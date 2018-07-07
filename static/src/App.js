@@ -99,11 +99,11 @@ class App extends Component {
   }
 
   handleFilter(){
-
+    alert('handle')
   }
 
   resetFilter(){
-
+    alert('reset')
   }
 
   render() {
@@ -118,7 +118,7 @@ class App extends Component {
         </p>
         <div>
             <Gallery imageList={this.props.gallery}/>
-            <Filter tags={this.props.tags} filterFunc={this.handleFilter()} resetFunc={this.resetFilter()}/>
+            <Filter tags={this.props.tags} filterFunc={this.handleFilter} resetFunc={this.resetFilter}/>
         </div>
       </div>
     );
