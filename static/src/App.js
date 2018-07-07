@@ -57,12 +57,26 @@ class Gallery extends Component {
     constructor(props){
         super(props);
         this.imageList = props.imageList;
+        this.valid = props.tagset;
+    }
+
+    check(imageTags){
+        for (var tag in imageTags){
+           if (this.valid.has(imageTags[tag])) {
+               return true;
+           }
+        }
     }
 
     render() {
         return (
             this.imageList.map((el) => {
-                return <Photo name={el.name} url={el.url} tags={el.tags} desc={el.desc}/>
+                // si hay un tag de la imagen en los tag validos hacer esto
+                if(this.check(el.tags)) {
+                    return <Photo name={el.name} url={el.url} tags={el.tags} desc={el.desc}/>
+                }else{
+                    return <span>Filtrada</span>
+                }
             })
         );
     }
@@ -74,18 +88,29 @@ class Filter extends Component {
         this.tags = props.tags;
         this.onClickFilter = props.filterFunc;
         this.onClickReset = props.resetFunc;
+        this.tagset = props.tagset;
+        this.tagsList = new Set();
+
     }
+
+    addTag(el){
+        alert(el.target.value)
+        this.tagsList.add(el.target.value)
+    }
+
+
     // Agregar funcion onclick
     render() {
         return (
             <div>
+                <h1>{this.tagset}</h1>
                 {this.tags.map( (el) => {
                     return <label> {el}
-                        <input type="checkbox" name={el} value={el}/>
+                        <input type="checkbox" name={el} value={el} onChange={ev => this.addTag(ev)}/>
                     </label>
                 })}
-                <button onClick={this.onClickFilter}>Mostrar seleccionados</button>
-                <button onClick={this.onClickReset}>Mostrat todos</button>
+                <button onClick={()=>this.onClickFilter(this.tagsList)}>Mostrar seleccionados</button>
+                <button onClick={this.onClickReset}>Mostrar todos</button>
             </div>
         );
     }
@@ -96,10 +121,22 @@ class App extends Component {
       super(props);
       this.props = props;
       this.validTags = new Set();
+      this.initValidTags()
   }
 
-  handleFilter(){
-    alert('handle')
+  //renderTwice(){
+    //
+  //}
+
+  initValidTags(){
+      for (var el in this.props.tags){
+          this.validTags.add(this.props.tags[el])
+      }
+  }
+
+  handleFilter = (tagSet) => {
+      console.log(tagSet)
+      this.validTags.clear();
   }
 
   resetFilter(){
@@ -117,8 +154,8 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
         <div>
-            <Gallery imageList={this.props.gallery}/>
-            <Filter tags={this.props.tags} filterFunc={this.handleFilter} resetFunc={this.resetFilter}/>
+            <Gallery imageList={this.props.gallery} tagset={this.validTags}/>
+            <Filter tags={this.props.tags} filterFunc={this.handleFilter} resetFunc={this.resetFilter} tagset={this.validTags}/>
         </div>
       </div>
     );
