@@ -124,10 +124,6 @@ class App extends Component {
       this.initValidTags()
   }
 
-  //renderTwice(){
-    //
-  //}
-
   initValidTags(){
       for (var el in this.props.tags){
           this.validTags.add(this.props.tags[el])

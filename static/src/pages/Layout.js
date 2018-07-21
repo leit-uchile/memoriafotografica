@@ -11,7 +11,7 @@ import NoMatch from "./NoMatch";
 class Layout extends Component{
     render(){
         return(
-            <div>
+            <div className='jumbotron container'>
                 <Header/>
                 <Switch>
                     <Route exact path={"/"} component={Home}/>
