@@ -38,6 +38,9 @@ class Login extends Component{
                     </fieldset>
                     <button type="submit">Entrar</button>
                 </form>
+                <div>
+                    <Link to={"/register"}>¿No tienes cuenta? Registrate</Link>
+                </div>
             </div>
         );
     }

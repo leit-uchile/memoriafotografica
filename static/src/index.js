@@ -1,19 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Link } from "react-router-dom";
+import { Provider } from 'react-redux';
 
 import './index.css';
+import store from './store/index';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
-
-import Layout from "./pages/Layout";
 
 const app = document.getElementById('root');
 
 ReactDOM.render(
-    <BrowserRouter>
-        <Layout />
-    </BrowserRouter>
+    <Provider store={store}>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    </Provider>
 , app);
-
-registerServiceWorker();
