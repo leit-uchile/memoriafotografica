@@ -10,12 +10,8 @@ from .serializers import UserSerializer
 def index(request):
     return HttpResponse("Hello, world. You're at the users index.")
 
-
-
 def user_list(request):
-    """
-    List all code metadata, or create a new metadata.
-    """
+
     if request.method == 'GET':
         user = User.objects.all()
         serializer = UserSerializer(user, many=True)
@@ -31,9 +27,7 @@ def user_list(request):
 
 @csrf_exempt
 def user_detail(request, pk):
-    """
-    Retrieve, update or delete a code metadata.
-    """
+
     try:
         user = User.objects.get(pk=pk)
     except User.DoesNotExist:
