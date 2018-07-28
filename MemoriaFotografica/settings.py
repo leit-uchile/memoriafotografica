@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
     'rest_framework',
-    'knox'
+    'knox',
+    'imagekit'
 ]
 
 MIDDLEWARE = [
