@@ -1,23 +1,31 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
+import {connect} from 'react-redux';
+
 
 class Header extends Component{
-
-    constructor(){
-        super();
-    }
-
     render(){
+        var doLoginNav;
+        if(this.props.auth.isAuthenticated === true){
+            doLoginNav = <Link className="nav-item" to={"/dashboard"}><span className="nav-link">{this.props.auth.user.username}</span></Link>
+        }else{
+            doLoginNav = <Link className="nav-item" to={"/login"}><span className="nav-link">Login</span></Link>
+        }
         return(
             <header>
-                <h1>Header</h1>
-                <Link to={"/"}>Home</Link>
-                <Link to={"/app"}>Testing App</Link>
-                <Link to={"/login"}>Login</Link>
+                <nav className="nav nav-pills ">
+                    <Link className="nav-item" to={"/"}> <span className="nav-link">Memoria Fotografica</span> </Link>
+                    {doLoginNav}
+                </nav>
             </header>
         );
     }
-
 }
 
-export default Header;
+const mapStateToProps = state => {
+    return {
+        auth : state.auth
+    }
+}
+
+export default connect(mapStateToProps)(Header);

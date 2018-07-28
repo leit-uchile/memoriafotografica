@@ -8,7 +8,7 @@ class Footer extends Component{
 
     render(){
         return(
-            <h1>Footer</h1>
+            <span>LEIT - Biblioteca Central</span>
         );
     }
 
