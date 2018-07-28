@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
-
+import {auth} from '../actions';
+import {connect} from 'react-redux';
 
 class Login extends Component{
 
@@ -16,17 +17,24 @@ class Login extends Component{
 
     updatePassword = e => {this.setState({password : e.target.value})}
 
-    sendForm = function(){
-        alert("Aun no implementado")
-        console.log(this.state)
+    onSubmit = e => {
+        e.preventDefault();
+        this.props.login(this.state.username, this.state.password);
     }
 
     render(){
         return(
             <div>
-                <form onSubmit={this.sendForm}>
+                <form onSubmit={this.onSubmit}>
                     <h1>Login</h1>
                     <fieldset>
+                        {this.props.errors.length > 0 && (
+                            <ul>
+                            {this.props.errors.map(error => (
+                                <li key={error.field}>{error.message}</li>
+                            ))}
+                            </ul>
+                        )}
                         <p>
                             <label htmlFor="username">Nombre de usuario</label>
                             <input type="text" onChange={this.updateUserName}/>
@@ -47,4 +55,25 @@ class Login extends Component{
 
 }
 
-export default Login;
+const mapStateToProps = state => {
+    let errors = [];
+    if (state.auth.errors) {
+        errors = Object.keys(state.auth.errors).map(field => {
+        return {field, message: state.auth.errors[field]};
+        });
+    }
+    return {
+        errors,
+        isAuthenticated: state.auth.isAuthenticated
+    };
+  }
+  
+const mapActionsToProps = dispatch => {
+    return {
+        login: (username, password) => {
+          return dispatch(auth.login(username, password));
+        }
+    };
+}
+
+export default connect(mapStateToProps, mapActionsToProps)(Login);

@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
+import { BrowserRouter } from "react-router-dom";
+import { Provider, connect } from 'react-redux';
+
 import Layout from "./pages/Layout";
+import store from "./store";
 
 class App extends Component {
-  constructor(props){
-      super(props);
-      this.props = props;
-      this.state = {
-          loggedIn : false
-      }
-  }
 
   render() {
     return (
-        <Layout appState={this.state} />
+        <Provider store={store}>
+            <BrowserRouter>
+                <Layout/>
+            </BrowserRouter>
+        </Provider>
     );
   }
 }
