@@ -39,8 +39,13 @@ class Home extends Component{
 
     render(){
         return(
-            <div className='container'><h1>Gallery Home</h1>
-            <Gallery imageList={this.props.gallery} />
+            <div className='container gallery-container'><h1>Gallery Home</h1>
+                <p className='page-description text-center'>Aqui pondria mi descripcion... si tuviera una</p>
+                <div className='tz-gallery'>
+                    <div className='row'>
+                    <Gallery imageList={this.props.gallery} />
+                </div>
+                </div>
             </div>
 
 
