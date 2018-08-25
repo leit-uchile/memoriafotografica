@@ -144,3 +144,7 @@ REST_FRAMEWORK = {
     # ],
     'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
 }
+
+PAGE_CACHE_SECONDS = 1
+
+MIDDLEWARE.append('MemoriaFotografica.middleware.dev_cors_middleware')
