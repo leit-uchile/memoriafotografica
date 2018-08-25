@@ -1,8 +1,8 @@
 # Import models here
 from .models import *
 from datetime import datetime
-from MetaData.models import Metadata
-from MetaData.serializers import MetadataSerializer
+#from MetaData.models import Metadata
+#from MetaData.serializers import MetadataSerializer
 from rest_framework import serializers
 
 from rest_framework import serializers
@@ -49,5 +49,3 @@ class AlbumSerializer (serializers.Serializer):
 
         instance.save()
         return instance
-
-

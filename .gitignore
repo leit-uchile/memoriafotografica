@@ -1,8 +1,13 @@
 # =============== PyCharm ==============
 
-.idea
-.venv
-
+__pycache__/
+.DS_Store
+.idea/
+.venv/
+**/__pycache__/
+*.pyc
+**/db.sqlite3
+db.sqlite3
 # ================= Node ===============
 
 # dependencies

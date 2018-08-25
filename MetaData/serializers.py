@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 # Create serializers here :)
 from rest_framework import serializers
-from .models import Metadata
+#from .models import Metadata
 
 
 class MetadataSerializer(serializers.Serializer):
