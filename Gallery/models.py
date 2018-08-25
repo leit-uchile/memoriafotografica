@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import datetime
-from MetaData.models import Metadata
+from MetaData.models import *
 from PIL import Image
 #from imagekit.models import ImageSpecField
 #from imagekit.processors import ResizeToFill
@@ -13,15 +13,13 @@ import os
 
 class Photo(models.Model):
 
-    title = models.CharField(max_length=40)  # type: str
-    description = models.TextField()
     image = models.ImageField()
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
-    tags = models.ManyToManyField(Metadata)
-
     thumbnail = models.ImageField(max_length=500, blank=True, null=True)
-
+    keywords = models.ManyToManyField(MetadataKeyword)
     def create_thumbnail(self):
+
+
 
         if not self.image:
             return
