@@ -1,5 +1,4 @@
 import auth from "./auth";
-import notes from './notes';
 
 import {combineReducers} from 'redux';
 
@@ -10,7 +9,6 @@ import {combineReducers} from 'redux';
 const rootReducer = (state = initialState, action) => state;
 */
 const rootReducer = combineReducers({
-  notes: notes,
   auth: auth
 })
 
