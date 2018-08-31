@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-//import Home from '../pages/Home';
 import Photo from './Photo';
 
 class Gallery extends Component {

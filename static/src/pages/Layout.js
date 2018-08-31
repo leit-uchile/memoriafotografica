@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Home from './Home';
 import Login from './Login';
-import App from "../App";
+import Register from './Register';
 import NoMatch from "./NoMatch";
 
 class Layout extends Component{
@@ -15,8 +15,8 @@ class Layout extends Component{
                 <Header/>
                 <Switch>
                     <Route exact path={"/"} component={Home}/>
-                    <Route path={"/app"} component={App}/>
                     <Route path={"/login"} component={Login}/>
+                    <Route path={"/register"} component={Register}/>
                     <Route component={NoMatch}/>
                 </Switch>
                 <Footer/>

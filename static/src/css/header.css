@@ -1,0 +1,17 @@
+.header{
+    background: #f8f8f8;
+    padding: 15px;
+    overflow: auto;
+}
+
+.header-menu ul{
+    float: right;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.header-menu li {
+    display: inline;
+
+}
