@@ -16,6 +16,7 @@ class Header extends Component{
                 <nav className="nav nav-pills ">
                     <Link className="nav-item" to={"/"}> <span className="nav-link">Memoria Fotografica</span> </Link>
                     {doLoginNav}
+                    <Link className="nav-item" to= {"/upload"}> <span className="nav-link">Sube tu foto</span></Link>
                 </nav>
             </header>
         );
