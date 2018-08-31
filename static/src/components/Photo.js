@@ -6,16 +6,17 @@ class Photo extends Component {
         this.props = props;
     }
     render() {
-        const imgStyle = {height: '100px', width: '100px'};
+
+        const center = {display: 'flex',  justifyContent:'center', alignItems:'center'}
         return(
-            <div className='col-sm-6 col-md-4'>
+            <div style={{top:'10px'}} className='col-sm-6 col-md-4'>
                 <div className='thumbnail'>
-                    <a className='lightbox' href={this.props.url}>
-                        <img style={imgStyle} src={this.props.url} alt={this.props.name}/>
+                    <a style={center} className='lightbox' href={this.props.url}>
+                        <img style={{height: '200px', width: 'auto'}} src={this.props.url} alt={this.props.name}/>
                     </a>
                     <div className='caption'>
-                        <h3>{this.props.name}</h3>
-                        <p>{this.props.desc}</p>
+                        <h3 style={center}>{this.props.name}</h3>
+                        {/*<p>{this.props.desc}</p>*/}
                         <ul>
                             {this.props.tags.map( (el) => {
                                 return <li>{el}</li>
