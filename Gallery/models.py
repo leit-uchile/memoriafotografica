@@ -14,7 +14,7 @@ class Photo(models.Model):
     image = models.ImageField()
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
     thumbnail = models.ImageField(max_length=500, blank=True, null=True)
-    #keywords = models.ManyToManyField(MetadataKeyword)
+
     # def create_thumbnail(self):
     #
     #
@@ -58,9 +58,11 @@ class Photo(models.Model):
 
     def __str__(self):
         try:
+            # taglist = self.metadatakeyword_set.all()   PARA OBTENERLISTA DE TODOS LOS TAGS
             t = self.metadatatitle.name
             return "Photo: "+t
-        except:
+        except Exception as e:
+            print(e)
             return "Photo without title (" + str(self.id) + ")"
 
 class Album(models.Model):
