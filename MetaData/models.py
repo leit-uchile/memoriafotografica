@@ -12,4 +12,4 @@ class MetadataDescription(models.Model):
 
 class MetadataKeyword(models.Model):
     keywords = models.TextField()
-    photo = models.OneToOneField(Photo, on_delete=models.CASCADE)
+    photo = models.ManyToManyField(Photo)

@@ -5,26 +5,19 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import User
 from django.contrib.auth.models import User as django_user
+from Gallery.serializers import AlbumSerializer, PhotoSerializer
+
+class DjangoUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = django_user
+        fields = ('id', 'username')
 
 class UserSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    user = models.OneToOneField(django_md.User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to='user/avatar', blank=True)
-    albums = models.ManyToManyField(Album, blank=True)
-    photos = models.ManyToManyField(Photo, blank=True)
-
-    def create(self, validated_data):
-
-        return User.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-
-        instance.user = validated_data.get('user', instance.user)
-        instance.avatar = validated_data.get('avatar', instance.avatar)
-        instance.albums = validated_data.get('albums', instance.albums)
-        instance.photos = validated_data.get('photos', instance.photos)
-        instance.save()
-        return instance
+    user = DjangoUserSerializer()
+    avatar = serializers.ImageField(max_length=None, allow_empty_file=True)
+    albums = AlbumSerializer(many = True)
+    photos = PhotoSerializer(many = True)
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -51,5 +44,5 @@ class LoginUserSerializer(serializers.Serializer):
         user = authenticate(**data)
         if user and user.is_active:
             return user
-        raise serializers.ValidationError("Unable to log in with provided credentials.")
 
+        raise serializers.ValidationError("Unable to log in with provided credentials.")
