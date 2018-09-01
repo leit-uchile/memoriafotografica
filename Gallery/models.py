@@ -11,7 +11,6 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 import os
 
 class Photo(models.Model):
-
     image = models.ImageField()
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
     thumbnail = models.ImageField(max_length=500, blank=True, null=True)

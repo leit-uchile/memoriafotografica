@@ -4,9 +4,9 @@ from rest_framework.response import Response
 from knox.models import AuthToken
 
 from .models import User
-from .serializers import UserSerializer, CreateUserSerializer
+from .serializers import CreateUserSerializer, DjangoUserSerializer, UserSerializer
 from .serializers import (CreateUserSerializer,
-                          UserSerializer, LoginUserSerializer)
+                          DjangoUserSerializer, UserSerializer, LoginUserSerializer)
 
 
 class RegistrationAPI(generics.GenericAPIView):
@@ -20,8 +20,9 @@ class RegistrationAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        our_user = User.objects.get(user__id = user.id)
         return Response({
-            "user": UserSerializer(user, context=self.get_serializer_context()).data,
+            "user": UserSerializer(our_user, context=self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user)
         })
 
@@ -33,21 +34,22 @@ class LoginAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
+        our_user = User.objects.get(user__id = user.id)
         return Response({
-            "user": UserSerializer(user, context=self.get_serializer_context()).data,
+            "user": UserSerializer(our_user, context=self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user)
         })
 
 class UserAPI(generics.RetrieveAPIView):
-   # permission_classes = [permissions.IsAuthenticated, ]
-    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = DjangoUserSerializer
 
     def get_object(self):
         return self.request.user
 
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, ]
-    serializer_class = UserSerializer
+    serializer_class = DjangoUserSerializer
 
     def get_queryset(self):
         return self.request.user.notes.all()

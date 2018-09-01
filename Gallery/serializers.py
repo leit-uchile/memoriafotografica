@@ -9,11 +9,11 @@ from rest_framework import serializers
 # Create serializers here :)
 class PhotoSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(required=False, allow_blank=True, max_length=100)
-    description = serializers.CharField()
+    #name = serializers.CharField(required=False, allow_blank=True, max_length=100)
+    #description = serializers.CharField()
     image = serializers.ImageField()
     uploadDate =serializers.DateTimeField('date published', default=datetime.now)
-    tags = serializers.SlugRelatedField(slug_field='name', many=True, read_only=True)
+    #tags = serializers.SlugRelatedField(slug_field='name', many=True, read_only=True)
 
 
     def create(self, validated_data):
@@ -21,14 +21,9 @@ class PhotoSerializer(serializers.Serializer):
         return Photo.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-
-        instance.name = validated_data.get('name', instance.name)
-        instance.description = validated_data.get('description', instance.description)
         instance.image = validated_data.get('image', instance.image)
         instance.uploadDate = validated_data.get('date', instance.uploadDate)
         instance.tags = validated_data.get('tags', instance.tags)
-
-
         instance.save()
         return instance
 
