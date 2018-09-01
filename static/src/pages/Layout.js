@@ -18,7 +18,7 @@ class Layout extends Component{
                     <Route exact path={"/"} component={Home}/>
                     <Route path={"/login"} component={Login}/>
                     <Route path={"/register"} component={Register}/>
-                    <Route path={"/upload"} component={Upload} />
+                    <Route path={"/upload"}component={Upload} />
                     <Route component={NoMatch}/>
                 </Switch>
                 <Footer/>
@@ -27,7 +27,7 @@ class Layout extends Component{
     }
 
 }
-
+//<Route path={"/upload"} component={Upload} />
 export default Layout;
 
 //<Route path={"/dashboard"} component={DashBoard}/>

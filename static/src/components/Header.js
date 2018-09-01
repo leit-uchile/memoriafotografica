@@ -21,6 +21,7 @@ class Header extends Component{
                 <div className='header-menu'>
                     <ul>
                         <il><Link to={"/"}>Home</Link></il>
+			<il><Link className="nav-item" to={"/upload"}> <span className="nav-link">Sube tu foto</span></Link></il>
                         <il>{doLoginNav}</il>
                     </ul>
                 </div>
