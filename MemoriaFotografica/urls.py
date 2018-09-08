@@ -18,14 +18,17 @@ from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
-from Users import endpoints
+from Users import endpoints as user_endpoints
+from Gallery import endpoints as gallery_endpoints
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/',include('Users.urls')),
     path('gallery/',include('Gallery.urls')),
     path('metadata/',include('MetaData.urls')),
-    re_path(r'^api/', include(endpoints)),
+    re_path(r'^api/', include(user_endpoints)),
+    re_path(r'^api/', include(gallery_endpoints)),
     re_path(r'^api/auth/', include('knox.urls')),
     #re_path(r'^', TemplateView.as_view(template_name="index.html")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

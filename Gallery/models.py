@@ -8,12 +8,12 @@ class Photo(models.Model):
 
     image = models.ImageField()
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
-    thumbnail = models.ImageField(sizes=((125,125),(200,200)), blank=True, null=True)
+    thumbnail = models.ImageField(blank=True, null=True)
     #keywords = models.ManyToManyField(MetadataKeyword)
 
     def __str__(self):
         try:
-            t = self.metadatatitle.name
+            t = self.metadatatitle.title
             return "Photo: "+t
         except:
             return "Photo without title (" + str(self.id) + ")"
