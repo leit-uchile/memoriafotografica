@@ -45,10 +45,10 @@ class Upload extends Component{
         <div>
             {message}
             <form enctype="multipart/form-data" method="POST" onSubmit={this.onSubmit}>
-                    <input type="file"  name="photo" onChange={this.updateimage} accept='.jpg, .png, .jpeg'/>
+                    <input type="file"  name="photo" onChange={this.updateimage} accept='.jpg, .png, .jpeg' required />
                 <label>
                     Título
-                    <input type="text" onChange={this.updatename} name="name"/>
+                    <input type="text" onChange={this.updatename} name="name"required/>
                 </label>
 
                 <label>
