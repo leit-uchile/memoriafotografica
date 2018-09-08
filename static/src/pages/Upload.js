@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import {upload} from '../actions';
+import {connect} from 'react-redux';
 
 class Upload extends Component{
     constructor(Props){
@@ -8,17 +10,22 @@ class Upload extends Component{
             name: "",
             description: "",
             image: ""
-        };   
+        };
     }
 
    updatename = a => {this.setState({name : a.target.value})}
    updatedescription = a =>{this.setState({description : a.target.value})}
-   updateimage = a =>{this.setState({image : a.target.value})}
+   updateimage = a =>
+    {
+       console.log(a.target.files[0])
+       var im = a.target.files[0];
+       this.setState({image: im})
+    }
 
-onSubmit = a => {
-    a.preventDefault();
-    this.props.Upload(this.state.name,this.state.description,this.state.image);
-}
+    onSubmit = a => {
+        a.preventDefault();
+        this.props.upload(this.state.name,this.state.description,this.state.image);
+    }
     
     anError(){
         console.log("Llame error");
@@ -38,8 +45,7 @@ onSubmit = a => {
         <div>
             {message}
             <form enctype="multipart/form-data" method="POST" onSubmit={this.onSubmit}>
-
-                    <input type="file"  name="photo" onChange={this.updateimage}/>
+                    <input type="file"  name="photo" onChange={this.updateimage} accept='.jpg, .png, .jpeg'/>
                 <label>
                     Título
                     <input type="text" onChange={this.updatename} name="name"/>
@@ -61,4 +67,18 @@ onSubmit = a => {
     }
 }
 
-export default Upload;
+const mapStateToProps = state => {
+    return {
+        errors : null
+    };
+}
+
+const mapActionsToProps = dispatch => {
+    return {
+        upload : (name,desc,im) => {
+            return dispatch(upload.uploadImage(name,desc,im));
+        }
+    }
+}
+
+export default connect(mapStateToProps,mapActionsToProps)(Upload);
