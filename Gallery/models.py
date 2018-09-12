@@ -1,18 +1,22 @@
 from django.db import models
 from datetime import datetime
-from MetaData.models import Metadata
+from PIL import Image
+from django.utils.text import slugify
 # Create your models here.
 
 class Photo(models.Model):
 
-    name = models.CharField(max_length=40)  # type: str
-    description = models.TextField()
     image = models.ImageField()
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
-    tags = models.ManyToManyField(Metadata)
+    thumbnail = models.ImageField(blank=True, null=True)
+    #keywords = models.ManyToManyField(MetadataKeyword)
 
     def __str__(self):
-        return "Photo " + self.name
+        try:
+            t = self.metadatatitle.title
+            return "Photo: "+t
+        except:
+            return "Photo without title (" + str(self.id) + ")"
 
 class Album(models.Model):
 
