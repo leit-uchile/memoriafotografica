@@ -8,6 +8,7 @@ import Login from './Login';
 import Register from './Register';
 import NoMatch from "./NoMatch";
 import Upload from './Upload';
+import PhotoDetail from "./PhotoDetail";
 
 class Layout extends Component{
     render(){
@@ -19,6 +20,7 @@ class Layout extends Component{
                     <Route path={"/login"} component={Login}/>
                     <Route path={"/register"} component={Register}/>
                     <Route path={"/upload"}component={Upload} />
+                    <Route path={"/photo"}component={PhotoDetail}/>
                     <Route component={NoMatch}/>
                 </Switch>
                 <Footer/>

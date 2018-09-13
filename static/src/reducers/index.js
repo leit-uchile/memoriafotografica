@@ -1,4 +1,5 @@
 import auth from "./auth";
+import home from "./home";
 import {combineReducers} from 'redux';
 
 /*const initialState = {
@@ -8,7 +9,8 @@ import {combineReducers} from 'redux';
 const rootReducer = (state = initialState, action) => state;
 */
 const rootReducer = combineReducers({
-  auth: auth
+  auth: auth,
+  home: home
 })
 
 export default rootReducer;

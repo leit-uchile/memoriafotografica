@@ -24,11 +24,14 @@ const initialState = {
     ]
 }
 
-export function home(state=initialState,action){
+export default function home(state=initialState,action){
     switch (action.type){
-        case 'ADD_PHOTO':
-            return {...state, photos : action.payload }
-            ;
+        case 'RECOVERED_PHOTO':
+            return {...state, photos : action.data};
+        case 'EMPTY':
+            return{...state, errors: action.data};
+        case 'DETAIL':
+            return{...state, imageDetails: action.data};
         default:
             return state
     }
