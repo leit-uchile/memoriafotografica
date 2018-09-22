@@ -77,36 +77,78 @@ class Register extends Component{
                 <h1>Register</h1>
                 <form onSubmit={this.onSubmit}>
                     {errorMessage}
+
                     <p>
-                        <label>
-                            Nombre : <input type="text" placeholder="Rosa" onChange={this.updateName}></input>
-                        </label>
+                    <div>
+                        <label> Nombre : </label>
+                    </div>
+
+                    <div>
+                        <input type="text" placeholder="Rosa" onChange={this.updateName}></input>
+                    </div>
                     </p>
+                    <br/>
+
+
                     <p>
-                        <label>
-                            Apellido : <input type="text" placeholder="Leal" onChange={this.updateLastName}></input>
-                        </label>
+                    <div>
+                        <label> Apellido : </label>
+                    </div>
+
+                     <div>
+                        <input type="text" placeholder="Leal" onChange={this.updateLastName}></input>
+                     </div>
                     </p>
+                        <br/>
+
+
                     <p>
+                        <div>
                         <label>
-                            Rut : <input type="text" placeholder="11111112" onChange={this.updateRut}></input>
+                            Rut :
                         </label>
+                        </div>
+
+                    <div>
+                         <input type="text" placeholder="11111112" onChange={this.updateRut}></input>
+                        </div>
                     </p>
+                         <br/>
+
                     <p>
+                        <div>
                         <label>
-                            Correo electronico : <input type="email" placeholder="usuario@leit.cl" onChange={this.updateEmail}></input>
+                            Correo electronico :
                         </label>
+                        </div>
+                        <div>
+                        <input type="email" placeholder="usuario@leit.cl" onChange={this.updateEmail}></input>
+                        </div>
                     </p>
+                            <br/>
+
+
                     <p>
+                       <div>
                         <label>
-                            Contraseña : <input type="password" onChange={this.updatePassword}></input>
+                            Contraseña :
                         </label>
+                        </div>
+                        <div>
+                        <input type="password" onChange={this.updatePassword}></input>
+                        </div>
                     </p>
+                        <br/>
+
                     <p>
+                        <div>
                         <label>
-                            Repita su contraseña: <input type="password" onChange={this.updatePasswordCheck}></input>
+                            Repita su contraseña:
                         </label>
+                        </div>
+                        <div> <input type="password" onChange={this.updatePasswordCheck}></input> </div>
                     </p>
+                        <br/>
                     <button type="submit">Registrar</button>
                 </form>
             </div>
