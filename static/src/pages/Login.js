@@ -25,34 +25,57 @@ class Login extends Component{
     render(){
         return(
             <div className='container'>
-                <form onSubmit={this.onSubmit}>
-                    <h1>Login</h1>
-                    <fieldset>
-                        {this.props.errors.length > 0 && (
-                            <ul>
-                            {this.props.errors.map(error => (
-                                <li key={error.field}>{error.message}</li>
-                            ))}
-                            </ul>
-                        )}
-                        <p>
-                            <label htmlFor="username">Nombre de usuario</label>
-                            <input type="text" onChange={this.updateUserName}/>
-                        </p>
-                        <p>
-                            <label htmlFor="username">Nombre de usuario</label>
-                            <input type="password" onChange={this.updatePassword}/>
-                        </p>
-                    </fieldset>
-                    <button type="submit">Entrar</button>
-                </form>
-                <div>
-                    <Link to={"/register"}>¿No tienes cuenta? Registrate</Link>
+                <div className='row'>
+                    <div className='col-sm-6 col-md-offset-4'>
+                        <div className='panel panel-default'>
+                            <div className='panel-body'>
+                                <h1>Inicia sesion</h1>
+                                <form onSubmit={this.onSubmit}>
+                                    <fieldset>
+                                        {this.props.errors.length > 0 && (
+                                            <ul>
+                                            {this.props.errors.map(error => (
+                                                <li key={error.field}>{error.message}</li>
+                                            ))}
+                                            </ul>
+                                        )}
+                                        <div className='row'>
+                                            <div className='col-sm-12 col-md-10 col-md-offset-1'>
+                                                <div className='form-group'>
+                                                    <div className='input-group'>
+                                                        <div className='input-group-prepend'>
+                                                            <span className='input-group-text'>
+                                                                <i className="fas fa-user"></i>
+                                                            </span>
+                                                            <input type="text" className='form-control' onChange={this.updateUserName} placeholder='Nombre de Usuario'/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className='form-group'>
+                                                    <div className='input-group'>
+                                                        <div className='input-group-prepend'>
+                                                            <span className='input-group-text'>
+                                                                <i className="fas fa-unlock"></i>
+                                                            </span>
+                                                            <input type="password" className='form-control' onChange={this.updatePassword} placeholder='Contraseña'/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <button type="submit">Entrar</button>
+                                </form>
+                            </div>
+                            <div className='panel-footer'>
+                                <Link to={"/register"}>¿No tienes cuenta? Registrate</Link>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
     }
-
 }
 
 const mapStateToProps = state => {

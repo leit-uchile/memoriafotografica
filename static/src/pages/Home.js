@@ -26,7 +26,7 @@ let imgs = [
     },
     {
         name: "img4",
-        url: "http://www.concepcionfotografica.cl/wp-content/uploads/2017/05/chile.png",
+        url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXNHwd_dZRBXjRWzvbEXwqOFLTQ1U98bQGNQogaJu94I7mENue",
         tags: ["tag1","tag2"],
         // Lorem ipsum Dolor Sit Amet
         desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat leo vitae felis iaculis, sit amet placerat tellus tincidunt. Nunc at vestibulum elit. Vivamus id ipsum eros. Curabitur pulvinar nulla eu magna euismod iaculis. Nulla facilisi. Vestibulum euismod augue vel semper condimentum. Mauris laoreet, quam quis finibus malesuada, tellus tellus ultrices odio, quis commodo nulla nulla vestibulum arcu. Nullam aliquet, quam id porttitor consectetur, arcu velit congue arcu, non sollicitudin nunc dolor id enim. Nunc ultricies eget mauris id dapibus. Praesent magna lorem, lacinia id tristique vel, fringilla eget urna. Sed velit elit, rhoncus at ligula ac, porta dapibus nunc. Morbi eu nulla vel lectus porta egestas sit amet vitae dui. "

@@ -40,28 +40,33 @@ class Upload extends Component{
             message = null;
         }
 
-
         return(
-        <div>
+        <div className='container'>
             {message}
             <form enctype="multipart/form-data" method="POST" onSubmit={this.onSubmit}>
-                    <input type="file"  name="photo" onChange={this.updateimage} accept='.jpg, .png, .jpeg' required />
-                <label>
-                    Título
-                    <input type="text" onChange={this.updatename} name="name"required/>
-                </label>
 
-                <label>
-                    Descripción
-                     <textarea name="description" onChange={this.updatedescription}> </textarea>
-                </label>    
-                
-                <label>
-                    Envia
-                    <input type="submit" value="SEND" className="submit" /> 
-                </label>
+                <h1 className='my-4'>
+                    Título
+                    <small><input type="text" onChange={this.updatename} name="name"required placeholder="Ingrese el título de su imagen"/></small>
+                </h1>
+                <div className='row'>
+                    <div className='col-md-8'>
+                        <img className='img-fluid' style={{height: '500px', width: 'auto'}} src='http://www.lebenshilfe-sz.de/wp-content/uploads/2017/01/noimg.jpg'/>
+                        <input type="file"  name="photo" onChange={this.updateimage} accept='.jpg, .png, .jpeg' required />
+                    </div>
+                    <div className='col-md-4'>
+                        <h3 className='my-3'>Descripción</h3>
+                            <textarea name="description" onChange={this.updatedescription} placeholder='Ingrese la descripcion de su imagen'> </textarea>
+                        <h3 className='my-3'>Etiquetas</h3>
+                        <input type="submit" value="SEND" className="submit" />
+                        <button onClick={this.anError.bind(this)}>Error</button>
+
+
+
+                    </div>
+                </div>
             </form>  
-            <button onClick={this.anError.bind(this)}>Error</button>
+
         </div>
          )
     }
