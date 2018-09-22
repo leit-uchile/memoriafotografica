@@ -18,7 +18,7 @@ class UserSerializer(serializers.Serializer):
     avatar = serializers.ImageField(max_length=None, allow_empty_file=True)
     albums = AlbumSerializer(many = True)
     photos = PhotoSerializer(many = True)
-
+    user_type = serializers.IntegerField()
 
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
