@@ -14,6 +14,7 @@ class PhotoSerializer(serializers.Serializer):
     image = serializers.ImageField()
     uploadDate =serializers.DateTimeField('date published', default=datetime.now)
     #tags = serializers.SlugRelatedField(slug_field='name', many=True, read_only=True)
+    approved = serializers.BooleanField(default=False)
 
 
     def create(self, validated_data):
@@ -24,6 +25,7 @@ class PhotoSerializer(serializers.Serializer):
         instance.image = validated_data.get('image', instance.image)
         instance.uploadDate = validated_data.get('date', instance.uploadDate)
         instance.tags = validated_data.get('tags', instance.tags)
+        instance.approved = validated_data.get('approved', instance.approved)
         instance.save()
         return instance
 

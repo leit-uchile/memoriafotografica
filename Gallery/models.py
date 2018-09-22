@@ -1,6 +1,5 @@
 from django.db import models
 from datetime import datetime
-from PIL import Image
 from django.utils.text import slugify
 # Create your models here.
 
@@ -9,6 +8,7 @@ class Photo(models.Model):
     image = models.ImageField()
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
     thumbnail = models.ImageField(blank=True, null=True)
+    approved = models.BooleanField(default=False)
     #keywords = models.ManyToManyField(MetadataKeyword)
 
     def __str__(self):
