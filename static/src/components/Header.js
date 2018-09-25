@@ -7,22 +7,22 @@ class Header extends Component{
     render(){
         var doLoginNav;
         if(this.props.auth.isAuthenticated === true){
-            doLoginNav = <Link className="nav-item" to={"/dashboard"}><span className="nav-link">{this.props.auth.user.id}</span></Link>
+            doLoginNav = <Link className='nav-link' to={"/dashboard"}><span>{this.props.auth.user.id}</span></Link>
         }else{
-            doLoginNav = <Link className="nav-item" to={"/login"}><span className="nav-link">Login</span></Link>
+            doLoginNav = <Link className='nav-link' to={"/login"}><span>Login</span></Link>
       
         }
         return(
-            <header className='header'>
-                <div>
-                    <img style={{width: '100px', height: 'auto', float: 'left'}} src={'/fcfm_header.png'} alt={'logo'}/>
-                    <h1 style={{fontSize:'20px',position:'relative', top:'18px', left:'10px'}}>Memoria Fotográfica</h1>
+            <header className='header mb-2'>
+                <div className='container'>
+                    <img src={'/fcfm_header.png'} alt={'logo'}/>
+                    <h1>Memoria Fotográfica</h1>
                 </div>
-                <div className='header-menu'>
-                    <ul>
-                        <il><Link to={"/"}>Home</Link></il>
-			<il><Link className="nav-item" to={"/upload"}> <span className="nav-link">Sube tu foto</span></Link></il>
-                        <il>{doLoginNav}</il>
+                <div className='container'>
+                    <ul className='nav justify-content-end'>
+                        <li className='nav-item'><Link className='nav-link' to={"/"}>Home</Link></li>
+			            <li className='nav-item'><Link className='nav-link' to={"/upload"}><span>Sube tu foto</span></Link></li>
+                        <li className='nav-item'>{doLoginNav}</li>
                     </ul>
                 </div>
             </header>

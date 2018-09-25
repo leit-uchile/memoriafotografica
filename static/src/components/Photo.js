@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import photoInfo from '../css/photoInfo.css';
 
 class Photo extends Component {
     constructor(props){
@@ -7,25 +8,24 @@ class Photo extends Component {
     }
     render() {
 
-        const center = {display: 'flex',  justifyContent:'center', alignItems:'center'}
         return(
-            <div style={{top:'10px'}} className='col-sm-6 col-md-4'>
-                <div className='thumbnail'>
-                    <a style={center} className='lightbox' href={this.props.url}>
-                        <img style={{height: '200px', width: 'auto'}} src={this.props.url} alt={this.props.name}/>
+
+                <div className='col-md-4 mt-3'>
+                    <a href={this.props.url}>
+                        <img className='img-fluid' style={{height: '200px', width: 'auto'}}  src={this.props.url} alt={this.props.name}/>
                     </a>
-                    <div className='caption'>
-                        <h3 style={center}>{this.props.name}</h3>
+                    <div className='info-block'>
+                        <h3>{this.props.name}</h3>
                         {/*<p>{this.props.desc}</p>*/}
                         <ul>
-                            {this.props.tags.map( (el) => {
+                            Etiquetas: {this.props.tags.map( (el) => {
                                 return <li>{el}</li>
                             })}
                         </ul>
                     </div>
                 </div>
 
-            </div>
+
         );
     }
 }

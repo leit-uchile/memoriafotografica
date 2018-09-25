@@ -47,19 +47,19 @@ class Upload extends Component{
 
                 <h1 className='my-4'>
                     Título
-                    <small><input type="text" onChange={this.updatename} name="name"required placeholder="Ingrese el título de su imagen"/></small>
+                    <input className='form-control-sm' type="text" onChange={this.updatename} name="name"required placeholder="Ingrese el título de su imagen"/>
                 </h1>
                 <div className='row'>
                     <div className='col-md-8'>
                         <img className='img-fluid' style={{height: '500px', width: 'auto'}} src='http://www.lebenshilfe-sz.de/wp-content/uploads/2017/01/noimg.jpg'/>
-                        <input type="file"  name="photo" onChange={this.updateimage} accept='.jpg, .png, .jpeg' required />
+                        <input type="file" name="photo" onChange={this.updateimage} accept='.jpg, .png, .jpeg' required />
                     </div>
                     <div className='col-md-4'>
                         <h3 className='my-3'>Descripción</h3>
-                            <textarea name="description" onChange={this.updatedescription} placeholder='Ingrese la descripcion de su imagen'> </textarea>
+                            <textarea className='form-control' name="description" onChange={this.updatedescription} placeholder='Ingrese la descripcion de su imagen'> </textarea>
                         <h3 className='my-3'>Etiquetas</h3>
-                        <input type="submit" value="SEND" className="submit" />
-                        <button onClick={this.anError.bind(this)}>Error</button>
+                        <input className='btn btn-danger' type="submit" value="Subir" />
+                        {/* <button onClick={this.anError.bind(this)}>Error</button> */}
 
 
 

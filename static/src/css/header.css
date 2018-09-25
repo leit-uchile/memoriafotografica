@@ -3,15 +3,14 @@
     padding: 15px;
     overflow: auto;
 }
-
-.header-menu ul{
-    float: right;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+.header img{
+    width: 100px;
+    height: auto;
+    float: left;
 }
-
-.header-menu li {
-    display: inline;
-
+.header h1{
+    font-size: 20px;
+    position: relative;
+    top: 26px;
+    left: 10px;
 }

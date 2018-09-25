@@ -25,11 +25,11 @@ class Login extends Component{
     render(){
         return(
             <div className='container'>
-                <div className='row'>
-                    <div className='col-sm-6 col-md-offset-4'>
-                        <div className='panel panel-default'>
-                            <div className='panel-body'>
-                                <h1>Inicia sesion</h1>
+
+                    <div className='mx-5'>
+                        <div className='card'>
+                            <div className='card-body'>
+                                <h1>Inicia sesión</h1>
                                 <form onSubmit={this.onSubmit}>
                                     <fieldset>
                                         {this.props.errors.length > 0 && (
@@ -47,8 +47,8 @@ class Login extends Component{
                                                             <span className='input-group-text'>
                                                                 <i className="fas fa-user"></i>
                                                             </span>
-                                                            <input type="text" className='form-control' onChange={this.updateUserName} placeholder='Nombre de Usuario'/>
                                                         </div>
+                                                            <input type="text" className='form-control' onChange={this.updateUserName} placeholder='Nombre de Usuario'/>
                                                     </div>
                                                 </div>
                                                 <div className='form-group'>
@@ -57,22 +57,24 @@ class Login extends Component{
                                                             <span className='input-group-text'>
                                                                 <i className="fas fa-unlock"></i>
                                                             </span>
-                                                            <input type="password" className='form-control' onChange={this.updatePassword} placeholder='Contraseña'/>
                                                         </div>
+                                                            <input type="password" className='form-control' onChange={this.updatePassword} placeholder='Contraseña'/>
                                                     </div>
+                                                </div>
+                                                <div className='form-group'>
+                                                    <button className='btn btn-danger' type="submit">Entrar</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </fieldset>
-                                    <button type="submit">Entrar</button>
                                 </form>
                             </div>
-                            <div className='panel-footer'>
-                                <Link to={"/register"}>¿No tienes cuenta? Registrate</Link>
+                            <div className='card-footer'>
+                                <Link to={"/register"}>¿No tienes cuenta? Regístrate</Link>
                             </div>
                         </div>
                     </div>
-                </div>
+
             </div>
         );
     }

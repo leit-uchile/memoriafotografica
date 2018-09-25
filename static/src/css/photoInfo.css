@@ -1,0 +1,17 @@
+a{
+    display: flex;
+    justify-content: center;
+}
+.info-block h3{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+.info-block li{
+    display: inline;
+    margin: 0 2px 0;
+    overflow: hidden;
+    padding: 10px;
+    background: #000000;
+    color: #ffffff;
+}

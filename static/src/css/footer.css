@@ -3,6 +3,12 @@
     padding: 15px;
     color: white;
 }
+.footer img{
+    width: 100px;
+    height: auto;
+    float: left;
+    filter: grayscale(100%)
+}
 .footer h2{
     font-size: 12px;
 }

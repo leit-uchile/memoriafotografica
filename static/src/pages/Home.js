@@ -47,9 +47,11 @@ class Home extends Component{
 
     render(){
         return(
-            <div className='container-fluid'>
-                <div className='row'>
-                    <Gallery imageList={this.props.gallery} />
+            <div className='col-md-12'>
+                <div className='container-fluid'>
+                    <div className='row'>
+                        <Gallery imageList={this.props.gallery} />
+                    </div>
                 </div>
             </div>
         );
