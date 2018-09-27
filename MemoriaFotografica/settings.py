@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'main.apps.MainConfig',
     'rest_framework',
     'knox',
-    'imagekit'
+
 ]
 
 MIDDLEWARE = [

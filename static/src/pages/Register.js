@@ -73,7 +73,7 @@ class Register extends Component{
         }
 
         return (
-            <div>
+            <div class="container">
                 <h1>Register</h1>
                 <form onSubmit={this.onSubmit}>
                     {errorMessage}
@@ -83,8 +83,8 @@ class Register extends Component{
                         <label> Nombre : </label>
                     </div>
 
-                    <div>
-                        <input type="text" placeholder="Rosa" onChange={this.updateName}></input>
+                    <div >
+                        <input type="text" placeholder="Rosa" class="form-control"onChange={this.updateName}></input>
                     </div>
                     </p>
                     <br/>
@@ -96,7 +96,7 @@ class Register extends Component{
                     </div>
 
                      <div>
-                        <input type="text" placeholder="Leal" onChange={this.updateLastName}></input>
+                        <input type="text" placeholder="Leal" class="form-control" onChange={this.updateLastName}></input>
                      </div>
                     </p>
                         <br/>
@@ -110,7 +110,7 @@ class Register extends Component{
                         </div>
 
                     <div>
-                         <input type="text" placeholder="11111112" onChange={this.updateRut}></input>
+                         <input type="text" placeholder="11111112" class="form-control" onChange={this.updateRut}></input>
                         </div>
                     </p>
                          <br/>
@@ -122,7 +122,7 @@ class Register extends Component{
                         </label>
                         </div>
                         <div>
-                        <input type="email" placeholder="usuario@leit.cl" onChange={this.updateEmail}></input>
+                        <input type="email" placeholder="usuario@leit.cl" class="form-control" onChange={this.updateEmail}></input>
                         </div>
                     </p>
                             <br/>
@@ -135,7 +135,7 @@ class Register extends Component{
                         </label>
                         </div>
                         <div>
-                        <input type="password" onChange={this.updatePassword}></input>
+                        <input type="password" class="form-control" onChange={this.updatePassword}></input>
                         </div>
                     </p>
                         <br/>
@@ -146,10 +146,10 @@ class Register extends Component{
                             Repita su contraseña:
                         </label>
                         </div>
-                        <div> <input type="password" onChange={this.updatePasswordCheck}></input> </div>
+                        <div> <input type="password" class="form-control" onChange={this.updatePasswordCheck}></input> </div>
                     </p>
                         <br/>
-                    <button type="submit">Registrar</button>
+                    <button type="submit" className='btn btn-danger' >Registrar</button>
                 </form>
             </div>
         );
