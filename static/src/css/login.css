@@ -5,7 +5,7 @@
 }
 .modal-content {
     background-color: white;
-    opacity: .8;
+    /*opacity: .8;*/
     border-radius: 10px;
 }
 .modal-content h1 {

@@ -2,6 +2,10 @@
     background: #4e5154;
     padding: 15px;
     color: white;
+
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 .footer img {
     width: 100px;
@@ -11,5 +15,14 @@
 }
 .footer h2 {
     font-size: 12px;
+}
+
+html {
+  min-height: 130%;
+  position: relative;
+}
+body {
+  margin: 0;
+  margin-bottom: 100px;
 }
 

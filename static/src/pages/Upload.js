@@ -52,12 +52,12 @@ class Upload extends Component{
                 <div className='row'>
                     <div className='col-md-8'>
                         <img className='img-fluid' style={{height: '500px', width: 'auto'}} src='http://www.lebenshilfe-sz.de/wp-content/uploads/2017/01/noimg.jpg'/>
-                        <i className="fas fa-camera"></i><input type="file" name="photo" onChange={this.updateimage} accept='.jpg, .png, .jpeg' required />
+                        <input type="file" name="photo" onChange={this.updateimage} accept='.jpg, .png, .jpeg' required />
                     </div>
                     <div className='col-md-4'>
                         <h3 className='my-3'>
                             <span className='icon'><i className="fas fa-book-open"></i></span>
-                            Descripción
+                            Historia
                         </h3>
                             <textarea className='form-control' name="description" onChange={this.updatedescription} placeholder='Ingrese la descripcion de su imagen'> </textarea>
                         <h3 className='my-3'>Etiquetas</h3>

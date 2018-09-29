@@ -10,7 +10,6 @@ a {
 .info-block span {
     display: inline;
     margin: 0 2px 0;
-    overflow: hidden;
     padding: 10px;
     background: #000000;
     border-radius: 20px;
