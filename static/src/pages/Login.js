@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import {auth} from '../actions';
 import {connect} from 'react-redux';
+import login from '../css/login.css';
 
 class Login extends Component{
 
@@ -24,11 +25,9 @@ class Login extends Component{
 
     render(){
         return(
-            <div className='container'>
-
-                    <div className='mx-5'>
-                        <div className='card'>
-                            <div className='card-body'>
+            <div className='modal-dialog text-center'>
+                    <div className='col-sm-9 main-section'>
+                        <div className='modal-content'>
                                 <h1>Inicia sesión</h1>
                                 <form onSubmit={this.onSubmit}>
                                     <fieldset>
@@ -39,8 +38,7 @@ class Login extends Component{
                                             ))}
                                             </ul>
                                         )}
-                                        <div className='row'>
-                                            <div className='col-sm-12 col-md-10 col-md-offset-1'>
+                                            <div className='col-12 form-input'>
                                                 <div className='form-group'>
                                                     <div className='input-group'>
                                                         <div className='input-group-prepend'>
@@ -65,16 +63,14 @@ class Login extends Component{
                                                     <button className='btn btn-danger' type="submit">Entrar</button>
                                                 </div>
                                             </div>
-                                        </div>
                                     </fieldset>
                                 </form>
-                            </div>
-                            <div className='card-footer'>
+
+                            <div className='col-12 forgot'>
                                 <Link to={"/register"}>¿No tienes cuenta? Regístrate</Link>
                             </div>
                         </div>
                     </div>
-
             </div>
         );
     }

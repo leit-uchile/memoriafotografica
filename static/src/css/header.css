@@ -1,14 +1,14 @@
-.header{
+.header {
     background: #f8f8f8;
     padding: 15px;
     overflow: auto;
 }
-.header img{
+.header img {
     width: 100px;
     height: auto;
     float: left;
 }
-.header h1{
+.header h1 {
     font-size: 20px;
     position: relative;
     top: 26px;

@@ -1,0 +1,19 @@
+.main-section {
+    margin: 0 auto;
+    margin-top: 10px;
+    padding: 0;
+}
+.modal-content {
+    background-color: white;
+    opacity: .8;
+    border-radius: 10px;
+}
+.modal-content h1 {
+    padding: 20px;
+}
+.form-group button {
+    width: 30%;
+}
+.forgot {
+    padding: 5px 0 5px;
+}

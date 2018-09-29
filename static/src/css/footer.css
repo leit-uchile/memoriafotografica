@@ -1,15 +1,15 @@
-.footer{
+.footer {
     background: #4e5154;
     padding: 15px;
     color: white;
 }
-.footer img{
+.footer img {
     width: 100px;
     height: auto;
     float: left;
     filter: grayscale(100%)
 }
-.footer h2{
+.footer h2 {
     font-size: 12px;
 }
 

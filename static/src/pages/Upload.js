@@ -46,16 +46,19 @@ class Upload extends Component{
             <form enctype="multipart/form-data" method="POST" onSubmit={this.onSubmit}>
 
                 <h1 className='my-4'>
-                    Título
+                    <i className="far fa-edit"></i> Título
                     <input className='form-control-sm' type="text" onChange={this.updatename} name="name"required placeholder="Ingrese el título de su imagen"/>
                 </h1>
                 <div className='row'>
                     <div className='col-md-8'>
                         <img className='img-fluid' style={{height: '500px', width: 'auto'}} src='http://www.lebenshilfe-sz.de/wp-content/uploads/2017/01/noimg.jpg'/>
-                        <input type="file" name="photo" onChange={this.updateimage} accept='.jpg, .png, .jpeg' required />
+                        <i className="fas fa-camera"></i><input type="file" name="photo" onChange={this.updateimage} accept='.jpg, .png, .jpeg' required />
                     </div>
                     <div className='col-md-4'>
-                        <h3 className='my-3'>Descripción</h3>
+                        <h3 className='my-3'>
+                            <span className='icon'><i className="fas fa-book-open"></i></span>
+                            Descripción
+                        </h3>
                             <textarea className='form-control' name="description" onChange={this.updatedescription} placeholder='Ingrese la descripcion de su imagen'> </textarea>
                         <h3 className='my-3'>Etiquetas</h3>
                         <input className='btn btn-danger' type="submit" value="Subir" />

@@ -19,7 +19,7 @@ class Photo extends Component {
                         {/*<p>{this.props.desc}</p>*/}
                         <ul>
                             Etiquetas: {this.props.tags.map( (el) => {
-                                return <li>{el}</li>
+                                return <span className='fas fa-tag'> {el}</span>
                             })}
                         </ul>
                     </div>
