@@ -9,6 +9,7 @@ import Register from './Register';
 import NoMatch from "./NoMatch";
 import Upload from './Upload';
 import PhotoDetail from "./PhotoDetail";
+import Dashboard from "./Curador/Dashboard";
 
 class Layout extends Component{
     render(){
@@ -21,6 +22,7 @@ class Layout extends Component{
                     <Route path={"/register"} component={Register}/>
                     <Route path={"/upload"}component={Upload} />
                     <Route path={"/photo"}component={PhotoDetail}/>
+                    <Route path={"/curador/dashboard"}component={Dashboard}/>
                     <Route component={NoMatch}/>
                 </Switch>
                 <Footer/>
