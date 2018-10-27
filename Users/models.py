@@ -5,9 +5,10 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
-
+from django.contrib.auth.base_user import BaseUserManager
 from .managers import UserManager
 from Gallery.models import Album, Photo, Comment
+from datetime import datetime
 
 class User(AbstractBaseUser, PermissionsMixin):
 
@@ -24,24 +25,31 @@ class User(AbstractBaseUser, PermissionsMixin):
         (5, 'Funcionario'),
         (6, 'Externo')
     )
+    # DATOS:
     email = models.EmailField(_('email address'), unique=True)
     first_name = models.CharField(_('first name'), max_length=30)
     last_name = models.CharField(_('last name'), max_length=30)
-    date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
+    date_joined = models.DateTimeField(_('date joined'),auto_now_add=True)
     is_active = models.BooleanField(_('active'), default=True)      #Habilitado
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     deleted = models.BooleanField(_('deleted'), default = False)    #Eliminado
     generation = models.CharField(_('generation'), max_length = 5, blank = True)
+
+    #CONTENIDO GENERADO
     albums = models.ManyToManyField(Album, blank=True)
     photos = models.ManyToManyField(Photo, blank=True)
-    user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, blank = 1)
-    rol_type = models.PositiveSmallIntegerField(choices=ROL_TYPE_CHOICES, blank=6)
     comments = models.ManyToManyField(Comment, blank = True)
+
+    #TIPO DE USUARIO
+    user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default = 1)
+    rol_type = models.PositiveSmallIntegerField(choices=ROL_TYPE_CHOICES, default=6)
+    is_staff = models.BooleanField(_('staff status'), default=False)
     objects = UserManager()
 
-    USERNAME_FIELD = 'email', 'first name', 'lats name'
-    REQUIRED_FIELDS = ['email', 'first name', 'last name']
-'''
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
@@ -64,5 +72,3 @@ class User(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         '''
         send_mail(subject, message, from_email, [self.email], **kwargs)
-
-'''

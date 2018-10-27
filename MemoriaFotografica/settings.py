@@ -28,6 +28,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
+AUTH_USER_MODEL = 'Users.User'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
     'rest_framework',
-    'knox'
+    'knox',
     'multiselectfield'
 ]
 
