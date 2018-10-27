@@ -4,15 +4,20 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from multiselectfield import MultiSelectField
 # Create your models here.
+PERMISSION_CHOICES = (
+    ('a', 'Hola'),
+    ('b', 'Hello'),
+    ('c', 'Bonjour'),
+    ('d', 'Boas'),
+)
+
+class Comment(models.Model):
+    content = models.TextField()
+    censure = models.BooleanField(default = False)
+    def __str__(self):
+        return "Comentario"
 
 class Photo(models.Model):
-    PERMISSION_CHOICES = (
-        ('a', 'Hola'),
-        ('b', 'Hello'),
-        ('c', 'Bonjour'),
-        ('d', 'Boas'),
-    )
-
     image = models.ImageField()
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
     title = models.CharField(_('Título'), max_length = 30)
@@ -20,8 +25,9 @@ class Photo(models.Model):
     approved = models.BooleanField(default=False)
     #keywords = models.ManyToManyField(MetadataKeyword)
     censure = models.BooleanField(default = False)
-    permission = models.MultiSelectField(choices=PERMISSION_CHOICES, max_choices=3,
-                                            max_length=3))
+    permission = MultiSelectField(choices=PERMISSION_CHOICES, max_choices=3,
+                                            max_length=3)
+    comments = models.ManyToManyField(Comment)
 
 
     def __str__(self):
@@ -38,9 +44,3 @@ class Album(models.Model):
 
     def __str__(self):
         return "Album " + self.name
-
-class Comment(models.Model):
-    content = models.ManyToManyField(Photo)
-    censure = models.BooleanField(default = False)
-    def __str__(self):
-        return "Comentario"

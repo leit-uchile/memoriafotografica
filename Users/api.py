@@ -11,7 +11,7 @@ class RegistrationAPI(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         print(request.data)
-        serializer = self.get_serializer(data=request.data)        
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         return Response({
@@ -36,9 +36,10 @@ class LoginAPI(generics.GenericAPIView):
 class UserAPI(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = UserSerializer
-
     def get_object(self):
         return self.request.user
+
+
 
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, ]

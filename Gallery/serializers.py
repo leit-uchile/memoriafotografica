@@ -3,20 +3,35 @@ from .models import *
 from datetime import datetime
 #from MetaData.models import Metadata
 #from MetaData.serializers import MetadataSerializer
-from rest_framework import serializers
-
-from rest_framework import serializers
+from rest_framework import fields, serializers
 # Create serializers here
+
+
+class CommentSerializer(serializers.Serializer):
+    content = serializers.CharField()
+    censure = serializers.BooleanField(default = False)
+
+    def create(self, validated_data):
+        return Comment.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.content = validated_data.get('content', instance.content)
+        instance.censure = validated_data.get('censure', instance.censure)
+
+        instance.save()
+        return instance
+
 
 class PhotoSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     image = serializers.ImageField()
-    title = serializers.CharField(max_legth = 30)
+    title = serializers.CharField(max_length = 30)
     uploadDate =serializers.DateTimeField('date published', default=datetime.now)
     #tags = serializers.SlugRelatedField(slug_field='name', many=True, read_only=True)
     approved = serializers.BooleanField(default=False)
     censure = serializers.BooleanField(default=False)
     permission = fields.MultipleChoiceField(choices=PERMISSION_CHOICES)
+    comments = CommentSerializer()
 
 
     def create(self, validated_data):
@@ -46,18 +61,3 @@ class AlbumSerializer(serializers.Serializer):
         instance.pictures = validated_data.get('pictures', instance.pictures)
         instance.save()
         return instance
-
-class CommentSerializer(serializers.Serializer):
-    content = serializers.ManyToManyField()
-    censure = serializers.BooleanField(default = False)
-
-    def create(self, validated_data):
-        return Comment.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        instance.content = validated_data.get('content', instance.content)
-        instance.censure = validated_data.get('censure', instance.censure)
-
-        instance.save()
-        return instance
-
