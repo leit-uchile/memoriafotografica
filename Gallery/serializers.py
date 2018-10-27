@@ -21,22 +21,30 @@ class CommentSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+class CreatePhotoSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Photo
+            fields = ('id', 'image', 'uploadDate', 'title', 'approved', 'censure', 'permission')
+        def create(self, validated_data):
+            photo = Photo.objects.create(**validated_data)
+            return photo
 
 class PhotoSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     image = serializers.ImageField()
     title = serializers.CharField(max_length = 30)
     uploadDate =serializers.DateTimeField('date published', default=datetime.now)
-    #tags = serializers.SlugRelatedField(slug_field='name', many=True, read_only=True)
     approved = serializers.BooleanField(default=False)
     censure = serializers.BooleanField(default=False)
     permission = fields.MultipleChoiceField(choices=PERMISSION_CHOICES)
-    comments = CommentSerializer()
-
-
-    def create(self, validated_data):
-
-        return Photo.objects.create(**validated_data)
+    comments = CommentSerializer(many = True)
+    class Meta:
+        fields = ['id', 'image', 'title',
+                    'uploadDate',
+                    'approved',
+                    'censure',
+                    'permission','comments']
+        model = Photo
 
     def update(self, instance, validated_data):
         instance.image = validated_data.get('image', instance.image)

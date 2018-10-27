@@ -4,9 +4,9 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from .models import Photo, Album
-from .serializers import PhotoSerializer, AlbumSerializer
+from .serializers import CreatePhotoSerializer, PhotoSerializer, AlbumSerializer
 from MetaData.models import MetadataTitle, MetadataDescription
-
+from .permissions import *
 
 def add_title_description(request, p_id):
     if request.method == 'POST':
@@ -18,19 +18,17 @@ def add_title_description(request, p_id):
 
 
 
-class PhotoUploadAPI(APIView):
-
+class PhotoUploadAPI(generics.GenericAPIView):
+    permission_classes = [IsOwnerOrReadOnly,]
     parser_classes = (MultiPartParser, FormParser)
+    serializer_class = CreatePhotoSerializer
 
     def post(self, request, *args, **kwargs):
-
-
-
-        photo_serializer = PhotoSerializer(data = request.data)
+        print(request.user.id)
+        photo_serializer = self.get_serializer(data = request.data)
         if photo_serializer.is_valid():
             photo_serializer.save()
-            add_title_description(request, photo_serializer.data['id'])
+            #add_title_description(request, photo_serializer.data['id'])
             return Response(photo_serializer.data, status=status.HTTP_201_CREATED)
         else:
-            print(photo_serializer)
             return Response(photo_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

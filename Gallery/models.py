@@ -19,15 +19,14 @@ class Comment(models.Model):
 
 class Photo(models.Model):
     image = models.ImageField()
-    uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
     title = models.CharField(_('Título'), max_length = 30)
-    thumbnail = models.ImageField(blank=True, null=True)
+    uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
     approved = models.BooleanField(default=False)
-    #keywords = models.ManyToManyField(MetadataKeyword)
     censure = models.BooleanField(default = False)
     permission = MultiSelectField(choices=PERMISSION_CHOICES, max_choices=3,
                                             max_length=3)
     comments = models.ManyToManyField(Comment)
+    #thumbnail = models.ImageField(blank=True, null=True)
 
 
     def __str__(self):
