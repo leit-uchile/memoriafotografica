@@ -39,9 +39,14 @@ class CommentUploadAPI(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         comment_serializer = CommentSerializer(data = request.data)
         if comment_serializer.is_valid():
-            comment_serializer.save()
+            c = comment_serializer.save()
+            try:
+                pid = request.POST.get('photo')
+                p = Photo.objects.get(id = pid)
+                print(p)
+                p.comments.add(c)
+            except:
+                pass
             return Response(comment_serializer.data,  status = status.HTTP_201_CREATED)
         else:
             return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
