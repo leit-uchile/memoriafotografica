@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 from django.utils.text import slugify
+from django.utils.translation import ugettext_lazy as _
 # Create your models here.
 
 
@@ -13,15 +14,15 @@ class Photo(models.Model):
         ('c', 'Bonjour'),
         ('d', 'Boas'),
     )
-)
+
     image = models.ImageField()
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
-    title = models.CharField(_('Título'), max_length = 30)
+    title = models.CharField(_('Título'), max_length = 30, blank = True)
     thumbnail = models.ImageField(blank=True, null=True)
     approved = models.BooleanField(default=False)
     #keywords = models.ManyToManyField(MetadataKeyword)
     censure = models.BooleanField(default = False)
-    permission = models.CharField(max_length=6, choices=PERMISSION_CHOICES)  #¿Elige varios?
+    permission = models.CharField(max_length=6, choices=PERMISSION_CHOICES, blank = True)  #¿Elige varios?
 
 
     def __str__(self):
@@ -39,8 +40,11 @@ class Album(models.Model):
     def __str__(self):
         return "Album " + self.name
 
+
 class Comment(models.Model):
+
     contenido = models.ManyToManyField(Photo)
     censure = models.BooleanField()
+
     def __str__(self):
         return "Comentario"
