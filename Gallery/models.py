@@ -1,10 +1,9 @@
 from django.db import models
 from datetime import datetime
 from django.utils.text import slugify
+from django.utils.translation import ugettext_lazy as _
+from multiselectfield import MultiSelectField
 # Create your models here.
-
-
-
 
 class Photo(models.Model):
     PERMISSION_CHOICES = (
@@ -13,7 +12,7 @@ class Photo(models.Model):
         ('c', 'Bonjour'),
         ('d', 'Boas'),
     )
-)
+
     image = models.ImageField()
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
     title = models.CharField(_('Título'), max_length = 30)
@@ -21,7 +20,8 @@ class Photo(models.Model):
     approved = models.BooleanField(default=False)
     #keywords = models.ManyToManyField(MetadataKeyword)
     censure = models.BooleanField(default = False)
-    permission = models.CharField(max_length=6, choices=PERMISSION_CHOICES)  #¿Elige varios?
+    permission = models.MultiSelectField(choices=PERMISSION_CHOICES, max_choices=3,
+                                            max_length=3))
 
 
     def __str__(self):
@@ -40,7 +40,7 @@ class Album(models.Model):
         return "Album " + self.name
 
 class Comment(models.Model):
-    contenido = models.ManyToManyField(Photo)
-    censure = models.BooleanField()
+    content = models.ManyToManyField(Photo)
+    censure = models.BooleanField(default = False)
     def __str__(self):
         return "Comentario"
