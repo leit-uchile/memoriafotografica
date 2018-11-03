@@ -26,6 +26,7 @@ class CreatePhotoSerializer(serializers.ModelSerializer):
             model = Photo
             fields = ('id', 'image', 'uploadDate', 'title', 'approved', 'censure', 'permission')
         def create(self, validated_data):
+            
             photo = Photo.objects.create(**validated_data)
             return photo
 

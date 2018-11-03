@@ -29,6 +29,12 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'email')
 
+        
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        ## aqui los atributos a poner para el perfil
+
+
 class LoginUserSerializer(serializers.Serializer):
     email = serializers.CharField()
     password = serializers.CharField()
