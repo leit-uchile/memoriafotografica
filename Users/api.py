@@ -32,45 +32,8 @@ class LoginAPI(generics.GenericAPIView):
         })
 
 
-class UserAPI(generics.RetrieveAPIView):
+class UserTokenAPI(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = UserSerializer
     def get_object(self):
         return self.request.user
-
-class ProfileAPI(generics.RetrieveAPIView):
-    """
-    TODO: Crear Serializador para obtener los datos necesarios para mostrar el perfil de usuario.
-            Basarse en UserSerializer :)
-          Agregar la URL para llamar a este endpoint
-    """
-    permission_classes = [permissions.IsAuthenticated, ]
-    serializer_class = EL_SERIALIZADOR_QUE_HAY_QUE_CREAR
-    def get_object(self):
-        """
-        si se descomenta la linea de codigo a continuacion se obtiene
-        la informacion del usuario autenticado, hay que buscar una forma de obtener
-        el perfil de cualquier usuario.
-        """
-        #return self.request.user
-        pass
-
-class ReportProfileAPI(generics.GenericAPIView):
-    """
-    TODO: Crear un metodo (post) para generar un reporte del perfil de usuario
-    que se esta visitando.
-    """
-    def post(self, request, *args, **kwargs):
-        pass
-
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated, ]
-    serializer_class = UserSerializer
-
-    def get_queryset(self):
-        return self.request.user.notes.all()
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)

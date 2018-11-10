@@ -7,7 +7,7 @@ from .models import Photo, Album
 from .serializers import CreatePhotoSerializer, PhotoSerializer, AlbumSerializer, CommentSerializer
 from MetaData.models import MetadataTitle, MetadataDescription
 from .permissions import *
-
+from django.http import Http404
 #Metadata¿?
 def add_title_description(request, p_id):
     if request.method == 'POST':
@@ -50,3 +50,109 @@ class CommentUploadAPI(generics.GenericAPIView):
             return Response(comment_serializer.data,  status = status.HTTP_201_CREATED)
         else:
             return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class PhotoListAPI(generics.GenericAPIView):
+    """
+    List all photos, or create a new photo.
+    """
+    def get(self, request, *args, **kwargs):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        pass
+
+
+class PhotoDetailAPI(generics.GenericAPIView):
+    """
+    Retrieve, update or delete a photo instance.
+    """
+    def get_object(self, pk):
+        try:
+            return Photo.objects.get(pk=pk)
+        except Photo.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, *args, **kwargs):
+        pass
+
+    def put(self, request, pk, *args, **kwargs):
+        pass
+
+    def delete(self, request, pk, *args, **kwargs):
+        pass
+
+
+class CommentListAPI(generics.GenericAPIView):
+    """
+    List all comments, or create a new comment.
+    """
+    def get(self, request, *args, **kwargs):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        pass
+
+
+class CommentDetailAPI(generics.GenericAPIView):
+    """
+    Retrieve, update or delete a comment instance.
+    """
+    def get_object(self, pk):
+        try:
+            return Comment.objects.get(pk=pk)
+        except Comment.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, *args, **kwargs):
+        pass
+
+    def put(self, request, pk, *args, **kwargs):
+        pass
+
+    def delete(self, request, pk, *args, **kwargs):
+        pass
+
+class PhotoCommentListAPI(generics.GenericAPIView):
+    """
+    List all comments, or create a new comment.
+    """
+    def get(self, request, pk, *args, **kwargs):
+        pass
+
+    def post(self, request, pk, *args, **kwargs):
+        pass
+
+
+class CategoryListAPI(generics.GenericAPIView):
+    """
+    List all categories, or create a new category.
+    """
+    def get(self, request, *args, **kwargs):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        pass
+
+
+
+class CategoryDetailAPI(generics.GenericAPIView):
+    """
+    Retrieve, update or delete a comment instance.
+    """
+    def get_object(self, pk):
+        try:
+            return Category.objects.get(pk=pk)
+        except Category.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, *args, **kwargs):
+        pass
+
+    def put(self, request, pk, *args, **kwargs):
+        pass
+
+    def delete(self, request, pk, *args, **kwargs):
+        pass
