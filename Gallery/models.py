@@ -3,7 +3,6 @@ from datetime import datetime
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from multiselectfield import MultiSelectField
-from Users.models import Reporte
 # Create your models here.
 PERMISSION_CHOICES = (
     ('a', 'Hola'),
@@ -11,6 +10,17 @@ PERMISSION_CHOICES = (
     ('c', 'Bonjour'),
     ('d', 'Boas'),
 )
+
+class Reporte(models.Model):
+    contenido = models.TextField()
+    REPORT_TYPE_CHOICES = (
+        (1, 'usuario'),
+        (2, 'foto'),
+        (3, 'comentario')
+    )
+    type = models.PositiveSmallIntegerField(choices=REPORT_TYPE_CHOICES)
+
+
 
 class Comment(models.Model):
     content = models.TextField()
@@ -21,7 +31,8 @@ class Comment(models.Model):
 
 class Category(models.Model):
     title = models.CharField(max_length= 30)
-
+    def __str__(self):
+        return "categoria"
 
 class Photo(models.Model):
     image = models.ImageField()
