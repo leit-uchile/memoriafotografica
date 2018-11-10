@@ -142,7 +142,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
-        p = get_object(pk)
+        p = self.get_object(pk)
         comments = p.comments.all()
         serializer = CommentSerializer(comments, many = True)
         return Response(serializer.data)
