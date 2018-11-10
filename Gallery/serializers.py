@@ -6,7 +6,15 @@ from datetime import datetime
 from rest_framework import fields, serializers
 # Create serializers here
 
+class ReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reporte
+        fields = ('title')
+    def create(self, validated_data):
+        title = Reporte.objects.create(validated_data['title'])
+        return title
 
+        
 class CommentSerializer(serializers.Serializer):
     content = serializers.CharField()
     censure = serializers.BooleanField(default = False)
