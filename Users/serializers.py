@@ -7,14 +7,6 @@ from .models import User
 from django.conf import settings
 from Gallery.serializers import AlbumSerializer, PhotoSerializer
 
-class ReportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Reporte
-        fields = ('title')
-    def create(self, validated_data):
-        title = Reporte.objects.create(validated_data['title'])
-        return title
-
 
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:

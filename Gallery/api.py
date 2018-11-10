@@ -133,10 +133,20 @@ class CommentDetailAPI(generics.GenericAPIView):
 
 class PhotoCommentListAPI(generics.GenericAPIView):
     """
-    List all comments, or create a new comment.
+    List all comments from a photo, or create a new comment.
     """
+    def get_object(self, pk):
+        try:
+            return Photo.objects.get(pk=pk)
+        except Photo.DoesNotExist:
+            raise Http404
+
     def get(self, request, pk, *args, **kwargs):
-        pass
+        p = get_object(pk)
+        comments = p.comments.all()
+        serializer = CommentSerializer(comments, many = True)
+        return Response(serializer.data)
+
 
     def post(self, request, pk, *args, **kwargs):
         pass

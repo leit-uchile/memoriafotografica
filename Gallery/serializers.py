@@ -14,10 +14,11 @@ class ReportSerializer(serializers.ModelSerializer):
         title = Reporte.objects.create(validated_data['title'])
         return title
 
-        
+
 class CommentSerializer(serializers.Serializer):
-    content = serializers.CharField()
-    censure = serializers.BooleanField(default = False)
+    class Meta:
+        model = Comment
+        fields = ('content', 'censure', 'report')
 
     def create(self, validated_data):
         return Comment.objects.create(**validated_data)
