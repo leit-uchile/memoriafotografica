@@ -7,6 +7,14 @@ from .models import User
 from django.conf import settings
 from Gallery.serializers import AlbumSerializer, PhotoSerializer
 
+class ReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reporte
+        fields = ('title')
+    def create(self, validated_data):
+        title = Reporte.objects.create(validated_data['title'])
+        return title
+
 
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,12 +36,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'email')
-
-        
-class ProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        ## aqui los atributos a poner para el perfil
-
 
 class LoginUserSerializer(serializers.Serializer):
     email = serializers.CharField()

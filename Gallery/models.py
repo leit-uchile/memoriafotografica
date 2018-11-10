@@ -21,7 +21,8 @@ class Comment(models.Model):
 
 class Category(models.Model):
     title = models.CharField(max_length= 30)
-
+    def __str__(self):
+        return "categoria"
 
 class Photo(models.Model):
     image = models.ImageField()

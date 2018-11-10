@@ -21,12 +21,25 @@ class CommentSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+
+class CategorySerializer(serializers.Serializer):
+    title = serializers.CharField()
+
+    def create(self, validated_data):
+        return Category.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.title = validated_data('title', instance.title)
+        instance.save()
+        return instance
+
+
 class CreatePhotoSerializer(serializers.ModelSerializer):
         class Meta:
             model = Photo
             fields = ('id', 'image', 'uploadDate', 'title', 'approved', 'censure', 'permission')
+
         def create(self, validated_data):
-            
             photo = Photo.objects.create(**validated_data)
             return photo
 
@@ -39,6 +52,7 @@ class PhotoSerializer(serializers.Serializer):
     censure = serializers.BooleanField(default=False)
     permission = fields.MultipleChoiceField(choices=PERMISSION_CHOICES)
     comments = CommentSerializer(many = True)
+
     class Meta:
         fields = ['id', 'image', 'title',
                     'uploadDate',
