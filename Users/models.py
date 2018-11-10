@@ -10,6 +10,17 @@ from .managers import UserManager
 from Gallery.models import Album, Photo, Comment
 from datetime import datetime
 
+
+class Reporte(models.Model):
+    contenido = models.TextField()
+    REPORT_TYPE_CHOICES = (
+        (1, 'usuario'),
+        (2, 'foto'),
+        (3, 'comentario')
+    )
+    type = models.PositiveSmallIntegerField(choices=REPORT_TYPE_CHOICES)
+
+
 class User(AbstractBaseUser, PermissionsMixin):
 
     USER_TYPE_CHOICES = (
@@ -39,6 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     albums = models.ManyToManyField(Album, blank=True)
     photos = models.ManyToManyField(Photo, blank=True)
     comments = models.ManyToManyField(Comment, blank = True)
+    reports = models.ManyToManyField(Reporte, blank= True)
 
     #TIPO DE USUARIO
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default = 1)
@@ -72,3 +84,4 @@ class User(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         '''
         send_mail(subject, message, from_email, [self.email], **kwargs)
+

@@ -3,6 +3,7 @@ from datetime import datetime
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from multiselectfield import MultiSelectField
+from Users.models import Reporte
 # Create your models here.
 PERMISSION_CHOICES = (
     ('a', 'Hola'),
@@ -14,8 +15,13 @@ PERMISSION_CHOICES = (
 class Comment(models.Model):
     content = models.TextField()
     censure = models.BooleanField(default = False)
+    report = models.ManyToManyField(Reporte, blank= True)
     def __str__(self):
         return "Comentario"
+
+class Category(models.Model):
+    title = models.CharField(max_length= 30)
+
 
 class Photo(models.Model):
     image = models.ImageField()
@@ -23,11 +29,11 @@ class Photo(models.Model):
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
     approved = models.BooleanField(default=False)
     censure = models.BooleanField(default = False)
-    permission = MultiSelectField(choices=PERMISSION_CHOICES, max_choices=3,
-                                            max_length=3)
+    permission = MultiSelectField(choices=PERMISSION_CHOICES, max_choices=3, max_length=3)
+    category = models.ManyToManyField(Category)
     comments = models.ManyToManyField(Comment)
     #thumbnail = models.ImageField(blank=True, null=True)
-
+    report = models.ManyToManyField(Reporte, blank = True)
 
     def __str__(self):
         try:
