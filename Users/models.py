@@ -7,18 +7,9 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.base_user import BaseUserManager
 from .managers import UserManager
-from Gallery.models import Album, Photo, Comment
+from Gallery.models import Album, Photo, Comment, Reporte
 from datetime import datetime
 
-
-class Reporte(models.Model):
-    contenido = models.TextField()
-    REPORT_TYPE_CHOICES = (
-        (1, 'usuario'),
-        (2, 'foto'),
-        (3, 'comentario')
-    )
-    type = models.PositiveSmallIntegerField(choices=REPORT_TYPE_CHOICES)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
