@@ -16,13 +16,14 @@ class Photo extends Component {
                     </a>
                     <div className='info-block'>
                         <h3>{this.props.name}</h3>
-                        {/*<p>{this.props.desc}</p>*/}
+                        <p>{this.props.desc}</p>
                         <ul>
                             {this.props.tags.map( (el) => {
                                 return <span className='fas fa-tag'> {el}</span>
                             })}
                         </ul>
                     </div>
+                    <h3>{this.props.state}</h3>
                 </div>
 
 
