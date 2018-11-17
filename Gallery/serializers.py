@@ -9,24 +9,23 @@ from rest_framework import fields, serializers
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reporte
-        fields = ('title')
+        fields = ('title',)
     def create(self, validated_data):
         title = Reporte.objects.create(validated_data['title'])
         return title
 
 
-class CommentSerializer(serializers.Serializer):
+class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('content', 'censure', 'report')
-
+        fields = ('id', 'content', 'censure', 'report')
+        read_only_fields = ('id',)
     def create(self, validated_data):
         return Comment.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         instance.content = validated_data.get('content', instance.content)
         instance.censure = validated_data.get('censure', instance.censure)
-
         instance.save()
         return instance
 
@@ -42,6 +41,14 @@ class CategorySerializer(serializers.Serializer):
         instance.save()
         return instance
 
+class CreateCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('content',)
+
+        def create(self, validated_data):
+            comment = Comment.objects.create(**validated_data)
+            return comment
 
 class CreatePhotoSerializer(serializers.ModelSerializer):
         class Meta:

@@ -48,6 +48,7 @@ class UserListAPI(generics.GenericAPIView):
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
+    # Exclusivo del administrador:
     def post(self, request, *args, **kwargs):
         serializer = CreateUserSerializer(data=request.data)
         if serializer.is_valid():
