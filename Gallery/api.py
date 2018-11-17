@@ -106,10 +106,12 @@ class CommentListAPI(generics.GenericAPIView):
     List all comments, or create a new comment.
     """
     def get(self, request, *args, **kwargs):
-        pass
+        comments = Comment.objects.all();
+        serializer = CommentSerializer(comments, many = True)
+        return Response(serializer.data)
 
-    def post(self, request, *args, **kwargs):
-        pass
+    # Aqui no hay POST porque la idea es crear
+    # comentarios dentro de una foto.
 
 
 class CommentDetailAPI(generics.GenericAPIView):

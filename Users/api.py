@@ -37,3 +37,58 @@ class UserTokenAPI(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     def get_object(self):
         return self.request.user
+
+
+
+
+class UserListAPI(generics.GenericAPIView):
+
+    def get(self, request, *args, **kwargs):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        pass
+
+
+
+
+class UserDetailAPI(generics.GenericAPIView):
+
+    def get_object(self, pk):
+        pass
+
+    def get(self, request, pk, *args, **kwargs):
+        pass
+
+    def put(self, request, pk, *args, **kwargs):
+        pass
+
+    def delete(self, request, pk, *args, **kwargs):
+        pass
+
+
+
+
+class ReportListAPI(generics.GenericAPIView):
+
+    def get(self, request, *args, **kwargs):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        pass
+
+
+
+class ReportDetailAPI(generics.GenericAPIView):
+
+    def get_object(self, pk):
+        pass
+
+    def get(self, request, pk, *args, **kwargs):
+        pass
+
+    def put(self, request, pk, *args, **kwargs):
+        pass
+
+    def delete(self, request, pk, *args, **kwargs):
+        pass
