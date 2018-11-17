@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from .models import Photo, Album, Comment, Reporte, Category
-from .serializers import CreatePhotoSerializer, PhotoSerializer, AlbumSerializer, CommentSerializer, ReportSerializer
+from .serializers import CreatePhotoSerializer, PhotoSerializer, AlbumSerializer, CommentSerializer, ReportSerializer, CategorySerializer
 from MetaData.models import MetadataTitle, MetadataDescription
 from .permissions import *
 from django.http import Http404
@@ -159,17 +159,23 @@ class CategoryListAPI(generics.GenericAPIView):
     List all categories, or create a new category.
     """
     def get(self, request, *args, **kwargs):
-        pass
+        category = Category.objects.all()
+        serializer = CategorySerializer(category)
+        return Reponse(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        pass
-
+        serializer = CategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CategoryDetailAPI(generics.GenericAPIView):
     """
     Retrieve, update or delete a comment instance.
     """
+
     def get_object(self, pk):
         try:
             return Category.objects.get(pk=pk)
@@ -177,13 +183,22 @@ class CategoryDetailAPI(generics.GenericAPIView):
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
-        pass
+        category = self.get_object(pk)
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
-        pass
+        category = self.get_object(pk)
+        serializer = CategorySerializer(category, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, *args, **kwargs):
-        pass
+        category = self.get_object(pk)
+        category.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ReportListAPI(generics.GenericAPIView):
 
