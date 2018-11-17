@@ -2,7 +2,7 @@ from .api import *
 from django.urls import re_path, include
 
 
-urlpatterns = [
+urlpatterns = {
 
     re_path("^gallery/upload-photo/$", PhotoUploadAPI.as_view()),
     re_path('^gallery/upload-comment/$', CommentUploadAPI.as_view()),
@@ -13,6 +13,9 @@ urlpatterns = [
     re_path('^comments/$', CommentListAPI.as_view()),
     re_path('^comments/(?P<pk>[0-9]+)/$', CommentDetailAPI.as_view()),
     re_path('^categories/$', CategoryListAPI.as_view()),
-    re_path('^categories/(?P<pk>[0-9]+)/$', CategoryDetailAPI.as_view())
+    re_path('^categories/(?P<pk>[0-9]+)/$', CategoryDetailAPI.as_view()),
 
-    ]
+    re_path("^reports/$", ReportListAPI.as_view()),
+    re_path("^report/(?P<pk>[0-9]+)/$", ReportDetailAPI.as_view())
+
+}

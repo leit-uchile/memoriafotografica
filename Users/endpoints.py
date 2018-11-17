@@ -14,9 +14,6 @@ urlpatterns = [
     re_path("^auth/user/$", UserTokenAPI.as_view()),
 #
     re_path("^users/$", UserListAPI.as_view()),
-    re_path("^users/(?P<pk>[0-9]+)/$", UserDetailAPI.as_view()),
-#
-    re_path("^reports/$", ReportListAPI.as_view()),
-    re_path("^report/(?P<pk>[0-9]+)/$", ReportDetailAPI.as_view())
+    re_path("^users/(?P<pk>[0-9]+)/$", UserDetailAPI.as_view())
 
 ]

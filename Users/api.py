@@ -44,51 +44,41 @@ class UserTokenAPI(generics.RetrieveAPIView):
 class UserListAPI(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
-        pass
+        user = User.objects.all()
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        pass
-
-
+        serializer = CreateUserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserDetailAPI(generics.GenericAPIView):
 
     def get_object(self, pk):
-        pass
+        try:
+            return User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            raise Http404
 
     def get(self, request, pk, *args, **kwargs):
-        pass
+        user = self.get_object(pk)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
-        pass
+        user = self.get_object(pk)
+        serializer = UserSerializer(user, data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def delete(self, request, pk, *args, **kwargs):
-        pass
-
-
-
-
-class ReportListAPI(generics.GenericAPIView):
-
-    def get(self, request, *args, **kwargs):
-        pass
-
-    def post(self, request, *args, **kwargs):
-        pass
-
-
-
-class ReportDetailAPI(generics.GenericAPIView):
-
-    def get_object(self, pk):
-        pass
-
-    def get(self, request, pk, *args, **kwargs):
-        pass
-
-    def put(self, request, pk, *args, **kwargs):
-        pass
-
-    def delete(self, request, pk, *args, **kwargs):
-        pass
+        user = self.get_object(pk)
+        user.delete()
+        return Response(status = status.HTTP_204_NO_CONTENT)
