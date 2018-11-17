@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
-import {auth} from '../actions';
-import {connect} from 'react-redux';
 import {Redirect} from 'react-router-dom';
 
-class Register extends Component{
-    constructor(){
+
+class RegisterLoginInfo extends Component{
+    constructor(Props){
         super()
         this.state = {
             email : "",
@@ -12,18 +11,19 @@ class Register extends Component{
             rut: "",
             name: "",
             lastname: "",
-            passwordCheck: ""
+            passwordCheck: "",
+            date: "",
         }
         this.checkPassword = this.checkPassword.bind(this);
-        this.checkRut = this.checkRut.bind(this);
+        this.props = Props
     }
 
     updateName = e => {this.setState({name: e.target.value})};
     updateLastName = e => {this.setState({lastname: e.target.value})};
-    updateRut = e => {this.setState({rut: e.target.value})};
     updateEmail = e => {this.setState({email: e.target.value})};
     updatePassword = e => {this.setState({password: e.target.value})};
     updatePasswordCheck = e => {this.setState({passwordCheck: e.target.value})};
+    updateDate = e => {this.setState({date: e.target.value})};
 
     checkPassword(){
         if(this.state.password == ""){
@@ -40,28 +40,17 @@ class Register extends Component{
         }
     }
 
-    checkRut(){
-        var len = this.state.rut.length;
-        // -------------------------------------
-        // TODO :  Check rut with formula ! 
-        // -------------------------------------
-        if(len >= 7 && len <9){
-            return true;
-        }else{
-            this.setState({error: "Rut invalido"})
-        }
-    }
-
     onSubmit = e => {
         e.preventDefault();
-        if(this.checkPassword() && this.checkRut()){
+        if(this.checkPassword()){
             this.setState({error: null})
-            this.props.register(this.state.email,this.state.password);
+            this.props.saveInfo(this.state)
         }
     }
 
-    render(){
-        if (this.props.isAuthenticated) {
+    render() {
+
+         if (this.props.isAuthenticated) {
             return <Redirect to="/" />
         }
 
@@ -73,57 +62,57 @@ class Register extends Component{
         }
 
         return (
-            <div>
-                <h1>Register</h1>
+            <div class="container">
+                <div class="container"><h1>Register</h1></div>
                 <form onSubmit={this.onSubmit}>
                     {errorMessage}
+                 <div>
                     <p>
                         <label>
-                            Nombre : <input type="text" placeholder="Rosa" onChange={this.updateName}></input>
+                            Nombre : <input type="text" placeholder="Rosa" onChange={this.updateName} required></input>
                         </label>
                     </p>
                     <p>
                         <label>
-                            Apellido : <input type="text" placeholder="Leal" onChange={this.updateLastName}></input>
+                            Apellido : <input type="text" placeholder="Leal" onChange={this.updateLastName}required></input>
+                        </label>
+                    </p>
+                     <p>
+                        <label>
+                            Fecha de nacimiento : <input type="date" onChange={this.updateDate} id="date" required></input>
                         </label>
                     </p>
                     <p>
                         <label>
-                            Rut : <input type="text" placeholder="11111112" onChange={this.updateRut}></input>
+                            Correo electronico : <input type="email" placeholder="usuario@leit.cl" onChange={this.updateEmail}required></input>
                         </label>
                     </p>
                     <p>
                         <label>
-                            Correo electronico : <input type="email" placeholder="usuario@leit.cl" onChange={this.updateEmail}></input>
+                            Contraseña : <input type="password" onChange={this.updatePassword} method="post"required></input>
                         </label>
                     </p>
                     <p>
                         <label>
-                            Contraseña : <input type="password" onChange={this.updatePassword}></input>
+                            Repita su contraseña: <input type="password" onChange={this.updatePasswordCheck} method="post"required></input>
                         </label>
                     </p>
-                    <p>
-                        <label>
-                            Repita su contraseña: <input type="password" onChange={this.updatePasswordCheck}></input>
-                        </label>
-                    </p>
-                    <button type="submit">Registrar</button>
+                  
+                </div>
+                <button type="submit">Continuar</button>    
                 </form>
-            </div>
+               
+            </div>    
         );
     }
 }
 
+
 const mapStateToProps = state => {
     return {
         isAuthenticated : state.auth.isAuthenticated
+
     }
 }
 
-const mapActionsToProps = dispatch => {
-    return {
-        register: (username, password) => dispatch(auth.register(username, password))
-    };
-}
-
-export default connect(mapStateToProps,mapActionsToProps)(Register);
+export default RegisterLoginInfo;
