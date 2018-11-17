@@ -46,6 +46,7 @@ class UserListAPI(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         pass
 
+    # Exclusivo del administrador:
     def post(self, request, *args, **kwargs):
         pass
 
