@@ -31,7 +31,9 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.Serializer):
-    title = serializers.CharField()
+    class Meta:
+        model = Category
+        fields = ('title', )
 
     def create(self, validated_data):
         return Category.objects.create(**validated_data)
