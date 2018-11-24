@@ -8,13 +8,14 @@ import Login from './Login';
 import Register from './Register/Register';
 import NoMatch from "./NoMatch";
 import Upload from './Upload';
-import PhotoDetail from "./PhotoDetail";
+import PhotoDetail from "./PhotoView/PhotoDetail";
 
 class Layout extends Component{
     render(){
         return(
             <div>
                 <Header/>
+                <div class="container-fluid">
                 <Switch>
                     <Route exact path={"/"} component={Home}/>
                     <Route path={"/login"} component={Login}/>
@@ -23,6 +24,7 @@ class Layout extends Component{
                     <Route path={"/photo"}component={PhotoDetail}/>
                     <Route component={NoMatch}/>
                 </Switch>
+                </div>
                 <Footer/>
             </div>
         );
