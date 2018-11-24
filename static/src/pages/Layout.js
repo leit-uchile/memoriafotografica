@@ -9,6 +9,7 @@ import Register from './Register/Register';
 import NoMatch from "./NoMatch";
 import Upload from './Upload';
 import PhotoDetail from "./PhotoView/PhotoDetail";
+import PrivateComponent from '../components/PrivateComponent';
 
 class Layout extends Component{
     render(){
