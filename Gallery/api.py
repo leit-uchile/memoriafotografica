@@ -179,7 +179,7 @@ class CategoryListAPI(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         category = Category.objects.all()
         serializer = CategorySerializer(category)
-        return Reponse(serializer.data)
+        return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         serializer = CategorySerializer(data=request.data)
