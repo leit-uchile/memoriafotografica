@@ -30,7 +30,7 @@ class CommentSerializer(serializers.ModelSerializer):
         return instance
 
 
-class CategorySerializer(serializers.Serializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('title', )
