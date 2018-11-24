@@ -12,7 +12,7 @@ class RegisterUserInfo extends Component{
         this.checkGeneration = this.checkGeneration.bind(this);
     }
 
-    updateGeneration = e =>{e.preventDefault(); this.setState({generation: e.target.value})};
+    updateGeneration = e =>{e.preventDefault(); this.setState({ info: {...this.state.info, generation: e.target.value}})};
 
     
     checkGeneration(e){
@@ -24,8 +24,6 @@ class RegisterUserInfo extends Component{
     
     render(){
 
-
-           
         var generacion;
         if (this.state.student){
             generacion = <label> generación: <input type="Number" max= "3000" onChange={this.updateGeneration} min="1920" placeholder="1920"/> </label>
@@ -34,8 +32,6 @@ class RegisterUserInfo extends Component{
 
         }
         
-        
-
         return(
             <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
                 <div>

@@ -1,18 +1,22 @@
 import React, {Component} from 'react';
-import {Redirect} from 'react-router-dom';
-
 
 class RegisterLoginInfo extends Component{
     constructor(Props){
-        super()
-        this.state = {
-            email : "",
-            password: "",
-            rut: "",
-            name: "",
-            lastname: "",
-            passwordCheck: "",
-            date: "",
+        super(Props)
+        if(Props.cache != null){
+            this.state = {
+                ...Props.cache,
+                error: null
+            }
+        }else{
+            this.state = {
+                email : "",
+                password: "",
+                name: "",
+                lastname: "",
+                passwordCheck: "",
+                date: "",
+            }
         }
         this.checkPassword = this.checkPassword.bind(this);
         this.props = Props
@@ -49,13 +53,9 @@ class RegisterLoginInfo extends Component{
     }
 
     render(){
-        if (this.props.isAuthenticated) {
-            return <Redirect to="/" />
-        }
-
         var errorMessage;
         if(this.state.error != undefined && this.state.error != null){
-            errorMessage = <div className="errorMessage">{this.state.error}</div>
+            errorMessage = <div className="alert alert-warning">{this.state.error}</div>
         }else{
             errorMessage = null;
         }
@@ -64,30 +64,30 @@ class RegisterLoginInfo extends Component{
             <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
                 <div class="container"><h1>Register</h1></div>
                 <form onSubmit={this.onSubmit}>
-                    {errorMessage}
-                 <div>
+                {errorMessage}
+                <div>
                     <div className="form-group row">
                         <label className="col-sm-2 col-form-label">Nombre: </label>
                         <div className="col-sm-10">
-                            <input className="form-control" type="text" placeholder="Jose" onChange={this.updateName} required></input>
+                            <input className="form-control" type="text" placeholder="Jose" onChange={this.updateName} required value={this.state.name}></input>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label className="col-sm-2 col-form-label">Apellido: </label>
                         <div className="col-sm-10">
-                            <input className="form-control" type="text" placeholder="Aguirre" onChange={this.updateLastName}required></input>
+                            <input className="form-control" type="text" placeholder="Aguirre" onChange={this.updateLastName}required value={this.state.lastname}></input>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label className="col-sm-2 col-form-label">Fecha de nacimiento:</label>
                         <div className="col-sm-10">
-                            <input className="form-control" type="date" onChange={this.updateDate} id="date" required></input>
+                            <input className="form-control" type="date" onChange={this.updateDate} id="date" required value={this.state.date}></input>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label className="col-sm-2 col-form-label">Correo electronico:</label>
                         <div className="col-sm-10">
-                            <input className="form-control" type="email" placeholder="jose.medina@memoria-uchile.cl" onChange={this.updateEmail}required></input>
+                            <input className="form-control" type="email" placeholder="jose.medina@memoria-uchile.cl" onChange={this.updateEmail}required value={this.state.email}></input>
                         </div>
                     </div>
                     <div className="form-group row">
@@ -108,14 +108,6 @@ class RegisterLoginInfo extends Component{
                
             </div>
         );
-    }
-}
-
-
-const mapStateToProps = state => {
-    return {
-        isAuthenticated : state.auth.isAuthenticated
-
     }
 }
 
