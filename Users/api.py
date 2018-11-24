@@ -3,8 +3,7 @@ from rest_framework.response import Response
 from knox.models import AuthToken
 from django.conf import settings
 from .serializers import (CreateUserSerializer,UserSerializer, LoginUserSerializer)
-
-User = settings.AUTH_USER_MODEL
+from .models import User
 
 class RegistrationAPI(generics.GenericAPIView):
     serializer_class = CreateUserSerializer
@@ -45,7 +44,7 @@ class UserListAPI(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         user = User.objects.all()
-        serializer = UserSerializer(user)
+        serializer = UserSerializer(user, many=True)
         return Response(serializer.data)
 
     # Exclusivo del administrador:

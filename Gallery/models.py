@@ -3,6 +3,12 @@ from datetime import datetime
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from multiselectfield import MultiSelectField
+from MemoriaFotografica.settings import BASE_DIR
+
+import os
+from uuid import uuid4
+
+
 # Create your models here.
 PERMISSION_CHOICES = (
     ('a', 'Hola'),
@@ -34,8 +40,13 @@ class Category(models.Model):
     def __str__(self):
         return "categoria"
 
+def gen_uuid(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = '{}.{}'.format(uuid4().hex, ext)
+    return os.path.join(filename)
+
 class Photo(models.Model):
-    image = models.ImageField()
+    image = models.ImageField(upload_to=gen_uuid)
     title = models.CharField(_('Título'), max_length = 30)
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
     approved = models.BooleanField(default=False)

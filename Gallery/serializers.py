@@ -12,7 +12,7 @@ class ReportSerializer(serializers.ModelSerializer):
         model = Reporte
         fields = '__all__'
 
-    def create(self, validated_data):        
+    def create(self, validated_data):
         reporte = Reporte.objects.create(**validated_data)
         return reporte
 
@@ -93,10 +93,14 @@ class AlbumSerializer(serializers.ModelSerializer):
         model = Album
 
     def create(self, validated_data):
-        return Album.objects.create(**validated_data)
+        a = Album(name=validated_data['name'])
+        a.save()
+        a.pictures.add(*validated_data['pictures'])
+        a.save()
+        return a
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
-        instance.pictures = validated_data.get('pictures', instance.pictures)
+        instance.pictures.add(*validated_data.get('pictures'))
         instance.save()
         return instance
