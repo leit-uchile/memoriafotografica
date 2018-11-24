@@ -87,9 +87,10 @@ class PhotoSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-class AlbumSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=40)
-    pictures = PhotoSerializer(many=True)
+class AlbumSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Album
 
     def create(self, validated_data):
         return Album.objects.create(**validated_data)

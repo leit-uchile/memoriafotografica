@@ -273,3 +273,50 @@ class ReportDetailAPI(generics.GenericAPIView):
         user = self.get_object(pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AlbumListAPI(generics.GenericAPIView):
+    """
+    List all categories, or create a new category.
+    """
+    def get(self, request, *args, **kwargs):
+        category = Album.objects.all()
+        serializer = AlbumSerializer(category, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        serializer = AlbumSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AlbumDetailAPI(generics.GenericAPIView):
+    """
+    Retrieve, update or delete a comment instance.
+    """
+
+    def get_object(self, pk):
+        try:
+            return Album.objects.get(pk=pk)
+        except Album.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, *args, **kwargs):
+        album = self.get_object(pk)
+        serializer = AlbumSerializer(album)
+        return Response(serializer.data)
+
+    def put(self, request, pk, *args, **kwargs):
+        album = self.get_object(pk)
+        serializer = AlbumSerializer(album, data=request.data, partial = True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, *args, **kwargs):
+        album = self.get_object(pk)
+        album.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

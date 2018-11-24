@@ -14,7 +14,8 @@ urlpatterns = [
     re_path('^comments/(?P<pk>[0-9]+)/$', CommentDetailAPI.as_view()),
     re_path('^categories/$', CategoryListAPI.as_view()),
     re_path('^categories/(?P<pk>[0-9]+)/$', CategoryDetailAPI.as_view()),
-
+    re_path('^album/$', AlbumListAPI.as_view()),
+    re_path('^album/(?P<pk>[0-9]+)/$', AlbumDetailAPI.as_view())
     re_path("^reports/$", ReportListAPI.as_view()),
     re_path("^reports/(?P<pk>[0-9]+)/$", ReportDetailAPI.as_view())
 
