@@ -37,16 +37,14 @@ class RegisterUserInfo extends Component{
         
 
         return(
-            <div class="container">
+            <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
                 <div>
-                    
                     <h1>Registrar</h1>
-                
                 </div>
 
                 <form onSubmit={() => this.props.saveInfo(this.state.info)}>
                 <p>
-                    <label>información de comunidad FCFM</label>
+                    <label>Información de comunidad FCFM</label>
                     <hr/>
                 </p>
                 <p>
@@ -66,11 +64,9 @@ class RegisterUserInfo extends Component{
                     <label><input type="checkbox"onChange={e =>this.setState({info: {...this.state.info, externo: e.target.checked}})}/> externo a la comunidad </label>
                 </p>
             
-                <div>
-                    <p>
-                        <label>¿Cómo te esteraste de esta página?</label>
-                    </p> 
-                    <select onChange={e => this.setState({info: {...this.state.info,dato: e.target.value}})} required>
+                <label>¿Cómo te esteraste de esta página?</label>
+                <div className="input-group mb-3">
+                    <select className="custom-select" onChange={e => this.setState({info: {...this.state.info,dato: e.target.value}})} required>
                         <option>internet</option>
                         <option>poster</option>
                         <option>correo electrónico</option>
@@ -81,8 +77,8 @@ class RegisterUserInfo extends Component{
                 </div>  
                 <p>&nbsp;</p>
 
-                <button onClick={this.props.goBack}>Atras</button>  
-                <button type="submit">Registrar</button>  
+                <button className="btn btn-secondary" onClick={this.props.goBack}>Atras</button>  
+                <button className="btn btn-success" type="submit">Registrar</button>  
                 </form>
             </div>
         )

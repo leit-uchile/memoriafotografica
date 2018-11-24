@@ -6,7 +6,7 @@ class Register extends Component{
     constructor(){
         super()
         this.state = {
-            currentPage: 0,
+            currentPage: 1,
             loginInfo: null
         }
         this.volver = this.volver.bind(this);
@@ -54,8 +54,9 @@ class Register extends Component{
                   subRegister = <RegisterUserInfo goBack={this.volver} saveInfo={this.saveUserInfo}/>
                   break;  
               case 2: 
-                  subRegister = <div>
-                      <h1>¡Registro con éxito!</h1>
+                  subRegister = <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
+                      <h1 style={{textAlign: "center", fontWeight: "bold"}}>¡Registro con éxito!</h1>
+                      <span style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>Por favor confirma tu correo electronico</span>
                   </div>
             }
 

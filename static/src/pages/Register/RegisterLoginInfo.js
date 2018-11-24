@@ -61,47 +61,52 @@ class RegisterLoginInfo extends Component{
         }
 
         return (
-            <div class="container">
+            <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
                 <div class="container"><h1>Register</h1></div>
                 <form onSubmit={this.onSubmit}>
                     {errorMessage}
                  <div>
-                    <p>
-                        <label>
-                            Nombre : <input className="form-control" type="text" placeholder="Rosa" onChange={this.updateName} required></input>
-                        </label>
-                    </p>
-                    <p>
-                        <label>
-                            Apellido : <input className="form-control" type="text" placeholder="Leal" onChange={this.updateLastName}required></input>
-                        </label>
-                    </p>
-                     <p>
-                        <label>
-                            Fecha de nacimiento : <input className="form-control" type="date" onChange={this.updateDate} id="date" required></input>
-                        </label>
-                    </p>
-                    <p>
-                        <label>
-                            Correo electronico : <input className="form-control" type="email" placeholder="usuario@leit.cl" onChange={this.updateEmail}required></input>
-                        </label>
-                    </p>
-                    <p>
-                        <label>
-                            Contraseña : <input className="form-control" type="password" onChange={this.updatePassword} method="post"required></input>
-                        </label>
-                    </p>
-                    <p>
-                        <label>
-                            Repita su contraseña: <input className="form-control" type="password" onChange={this.updatePasswordCheck} method="post"required></input>
-                        </label>
-                    </p>
-                  
+                    <div className="form-group row">
+                        <label className="col-sm-2 col-form-label">Nombre: </label>
+                        <div className="col-sm-10">
+                            <input className="form-control" type="text" placeholder="Jose" onChange={this.updateName} required></input>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-2 col-form-label">Apellido: </label>
+                        <div className="col-sm-10">
+                            <input className="form-control" type="text" placeholder="Aguirre" onChange={this.updateLastName}required></input>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-2 col-form-label">Fecha de nacimiento:</label>
+                        <div className="col-sm-10">
+                            <input className="form-control" type="date" onChange={this.updateDate} id="date" required></input>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-2 col-form-label">Correo electronico:</label>
+                        <div className="col-sm-10">
+                            <input className="form-control" type="email" placeholder="jose.medina@memoria-uchile.cl" onChange={this.updateEmail}required></input>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-2 col-form-label">Contraseña:</label>
+                        <div className="col-sm-10">
+                            <input className="form-control" type="password" onChange={this.updatePassword} method="post"required></input>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-2 col-form-label">Repita su contraseña:</label>
+                        <div className="col-sm-10">
+                            <input className="form-control" type="password" onChange={this.updatePasswordCheck} method="post"required></input>
+                        </div>
+                    </div>
                 </div>
-                <button type="submit">Continuar</button>    
+                <button className="btn btn-primary" type="submit">Continuar</button>    
                 </form>
                
-            </div>    
+            </div>
         );
     }
 }
