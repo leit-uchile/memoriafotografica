@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Photo from '../../../src/components/Photo';
+import Photo from '../../components/Photo';
 
 var imgs = [
     {
@@ -52,7 +52,7 @@ var imgs = [
     }
 ];
 
-class Send_Photos extends Component{
+class Filter extends Component{
 
     constructor(){
         super()
@@ -109,7 +109,7 @@ class Send_Photos extends Component{
         return(
             <div>
                 {actually}
-                <div className='btn-group' role='group' aria-label='Accion'>
+                <div className='btn-group' role='group' aria-label='Accions'>
                     <button type="button" className="btn btn-primary active" onClick={this.updatePhotoState}>Publicar</button>
                     <button type="button" className="btn btn-secondary active" onClick={this.removePhoto}>Rechazar</button>
                 </div>
@@ -119,8 +119,8 @@ class Send_Photos extends Component{
     }
 
 }
-Send_Photos.props = {
+Filter.props = {
     gallery: imgs
 }
 
-export default Send_Photos
+export default Filter

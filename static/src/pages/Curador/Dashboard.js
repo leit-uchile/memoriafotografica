@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Send_Photos from './Send_Photos';
-import Category_Photos from './Category_Photos';
+import Filter from './Filter';
+import Categories from './Categories';
 import Reported_Photos from './Reported_Photos';
 
 class Dashboard extends Component{
@@ -16,10 +16,10 @@ class Dashboard extends Component{
         var currentpage;
         switch (this.state.page){
             case 0:
-                currentpage = <Send_Photos />
+                currentpage = <Filter />
                 break;
             case 1:
-                currentpage = <Category_Photos />
+                currentpage = <Categories/>
                 break;
             case 2:
                 currentpage = <Reported_Photos />

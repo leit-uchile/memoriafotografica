@@ -98,7 +98,7 @@ class Reported_Photos extends Component{
             <div>
                 {actually}
                 {reason}
-                <div className='btn-group' role='group' aria-label='Accion'>
+                <div className='btn-group' role='group' aria-label='Accions'>
                     <button type="button" className="btn btn-primary active" onClick={this.updatePhotoState}>Dar de baja</button>
                     <button type="button" className="btn btn-secondary active" onClick={this.removePhoto}>Descartar</button>
                 </div>

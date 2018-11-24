@@ -10,6 +10,8 @@ import NoMatch from "./NoMatch";
 import Upload from './Upload';
 import PhotoDetail from "./PhotoDetail";
 import Dashboard from "./Curador/Dashboard";
+import Category_New from "./Curador/Category_New";
+import Category_Photos from "./Curador/Category_Photos";
 
 class Layout extends Component{
     render(){
@@ -22,7 +24,9 @@ class Layout extends Component{
                     <Route path={"/register"} component={Register}/>
                     <Route path={"/upload"}component={Upload} />
                     <Route path={"/photo"}component={PhotoDetail}/>
-                    <Route path={"/curador/dashboard"}component={Dashboard}/>
+                    <Route exact path={"/curador/dashboard"}component={Dashboard}/>
+                    <Route path={"/curador/dashboard/new-category"}component={Category_New}/>
+                    <Route path={"/curador/dashboard/category/name"}component={Category_Photos}/>
                     <Route component={NoMatch}/>
                 </Switch>
                 <Footer/>
