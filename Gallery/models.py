@@ -12,7 +12,7 @@ PERMISSION_CHOICES = (
 )
 
 class Reporte(models.Model):
-    contenido = models.TextField()
+    content = models.TextField()
     REPORT_TYPE_CHOICES = (
         (1, 'usuario'),
         (2, 'foto'),
@@ -41,8 +41,8 @@ class Photo(models.Model):
     approved = models.BooleanField(default=False)
     censure = models.BooleanField(default = False)
     permission = MultiSelectField(choices=PERMISSION_CHOICES, max_choices=3, max_length=3)
-    category = models.ManyToManyField(Category)
-    comments = models.ManyToManyField(Comment)
+    category = models.ManyToManyField(Category, blank = True)
+    comments = models.ManyToManyField(Comment, blank = True)
     #thumbnail = models.ImageField(blank=True, null=True)
     report = models.ManyToManyField(Reporte, blank = True)
 

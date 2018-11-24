@@ -16,6 +16,6 @@ urlpatterns = [
     re_path('^categories/(?P<pk>[0-9]+)/$', CategoryDetailAPI.as_view()),
 
     re_path("^reports/$", ReportListAPI.as_view()),
-    re_path("^report/(?P<pk>[0-9]+)/$", ReportDetailAPI.as_view())
+    re_path("^reports/(?P<pk>[0-9]+)/$", ReportDetailAPI.as_view())
 
 ]

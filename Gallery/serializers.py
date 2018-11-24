@@ -4,15 +4,17 @@ from datetime import datetime
 #from MetaData.models import Metadata
 #from MetaData.serializers import MetadataSerializer
 from rest_framework import fields, serializers
+from rest_framework.exceptions import NotFound
 # Create serializers here
 
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reporte
-        fields = ('title',)
-    def create(self, validated_data):
-        title = Reporte.objects.create(validated_data['title'])
-        return title
+        fields = '__all__'
+
+    def create(self, validated_data):        
+        reporte = Reporte.objects.create(**validated_data)
+        return reporte
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -39,7 +41,7 @@ class CategorySerializer(serializers.ModelSerializer):
         return Category.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.title = validated_data('title', instance.title)
+        instance.title = validated_data.get('title', instance.title)
         instance.save()
         return instance
 
@@ -61,32 +63,27 @@ class CreatePhotoSerializer(serializers.ModelSerializer):
             photo = Photo.objects.create(**validated_data)
             return photo
 
-class PhotoSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    image = serializers.ImageField()
-    title = serializers.CharField(max_length = 30)
-    uploadDate =serializers.DateTimeField('date published', default=datetime.now)
-    approved = serializers.BooleanField(default=False)
-    censure = serializers.BooleanField(default=False)
-    permission = fields.MultipleChoiceField(choices=PERMISSION_CHOICES)
-    comments = CommentSerializer(many = True)
+class PhotoSerializer(serializers.ModelSerializer):
+    # id = serializers.IntegerField(read_only=True)
+    # image = serializers.ImageField()
+    # title = serializers.CharField(max_length = 30)
+    # uploadDate =serializers.DateTimeField('date published', default=datetime.now)
+    # approved = serializers.BooleanField(default=False)
+    # censure = serializers.BooleanField(default=False)
+    # permission = fields.MultipleChoiceField(choices=PERMISSION_CHOICES)
+    # comments = CommentSerializer(many = True)
 
     class Meta:
-        fields = ['id', 'image', 'title',
-                    'uploadDate',
-                    'approved',
-                    'censure',
-                    'permission','comments']
+        fields = '__all__'
         model = Photo
 
     def update(self, instance, validated_data):
-        instance.image = validated_data.get('image', instance.image)
-        instance.uploadDate = validated_data.get('date', instance.uploadDate)
+
         #instance.tags = validated_data.get('tags', instance.tags)
         instance.approved = validated_data.get('approved', instance.approved)
         instance.censure = validated_data.get('censure', instance.censure)
         instance.permission = validated_data.get('permission', instance.permission)
-
+        instance.category.add(*validated_data.get('category'))
         instance.save()
         return instance
 

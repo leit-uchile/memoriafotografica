@@ -4,8 +4,10 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from .models import Photo, Album, Comment, Reporte, Category
+from Users.models import User
 from .serializers import *
-
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.exceptions import NotFound
 from MetaData.models import MetadataTitle, MetadataDescription
 from .permissions import *
 from django.http import Http404
@@ -71,10 +73,11 @@ class PhotoListAPI(generics.GenericAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class PhotoDetailAPI(generics.GenericAPIView):
+class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
     """
     Retrieve, update or delete a photo instance.
     """
+
     def get_object(self, pk):
         try:
             return Photo.objects.get(pk=pk)
@@ -88,12 +91,11 @@ class PhotoDetailAPI(generics.GenericAPIView):
 
     def put(self, request, pk, *args, **kwargs):
         photo = self.get_object(pk)
-        serializer = PhotoSerializer(photo, data = request.data)
+        serializer = PhotoSerializer(photo, data = request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     def delete(self, request, pk, *args, **kwargs):
         photo = self.get_object(pk)
@@ -178,7 +180,7 @@ class CategoryListAPI(generics.GenericAPIView):
     """
     def get(self, request, *args, **kwargs):
         category = Category.objects.all()
-        serializer = CategorySerializer(category)
+        serializer = CategorySerializer(category, many=True)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
@@ -207,7 +209,7 @@ class CategoryDetailAPI(generics.GenericAPIView):
 
     def put(self, request, pk, *args, **kwargs):
         category = self.get_object(pk)
-        serializer = CategorySerializer(category, data=request.data)
+        serializer = CategorySerializer(category, data=request.data, partial = True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -221,14 +223,27 @@ class CategoryDetailAPI(generics.GenericAPIView):
 class ReportListAPI(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
-        report = Reporte.object.all()
-        serializer = ReportSerializer(report)
+        report = Reporte.objects.all()
+        serializer = ReportSerializer(report, many=True)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         serializer = ReportSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            t = request.data['type']
+            t_class = {'1': 'Usuario', '2': 'Foto', '3':'Comentario'} #ERROR HANDLING
+            try:
+                id=request.data['id']
+                if (t=='1'):
+                    m = User.objects.get(pk=id)
+                elif (t == '2'):
+                    m = Photo.objects.get(pk=id)
+                elif (t == '3'):
+                    m = Comment.objects.get(pk=id)
+            except:
+                raise NotFound(detail="ID de "+t_class[t]+" inválido o no existente.")
+            r = serializer.save()
+            m.report.add(r)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
