@@ -29,13 +29,10 @@ class Comment extends Component{
     }
 
     render(){
-
-        console.log("Bla")
-
         return (
-        <div>
-            <Avatar avatarurl={this.state.userdata.avatar} name={this.state.userdata.name}/>
-            <p>
+        <div className="row">
+            <Avatar avatarurl={this.state.userdata.avatar} name={this.state.userdata.name} isComment={true}/>
+            <p className="col-10">
                 {this.props.content}
             </p>
         </div>)

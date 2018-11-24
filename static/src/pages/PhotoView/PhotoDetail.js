@@ -2,27 +2,31 @@ import React, { Component } from 'react';
 
 import Comment from "./Comment";
 import ReportModal from "./ReportModal"
-import Photo from '../../components/Photo';
 import {Link} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {Button} from 'reactstrap';
 
 class PhotoDetails extends Component{
 
-    constructor(Props){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             image : {
                 ownerid: 0,
                 name: "img1",
                 url: "https://mott.pe/noticias/wp-content/uploads/2016/11/Janette-Asche.jpg",
-                tags: ["tag1","tag2"],
+                tags: ["facultad de quimica","1992"],
                 // Lorem ipsum Dolor Sit Amet
                 desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat leo vitae felis iaculis, sit amet placerat tellus tincidunt. Nunc at vestibulum elit. Vivamus id ipsum eros. Curabitur pulvinar nulla eu magna euismod iaculis. Nulla facilisi. Vestibulum euismod augue vel semper condimentum. Mauris laoreet, quam quis finibus malesuada, tellus tellus ultrices odio, quis commodo nulla nulla vestibulum arcu. Nullam aliquet, quam id porttitor consectetur, arcu velit congue arcu, non sollicitudin nunc dolor id enim. Nunc ultricies eget mauris id dapibus. Praesent magna lorem, lacinia id tristique vel, fringilla eget urna. Sed velit elit, rhoncus at ligula ac, porta dapibus nunc. Morbi eu nulla vel lectus porta egestas sit amet vitae dui. ",
                 permissions: 0
             },
             commentsLoaded : false,
             suggestionsLoaded : false,
-
+            auth: this.props.auth,
+            newCommentInfo: null
         }
+
+        this.sendComment = this.sendComment.bind(this)
     }
 
     async getUserDetails(){
@@ -44,13 +48,13 @@ class PhotoDetails extends Component{
                     id: 0,
                     userid : 0,
                     photoid: 0,
-                    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat leo vitae felis iaculis, sit amet placerat tellus tincidunt. Nunc at vestibulum elit. Vivamus id ipsum eros. Curabitur pulvinar nulla eu magna euismod iaculis. Nulla facilisi. Vestibulum euismod augue vel semper condimentum. Mauris laoreet, quam quis finibus malesuada, tellus tellus ultrices odio, quis commodo nulla nulla vestibulum arcu. Nullam aliquet, quam id porttitor consectetur, arcu velit congue arcu, non sollicitudin nunc dolor id enim. Nunc ultricies eget mauris id dapibus. Praesent magna lorem, lacinia id tristique vel, fringilla eget urna. Sed velit elit, rhoncus at ligula ac, porta dapibus nunc. Morbi eu nulla vel lectus porta egestas sit amet vitae dui. "
+                    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat leo vitae felis iaculis, sit amet placerat tellus tincidunt. "
                 },
                 {
                     id: 0,
                     userid : 0,
                     photoid: 0,
-                    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat leo vitae felis iaculis, sit amet placerat tellus tincidunt. Nunc at vestibulum elit. Vivamus id ipsum eros. Curabitur pulvinar nulla eu magna euismod iaculis. Nulla facilisi. Vestibulum euismod augue vel semper condimentum. Mauris laoreet, quam quis finibus malesuada, tellus tellus ultrices odio, quis commodo nulla nulla vestibulum arcu. Nullam aliquet, quam id porttitor consectetur, arcu velit congue arcu, non sollicitudin nunc dolor id enim. Nunc ultricies eget mauris id dapibus. Praesent magna lorem, lacinia id tristique vel, fringilla eget urna. Sed velit elit, rhoncus at ligula ac, porta dapibus nunc. Morbi eu nulla vel lectus porta egestas sit amet vitae dui. "
+                    content: "Nullam aliquet, quam id porttitor consectetur, arcu velit congue arcu, non sollicitudin nunc dolor id enim. Nunc ultricies eget mauris id dapibus. Praesent magna lorem, lacinia id tristique vel, fringilla eget urna. Sed velit elit, rhoncus at ligula ac, porta dapibus nunc. Morbi eu nulla vel lectus porta egestas sit amet vitae dui. "
                 }
             ],
             commentsLoaded: true
@@ -86,6 +90,13 @@ class PhotoDetails extends Component{
         )
     }
 
+    async sendComment(e){
+        e.preventDefault()
+        if(this.state.newCommentInfo != null){
+            console.log("Call the API")
+        }
+    }
+
     componentDidMount(){
         this.getComments();
         this.getUserDetails();
@@ -106,7 +117,7 @@ class PhotoDetails extends Component{
         var imageTags = [];
         for (let i = 0; i < this.state.image.tags.length; i++) {
             imageTags.push(
-                <span>
+                <span style={{color: "white", backgroundColor: "blue", padding: "0.7em", margin: "1em", borderRadius: "1em"}}>
                     {this.state.image.tags[i]}
                 </span>
             )   
@@ -119,30 +130,44 @@ class PhotoDetails extends Component{
 
         var userProfile;
         if(this.state.userinfo != undefined){
-            userProfile = <div><span>Subido por {this.state.userinfo.name}</span> <img src={this.state.userinfo.avatar}/></div>
+            userProfile = 
+            <div style={{marginRight: "auto", marginLeft: "auto"}}>
+                <span style={{marginRight: "auto", marginLeft: "auto", display: "block", textAlign: 'center', padding: '1em'}}>Subido por {this.state.userinfo.name}</span>
+                <img src={this.state.userinfo.avatar} style={{borderRadius: "50%", width: "70px", height: "70px", marginRight: "auto", marginLeft: "auto", display: "block"}}/>
+            </div>
+        }
+
+        var newComment;
+        if(this.state.auth.isAuthenticated === true){
+            newComment = <div>
+                <form onSubmit={this.sendComment}>
+                    <textarea rows="4" cols="60" required></textarea>
+                    <Button color="primary">Comentar</Button>
+                </form>
+            </div>
         }
 
         return (
-            <div className="row">
-                <div >
-                    <div>
-                        <img src={this.state.image.url}/>
+            <div className="row" style={{padding: "2em"}}>
+                <div style={{backgroundColor: "rgb(240,240,240)",borderRadius: "1em"}}>
+                    <div style={{padding: "2em"}}>
+                        <h1 style={{textAlign: "center"}}>{this.state.image.name}</h1>
+                        <img src={this.state.image.url} style={{marginRight: "auto", marginLeft: "auto", display: "block", maxWidth: "100%"}}/>
                         <div>
                             <h2>Descripcion</h2>
                             <p>{this.state.image.desc}</p>
                             {imageTags}
+                            {userProfile}
                         </div>
-                        <Link to="/" >Si quieres pedir la imagen ingresa aqui</Link>
+                        <Link to="/" >Si quieres pedir esta imagen ingresa aqui</Link>
                         <ReportModal/>
-                    </div>
-                    <div>
-                        {userProfile}
                     </div>
                 </div>
                 <div className="col">
                     {commentDivs}
+                    {newComment}
                 </div>
-                <div className="col">
+                <div className="col" style={{padding: "1em"}}>
                     {Suggestions}
                 </div>
             </div>
@@ -150,4 +175,10 @@ class PhotoDetails extends Component{
     }
 }
 
-export default PhotoDetails;
+const mapStateToProps = state => {
+    return {
+        auth: state.auth
+    }
+}
+
+export default connect(mapStateToProps)(PhotoDetails);

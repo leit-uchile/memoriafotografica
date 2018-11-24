@@ -7,7 +7,8 @@ class ReportModal extends Component{
         super(props);
 
         this.state = {
-            modal: false
+            modal: false,
+            reportIssues: []
         }
 
         this.toggle = this.toggle.bind(this);
@@ -19,14 +20,29 @@ class ReportModal extends Component{
         });
     }
 
+    updateReport(element){
+        this.state.reportIssues.push(element)
+        this.forceUpdate()
+    }
+
+    sendReport(){
+        // Call API adn send report Issues
+        console.log("Sended report")
+    }
+
     render(){
+
+        const labelStyle = {display: "block"};
+
         return(
             <div>
                 <Button color="danger" onClick={this.toggle}>Reportar Foto</Button>
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
                     <ModalHeader toggle={this.toggle}>Reportar fotografia</ModalHeader>
                     <ModalBody>
-                        Contents
+                        <label style={labelStyle}><input type="checkbox" onChange={() => this.updateReport(1)}/> Contenido inapropiado</label>
+                        <label style={labelStyle}><input type="checkbox" onChange={() => this.updateReport(2)}/> Incita a la violencia</label>
+                        <label style={labelStyle}><input type="checkbox" onChange={() => this.updateReport(3)}/> El usuario no es autor del contenido</label>
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={this.toggle}>Reportar</Button>
