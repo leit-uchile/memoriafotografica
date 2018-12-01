@@ -19,48 +19,51 @@ def add_title_description(request, p_id):
         title = MetadataTitle.objects.create(title=t, description=t.lower(), photo=Photo.objects.get(pk=p_id))
         description = MetadataDescription.objects.create(description=d, photo=Photo.objects.get(pk=p_id))
 
-
-class PhotoUploadAPI(generics.GenericAPIView):
-    permission_classes = [IsOwnerOrReadOnly, ]
-    parser_classes = (MultiPartParser, FormParser)
-    serializer_class = CreatePhotoSerializer
-
-    def post(self, request, *args, **kwargs):
-        print(request.user.id)
-        photo_serializer = self.get_serializer(data=request.data)
-        if photo_serializer.is_valid():
-            photo_serializer.save()
-            # add_title_description(request, photo_serializer.data['id'])
-            return Response(photo_serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(photo_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class CommentUploadAPI(generics.GenericAPIView):
-    permissions_classes = [IsOwnerOrReadOnly]
-    parser_classes = (MultiPartParser, FormParser)
-
-    def post(self, request, *args, **kwargs):
-        comment_serializer = CommentSerializer(data = request.data)
-        if comment_serializer.is_valid():
-            c = comment_serializer.save()
-            try:
-                pid = request.POST.get('photo')
-                p = Photo.objects.get(id = pid)
-                print(p)
-                p.comments.add(c)
-            except:
-                pass
-            return Response(comment_serializer.data,  status = status.HTTP_201_CREATED)
-        else:
-            return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#
+# class PhotoUploadAPI(generics.GenericAPIView):
+#     permission_classes = [IsOwnerOrReadOnly, ]
+#     parser_classes = (MultiPartParser, FormParser)
+#     serializer_class = CreatePhotoSerializer
+#
+#     def post(self, request, *args, **kwargs):
+#         print(request.user.id)
+#         photo_serializer = self.get_serializer(data=request.data)
+#         if photo_serializer.is_valid():
+#             photo_serializer.save()
+#             # add_title_description(request, photo_serializer.data['id'])
+#             return Response(photo_serializer.data, status=status.HTTP_201_CREATED)
+#         else:
+#             return Response(photo_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#
+# class CommentUploadAPI(generics.GenericAPIView):
+#     permissions_classes = [IsOwnerOrReadOnly]
+#     parser_classes = (MultiPartParser, FormParser)
+#
+#     def post(self, request, *args, **kwargs):
+#         comment_serializer = CommentSerializer(data = request.data)
+#         if comment_serializer.is_valid():
+#             c = comment_serializer.save()
+#             try:
+#                 pid = request.POST.get('photo')
+#                 p = Photo.objects.get(id = pid)
+#                 print(p)
+#                 p.comments.add(c)
+#             except:
+#                 pass
+#             return Response(comment_serializer.data,  status = status.HTTP_201_CREATED)
+#         else:
+#             return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
 
 class PhotoListAPI(generics.GenericAPIView):
+
     """
     List all photos, or create a new photo.
     """
+    serializer_class = PhotoSerializer
+
     def get(self, request, *args, **kwargs):
         photo = Photo.objects.all()
         serializer = PhotoSerializer(photo, many = True)
@@ -78,6 +81,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
     Retrieve, update or delete a photo instance.
     """
 
+    serializer_class = PhotoSerializer
     def get_object(self, pk):
         try:
             return Photo.objects.get(pk=pk)
@@ -108,6 +112,7 @@ class CommentListAPI(generics.GenericAPIView):
     """
     List all comments, or create a new comment.
     """
+    serializer_class = CommentSerializer
     def get(self, request, *args, **kwargs):
         comments = Comment.objects.all();
         serializer = CommentSerializer(comments, many = True)
@@ -121,6 +126,7 @@ class CommentDetailAPI(generics.GenericAPIView):
     """
     Retrieve, update or delete a comment instance.
     """
+    serializer_class = CommentSerializer
     def get_object(self, pk):
         try:
             return Comment.objects.get(pk=pk)
@@ -149,6 +155,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
     """
     List all comments from a photo, or create a new comment.
     """
+    serializer_class = CommentSerializer
     def get_object(self, pk):
         try:
             return Photo.objects.get(pk=pk)
@@ -178,6 +185,7 @@ class CategoryListAPI(generics.GenericAPIView):
     """
     List all categories, or create a new category.
     """
+    serializer_class = CategorySerializer
     def get(self, request, *args, **kwargs):
         category = Category.objects.all()
         serializer = CategorySerializer(category, many=True)
@@ -196,6 +204,7 @@ class CategoryDetailAPI(generics.GenericAPIView):
     Retrieve, update or delete a comment instance.
     """
 
+    serializer_class = CategorySerializer
     def get_object(self, pk):
         try:
             return Category.objects.get(pk=pk)
@@ -222,6 +231,7 @@ class CategoryDetailAPI(generics.GenericAPIView):
 
 class ReportListAPI(generics.GenericAPIView):
 
+    serializer_class = ReportSerializer
     def get(self, request, *args, **kwargs):
         report = Reporte.objects.all()
         serializer = ReportSerializer(report, many=True)
@@ -250,6 +260,7 @@ class ReportListAPI(generics.GenericAPIView):
 
 class ReportDetailAPI(generics.GenericAPIView):
 
+    serializer_class = ReportSerializer
     def get_object(self, pk):
         try:
             return Reporte.objects.get(pk=pk)
@@ -279,6 +290,9 @@ class AlbumListAPI(generics.GenericAPIView):
     """
     List all categories, or create a new category.
     """
+
+    serializer_class = AlbumSerializer
+
     def get(self, request, *args, **kwargs):
         category = Album.objects.all()
         serializer = AlbumSerializer(category, many=True)
@@ -297,6 +311,7 @@ class AlbumDetailAPI(generics.GenericAPIView):
     Retrieve, update or delete a comment instance.
     """
 
+    serializer_class = AlbumSerializer
     def get_object(self, pk):
         try:
             return Album.objects.get(pk=pk)

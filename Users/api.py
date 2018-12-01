@@ -42,6 +42,7 @@ class UserTokenAPI(generics.RetrieveAPIView):
 
 class UserListAPI(generics.GenericAPIView):
 
+    serializer_class = UserSerializer
     def get(self, request, *args, **kwargs):
         user = User.objects.all()
         serializer = UserSerializer(user, many=True)
@@ -58,6 +59,7 @@ class UserListAPI(generics.GenericAPIView):
 
 class UserDetailAPI(generics.GenericAPIView):
 
+    serializer_class = UserSerializer
     def get_object(self, pk):
         try:
             return User.objects.get(pk=pk)
