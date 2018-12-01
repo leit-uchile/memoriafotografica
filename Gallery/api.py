@@ -60,7 +60,11 @@ def add_title_description(request, p_id):
 class PhotoListAPI(generics.GenericAPIView):
 
     """
-    List all photos, or create a new photo.
+    get:
+    Get a list of ALL pictures.
+
+    post:
+    Create a new picture.
     """
     serializer_class = PhotoSerializer
 
@@ -78,7 +82,14 @@ class PhotoListAPI(generics.GenericAPIView):
 
 class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
     """
-    Retrieve, update or delete a photo instance.
+    get:
+    Get details of a picture.
+
+    put:
+    Modify (partially) the attributes of a picture.
+
+    delete:
+    Delete a picture.
     """
 
     serializer_class = PhotoSerializer
