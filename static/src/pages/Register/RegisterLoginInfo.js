@@ -103,7 +103,7 @@ class RegisterLoginInfo extends Component{
                         </div>
                     </div>
                 </div>
-                <button className="btn btn-primary" type="submit">Continuar</button>    
+                <button className="btn btn-primary" type="submit" style={{marginLeft: "calc(100% - 6em)"}}>Continuar</button>
                 </form>
                
             </div>

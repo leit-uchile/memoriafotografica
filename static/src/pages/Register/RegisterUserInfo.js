@@ -68,13 +68,11 @@ class RegisterUserInfo extends Component{
                         <option>correo electrónico</option>
                         <option>un amigo</option>
                     </select> 
-
-                    
-                </div>  
-                <p>&nbsp;</p>
-
-                <button className="btn btn-secondary" onClick={this.props.goBack}>Atras</button>  
-                <button className="btn btn-success" type="submit">Registrar</button>  
+                </div>
+                <div style={{position: "relative"}}>
+                    <button className="btn btn-secondary" onClick={this.props.goBack}>Atras</button>  
+                    <button className="btn btn-success" type="submit" style={{position: "absolute", right: "0"}}>Registrar</button>
+                </div>
                 </form>
             </div>
         )

@@ -125,7 +125,7 @@ class PhotoDetails extends Component{
 
         var Suggestions;
         if(this.state.suggestionsLoaded){
-            Suggestions = this.state.imageSuggestions.map( (im,k) => <div> <img key={k} src={im.url} style={{maxWidth: "100%"}}/> </div>)
+            Suggestions = this.state.imageSuggestions.map( (im,k) => <div style={{margin: "0 1em 1em 1em"}}> <img key={k} src={im.url} style={{maxWidth: "90%"}}/> </div>)
         }
 
         var userProfile;
@@ -139,17 +139,19 @@ class PhotoDetails extends Component{
 
         var newComment;
         if(this.state.auth.isAuthenticated === true){
-            newComment = <div>
-                <form onSubmit={this.sendComment}>
-                    <textarea rows="4" cols="60" required></textarea>
-                    <Button color="primary">Comentar</Button>
+            newComment = <div className="row">
+                <form onSubmit={this.sendComment} style={{width: "100%"}}>
+                    <h3>Escribe aqui tu comentario</h3>
+                    <textarea rows="4" required style={{width: "calc(100% - 2em)", margin: "1em"}}></textarea>
+                    <br></br>
+                    <Button color="primary" style={{marginLeft: "1em"}}>Comentar</Button>
                 </form>
             </div>
         }
 
         return (
             <div className="row" style={{padding: "2em"}}>
-                <div style={{backgroundColor: "rgb(240,240,240)",borderRadius: "1em"}}>
+                <div className="col-9" style={{backgroundColor: "rgb(240,240,240)",borderRadius: "1em"}}>
                     <div style={{padding: "2em"}}>
                         <h1 style={{textAlign: "center"}}>{this.state.image.name}</h1>
                         <img src={this.state.image.url} style={{marginRight: "auto", marginLeft: "auto", display: "block", maxWidth: "100%"}}/>
@@ -162,12 +164,10 @@ class PhotoDetails extends Component{
                         <Link to="/" >Si quieres pedir esta imagen ingresa aqui</Link>
                         <ReportModal/>
                     </div>
-                </div>
-                <div className="col">
                     {commentDivs}
                     {newComment}
                 </div>
-                <div className="col" style={{padding: "1em"}}>
+                <div className="col-3" style={{padding: "1em"}}>
                     {Suggestions}
                 </div>
             </div>
