@@ -11,10 +11,12 @@ from uuid import uuid4
 
 # Create your models here.
 PERMISSION_CHOICES = (
-    ('a', 'Hola'),
-    ('b', 'Hello'),
-    ('c', 'Bonjour'),
-    ('d', 'Boas'),
+    ('CC BY', ('Atribución', 'descripción')),
+    ('CC BY-SA', ('Atribución-CompartirIgual', 'd')),
+    ('CC BY-ND', ('Atribución sin Derivadas', 'd')),
+    ('CC BY-NC', ('Atribución No Comercial', 'd')),
+    ('CC BY-NC-SA', ('Atribución NoComercial-CompartirIgual', 'd')),
+    ('CC BY-NC-ND', ('Atribución NoComercial-SinDerivadas', 'd')),
 )
 
 class Reporte(models.Model):
