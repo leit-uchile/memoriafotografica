@@ -1,10 +1,11 @@
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
+from rest_framework import status
 from knox.models import AuthToken
 from django.conf import settings
 from .serializers import (CreateUserSerializer,UserSerializer, LoginUserSerializer)
 from .models import User
-
+from .permissions import *
 class RegistrationAPI(generics.GenericAPIView):
     serializer_class = CreateUserSerializer
 
@@ -50,6 +51,7 @@ class UserListAPI(generics.GenericAPIView):
 
     # Exclusivo del administrador:
     def post(self, request, *args, **kwargs):
+        permission_classes = [IsAdmin,]
         serializer = CreateUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

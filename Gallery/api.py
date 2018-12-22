@@ -9,6 +9,7 @@ from .serializers import *
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.exceptions import NotFound
 from MetaData.models import MetadataTitle, MetadataDescription
+from Users.permissions import *
 from .permissions import *
 
 from django.http import Http404, QueryDict
@@ -77,7 +78,6 @@ class PhotoListAPI(generics.GenericAPIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-
         permission_class = [IsAuthenticated, IsColaborator]
         serializer = CreatePhotoSerializer(data=request.data)
         if serializer.is_valid():
@@ -110,6 +110,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
         return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
+        permission_classes = [FilterContent,]
         photo = self.get_object(pk)
         serializer = PhotoSerializer(photo, data = request.data, partial=True)
         if serializer.is_valid():
@@ -208,6 +209,7 @@ class CategoryListAPI(generics.GenericAPIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
+        permission_classes = [IsCurator, IsAdmin,]
         usuario = request.user.user_type
         print(usuario)
         serializer = CategorySerializer(data=request.data)
@@ -251,6 +253,7 @@ class ReportListAPI(generics.GenericAPIView):
 
     serializer_class = ReportSerializer
     def get(self, request, *args, **kwargs):
+        permission_classes=[IsCurator, IsAdmin,]
         report = Reporte.objects.all()
         serializer = ReportSerializer(report, many=True)
         return Response(serializer.data)
@@ -286,11 +289,13 @@ class ReportDetailAPI(generics.GenericAPIView):
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
+        permission_classes=[IsCurator, IsAdmin,]
         user = self.get_object(pk)
         serializer = ReportSerializer(user)
         return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
+        permission_classes=[IsCurator, IsAdmin,]
         user = self.get_object(pk)
         serializer = ReportSerializer(user, data=request.data)
         if serializer.is_valid():
@@ -299,6 +304,7 @@ class ReportDetailAPI(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, *args, **kwargs):
+        permission_classes=[IsCurator, IsAdmin,]
         user = self.get_object(pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

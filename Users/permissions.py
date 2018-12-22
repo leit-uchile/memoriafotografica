@@ -27,3 +27,12 @@ class IsAdmin(permissions.BasePermission):
             return True
         else:
             return False
+
+class ModifyUserType(permissions.BasePermission):
+    def has_object_permission(self, request, view):
+        user_type = request.user.user_type
+        try:
+            c = request.data['user_type']
+            return user_type == 3
+        except KeyError:
+            return True
