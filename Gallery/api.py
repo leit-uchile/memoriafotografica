@@ -71,7 +71,7 @@ class PhotoListAPI(generics.GenericAPIView):
     Create a new picture.
     """
     serializer_class = PhotoSerializer
-
+    permissions_classes = ([IsPostRequest, IsAuthenticated] | IsGetRequest,)
     def get(self, request, *args, **kwargs):
         photo = Photo.objects.all()
         serializer = PhotoSerializer(photo, many = True)
@@ -96,7 +96,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
     delete:
     Delete a picture.
     """
-
+    permissions_classes = []
     serializer_class = PhotoSerializer
     def get_object(self, pk):
         try:

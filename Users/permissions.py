@@ -39,16 +39,16 @@ class ModifyUserType(permissions.BasePermission):
 
 class IsPostRequest(permissions.BasePermission):
     def has_permission(self, request, view):
-        pass
+        return request.method
 
-class IsPostRequest(permissions.BasePermission):
+class IsGetRequest(permissions.BasePermission):
     def has_permission(self, request, view):
         pass
 
-class IsPostRequest(permissions.BasePermission):
+class IsPutRequest(permissions.BasePermission):
     def has_permission(self, request, view):
             pass
 
-class IsPostRequest(permissions.BasePermission):
+class IsDeleteRequest(permissions.BasePermission):
     def has_permission(self, request, view):
         pass
