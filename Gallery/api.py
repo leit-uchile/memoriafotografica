@@ -10,7 +10,7 @@ from rest_framework.mixins import UpdateModelMixin
 from rest_framework.exceptions import NotFound
 from MetaData.models import MetadataTitle, MetadataDescription
 from .permissions import *
-from django.http import Http404
+from django.http import Http404, QueryDict
 #Metadata¿?
 def add_title_description(request, p_id):
     if request.method == 'POST':
@@ -83,7 +83,7 @@ class PhotoListAPI(generics.GenericAPIView):
 class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
     """
     get:
-    Get details of a picture.
+    Get details of a *picture*.
 
     put:
     Modify (partially) the attributes of a picture.
@@ -203,6 +203,8 @@ class CategoryListAPI(generics.GenericAPIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
+        usuario = request.user.user_type
+        print(usuario)
         serializer = CategorySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
