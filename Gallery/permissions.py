@@ -17,7 +17,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         return obj.owner == request.user
 
 class FilterContent(permissions.BasePermission):
-    def has_object_permission(self, request, view):
+    def has_permission(self, request, view):
         #Leer los permisos asignados al usuario
         user_type = request.user.user_type
         try:

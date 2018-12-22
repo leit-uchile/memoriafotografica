@@ -69,6 +69,7 @@ class UserDetailAPI(generics.GenericAPIView):
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
+        permission_classes = (permissions.IsAuthenticated,)
         user = self.get_object(pk)
         serializer = UserSerializer(user)
         return Response(serializer.data)
