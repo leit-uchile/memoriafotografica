@@ -10,7 +10,10 @@ from rest_framework.mixins import UpdateModelMixin
 from rest_framework.exceptions import NotFound
 from MetaData.models import MetadataTitle, MetadataDescription
 from .permissions import *
+
 from django.http import Http404, QueryDict
+from rest_framework.permissions import IsAuthenticated
+
 #Metadata¿?
 def add_title_description(request, p_id):
     if request.method == 'POST':
@@ -74,6 +77,8 @@ class PhotoListAPI(generics.GenericAPIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
+
+        permission_class = [IsAuthenticated, IsColaborator]
         serializer = CreatePhotoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
