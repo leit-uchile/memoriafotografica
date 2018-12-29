@@ -1,16 +1,33 @@
-.header {
-    background: #f8f8f8;
-    padding: 15px;
-    overflow: auto;
+a{
+    outline: none;
 }
-.header img {
-    width: 100px;
-    height: auto;
-    float: left;
+.n.navbar{
+    padding: 3px 16px;
 }
-.header h1 {
-    font-size: 20px;
-    position: relative;
-    top: 26px;
-    left: 10px;
+.navbar .navbar-nav .active{
+    font-size: 18px;
+    font-weight: 600px;
+}
+.navbar-nav>li>a{
+    font-size: 14px;
+    font-weight: 400px;
+    outline: none;
+}
+.active{
+    opacity: 1;
+}
+.navbar-nav .nav-item .nav-link{
+    transition: 0.3s ease;
+}
+.navbar-nav .nav-item .nav-link:hover{
+    transition: 0.3s ease;
+    font-size: 18px;
+}
+.navbar-dark .navbar-toggler:hover, .navbar-dark .navbar-toggler:active{
+    background-color: rgba(255,255,255,0.2);
+    transition: 0.3s ease;
+}
+button:focus{
+    outline: none;
+    background-color: rgba(255,255,255,0.1);
 }

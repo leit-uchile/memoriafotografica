@@ -41,7 +41,7 @@ class Upload extends Component{
         }
 
         return(
-        <div className='container'>
+        <div className='container' style={{marginTop: '10%'}}>
             {message}
             <form enctype="multipart/form-data" method="POST" onSubmit={this.onSubmit}>
 

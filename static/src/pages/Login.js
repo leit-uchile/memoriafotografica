@@ -25,7 +25,7 @@ class Login extends Component{
 
     render(){
         return(
-            <div className='modal-dialog text-center'>
+            <div className='modal-dialog text-center' style={{marginTop: '10%'}}>
                     <div className='col-sm-9 main-section'>
                         <div className='modal-content'>
                                 <h1>Inicia sesión</h1>

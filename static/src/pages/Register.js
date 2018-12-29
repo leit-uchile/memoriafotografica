@@ -73,7 +73,7 @@ class Register extends Component{
         }
 
         return (
-            <div class="container">
+            <div class="container" style={{marginTop: '10%'}}>
                 <h1>Register</h1>
                 <form onSubmit={this.onSubmit}>
                     {errorMessage}
