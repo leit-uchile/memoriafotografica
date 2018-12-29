@@ -77,7 +77,7 @@ class PhotoListAPI(generics.GenericAPIView):
     serializer_class = PhotoSerializer
     post_permission = And(IsPostRequest, IsAuthenticated)
 
-    permission_classes = [post_permission, IsGetRequest,]
+    permission_classes = [Or(post_permission, IsGetRequest),]
 
     def get(self, request, *args, **kwargs):
         photo = Photo.objects.all()
@@ -103,8 +103,8 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
     delete:
     Delete a picture.
     """
-    permission_classes = [Or(And(IsPutRequest, FilterContent),
-                             IsGetRequest, IsDeleteRequest),]
+    permission_classes = [Or(IsGetRequest,
+                             And(IsOwner, Or(IsDeleteRequest, And(IsPutRequest, FilterContent)))),]
     serializer_class = PhotoSerializer
     def get_object(self, pk):
         try:
@@ -151,6 +151,8 @@ class CommentDetailAPI(generics.GenericAPIView):
     Retrieve, update or delete a comment instance.
     """
     serializer_class = CommentSerializer
+    permission_classes = [Or(And(IsOwner, Or(IsPutRequest, IsDeleteRequest)),
+                             IsGetRequest),]
     def get_object(self, pk):
         try:
             return Comment.objects.get(pk=pk)
@@ -233,6 +235,8 @@ class CategoryDetailAPI(generics.GenericAPIView):
     """
 
     serializer_class = CategorySerializer
+    permission_classes = [Or(IsGetRequest,
+                             And(IsOwner, Or(IsPutRequest, IsDeleteRequest))),]
     def get_object(self, pk):
         try:
             return Category.objects.get(pk=pk)
@@ -341,7 +345,8 @@ class AlbumDetailAPI(generics.GenericAPIView):
     """
     Retrieve, update or delete a comment instance.
     """
-
+    permission_classes = [Or(IsGetRequest,
+                             And(IsOwner, Or(IsPutRequest, IsDeleteRequest))),]
     serializer_class = AlbumSerializer
     def get_object(self, pk):
         try:

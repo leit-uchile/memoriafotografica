@@ -83,7 +83,8 @@ class PhotoSerializer(serializers.ModelSerializer):
         instance.approved = validated_data.get('approved', instance.approved)
         instance.censure = validated_data.get('censure', instance.censure)
         instance.permission = validated_data.get('permission', instance.permission)
-        instance.category.add(*validated_data.get('category'))
+        if validated_data.get('category'):
+            instance.category.add(*validated_data.get('category'))
         instance.save()
         return instance
 
