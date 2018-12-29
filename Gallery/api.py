@@ -75,14 +75,17 @@ class PhotoListAPI(generics.GenericAPIView):
     Create a new picture.
     """
     serializer_class = PhotoSerializer
-    permissions_classes = [Or(And(IsPostRequest, IsAuthenticated), IsGetRequest),]
+    post_permission = And(IsPostRequest, IsAuthenticated)
+
+    permission_classes = [post_permission, IsGetRequest,]
+
     def get(self, request, *args, **kwargs):
         photo = Photo.objects.all()
         serializer = PhotoSerializer(photo, many = True)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        permission_class = [And(IsAuthenticated, IsColaborator),]
+
         serializer = CreatePhotoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -100,7 +103,8 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
     delete:
     Delete a picture.
     """
-    permissions_classes = []
+    permission_classes = [Or(And(IsPutRequest, FilterContent),
+                             IsGetRequest, IsDeleteRequest),]
     serializer_class = PhotoSerializer
     def get_object(self, pk):
         try:
@@ -114,7 +118,6 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
         return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
-        permission_classes = [FilterContent,]
         photo = self.get_object(pk)
         serializer = PhotoSerializer(photo, data = request.data, partial=True)
         if serializer.is_valid():
@@ -207,13 +210,14 @@ class CategoryListAPI(generics.GenericAPIView):
     List all categories, or create a new category.
     """
     serializer_class = CategorySerializer
+    permission_classes = [Or(And(IsPostRequest,Or(IsCurator, IsAdmin)),
+                             IsGetRequest), ]
     def get(self, request, *args, **kwargs):
         category = Category.objects.all()
         serializer = CategorySerializer(category, many=True)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        permission_classes = [Or(IsCurator, IsAdmin),]
         usuario = request.user.user_type
         print(usuario)
         serializer = CategorySerializer(data=request.data)
@@ -254,10 +258,10 @@ class CategoryDetailAPI(generics.GenericAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ReportListAPI(generics.GenericAPIView):
-
     serializer_class = ReportSerializer
+    permission_classes = [Or(And(IsGetRequest,Or (IsCurator, IsAdmin)),
+                          IsGetRequest),]
     def get(self, request, *args, **kwargs):
-        permission_classes=[Or(IsCurator, IsAdmin),]
         report = Reporte.objects.all()
         serializer = ReportSerializer(report, many=True)
         return Response(serializer.data)
@@ -284,9 +288,9 @@ class ReportListAPI(generics.GenericAPIView):
 
 
 class ReportDetailAPI(generics.GenericAPIView):
-    permissions_classes=[Or(And(IsGetRequest, Or(IsCurator, IsAdmin)),
-                            And(IsPutRequest, Or(IsCurator, IsAdmin))),
-                            And(IsDeleteRequest, Or(IsCurator, IsAdmin)),]
+    permission_classes=[Or(And(IsGetRequest, Or(IsCurator, IsAdmin)),
+                            And(IsPutRequest, Or(IsCurator, IsAdmin)),
+                            And(IsDeleteRequest, Or(IsCurator, IsAdmin))),]
     serializer_class = ReportSerializer
     def get_object(self, pk):
         try:
@@ -295,13 +299,11 @@ class ReportDetailAPI(generics.GenericAPIView):
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
-        #permission_classes=[Or(IsCurator, IsAdmin),]
         user = self.get_object(pk)
         serializer = ReportSerializer(user)
         return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
-        #permission_classes=[Or(IsCurator, IsAdmin),]
         user = self.get_object(pk)
         serializer = ReportSerializer(user, data=request.data)
         if serializer.is_valid():
@@ -310,7 +312,6 @@ class ReportDetailAPI(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, *args, **kwargs):
-        #permission_classes=[Or(IsCurator, IsAdmin),]
         user = self.get_object(pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
