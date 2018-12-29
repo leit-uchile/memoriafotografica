@@ -11,9 +11,13 @@ from rest_framework.exceptions import NotFound
 from MetaData.models import MetadataTitle, MetadataDescription
 from Users.permissions import *
 from .permissions import *
-
 from django.http import Http404, QueryDict
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import BasePermission
+from rest_condition import ConditionalPermission, C, And, Or, Not
+
+
+
 
 #Metadata¿?
 def add_title_description(request, p_id):
@@ -71,14 +75,14 @@ class PhotoListAPI(generics.GenericAPIView):
     Create a new picture.
     """
     serializer_class = PhotoSerializer
-    permissions_classes = ([IsPostRequest, IsAuthenticated] | IsGetRequest,)
+    permissions_classes = [Or(And(IsPostRequest, IsAuthenticated), IsGetRequest),]
     def get(self, request, *args, **kwargs):
         photo = Photo.objects.all()
         serializer = PhotoSerializer(photo, many = True)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        permission_class = [IsAuthenticated, IsColaborator]
+        permission_class = [And(IsAuthenticated, IsColaborator),]
         serializer = CreatePhotoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -209,7 +213,7 @@ class CategoryListAPI(generics.GenericAPIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        permission_classes = [IsCurator | IsAdmin,]
+        permission_classes = [Or(IsCurator, IsAdmin),]
         usuario = request.user.user_type
         print(usuario)
         serializer = CategorySerializer(data=request.data)
@@ -253,7 +257,7 @@ class ReportListAPI(generics.GenericAPIView):
 
     serializer_class = ReportSerializer
     def get(self, request, *args, **kwargs):
-        permission_classes=[IsCurator | IsAdmin, ]
+        permission_classes=[Or(IsCurator, IsAdmin),]
         report = Reporte.objects.all()
         serializer = ReportSerializer(report, many=True)
         return Response(serializer.data)
@@ -280,7 +284,9 @@ class ReportListAPI(generics.GenericAPIView):
 
 
 class ReportDetailAPI(generics.GenericAPIView):
-
+    permissions_classes=[Or(And(IsGetRequest, Or(IsCurator, IsAdmin)),
+                            And(IsPutRequest, Or(IsCurator, IsAdmin))),
+                            And(IsDeleteRequest, Or(IsCurator, IsAdmin)),]
     serializer_class = ReportSerializer
     def get_object(self, pk):
         try:
@@ -289,13 +295,13 @@ class ReportDetailAPI(generics.GenericAPIView):
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
-        permission_classes=[IsCurator | IsAdmin,]
+        #permission_classes=[Or(IsCurator, IsAdmin),]
         user = self.get_object(pk)
         serializer = ReportSerializer(user)
         return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
-        permission_classes=[IsCurator | IsAdmin,]
+        #permission_classes=[Or(IsCurator, IsAdmin),]
         user = self.get_object(pk)
         serializer = ReportSerializer(user, data=request.data)
         if serializer.is_valid():
@@ -304,7 +310,7 @@ class ReportDetailAPI(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, *args, **kwargs):
-        permission_classes=[IsCurator | IsAdmin,]
+        #permission_classes=[Or(IsCurator, IsAdmin),]
         user = self.get_object(pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
