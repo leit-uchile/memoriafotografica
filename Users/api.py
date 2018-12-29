@@ -6,9 +6,14 @@ from django.conf import settings
 from .serializers import (CreateUserSerializer,UserSerializer, LoginUserSerializer)
 from .models import User
 from .permissions import *
+
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import BasePermission
+from rest_condition import ConditionalPermission, C, And, Or, Not
+
+
 class RegistrationAPI(generics.GenericAPIView):
     serializer_class = CreateUserSerializer
-
     def post(self, request, *args, **kwargs):
         print(request.data)
         serializer = self.get_serializer(data=request.data)
@@ -42,7 +47,8 @@ class UserTokenAPI(generics.RetrieveAPIView):
 
 
 class UserListAPI(generics.GenericAPIView):
-
+    permission_classes = [Or(IsGetRequest,
+                                And(IsPostRequest, IsAdmin)),]
     serializer_class = UserSerializer
     def get(self, request, *args, **kwargs):
         user = User.objects.all()
@@ -51,7 +57,6 @@ class UserListAPI(generics.GenericAPIView):
 
     # Exclusivo del administrador:
     def post(self, request, *args, **kwargs):
-        permission_classes = [IsAdmin,]
         serializer = CreateUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -60,7 +65,7 @@ class UserListAPI(generics.GenericAPIView):
 
 
 class UserDetailAPI(generics.GenericAPIView):
-
+    permission_classes = [IsAuthenticated,]
     serializer_class = UserSerializer
     def get_object(self, pk):
         try:
@@ -69,7 +74,6 @@ class UserDetailAPI(generics.GenericAPIView):
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
-        permission_classes = (permissions.IsAuthenticated,)
         user = self.get_object(pk)
         serializer = UserSerializer(user)
         return Response(serializer.data)
@@ -81,7 +85,6 @@ class UserDetailAPI(generics.GenericAPIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     def delete(self, request, pk, *args, **kwargs):
         user = self.get_object(pk)
