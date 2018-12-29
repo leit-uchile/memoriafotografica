@@ -139,7 +139,7 @@ class PhotoDetails extends Component{
 
         var newComment;
         if(this.state.auth.isAuthenticated === true){
-            newComment = <div className="row">
+            newComment = <div className="row" style={{margin: "0 1em"}}>
                 <form onSubmit={this.sendComment} style={{width: "100%"}}>
                     <h3>Escribe aqui tu comentario</h3>
                     <textarea rows="4" required style={{width: "calc(100% - 2em)", margin: "1em"}}></textarea>
