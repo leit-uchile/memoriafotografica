@@ -8,9 +8,12 @@ import Login from './Login';
 import Register from './Register/Register';
 import NoMatch from "./NoMatch";
 import Upload from './Upload';
+<<<<<<< Updated upstream
 import PhotoDetail from "./PhotoView/PhotoDetail";
-import UserDashboard from "./UserDashboard/UserDashboard";
-import RegisterEdit from "./Register/RegisterEdit"
+=======
+import PhotoDetail from "./PhotoDetail";
+import UserDashboard from "./UserDashboard/UserDashboard"
+>>>>>>> Stashed changes
 
 class Layout extends Component{
     render(){
@@ -25,14 +28,13 @@ class Layout extends Component{
                     <Route path={"/upload"}component={Upload} />
                     <Route path={"/photo"}component={PhotoDetail}/>
                     <Route path={"/userdashboard"}component={UserDashboard}/>
-                    <Route path={"/registeredit"}component={RegisterEdit}/> 
                     <Route component={NoMatch}/>
                 </Switch>
-                </div> 
+                </div>
                 <Footer/>
             </div>
         );
-   }
+    }
 
 }
 export default Layout;
