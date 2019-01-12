@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {upload} from '../actions';
+import {upload} from '../../actions';
 import {connect} from 'react-redux';
 
-class Upload extends Component{
+class UploadPhoto extends Component{
     constructor(Props){
         super(Props);
         this.state = {
@@ -89,4 +89,4 @@ const mapActionsToProps = dispatch => {
     }
 }
 
-export default connect(mapStateToProps,mapActionsToProps)(Upload);
+export default connect(mapStateToProps,mapActionsToProps)(UploadPhoto);

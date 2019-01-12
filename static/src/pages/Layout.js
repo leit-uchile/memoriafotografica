@@ -7,7 +7,7 @@ import Home from './Home';
 import Login from './Login';
 import Register from './Register/Register';
 import NoMatch from "./NoMatch";
-import Upload from './Upload';
+import Upload from './Upload/UploadPhoto';
 import PhotoDetail from "./PhotoView/PhotoDetail";
 import UserDashboard from "./UserDashboard/UserDashboard";
 import RegisterEdit from "./Register/RegisterEdit"
