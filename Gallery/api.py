@@ -15,7 +15,7 @@ from django.http import Http404, QueryDict
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import BasePermission
 from rest_condition import ConditionalPermission, C, And, Or, Not
-
+from rest_framework.documentation import include_docs_urls
 
 
 
@@ -134,7 +134,8 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
 
 class CommentListAPI(generics.GenericAPIView):
     """
-    List all comments, or create a new comment.
+    get:
+    Get a list of ALL comments.
     """
     serializer_class = CommentSerializer
     def get(self, request, *args, **kwargs):
@@ -262,6 +263,10 @@ class CategoryDetailAPI(generics.GenericAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ReportListAPI(generics.GenericAPIView):
+    """
+    List all reports, or create a new report.
+    """
+
     serializer_class = ReportSerializer
     permission_classes = [Or(And(IsGetRequest,Or (IsCurator, IsAdmin)),
                           IsGetRequest),]
@@ -292,6 +297,10 @@ class ReportListAPI(generics.GenericAPIView):
 
 
 class ReportDetailAPI(generics.GenericAPIView):
+    """
+    Retrieve, update or delete a report instance.
+    """
+
     permission_classes=[Or(And(IsGetRequest, Or(IsCurator, IsAdmin)),
                             And(IsPutRequest, Or(IsCurator, IsAdmin)),
                             And(IsDeleteRequest, Or(IsCurator, IsAdmin))),]
@@ -323,7 +332,7 @@ class ReportDetailAPI(generics.GenericAPIView):
 
 class AlbumListAPI(generics.GenericAPIView):
     """
-    List all categories, or create a new category.
+    List all albums, or create a new album.
     """
 
     serializer_class = AlbumSerializer
@@ -343,7 +352,7 @@ class AlbumListAPI(generics.GenericAPIView):
 
 class AlbumDetailAPI(generics.GenericAPIView):
     """
-    Retrieve, update or delete a comment instance.
+    Retrieve, update or delete an album instance.
     """
     permission_classes = [Or(IsGetRequest,
                              And(IsOwner, Or(IsPutRequest, IsDeleteRequest))),]

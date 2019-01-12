@@ -6,13 +6,17 @@ from django.conf import settings
 from .serializers import (CreateUserSerializer,UserSerializer, LoginUserSerializer)
 from .models import User
 from .permissions import *
-
+from rest_framework.documentation import include_docs_urls
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import BasePermission
 from rest_condition import ConditionalPermission, C, And, Or, Not
 
 
 class RegistrationAPI(generics.GenericAPIView):
+    """
+    post:
+    Create a new registration session.
+    """
     serializer_class = CreateUserSerializer
     def post(self, request, *args, **kwargs):
         print(request.data)
@@ -47,6 +51,13 @@ class UserTokenAPI(generics.RetrieveAPIView):
 
 
 class UserListAPI(generics.GenericAPIView):
+    """
+    get:
+    Return a list of all the existing users.
+
+    post:
+    Create a new user instance.
+    """
     permission_classes = [Or(IsGetRequest,
                                 And(IsPostRequest, IsAdmin)),]
     serializer_class = UserSerializer
@@ -65,6 +76,16 @@ class UserListAPI(generics.GenericAPIView):
 
 
 class UserDetailAPI(generics.GenericAPIView):
+    """
+       get:
+       Get details of a *user*.
+
+       put:
+       Modify (partially) the attributes of an user.
+
+       delete:
+       Delete an user.
+       """
     permission_classes = [IsAuthenticated,]
     serializer_class = UserSerializer
     def get_object(self, pk):
