@@ -12,12 +12,12 @@ class Upload extends Component{
         super(Props)
         this.state = {
             currentPage: 0,
-            loginInfo: null
+            userInfo: null
         }
         this.volver = this.volver.bind(this);
+        this.siguiente = this.siguiente.bind(this);
         this.saveUserInfo = this.saveUserInfo.bind(this);
-        this.saveUserLogin = this.saveUserLogin.bind(this);
-        this.uploadToBack = this.uploadToBack.bind(this);
+        
 
     }
 
@@ -28,25 +28,20 @@ class Upload extends Component{
             })
         }
     }
-
-    saveUserLogin(info){
-        this.setState({
-            currentPage : this.state.currentPage + 1,
-            loginInfo: {...info}
-        })
+    siguiente(){
+        if(this.state.currentPage !=4){
+            this.setState({
+                currentPage : this.state.currentPage +1
+            })
+        }
     }
-
     saveUserInfo(info){
         this.setState({
             currentPage : this.state.currentPage + 1,
             userInfo: {...info}
         })
     }
-
-    uploadToBack(){
-        console.log("Called the API")
-        this.props.upload(this.state.loginInfo.name,this.state.loginInfo.password)
-    }
+    
 
     render(){
         if (this.props.isAuthenticated) {
@@ -54,38 +49,41 @@ class Upload extends Component{
         }
 
         var subupload;
-        console.log(this.state.currentPage)
         switch (this.state.currentPage){ 
             case 0: 
                 subupload = <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
                     <h1 style={{textAlign: "center", fontWeight: "bold"}}>¡Ayudanos aportando material!</h1>
                     <div>
                         <button className="btn btn-primary">Iniciar sesion</button>
-                        <button className="btn btn-secundary">Continuar sin registrar</button>
+                        <button className="btn btn-secundary" onClick={this.siguiente}>Continuar sin registrar</button>
                     </div>
                     <span style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>Tendras que ingresar tus datos cada vez que subas una foto</span>
-                </div> ;  
+                </div> ;
+                break;
             case 1:
-                subupload = <UploadUnregister/>
+                subupload = <UploadUnregister goBack={this.volver} saveInfo={this.saveUserInfo} cache={this.state.userInfo}/>
+                break;
             case 2:
-                subupload = <UploadPhoto/>
+                console.log(this.state.userInfo)
+                subupload = <UploadPhoto goBack={this.volver} savePhotos={this.savePhotos}/>
+                break;
             case 3:
-                subupload = <UploadDetails/>
+                subupload = <UploadDetails goBack={this.volver} saveInfo={this.savePhotoInfo}/>
+                break;
             case 4:
                 subupload = <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
                     <h1 style={{textAlign: "center", fontWeight: "bold"}}>¡Aporte enviado!</h1>
-                    <span style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>La foto tendra que ser aprobada para que la comunidad la vea. Puedes ver en que estado se encuentra en tu perfil. Muchas gracias!</span>
-        </div> ; 
-
+                    <span style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>La foto tendra que ser aprobada para que la comunidad la vea. Puedes ver el estado en que se encuentra accediento a tu perfil. Muchas gracias!</span>
+        </div> ;
+        break;
         }
-
             return(
                 <div>
                     {subupload}
                 </div>
             );
-         }
-       }
+    }
+}
 
 const mapStateToProps = state => {
     let errors = [];
