@@ -31,6 +31,6 @@ urlpatterns = [
     re_path(r'^api/', include(user_endpoints)),
     re_path(r'^api/', include(gallery_endpoints)),
     re_path(r'^api/auth/', include('knox.urls')),
-    re_path(r'^',  cache_page(settings.PAGE_CACHE_SECONDS)(base_.IndexView.as_view()), name='index'),
+    #re_path(r'^',  cache_page(settings.PAGE_CACHE_SECONDS)(base_.IndexView.as_view()), name='index'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     #re_path(r'^', TemplateView.as_view(template_name="index.html")),
