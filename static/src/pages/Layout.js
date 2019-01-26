@@ -7,7 +7,7 @@ import Home from './Home';
 import Login from './Login';
 import Register from './Register/Register';
 import NoMatch from "./NoMatch";
-import Upload from './Upload/Upload';
+import UploadPage from './Upload/Upload';
 import PhotoDetail from "./PhotoView/PhotoDetail";
 import UserDashboard from "./UserDashboard/UserDashboard";
 import RegisterEdit from "./Register/RegisterEdit"
@@ -22,7 +22,7 @@ class Layout extends Component{
                     <Route exact path={"/"} component={Home}/>
                     <Route path={"/login"} component={Login}/>
                     <Route path={"/register"} component={Register}/>
-                    <Route path={"/upload"}component={Upload} />
+                    <Route path={"/upload"}component={UploadPage} />
                     <Route path={"/photo"}component={PhotoDetail}/>
                     <Route path={"/userdashboard"}component={UserDashboard}/>
                     <Route path={"/registeredit"}component={RegisterEdit}/> 

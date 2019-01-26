@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {auth} from '../../actions';
 import {Redirect} from 'react-router-dom';
 
-class Upload extends Component{
+class UploadPage extends Component{
     constructor(Props){
         super(Props)
         this.state = {
@@ -17,6 +17,8 @@ class Upload extends Component{
         this.volver = this.volver.bind(this);
         this.siguiente = this.siguiente.bind(this);
         this.saveUserInfo = this.saveUserInfo.bind(this);
+        this.savePhotos = this.savePhotos.bind(this);
+        this.savePhotoInfo = this.savePhotoInfo.bind(this);
         
 
     }
@@ -41,7 +43,18 @@ class Upload extends Component{
             userInfo: {...info}
         })
     }
-    
+    savePhotos(photos){
+        this.setState({
+            currentPage : this.state.currentPage + 1,
+            photoList: {...photos}
+        })
+    }
+    savePhotoInfo(meta){
+        this.setState({
+            currentPage : this.state.currentPage + 1,
+            metaPhotos: {...meta}
+        })
+    }
 
     render(){
         if (this.props.isAuthenticated) {
@@ -54,7 +67,7 @@ class Upload extends Component{
                 subupload = <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
                     <h1 style={{textAlign: "center", fontWeight: "bold"}}>¡Ayudanos aportando material!</h1>
                     <div>
-                        <button className="btn btn-primary">Iniciar sesion</button>
+                        <button className="btn btn-primary" onClick="//login">Iniciar sesion</button>
                         <button className="btn btn-secundary" onClick={this.siguiente}>Continuar sin registrar</button>
                     </div>
                     <span style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>Tendras que ingresar tus datos cada vez que subas una foto</span>
@@ -99,5 +112,5 @@ const mapStateToProps = state => {
 }
 
 
-export default connect(mapStateToProps)(Upload);
+export default connect(mapStateToProps)(UploadPage);
    

@@ -4,7 +4,8 @@ import {connect} from 'react-redux';
 
 class UploadPhoto extends Component{
     constructor(Props){
-        super(Props);
+        super();
+        this.props = Props
         this.state = {
             errors: null,
             name: "",
@@ -61,7 +62,7 @@ class UploadPhoto extends Component{
                         </h3>
                             <textarea className='form-control' name="description" onChange={this.updatedescription} placeholder='Ingrese la descripcion de su imagen'> </textarea>
                         <h3 className='my-3'>Etiquetas</h3>
-                        <input className='btn btn-danger' type="submit" value="Subir" />
+                        <input className='btn btn-danger' type="submit" onClick={this.onSubmit} value="Subir" />
                         {/* <button onClick={this.anError.bind(this)}>Error</button> */}
 
 
