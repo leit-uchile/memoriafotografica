@@ -24,9 +24,8 @@ from Gallery import endpoints as gallery_endpoints
 
 #DOCUMENTACION API
 from rest_framework.documentation import include_docs_urls
-from rest_framework_swagger.views import get_swagger_view
 
-schema_view = get_swagger_view(title='API Memoria Fotográfica')
+#schema_view = get_swagger_view(title='API Memoria Fotográfica')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,5 +36,5 @@ urlpatterns = [
     re_path(r'^api/', include(gallery_endpoints)),
     re_path(r'^api/auth/', include('knox.urls')),
     #re_path(r'^', TemplateView.as_view(template_name="index.html")),
-    url(r'^docs/', schema_view)
+    url(r'^docs/', include_docs_urls(title="API Memfoto", public=False))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

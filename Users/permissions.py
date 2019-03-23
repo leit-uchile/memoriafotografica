@@ -12,7 +12,6 @@ class IsColaborator(permissions.BasePermission):
 
 
 class IsCurator(permissions.BasePermission):
-
     def has_permission(self, request, view):
         if request.user.user_type == 2:
             return True

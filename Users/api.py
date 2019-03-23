@@ -58,8 +58,8 @@ class UserListAPI(generics.GenericAPIView):
     post:
     Create a new user instance.
     """
-    permission_classes = [Or(IsGetRequest,
-                                And(IsPostRequest, IsAdmin)),]
+    #permission_classes = [Or(IsGetRequest,
+    #                            And(IsPostRequest, IsAdmin)),]
     serializer_class = UserSerializer
     def get(self, request, *args, **kwargs):
         user = User.objects.all()

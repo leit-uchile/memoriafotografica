@@ -27,42 +27,6 @@ def add_title_description(request, p_id):
         title = MetadataTitle.objects.create(title=t, description=t.lower(), photo=Photo.objects.get(pk=p_id))
         description = MetadataDescription.objects.create(description=d, photo=Photo.objects.get(pk=p_id))
 
-#
-# class PhotoUploadAPI(generics.GenericAPIView):
-#     permission_classes = [IsOwnerOrReadOnly, ]
-#     parser_classes = (MultiPartParser, FormParser)
-#     serializer_class = CreatePhotoSerializer
-#
-#     def post(self, request, *args, **kwargs):
-#         print(request.user.id)
-#         photo_serializer = self.get_serializer(data=request.data)
-#         if photo_serializer.is_valid():
-#             photo_serializer.save()
-#             # add_title_description(request, photo_serializer.data['id'])
-#             return Response(photo_serializer.data, status=status.HTTP_201_CREATED)
-#         else:
-#             return Response(photo_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-# class CommentUploadAPI(generics.GenericAPIView):
-#     permissions_classes = [IsOwnerOrReadOnly]
-#     parser_classes = (MultiPartParser, FormParser)
-#
-#     def post(self, request, *args, **kwargs):
-#         comment_serializer = CommentSerializer(data = request.data)
-#         if comment_serializer.is_valid():
-#             c = comment_serializer.save()
-#             try:
-#                 pid = request.POST.get('photo')
-#                 p = Photo.objects.get(id = pid)
-#                 print(p)
-#                 p.comments.add(c)
-#             except:
-#                 pass
-#             return Response(comment_serializer.data,  status = status.HTTP_201_CREATED)
-#         else:
-#             return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 
 class PhotoListAPI(generics.GenericAPIView):
@@ -103,8 +67,8 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
     delete:
     Delete a picture.
     """
-    permission_classes = [Or(IsGetRequest,
-                             And(IsOwner, Or(IsDeleteRequest, And(IsPutRequest, FilterContent)))),]
+    #permission_classes = [Or(IsGetRequest,
+    #                         And(IsOwner, Or(IsDeleteRequest, And(IsPutRequest, FilterContent)))),]
     serializer_class = PhotoSerializer
     def get_object(self, pk):
         try:
@@ -121,7 +85,10 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
         photo = self.get_object(pk)
         serializer = PhotoSerializer(photo, data = request.data, partial=True)
         if serializer.is_valid():
+            print("es valido so que pasa?")
             serializer.save()
+            print(request.data)
+            print(serializer.data)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
