@@ -12,7 +12,8 @@ class UploadPage extends Component{
         super(Props)
         this.state = {
             currentPage: 0,
-            userInfo: null
+            userInfo: null,
+            photoList: null
         }
         this.volver = this.volver.bind(this);
         this.siguiente = this.siguiente.bind(this);

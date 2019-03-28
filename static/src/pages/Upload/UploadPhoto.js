@@ -6,22 +6,25 @@ class UploadPhoto extends Component{
   constructor(Props) {
     super();
     this.props = Props
-    
+    this.state = {
+      fileList: Array(
+      )
+    }
   }
 
   onSubmit = e => {
-    this.props.savePhotos(this.fileList2)
+    this.props.savePhotos(e)
 }
   
   render() {
-    const fileList2 = []
     return (
       <Upload
         className="upload-demo"
         action="//jsonplaceholder.typicode.com/posts/"
+        fileList={this.state.fileList}
         onPreview={file => this.handlePreview(file)}
         onRemove={(file, fileList) => this.handleRemove(file, fileList)}
-        fileList={fileList2}
+        onChange={(file,fileList)=> this.handleUpload(file,fileList)}        
         listType="picture"
         tip={<div className="el-upload__tip">solo archivos jpg/png con peso menor a 500kb</div>}
       >
@@ -37,6 +40,10 @@ class UploadPhoto extends Component{
 
   handlePreview(file) {
     console.log(file);
+  }
+
+  handleUpload(file,fileList){
+    this.setState({fileList: fileList.concat(file)});
   }
 
 }
