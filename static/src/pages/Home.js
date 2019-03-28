@@ -18,7 +18,7 @@ const Home = ({photos, onLoad}) => (
 )
 
 const Photo = ({name,url,url2,tags}) => {
-            const detailsFunc = () => history.push('/register')
+            const detailsFunc = () => history.push('/photo')
             if(url === undefined){
                 return(
                 <div className='col-md-4 mt-3'>
