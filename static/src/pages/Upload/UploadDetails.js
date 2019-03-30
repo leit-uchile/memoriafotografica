@@ -52,8 +52,7 @@ class UploadPhoto extends Component{
                 </h1>
                 <div className='row'>
                     <div className='col-md-8'>
-                        <img className='img-fluid' style={{height: '500px', width: 'auto'}} src='http://www.lebenshilfe-sz.de/wp-content/uploads/2017/01/noimg.jpg'/>
-                        <input type="file" name="photo" onChange={this.updateimage} accept='.jpg, .png, .jpeg' required />
+                        
                     </div>
                     <div className='col-md-4'>
                         <h3 className='my-3'>
