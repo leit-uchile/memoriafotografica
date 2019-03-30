@@ -1,15 +1,6 @@
-import React, { Component } from 'react';
-import footer from '../css/footer.css';
+import React from 'react';
 
-class Footer extends Component{
-
-    constructor(){
-        super();
-    }
-
-    render(){
-
-        return(
+const Footer = () =>
             <footer className='footer mt-5'>
                 <div className='container'>
                     <img src={'/fcfm_escudo_color_png.png'} alt={'logo'}/>
@@ -18,9 +9,5 @@ class Footer extends Component{
                     <h2>Beauchef 850, Santiago | Central: +562 29784000</h2>
                 </div>
             </footer>
-        );
-    }
-
-}
 
 export default Footer;

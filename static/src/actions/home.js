@@ -1,7 +1,7 @@
 export const home = () => {return (dispatch,getState) => {
     let headers = {"Content-Type": "application/json"};
 
-    return fetch('http://localhost:8000/gallery/photo/',{method: 'GET'})
+    return fetch('http://localhost:8000/gallery/photo/',{method: 'GET', headers: headers})
     .then(function(response) {
       const r = response
       if(r.status === 200){
@@ -17,7 +17,6 @@ export const home = () => {return (dispatch,getState) => {
 
 export const detail = (image) => {return (dispatch,getState) =>
 {
-    let single = {};
     dispatch({type: "DETAIL", data: image})
 }}
 

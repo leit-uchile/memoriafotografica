@@ -125,15 +125,16 @@ class PhotoDetails extends Component{
 
         var Suggestions;
         if(this.state.suggestionsLoaded){
-            Suggestions = this.state.imageSuggestions.map( (im,k) => <div style={{margin: "0 1em 1em 1em"}}> <img key={k} src={im.url} style={{maxWidth: "90%"}}/> </div>)
+            Suggestions = this.state.imageSuggestions.map( (im,k) => <div style={{margin: "0 1em 1em 1em"}}> <
+                img alt="Foto relacionada" key={k} src={im.url} style={{maxWidth: "90%"}}/> </div>)
         }
 
         var userProfile;
-        if(this.state.userinfo != undefined){
+        if(this.state.userinfo !== undefined){
             userProfile = 
             <div style={{marginRight: "auto", marginLeft: "auto"}}>
                 <span style={{marginRight: "auto", marginLeft: "auto", display: "block", textAlign: 'center', padding: '1em'}}>Subido por {this.state.userinfo.name}</span>
-                <img src={this.state.userinfo.avatar} style={{borderRadius: "50%", width: "70px", height: "70px", marginRight: "auto", marginLeft: "auto", display: "block"}}/>
+                <img alt="Foto de usuario" src={this.state.userinfo.avatar} style={{borderRadius: "50%", width: "70px", height: "70px", marginRight: "auto", marginLeft: "auto", display: "block"}}/>
             </div>
         }
 
@@ -154,7 +155,7 @@ class PhotoDetails extends Component{
                 <div className="col-9" style={{backgroundColor: "rgb(240,240,240)",borderRadius: "1em"}}>
                     <div style={{padding: "2em"}}>
                         <h1 style={{textAlign: "center"}}>{this.state.image.name}</h1>
-                        <img src={this.state.image.url} style={{marginRight: "auto", marginLeft: "auto", display: "block", maxWidth: "100%"}}/>
+                        <img alt="" src={this.state.image.url} style={{marginRight: "auto", marginLeft: "auto", display: "block", maxWidth: "100%"}}/>
                         <div>
                             <h2>Descripcion</h2>
                             <p>{this.state.image.desc}</p>

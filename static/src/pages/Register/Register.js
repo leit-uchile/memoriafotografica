@@ -21,7 +21,7 @@ class Register extends Component{
     }
 
     volver(){
-        if(this.state.currentPage !=0){
+        if(this.state.currentPage !== 0){
             this.setState({
                 currentPage : this.state.currentPage -1
             })
@@ -66,6 +66,10 @@ class Register extends Component{
                     <span style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>Por favor confirma tu correo electronico</span>
                 </div> ;
                 this.registerToBack();
+                break;
+            default:
+                subRegister = <RegisterLoginInfo saveInfo={this.saveUserLogin} cache={this.state.loginInfo}/>
+                break;
             }
 
             return(

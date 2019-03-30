@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 //import Gallery from '../components/Gallery';
 import {connect} from 'react-redux'
 import {home} from '../actions';

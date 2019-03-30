@@ -30,7 +30,7 @@ class RegisterLoginInfo extends Component{
     updateDate = e => {this.setState({date: e.target.value})};
 
     checkPassword(){
-        if(this.state.password == ""){
+        if(this.state.password === ""){
             this.setState({error: "Por favor ingrese su contraseña"})
             return false;
         }else if(this.state.password !== this.state.passwordCheck){
@@ -54,7 +54,7 @@ class RegisterLoginInfo extends Component{
 
     render(){
         var errorMessage;
-        if(this.state.error != undefined && this.state.error != null){
+        if(this.state.error !== undefined && this.state.error !== null){
             errorMessage = <div className="alert alert-warning">{this.state.error}</div>
         }else{
             errorMessage = null;

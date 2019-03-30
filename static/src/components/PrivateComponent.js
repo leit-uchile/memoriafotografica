@@ -5,7 +5,7 @@ import {connect}  from 'react-redux';
 
 function PrivateComponent({  component: Component, ...rest}){
 
-  if(rest.isAuthenticated == null || rest.isAuthenticated == false){
+  if(rest.isAuthenticated === null || rest.isAuthenticated === false){
     return <Redirect to="/login" />
   }
 
