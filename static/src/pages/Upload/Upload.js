@@ -13,7 +13,8 @@ class UploadPage extends Component{
         this.state = {
             currentPage: 0,
             userInfo: null,
-            photoList: null
+            photosList: null,
+            metaPhotos: null,
         }
         this.volver = this.volver.bind(this);
         this.siguiente = this.siguiente.bind(this);
@@ -47,7 +48,7 @@ class UploadPage extends Component{
     savePhotos(photos){
         this.setState({
             currentPage : this.state.currentPage + 1,
-            photoList: {...photos}
+            photosList: {...photos}
         })
     }
     savePhotoInfo(meta){
@@ -78,7 +79,6 @@ class UploadPage extends Component{
                 subupload = <UploadUnregister goBack={this.volver} saveInfo={this.saveUserInfo} cache={this.state.userInfo}/>
                 break;
             case 2:
-                console.log(this.state.userInfo)
                 subupload = <UploadPhoto goBack={this.volver} savePhotos={this.savePhotos}/>
                 break;
             case 3:

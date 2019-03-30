@@ -2,91 +2,80 @@ import React, {Component} from 'react';
 import {upload} from '../../actions';
 import {connect} from 'react-redux';
 
-class UploadPhoto extends Component{
+import { Row, Col, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+
+class UploadDetails extends Component{
     constructor(Props){
         super();
         this.props = Props
         this.state = {
-            errors: null,
-            name: "",
+            photo: "",
+            title: "",
+            date: "",
             description: "",
-            image: ""
+            tags: "",
         };
     }
 
-   updatename = a => {this.setState({name : a.target.value})}
-   updatedescription = a =>{this.setState({description : a.target.value})}
-   updateimage = a =>
-    {
-       console.log(a.target.files[0])
-       var im = a.target.files[0];
-       this.setState({image: im})
+    updateTitle = e => {this.setState({title : e.target.value})}
+    updateDate = e => {this.setState({date : e.target.value})}
+    updateDescription = e =>{this.setState({description : e.target.value})}
+    updateTags = e =>{this.setState({tags : e.target.value})}
+
+    onSubmit = e => {
+        e.preventDefault()
+        this.props.saveInfo(this.state)
     }
 
-    onSubmit = a => {
-        a.preventDefault();
-        this.props.upload(this.state.name,this.state.description,this.state.image);
-    }
-    
-    anError(){
-        console.log("Llame error");
-        this.setState({errors: "Un error"});
-    }
-
-    render() {
-        var message;
-        if (this.state.errors != null){
-            message = <div>{this.state.errors}</div>
-        } else {
-            message = null;
-        }
-
+    render(){
         return(
-        <div className='container'>
-            {message}
-            <form enctype="multipart/form-data" method="POST" onSubmit={this.onSubmit}>
+            <div>
+                <Row>
+                    <h1>AÑADIR INFORMACION</h1>
+                </Row>
+                <Row>
+                    <Col sm='6'>
+                    <Form>
+                        <FormGroup>
+                            <Label>Titulo de la foto</Label>
+                            <Input type="text" name="title" id="title" onChange={this.updateTitle} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Fecha en que se tomo la foto</Label>
+                            <Input type="date" name="date" id="date" placeholder="date placeholder" onChange={this.updateDate}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Historia de la foto</Label>
+                            <Input type="textarea" name="description" id="description" onChange={this.updateDescription}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Etiquetas</Label>
+                            <Input type="select" name="tags" id="tags" onChange={this.updateTags} multiple>
+                                <option>Etiqueta 1</option>
+                                <option>Etiqueta 2</option>
+                                <option>Etiqueta 3</option>
+                                <option>Etiqueta 4</option>
+                                <option>Etiqueta 5</option>
+                            </Input>
+                        </FormGroup>
+                        <FormGroup check>
+                        <Label check>
+                            <Input type="checkbox" />
+                            {' '}
+                            Acepto los terminos y condiciones
+                        </Label>
+                        </FormGroup>
+                        <Button onClick={this.onSubmit}>Continuar</Button>
+                    </Form>
 
-                <h1 className='my-4'>
-                    <i className="far fa-edit"></i> Título
-                    <input className='form-control-sm' type="text" onChange={this.updatename} name="name"required placeholder="Ingrese el título de su imagen"/>
-                </h1>
-                <div className='row'>
-                    <div className='col-md-8'>
-                        
-                    </div>
-                    <div className='col-md-4'>
-                        <h3 className='my-3'>
-                            <span className='icon'><i className="fas fa-book-open"></i></span>
-                            Historia
-                        </h3>
-                            <textarea className='form-control' name="description" onChange={this.updatedescription} placeholder='Ingrese la descripcion de su imagen'> </textarea>
-                        <h3 className='my-3'>Etiquetas</h3>
-                        <input className='btn btn-danger' type="submit" onClick={this.onSubmit} value="Subir" />
-                        {/* <button onClick={this.anError.bind(this)}>Error</button> */}
-
-
-
-                    </div>
-                </div>
-            </form>  
-
-        </div>
-         )
+                    </Col>
+                    <Col sm='6'>
+                        <h3>FOTO</h3>
+                    </Col>
+                </Row>
+            </div>
+        )
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        errors : null
-    };
-}
-
-const mapActionsToProps = dispatch => {
-    return {
-        upload : (name,desc,im) => {
-            return dispatch(upload.uploadImage(name,desc,im));
-        }
-    }
-}
-
-export default connect(mapStateToProps,mapActionsToProps)(UploadPhoto);
+export default UploadDetails;

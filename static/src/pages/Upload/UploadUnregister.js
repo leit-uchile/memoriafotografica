@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-class UploadUnregiter extends Component{
+class UploadUnregister extends Component{
     constructor(Props){
         super()
         this.props = Props        
@@ -113,5 +113,5 @@ class UploadUnregiter extends Component{
     }
 }
 
-export default UploadUnregiter
+export default UploadUnregister
   
