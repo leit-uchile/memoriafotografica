@@ -28,6 +28,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
+AUTH_USER_MODEL = 'Users.User'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,10 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework_swagger',
     'main.apps.MainConfig',
     'rest_framework',
     'knox',
-
+    'multiselectfield'
 ]
 
 MIDDLEWARE = [
@@ -145,7 +149,3 @@ REST_FRAMEWORK = {
     # ],
     'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
 }
-
-PAGE_CACHE_SECONDS = 1
-
-MIDDLEWARE.append('MemoriaFotografica.middleware.dev_cors_middleware')
