@@ -38,7 +38,7 @@ class PhotoListAPI(generics.GenericAPIView):
     post:
     Create a new picture.
     """
-    
+
     post_permission = And(IsPostRequest, IsAuthenticated)
 
     permission_classes = [IsAuthenticated,]
@@ -46,7 +46,7 @@ class PhotoListAPI(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
 
         photo = Photo.objects.all()
-        
+
         if request.user.user_type == 1:
             serializer_class = PhotoSerializer
             serializer = PhotoSerializer(photo, many = True)
@@ -60,6 +60,9 @@ class PhotoListAPI(generics.GenericAPIView):
         serializer = CreatePhotoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            p = Photo.objects.get(pk=serializer.data['id'])
+            request.user.photos.add(p)
+            request.user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -77,7 +80,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
     #permission_classes = [Or(IsGetRequest,
     #                         And(IsOwner, Or(IsDeleteRequest, And(IsPutRequest, FilterContent)))),]
     permission_classes = [IsAuthenticated,]
-  
+
     def get_object(self, pk):
         try:
             return Photo.objects.get(pk=pk)
@@ -96,21 +99,21 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
 
     def put(self, request, pk, *args, **kwargs):
         photo = self.get_object(pk)
-        if request.user.user_type == 1:
+        if request.user.user_type == 1 and photo in request.user.photos:
             serializer_class = PhotoSerializer
             serializer = PhotoSerializer(photo, data = request.data, partial=True)
         else:
             serializer_class = PhotoAdminSerializer
             serializer = PhotoAdminSerializer(photo, data = request.data, partial=True)
-        
+
         if serializer.is_valid():
-            serializer.save() 
+            serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, *args, **kwargs):
-        if request.user.user_type == 3:
-            photo = self.get_object(pk)
+        photo = self.get_object(pk)
+        if request.user.user_type == 3 or photo in request.user.photos:
             photo.delete()
             return Response(status = status.HTTP_204_NO_CONTENT)
         else:
@@ -129,7 +132,7 @@ class CommentListAPI(generics.GenericAPIView):
         if request.user.user_type == 1:
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comments, many = True)
-        else: 
+        else:
             serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comments, many = True)
         return Response(serializer.data)
@@ -142,7 +145,7 @@ class CommentDetailAPI(generics.GenericAPIView):
     """
     Retrieve, update or delete a comment instance.
     """
-    
+
     #permission_classes = [Or(And(IsOwner, Or(IsPutRequest, IsDeleteRequest)),
     #                         IsGetRequest),]
     permission_classes = [IsAuthenticated,]
@@ -157,7 +160,7 @@ class CommentDetailAPI(generics.GenericAPIView):
         if request.user.user_type == 1:
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comment)
-        else: 
+        else:
             serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comment)
         return Response(serializer.data)
@@ -168,7 +171,7 @@ class CommentDetailAPI(generics.GenericAPIView):
         if request.user.user_type == 1:
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comment, data = request.data, partial = True)
-        else: 
+        else:
             serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comment, data=request.data, partial = True)
         if serializer.is_valid():
@@ -201,7 +204,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
         if request.user.user_type == 1:
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comments, many = True)
-        else: 
+        else:
             serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comments, many = True)
         return Response(serializer.data)
@@ -215,6 +218,8 @@ class PhotoCommentListAPI(generics.GenericAPIView):
             s = serializer.save()
             photo.comments.add(s)
             photo.save()
+            request.user.comments.add(s)
+            request.user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -233,7 +238,6 @@ class CategoryListAPI(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         usuario = request.user.user_type
-        print(usuario)
         serializer = CategorySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -356,7 +360,9 @@ class AlbumListAPI(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = AlbumSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            s = serializer.save()
+            request.user.albums.add(s)
+            request.user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
