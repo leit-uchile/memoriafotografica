@@ -168,19 +168,17 @@ class CommentDetailAPI(generics.GenericAPIView):
     def put(self, request, pk, *args, **kwargs):
         comment = self.get_object(pk)
         #serializer = CommentSerializer(comment, request.data)
-        if request.user.user_type == 1:
+        if request.user.user_type == 1 and comment in request.user.comments:
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comment, data = request.data, partial = True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status= status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            serializer_class = CommentAdminSerializer
-            serializer = CommentAdminSerializer(comment, data=request.data, partial = True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status= status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+            return Response(status = status.HTTP_401_UNAUTHORIZED)
     def delete(self, request, pk, *args, **kwargs):
-        if request.user.user_type == 3:
+        if request.user.user_type == 3 or comment in request.user.comments:
             c = self.get_object(pk)
             c.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -412,8 +410,8 @@ class AlbumDetailAPI(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, *args, **kwargs):
-        if request.user.user_type == 3:
-            album = self.get_object(pk)
+        album = self.get_object(pk)
+        if request.user.user_type == 3 or album in request.user.albums:
             album.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
