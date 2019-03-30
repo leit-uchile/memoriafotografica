@@ -36,15 +36,24 @@ class Register extends Component{
     }
 
     saveUserInfo(info){
+
+        this.setState({
+            userInfo: {...info}
+        })
+
+        this.registerToBack();
+
+
         this.setState({
             currentPage : this.state.currentPage + 1,
-            userInfo: {...info}
         })
     }
 
     registerToBack(){
         console.log("Called the API")
-        this.props.register(this.state.loginInfo.name,this.state.loginInfo.password)
+        this.props.register(
+            this.state.loginInfo.email,
+            this.state.loginInfo.password)
     }
 
     render(){
@@ -65,7 +74,6 @@ class Register extends Component{
                     <h1 style={{textAlign: "center", fontWeight: "bold"}}>¡Registro con éxito!</h1>
                     <span style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>Por favor confirma tu correo electronico</span>
                 </div> ;
-                this.registerToBack();
                 break;
             default:
                 subRegister = <RegisterLoginInfo saveInfo={this.saveUserLogin} cache={this.state.loginInfo}/>

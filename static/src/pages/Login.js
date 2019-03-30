@@ -9,18 +9,18 @@ class Login extends Component{
     constructor(){
         super();
         this.state = {
-            username : "",
+            email : "",
             password : "",
         }
     }
 
-    updateUserName = e => {this.setState({username : e.target.value})}
+    updateEmail = e => {this.setState({email : e.target.value})}
 
     updatePassword = e => {this.setState({password : e.target.value})}
 
     onSubmit = e => {
         e.preventDefault();
-        this.props.login(this.state.username, this.state.password);
+        this.props.login(this.state.email, this.state.password);
     }
 
     render(){
@@ -46,7 +46,7 @@ class Login extends Component{
                                                                 <i className="fas fa-user"></i>
                                                             </span>
                                                         </div>
-                                                            <input type="text" className='form-control' onChange={this.updateUserName} placeholder='Nombre de Usuario'/>
+                                                            <input type="text" className='form-control' onChange={this.updateEmail} placeholder='Correo Electronico'/>
                                                     </div>
                                                 </div>
                                                 <div className='form-group'>
@@ -91,8 +91,8 @@ const mapStateToProps = state => {
   
 const mapActionsToProps = dispatch => {
     return {
-        login: (username, password) => {
-          return dispatch(auth.login(username, password));
+        login: (email, password) => {
+          return dispatch(auth.login(email, password));
         }
     };
 }
