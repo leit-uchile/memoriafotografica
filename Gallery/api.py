@@ -375,7 +375,7 @@ class AlbumListAPI(generics.GenericAPIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        serializer = AlbumSerializer(data=request.data)
+        serializer = AlbumSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             s = serializer.save()
             request.user.albums.add(s)

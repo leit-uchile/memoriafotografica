@@ -11,7 +11,7 @@ from Gallery.serializers import AlbumSerializer, PhotoSerializer
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'password')
+        fields = ('id', 'email', 'password', 'first_name', 'last_name', 'birth_date')
         extra_kwargs = {'password': {'write_only': True}}
     def create(self, validated_data):
         user = User.objects.create_user(validated_data['email'],
@@ -27,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = '__all__'
+        exclude=('password',)
 
 
 

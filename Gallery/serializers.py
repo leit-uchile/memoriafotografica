@@ -5,6 +5,7 @@ from datetime import datetime
 #from MetaData.serializers import MetadataSerializer
 from rest_framework import fields, serializers
 from rest_framework.exceptions import NotFound
+from rest_framework.fields import CurrentUserDefault
 # Create serializers here
 
 class ReportSerializer(serializers.ModelSerializer):
@@ -115,7 +116,9 @@ class AlbumSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         a = Album(name=validated_data['name'])
         a.save()
-        a.pictures.add(*validated_data['pictures'])
+        my_user = self.context['request'].user
+        valid_pics = list(filter(lambda x: x in my_user.photos.all() ,validated_data['pictures']))
+        a.pictures.add(*valid_pics)
         a.save()
         return a
 
