@@ -99,7 +99,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
 
     def put(self, request, pk, *args, **kwargs):
         photo = self.get_object(pk)
-        if request.user.user_type == 1 and photo in request.user.photos:
+        if request.user.user_type == 1 and photo in request.user.photos.all():
             serializer_class = PhotoSerializer
             serializer = PhotoSerializer(photo, data = request.data, partial=True)
         else:
@@ -113,7 +113,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
 
     def delete(self, request, pk, *args, **kwargs):
         photo = self.get_object(pk)
-        if request.user.user_type == 3 or photo in request.user.photos:
+        if request.user.user_type == 3 or photo in request.user.photos.all():
             photo.delete()
             return Response(status = status.HTTP_204_NO_CONTENT)
         else:
@@ -168,7 +168,7 @@ class CommentDetailAPI(generics.GenericAPIView):
     def put(self, request, pk, *args, **kwargs):
         comment = self.get_object(pk)
         #serializer = CommentSerializer(comment, request.data)
-        if request.user.user_type == 1 and comment in request.user.comments:
+        if request.user.user_type == 1 and comment in request.user.comments.all():
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comment, data = request.data, partial = True)
             if serializer.is_valid():
@@ -178,7 +178,7 @@ class CommentDetailAPI(generics.GenericAPIView):
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
     def delete(self, request, pk, *args, **kwargs):
-        if request.user.user_type == 3 or comment in request.user.comments:
+        if request.user.user_type == 3 or comment in request.user.comments.all():
             c = self.get_object(pk)
             c.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -411,7 +411,7 @@ class AlbumDetailAPI(generics.GenericAPIView):
 
     def delete(self, request, pk, *args, **kwargs):
         album = self.get_object(pk)
-        if request.user.user_type == 3 or album in request.user.albums:
+        if request.user.user_type == 3 or album in request.user.albums.all():
             album.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:

@@ -11,11 +11,15 @@ from Gallery.serializers import AlbumSerializer, PhotoSerializer
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'password', 'first_name', 'last_name', 'birth_date')
+        fields = ('id', 'email', 'password', 'first_name', 'last_name', 'birth_date', 'rol_type')
         extra_kwargs = {'password': {'write_only': True}}
     def create(self, validated_data):
+        print("validated data")
+        extra_data = validated_data.copy()
+        extra_data.pop("email")
+        extra_data.pop("password")
         user = User.objects.create_user(validated_data['email'],
-                                        validated_data['password'])
+                                        validated_data['password'], **extra_data)
         return user
 
 class UserSerializer(serializers.ModelSerializer):
