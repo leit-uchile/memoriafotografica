@@ -227,7 +227,7 @@ class CategoryListAPI(generics.GenericAPIView):
     serializer_class = CategorySerializer
     #permission_classes = [Or(And(IsPostRequest,Or(IsCurator, IsAdmin)),
     #                        IsGetRequest), ]
-    permissions_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated,]
     def get(self, request, *args, **kwargs):
         category = Category.objects.all()
         serializer = CategorySerializer(category, many=True)
