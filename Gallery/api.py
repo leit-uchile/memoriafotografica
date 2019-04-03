@@ -194,9 +194,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
         try:
             return Photo.objects.get(pk=pk)
         except Photo.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, *args, **kwargs):
+            raise Http404args):
         p = self.get_object(pk)
         comments = p.comments.all()
         if request.user.user_type == 1:
@@ -404,11 +402,14 @@ class AlbumDetailAPI(generics.GenericAPIView):
     def put(self, request, pk, *args, **kwargs):
         album = self.get_object(pk)
         serializer = AlbumSerializer(album, data=request.data, partial = True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        if album in request.user.albums:
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            
     def delete(self, request, pk, *args, **kwargs):
         album = self.get_object(pk)
         if request.user.user_type == 3 or album in request.user.albums:
