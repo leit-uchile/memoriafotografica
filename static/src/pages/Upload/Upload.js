@@ -16,7 +16,7 @@ class UploadPage extends Component{
             photosList: null,
             metaPhotos: null,
         }
-        this.volver = this.volver.bind(this);
+        this.back = this.back.bind(this);
         this.siguiente = this.siguiente.bind(this);
         this.saveUserInfo = this.saveUserInfo.bind(this);
         this.savePhotos = this.savePhotos.bind(this);
@@ -25,7 +25,7 @@ class UploadPage extends Component{
 
     }
 
-    volver(){
+    back(){
         if(this.state.currentPage !=0){
             this.setState({
                 currentPage : this.state.currentPage -1
@@ -76,13 +76,13 @@ class UploadPage extends Component{
                 </div> ;
                 break;
             case 1:
-                subupload = <UploadUnregister goBack={this.volver} saveInfo={this.saveUserInfo} cache={this.state.userInfo}/>
+                subupload = <UploadUnregister goBack={this.back} saveInfo={this.saveUserInfo} cache={this.state.userInfo}/>
                 break;
             case 2:
-                subupload = <UploadPhoto goBack={this.volver} savePhotos={this.savePhotos}/>
+                subupload = <UploadPhoto goBack={this.back} savePhotos={this.savePhotos}/>
                 break;
             case 3:
-                subupload = <UploadDetails goBack={this.volver} saveInfo={this.savePhotoInfo}/>
+                subupload = <UploadDetails goBack={this.back} saveInfo={this.savePhotoInfo}/>
                 break;
             case 4:
                 subupload = <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>

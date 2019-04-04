@@ -65,6 +65,7 @@ class UploadDetails extends Component{
                             Acepto los terminos y condiciones
                         </Label>
                         </FormGroup>
+                        <Button onClick={this.props.goBack}>Atras</Button>
                         <Button onClick={this.onSubmit}>Continuar</Button>
                     </Form>
 
