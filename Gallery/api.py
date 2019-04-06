@@ -47,12 +47,12 @@ class PhotoListAPI(generics.GenericAPIView):
 
         photo = Photo.objects.all()
 
-        if request.user.user_type == 1:
-            serializer_class = PhotoSerializer
-            serializer = PhotoSerializer(photo, many = True)
-        else:
+        if request.user.user_type == 3:
             serializer_class = PhotoAdminSerializer
             serializer = PhotoAdminSerializer(photo, many = True)
+        else:
+            serializer_class = PhotoSerializer
+            serializer = PhotoSerializer(photo, many = True)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
@@ -89,22 +89,26 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
 
     def get(self, request, pk, *args, **kwargs):
         photo = self.get_object(pk)
-        if request.user.user_type == 1:
-            serializer_class = PhotoSerializer
-            serializer = PhotoSerializer(photo)
-        else:
+        if request.user.user_type == 3:
             serializer_class = PhotoAdminSerializer
             serializer = PhotoAdminSerializer(photo)
+        else:
+            serializer_class = PhotoSerializer
+            serializer = PhotoSerializer(photo)
         return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
         photo = self.get_object(pk)
+        print("is_collab: "+str(request.user.user_type))
+        print("have pic?: "+str(photo in request.user.photos.all()))
         if request.user.user_type == 1 and photo in request.user.photos.all():
             serializer_class = PhotoSerializer
             serializer = PhotoSerializer(photo, data = request.data, partial=True)
-        else:
+        elif request.user.user_type == 3:
             serializer_class = PhotoAdminSerializer
             serializer = PhotoAdminSerializer(photo, data = request.data, partial=True)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         if serializer.is_valid():
             serializer.save()
@@ -312,8 +316,9 @@ class ReportListAPI(generics.GenericAPIView):
                     m = Photo.objects.get(pk=id)
                 elif (t == '3'):
                     m = Comment.objects.get(pk=id)
-            except:
-                raise NotFound(detail="ID de "+t_class[t]+" inválido o no existente.")
+            except Exception as e:
+                print(e)
+                raise NotFound(detail="ID de "+t_class[t]+" inválido o no existente. Campo 'id' es requerido. ")
             r = serializer.save()
             m.report.add(r)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -403,7 +408,7 @@ class AlbumDetailAPI(generics.GenericAPIView):
     def put(self, request, pk, *args, **kwargs):
         album = self.get_object(pk)
         serializer = AlbumSerializer(album, data=request.data, partial = True)
-        if album in request.user.albums:
+        if album in request.user.albums.all():
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
