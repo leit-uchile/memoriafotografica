@@ -11,7 +11,6 @@ from Gallery.models import Album, Photo, Comment, Reporte
 from datetime import datetime
 
 
-
 class User(AbstractBaseUser, PermissionsMixin):
 
     USER_TYPE_CHOICES = (
@@ -31,6 +30,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
     first_name = models.CharField(_('first name'), max_length=30)
     last_name = models.CharField(_('last name'), max_length=30)
+    birth_date = models.DateField(_('birth date'))
     date_joined = models.DateTimeField(_('date joined'),auto_now_add=True)
     is_active = models.BooleanField(_('active'), default=True)      #Habilitado
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
@@ -47,6 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default = 1)
     rol_type = models.PositiveSmallIntegerField(choices=ROL_TYPE_CHOICES, default=6)
     is_staff = models.BooleanField(_('staff status'), default=False)
+
     objects = UserManager()
 
 

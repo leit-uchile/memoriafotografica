@@ -5,6 +5,7 @@ from datetime import datetime
 #from MetaData.serializers import MetadataSerializer
 from rest_framework import fields, serializers
 from rest_framework.exceptions import NotFound
+from rest_framework.fields import CurrentUserDefault
 # Create serializers here
 
 class ReportSerializer(serializers.ModelSerializer):
@@ -17,7 +18,7 @@ class ReportSerializer(serializers.ModelSerializer):
         return reporte
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class CommentAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('id', 'content', 'censure', 'report')
@@ -31,11 +32,24 @@ class CommentSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id', 'content')
+        read_only_fields = ('id',)
+    def create(self, validated_data):
+        return Comment.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.content = validated_data.get('content', instance.content)
+        instance.censure = validated_data.get('censure', instance.censure)
+        instance.save()
+        return instance
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('title', )
+        fields = "__all__"
 
     def create(self, validated_data):
         return Category.objects.create(**validated_data)
@@ -48,7 +62,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class CreateCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('content',)
+        fields = ('id','content',)
 
         def create(self, validated_data):
             comment = Comment.objects.create(**validated_data)
@@ -57,34 +71,39 @@ class CreateCommentSerializer(serializers.ModelSerializer):
 class CreatePhotoSerializer(serializers.ModelSerializer):
         class Meta:
             model = Photo
-            fields = ('id', 'image', 'uploadDate', 'title', 'approved', 'censure', 'permission')
+            fields = ('id', 'image', 'uploadDate', 'title', 'permission')
 
         def create(self, validated_data):
             photo = Photo.objects.create(**validated_data)
             return photo
 
 class PhotoSerializer(serializers.ModelSerializer):
-    # id = serializers.IntegerField(read_only=True)
-    # image = serializers.ImageField()
-    # title = serializers.CharField(max_length = 30)
-    # uploadDate =serializers.DateTimeField('date published', default=datetime.now)
-    # approved = serializers.BooleanField(default=False)
-    # censure = serializers.BooleanField(default=False)
-    # permission = fields.MultipleChoiceField(choices=PERMISSION_CHOICES)
-    # comments = CommentSerializer(many = True)
-
+    #Para usuario colaborador
     class Meta:
-        fields = '__all__'
+        fields = ('id','image', 'title', 'uploadDate', 'category', 'permission', 'comments')
         model = Photo
 
     def update(self, instance, validated_data):
+        #instance.tags = validated_data.get('tags', instance.tags)
+        instance.permission = validated_data.get('permission', instance.permission)
+        instance.title = validated_data.get('title', instance.title)
+        instance.save()
+        return instance
 
+class PhotoAdminSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = "__all__"
+        model = Photo
+    def update(self, instance, validated_data):
         #instance.tags = validated_data.get('tags', instance.tags)
         instance.approved = validated_data.get('approved', instance.approved)
         instance.censure = validated_data.get('censure', instance.censure)
         instance.permission = validated_data.get('permission', instance.permission)
-        if validated_data.get('category'):
-            instance.category.add(*validated_data.get('category'))
+        try:
+            instance.category.set(validated_data['category'])
+        except KeyError:
+            pass
         instance.title = validated_data.get('title', instance.title)
         instance.save()
         return instance
@@ -97,12 +116,20 @@ class AlbumSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         a = Album(name=validated_data['name'])
         a.save()
-        a.pictures.add(*validated_data['pictures'])
+        my_user = self.context['request'].user
+        valid_pics = list(filter(lambda x: x in my_user.photos.all() ,validated_data['pictures']))
+        a.pictures.add(*valid_pics)
         a.save()
         return a
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
-        instance.pictures.add(*validated_data.get('pictures'))
+        try:
+            validated_data['pictures']
+            my_user = self.context['request'].user
+            valid_pics = list(filter(lambda x: x in my_user.photos.all() ,validated_data['pictures']))
+            instance.pictures.set(valid_pics)
+        except KeyError:
+            pass
         instance.save()
         return instance
