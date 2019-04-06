@@ -1,8 +1,6 @@
 import React from 'react';
-//import Gallery from '../components/Gallery';
 import {connect} from 'react-redux'
 import {home} from '../actions';
-//import Photo from '../components/Photo';
 
 import history from '../history'
 

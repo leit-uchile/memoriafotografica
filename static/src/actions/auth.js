@@ -66,7 +66,7 @@ export const loadUser = () => {
   }
 }
 
-export const register = (email, password) => {
+export const register = (email, password, name, lastname, date, rol) => {
   return (dispatch, getState) => {
     let headers = {"Content-Type": "application/json"};
     let body = JSON.stringify({email, password});
@@ -79,6 +79,7 @@ export const register = (email, password) => {
           })
         } else {
           console.log("Server Error!");
+          dispatch({type: "REGISTRATION_FAILED", data: res.data})
           throw res;
         }
       })
@@ -94,5 +95,11 @@ export const register = (email, password) => {
           throw res.data;
         }
       })
+  }
+}
+
+export const cleanErrors  = () => {
+  return (dispatch, getState) => {
+    dispatch({type: "CLEAR_AUTH_ERRORS", data: null})
   }
 }

@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import {Form, FormGroup, Label, Input, Button, Col, Row, FormFeedbackn, } from 'reactstrap';
+
 
 class RegisterLoginInfo extends Component{
     constructor(Props){
@@ -16,6 +18,9 @@ class RegisterLoginInfo extends Component{
                 lastname: "",
                 passwordCheck: "",
                 date: "",
+                avatar: "",
+                rol: "",
+                difusion: ""
             }
         }
         this.checkPassword = this.checkPassword.bind(this);
@@ -28,6 +33,8 @@ class RegisterLoginInfo extends Component{
     updatePassword = e => {this.setState({password: e.target.value})};
     updatePasswordCheck = e => {this.setState({passwordCheck: e.target.value})};
     updateDate = e => {this.setState({date: e.target.value})};
+    updateRol = e => this.setState({rol: e.target.value});
+    updateDif = e => this.setState({difusion: e.target.value});
 
     checkPassword(){
         if(this.state.password === ""){
@@ -61,51 +68,66 @@ class RegisterLoginInfo extends Component{
         }
 
         return (
-            <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
-                <div class="container"><h1>Register</h1></div>
-                <form onSubmit={this.onSubmit}>
-                {errorMessage}
-                <div>
-                    <div className="form-group row">
-                        <label className="col-sm-2 col-form-label">Nombre: </label>
-                        <div className="col-sm-10">
-                            <input className="form-control" type="text" placeholder="Jose" onChange={this.updateName} required value={this.state.name}></input>
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-2 col-form-label">Apellido: </label>
-                        <div className="col-sm-10">
-                            <input className="form-control" type="text" placeholder="Aguirre" onChange={this.updateLastName}required value={this.state.lastname}></input>
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-2 col-form-label">Fecha de nacimiento:</label>
-                        <div className="col-sm-10">
-                            <input className="form-control" type="date" onChange={this.updateDate} id="date" required value={this.state.date}></input>
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-2 col-form-label">Correo electronico:</label>
-                        <div className="col-sm-10">
-                            <input className="form-control" type="email" placeholder="jose.medina@memoria-uchile.cl" onChange={this.updateEmail}required value={this.state.email}></input>
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-2 col-form-label">Contraseña:</label>
-                        <div className="col-sm-10">
-                            <input className="form-control" type="password" onChange={this.updatePassword} method="post"required></input>
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-2 col-form-label">Repita su contraseña:</label>
-                        <div className="col-sm-10">
-                            <input className="form-control" type="password" onChange={this.updatePasswordCheck} method="post"required></input>
-                        </div>
-                    </div>
-                </div>
-                <button className="btn btn-primary" type="submit" style={{marginLeft: "calc(100% - 6em)"}}>Continuar</button>
-                </form>
-               
+            <div className="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
+                
+                <h1>Register</h1>
+                
+                <Form onSubmit={this.onSubmit}>
+                    {errorMessage}
+                    <Row form>
+                        <Col sm={6}>
+                            <FormGroup>
+                                <Label for="registerName">Nombre: </Label>
+                                <Input id="registerName" type="text" placeholder="Jose" 
+                                onChange={this.updateName} required value={this.state.name}></Input>
+                            </FormGroup>
+                        </Col>
+                        <Col sm={6}>
+                            <FormGroup>
+                                <Label for="registerLastName">Apellido: </Label>
+                                <Input id="registerLastName" type="text" placeholder="Aguirre" 
+                                onChange={this.updateLastName} required value={this.state.lastname}></Input>
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                    <FormGroup>
+                        <Label for="registerBirthdate">Fecha de nacimiento</Label>
+                        <Input id="registerBirthdate" type="date" onChange={this.updateDate} required
+                        value={this.state.date}></Input>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="registerEmail">Correo electronico</Label>
+                        <Input id="registerEmail" type="email" placeholder="jose.medina@memoria-uchile.cl"
+                        onChange={this.updateEmail} required></Input>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="password">Contraseña</Label>
+                        <Input id="password" type="password" onChange={this.updatePassword} required></Input>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="passwordRepeat">Repetir Contraseña</Label>
+                        <Input id="passwordRepeat" type="password" onChange={this.updatePasswordCheck} required></Input>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="rol">Rol en la facultad</Label>
+                        <Input id="rol" type="select" onChange={this.updateRol} required>
+                            <option>Estudiante</option>
+                            <option>Docente</option>
+                            <option>Funcionario</option>
+                            <option>Externo</option>
+                        </Input>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="difusion">¿Como te enteraste de esta página?</Label>
+                        <Input id="difusion" type="select" onChange={this.updateDif} required>
+                            <option>internet</option>
+                            <option>poster</option>
+                            <option value="Correo">correo electrónico</option>
+                            <option value="Amigo">un amigo</option>
+                        </Input>
+                    </FormGroup>
+                    <Button>Finalizar</Button>
+                </Form>
             </div>
         );
     }

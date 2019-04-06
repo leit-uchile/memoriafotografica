@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import RegisterLoginInfo from './RegisterLoginInfo';
-import RegisterUserInfo from './RegisterUserInfo';
 
 import {connect} from 'react-redux';
 import {auth} from '../../actions';
+import ReactLoading from 'react-loading';
+import {Button} from 'reactstrap';
 import {Redirect} from 'react-router-dom';
 
 class Register extends Component{
@@ -11,10 +12,10 @@ class Register extends Component{
         super(Props)
         this.state = {
             currentPage: 0,
-            loginInfo: null
+            loginInfo: null,
+            calledResgister: false
         }
         this.volver = this.volver.bind(this);
-        this.saveUserInfo = this.saveUserInfo.bind(this);
         this.saveUserLogin = this.saveUserLogin.bind(this);
         this.registerToBack = this.registerToBack.bind(this);
 
@@ -23,9 +24,14 @@ class Register extends Component{
     volver(){
         if(this.state.currentPage !== 0){
             this.setState({
-                currentPage : this.state.currentPage -1
+                currentPage : this.state.currentPage - 1
             })
         }
+        // Clear errors
+        this.props.cleanErrors();
+        this.setState({
+            calledResgister: false
+        })
     }
 
     saveUserLogin(info){
@@ -35,31 +41,26 @@ class Register extends Component{
         })
     }
 
-    saveUserInfo(info){
-
-        this.setState({
-            userInfo: {...info}
-        })
-
-        this.registerToBack();
-
-
-        this.setState({
-            currentPage : this.state.currentPage + 1,
-        })
-    }
-
     registerToBack(){
         console.log("Called the API")
+        this.setState({calledResgister: true})
         this.props.register(
             this.state.loginInfo.email,
-            this.state.loginInfo.password)
+            this.state.loginInfo.password,
+            this.state.loginInfo.name,
+            this.state.loginInfo.lastname,
+            this.state.loginInfo.date,
+            this.state.loginInfo.rol)
     }
 
     render(){
-        if (this.props.isAuthenticated) {
+        /* 
+        if (this.props.isAuthenticated) {   
             return <Redirect to="/" />
-        }
+        } */
+
+        const divStyle = {backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"};
+        const h1Style = {textAlign: "center", fontWeight: "bold"}
 
         var subRegister;
         switch (this.state.currentPage){
@@ -67,11 +68,32 @@ class Register extends Component{
                 subRegister = <RegisterLoginInfo saveInfo={this.saveUserLogin} cache={this.state.loginInfo}/>
                 break;
             case 1:
-                subRegister = <RegisterUserInfo goBack={this.volver} saveInfo={this.saveUserInfo}/>
-                break;  
+                // Call the API
+                if(!this.state.calledResgister){
+                    this.registerToBack()
+                }
+
+                if(this.props.isAuthenticated){
+                    this.setState({currentPage: this.state.currentPage + 1})
+                }
+
+                if(this.props.errors.length > 0){
+                    subRegister = <div className="container" style={divStyle} >
+                        <h2> No pudimos realizar tu registro </h2>
+                        <Button color="warning" onClick={this.volver}>Volver</Button>
+                    </div>
+                }else{
+                    subRegister = <div className="container" style={divStyle} >
+                        <h1 style={h1Style}>
+                            Completando registro
+                        </h1>
+                        <ReactLoading type="spin" color="red" height={'100px'} width={'100px'} className="centering"/>
+                    </div>
+                }
+                break;
             case 2: 
-                subRegister = <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
-                    <h1 style={{textAlign: "center", fontWeight: "bold"}}>¡Registro con éxito!</h1>
+                subRegister = <div className="container" style={divStyle}>
+                    <h1 style={h1Style}>¡Registro con éxito!</h1>
                     <span style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>Por favor confirma tu correo electronico</span>
                 </div> ;
                 break;
@@ -105,6 +127,9 @@ const mapActionsToProps = dispatch => {
     return {
         register: (username, password) => {
             return dispatch(auth.register(username, password));
+        },
+        cleanErrors: () => {
+            return dispatch(auth.cleanErrors())
         }
     };
 }

@@ -7,7 +7,8 @@ class Header extends Component{
     render(){
         var doLoginNav;
         if(this.props.auth.isAuthenticated === true){
-            doLoginNav = <Link className='nav-link' to={"/dashboard"}><span>{this.props.auth.user.id}</span></Link>
+            doLoginNav = <Link className='nav-link' to={"/dashboard"}>
+            <span>{`${this.props.auth.user.id} ${ this.props.auth.user.name? this.props.auth.user.name : "Nombre"}`}</span></Link>
         }else{
             doLoginNav = <Link className='nav-link' to={"/login"}><span>Login</span></Link>
       

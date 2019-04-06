@@ -17,7 +17,7 @@ class Layout extends Component{
         return(
             <div>
                 <Header/>
-                <div class="container-fluid">
+                <div className="container-fluid">
                 <Switch>
                     <Route exact path={"/"} component={Home}/>
                     <Route path={"/login"} component={Login}/>

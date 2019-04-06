@@ -22,8 +22,10 @@ export default function auth(state=initialState, action) {
     case 'REGISTRATION_SUCCESSFUL':
       localStorage.setItem("token", action.data.token);
       return {...state, ...action.data, isAuthenticated: true, isLoading: false, errors: null};
+
     case 'REGISTRATION_FAILED':
-      break;
+      return {...state, errors: {register: "REGISTRATION_FAILED"}};
+
     case 'AUTHENTICATION_ERROR':
       break;
     case 'LOGIN_FAILED':
@@ -32,7 +34,8 @@ export default function auth(state=initialState, action) {
       localStorage.removeItem("token");
       return {...state, errors: action.data, token: null, user: null,
         isAuthenticated: false, isLoading: false};
-
+    case 'CLEAR_AUTH_ERRORS':
+      return {...state, errors: {}};
     default:
       return state;
   }
