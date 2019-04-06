@@ -45,12 +45,13 @@ class PhotoListAPI(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
 
-        photo = Photo.objects.all()
+        photo_admin = Photo.objects.all()
 
-        if request.user.user_type == 3:
+        if request.user.user_type != 1:
             serializer_class = PhotoAdminSerializer
-            serializer = PhotoAdminSerializer(photo, many = True)
+            serializer = PhotoAdminSerializer(photo_admin, many = True)
         else:
+            photo = Photo.objects.filter(censure = False, approved = True)
             serializer_class = PhotoSerializer
             serializer = PhotoSerializer(photo, many = True)
         return Response(serializer.data)
@@ -407,7 +408,7 @@ class AlbumDetailAPI(generics.GenericAPIView):
 
     def put(self, request, pk, *args, **kwargs):
         album = self.get_object(pk)
-        serializer = AlbumSerializer(album, data=request.data, partial = True)
+        serializer = AlbumSerializer(album, data=request.data, context={'request': request}, partial = True)
         if album in request.user.albums.all():
             if serializer.is_valid():
                 serializer.save()

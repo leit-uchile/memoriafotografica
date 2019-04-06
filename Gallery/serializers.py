@@ -86,8 +86,6 @@ class PhotoSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         #instance.tags = validated_data.get('tags', instance.tags)
         instance.permission = validated_data.get('permission', instance.permission)
-        if validated_data.get('category'):
-            instance.category.add(*validated_data.get('category'))
         instance.title = validated_data.get('title', instance.title)
         instance.save()
         return instance
@@ -102,8 +100,10 @@ class PhotoAdminSerializer(serializers.ModelSerializer):
         instance.approved = validated_data.get('approved', instance.approved)
         instance.censure = validated_data.get('censure', instance.censure)
         instance.permission = validated_data.get('permission', instance.permission)
-        if validated_data.get('category'):
-            instance.category.add(*validated_data.get('category'))
+        try:
+            instance.category.set(validated_data['category'])
+        except KeyError:
+            pass
         instance.title = validated_data.get('title', instance.title)
         instance.save()
         return instance
@@ -124,6 +124,12 @@ class AlbumSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
-        instance.pictures.add(*validated_data.get('pictures'))
+        try:
+            validated_data['pictures']
+            my_user = self.context['request'].user
+            valid_pics = list(filter(lambda x: x in my_user.photos.all() ,validated_data['pictures']))
+            instance.pictures.set(valid_pics)
+        except KeyError:
+            pass
         instance.save()
         return instance

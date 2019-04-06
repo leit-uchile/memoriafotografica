@@ -51,7 +51,7 @@ class Photo(models.Model):
     image = models.ImageField(upload_to=gen_uuid)
     title = models.CharField(_('Título'), max_length = 30)
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
-    approved = models.BooleanField(default=False)
+    approved = models.BooleanField(default=True)
     censure = models.BooleanField(default = False)
     permission = MultiSelectField(choices=PERMISSION_CHOICES, max_choices=3, max_length=3)
     category = models.ManyToManyField(Category, blank = True)
@@ -69,7 +69,7 @@ class Photo(models.Model):
 class Album(models.Model):
 
     name = models.CharField(max_length=40)
-    pictures = models.ManyToManyField(Photo)
+    pictures = models.ManyToManyField(Photo, blank = True)
 
     def __str__(self):
         return "Album " + self.name

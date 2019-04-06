@@ -11,7 +11,6 @@ from Gallery.models import Album, Photo, Comment, Reporte
 from datetime import datetime
 
 
-
 class User(AbstractBaseUser, PermissionsMixin):
 
     USER_TYPE_CHOICES = (
