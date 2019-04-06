@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {Form, FormGroup, Label, Input, Button, Col, Row, FormFeedbackn, } from 'reactstrap';
-
+import {Form, FormGroup, Label, Input, Button, Col, Row} from 'reactstrap';
 
 class RegisterLoginInfo extends Component{
     constructor(Props){

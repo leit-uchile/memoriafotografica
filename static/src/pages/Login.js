@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Link} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 import {auth} from '../actions';
 import {connect} from 'react-redux';
 import login from '../css/login.css';
@@ -24,6 +24,11 @@ class Login extends Component{
     }
 
     render(){
+
+        if (this.props.isAuthenticated) {   
+            return <Redirect to="/" />
+        }
+
         return(
             <div className='modal-dialog text-center'>
                     <div className='col-sm-9 main-section'>

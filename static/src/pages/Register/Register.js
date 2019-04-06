@@ -5,7 +5,6 @@ import {connect} from 'react-redux';
 import {auth} from '../../actions';
 import ReactLoading from 'react-loading';
 import {Button} from 'reactstrap';
-import {Redirect} from 'react-router-dom';
 
 class Register extends Component{
     constructor(Props){
