@@ -124,8 +124,8 @@ const mapStateToProps = state => {
 
 const mapActionsToProps = dispatch => {
     return {
-        register: (username, password) => {
-            return dispatch(auth.register(username, password));
+        register: (username, password, name, lastname, date, rol) => {
+            return dispatch(auth.register(username, password, name, lastname, date, rol));
         },
         cleanErrors: () => {
             return dispatch(auth.cleanErrors())

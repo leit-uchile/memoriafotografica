@@ -18,7 +18,7 @@ class RegisterLoginInfo extends Component{
                 passwordCheck: "",
                 date: "",
                 avatar: "",
-                rol: "",
+                rol: 1,
                 difusion: ""
             }
         }
@@ -110,10 +110,12 @@ class RegisterLoginInfo extends Component{
                     <FormGroup>
                         <Label for="rol">Rol en la facultad</Label>
                         <Input id="rol" type="select" onChange={this.updateRol} required>
-                            <option>Estudiante</option>
-                            <option>Docente</option>
-                            <option>Funcionario</option>
-                            <option>Externo</option>
+                            <option value="1">Alumno</option>
+                            <option value="2">Ex-Alumno</option>
+                            <option value="3">Acad&eacute;mico</option>
+                            <option value="4">Ex-Acad&eacute;mico</option>
+                            <option value="5">Funcionario</option>
+                            <option value="6">Externo</option>
                         </Input>
                     </FormGroup>
                     <FormGroup>

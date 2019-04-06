@@ -66,11 +66,11 @@ export const loadUser = () => {
   }
 }
 
-export const register = (email, password, name, lastname, date, rol) => {
+export const register = (email, password, first_name, last_name, birth_date, rol_type) => {
   return (dispatch, getState) => {
     let headers = {"Content-Type": "application/json"};
-    let body = JSON.stringify({email, password});
-
+    let body = JSON.stringify({email, password, first_name, last_name, birth_date, rol_type: parseInt(rol_type)});
+        
     return fetch("/api/auth/register/", {headers, body, method: "POST"})
       .then(res => {
         if (res.status < 500) {
