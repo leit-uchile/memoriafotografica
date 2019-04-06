@@ -82,30 +82,37 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
     #                         And(IsOwner, Or(IsDeleteRequest, And(IsPutRequest, FilterContent)))),]
     permission_classes = [IsAuthenticated,]
 
-    def get_object(self, pk):
+    def get_object(self, pk, admin):
         try:
-            return Photo.objects.get(pk=pk)
+            p = Photo.objects.get(pk=pk)
+            if not admin:
+                if p.censure or not p.approved:
+                    raise Photo.DoesNotExist
+            return p
         except Photo.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
-        photo = self.get_object(pk)
-        if request.user.user_type == 3:
+        if request.user.user_type != 1:
+            photo = self.get_object(pk,True)
             serializer_class = PhotoAdminSerializer
             serializer = PhotoAdminSerializer(photo)
         else:
+            photo = self.get_object(pk,False)
             serializer_class = PhotoSerializer
             serializer = PhotoSerializer(photo)
         return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
-        photo = self.get_object(pk)
-        print("is_collab: "+str(request.user.user_type))
-        print("have pic?: "+str(photo in request.user.photos.all()))
-        if request.user.user_type == 1 and photo in request.user.photos.all():
-            serializer_class = PhotoSerializer
-            serializer = PhotoSerializer(photo, data = request.data, partial=True)
-        elif request.user.user_type == 3:
+        if request.user.user_type == 1:
+            photo = self.get_object(pk, False)
+            if photo in request.user.photos.all():
+                serializer_class = PhotoSerializer
+                serializer = PhotoSerializer(photo, data = request.data, partial=True)
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        elif request.user.user_type != 1:
+            photo = self.get_object(pk,True)
             serializer_class = PhotoAdminSerializer
             serializer = PhotoAdminSerializer(photo, data = request.data, partial=True)
         else:
@@ -117,8 +124,12 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, *args, **kwargs):
-        photo = self.get_object(pk)
-        if request.user.user_type == 3 or photo in request.user.photos.all():
+        if request.user.user_type != 1:
+            adm = True
+        else:
+            adm = False
+            photo = self.get_object(pk, adm)
+        if request.user.user_type != 1 or photo in request.user.photos.all():
             photo.delete()
             return Response(status = status.HTTP_204_NO_CONTENT)
         else:

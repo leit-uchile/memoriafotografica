@@ -49,7 +49,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('title', )
+        fields = "__all__"
 
     def create(self, validated_data):
         return Category.objects.create(**validated_data)
@@ -62,7 +62,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class CreateCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('content',)
+        fields = ('id','content',)
 
         def create(self, validated_data):
             comment = Comment.objects.create(**validated_data)
@@ -80,7 +80,7 @@ class CreatePhotoSerializer(serializers.ModelSerializer):
 class PhotoSerializer(serializers.ModelSerializer):
     #Para usuario colaborador
     class Meta:
-        fields = ('image', 'title', 'uploadDate', 'category', 'permission', 'comments')
+        fields = ('id','image', 'title', 'uploadDate', 'category', 'permission', 'comments')
         model = Photo
 
     def update(self, instance, validated_data):
