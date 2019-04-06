@@ -13,14 +13,12 @@ class UploadPage extends Component{
         this.state = {
             currentPage: 0,
             userInfo: null,
-            photosList: null,
-            metaPhotos: null,
+            photos: null,
         }
         this.back = this.back.bind(this);
         this.siguiente = this.siguiente.bind(this);
         this.saveUserInfo = this.saveUserInfo.bind(this);
         this.savePhotos = this.savePhotos.bind(this);
-        this.savePhotoInfo = this.savePhotoInfo.bind(this);
         
 
     }
@@ -48,13 +46,7 @@ class UploadPage extends Component{
     savePhotos(photos){
         this.setState({
             currentPage : this.state.currentPage + 1,
-            photosList: {...photos}
-        })
-    }
-    savePhotoInfo(meta){
-        this.setState({
-            currentPage : this.state.currentPage + 1,
-            metaPhotos: {...meta}
+            photos: {...photos}
         })
     }
 
@@ -79,12 +71,9 @@ class UploadPage extends Component{
                 subupload = <UploadUnregister goBack={this.back} saveInfo={this.saveUserInfo} cache={this.state.userInfo}/>
                 break;
             case 2:
-                subupload = <UploadPhoto goBack={this.back} savePhotos={this.savePhotos}/>
+                subupload = <UploadPhoto goBack={this.back} saveAll={this.savePhotos}/>
                 break;
             case 3:
-                subupload = <UploadDetails goBack={this.back} saveInfo={this.savePhotoInfo}/>
-                break;
-            case 4:
                 subupload = <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
                     <h1 style={{textAlign: "center", fontWeight: "bold"}}>¡Aporte enviado!</h1>
                     <span style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>La foto tendra que ser aprobada para que la comunidad la vea. Puedes ver el estado en que se encuentra accediento a tu perfil. Muchas gracias!</span>

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import uploadPhoto from '../../css/uploadPhoto.css'
+import UploadDetails from '../Upload/UploadDetails.js'
 import { Row, Col, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
 class UploadPhoto extends Component{
@@ -10,27 +11,8 @@ class UploadPhoto extends Component{
       photosList: Array(
       )
     }
-    this.state.photosList = this.state.photosList.bind(this)
+    //this.saveInfo = this.saveInfo.bind(this);
   }
-
-  errorHandler= e=> {
-    switch(e.target.error.code) {
-      case e.target.error.NOT_FOUND_ERR:
-        alert('File Not Found!');
-        console.log('File Not Found!');
-        break;
-      case e.target.error.NOT_READABLE_ERR:
-        alert('File is not readable');
-        console.log('File is not readable');
-        break;
-      case e.target.error.ABORT_ERR:
-        break; // noop
-      default:
-        alert('An error occurred reading this file.');
-        console.log('An error occurred reading this file.');
-    };
-  }
-
 
   handleFileSelect= e=>{
     var files= e.target.files;
@@ -41,47 +23,41 @@ class UploadPhoto extends Component{
         continue;
       }
 
-      var reader = new FileReader();
-
-      // Closure to capture the file information.
-      reader.onerror = (this.errorHandler);
-      reader.onload = (function(theFile) {
-        this.handleUpload(f,this.state.fileList)
-        return function(e) {
-          // Render thumbnail.
-          var span = document.createElement('span');
-          span.innerHTML = ['<img class="thumb" src="', e.target.result,
-                            '" title="', escape(theFile.name), '"/>'].join('');
-          console.log(span.innerHTML);
-          document.getElementById('list').insertBefore(span, null);
-        };
-      })(f);
-
-      // Read in the image file as a data URL.
-      reader.readAsDataURL(f);
+      this.handleUpload(f)
     }
-  }
+  } 
 
   onSubmit = e => {    
     e.preventDefault()
-    this.props.savePhotos(this.state.photosList)
-}
-  
+    this.props.saveAll(this.state)
+  }
+
+  //saveInfo(info,key){
+  // this.setState({ photosList: [this.state.photosList[:key], {
+  //    this.state.photosList[key]
+  //  } ]
+  //    
+  //  )
+  //}
+
   render() {
+    var details = this.state.photosList.map( (el, key) => 
+      <UploadDetails photo={el} save={(info) => this.saveInfo(info, key)}/>)
+    
     return (
       <div>
         <input type='file' id='file' multiple onChange={this.handleFileSelect}/>
         <output id='list'></output>
         <Button onClick={this.props.goBack}>Atras</Button>
         <Button onClick={this.onSubmit}>Continuar</Button>
+        {details}
       </div>
     )
   }
 
-  handleUpload(file,fileList){
+  handleUpload(fileList){
     this.setState({photosList: [...this.state.photosList , fileList ]}) ;
     console.log(this.state.photosList);
-    console.log('yeah')
   }
 
 }

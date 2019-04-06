@@ -6,10 +6,9 @@ import { Row, Col, Button, Form, FormGroup, Label, Input, FormText } from 'react
 
 class UploadDetails extends Component{
     constructor(Props){
-        super();
-        this.props = Props
+        super(Props);
         this.state = {
-            photo: "",
+            photo: Props.photo,
             title: "",
             date: "",
             description: "",
@@ -24,15 +23,28 @@ class UploadDetails extends Component{
 
     onSubmit = e => {
         e.preventDefault()
-        this.props.saveInfo(this.state)
+        this.props.save(this.state)
     }
 
     render(){
+    
+        const {photo} = this.props
+
+        var reader = new FileReader();
+
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+            return function(e) {
+            // Render thumbnail.
+            this.setState({src: e.target.result})
+            };
+        })(photo).bind(this);
+
+        // Read in the image file as a data URL.
+        reader.readAsDataURL(photo);
+
         return(
             <div>
-                <Row>
-                    <h1>AÑADIR INFORMACION</h1>
-                </Row>
                 <Row>
                     <Col sm='6'>
                     <Form>
@@ -48,16 +60,20 @@ class UploadDetails extends Component{
                             <Label>Historia de la foto</Label>
                             <Input type="textarea" name="description" id="description" onChange={this.updateDescription}/>
                         </FormGroup>
-                        <FormGroup>
-                            <Label>Etiquetas</Label>
-                            <Input type="select" name="tags" id="tags" onChange={this.updateTags} multiple>
-                                <option>Etiqueta 1</option>
-                                <option>Etiqueta 2</option>
-                                <option>Etiqueta 3</option>
-                                <option>Etiqueta 4</option>
-                                <option>Etiqueta 5</option>
-                            </Input>
+                        
+                        <Label>Etiquetas</Label>
+                        <FormGroup check inline>                            
+                            <Label check>
+                                <Input type="checkbox"/>Etiqueta1
+                            </Label>
                         </FormGroup>
+
+                        <FormGroup check inline>                            
+                            <Label check>
+                                <Input type="checkbox"/>Etiqueta2
+                            </Label>
+                        </FormGroup>
+
                         <FormGroup check>
                         <Label check>
                             <Input type="checkbox" />
@@ -65,13 +81,13 @@ class UploadDetails extends Component{
                             Acepto los terminos y condiciones
                         </Label>
                         </FormGroup>
-                        <Button onClick={this.props.goBack}>Atras</Button>
-                        <Button onClick={this.onSubmit}>Continuar</Button>
+                        <Button onClick={this.onSubmit}>Guardar</Button>
                     </Form>
 
                     </Col>
                     <Col sm='6'>
                         <h3>FOTO</h3>
+                        <img src={this.state.src}/>
                     </Col>
                 </Row>
             </div>
