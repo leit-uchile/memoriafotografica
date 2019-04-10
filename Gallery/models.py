@@ -4,7 +4,7 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from multiselectfield import MultiSelectField
 from MemoriaFotografica.settings import BASE_DIR
-
+from MetaData.models import Metadata
 import os
 from uuid import uuid4
 
@@ -56,6 +56,7 @@ class Photo(models.Model):
     permission = MultiSelectField(choices=PERMISSION_CHOICES, max_choices=3, max_length=3)
     category = models.ManyToManyField(Category, blank = True)
     comments = models.ManyToManyField(Comment, blank = True)
+    metadata = models.ManyToManyField(Metadata, blank = True)
     #thumbnail = models.ImageField(blank=True, null=True)
     report = models.ManyToManyField(Reporte, blank = True)
 
