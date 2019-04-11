@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import uploadPhoto from '../../css/uploadPhoto.css'
 import UploadDetails from '../Upload/UploadDetails.js'
 import { Row, Col, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
@@ -9,9 +8,12 @@ class UploadPhoto extends Component{
     this.props = Props
     this.state = {
       photosList: Array(
+      ),
+      photosAndMeta: Array(
       )
     }
-    //this.saveInfo = this.saveInfo.bind(this);
+    this.saveInfo = this.saveInfo.bind(this);
+    //this.handleErase = this.handleErase.bind(this);
   }
 
   handleFileSelect= e=>{
@@ -29,16 +31,17 @@ class UploadPhoto extends Component{
 
   onSubmit = e => {    
     e.preventDefault()
-    this.props.saveAll(this.state)
+    this.props.saveAll(this.state.photosAndMeta)
   }
 
-  //saveInfo(info,key){
-  // this.setState({ photosList: [this.state.photosList[:key], {
-  //    this.state.photosList[key]
-  //  } ]
-  //    
-  //  )
-  //}
+  saveInfo(info,key){
+    this.setState({photosAndMeta: [...this.state.photosAndMeta , info ]}) ;
+    console.log(this.state.photosAndMeta);
+    }
+
+  //handleErase(key){
+    
+  // }
 
   render() {
     var details = this.state.photosList.map( (el, key) => 
@@ -46,7 +49,7 @@ class UploadPhoto extends Component{
     
     return (
       <div>
-        <input type='file' id='file' multiple onChange={this.handleFileSelect}/>
+        <input type='file' id='file' multiple onChange={this.handleFileSelect}         />
         <output id='list'></output>
         <Button onClick={this.props.goBack}>Atras</Button>
         <Button onClick={this.onSubmit}>Continuar</Button>

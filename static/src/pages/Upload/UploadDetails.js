@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {upload} from '../../actions';
 import {connect} from 'react-redux';
+import uploadPhoto from '../../css/uploadPhoto.css'
 
 import { Row, Col, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
@@ -12,7 +13,7 @@ class UploadDetails extends Component{
             title: "",
             date: "",
             description: "",
-            tags: "",
+            tags: [],
         };
     }
 
@@ -26,12 +27,20 @@ class UploadDetails extends Component{
         this.props.save(this.state)
     }
 
+    onTagSelect(selected) {
+        const index = this.state.tags.indexOf(selected);
+        if (index < 0) {
+          this.state.tags.push(selected);
+        } else {
+          this.state.tags.splice(index, 1);
+        }
+        this.setState({ tags: [...this.state.tags] });
+      }
+
     render(){
     
         const {photo} = this.props
-
         var reader = new FileReader();
-
         // Closure to capture the file information.
         reader.onload = (function(theFile) {
             return function(e) {
@@ -39,10 +48,8 @@ class UploadDetails extends Component{
             this.setState({src: e.target.result})
             };
         })(photo).bind(this);
-
         // Read in the image file as a data URL.
         reader.readAsDataURL(photo);
-
         return(
             <div>
                 <Row>
@@ -64,30 +71,31 @@ class UploadDetails extends Component{
                         <Label>Etiquetas</Label>
                         <FormGroup check inline>                            
                             <Label check>
-                                <Input type="checkbox"/>Etiqueta1
+                                <Input type="checkbox" onClick={() => this.onTagSelect(1)} active={this.state.tags.includes(1)}/>Etiqueta1
                             </Label>
                         </FormGroup>
 
                         <FormGroup check inline>                            
                             <Label check>
-                                <Input type="checkbox"/>Etiqueta2
+                                <Input type="checkbox" onClick={() => this.onTagSelect(2)} active={this.state.tags.includes(2)}/>Etiqueta1
                             </Label>
                         </FormGroup>
 
                         <FormGroup check>
                         <Label check>
-                            <Input type="checkbox" />
+                            <Input type="checkbox" required/>
                             {' '}
                             Acepto los terminos y condiciones
                         </Label>
                         </FormGroup>
                         <Button onClick={this.onSubmit}>Guardar</Button>
+                        
                     </Form>
 
                     </Col>
                     <Col sm='6'>
                         <h3>FOTO</h3>
-                        <img src={this.state.src}/>
+                        <img src={this.state.src} id='thumb'/>
                     </Col>
                 </Row>
             </div>
