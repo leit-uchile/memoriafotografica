@@ -14,7 +14,18 @@ class UploadDetails extends Component{
             date: "",
             description: "",
             tags: [],
+            previewCalled: false
         };
+
+        // Prepare File Reader for preview management
+        this.fr = new FileReader();
+        this.fr.onload = (function(theFile) {
+            return function(e) {
+            // Render thumbnail.
+            this.setState({src: e.target.result})
+            };
+        })(Props.photo).bind(this);
+
     }
 
     updateTitle = e => {this.setState({title : e.target.value})}
@@ -41,19 +52,11 @@ class UploadDetails extends Component{
         this.setState({ tags: [...this.state.tags] });
       }
 
+    componentWillMount(){
+        this.fr.readAsDataURL(this.props.photo)
+    }
+
     render(){
-    
-        const {photo} = this.props
-        var reader = new FileReader();
-        // Closure to capture the file information.
-        reader.onload = (function(theFile) {
-            return function(e) {
-            // Render thumbnail.
-            this.setState({src: e.target.result})
-            };
-        })(photo).bind(this);
-        // Read in the image file as a data URL.
-        reader.readAsDataURL(photo);
         return(
             <div>
                 <Row>
