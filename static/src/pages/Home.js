@@ -5,12 +5,10 @@ import {home} from '../actions';
 import history from '../history'
 
 const Home = ({photos, onLoad}) => (
-    <div className='col-md-12'>
-        <div className='container-fluid'>
-            <button onClick={onLoad}>Click</button>
-            <div className='row'>
-             <Gallery photoList={photos} />
-            </div>
+    <div className='container-fluid'>
+        <button onClick={onLoad}>Click</button>
+        <div className='row'>
+            <Gallery photoList={photos} />
         </div>
     </div>
 )

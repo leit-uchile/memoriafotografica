@@ -97,7 +97,7 @@ class RegisterLoginInfo extends Component{
                     <FormGroup>
                         <Label for="registerEmail">Correo electronico</Label>
                         <Input id="registerEmail" type="email" placeholder="jose.medina@memoria-uchile.cl"
-                        onChange={this.updateEmail} required></Input>
+                        onChange={this.updateEmail} value={this.state.email} required></Input>
                     </FormGroup>
                     <FormGroup>
                         <Label for="password">Contraseña</Label>
@@ -109,7 +109,7 @@ class RegisterLoginInfo extends Component{
                     </FormGroup>
                     <FormGroup>
                         <Label for="rol">Rol en la facultad</Label>
-                        <Input id="rol" type="select" onChange={this.updateRol} required>
+                        <Input id="rol" type="select" onChange={this.updateRol} value={this.state.rol} required>
                             <option value="1">Alumno</option>
                             <option value="2">Ex-Alumno</option>
                             <option value="3">Acad&eacute;mico</option>
@@ -120,7 +120,8 @@ class RegisterLoginInfo extends Component{
                     </FormGroup>
                     <FormGroup>
                         <Label for="difusion">¿Como te enteraste de esta página?</Label>
-                        <Input id="difusion" type="select" onChange={this.updateDif} required>
+                        <Input id="difusion" type="select" onChange={this.updateDif} 
+                            value={this.state.difusion} required>
                             <option>internet</option>
                             <option>poster</option>
                             <option value="Correo">correo electrónico</option>

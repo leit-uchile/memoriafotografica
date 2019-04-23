@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {auth} from '../../actions';
 import ReactLoading from 'react-loading';
 import {Button} from 'reactstrap';
+import {Redirect} from 'react-router-dom'
 
 class Register extends Component{
     constructor(Props){
@@ -43,20 +44,20 @@ class Register extends Component{
     registerToBack(){
         console.log("Called the API")
         this.setState({calledResgister: true})
-        this.props.register(
+        setTimeout(this.props.register, 2000,
             this.state.loginInfo.email,
             this.state.loginInfo.password,
             this.state.loginInfo.name,
             this.state.loginInfo.lastname,
             this.state.loginInfo.date,
             this.state.loginInfo.rol)
+        
     }
 
     render(){
-        /* 
         if (this.props.isAuthenticated) {   
             return <Redirect to="/" />
-        } */
+        }
 
         const divStyle = {backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"};
         const h1Style = {textAlign: "center", fontWeight: "bold"}

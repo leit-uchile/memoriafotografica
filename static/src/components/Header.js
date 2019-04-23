@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
+import UserModal from './UserModal'
 import header from '../css/header.css';
 
 class Header extends Component{
     render(){
         var doLoginNav;
-        if(this.props.auth.isAuthenticated === true){
-            doLoginNav = <Link className='nav-link' to={"/dashboard"}>
-            <span>{`${ this.props.auth.user.first_name? this.props.auth.user.first_name : "Nombre"} ${ this.props.auth.user.last_name? this.props.auth.user.last_name : "Apellido"}`}</span></Link>
+        if(this.props.isAuth === true){
+            doLoginNav = <UserModal />
         }else{
             doLoginNav = <Link className='nav-link' to={"/login"}><span>Login</span></Link>
-      
         }
         return(
             <header className='header mb-2'>
@@ -33,7 +32,7 @@ class Header extends Component{
 
 const mapStateToProps = state => {
     return {
-        auth : state.auth
+        isAuth : state.auth.isAuthenticated
     }
 }
 

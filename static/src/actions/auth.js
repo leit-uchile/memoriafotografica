@@ -103,3 +103,10 @@ export const cleanErrors  = () => {
     dispatch({type: "CLEAR_AUTH_ERRORS", data: null})
   }
 }
+
+export const logout = (token) => {
+  let headers = {"Content-Type": "application/json"};
+  return (dispatch, getState) => {
+    dispatch({type: "LOGOUT_SUCCESSFUL", data: null})
+  }
+}
