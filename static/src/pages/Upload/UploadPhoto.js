@@ -13,7 +13,7 @@ class UploadPhoto extends Component{
       )
     }
     this.saveInfo = this.saveInfo.bind(this);
-    //this.handleErase = this.handleErase.bind(this);
+    this.handleErase = this.handleErase.bind(this);
   }
 
   handleFileSelect= e=>{
@@ -24,7 +24,6 @@ class UploadPhoto extends Component{
       if (!f.type.match('image.*')) {
         continue;
       }
-
       this.handleUpload(f)
     }
   } 
@@ -35,17 +34,29 @@ class UploadPhoto extends Component{
   }
 
   saveInfo(info,key){
+    if (info in this.state.photosAndMeta){
+    // Actualizar
+  }else{
     this.setState({photosAndMeta: [...this.state.photosAndMeta , info ]}) ;
-    console.log(this.state.photosAndMeta);
+  }
     }
 
-  //handleErase(key){
-    
-  // }
+  handleErase(info){
+    var details = this.state.photosAndMeta.map( (el) =>
+    {if (el===info){
+      //borrar
+      console.log('si esta')
+    }else{
+      console.log(el===info);
+      console.log(info,el);
+    }
+    }
+    )
+  }
 
   render() {
     var details = this.state.photosList.map( (el, key) => 
-      <UploadDetails photo={el} save={(info) => this.saveInfo(info, key)}/>)
+      <UploadDetails photo={el} save={(info) => this.saveInfo(info, key)} delete={(info) => this.handleErase(info)}/>)
     
     return (
       <div>

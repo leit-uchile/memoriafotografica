@@ -27,6 +27,10 @@ class UploadDetails extends Component{
         this.props.save(this.state)
     }
 
+    onDelete = e => {
+        this.props.delete(this.state)
+    }
+
     onTagSelect(selected) {
         const index = this.state.tags.indexOf(selected);
         if (index < 0) {
@@ -89,7 +93,7 @@ class UploadDetails extends Component{
                         </Label>
                         </FormGroup>
                         <Button onClick={this.onSubmit}>Guardar</Button>
-                        
+                        <Button onClick={this.onDelete}>Eliminar</Button>
                     </Form>
 
                     </Col>
