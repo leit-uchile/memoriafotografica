@@ -9,7 +9,6 @@ class UploadDetails extends Component{
     constructor(Props){
         super(Props);
         this.state = {
-            photo: Props.photo,
             title: "",
             date: "",
             description: "",

@@ -1,16 +1,14 @@
 import React, {Component} from 'react';
 import UploadDetails from '../Upload/UploadDetails.js'
 import { Row, Col, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import {v4} from 'uuid';
 
 class UploadPhoto extends Component{
   constructor(Props) {
     super();
     this.props = Props
     this.state = {
-      photosList: Array(
-      ),
-      photosAndMeta: Array(
-      )
+      photosList: Array()
     }
     this.saveInfo = this.saveInfo.bind(this);
     this.handleErase = this.handleErase.bind(this);
@@ -30,33 +28,38 @@ class UploadPhoto extends Component{
 
   onSubmit = e => {    
     e.preventDefault()
-    this.props.saveAll(this.state.photosAndMeta)
+    this.props.saveAll(this.state.photosList)
   }
 
   saveInfo(info,key){
-    if (info in this.state.photosAndMeta){
-    // Actualizar
-  }else{
-    this.setState({photosAndMeta: [...this.state.photosAndMeta , info ]}) ;
+    var newPhotosList = []
+    for (var i=0; i<this.state.photosList.length;i++){
+      if (i==key){
+        var el = {id: this.state.photosList[key].id, photo: this.state.photosList[key].photo, info: info}
+        newPhotosList = newPhotosList.concat(el)
+      }
+      else{
+        newPhotosList = newPhotosList.concat(this.state.photosList[i])
+      }
+    }
+    this.setState({photosList: newPhotosList}) ;
   }
-    }
 
-  handleErase(info){
-    var details = this.state.photosAndMeta.map( (el) =>
-    {if (el===info){
-      //borrar
-      console.log('si esta')
-    }else{
-      console.log(el===info);
-      console.log(info,el);
+  handleErase(info,key){
+    var newPhotosList = []
+    for (var i=0; i<this.state.photosList.length;i++){
+      if (i!==key){
+        console.log('no debo borrarlo, agrego el',i)
+        newPhotosList = newPhotosList.concat(this.state.photosList[i])
+        console.log(newPhotosList)
+      }
     }
-    }
-    )
+    this.setState({photosList: newPhotosList}) ;
   }
 
   render() {
     var details = this.state.photosList.map( (el, key) => 
-      <UploadDetails photo={el} save={(info) => this.saveInfo(info, key)} delete={(info) => this.handleErase(info)}/>)
+      <UploadDetails key={`${key}-${el.id}`} photo={el.photo} save={(info) => this.saveInfo(info, key)} delete={(info) => this.handleErase(info,key)}/>)
     
     return (
       <div>
@@ -69,9 +72,10 @@ class UploadPhoto extends Component{
     )
   }
 
-  handleUpload(fileList){
-    this.setState({photosList: [...this.state.photosList , fileList ]}) ;
-    console.log(this.state.photosList);
+  handleUpload(file){
+    const uuidv4 = require('uuid/v4')
+    var el = {id: uuidv4(),photo: file, info: null}
+    this.setState({photosList: [...this.state.photosList , el ]}) ;
   }
 
 }
