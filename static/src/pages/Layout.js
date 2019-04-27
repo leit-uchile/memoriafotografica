@@ -11,6 +11,7 @@ import Upload from './Upload';
 import PhotoDetail from "./PhotoView/PhotoDetail";
 import PrivateComponent from '../components/PrivateComponent';
 import TestComponent from './TestComponent'
+import Dashboard from './Curador/Dashboard'
 
 class Layout extends Component{
     render(){
@@ -25,6 +26,7 @@ class Layout extends Component{
                     <Route path={"/upload"}component={Upload} />
                     <Route path={"/photo"}component={PhotoDetail}/>
                     <Route path={"/test/:id"} component={TestComponent}/>
+                    <Route path={"/curador/dashboard"} component={Dashboard} />
                     <Route component={NoMatch}/>
                 </Switch>
                 </div>

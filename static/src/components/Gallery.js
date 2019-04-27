@@ -28,15 +28,17 @@ class Gallery extends Component {
 
     render() {
         return (
+            
             this.imageList.map((el,id) => {
-                // si hay un tag de la imagen en los tag validos hacer esto
-                //if(this.check(el.tags)) {
-                //return <Link onClick={e =>{this.detail(id)}} to='/photo'><Photo name={el.name} url={el.url} tags={el.tags}/></Link>
-                return <Photo name={el.name} url={el.url} tags={el.tags}/>
-                //}else{
-                //    return <span>Filtrada</span>
-                //}
-            })
+                    // si hay un tag de la imagen en los tag validos hacer esto
+                    //if(this.check(el.tags)) {
+                    //return <Link onClick={e =>{this.detail(id)}} to='/photo'><Photo name={el.name} url={el.url} tags={el.tags}/></Link>
+                    return <Photo name={el.name} url={el.url} tags={el.tags}/>
+                    //}else{
+                    //    return <span>Filtrada</span>
+                    //}
+                })
+            
         );
     }
 }
