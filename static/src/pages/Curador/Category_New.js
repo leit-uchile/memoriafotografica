@@ -1,4 +1,6 @@
 import React, { Component } from 'react'; 
+import {Button, Form, FormGroup, Row, Col, Input, Label} from 'reactstrap';
+import Category_Photos from './Category_Photos'
 
 var cates = [
     {
@@ -8,7 +10,6 @@ var cates = [
     }]
 
 class Category_New extends Component{
-
     constructor(){
         super()
         this.setState({
@@ -19,28 +20,18 @@ class Category_New extends Component{
         this.cates.push([name,tags])
         console.log(this.cates)
     }
-
     render(){
         return(
             <div>
-                <h1>Crear Categoria</h1>
-                    <div>
-                        <form>
-                            <div className="form-row">
-                                <div className="form-group col-md-5">
-                                    <label>Nombre</label>
-                                    <input type="text" className="form-control"/>
-                                </div>
-                                <div className="form-group col-md-4">
-                                    <label>Añadir Tags</label>
-                                    <textarea className="form-control" rows='1'/>
-                                </div>
-                                <div className='form-group col-md-3'>
-                                    <button type='button' className="btn btn-success" style={{marginTop: '33px'}}  onclick={e => this.createCategory('Nueva','1')} >Crear</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                <h2>Crear Categoria</h2>
+                <Form>
+                    <FormGroup>
+                        <Label for='catName'>Nombre</Label>
+                        <Input id="catName" type="text" placeholder="Categoria Nueva" name="categoryName"></Input>
+                    </FormGroup>
+                    <Button color="success">Crear</Button>
+                </Form>
+                <Category_Photos />
             </div>
         )
     }

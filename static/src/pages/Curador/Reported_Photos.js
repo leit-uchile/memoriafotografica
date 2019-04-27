@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Photo from '../../../src/components/Photo';
+import Photo from '../../components/Photo';
+import {Button, ButtonGroup, Row, Col, Container} from 'reactstrap';
 
 var imgs = [
     {
@@ -91,19 +92,26 @@ class Reported_Photos extends Component{
         }
         else{
             actually= <Photo name={this.state.photos[0].name} url={this.state.photos[0].url} tags={this.state.photos[0].tags}
-                       desc={this.state.photos[0].desc} state={this.state.photos[0].state}/>
+                       desc={this.state.photos[0].desc} state={this.state.photos[0].state} height="400px"/>
             reason = <p>Motivo del reporte: {this.state.photos[0].reason}</p>
         }
         return(
-            <div>
-                {actually}
-                {reason}
-                <div className='btn-group' role='group' aria-label='Accions'>
-                    <button type="button" className="btn btn-primary active" onClick={this.updatePhotoState}>Dar de baja</button>
-                    <button type="button" className="btn btn-secondary active" onClick={this.removePhoto}>Descartar</button>
-                </div>
-                {latest}
-            </div>
+            <Container>
+                <Row>
+                    <Col sm={8}>
+                        {actually}
+                        {reason}
+                        {imgs.length === 0 ? null : 
+                        <ButtonGroup>
+                            <Button onClick={this.updatePhotoState}>Dar de baja</Button>
+                            <Button onClick={this.removePhoto}>Descartar reporte</Button>
+                        </ButtonGroup>}
+                    </Col>
+                    <Col sm={4}>
+                        {latest}
+                    </Col>
+                </Row>
+            </Container>
         );
     }
 

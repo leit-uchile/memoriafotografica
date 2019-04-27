@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import Category_New from './Category_New'
+import {Link, Route} from 'react-router-dom';
+import {Col, Row, Container, Button, ButtonGroup, Input,
+    Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import Photo from '../../components/Photo';
-import { Link } from 'react-router-dom';
 
 var cates = [
     {
@@ -30,83 +32,98 @@ class Categories extends Component{
 
     constructor(){
         super()
+        this.state = {
+            toDelete : [],
+            deleteModal: false,
+        }
         this.getLatestCategories = this.getLatestCategories.bind(this);
         this.removeCategories = this.removeCategories.bind(this);
         this.updateToDelete = this.updateToDelete.bind(this);
-        this.state = {
-            toDelete : []
-        }
+        this.toggleRemoveConfirmation = this.toggleRemoveConfirmation.bind(this);
     }
 
     componentWillMount(){
         this.getLatestCategories()
     }
-
     getLatestCategories(){
         // Call API
         this.setState({
-            categories: cates
+            categories: [...cates]
         })
     }
     
     updateToDelete(i,isCheck){
         // Send update to API
-        console.log(i)
         if (isCheck){
-            this.state.toDelete.push(i)
-            console.log(this.state.toDelete)
+            this.setState({toDelete: [...this.state.toDelete, i]})
+        }else{
+            this.setState({toDelete: this.state.toDelete.filter( el => el != i)})
         }
-        else{
-            var index = this.state.toDelete.indexOf(i);
-            this.state.toDelete.splice(index,1);
-            console.log(this.state.toDelete)
-        }
-        
         // Update
-
     }
 
     removeCategories(){
-        // Fake call to API
-        var newCates = []
-        for (var i in cates){
-            if (i in this.state.toDelete == false){
-                newCates.push(cates[i])
-            }
-        }
-        //console.log(newCates)
-        cates = newCates
-        this.state.toDelete=[]
-        this.getLatestCategories()
+        // Fake call to API : stub function
+        const arr = this.state.categories.filter( (el,i) => {
+            for(var j=0; j<this.state.toDelete.length; j++){
+                if(this.state.toDelete[j] === i){return false}
+            } return true
+        })
+        // Arr should come from redux with a reducer
+        this.setState({toDelete: [], categories: arr, deleteModal: false})
+        //this.getLatestCategories()
     }
 
+    toggleRemoveConfirmation(){
+        this.setState({deleteModal: !this.state.deleteModal})
+    }
     
     render(){
+        const {match} = this.props
         var latest = []
-        for (var i = 0; i < cates.length; i++) {
-            const index = i;
-            latest.push(
-                <div>
-                    <input type="checkbox" aria-label="Checkbox for delete Categories" onClick={e => this.updateToDelete(this.state.categories[index],e.target.checked)}></input>
-                    <Photo name={this.state.categories[i].name} url={this.state.categories[i].url} tags={this.state.categories[i].tags}/>
-                    <button type="button" className="btn btn-primary active">Agregar fotos</button>    
-                </div>
-            )
+        // Put 3 per row
+        for (var i = 0; i < this.state.categories.length; i+=3){
+            var aRow = []
+            for ( var j = 0; j < 3 && i+j < this.state.categories.length; j++){
+                const index = i + j
+                aRow.push(
+                    <Col sm={4} key={this.state.categories[index].name}>
+                        <h4>
+                            <input type="checkbox" aria-label="Checkbox for delete Categories"
+                            onClick={e => this.updateToDelete(index,e.target.checked)}></input>
+                            {this.state.categories[index].name}    
+                        </h4>
+                        <Photo name={this.state.categories[index].name} url={this.state.categories[index].url} tags={this.state.categories[index].tags}
+                            height="200px" width="auto" className='fit-image'/>
+                    </Col>)
+            }
+            latest.push(<Row>{aRow}</Row>)
         }
-        if(cates.length<1) {
-            latest = 'No existen categorias'
+        if(latest.length<1){
+            latest = <span>No existen categorias</span>
         }
         return(
-        
-            <div>
-                <div className='btn-group' role='group' aria-label='Accions'>
-                    <Link to='/curador/dashboard/new-category'>Crear Categoria</Link>
-                    <button type="button" className="btn btn-secondary active" onClick={this.removeCategories}>Eliminar</button>
-                </div>
+            <Container>
+                <h2>Administrar Categorias</h2>
+                <Row>
+                    <ButtonGroup>
+                        <Button tag={Link} to={match.url + "/new-category"}>Crear categorias</Button>
+                        <Button onClick={this.toggleRemoveConfirmation}>Eliminar</Button>
+                        <Modal isOpen={this.state.deleteModal} toggle={this.toggleRemoveConfirmation}>
+                            <ModalHeader>¿Est&aacute;s seguro(a) que quieres eliminar la categoria?</ModalHeader>
+                            <ModalBody>
+                                No se eliminar&aacute;n las fotos, s&oacute;lo la categoria.
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="danger" onClick={this.removeCategories}>Eliminar</Button>
+                                <Button onClick={this.toggleRemoveConfirmation}>Volver</Button>
+                            </ModalFooter>
+                        </Modal>
+                    </ButtonGroup>
+                </Row>
+                <h3>Categorias disponibles</h3>
                 {latest}
-                
-            </div>
-            
+            </Container>
         );
     }
 

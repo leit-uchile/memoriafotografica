@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Photo from '../../components/Photo';
+import {Button, ButtonGroup, Row, Col, Container} from 'reactstrap';
 
 var list = [
     {
@@ -59,10 +60,6 @@ class Publish_Photos extends Component{
         this.getLatestElements = this.getLatestElements.bind(this)
         this.removeElement = this.removeElement.bind(this)
         this.updateElementState = this.updateElementState.bind(this)
-        this.state = {
-            ...this.list=list
-            
-        }
     }
 
     componentWillMount(){
@@ -103,22 +100,29 @@ class Publish_Photos extends Component{
         var actually = ''
 
         if(list.length<1) {
-            actually = 'Has filtrado todas las solicitudes'
+            actually = 'Has revisado todas las solicitudes'
         }
         else{
             actually= <Photo name={this.state.elements[0].name} url={this.state.elements[0].url} tags={this.state.elements[0].tags}
-                             desc={this.state.elements[0].desc} state={this.state.elements[0].state}/>
+                             desc={this.state.elements[0].desc} state={this.state.elements[0].state} height="400px"/>
 
         }
         return(
-            <div>
-                {actually}
-                <div className='btn-group' role='group' aria-label='Accions'>
-                    <button type="button" className="btn btn-primary active" onClick={this.updateElementState}>this.checkIn</button>
-                    <button type="button" className="btn btn-secondary active" onClick={this.removeElement}>Rechazar</button>
-                </div>
-                {latest}
-            </div>
+            <Container>
+                <Row>
+                    <Col sm={8}>
+                        {actually}
+                        {list.length === 0 ? null : 
+                        <ButtonGroup>
+                            <Button onClick={this.updateElementState}>Dar de baja</Button>
+                            <Button onClick={this.removeElement}>Descartar reporte</Button>
+                        </ButtonGroup>}
+                    </Col>
+                    <Col sm={4}>
+                        {latest}
+                    </Col>
+                </Row>
+            </Container>
         );
     }
 
