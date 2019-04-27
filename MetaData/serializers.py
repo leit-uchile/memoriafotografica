@@ -11,7 +11,7 @@ from Gallery.models import Photo
 
 
 
-class IPTCKeywordSerializer(serializers.Serializer):
+class IPTCKeywordSerializer(serializers.ModelSerializer):
     class Meta:
         model = IPTCKeyword
         fields = '__all__'
@@ -28,10 +28,10 @@ class IPTCKeywordSerializer(serializers.Serializer):
         return instance
 
 
-class MetadataSerializer(serializers.Serializer):
-   class Meta:
-       model = Metadata
-       fields = '__all__'
+class MetadataAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Metadata
+        fields = '__all__'
 
     def create(self, validated_data):
         return MetadataSerializer.objects.create(**validated_data)
@@ -39,7 +39,21 @@ class MetadataSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         instance.value = validated_data.get('value', instance.value)
         instance.metadata = validated_data.get('metadata', instance.metadata)
+        instance.approved = validated_data.get('approved', instance.approved)
         instance.save()
         return instance
 
+class MetadataSerializer(serializers.ModelSerializer):
+    class Meta:
+        exclude = ('approved')
+        model = Metadata
+    def create(self, validated_data):
+        return MetadataSerializer.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.value = validated_data.get('value', instance.value)
+        instance.metadata = validated_data.get('metadata', instance.metadata)
+        instance.approved = validated_data.get('approved', instance.approved)
+        instance.save()
+        return instance
 

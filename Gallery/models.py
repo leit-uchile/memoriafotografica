@@ -71,6 +71,6 @@ class Album(models.Model):
 
     name = models.CharField(max_length=40)
     pictures = models.ManyToManyField(Photo, blank = True)
-
+    description = models.CharField(max_length=255, blank=True)
     def __str__(self):
         return "Album " + self.name
