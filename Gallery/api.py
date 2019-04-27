@@ -8,7 +8,7 @@ from Users.models import User
 from .serializers import *
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.exceptions import NotFound
-from MetaData.models import MetadataTitle, MetadataDescription
+from MetaData.models import *
 from Users.permissions import *
 from .permissions import *
 from django.http import Http404, QueryDict

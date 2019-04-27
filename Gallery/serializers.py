@@ -80,7 +80,7 @@ class CreatePhotoSerializer(serializers.ModelSerializer):
 class PhotoSerializer(serializers.ModelSerializer):
     #Para usuario colaborador
     class Meta:
-        fields = ('id','image', 'title', 'uploadDate', 'category', 'permission', 'comments')
+        exclude = ('censure', 'approved','report',)
         model = Photo
 
     def update(self, instance, validated_data):
