@@ -8,6 +8,9 @@ __pycache__/
 *.pyc
 **/db.sqlite3
 db.sqlite3
+
+media/*
+
 # ========== Visual Studio Code ========
 .vscode/
 

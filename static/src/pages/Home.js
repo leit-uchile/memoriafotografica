@@ -1,41 +1,40 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux'
 import {home} from '../actions';
+import Photo from '../components/Photo';
+import {Container, Row} from 'reactstrap';
 
 import history from '../history'
 
-const Home = ({photos, onLoad}) => (
-    <div className='container-fluid'>
-        <button onClick={onLoad}>Click</button>
-        <div className='row'>
-            <Gallery photoList={photos} />
-        </div>
-    </div>
-)
+class Home extends Component{
 
-const Photo = ({name,url,url2,tags}) => {
-            const detailsFunc = () => history.push('/photo')
-            if(url === undefined){
-                return(
-                <div className='col-md-4 mt-3'>
-                    <h2>{name}</h2>
-                    <img className='img-fluid' src={url2}/>
-                </div>)
-            }else{
-                return (
-                <div className='col-md-4 mt-3'>
-                    <h2>{name}</h2>
-                    <img className='img-fluid' src={url} onClick={detailsFunc}/>
-                </div>)
-            }
+    constructor(props){
+        super(props)
+        this.state = {
+            photos: undefined
         }
+    }
+
+    componentWillMount(){
+        this.props.onLoad()
+    }
+
+    render(){
+        const {photos} = this.props
+        return(
+        <Container fluid>
+            <Gallery photoList={photos} />            
+        </Container>
+        )
+    }
+}
 
 const Gallery = ({photoList}) => (
-    <div className='row'>
+    <Row>
         {photoList.map((el, index) => (
-            <Photo key={index} name={el.name} url={el.url} tags={el.tags} url2={el.image}/>
+            <Photo key={index} name={el.title} url={el.image} tags={el.metadata} url2={el.image} height="200px" onClick={() =>history.push('/photo')}/>
         ))}
-    </div>
+    </Row>
 )
 
 const mapStateToProps = state => {

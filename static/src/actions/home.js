@@ -1,7 +1,7 @@
 export const home = () => {return (dispatch,getState) => {
     let headers = {"Content-Type": "application/json"};
 
-    return fetch('http://localhost:8000/gallery/photo/',{method: 'GET', headers: headers})
+    return fetch('/gallery/photo/',{method: 'GET', headers: headers})
     .then(function(response) {
       const r = response
       if(r.status === 200){

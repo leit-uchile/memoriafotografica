@@ -53,7 +53,7 @@ class Photo(models.Model):
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
     approved = models.BooleanField(default=True)
     censure = models.BooleanField(default = False)
-    permission = MultiSelectField(choices=PERMISSION_CHOICES, max_choices=3, max_length=3)
+    permission = MultiSelectField(choices=PERMISSION_CHOICES, max_choices=3)
     category = models.ManyToManyField(Category, blank = True)
     comments = models.ManyToManyField(Comment, blank = True)
     metadata = models.ManyToManyField(Metadata, blank = True)
