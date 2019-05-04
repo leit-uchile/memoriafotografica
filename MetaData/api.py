@@ -79,7 +79,7 @@ class IPTCKeywordDetailAPI(generics.GenericAPIView):
         keyword = self.get_object(pk)
         #serializer_class = IPTCKeywordSerializer
         serializer = IPTCKeywordSerializer(keyword)
-        return Response(serializer.data)        
+        return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
         keyword = self.get_object(pk)
@@ -129,13 +129,13 @@ class MetadataListAPI(generics.GenericAPIView):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
 
 class MetadataDetailAPI(generics.GenericAPIView):
     """
     get:
     Get details of Metadata
-    
+
     put:
     Modify (partially) the attributes of a metadata.
 
@@ -197,3 +197,21 @@ class MetadataDetailAPI(generics.GenericAPIView):
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
 
+
+
+
+class MetadataPhotoListAPI(generics.GenericAPIView):
+
+    permission_classes = [IsAuthenticated,]
+    def get_object(self, pk):
+        try:
+            metadata = Metadata.objects.get(pk=pk)
+            if not admin:
+                if metadata.approved:
+                    raise Metadata.DoesNotExist
+            return metadata
+        except Photo.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, *args, **kwargs):
+        return Response()
