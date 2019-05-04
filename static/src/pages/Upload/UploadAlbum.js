@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import UploadDetails from './UploadDetails.js'
-import UploadAlbum from './UploadAlbum.js'
 import { Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import {v4} from 'uuid';
 
-class UploadPhoto extends Component{
+class UploadAlbum extends Component{
   constructor(Props) {
     super();
     this.props = Props
@@ -92,37 +91,32 @@ class UploadPhoto extends Component{
   }
 
   render() {
-    var details = this.state.photosList.map( (el, key) => 
-      <UploadDetails key={`${key}-${el.id}`} photo={el.photo} save={(info) => this.saveMeta(info, key)} delete={(info) => this.handleErase(info,key)} meta={el.meta}/>)
-    var createAlbum = true
-    if (createAlbum===true){
-      var left = <UploadAlbum />}
     return (
       <Container>
-        <Row>
-          <Col md='3'>
-            <FormGroup check>  
-              <Label check><Input type='checkbox' onClick={() => createAlbum=true} />Subir como Album</Label>
-            </FormGroup>
-            <Form onSubmit={this.onSubmit}>
+        
+          
+            <Form>
               <FormGroup>
-                <Input type='file' multiple onChange={this.handleFileSelect}/>
-                <output id='list'></output>
+                <Input type="text" name="album-name" placeholder="Nombre del album" onChange={this.updateAlbumName} required/>
+                <Input type="date" name="date" id="date" onChange={this.updateAlbumDate} required/>
+                <Input type="textarea" name="album-description" placeholder="Descripcion" onChange={this.updateAlbumDesc}/>
+                <Input type="search" name="album-tags" placeholder="Etiquetas"/>
+                <Label>Creative Commons</Label>
+                <FormGroup check inline>                            
+                  <Label check><Input type='checkbox' onClick={() => this.updateCC('CC BY')} active={this.state.cc.includes('CC BY')} />CC BY</Label>
+                  <Label check><Input type='checkbox' onClick={() => this.updateCC('CC BY-SA')} active={this.state.cc.includes('CC BY-SA')} />CC BY-SA</Label>
+                  <Label check><Input type='checkbox' onClick={() => this.updateCC('CC BY-ND')} active={this.state.cc.includes('CC BY-ND')} />CC BY-ND</Label>
+                  <Label check><Input type='checkbox' onClick={() => this.updateCC('CC BY-NC')} active={this.state.cc.includes('CC BY-NC')} />CC BY-NC</Label>
+                  <Label check><Input type='checkbox' onClick={() => this.updateCC('CC BY-NC-SA')} active={this.state.cc.includes('CC BY-NC-SA')} />CC BY-NC-SA</Label>
+                  <Label check><Input type='checkbox' onClick={() => this.updateCC('CC BY-NC-ND')} active={this.state.cc.includes('CC BY-NC-ND')} />CC BY-NC-ND</Label>
+                </FormGroup>
               </FormGroup>
-              <ButtonGroup>
-                  <Button onClick={this.props.goBack}>Atras</Button>
-                  <Button type="submit">Continuar</Button>
-              </ButtonGroup>                
-            </Form>   
-            {left}
-          </Col>
-          <Col md='9'>
-            {details}
-          </Col>
-        </Row>
+            </Form>            
+          
+        
       </Container>
     )
   }
 }
 
-export default UploadPhoto
+export default UploadAlbum

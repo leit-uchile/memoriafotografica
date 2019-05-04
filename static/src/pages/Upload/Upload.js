@@ -11,16 +11,14 @@ class UploadPage extends Component{
     constructor(Props){
         super(Props)
         this.state = {
-            currentPage: 0,
+            currentPage: 2,
             userInfo: null,
             photos: null,
         }
         this.back = this.back.bind(this);
         this.siguiente = this.siguiente.bind(this);
         this.saveUserInfo = this.saveUserInfo.bind(this);
-        this.savePhotos = this.savePhotos.bind(this);
-        
-
+        this.savePhotos = this.savePhotos.bind(this); 
     }
 
     back(){

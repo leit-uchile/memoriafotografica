@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 
 class UploadUnregister extends Component{
     constructor(Props){
-        super()
-        this.props = Props        
+        super(Props)       
         if(Props.cache != null){
             this.state = {
                 ...Props.cache,
