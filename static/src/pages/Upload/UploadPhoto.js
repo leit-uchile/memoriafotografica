@@ -1,29 +1,40 @@
 import React, {Component} from 'react';
 import UploadDetails from './UploadDetails.js'
 import UploadAlbum from './UploadAlbum.js'
-import { Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import {CustomInput, Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import {v4} from 'uuid';
 
 class UploadPhoto extends Component{
   constructor(Props) {
     super();
     this.props = Props
-    this.state = {
-      albumName: "",
-      albumDesc:"",
-      albumDate:"",
-      albumTags:"",
-      cc:[],
-      photosList: Array()
+    this.onAlbum = true
+    if(this.onAlbum){
+      this.state = {
+        date:"",
+        tags:"",
+        cc:[],
+        albumName: "",
+        albumDesc:"",
+        photosList: Array()
+      }
+    }else{
+      this.state = {
+        date:"",
+        tags:"",
+        cc:[],
+        photosList: Array()
+      }
     }
-    this.saveMeta = this.saveMeta.bind(this);
     this.handleErase = this.handleErase.bind(this);
   }
 
-  updateAlbumName =  e => {this.setState({albumName : e.target.value})}
-  updateAlbumDesc =  e => {this.setState({albumDesc : e.target.value})}
-  updateAlbumDate =  e => {this.setState({albumDate : e.target.value})}
-  
+  isAlbum(){
+    this.onAlbum = true;
+    console.log(this.onAlbum)}
+
+  updateDate =  e => {this.setState({date : e.target.value})}
+  //updateTags
   updateCC(selected) {
       const index = this.state.cc.indexOf(selected);
       if (index < 0) {
@@ -32,6 +43,10 @@ class UploadPhoto extends Component{
         this.state.cc.splice(index, 1);//elimina 1 elemento
       }
       this.setState({ cc: [...this.state.cc] });//actualiza
+  }
+
+  saveAlbum(info){
+    this.setState({albumName: info.albumName, albumDesc: info.albumDesc})
   }
 
   handleFileSelect= e=>{
@@ -94,29 +109,40 @@ class UploadPhoto extends Component{
   render() {
     var details = this.state.photosList.map( (el, key) => 
       <UploadDetails key={`${key}-${el.id}`} photo={el.photo} save={(info) => this.saveMeta(info, key)} delete={(info) => this.handleErase(info,key)} meta={el.meta}/>)
-    var createAlbum = true
-    if (createAlbum===true){
-      var left = <UploadAlbum />}
+    if (this.onAlbum){
+      var left = <UploadAlbum save={(info) => this.saveAlbum(info) }/>}
     return (
-      <Container>
+      <Container style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
         <Row>
           <Col md='3'>
-            <FormGroup check>  
-              <Label check><Input type='checkbox' onClick={() => createAlbum=true} />Subir como Album</Label>
-            </FormGroup>
+            <Button color="primary" onClick={() => this.isAlbum()}>+ Album</Button>
             <Form onSubmit={this.onSubmit}>
               <FormGroup>
                 <Input type='file' multiple onChange={this.handleFileSelect}/>
-                <output id='list'></output>
+                <hr />
+                <Label>Configuración general</Label>
+                <Input type="date" name="date" id="date" onChange={this.updateDate} required/>
+                <Input type="search" name="album-tags" placeholder="Etiquetas"/>
+              </FormGroup>
+              <FormGroup>
+                <Label>Creative Commons</Label>                         
+                <div>
+                  <CustomInput type='checkbox' label='CC BY' onClick={() => this.updateCC('CC BY')} active={this.state.cc.includes('CC BY')} />
+                  <CustomInput type='checkbox' label='CC BY-SA' onClick={() => this.updateCC('CC BY-SA')} active={this.state.cc.includes('CC BY-SA')}  />
+                  <CustomInput type='checkbox' label='CC BY-ND' onClick={() => this.updateCC('CC BY-ND')} active={this.state.cc.includes('CC BY-ND')} />
+                  <CustomInput type='checkbox' label='CC BY-NC' onClick={() => this.updateCC('CC BY-NC')} active={this.state.cc.includes('CC BY-NC')} />
+                  <CustomInput type='checkbox' label='CC BY-NC-SA' onClick={() => this.updateCC('CC BY-NC-SA')} active={this.state.cc.includes('CC BY-NC-SA')} />
+                  <CustomInput type='checkbox' label='CC BY-NC-ND' onClick={() => this.updateCC('CC BY-NC-ND')} active={this.state.cc.includes('CC BY-NC-ND')} />
+                </div>
               </FormGroup>
               <ButtonGroup>
                   <Button onClick={this.props.goBack}>Atras</Button>
                   <Button type="submit">Continuar</Button>
-              </ButtonGroup>                
-            </Form>   
-            {left}
+              </ButtonGroup>          
+            </Form>
           </Col>
           <Col md='9'>
+            {left}
             {details}
           </Col>
         </Row>
