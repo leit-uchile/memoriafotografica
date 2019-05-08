@@ -100,6 +100,25 @@ class IPTCKeywordDetailAPI(generics.GenericAPIView):
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
 
+class IPTCKeywordMetadataListAPI(generics.GenericAPIView):
+
+    permission_classes = [IsAuthenticated,]
+    def get_object(self,pk):
+        try:
+            return IPTCKeyword.objects.get(pk=pk)
+        except IPTCKeyword.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, *args,**kwargs):
+        iptc = self.get_object(pk)
+        if request.user.user_type == 1:
+            metadata = iptc.metadata_set.filter(approved = True)
+            serializer = MetadataSerializer(metadata, many=True)
+        else:
+            metadata = iptc.metadata_set.all()
+            serializer = MetadataAdminSerializer(metadata, many=True)
+        return Response(serializer.data)
+
 
 class MetadataListAPI(generics.GenericAPIView):
     """
@@ -210,11 +229,11 @@ class MetadataPhotoListAPI(generics.GenericAPIView):
                 if metadata.approved:
                     raise Metadata.DoesNotExist
             return metadata
-        except Photo.DoesNotExist:
+        except MetaData.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
-        md = get_object(pk)
+        md = self.get_object(pk)
         if request.user.user_type == 1:
             pictures = md.photo_set.filter(censure = False, approved = True)
             serializer = PhotoSerializer(pictures, many=True)
