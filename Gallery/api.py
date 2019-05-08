@@ -439,6 +439,8 @@ class AlbumDetailAPI(generics.GenericAPIView):
 
 
 class CategoryPhotoListAPI(generics.GenericAPIView):
+
+    permission_classes = (IsAuthenticated,)
     def get_object(self, pk):
         try:
             return Category.objects.get(pk=pk)
