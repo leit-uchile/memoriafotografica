@@ -40,8 +40,11 @@ class MetadataAdminSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.value = validated_data.get('value', instance.value)
-        instance.metadata = validated_data.get('metadata', instance.metadata)
-        instance.approved = validated_data.get('approved', instance.approved)
+        try:
+            instance.metadata.set(validated_data.get('metadata', instance.metadata))
+        except KeyError:
+            pass
+        instance.approved = validated_data.get('approved', instance.approved)    
         instance.save()
         return instance
 
@@ -56,8 +59,11 @@ class MetadataSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.value = validated_data.get('value', instance.value)
-        instance.metadata = validated_data.get('metadata', instance.metadata)
-        instance.approved = validated_data.get('approved', instance.approved)
+        try:
+           instance.metadata.set = validated_data.get('metadata', instance.metadata)
+        except KeyError:
+            pass
+        #instance.approved = validated_data.get('approved', instance.approved)
         instance.save()
         return instance
 

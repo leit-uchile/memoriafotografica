@@ -124,7 +124,7 @@ class MetadataListAPI(generics.GenericAPIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        serializer = MetadataSerializer(data=request.data)
+        serializer = MetadataAdminSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
@@ -144,14 +144,14 @@ class MetadataDetailAPI(generics.GenericAPIView):
 
     """
     permission_classes = [IsAuthenticated,]
-    def get_object(self, pk):
+    def get_object(self, pk, admin):
         try:
             metadata = Metadata.objects.get(pk=pk)
             if not admin:
                 if metadata.approved:
                     raise Metadata.DoesNotExist
             return metadata
-        except Photo.DoesNotExist:
+        except Metadata.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
@@ -190,7 +190,7 @@ class MetadataDetailAPI(generics.GenericAPIView):
             adm = True
         else:
             adm = False
-            metadata = self.get_object(pk, adm)
+        metadata = self.get_object(pk, adm)
         if request.user.user_type != 1 or metadata in request.user.metadata.all():
             metadata.delete()
             return Response(status = status.HTTP_204_NO_CONTENT)
