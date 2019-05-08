@@ -9,6 +9,7 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     re_path("^", include(router.urls)),
+    re_path('^api/auth/', include('knox.urls')),
     re_path("^auth/register/$", RegistrationAPI.as_view()),
     re_path("^auth/login/$", LoginAPI.as_view()),
     re_path("^auth/user/$", UserTokenAPI.as_view()),
