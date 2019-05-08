@@ -47,7 +47,7 @@ class IPTCKeywordListAPI(generics.GenericAPIView):
         serializer = IPTCKeywordSerializer(data=request.data)
         if user !=1:
             if serializer.is_valid():
-                print("saving ser.")
+                #print("saving ser.")
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -123,8 +123,14 @@ class MetadataListAPI(generics.GenericAPIView):
             serializer = MetadataSerializer(metadata, many=True)
         return Response(serializer.data)
 
-    def post(self, request, *args, **kwargs):
-        serializer = MetadataAdminSerializer(data=request.data)
+    def post(self, request, *args, **kwargs):        
+        if request.user.user_type != 1:
+            serializer = MetadataAdminSerializer(data=request.data)
+            
+        elif request.user.user_type == 1:
+            serializer = MetadataSerializer(data = request.data)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)            
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
@@ -148,7 +154,7 @@ class MetadataDetailAPI(generics.GenericAPIView):
         try:
             metadata = Metadata.objects.get(pk=pk)
             if not admin:
-                if metadata.approved:
+                if not metadata.approved:
                     raise Metadata.DoesNotExist
             return metadata
         except Metadata.DoesNotExist:
@@ -162,10 +168,11 @@ class MetadataDetailAPI(generics.GenericAPIView):
         else:
             metadata = self.get_object(pk, False)
             serializer_class = MetadataSerializer
-            serializer = MetadataSerializer
+            serializer = MetadataSerializer(metadata)
         return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
+        """
         if request.user.user_type == 1:
             metadata = self.get_object(pk, False)
             if metadata in request.user.metadata.all():
@@ -173,7 +180,8 @@ class MetadataDetailAPI(generics.GenericAPIView):
                 serializer = MetadataSerializer(metadata, data=request.data, partial = True)
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
-        elif request.user.user_type != 1:
+                """
+        if request.user.user_type != 1:
             metadata = self.get_object(pk,True)
             serializer_class = MetadataAdminSerializer
             serializer = MetadataAdminSerializer(metadata, data = request.data, partial=True)
@@ -191,7 +199,7 @@ class MetadataDetailAPI(generics.GenericAPIView):
         else:
             adm = False
         metadata = self.get_object(pk, adm)
-        if request.user.user_type != 1 or metadata in request.user.metadata.all():
+        if request.user.user_type != 1:
             metadata.delete()
             return Response(status = status.HTTP_204_NO_CONTENT)
         else:
