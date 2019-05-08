@@ -214,4 +214,11 @@ class MetadataPhotoListAPI(generics.GenericAPIView):
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
-        return Response()
+        md = get_object(pk)
+        if request.user.user_type == 1:
+            pictures = md.photo_set.filter(censure = False, approved = True)
+            serializer = PhotoSerializer(pictures, many=True)
+        else:
+            pictures = md.photo_set.all()
+            serializer = PhotoAdminSerializer(pictures, many=True)
+        return Response(serializer.data)
