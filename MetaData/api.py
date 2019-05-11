@@ -142,14 +142,14 @@ class MetadataListAPI(generics.GenericAPIView):
             serializer = MetadataSerializer(metadata, many=True)
         return Response(serializer.data)
 
-    def post(self, request, *args, **kwargs):        
+    def post(self, request, *args, **kwargs):
         if request.user.user_type != 1:
             serializer = MetadataAdminSerializer(data=request.data)
-            
+
         elif request.user.user_type == 1:
             serializer = MetadataSerializer(data = request.data)
         else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)            
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
@@ -206,7 +206,7 @@ class MetadataDetailAPI(generics.GenericAPIView):
                 serializer_class = MetadataAdminSerializer
                 serializer = MetadataAdminSerializer(metadata, data = request.data, partial=True)
             else:
-                Response(status=status.HTTP_401_UNAUTHORIZED)  
+                Response(status=status.HTTP_401_UNAUTHORIZED)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
@@ -246,7 +246,7 @@ class MetadataPhotoListAPI(generics.GenericAPIView):
     def get(self, request, pk, *args, **kwargs):
         if request.user.user_type == 1:
             md = self.get_object(pk, False)
-            pictures = md.photo_set.filter(censure = True, approved = False)
+            pictures = md.photo_set.exclude(censure = True, approved = False)
             serializer = PhotoSerializer(pictures, many=True)
         else:
             md = self.get_object(pk, True)
