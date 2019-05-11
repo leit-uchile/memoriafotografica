@@ -9,7 +9,7 @@ import Home from './Home';
 import Login from './Login';
 import Register from './Register/Register';
 import NoMatch from "./NoMatch";
-import Upload from './Upload';
+import Upload from './Upload/Upload';
 import PhotoDetails from "./PhotoView/PhotoDetail";
 import PrivateComponent from '../components/PrivateComponent';
 import TestComponent from './TestComponent'
@@ -37,7 +37,7 @@ class Layout extends Component{
                 <Footer/>
             </div>
         );
-    }
+   }
 
 }
 export default Layout;
