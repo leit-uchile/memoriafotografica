@@ -1,35 +1,28 @@
 import React, {Component} from 'react';
+import ReactTags from 'react-tag-autocomplete'
 import {upload} from '../../actions';
 import {connect} from 'react-redux';
 import uploadPhoto from '../../css/uploadPhoto.css'
-import { Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input, Collapse, Card, CardBody } from 'reactstrap';
+import { Container, Row, Col, Button, CustomInput, ButtonGroup, Form, FormGroup, Label, Input, Collapse, Card, CardBody } from 'reactstrap';
 
 class UploadDetails extends Component{
     constructor(Props){
         super(Props);
-        this.toggle = this.toggle.bind(this)
-        this.otherConfig = false
+        console.log(this.props)
         if(Props.meta != null){
             this.state = {
                 ...Props.meta,
             }
         }else{
-            if(this.otherConfig){
-                this.state = {
-                    description: "",
-                    tags: "",
+            this.state = {
+                    description: "",                    
+                    tags: [],
                     cc: [],
                     previewCalled: false,
                     collapse: false
                 } 
-            }else{
-                this.state = {
-                    description: "",
-                    previewCalled: false,
-                    collapse: false
-                }
             }
-        };
+        this.toggle = this.toggle.bind(this);
 
         // Prepare File Reader for preview management
         this.fr = new FileReader();
@@ -39,25 +32,27 @@ class UploadDetails extends Component{
             this.setState({src: e.target.result})
             };
         })(Props.photo).bind(this);
-
     }
+
     updateDescription = e =>{
         this.setState({description : e.target.value});
-    }
-
-    onSubmit = e => {
-        e.preventDefault()
-        this.props.save(this.state)
-    }
-
-    onDelete = e => {
-        this.props.delete(this.state)
     }
 
     toggle() {
         this.setState(state => ({ collapse: !state.collapse }));
     }
-    //updateTags
+
+    deleteTag(i) {
+        const tags = this.state.tags.slice(0)
+        tags.splice(i, 1)
+        this.setState({ tags })
+    }
+
+    additionTag(tag) {
+        const tags = [].concat(this.state.tags, tag)
+        this.setState({ tags: tags })
+    }
+    
     updateCC(selected) {
         const index = this.state.cc.indexOf(selected);
         if (index < 0) {
@@ -66,6 +61,17 @@ class UploadDetails extends Component{
         this.state.cc.splice(index, 1);//elimina 1 elemento
         }
         this.setState({ cc: [...this.state.cc] });//actualiza
+    }
+    onSubmit = e => {
+        e.preventDefault()
+        if (this.state.collapse===true){
+            this.toggle()
+        }
+        this.props.save(this.state)
+    }
+
+    onDelete = e => {
+        this.props.delete(this.state)
     }
 
     componentWillMount(){
@@ -80,7 +86,7 @@ class UploadDetails extends Component{
                         <img src={this.state.src} id='thumb'/>
                     </Col>                  
                     <Col md='6'>    
-                        <Form onChange={this.onSubmit}>
+                        <Form onSubmit={this.onSubmit}>
                             <FormGroup>
                                 <Input type="textarea" name="description" placeholder="Historia asociada a la foto"id="description" onChange={this.updateDescription} value={this.state.description} required/>                                
                             </FormGroup>
@@ -88,22 +94,23 @@ class UploadDetails extends Component{
                             <Collapse isOpen={this.state.collapse}>
                                 <Card>
                                     <CardBody>
+                                    <ReactTags placeholder={'Añadir etiquetas'} autoresize={false} allowNew={true} tags={this.state.tags} suggestions={this.props.suggestions} handleDelete={this.deleteTag.bind(this)} handleAddition={this.additionTag.bind(this)} />
                                     <FormGroup>
-                                        <Input type="search" name="album-tags" placeholder="Etiquetas"/>
-                                    </FormGroup>
-                                    <Label>Creative Commons</Label>
-                                    <FormGroup check inline>                            
-                                        <Label check><Input type='checkbox' onClick={() => this.updateCC('CC BY')} active={this.state.cc.includes('CC BY')} />CC BY</Label>
-                                        <Label check><Input type='checkbox' onClick={() => this.updateCC('CC BY-SA')} active={this.state.cc.includes('CC BY-SA')} />CC BY-SA</Label>
-                                        <Label check><Input type='checkbox' onClick={() => this.updateCC('CC BY-ND')} active={this.state.cc.includes('CC BY-ND')} />CC BY-ND</Label>
-                                        <Label check><Input type='checkbox' onClick={() => this.updateCC('CC BY-NC')} active={this.state.cc.includes('CC BY-NC')} />CC BY-NC</Label>
-                                        <Label check><Input type='checkbox' onClick={() => this.updateCC('CC BY-NC-SA')} active={this.state.cc.includes('CC BY-NC-SA')} />CC BY-NC-SA</Label>
-                                        <Label check><Input type='checkbox' onClick={() => this.updateCC('CC BY-NC-ND')} active={this.state.cc.includes('CC BY-NC-ND')} />CC BY-NC-ND</Label>
+                                        <Label for={this.props.id}>Permisos de acceso e intercambio</Label>
+                                        <div>
+                                        <CustomInput type="checkbox" id={this.props.id+1} label="CC BY" onClick={() => this.updateCC('CC BY')}/>
+                                        <CustomInput type="checkbox" id={this.props.id+2} label="CC BY-SA" onClick={() => this.updateCC('CC BY-SA')} />
+                                        <CustomInput type="checkbox" id={this.props.id+3} label="CC BY-ND" onClick={() => this.updateCC('CC BY-ND')}/>
+                                        <CustomInput type="checkbox" id={this.props.id+4} label="CC BY-NC" onClick={() => this.updateCC('CC BY-NC')} />
+                                        <CustomInput type="checkbox" id={this.props.id+5} label="CC BY-NC-SA" onClick={() => this.updateCC('CC BY-NC-SA')} />
+                                        <CustomInput type="checkbox" id={this.props.id+6} label="CC BY-NC-ND" onClick={() => this.updateCC('CC BY-NC-ND')} />
+                                        </div>
                                     </FormGroup>
                                     </CardBody>
                                 </Card>
                             </Collapse>
-                            <Button onClick={this.onDelete}>Eliminar</Button>
+                            <Button type="submit">Guardar cambios</Button>
+                            <Button onClick={this.onDelete}>Eliminar</Button>                            
                         </Form>
                     </Col>
                     

@@ -3,8 +3,7 @@ import { Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input
 
 class UploadAlbum extends Component{
   constructor(Props) {
-    super();
-    this.props = Props
+    super(Props);
     this.state = {
       albumName: "",
       albumDesc:"",
