@@ -227,9 +227,6 @@ class MetadataDetailAPI(generics.GenericAPIView):
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
 
-
-
-
 class MetadataPhotoListAPI(generics.GenericAPIView):
 
     permission_classes = [IsAuthenticated,]
