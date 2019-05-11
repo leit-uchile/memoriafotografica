@@ -8,13 +8,6 @@ import history from '../history'
 
 class Home extends Component{
 
-    constructor(props){
-        super(props)
-        this.state = {
-            photos: undefined
-        }
-    }
-
     componentWillMount(){
         this.props.onLoad()
     }
@@ -32,7 +25,7 @@ class Home extends Component{
 const Gallery = ({photoList}) => (
     <Row>
         {photoList.map((el, index) => (
-            <Photo key={index} name={el.title} url={el.image} tags={el.metadata} url2={el.image} height="200px" onClick={() =>history.push('/photo')}/>
+            <Photo key={index} name={el.title} url={el.image} tags={el.metadata} url2={el.image} height="200px" onClick={() =>history.push(`/photo/${el.id}`)}/>
         ))}
     </Row>
 )

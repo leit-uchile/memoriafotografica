@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import UserModal from './UserModal'
-//import header from '../css/header.css';
+import header from '../css/header.css';
 import {Navbar, NavbarBrand, NavbarToggler, Collapse, Nav, NavItem, NavLink} from 'reactstrap';
 
 class Header extends Component{
@@ -23,17 +23,25 @@ class Header extends Component{
         if(this.props.isAuth === true){
             doLoginNav = <NavLink tag={UserModal}></NavLink>
         }else{
-            doLoginNav = <NavLink tag={Link} to="/login">Login</NavLink>
+            doLoginNav = <NavLink tag={Link} to="/login"><i class="glyphicon glyphicon-user"></i>Ingresar</NavLink>
         }
         return(
             <header>
                 <Navbar color="light" light expand="md">
-                    <NavbarBrand> Memoria Fotografica </NavbarBrand>
+                    <NavbarBrand className="mf-navbar"> 
+                        <span id="mf-title">
+                        <b>Memoria</b> fotogr&aacute;fica 
+                        </span>
+                        <span>
+                            Facultad de Ciencias Fisicas y Matematicas - Universidad de Chile
+                        </span>
+                    </NavbarBrand>
                     <NavbarToggler onClick={this.toggleNav} />
                     <Collapse isOpen={this.state.toggle} navbar>
                         <Nav className="ml-auto" navbar>
-                            <NavItem><NavLink tag={Link} to={"/"}>Home</NavLink></NavItem>
-                            <NavItem><NavLink tag={Link} to={"/upload"}>Sube tu foto</NavLink></NavItem>
+                            <NavItem><NavLink tag={Link} to={"/"}>Inicio</NavLink></NavItem>
+                            <NavItem><NavLink tag={Link} to={"/gallery"}>Galer&iacute;a</NavLink></NavItem>
+                            <NavItem><NavLink tag={Link} to={"/upload"}>Participa</NavLink></NavItem>
                             <NavItem>{doLoginNav}</NavItem>
                         </Nav>
                     </Collapse>

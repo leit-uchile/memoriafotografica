@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Router } from "react-router-dom";
-import { Provider, connect } from 'react-redux';
+import { Provider} from 'react-redux';
 import history from './history'
 
 import './App.css'
