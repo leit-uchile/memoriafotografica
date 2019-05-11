@@ -132,8 +132,8 @@ class MetadataListAPI(generics.GenericAPIView):
     permission_classes = [IsAuthenticated,]
 
     def get(self, request, *args, **kwargs):
-        metadata_admin = Metadata.objects.all()
         if request.user.user_type != 1:
+            metadata_admin = Metadata.objects.all()
             serializer_class = MetadataAdminSerializer
             serializer = MetadataAdminSerializer(metadata_admin, many=True)
         else:
@@ -237,7 +237,7 @@ class MetadataPhotoListAPI(generics.GenericAPIView):
         try:
             metadata = Metadata.objects.get(pk=pk)
             if not admin:
-                if metadata.approved:
+                if not metadata.approved:
                     raise Metadata.DoesNotExist
             return metadata
         except Metadata.DoesNotExist:
@@ -246,7 +246,7 @@ class MetadataPhotoListAPI(generics.GenericAPIView):
     def get(self, request, pk, *args, **kwargs):
         if request.user.user_type == 1:
             md = self.get_object(pk, False)
-            pictures = md.photo_set.exclude(censure = True, approved = False)
+            pictures = md.photo_set.filter(censure =False, approved = True)
             serializer = PhotoSerializer(pictures, many=True)
         else:
             md = self.get_object(pk, True)
