@@ -221,26 +221,30 @@ class PhotoCommentListAPI(generics.GenericAPIView):
     List all comments from a photo, or create a new comment.
     """
     permission_classes = [IsAuthenticated,]
-    def get_object(self, pk):
+    def get_object(self, pk, admin):
         try:
-            return Photo.objects.get(pk=pk)
+            p = Photo.objects.get(pk=pk)
+            if not admin:
+                if p.censure or not p.approved:
+                    raise Photo.DoesNotExist
+            return p
         except Photo.DoesNotExist:
             raise Http404
     def get(self, request, pk, *args, **kwargs):
-        p = self.get_object(pk)
-        
         if request.user.user_type == 1:
+            p = self.get_object(pk, False)
             comments = p.comments.filter(censure=False)
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comments, many = True)
         else:
+            p = self.get_object(pk, True)
             comments = p.comments.all()
             serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comments, many = True)
         return Response(serializer.data)
 
     def post(self, request, pk, *args, **kwargs):
-        photo = self.get_object(pk)
+        photo = self.get_object(pk, False)
         serializer = CreateCommentSerializer(data = request.data)
         if serializer.is_valid():
             s = serializer.save()
