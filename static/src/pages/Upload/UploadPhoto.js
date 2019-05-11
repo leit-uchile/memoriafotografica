@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ReactTags from 'react-tag-autocomplete'
 import UploadDetails from './UploadDetails.js'
 import UploadAlbum from './UploadAlbum.js'
 import {CustomInput, Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
@@ -6,35 +7,44 @@ import {v4} from 'uuid';
 
 class UploadPhoto extends Component{
   constructor(Props) {
-    super();
-    this.props = Props
-    this.onAlbum = true
-    if(this.onAlbum){
-      this.state = {
+    super(Props);
+    this.state = {
         date:"",
-        tags:"",
+        tags: [],
+        suggestions: [
+          { id: 1, name: "Apples" },
+          { id: 2, name: "Pears" }
+        ],
         cc:[],
+        onAlbum: false,
         albumName: "",
         albumDesc:"",
         photosList: Array()
       }
-    }else{
-      this.state = {
-        date:"",
-        tags:"",
-        cc:[],
-        photosList: Array()
-      }
-    }
     this.handleErase = this.handleErase.bind(this);
+    this.isAlbum = this.isAlbum.bind(this);
   }
 
   isAlbum(){
-    this.onAlbum = true;
-    console.log(this.onAlbum)}
+    if(this.state.onAlbum){
+      this.setState({onAlbum: false})
+    }else{
+      this.setState({onAlbum: true})
+    }
+  }
 
   updateDate =  e => {this.setState({date : e.target.value})}
-  //updateTags
+
+  deleteTag(i) {
+    const tags = this.state.tags.slice(0)
+    tags.splice(i, 1)
+    this.setState({ tags })
+  }
+  additionTag(tag) {
+    const tags = [].concat(this.state.tags, tag)
+    this.setState({ tags: tags })
+  }
+
   updateCC(selected) {
       const index = this.state.cc.indexOf(selected);
       if (index < 0) {
@@ -96,20 +106,41 @@ class UploadPhoto extends Component{
   onSubmit = e => {
     e.preventDefault()   
     var count = 0;
+    var globalTags = this.state.tags
+    var globalCC = this.state.cc
+    var fillTags = false
+    var fillCC = false
     for(var i=0; i<this.state.photosList.length; i++){
-      if(this.state.photosList[i].meta!==null){
-        count+=1}
+      var meta = this.state.photosList[i].meta
+      if(meta!==null){
+        count+=1        
+        if(meta.tags===""){
+          fillTags = true
+          console.log('Fill Tags',fillTags)
+        }
+        if(meta.cc.length===0){
+          fillCC = true
+          console.log('Fill CC',fillCC)
+        }
+        if(fillTags){
+          meta = {description: meta.description, tags:globalTags, cc: meta.cc, previewCalled:meta.previewCalled, collapse:meta.collapse}
+        }
+        if(fillCC){
+          meta = {description: meta.description, tags:meta.tags, cc: globalCC, previewCalled:meta.previewCalled, collapse:meta.collapse}
+        }
+        this.saveMeta(meta,i)
+      }
     }
     if(count===this.state.photosList.length && this.state.photosList.length!==0){
         this.props.saveAll(this.state)
-      }else{
-        console.log('aun hay nulos')}
+    }else{
+        console.log('No hay fotos o alguna no cuenta con descripcion')}
   }
 
   render() {
     var details = this.state.photosList.map( (el, key) => 
-      <UploadDetails key={`${key}-${el.id}`} photo={el.photo} save={(info) => this.saveMeta(info, key)} delete={(info) => this.handleErase(info,key)} meta={el.meta}/>)
-    if (this.onAlbum){
+      <UploadDetails key={el.id} id={el.id} photo={el.photo} save={(info) => this.saveMeta(info, key)} delete={(info) => this.handleErase(info,key)} meta={el.meta} suggestions={this.state.suggestions}/>)
+    if (this.state.onAlbum){
       var left = <UploadAlbum save={(info) => this.saveAlbum(info) }/>}
     return (
       <Container style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
@@ -121,18 +152,18 @@ class UploadPhoto extends Component{
                 <Input type='file' multiple onChange={this.handleFileSelect}/>
                 <hr />
                 <Label>Configuración general</Label>
-                <Input type="date" name="date" id="date" onChange={this.updateDate} required/>
-                <Input type="search" name="album-tags" placeholder="Etiquetas"/>
+                <Input type="date" id="date" onChange={this.updateDate} required/>
+                <ReactTags placeholder={'Añadir etiquetas'} autoresize={false} allowNew={true} tags={this.state.tags} suggestions={this.state.suggestions} handleDelete={this.deleteTag.bind(this)} handleAddition={this.additionTag.bind(this)} />
               </FormGroup>
               <FormGroup>
-                <Label>Creative Commons</Label>                         
+                <Label for="CreativeCommons">Permisos de acceso e intercambio</Label>
                 <div>
-                  <CustomInput type='checkbox' label='CC BY' onClick={() => this.updateCC('CC BY')} active={this.state.cc.includes('CC BY')} />
-                  <CustomInput type='checkbox' label='CC BY-SA' onClick={() => this.updateCC('CC BY-SA')} active={this.state.cc.includes('CC BY-SA')}  />
-                  <CustomInput type='checkbox' label='CC BY-ND' onClick={() => this.updateCC('CC BY-ND')} active={this.state.cc.includes('CC BY-ND')} />
-                  <CustomInput type='checkbox' label='CC BY-NC' onClick={() => this.updateCC('CC BY-NC')} active={this.state.cc.includes('CC BY-NC')} />
-                  <CustomInput type='checkbox' label='CC BY-NC-SA' onClick={() => this.updateCC('CC BY-NC-SA')} active={this.state.cc.includes('CC BY-NC-SA')} />
-                  <CustomInput type='checkbox' label='CC BY-NC-ND' onClick={() => this.updateCC('CC BY-NC-ND')} active={this.state.cc.includes('CC BY-NC-ND')} />
+                  <CustomInput type="checkbox" id="CreativeCommonsCheckbox1" label="CC BY" onClick={() => this.updateCC('CC BY')}/>
+                  <CustomInput type="checkbox" id="CreativeCommonsCheckbox2" label="CC BY-SA" onClick={() => this.updateCC('CC BY-SA')} />
+                  <CustomInput type="checkbox" id="CreativeCommonsCheckbox3" label="CC BY-ND" onClick={() => this.updateCC('CC BY-ND')}/>
+                  <CustomInput type="checkbox" id="CreativeCommonsCheckbox4" label="CC BY-NC" onClick={() => this.updateCC('CC BY-NC')} />
+                  <CustomInput type="checkbox" id="CreativeCommonsCheckbox5" label="CC BY-NC-SA" onClick={() => this.updateCC('CC BY-NC-SA')} />
+                  <CustomInput type="checkbox" id="CreativeCommonsCheckbox6" label="CC BY-NC-ND" onClick={() => this.updateCC('CC BY-NC-ND')} />
                 </div>
               </FormGroup>
               <ButtonGroup>
