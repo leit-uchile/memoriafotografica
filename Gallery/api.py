@@ -142,13 +142,13 @@ class CommentListAPI(generics.GenericAPIView):
     Get a list of ALL comments.
     """
     permission_classes = [IsAuthenticated,]
-
     def get(self, request, *args, **kwargs):
-        comments = Comment.objects.all();
         if request.user.user_type == 1:
+            comments = Comment.objects.filter(censure=False)
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comments, many = True)
         else:
+            comments = Comment.objects.all()
             serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comments, many = True)
         return Response(serializer.data)
@@ -165,38 +165,53 @@ class CommentDetailAPI(generics.GenericAPIView):
     #permission_classes = [Or(And(IsOwner, Or(IsPutRequest, IsDeleteRequest)),
     #                         IsGetRequest),]
     permission_classes = [IsAuthenticated,]
-    def get_object(self, pk):
+    def get_object(self, pk, admin):
+        comment = Comment.objects.get(pk=pk)
         try:
-            return Comment.objects.get(pk=pk)
+            if not admin:
+                if comment.censure:
+                    raise Comment.DoesNotExist
+            return comment
         except Comment.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
-        comment = self.get_object(pk)
         if request.user.user_type == 1:
+            comment = self.get_object(pk, False)
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comment)
         else:
+            comment = self.get_object(pk, True)
             serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comment)
         return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
-        comment = self.get_object(pk)
         #serializer = CommentSerializer(comment, request.data)
         if request.user.user_type == 1 and comment in request.user.comments.all():
+            comment = self.get_object(pk, False)
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comment, data = request.data, partial = True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status= status.HTTP_200_OK)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        elif request.user.user_type !=1:
+            comment = self.get_object(pk, True)
+            serializer_class = CommentAdminSerializer
+            serializer = CommentAdminSerializer(comment, data=request.data, partial = True)
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status= status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
     def delete(self, request, pk, *args, **kwargs):
-        if request.user.user_type == 3 or comment in request.user.comments.all():
-            c = self.get_object(pk)
+        #comment = Comment.objects.get(pk=pk)
+        if comment in request.user.comments.all():
+            c = self.get_object(pk, False)
             c.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        elif request.user.user_type == 3:
+            c = self.get_object(pk, True)
+            c.detele()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status= status.HTTP_401_UNAUTHORIZED)
@@ -213,11 +228,13 @@ class PhotoCommentListAPI(generics.GenericAPIView):
             raise Http404
     def get(self, request, pk, *args, **kwargs):
         p = self.get_object(pk)
-        comments = p.comments.all()
+        
         if request.user.user_type == 1:
+            comments = p.comments.filter(censure=False)
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comments, many = True)
         else:
+            comments = p.comments.all()
             serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comments, many = True)
         return Response(serializer.data)
