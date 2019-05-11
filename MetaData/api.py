@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from Users.models import User
 from Gallery.models import *
-
+from Gallery.serializers import *
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.exceptions import NotFound
 
@@ -202,8 +202,11 @@ class MetadataDetailAPI(generics.GenericAPIView):
                 """
         if request.user.user_type != 1:
             metadata = self.get_object(pk,True)
-            serializer_class = MetadataAdminSerializer
-            serializer = MetadataAdminSerializer(metadata, data = request.data, partial=True)
+            if metadata.approved:
+                serializer_class = MetadataAdminSerializer
+                serializer = MetadataAdminSerializer(metadata, data = request.data, partial=True)
+            else:
+                Response(status=status.HTTP_401_UNAUTHORIZED)  
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
@@ -230,22 +233,23 @@ class MetadataDetailAPI(generics.GenericAPIView):
 class MetadataPhotoListAPI(generics.GenericAPIView):
 
     permission_classes = [IsAuthenticated,]
-    def get_object(self, pk):
+    def get_object(self, pk, admin):
         try:
             metadata = Metadata.objects.get(pk=pk)
             if not admin:
                 if metadata.approved:
                     raise Metadata.DoesNotExist
             return metadata
-        except MetaData.DoesNotExist:
+        except Metadata.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
-        md = self.get_object(pk)
         if request.user.user_type == 1:
-            pictures = md.photo_set.filter(censure = False, approved = True)
+            md = self.get_object(pk, False)
+            pictures = md.photo_set.filter(censure = True, approved = False)
             serializer = PhotoSerializer(pictures, many=True)
         else:
+            md = self.get_object(pk, True)
             pictures = md.photo_set.all()
             serializer = PhotoAdminSerializer(pictures, many=True)
         return Response(serializer.data)
