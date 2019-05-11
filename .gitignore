@@ -4,12 +4,16 @@ __pycache__/
 .DS_Store
 .idea/
 .venv/
+venv
 **/__pycache__/
 *.pyc
 **/db.sqlite3
 db.sqlite3
 # ========== Visual Studio Code ========
 .vscode/
+
+*.orig
+*/migrations
 
 # ================= Node ===============
 
