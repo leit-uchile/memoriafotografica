@@ -1,5 +1,7 @@
-import React, {Component} from 'react'
-import {Link} from 'react-router-dom'
+import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
+import {misc} from '../actions';
+import {connect} from 'react-redux';
 import {
     Carousel,
     CarouselItem,
@@ -7,6 +9,7 @@ import {
     CarouselIndicators,
     CarouselCaption
   } from 'reactstrap';
+
 
 const items = [
     {
@@ -62,6 +65,10 @@ class LandingPage extends Component{
         if (this.animating) return;
         this.setState({ activeIndex: newIndex });
       }
+
+      componentWillMount(){
+        this.props.setRoute('/Inicio');
+      }
     
       render() {
         const { activeIndex } = this.state;
@@ -88,4 +95,12 @@ class LandingPage extends Component{
       }
 }
 
-export default LandingPage;
+const mapActionsToProps = dispatch => {
+  return {
+    setRoute: (route) => {
+      return dispatch(misc.setCurrentRoute(route));
+    }
+  }
+}
+
+export default connect(null,mapActionsToProps)(LandingPage);

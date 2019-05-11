@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux'
-import {home} from '../actions';
+import {home, misc} from '../actions';
 import Photo from '../components/Photo';
 import {Container, Row} from 'reactstrap';
-
-import history from '../history'
 
 class Home extends Component{
 
     componentWillMount(){
+        this.props.setRoute('/gallery/')
         this.props.onLoad()
     }
 
@@ -25,7 +24,7 @@ class Home extends Component{
 const Gallery = ({photoList}) => (
     <Row>
         {photoList.map((el, index) => (
-            <Photo key={index} name={el.title} url={el.image} tags={el.metadata} url2={el.image} height="200px" onClick={() =>history.push(`/photo/${el.id}`)}/>
+            <Photo key={index} name={el.title} url={el.image} tags={el.metadata} url2={el.image} height="200px" useLink redirectUrl={`/photo/${el.id}`}/>
         ))}
     </Row>
 )
@@ -40,6 +39,9 @@ const mapActionsToProps = dispatch =>{
     return {
         onLoad: () => {
             return dispatch(home.home());
+        },
+        setRoute: (route) => {
+            return dispatch(misc.setCurrentRoute(route));
         }
     }
 }

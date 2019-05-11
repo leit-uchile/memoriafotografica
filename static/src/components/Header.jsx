@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import UserModal from './UserModal'
+import {misc} from '../actions'
 import header from '../css/header.css';
 import {Navbar, NavbarBrand, NavbarToggler, Collapse, Nav, NavItem, NavLink} from 'reactstrap';
 
@@ -20,11 +21,20 @@ class Header extends Component{
 
     render(){
         var doLoginNav;
-        if(this.props.isAuth === true){
-            doLoginNav = <NavLink tag={UserModal}></NavLink>
-        }else{
-            doLoginNav = <NavLink tag={Link} to="/login"><i class="glyphicon glyphicon-user"></i>Ingresar</NavLink>
-        }
+
+        const routes = [
+            {to: "/", text: "Inicio"},
+            {to: "/gallery", text: "Galeria"},
+            {to: "/upload", text: "Participa"},
+        ]
+
+        const {isAuth, currentRoute} = this.props;
+
+        doLoginNav = isAuth ? <NavLink tag={UserModal}></NavLink> : 
+                    currentRoute == '/login' ? 
+                    <NavLink tag={Link} to="/login" active><i class="glyphicon glyphicon-user"></i>Ingresar</NavLink> :
+                    <NavLink tag={Link} to="/login"><i class="glyphicon glyphicon-user"></i>Ingresar</NavLink>
+
         return(
             <header>
                 <Navbar color="light" light expand="md">
@@ -39,24 +49,19 @@ class Header extends Component{
                     <NavbarToggler onClick={this.toggleNav} />
                     <Collapse isOpen={this.state.toggle} navbar>
                         <Nav className="ml-auto" navbar>
-                            <NavItem><NavLink tag={Link} to={"/"}>Inicio</NavLink></NavItem>
-                            <NavItem><NavLink tag={Link} to={"/gallery"}>Galer&iacute;a</NavLink></NavItem>
+                            <NavItem>{ currentRoute == '/Inicio' ?
+                                <NavLink tag={Link} to={"/"} active>Inicio</NavLink> :
+                                <NavLink tag={Link} to={"/"}>Inicio</NavLink>
+                            }</NavItem>
+                            <NavItem>{ currentRoute == '/gallery/' ? 
+                                <NavLink tag={Link} to={"/gallery"} active>Galer&iacute;a</NavLink> :
+                                <NavLink tag={Link} to={"/gallery"}>Galer&iacute;a</NavLink>
+                            }</NavItem>
                             <NavItem><NavLink tag={Link} to={"/upload"}>Participa</NavLink></NavItem>
                             <NavItem>{doLoginNav}</NavItem>
                         </Nav>
                     </Collapse>
-                </Navbar>{/* 
-                <div className='container'>
-                    <img src={'/fcfm_header.png'} alt={'logo'}/>
-                    <h1>Memoria Fotográfica</h1>
-                </div>
-                <div className='container'>
-                    <ul className='nav justify-content-end'>
-                        <li className='nav-item'><Link className='nav-link' to={"/"}>Home</Link></li>
-			            <li className='nav-item'><Link className='nav-link' to={"/upload"}><span>Sube tu foto</span></Link></li>
-                        <li className='nav-item'>{doLoginNav}</li>
-                    </ul>
-                </div> */}
+                </Navbar>
             </header>
         );
     }
@@ -64,7 +69,8 @@ class Header extends Component{
 
 const mapStateToProps = state => {
     return {
-        isAuth : state.auth.isAuthenticated
+        isAuth : state.auth.isAuthenticated,
+        currentRoute: state.misc.currentRoute,
     }
 }
 

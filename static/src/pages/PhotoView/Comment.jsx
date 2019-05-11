@@ -3,9 +3,8 @@ import Avatar from './Avatar'
 
 class Comment extends Component{
     
-    constructor(Props){
-        super()
-        this.props = Props
+    constructor(props){
+        super(props)
         this.state = {
             userdata: null
         }
@@ -31,7 +30,7 @@ class Comment extends Component{
     render(){
         return (
         <div className="row">
-            <Avatar avatarurl={this.state.userdata.avatar} name={this.state.userdata.name} isComment={true}/>
+            {/* <Avatar avatarurl={this.state.userdata.avatar} name={this.state.userdata.name} isComment={true}/> */}
             <p className="col-10">
                 {this.props.content}
             </p>

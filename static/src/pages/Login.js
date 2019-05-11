@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {Link, Redirect} from 'react-router-dom';
-import {auth} from '../actions';
+import {auth, misc} from '../actions';
 import {connect} from 'react-redux';
+import '../css/login.css';
 
 class Login extends Component{
 
@@ -22,8 +23,11 @@ class Login extends Component{
         this.props.login(this.state.email, this.state.password);
     }
 
-    render(){
+    componentWillMount(){
+        this.props.setRoute('/login')
+    }
 
+    render(){
         if (this.props.isAuthenticated) {   
             return <Redirect to="/" />
         }
@@ -97,6 +101,9 @@ const mapActionsToProps = dispatch => {
     return {
         login: (email, password) => {
           return dispatch(auth.login(email, password));
+        },
+        setRoute: (route) =>{
+            return dispatch(misc.setCurrentRoute(route));
         }
     };
 }
