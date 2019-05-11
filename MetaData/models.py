@@ -21,3 +21,4 @@ class IPTCKeyword(models.Model):
 class Metadata(models.Model):
     value = models.TextField()
     metadata = models.ManyToManyField(IPTCKeyword)
+    approved = models.BooleanField(default=False)

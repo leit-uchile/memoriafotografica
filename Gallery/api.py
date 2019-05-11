@@ -222,7 +222,6 @@ class PhotoCommentListAPI(generics.GenericAPIView):
             serializer = CommentAdminSerializer(comments, many = True)
         return Response(serializer.data)
 
-
     def post(self, request, pk, *args, **kwargs):
         photo = self.get_object(pk)
         serializer = CreateCommentSerializer(data = request.data)
@@ -435,3 +434,38 @@ class AlbumDetailAPI(generics.GenericAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+
+
+class CategoryPhotoListAPI(generics.GenericAPIView):
+
+    permission_classes = (IsAuthenticated,)
+    def get_object(self, pk):
+        try:
+            return Category.objects.get(pk=pk)
+        except Category.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, *args, **kwargs):
+        category = self.get_object(pk)
+
+        if request.user.user_type == 1:
+            pictures = category.photo_set.filter(censure = False, approved = True)
+            serializer = PhotoSerializer(pictures, many=True)
+        else:
+            pictures = category.photo_set.all()
+            serializer = PhotoAdminSerializer(pictures, many=True)
+        return Response(serializer.data)
+
+    def put(self, request, pk, *args, **kwargs):
+        category = self.get_object(pk)
+        try:
+            pictures = Photo.objects.filter(pk__in=request.data['photos'])
+            if request.user.user_type == 1:
+                serializer = PhotoSerializer(pictures, many = True)
+            else:
+                serializer = PhotoAdminSerializer(pictures, many = True)
+            category.photo_set.set(pictures)
+        except KeyError:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data)
