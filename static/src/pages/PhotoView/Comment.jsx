@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Avatar from './Avatar'
+import {Row, Col} from 'reactstrap';
 
 class Comment extends Component{
     
@@ -18,7 +19,7 @@ class Comment extends Component{
             userdata: {
                 id : 1,
                 name: "Juan",
-                avatar: "http://www.icare3d.org/images/AvatarTransp.png"
+                avatar: "https://lithespeed.com/wp-content/uploads/2019/04/listermann-profile-picture-e1556572036426.jpg"
             }
         })
     }
@@ -28,13 +29,26 @@ class Comment extends Component{
     }
 
     render(){
+
+        const {leftProportion, style, avatarHeight} = this.props
         return (
-        <div className="row">
-            {/* <Avatar avatarurl={this.state.userdata.avatar} name={this.state.userdata.name} isComment={true}/> */}
-            <p className="col-10">
-                {this.props.content}
-            </p>
-        </div>)
+            <Row style={style}>
+                {/* <Avatar avatarurl={this.state.userdata.avatar} name={this.state.userdata.name} isComment={true}/> */}
+                <Col sm={leftProportion} xs={3}>
+                    <img width="100%" style={{maxHeight: avatarHeight}}src={this.state.userdata.avatar} alt={this.state.userdata.name}/>
+                </Col>
+                <Col sm={12 - leftProportion} xs={9}>
+                    <div style={{display: 'inline-block', borderRight: '1px solid gray', padding: '0 15px'}}>
+                        {this.state.userdata.name}
+                    </div>
+                    <div style={{display: 'inline-block', padding: '0 15px'}}>
+                        {this.state.userdata.name}
+                    </div>
+                    <p style={{display: 'block'}}>
+                        {this.props.content}
+                    </p>
+                </Col>
+            </Row>)
     }
 }
 

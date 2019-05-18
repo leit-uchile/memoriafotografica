@@ -12,11 +12,12 @@ class Login extends Component{
             email : "",
             password : "",
         }
+        this.genericChangeHandler = this.genericChangeHandler.bind(this)
     }
 
-    updateEmail = e => {this.setState({email : e.target.value})}
-
-    updatePassword = e => {this.setState({password : e.target.value})}
+    genericChangeHandler(event){
+        this.setState({ [event.target.id]: event.target.value});
+    }
 
     onSubmit = e => {
         e.preventDefault();
@@ -54,7 +55,7 @@ class Login extends Component{
                                                                 <i className="fas fa-user"></i>
                                                             </span>
                                                         </div>
-                                                            <input type="text" className='form-control' onChange={this.updateEmail} placeholder='Correo Electronico'/>
+                                                            <input id="email" type="text" className='form-control' onChange={this.genericChangeHandler} placeholder='Correo Electronico'/>
                                                     </div>
                                                 </div>
                                                 <div className='form-group'>
@@ -64,7 +65,7 @@ class Login extends Component{
                                                                 <i className="fas fa-unlock"></i>
                                                             </span>
                                                         </div>
-                                                            <input type="password" className='form-control' onChange={this.updatePassword} placeholder='Contraseña'/>
+                                                            <input id="password" type="password" className='form-control' onChange={this.genericChangeHandler} placeholder='Contraseña'/>
                                                     </div>
                                                 </div>
                                                 <div className='form-group'>

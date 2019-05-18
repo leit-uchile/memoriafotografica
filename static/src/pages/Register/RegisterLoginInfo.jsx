@@ -24,16 +24,12 @@ class RegisterLoginInfo extends Component{
         }
         this.checkPassword = this.checkPassword.bind(this);
         this.props = Props
+        this.genericChangeHandler = this.genericChangeHandler.bind(this)
     }
 
-    updateName = e => {this.setState({name: e.target.value})};
-    updateLastName = e => {this.setState({lastname: e.target.value})};
-    updateEmail = e => {this.setState({email: e.target.value})};
-    updatePassword = e => {this.setState({password: e.target.value})};
-    updatePasswordCheck = e => {this.setState({passwordCheck: e.target.value})};
-    updateDate = e => {this.setState({date: e.target.value})};
-    updateRol = e => this.setState({rol: e.target.value});
-    updateDif = e => this.setState({difusion: e.target.value});
+    genericChangeHandler(event){
+        this.setState({ [event.target.id]: event.target.value});
+    }
 
     checkPassword(){
         if(this.state.password === ""){
@@ -76,40 +72,40 @@ class RegisterLoginInfo extends Component{
                     <Row form>
                         <Col sm={6}>
                             <FormGroup>
-                                <Label for="registerName">Nombre: </Label>
-                                <Input id="registerName" type="text" placeholder="Jose" 
-                                onChange={this.updateName} required value={this.state.name}></Input>
+                                <Label for="name">Nombre: </Label>
+                                <Input id="name" type="text" placeholder="Jose" 
+                                onChange={this.genericChangeHandler} required value={this.state.name}></Input>
                             </FormGroup>
                         </Col>
                         <Col sm={6}>
                             <FormGroup>
-                                <Label for="registerLastName">Apellido: </Label>
-                                <Input id="registerLastName" type="text" placeholder="Aguirre" 
-                                onChange={this.updateLastName} required value={this.state.lastname}></Input>
+                                <Label for="lastname">Apellido: </Label>
+                                <Input id="lastname" type="text" placeholder="Aguirre" 
+                                onChange={this.genericChangeHandler} required value={this.state.lastname}></Input>
                             </FormGroup>
                         </Col>
                     </Row>
                     <FormGroup>
-                        <Label for="registerBirthdate">Fecha de nacimiento</Label>
-                        <Input id="registerBirthdate" type="date" onChange={this.updateDate} required
+                        <Label for="date">Fecha de nacimiento</Label>
+                        <Input id="date" type="date" onChange={this.genericChangeHandler} required
                         value={this.state.date}></Input>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="registerEmail">Correo electronico</Label>
-                        <Input id="registerEmail" type="email" placeholder="jose.medina@memoria-uchile.cl"
-                        onChange={this.updateEmail} value={this.state.email} required></Input>
+                        <Label for="email">Correo electronico</Label>
+                        <Input id="email" type="email" placeholder="jose.medina@memoria-uchile.cl"
+                        onChange={this.genericChangeHandler} value={this.state.email} required></Input>
                     </FormGroup>
                     <FormGroup>
                         <Label for="password">Contraseña</Label>
-                        <Input id="password" type="password" onChange={this.updatePassword} required></Input>
+                        <Input id="password" type="password" onChange={this.genericChangeHandler} required></Input>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="passwordRepeat">Repetir Contraseña</Label>
-                        <Input id="passwordRepeat" type="password" onChange={this.updatePasswordCheck} required></Input>
+                        <Label for="passwordCheck">Repetir Contraseña</Label>
+                        <Input id="passwordCheck" type="password" onChange={this.genericChangeHandler} required></Input>
                     </FormGroup>
                     <FormGroup>
                         <Label for="rol">Rol en la facultad</Label>
-                        <Input id="rol" type="select" onChange={this.updateRol} value={this.state.rol} required>
+                        <Input id="rol" type="select" onChange={this.genericChangeHandler} value={this.state.rol} required>
                             <option value="1">Alumno</option>
                             <option value="2">Ex-Alumno</option>
                             <option value="3">Acad&eacute;mico</option>

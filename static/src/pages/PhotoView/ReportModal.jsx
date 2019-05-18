@@ -5,12 +5,10 @@ class ReportModal extends Component{
 
     constructor(props){
         super(props);
-
         this.state = {
             modal: false,
             reportIssues: []
         }
-
         this.toggle = this.toggle.bind(this);
     }
 
@@ -33,10 +31,11 @@ class ReportModal extends Component{
     render(){
 
         const labelStyle = {display: "block"};
+        const {style, className} = this.props;
 
         return(
-            <div>
-                <Button color="danger" onClick={this.toggle}>Reportar Foto</Button>
+            <div className={className} style={style}>
+                <Button onClick={this.toggle}>Danos tu opinion</Button>
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
                     <ModalHeader toggle={this.toggle}>Reportar fotografia</ModalHeader>
                     <ModalBody>
