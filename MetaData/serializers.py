@@ -10,7 +10,7 @@ class IPTCKeywordSerializer(serializers.ModelSerializer):
     class Meta:
         model = IPTCKeyword
         fields = '__all__'
-    
+
     def create(self, validated_data):
         return IPTCKeyword.objects.create(**validated_data)
 
@@ -35,6 +35,7 @@ class MetadataAdminSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.value = validated_data.get('value', instance.value)
         try:
+            validated_data['metadata']
             instance.metadata.set(validated_data.get('metadata', instance.metadata))
         except KeyError:
             pass

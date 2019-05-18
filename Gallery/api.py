@@ -41,10 +41,15 @@ class PhotoListAPI(generics.GenericAPIView):
         if request.user.user_type != 1:
             serializer_class = PhotoAdminSerializer
             serializer = PhotoAdminSerializer(photo_admin, many = True)
+            serialized_data = serializer.data
         else:
             photo = Photo.objects.filter(censure = False, approved = True)
             serializer_class = PhotoSerializer
             serializer = PhotoSerializer(photo, many = True)
+            serialized_data = serializer.data
+            for photo in serialized_data:
+                photo['metadata'] = list(filter(lambda x: x['approved'], photo['metadata']))
+                photo['metadata'] = list(map(lambda x: x['metadata'][0]['name'] + " : " + x['value'], photo['metadata']))
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
@@ -85,11 +90,15 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
             photo = self.get_object(pk,True)
             serializer_class = PhotoAdminSerializer
             serializer = PhotoAdminSerializer(photo)
+            serialized_data = serializer.data
         else:
             photo = self.get_object(pk,False)
             serializer_class = PhotoSerializer
             serializer = PhotoSerializer(photo)
-        return Response(serializer.data)
+            serialized_data = serializer.data
+            serialized_data['metadata'] = list(filter(lambda x: x['approved'], serialized_data['metadata']))
+            serialized_data['metadata'] = list(map(lambda x: x['metadata'][0]['name'] + " : " + x['value'], serialized_data['metadata']))
+        return Response(serialized_data)
 
     def put(self, request, pk, *args, **kwargs):
         if request.user.user_type == 1:
@@ -154,7 +163,7 @@ class CommentDetailAPI(generics.GenericAPIView):
     Delete a comment.
     """
     permission_classes = [IsAuthenticated,]
-    
+
     def get_object(self, pk, admin):
         comment = Comment.objects.get(pk=pk)
         try:
@@ -191,7 +200,7 @@ class CommentDetailAPI(generics.GenericAPIView):
             serializer.save()
             return Response(serializer.data, status= status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
     def delete(self, request, pk, *args, **kwargs):
         if comment in request.user.comments.all():
             c = self.get_object(pk, False)
@@ -210,7 +219,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
     List all comments from a photo, or create a new comment.
     """
     permission_classes = [IsAuthenticated,]
-    
+
     def get_object(self, pk, admin):
         try:
             p = Photo.objects.get(pk=pk)
@@ -220,7 +229,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
             return p
         except Photo.DoesNotExist:
             raise Http404
-    
+
     def get(self, request, pk, *args, **kwargs):
         if request.user.user_type == 1:
             p = self.get_object(pk, False)
@@ -253,7 +262,7 @@ class CategoryListAPI(generics.GenericAPIView):
     """
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated,]
-    
+
     def get(self, request, *args, **kwargs):
         category = Category.objects.all()
         serializer = CategorySerializer(category, many=True)
@@ -277,7 +286,7 @@ class CategoryDetailAPI(generics.GenericAPIView):
     """
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated,]
-    
+
     def get_object(self, pk):
         try:
             return Category.objects.get(pk=pk)
@@ -363,7 +372,7 @@ class ReportDetailAPI(generics.GenericAPIView):
             return Response(serializer.data)
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
-    
+
     def put(self, request, pk, *args, **kwargs):
         if request.user.user_type == 3:
             user = self.get_object(pk)
@@ -374,7 +383,7 @@ class ReportDetailAPI(generics.GenericAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
-    
+
     def delete(self, request, pk, *args, **kwargs):
         if request.user.user_type == 3:
             user = self.get_object(pk)
@@ -390,7 +399,7 @@ class AlbumListAPI(generics.GenericAPIView):
     """
     serializer_class = AlbumSerializer
     permission_classes = [IsAuthenticated,]
-    
+
     def get(self, request, *args, **kwargs):
         category = Album.objects.all()
         serializer = AlbumSerializer(category, many=True)
@@ -412,7 +421,7 @@ class AlbumDetailAPI(generics.GenericAPIView):
     """
     serializer_class = AlbumSerializer
     permission_classes = [IsAuthenticated,]
-    
+
     def get_object(self, pk):
         try:
             return Album.objects.get(pk=pk)
@@ -449,7 +458,7 @@ class CategoryPhotoListAPI(generics.GenericAPIView):
     List all photos from a category, or update a new category.
     """
     permission_classes = (IsAuthenticated,)
-    
+
     def get_object(self, pk):
         try:
             return Category.objects.get(pk=pk)

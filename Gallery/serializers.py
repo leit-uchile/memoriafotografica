@@ -23,7 +23,7 @@ class CommentAdminSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ('id', 'content', 'censure', 'report')
         read_only_fields = ('id',)
-    
+
     def create(self, validated_data):
         return Comment.objects.create(**validated_data)
 
@@ -83,9 +83,9 @@ class CreatePhotoSerializer(serializers.ModelSerializer):
 class PhotoSerializer(serializers.ModelSerializer):
     #Para usuario colaborador
     class Meta:
-        exclude = ('censure', 'approved','report',)
+        exclude = ('censure', 'approved','report','comments')
         model = Photo
-
+        depth = 2
     def update(self, instance, validated_data):
         #instance.tags = validated_data.get('tags', instance.tags)
         instance.permission = validated_data.get('permission', instance.permission)
@@ -98,6 +98,7 @@ class PhotoAdminSerializer(serializers.ModelSerializer):
     class Meta:
         fields = "__all__"
         model = Photo
+        depth = 2
     def update(self, instance, validated_data):
         #instance.tags = validated_data.get('tags', instance.tags)
         instance.approved = validated_data.get('approved', instance.approved)
