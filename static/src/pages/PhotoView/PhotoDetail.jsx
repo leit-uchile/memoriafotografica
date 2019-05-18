@@ -19,6 +19,7 @@ class PhotoDetails extends Component{
             auth: this.props.auth,
             newCommentInfo: "",
             myPhotoID: this.props.match.params.id,
+            newCommentID: "0"
         };
 
         this.sendComment = this.sendComment.bind(this);
@@ -27,7 +28,6 @@ class PhotoDetails extends Component{
     }
 
     getUserDetails(){
-        console.log("Called the API for user details")
         this.setState({
             userinfo: {
                 id : 1,
@@ -74,6 +74,14 @@ class PhotoDetails extends Component{
                 this.getDataFromBack()
             })
         }
+
+        if(this.props.photoInfo.new_comment && this.props.photoInfo.new_comment.id !== this.state.newCommentID){
+            this.setState({
+                newCommentID: this.props.photoInfo.new_comment.id,
+            })
+            this.getComments();
+        }
+
     }
 
     render(){
@@ -83,7 +91,6 @@ class PhotoDetails extends Component{
         //metadata
 
         var commentDivs = [];
-        console.log(this.state)
         if(photoInfo.commentsLoaded){
             for (let i = 0; i < photoInfo.comments.length; i++) {
                 commentDivs.push(
