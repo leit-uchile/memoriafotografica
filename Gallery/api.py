@@ -236,7 +236,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
 
     def post(self, request, pk, *args, **kwargs):
         photo = self.get_object(pk, False)
-        serializer = CreateCommentSerializer(data = request.data)
+        serializer = CommentSerializer(data = request.data)
         if serializer.is_valid():
             s = serializer.save()
             photo.comments.add(s)
