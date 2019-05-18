@@ -12,7 +12,6 @@ import NoMatch from "./NoMatch";
 import Upload from './Upload/Upload';
 import PhotoDetails from "./PhotoView/PhotoDetail";
 import PrivateComponent from '../components/PrivateComponent';
-import TestComponent from './TestComponent'
 import Dashboard from './Curador/Dashboard'
 import LandingPage from './LandingPage';
 
@@ -29,7 +28,6 @@ class Layout extends Component{
                         <Route path={"/register"} component={Register}/>
                         <Route path={"/upload"}component={Upload} />
                         <Route path={"/photo/:id"}component={PhotoDetails}/>
-                        <Route path={"/test/:id"} component={TestComponent}/>
                         <Route path={"/curador/dashboard"} component={Dashboard} />
                         <Route component={NoMatch}/>
                     </Switch>

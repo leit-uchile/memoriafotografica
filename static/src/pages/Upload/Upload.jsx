@@ -4,7 +4,7 @@ import UploadPhoto from './UploadPhoto';
 import UploadDetails from './UploadDetails';
 
 import {connect} from 'react-redux';
-import {auth} from '../../actions';
+import {auth, misc} from '../../actions';
 import {Redirect} from 'react-router-dom';
 
 class UploadPage extends Component{
@@ -99,6 +99,14 @@ const mapStateToProps = state => {
     };
 }
 
+const mapActionsToProps = dispatch => {
+    return {
+        setRoute: (route) => {
+            return dispatch(misc.setCurrentRoute(route));
+        }
+    }
+}
 
-export default connect(mapStateToProps)(UploadPage);
+
+export default connect(mapStateToProps,mapActionsToProps)(UploadPage);
    

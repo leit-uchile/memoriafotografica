@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Register from '../Register/Register';
+import Register from './Register';
 import { link, Link } from 'react-router-dom'
 
 class RegisterEdit extends Component{
@@ -19,8 +19,6 @@ async getUserInfo(){
         user:{username:"Natalia", email: "nati@yo.leit", password:"Yo123456"}
     })
 }
-
-
 
     render(){
         return (

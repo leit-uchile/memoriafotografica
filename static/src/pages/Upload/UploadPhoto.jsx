@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ReactTags from 'react-tag-autocomplete'
-import UploadDetails from './UploadDetails.js'
-import UploadAlbum from './UploadAlbum.js'
+import UploadDetails from './UploadDetails'
+import UploadAlbum from './UploadAlbum'
 import {CustomInput, Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import {v4} from 'uuid';
 
