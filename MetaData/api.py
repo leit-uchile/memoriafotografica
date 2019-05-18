@@ -200,9 +200,7 @@ class MetadataDetailAPI(generics.GenericAPIView):
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
                 """
-        serializer = "miau"
         if request.user.user_type != 1:
-            print("entre jeje")
             metadata = self.get_object(pk,True)
             serializer_class = MetadataAdminSerializer
             serializer = MetadataAdminSerializer(metadata, data = request.data, partial=True)

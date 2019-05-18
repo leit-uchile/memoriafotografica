@@ -12,7 +12,6 @@ from datetime import datetime
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-
     USER_TYPE_CHOICES = (
         (1, 'colaborator'),
         (2, 'curator'),
