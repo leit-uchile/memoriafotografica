@@ -51,6 +51,7 @@ class Photo(models.Model):
     image = models.ImageField(upload_to=gen_uuid)
     title = models.CharField(_('Título'), max_length = 30)
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
+    description = models.CharField(max_length=255, blank=True)
     approved = models.BooleanField(default=True)
     censure = models.BooleanField(default = False)
     permission = MultiSelectField(choices=PERMISSION_CHOICES, max_choices=3)

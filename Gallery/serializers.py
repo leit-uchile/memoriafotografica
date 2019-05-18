@@ -100,6 +100,7 @@ class PhotoAdminSerializer(serializers.ModelSerializer):
         instance.approved = validated_data.get('approved', instance.approved)
         instance.censure = validated_data.get('censure', instance.censure)
         instance.permission = validated_data.get('permission', instance.permission)
+        instance.description = validated_data.get('description', instance.description)
         try:
             instance.metadata.set(validated_data['metadata'])
         except KeyError:
