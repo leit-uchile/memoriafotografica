@@ -18,6 +18,7 @@ class RegistrationAPI(generics.GenericAPIView):
     Create a new registration session.
     """
     serializer_class = CreateUserSerializer
+    
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -29,7 +30,12 @@ class RegistrationAPI(generics.GenericAPIView):
 
 
 class LoginAPI(generics.GenericAPIView):
+    """
+    post:
+    Create a new token for a user that is already registered.
+    """
     serializer_class = LoginUserSerializer
+
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -41,12 +47,14 @@ class LoginAPI(generics.GenericAPIView):
 
 
 class UserTokenAPI(generics.RetrieveAPIView):
+    """
+    get:
+    Get details of the user 
+    """
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = UserSerializer
     def get_object(self):
         return self.request.user
-
-
 
 
 class UserListAPI(generics.GenericAPIView):
@@ -57,8 +65,7 @@ class UserListAPI(generics.GenericAPIView):
     post:
     Create a new user instance.
     """
-    #permission_classes = [Or(IsGetRequest,
-    #                            And(IsPostRequest, IsAdmin)),]
+   
     serializer_class = UserSerializer
     def get(self, request, *args, **kwargs):
         user = User.objects.all()
