@@ -24,7 +24,6 @@ from rest_framework.permissions import BasePermission
 from rest_framework.documentation import include_docs_urls
 
 
-
 class IPTCKeywordListAPI(generics.GenericAPIView):
     """
     get:
@@ -53,7 +52,6 @@ class IPTCKeywordListAPI(generics.GenericAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
-
 
 
 class IPTCKeywordDetailAPI(generics.GenericAPIView):
@@ -101,7 +99,9 @@ class IPTCKeywordDetailAPI(generics.GenericAPIView):
             return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 class IPTCKeywordMetadataListAPI(generics.GenericAPIView):
-
+    """
+    List all metadata from a IPTCKeyword.
+    """
     permission_classes = [IsAuthenticated,]
     def get_object(self,pk):
         try:
@@ -200,13 +200,12 @@ class MetadataDetailAPI(generics.GenericAPIView):
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
                 """
+        serializer = "miau"
         if request.user.user_type != 1:
+            print("entre jeje")
             metadata = self.get_object(pk,True)
-            if metadata.approved:
-                serializer_class = MetadataAdminSerializer
-                serializer = MetadataAdminSerializer(metadata, data = request.data, partial=True)
-            else:
-                Response(status=status.HTTP_401_UNAUTHORIZED)
+            serializer_class = MetadataAdminSerializer
+            serializer = MetadataAdminSerializer(metadata, data = request.data, partial=True)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
@@ -228,7 +227,9 @@ class MetadataDetailAPI(generics.GenericAPIView):
             return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 class MetadataPhotoListAPI(generics.GenericAPIView):
-
+    """
+    List all photos from a metadata.
+    """
     permission_classes = [IsAuthenticated,]
     def get_object(self, pk, admin):
         try:

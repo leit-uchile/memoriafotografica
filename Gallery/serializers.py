@@ -6,7 +6,7 @@ from datetime import datetime
 from rest_framework import fields, serializers
 from rest_framework.exceptions import NotFound
 from rest_framework.fields import CurrentUserDefault
-# Create serializers here
+
 
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,6 +23,7 @@ class CommentAdminSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ('id', 'content', 'censure', 'report')
         read_only_fields = ('id',)
+
     def create(self, validated_data):
         return Comment.objects.create(**validated_data)
 
@@ -39,13 +40,14 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
     def create(self, validated_data):
         return Comment.objects.create(**validated_data)
-
+    """
     def update(self, instance, validated_data):
         instance.content = validated_data.get('content', instance.content)
         instance.censure = validated_data.get('censure', instance.censure)
         instance.save()
         return instance
-
+    Comento esto porque el colab no debiese editar nada
+    """
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -59,6 +61,7 @@ class CategorySerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+"""
 class CreateCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
@@ -67,11 +70,11 @@ class CreateCommentSerializer(serializers.ModelSerializer):
         def create(self, validated_data):
             comment = Comment.objects.create(**validated_data)
             return comment
-
+"""
 class CreatePhotoSerializer(serializers.ModelSerializer):
         class Meta:
             model = Photo
-            fields = ('id', 'image', 'uploadDate', 'title', 'permission')
+            fields = ('id', 'image', 'description' 'uploadDate', 'title', 'permission')
 
         def create(self, validated_data):
             photo = Photo.objects.create(**validated_data)
@@ -80,9 +83,9 @@ class CreatePhotoSerializer(serializers.ModelSerializer):
 class PhotoSerializer(serializers.ModelSerializer):
     #Para usuario colaborador
     class Meta:
-        exclude = ('censure', 'approved','report',)
+        exclude = ('censure', 'approved','report','comments')
         model = Photo
-
+        depth = 2
     def update(self, instance, validated_data):
         #instance.tags = validated_data.get('tags', instance.tags)
         instance.permission = validated_data.get('permission', instance.permission)
@@ -95,11 +98,13 @@ class PhotoAdminSerializer(serializers.ModelSerializer):
     class Meta:
         fields = "__all__"
         model = Photo
+        depth = 2
     def update(self, instance, validated_data):
         #instance.tags = validated_data.get('tags', instance.tags)
         instance.approved = validated_data.get('approved', instance.approved)
         instance.censure = validated_data.get('censure', instance.censure)
         instance.permission = validated_data.get('permission', instance.permission)
+        instance.description = validated_data.get('description', instance.description)
         try:
             instance.metadata.set(validated_data['metadata'])
         except KeyError:
