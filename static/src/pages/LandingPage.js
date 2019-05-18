@@ -2,29 +2,22 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import {misc} from '../actions';
 import {connect} from 'react-redux';
-import {
-    Media,
-    Carousel,
-    CarouselItem,
-    CarouselControl,
-    CarouselIndicators,
-    CarouselCaption
-  } from 'reactstrap';
-
+import {home} from '../actions'
+import {Container, Row, Col, Carousel, CarouselItem, CarouselControl, CarouselIndicators, Card, Button, CardImg, CardText, CardDeck, CardBody} from 'reactstrap';
 
 const items = [
     {
-      src: 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22800%22%20height%3D%22400%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20400%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_15ba800aa1d%20text%20%7B%20fill%3A%23555%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A40pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_15ba800aa1d%22%3E%3Crect%20width%3D%22800%22%20height%3D%22400%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22285.921875%22%20y%3D%22218.3%22%3EFirst%20slide%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E',
+      src: 'http://www.adnradio.cl/images_remote/333/3339276_n_vir3.jpg?u=230217',
       altText: 'Slide 1',
       caption: 'Les susanda ecusdae odit inctia dolore, ea conseque expliti ossuntorem rae peris et volland erferei untur, tem am num quos secatio. Um hit et is si offictemqui rem numqui non prae sim que antemporia pra velent.'
     },
     {
-      src: 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22800%22%20height%3D%22400%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20400%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_15ba800aa20%20text%20%7B%20fill%3A%23444%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A40pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_15ba800aa20%22%3E%3Crect%20width%3D%22800%22%20height%3D%22400%22%20fill%3D%22%23666%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22247.3203125%22%20y%3D%22218.3%22%3ESecond%20slide%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E',
+      src: 'http://www.uchile.cl/image/f89084-2-o.jpeg?0419',
       altText: 'Slide 2',
-      caption: 'Apis ad quatum et, odis doluptature, ut aliquamustia dolupta comnis et remquo opta andam fugitati ab ipsanient.'
+      caption: 'Apis ad quatum et, odis doluptature, ut aliquamustia dolupta comnis et remquo opta andam fugitati ab ipsanient Les susanda ecusdae odit inctia dolore, ea conseque expliti ossuntorem rae peris et volland erferei untur, tem am num quos secatio. Um hit et is si offictemqui rem numqui non prae sim que antemporia pra velent.'
     },
     {
-      src: 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22800%22%20height%3D%22400%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20400%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_15ba800aa21%20text%20%7B%20fill%3A%23333%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A40pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_15ba800aa21%22%3E%3Crect%20width%3D%22800%22%20height%3D%22400%22%20fill%3D%22%23555%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22277%22%20y%3D%22218.3%22%3EThird%20slide%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E',
+      src:'https://pbs.twimg.com/media/B9krIl1IQAAod2e.jpg',
       altText: 'Slide 3',
       caption: 'Apis ad quatum et, odis doluptature, ut aliquamustia dolupta comnis et remquo opta andam fugitati ab ipsanient.'
     }
@@ -69,6 +62,7 @@ class LandingPage extends Component{
 
       componentWillMount(){
         this.props.setRoute('/Inicio');
+        this.props.onLoad();
       }
     
       render() {
@@ -77,47 +71,45 @@ class LandingPage extends Component{
         const slides = items.map((item) => {
           return (
             <CarouselItem onExiting={this.onExiting} onExited={this.onExited} key={item.src}>
-              <img src={item.src} alt={item.altText} />
-              <p style={styles.carouselText}>{item.caption}</p>
+              <img width= '100%' height= '600px' src={item.src} alt={item.altText} />
+              <div style={{width: '100%', height: '90px', backgroundColor: '#ebeeef', }}>
+                <p style={{textAlign: 'justify', padding: '15px'}}>{item.caption}</p>
+              </div>
             </CarouselItem>
           );
         });
-    
+        
+        const photos = this.props.photos.slice(0,5).map((el) => {
+          return (
+            <Card>
+              <CardImg top height="100%" src={el.image} alt="Card image cap" />
+              <CardBody style={{backgroundColor:'#ebeeef'}}>
+                <CardText>{el.description}</CardText>
+              </CardBody>
+            </Card>
+          );
+        });
+
         return (
-          <div>
-            <div style={{width: '800px'}}>
-                <Carousel activeIndex={activeIndex} next={this.next} previous={this.previous}>
-                    <CarouselIndicators items={items} activeIndex={activeIndex} onClickHandler={this.goToIndex} />
+          <Container>
+            <Row>
+              <div style={{width:'100%'}}>
+                <Carousel activeIndex={activeIndex} next={this.next} previous={this.previous}>                    
                     {slides}
                     <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previous} />
                     <CarouselControl direction="next" directionText="Next" onClickHandler={this.next} />
                 </Carousel>
-            </div>
-            <div style={styles.section2}>
-              <img src={'facultad.jpeg'} style={{width: '230px', height: '165px'}} />
-              <p style={{padding: '5px'}}>
-              Apis ad quatum et, odis doluptature, ut aliquamustia dolupta comnis et remquo opta andam fugitati ab ipsanient.
-              </p>
-            </div>
-            <div style={styles.section2}>
-              <img src={'facultad.jpeg'} style={{width: '230px', height: '165px'}} />
-              <p style={{padding: '5px'}}>
-              Apis ad quatum et, odis doluptature, ut aliquamustia dolupta comnis et remquo opta andam fugitati ab ipsanient.
-              </p>
-            </div>
-            <div style={styles.section2}>
-              <img src={'facultad.jpeg'} style={{width: '230px', height: '165px'}} />
-              <p style={{padding: '5px'}}>
-              Apis ad quatum et, odis doluptature, ut aliquamustia dolupta comnis et remquo opta andam fugitati ab ipsanient.
-              </p>
-            </div>
-            
-            <Media style={styles.section3}>
-              <Media body>
-                <Media heading>
-                ¿Quieres participar?
-                </Media>
-                Laborend andipsa ipsam ex es ame vent, te dendelit abo. Destis sunt lant eicab iduntios et facestrum quas que eum sime evenitatem qui id mincti voluptatur ma dem venditestor assincia coris
+              </div>
+            </Row>
+            <Row>
+              <CardDeck style={{marginTop: '30px'}}>
+                {photos}
+              </CardDeck>
+            </Row>
+            <Row style={{marginTop: '40px'}}>
+              <Col>
+                <h1 style={{fontSize:'25px'}}>¿Quieres participar?</h1>
+                <p style={{textAlign:'justify'}}>Laborend andipsa ipsam ex es ame vent, te dendelit abo. Destis sunt lant eicab iduntios et facestrum quas que eum sime evenitatem qui id mincti voluptatur ma dem venditestor assincia coris
       adit ea sitate earit veligni maximpo renimai onsero maiorep eruntus.
       Pa si si omnimpo rporeri nobist, verovit vero bero et quas eniminum cores maion cus cusdae nobit
       endipit, quundiat ea idem et que nobis endit quossit ectetur aliquiatur? Untur, quatibus.
@@ -130,45 +122,55 @@ class LandingPage extends Component{
       eium et ex esto voluptaqui inis accus poreicia deribusam inturitiae. Sit apere dita nonsenderum hit,
       officiur aut quame nobis etur, quassiti voluptaest, cuptatur aut estistor accatur sunt, cus, voluptas
       et molo exceperferum quatem aut ma conet aditi disciae nimus que iscimusapid esequia quis es
-      evelectia autemodis nis similla sunt, apercillabo. Et essim ratem unt ut utaquia turest quis aut am
-              </Media>
-              <Media right href="#">
-                <Media object data-src="facultad.jpeg" alt="Facultad de Ciencias Físicas y Matemáticas" />
-              </Media>
-            </Media>
-          </div>
+      evelectia autemodis nis similla sunt, apercillabo. Et essim ratem unt ut utaquia turest quis aut am</p>
+              </Col>
+              <Col sm='4'>
+              <Card>
+                <CardImg top width="100%" src="http://postulante.fcfm.uchile.cl/wordpress/wp-content/uploads/2015/09/bienvenidos_2_v2.jpg" alt="Card image cap" />
+                <CardBody style={{backgroundColor:'#ebeeef'}}>
+                  <CardText>Apis ad quatum et, odis doluptature, ut aliquamustia dolupta comnis et remquo opta andam fugitati ab ipsanient.</CardText>
+                </CardBody>
+              </Card>
+              </Col>  
+            </Row>           
+          </Container>
         );
       }
 }
 
 const styles = {
   carouselText: {
-    width: '800px',
-    height: '50px',
-    backgroundColor: '#ebeeef',
-    textAlign: 'justify',
+       
+
 },
   section2: {
-    display: 'inline-block',
-    margin: '15px',
-    width: '230px',
-    height: '248px',
     backgroundColor: '#ebeeef',
-    textAlign: 'justify',
-    fontSize: '15px',
-    
-},
-  section3: {
-    
+    fontSize: '15px',    
+}}
+
+/* const Gallery = ({photoList}) => (
+  <Row>
+      {photoList.map((el, index) => (
+          <Photo key={index} name={el.title} url={el.image} tags={el.metadata} url2={el.image} height="200px" useLink redirectUrl={`/photo/${el.id}`}/>
+      ))}
+  </Row>
+) */
+
+const mapStateToProps = state => {
+  return {
+      photos: state.home.photos
+  }
 }
 
-}
 const mapActionsToProps = dispatch => {
   return {
+    onLoad: () => {
+      return dispatch(home.home());
+  },
     setRoute: (route) => {
       return dispatch(misc.setCurrentRoute(route));
     }
   }
 }
 
-export default connect(null,mapActionsToProps)(LandingPage);
+export default connect(mapStateToProps,mapActionsToProps)(LandingPage);
