@@ -48,6 +48,10 @@ class UploadPage extends Component{
         })
     }
 
+    componentWillMount(){
+        this.props.setRoute('/upload')
+    }
+
     render(){
         if (this.props.isAuthenticated) {
             this.setState.currentPage = 2

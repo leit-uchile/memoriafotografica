@@ -57,7 +57,9 @@ class Header extends Component{
                                 <NavLink tag={Link} to={"/gallery"} active>Galer&iacute;a</NavLink> :
                                 <NavLink tag={Link} to={"/gallery"}>Galer&iacute;a</NavLink>
                             }</NavItem>
-                            <NavItem><NavLink tag={Link} to={"/upload"}>Participa</NavLink></NavItem>
+                            <NavItem>{ currentRoute == '/upload' ? 
+                            <NavLink tag={Link} to={"/upload"} active>Participa</NavLink> :
+                            <NavLink tag={Link} to={"/upload"}>Participa</NavLink>} </NavItem>
                             <NavItem>{doLoginNav}</NavItem>
                         </Nav>
                     </Collapse>
