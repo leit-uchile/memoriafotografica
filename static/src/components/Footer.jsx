@@ -70,7 +70,9 @@ const styles = {
     },
     contenido:{
         fontSize: '12px', 
-        maxWidth:'1800px', 
+        marginLeft:'auto',
+        marginRight:'auto',
+        maxWidth:'1370px', 
         paddingTop:'50px', 
         paddingLeft:'125px', 
         paddingRight:'125px',
