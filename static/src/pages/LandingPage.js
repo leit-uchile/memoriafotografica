@@ -71,7 +71,7 @@ class LandingPage extends Component{
         const slides = items.map((item) => {
           return (
             <CarouselItem onExiting={this.onExiting} onExited={this.onExited} key={item.src}>
-              <img width= '100%' height= '600px' src={item.src} alt={item.altText} />
+              <img width= '100%' style={{maxHeight:'600px'}} src={item.src} alt={item.altText} />
               <div style={{width: '100%', height: '90px', backgroundColor: '#ebeeef', }}>
                 <p style={{textAlign: 'justify', padding: '15px'}}>{item.caption}</p>
               </div>

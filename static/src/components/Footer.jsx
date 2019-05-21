@@ -53,7 +53,7 @@ const Footer = () =>{
                         </Col>
                     </Row>
                     <Row style={{paddingTop:'100px', paddingBottom:'100px'}}>
-                        <Col style={{display:'flex', justifyContent:'space-between'}}>
+                        <Col style={{display:'flex', justifyContent:'space-between', color:'#9fa4a5'}}>
                             <p style={{marginLeft:'auto', marginRight:'auto'}}>Todos los derechos reservados. Biblioteca Central - Facultad de Ciencias Fisicas y Matematicas - Universidad de Chile</p>
                             <Button color='link' onClick={componentDidMount}>volver al inicio</Button>
                         </Col>
