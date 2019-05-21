@@ -20,7 +20,7 @@ class Layout extends Component{
         return(
             <div>
                 <Header/>
-                <Container fluid>
+                <Container fluid  style={{minHeight:'80vh'}}>
                     <Switch>
                         <Route exact path={"/"} component={LandingPage}/>
                         <Route path={"/gallery"} component={Home}/>
