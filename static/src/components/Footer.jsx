@@ -20,7 +20,7 @@ const Footer = () =>{
                         </Col>
                     </Row>
                     <Row>
-                        <Col style={{maxWidth:'300px'}}>
+                        <Col md='3'>
                             
                             <h1 style={{fontSize:'15px'}}><b>Biblioteca Central FCFM</b></h1>
                             <p style={{margin:'0px',paddingBottom:'0px'}}>Beauchef 850</p>
@@ -28,7 +28,7 @@ const Footer = () =>{
                             <p>Chile</p>
                             <p>+56 22 978 4074</p>
                         </Col>
-                        <Col style={{maxWidth:'300px'}}>
+                        <Col md='3'>
                         <h1 style={{fontSize:'15px'}}><b>Equipo</b></h1>
                             <ul>
                                 <li>Acerca de</li>
@@ -36,7 +36,7 @@ const Footer = () =>{
                                 <li>Integrate al Proyecto</li>
                             </ul>
                         </Col>
-                        <Col style={{maxWidth:'300px'}}>
+                        <Col md='3'>
                             <h1 style={{fontSize:'15px'}}><b>Enlaces</b></h1>
                             <ul>
                                 <li>Preguntas Frecuentes</li>
@@ -44,7 +44,7 @@ const Footer = () =>{
                                 <li>Mapa del Sitio</li>
                             </ul>
                         </Col>
-                        <Col style={{maxWidth:'300px'}}>
+                        <Col md='3'>
                             <h1 style={{fontSize:'15px'}}><b>Suscripciones</b></h1>
                             <ul>
                                 <li>Para obtener novedades puede registrarse en nuestro Newsletter</li>
@@ -56,17 +56,21 @@ const Footer = () =>{
                         <Col style={{display:'flex', justifyContent:'space-between', color:'#9fa4a5'}}>
                             <p style={{marginLeft:'auto', marginRight:'auto'}}>Todos los derechos reservados. Biblioteca Central - Facultad de Ciencias Fisicas y Matematicas - Universidad de Chile</p>
                             <Button color='link' onClick={componentDidMount}>volver al inicio</Button>
-                        </Col>
-                        
+                        </Col>                        
                     </Row>
                 </div>
             </footer>)}
 
 const styles = {
-    contenedor: {   
+    contenedor: {
+        borderTop: '1px solid rgb(210,214,218)',
         width:'100%',
         marginTop:'30px',
-        backgroundColor: '#ebeeef', 
+        backgroundColor: '#dee1e2',
+        background: 'linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)', 
+        background: '-moz-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)', 
+        background: '-webkit-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)', 
+        
     },
     contenido:{
         fontSize: '12px', 

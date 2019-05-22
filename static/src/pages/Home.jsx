@@ -4,6 +4,9 @@ import {home, misc} from '../actions';
 import Photo from '../components/Photo';
 import {Container, Row, Col, Card, CardImg, CardBody, CardText} from 'reactstrap';
 
+const tags = [{tag:'Ingenieria'},{tag:'Geofisica'},{tag:'TorreChica'},{tag:'NicanorParra'},{tag:'idiem'},{tag:'MariaTeresaSanz'}]
+const categorias = [{categoria:'Departamento'}, {categoria:'Deportes'}, {categoria:'Arte'}, {categoria:'Biblioteca'}, {categoria:'Eventos'}, {categoria:'Otros'},]
+
 class Home extends Component{
 
     componentWillMount(){
@@ -21,17 +24,17 @@ class Home extends Component{
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
+                        <Col style={{maxWidth:'520px'}}>
                             <h2 style={{fontSize:'20px'}}>Busqueda por tag</h2>
-                            <Container>
-
+                            <Container fluid>
+                                <Tags tags={tags}/>
                             </Container>
                         </Col>
-                        <div style={{borderLeft:'2px solid rgb(239,112,117)', marginTop:'40px', marginLeft:'10px', marginRight:'10px', height:'200px'}}></div>
-                        <Col>
+                        <div style={styles.verticalLine}></div>
+                        <Col style={{maxWidth:'580px'}}>
                             <h2 style={{fontSize:'20px'}}>Busqueda por categoria</h2>
-                            <Container>
-                                
+                            <Container fluid>
+                                <Categories categorias={categorias}/>
                             </Container>
                         </Col>
                     </Row>
@@ -50,6 +53,22 @@ class Home extends Component{
     }
 }
 
+const Tags = ({tags}) => (
+    <Row>
+        {tags.map((el, index) => (
+            <span style={styles.tags}>#{el.tag}</span>
+        ))}
+    </Row>
+)
+
+const Categories = ({categorias}) => (
+    <Row>
+        {categorias.map((el, index) => (
+            <div style={styles.categories}>{el.categoria}</div>
+        ))}
+    </Row>
+)
+
 const Gallery = ({photoList}) => (
     <Row>
         {photoList.map((el, index) => (
@@ -63,6 +82,31 @@ const Gallery = ({photoList}) => (
     </Row>
 )
 
+const styles = {
+    tags:{
+        color:'white', 
+        borderRadius:'10px', 
+        backgroundColor:'#9a9e9d', 
+        margin:'2px', 
+        padding:'4px 12px 4px 12px'
+    },
+    verticalLine:{
+        borderLeft:'2px solid rgb(239,112,117)', 
+        marginTop:'32px', 
+        height:'220px'
+     },
+    categories: {
+        fontSize: '11px',
+        textAlign:'center',
+        width:'90px', 
+        height:'90px',
+        border:'1px solid rgb(208,208,208)', 
+        borderRadius:'9px', 
+        backgroundColor:'#dcdddd',
+        margin:'2px 20px 20px 0px', 
+        paddingTop:'34px'
+    }
+}
 const mapStateToProps = state => {
     return {
         photos: state.home.photos
