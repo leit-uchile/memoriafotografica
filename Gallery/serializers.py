@@ -74,7 +74,7 @@ class CreateCommentSerializer(serializers.ModelSerializer):
 class CreatePhotoSerializer(serializers.ModelSerializer):
         class Meta:
             model = Photo
-            fields = ('id', 'image', 'description' 'uploadDate', 'title', 'permission')
+            fields = ('id', 'image', 'description', 'uploadDate', 'title', 'permission', 'thumbnail')
 
         def create(self, validated_data):
             photo = Photo.objects.create(**validated_data)

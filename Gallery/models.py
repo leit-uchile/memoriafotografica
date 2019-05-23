@@ -7,8 +7,8 @@ from MemoriaFotografica.settings import BASE_DIR
 from MetaData.models import Metadata
 import os
 from uuid import uuid4
-
-
+from sorl.thumbnail import get_thumbnail
+from django.core.files.base import ContentFile
 # Create your models here.
 PERMISSION_CHOICES = (
     ('CC BY', 'Atribución'),
@@ -49,6 +49,7 @@ def gen_uuid(instance, filename):
 
 class Photo(models.Model):
     image = models.ImageField(upload_to=gen_uuid)
+    thumbnail = models.ImageField(blank=True)
     title = models.CharField(_('Título'), max_length = 30)
     uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
     description = models.CharField(max_length=255, blank=True)
@@ -58,9 +59,23 @@ class Photo(models.Model):
     category = models.ManyToManyField(Category, blank = True)
     comments = models.ManyToManyField(Comment, blank = True)
     metadata = models.ManyToManyField(Metadata, blank = True)
-    #thumbnail = models.ImageField(blank=True, null=True)
     report = models.ManyToManyField(Reporte, blank = True)
-
+    def save(self, *args, **kwargs):
+        if not self.id:
+            #Have to save the image (and imagefield) first
+            super(Photo, self).save(*args, **kwargs)
+            #obj is being created for the first time - resize
+            resized = get_thumbnail(self.image, "100x100", crop='center', quality=99)
+            #Manually reassign the resized image to the image field
+            archivo=self.image.url.split('/')[-1]
+            nombre = archivo.split('.')
+            nuevoNombre = nombre[0]+"_thumbnail."+nombre[1]
+            print(self.image.url)
+            self.thumbnail.save(nuevoNombre, ContentFile(resized.read()), True)
+        else:
+            super(Photo, self).save(*args, **kwargs)
+    
+    #thumbnail = get_thumbnail(image, '100x100', crop='center', quality=99)
     def __str__(self):
         try:
             t = self.metadatatitle.title

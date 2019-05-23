@@ -49,6 +49,9 @@ class PhotoListAPI(generics.GenericAPIView):
             serialized_data = serializer.data
             for photo in serialized_data:
                 photo['metadata'] = list(filter(lambda x: x['approved'], photo['metadata']))
+                print(len(photo['metadata']))
+                print("\n")
+                print(photo['metadata'])
                 photo['metadata'] = list(map(lambda x: x['metadata'][0]['name'] + " : " + x['value'], photo['metadata']))
         return Response(serializer.data)
 
