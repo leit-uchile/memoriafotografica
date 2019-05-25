@@ -13,7 +13,7 @@ const Footer = () =>{
                         <Col>
                             <img src={'/mf.ico'} alt={'logo'}/>
                             <div style={{display:'inline-block', margin:'10px'}}>
-                                <h1 style={{fontSize:'20px', fontWeight:'bold'}}>El Proyecto</h1>
+                                <h5 style={{fontSize:'20px', fontWeight:'bold'}}>El Proyecto</h5>
                                 <h2 style={{fontSize:'15px', color:'gray'}}>Memoria Fotografica</h2>
                             </div>
                             
@@ -22,14 +22,14 @@ const Footer = () =>{
                     <Row>
                         <Col md='3'>
                             
-                            <h1 style={{fontSize:'15px'}}><b>Biblioteca Central FCFM</b></h1>
+                            <h5 style={{fontSize:'12px'}}><b>Biblioteca Central FCFM</b></h5>
                             <p style={{margin:'0px',paddingBottom:'0px'}}>Beauchef 850</p>
                             <p style={{margin:'0px',paddingBottom:'0px'}}>Santiago</p>
                             <p>Chile</p>
                             <p>+56 22 978 4074</p>
                         </Col>
                         <Col md='3'>
-                        <h1 style={{fontSize:'15px'}}><b>Equipo</b></h1>
+                        <h5 style={{fontSize:'12px'}}><b>Equipo</b></h5>
                             <ul>
                                 <li>Acerca de</li>
                                 <li>LEIT</li>
@@ -37,7 +37,7 @@ const Footer = () =>{
                             </ul>
                         </Col>
                         <Col md='3'>
-                            <h1 style={{fontSize:'15px'}}><b>Enlaces</b></h1>
+                            <h5 style={{fontSize:'12px'}}><b>Enlaces</b></h5>
                             <ul>
                                 <li>Preguntas Frecuentes</li>
                                 <li>Contactenos</li>
@@ -45,7 +45,7 @@ const Footer = () =>{
                             </ul>
                         </Col>
                         <Col md='3'>
-                            <h1 style={{fontSize:'15px'}}><b>Suscripciones</b></h1>
+                            <h5 style={{fontSize:'12px'}}><b>Suscripciones</b></h5>
                             <ul>
                                 <li>Para obtener novedades puede registrarse en nuestro Newsletter</li>
                                 <Input type="email" placeholder="Ingrese su correo"/>
