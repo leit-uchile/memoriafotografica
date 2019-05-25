@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Link, Redirect} from 'react-router-dom';
 import {auth, misc} from '../actions';
 import {connect} from 'react-redux';
+import {Alert} from 'reactstrap';
 import '../css/login.css';
 
 class Login extends Component{
@@ -28,11 +29,25 @@ class Login extends Component{
         this.props.setRoute('/login')
     }
 
+    translateError(error){
+        var errorMessage;
+        var firstError = error.length ? error[0] : error
+        console.log(firstError)
+        switch (firstError){
+            case "Unable to log in with provided credentials.":
+                errorMessage = "Tus credenciales no son correctas";
+                break;
+            default:
+                errorMessage = "No podemos ingresarte al sitio";
+                break;
+        }
+        return errorMessage;
+    }
+
     render(){
         if (this.props.isAuthenticated) {   
             return <Redirect to="/" />
         }
-
         return(
             <div className='modal-dialog text-center'>
                     <div className='col-sm-9 main-section'>
@@ -40,13 +55,12 @@ class Login extends Component{
                                 <h1>Inicia sesión</h1>
                                 <form onSubmit={this.onSubmit}>
                                     <fieldset>
-                                        {this.props.errors.length > 0 && (
-                                            <ul>
-                                            {this.props.errors.map(error => (
-                                                <li key={error.field}>{error.message}</li>
-                                            ))}
-                                            </ul>
-                                        )}
+                                        {this.props.errors.length > 0 &&
+                                            this.props.errors.map(error => (
+                                                <Alert key={error.field} color="warning"
+                                                >{this.translateError(error.message)}</Alert>
+                                            ))
+                                        }
                                             <div className='col-12 form-input'>
                                                 <div className='form-group'>
                                                     <div className='input-group'>
