@@ -103,7 +103,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
         else:
             photo = self.get_object(pk,False)
             serializer_class = PhotoDetailSerializer
-            serializer = PhotoDetalSerializer(photo)
+            serializer = PhotoDetailSerializer(photo)
             serialized_data = serializer.data
             serialized_data['metadata'] = list(filter(lambda x: x['approved'], serialized_data['metadata']))
             serialized_data['metadata'] = list(map(lambda x: x['metadata'][0]['name'] + " : " + x['value'], serialized_data['metadata']))
@@ -253,17 +253,52 @@ class PhotoCommentListAPI(generics.GenericAPIView):
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
+        ROL_TYPE_CHOICES = (
+            (1, 'Alumno'),
+            (2, 'Ex-Alumno'),
+            (3, 'Académico'),
+            (4, 'Ex-Académico'),
+            (5, 'Funcionario'),
+            (6, 'Externo')
+        )
         if request.user.user_type == 1:
             p = self.get_object(pk, False)
             comments = p.comments.filter(censure=False)
-            serializer_class = CommentSerializer
+            serialized_class = CommentSerializer
             serializer = CommentSerializer(comments, many = True)
+            serialized_data = serializer.data
+            print(serialized_data)
+            for c in serialized_data:
+                try:
+                    u = comments.get(pk=c['id']).user_set.first()
+                    u_dict = {}
+                    u_dict['first_name'] = u.first_name
+                    u_dict['last_name'] = u.last_name
+                    u_dict['generation'] = u.generation
+                    u_dict['avatar'] = u.avatar if u.avatar else None
+                    u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
+                    c['usuario'] = u_dict                    
+                except:
+                    pass
         else:
             p = self.get_object(pk, True)
             comments = p.comments.all()
-            serializer_class = CommentAdminSerializer
+            #serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comments, many = True)
-        return Response(serializer.data)
+            serialized_data = serializer.data
+            for c in serialized_data:
+                try:
+                    u = comments.get(pk=c['id']).user_set.first()
+                    u_dict = {}
+                    u_dict['first_name'] = u.first_name
+                    u_dict['last_name'] = u.last_name
+                    u_dict['generation'] = u.generation
+                    u_dict['avatar'] = u.avatar if u.avatar else None
+                    u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
+                    c['usuario'] = u_dict
+                except:
+                    pass
+        return Response(serialized_data)
 
     def post(self, request, pk, *args, **kwargs):
         photo = self.get_object(pk, False)

@@ -53,7 +53,8 @@ class UploadPage extends Component{
 
     render(){
         var subupload;
-        switch (this.state.currentPage){ 
+        var current = this.props.isAuthenticated ? 2 : this.state.currentPage;
+        switch (current){ 
             case 0: 
                 subupload = <Container style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
                     <h1 style={{textAlign: "center", fontWeight: "bold"}}>¡Ayudanos aportando material!</h1>
@@ -79,7 +80,7 @@ class UploadPage extends Component{
         }
             return(
                 <div>
-                    {subupload}
+                {subupload}
                 </div>
             );
     }

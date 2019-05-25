@@ -50,7 +50,8 @@ class Register extends Component{
             this.state.loginInfo.name,
             this.state.loginInfo.lastname,
             this.state.loginInfo.date,
-            this.state.loginInfo.rol)
+            this.state.loginInfo.rol,
+            this.state.loginInfo.avatar)
         
     }
 
@@ -125,8 +126,8 @@ const mapStateToProps = state => {
 
 const mapActionsToProps = dispatch => {
     return {
-        register: (username, password, name, lastname, date, rol) => {
-            return dispatch(auth.register(username, password, name, lastname, date, rol));
+        register: (username, password, name, lastname, date, rol, avatar) => {
+            return dispatch(auth.register(username, password, name, lastname, date, rol, avatar));
         },
         cleanErrors: () => {
             return dispatch(auth.cleanErrors())

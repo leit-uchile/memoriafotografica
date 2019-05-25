@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, FormGroup, Label, Input, Button, Col, Row, Alert} from 'reactstrap';
+import {Form, FormGroup, Label, Input, Button, Col, Row, Alert, Container} from 'reactstrap';
 
 class RegisterLoginInfo extends Component{
     constructor(Props){
@@ -30,7 +30,7 @@ class RegisterLoginInfo extends Component{
         this.fr.onload = (function(theFile) {
             return function(e) {
             // Render thumbnail.
-            this.setState({avatar: e.target.result})
+            this.setState({avatarPreview: e.target.result})
             };
         })(Props.photo).bind(this);
         this.handleFileSelect = this.handleFileSelect.bind(this)
@@ -75,9 +75,10 @@ class RegisterLoginInfo extends Component{
             }
         }
         if(image){
+            this.setState({avatar: image})
             this.fr.readAsDataURL(image)
         }else{
-            this.setState({avatar: ""})
+            this.setState({avatarPreview: "", avatar: ""})
         }
     }
 
@@ -89,15 +90,13 @@ class RegisterLoginInfo extends Component{
             errorMessage = null;
         }
 
-        var avatarPreview = this.state.avatar === "" ? null : 
-            <img src={this.state.avatar} width="200px" height="200px"
+        var avatarPreview = this.state.avatarPreview === "" ? null : 
+            <img src={this.state.avatarPreview} width="200px" height="200px"
             style={{borderRadius: "50%", margin: "0 auto", display: "block", objectFit: "cover"}}/>
 
         return (
-            <div className="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
-                
-                <h1>Register</h1>
-                
+            <Container style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
+                <h1>Registro</h1>
                 <Form onSubmit={this.onSubmit}>
                     {errorMessage}
                     {avatarPreview}
@@ -162,7 +161,7 @@ class RegisterLoginInfo extends Component{
                     </FormGroup>
                     <Button>Finalizar</Button>
                 </Form>
-            </div>
+            </Container>
         );
     }
 }

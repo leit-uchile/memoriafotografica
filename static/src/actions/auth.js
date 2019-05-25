@@ -66,12 +66,21 @@ export const loadUser = () => {
   }
 }
 
-export const register = (email, password, first_name, last_name, birth_date, rol_type) => {
+export const register = (email, password, first_name, last_name, birth_date, rol_type, avatar) => {
   return (dispatch, getState) => {
+
     let headers = {"Content-Type": "application/json"};
-    let body = JSON.stringify({email, password, first_name, last_name, birth_date, rol_type: parseInt(rol_type)});
+
+    var formData = new FormData();
+    formData.append("email",email);
+    formData.append("password",password);
+    formData.append("first_name",first_name);
+    formData.append("last_name", last_name);
+    formData.append("birth_date", birth_date);
+    formData.append("rol_type",parseInt(rol_type));
+    formData.append("avatar", avatar)
         
-    return fetch("/api/auth/register/", {headers, body, method: "POST"})
+    return fetch("/api/auth/register/", {headers, body: formData, method: "POST"})
       .then(res => {
         if (res.status < 500) {
           return res.json().then(data => {
