@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, FormGroup, Label, Input, Button, Col, Row, Alert} from 'reactstrap';
+import {Form, FormGroup, Label, Input, Button, Col, Row, Alert, Container} from 'reactstrap';
 
 class RegisterLoginInfo extends Component{
     constructor(Props){
@@ -95,10 +95,8 @@ class RegisterLoginInfo extends Component{
             style={{borderRadius: "50%", margin: "0 auto", display: "block", objectFit: "cover"}}/>
 
         return (
-            <div className="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
-                
-                <h1>Register</h1>
-                
+            <Container style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
+                <h1>Registro</h1>
                 <Form onSubmit={this.onSubmit}>
                     {errorMessage}
                     {avatarPreview}
@@ -163,7 +161,7 @@ class RegisterLoginInfo extends Component{
                     </FormGroup>
                     <Button>Finalizar</Button>
                 </Form>
-            </div>
+            </Container>
         );
     }
 }
