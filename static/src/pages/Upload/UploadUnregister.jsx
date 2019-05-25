@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Container} from 'reactstrap';
 
 class UploadUnregister extends Component{
     constructor(Props){
@@ -50,7 +51,7 @@ class UploadUnregister extends Component{
         }
         
         return(
-            <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
+            <Container style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
                 <div>
                     <h1>Cuentanos un poco sobre ti</h1>
                 </div>
@@ -107,7 +108,7 @@ class UploadUnregister extends Component{
                 <button className="btn btn-secondary" onClick={this.props.goBack}>Atras</button>  
                 <button className="btn btn-success" type="submit">Continuar</button>  
                 </form>
-            </div>
+            </Container>
         )
     }
 }

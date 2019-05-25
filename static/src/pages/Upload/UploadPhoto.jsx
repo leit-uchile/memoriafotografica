@@ -3,7 +3,7 @@ import ReactTags from 'react-tag-autocomplete'
 import UploadDetails from './UploadDetails'
 import UploadAlbum from './UploadAlbum'
 import {CustomInput, Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
-import {useDropzone} from 'react-dropzone'
+//import {useDropzone} from 'react-dropzone'
 import {v4} from 'uuid';
 
 class UploadPhoto extends Component{
@@ -145,17 +145,17 @@ class UploadPhoto extends Component{
     if (this.state.onAlbum){
       var left = <UploadAlbum save={(info) => this.saveAlbum(info) }/>}
     return (
-      <Container style={{backgroundColor: 'rgb(245,245,245)', borderRadius: '1em', marginTop: '2em', padding: '2em'}}>
+      <Container style={{marginTop:'20px'}}>
         <Row>
           <Col md='3'>
-            <div style={{display:'flex', justifyContent:'space-between', backgroundColor:'#dceaf7', width:'94%', borderRadius:'10px 10px 0px 0px', border:'1px solid rgb(156,158,159)', marginLeft:'auto', marginRight:'auto', padding:'15px, 15px, 0px, 15px'}}>
+            <div style={styles.albumBox}>
               <Label style={{fontSize:'18px'}}>Crear Album</Label>
-              <Button color="primary" onClick={() => this.isAlbum()}>+</Button>
+              <Button style={styles.plusButton} color="primary" onClick={() => this.isAlbum()}>+</Button>
             </div>            
-            <Form onSubmit={this.onSubmit} style={{backgroundColor: "white", border:'1px solid rgb(156,158,159)', padding:'15px', borderRadius:'0px 0px 10px 10px',}}>
+            <Form onSubmit={this.onSubmit} style={styles.generalInformation}>
               <FormGroup>
                 {left}
-                <div style={{borderBottom:'1px solid rgb(156,158,159)'}}>
+                <div style={styles.hr}>
                   <Label>Informacion general</Label>
                 </div>              
                 <Label style={{color: '#848687'}}>Fecha de las fotos:</Label>
@@ -164,7 +164,7 @@ class UploadPhoto extends Component{
                 <ReactTags placeholder={'Añadir etiquetas'} autoresize={false} allowNew={true} tags={this.state.tags} suggestions={this.state.suggestions} handleDelete={this.deleteTag.bind(this)} handleAddition={this.additionTag.bind(this)} />
               </FormGroup>
               <FormGroup>
-                <div style={{borderBottom:'1px solid rgb(156,158,159)'}}>
+                <div style={styles.hr}>
                   <Label style={{color: '#848687'}} for="CreativeCommons">Permisos de acceso e intercambio</Label>
                 </div>
                 <div style={{marginTop:'10px'}}>
@@ -189,6 +189,40 @@ class UploadPhoto extends Component{
         </Row>
       </Container>
     )
+  }
+}
+const styles={
+  albumBox:{
+    display:'flex', 
+    width:'94%', 
+    height:'auto',
+    padding:'2px 10px 0px 10px',
+    marginLeft:'auto', 
+    marginRight:'auto',
+    marginBottom:'-5px',
+    justifyContent:'space-between', 
+    backgroundColor:'#dceaf7',     
+    borderRadius:'10px 10px 0px 0px', 
+    borderTop:'1px solid rgb(156,158,159)',
+    borderRight:'1px solid rgb(156,158,159)',
+    borderLeft:'1px solid rgb(156,158,159)', 
+    boxShadow: '2px 2px 3px rgb(156,158,159)'
+  },
+  plusButton:{
+    fontSize:'12px',
+    padding:'2px',
+    borderRadius:'50%', 
+    height:'25px', 
+    width:'25px'
+  },
+  generalInformation:{
+    backgroundColor: "white",
+    border:'1px solid rgb(156,158,159)', 
+    padding:'15px', 
+    borderRadius:'0px 0px 10px 10px',
+  },
+  hr:{
+    borderBottom:'1px solid rgb(156,158,159)'
   }
 }
 

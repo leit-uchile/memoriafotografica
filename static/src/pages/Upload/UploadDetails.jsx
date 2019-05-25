@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import ReactTags from 'react-tag-autocomplete'
 import {upload} from '../../actions';
 import {connect} from 'react-redux';
-import uploadPhoto from '../../css/uploadPhoto.css'
 import { Container, Row, Col, Button, CustomInput, ButtonGroup, Form, FormGroup, Label, Input, Collapse, Card, CardBody } from 'reactstrap';
 
 class UploadDetails extends Component{
@@ -80,14 +79,15 @@ class UploadDetails extends Component{
 
     render(){
         return(
-            <Container style={{backgroundColor:'#dceaf7', borderRadius:'10px 10px 10px 10px', border:'1px solid rgb(156,158,159)'}}>
+            <Container style={{marginBottom:'20px', backgroundColor:'#dceaf7', borderRadius:'10px 10px 10px 10px', border:'1px solid rgb(156,158,159)', boxShadow: '2px 2px 4px rgb(156,158,159)'}}>
                 <Row>
-                    <Col md='6'>
-                        <img src={this.state.src} id='thumb'/>
+                    <Col md='3' style={{display:'flex'}}>
+                        <img style={styles.thumb} src={this.state.src} id='thumb'/>
                     </Col>                  
-                    <Col md='6'>    
+                    <Col md='9' style={{padding:'20px'}}>    
                         <Form onSubmit={this.onSubmit}>
                             <FormGroup>
+                                <Label style={{color: '#848687'}}>Descripcion:</Label>
                                 <Input type="textarea" name="description" placeholder="Historia asociada a la foto"id="description" onChange={this.updateDescription} value={this.state.description} required/>                                
                             </FormGroup>
                             <Button color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>Configurar por separado</Button>
@@ -117,6 +117,16 @@ class UploadDetails extends Component{
                 </Row>
             </Container>
         )
+    }
+}
+
+const styles={
+    thumb:{
+        height: '85px',
+        marginTop: '20px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        boxShadow: '5px 5px 5px #3c4145',
     }
 }
 
