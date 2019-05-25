@@ -1,8 +1,9 @@
-import React, {Component} from 'react';
+import React, {Component, useCallback} from 'react';
 import ReactTags from 'react-tag-autocomplete'
 import UploadDetails from './UploadDetails'
 import UploadAlbum from './UploadAlbum'
 import {CustomInput, Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import {useDropzone} from 'react-dropzone'
 import {v4} from 'uuid';
 
 class UploadPhoto extends Component{
@@ -70,6 +71,7 @@ class UploadPhoto extends Component{
     }
     this.handleUpload(images)
   }
+  
 
   handleUpload(file){
     var f = file.map((el)=>{
@@ -143,21 +145,29 @@ class UploadPhoto extends Component{
     if (this.state.onAlbum){
       var left = <UploadAlbum save={(info) => this.saveAlbum(info) }/>}
     return (
-      <Container style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
+      <Container style={{backgroundColor: 'rgb(245,245,245)', borderRadius: '1em', marginTop: '2em', padding: '2em'}}>
         <Row>
           <Col md='3'>
-            <Button color="primary" onClick={() => this.isAlbum()}>+ Album</Button>
-            <Form onSubmit={this.onSubmit}>
+            <div style={{display:'flex', justifyContent:'space-between', backgroundColor:'#dceaf7', width:'94%', borderRadius:'10px 10px 0px 0px', border:'1px solid rgb(156,158,159)', marginLeft:'auto', marginRight:'auto', padding:'15px, 15px, 0px, 15px'}}>
+              <Label style={{fontSize:'18px'}}>Crear Album</Label>
+              <Button color="primary" onClick={() => this.isAlbum()}>+</Button>
+            </div>            
+            <Form onSubmit={this.onSubmit} style={{backgroundColor: "white", border:'1px solid rgb(156,158,159)', padding:'15px', borderRadius:'0px 0px 10px 10px',}}>
               <FormGroup>
-                <Input type='file' multiple onChange={this.handleFileSelect}/>
-                <hr />
-                <Label>Configuración general</Label>
+                {left}
+                <div style={{borderBottom:'1px solid rgb(156,158,159)'}}>
+                  <Label>Informacion general</Label>
+                </div>              
+                <Label style={{color: '#848687'}}>Fecha de las fotos:</Label>
                 <Input type="date" id="date" onChange={this.updateDate} required/>
+                <Label style={{color: '#848687',}}>Etiquetas:</Label>
                 <ReactTags placeholder={'Añadir etiquetas'} autoresize={false} allowNew={true} tags={this.state.tags} suggestions={this.state.suggestions} handleDelete={this.deleteTag.bind(this)} handleAddition={this.additionTag.bind(this)} />
               </FormGroup>
               <FormGroup>
-                <Label for="CreativeCommons">Permisos de acceso e intercambio</Label>
-                <div>
+                <div style={{borderBottom:'1px solid rgb(156,158,159)'}}>
+                  <Label style={{color: '#848687'}} for="CreativeCommons">Permisos de acceso e intercambio</Label>
+                </div>
+                <div style={{marginTop:'10px'}}>
                   <CustomInput type="checkbox" id="CreativeCommonsCheckbox1" label="CC BY" onClick={() => this.updateCC('CC BY')}/>
                   <CustomInput type="checkbox" id="CreativeCommonsCheckbox2" label="CC BY-SA" onClick={() => this.updateCC('CC BY-SA')} />
                   <CustomInput type="checkbox" id="CreativeCommonsCheckbox3" label="CC BY-ND" onClick={() => this.updateCC('CC BY-ND')}/>
@@ -173,8 +183,8 @@ class UploadPhoto extends Component{
             </Form>
           </Col>
           <Col md='9'>
-            {left}
             {details}
+            <Input type='file' multiple onChange={this.handleFileSelect}/>
           </Col>
         </Row>
       </Container>

@@ -80,7 +80,7 @@ class UploadDetails extends Component{
 
     render(){
         return(
-            <Container>
+            <Container style={{backgroundColor:'#dceaf7', borderRadius:'10px 10px 10px 10px', border:'1px solid rgb(156,158,159)'}}>
                 <Row>
                     <Col md='6'>
                         <img src={this.state.src} id='thumb'/>

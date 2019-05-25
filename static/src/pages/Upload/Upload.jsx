@@ -1,17 +1,16 @@
 import React, {Component} from 'react';
 import UploadUnregister from './UploadUnregister';
 import UploadPhoto from './UploadPhoto';
-import UploadDetails from './UploadDetails';
-
 import {connect} from 'react-redux';
 import {auth, misc} from '../../actions';
-import {Redirect} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
+import {Container, Button} from 'reactstrap';
 
 class UploadPage extends Component{
     constructor(Props){
         super(Props)
         this.state = {
-            currentPage: 2,
+            currentPage: 0,
             userInfo: null,
             photos: null,
         }
@@ -53,21 +52,17 @@ class UploadPage extends Component{
     }
 
     render(){
-        if (this.props.isAuthenticated) {
-            this.setState.currentPage = 2
-        }
-
         var subupload;
         switch (this.state.currentPage){ 
             case 0: 
-                subupload = <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
+                subupload = <Container style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
                     <h1 style={{textAlign: "center", fontWeight: "bold"}}>¡Ayudanos aportando material!</h1>
-                    <div>
-                        <button className="btn btn-primary" onClick="//login">Iniciar sesion</button>
-                        <button className="btn btn-secundary" onClick={this.siguiente}>Continuar sin registrar</button>
+                    <div style={{textAlign: "center"}}>
+                        <Button color='primary' tag={Link} to="/login">Iniciar sesion</Button>
+                        <Button color='link' onClick={this.siguiente}>Continuar sin registrar</Button>
                     </div>
-                    <span style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>Tendras que ingresar tus datos cada vez que subas una foto</span>
-                </div> ;
+                    <p style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>Si no inicias sesion tendras que ingresar tus datos cada vez que subas una foto</p>
+                </Container> ;
                 break;
             case 1:
                 subupload = <UploadUnregister goBack={this.back} saveInfo={this.saveUserInfo} cache={this.state.userInfo}/>
@@ -76,11 +71,11 @@ class UploadPage extends Component{
                 subupload = <UploadPhoto goBack={this.back} saveAll={this.savePhotos}/>
                 break;
             case 3:
-                subupload = <div class="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
+                subupload = <Container style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
                     <h1 style={{textAlign: "center", fontWeight: "bold"}}>¡Aporte enviado!</h1>
                     <span style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>La foto tendra que ser aprobada para que la comunidad la vea. Puedes ver el estado en que se encuentra accediento a tu perfil. Muchas gracias!</span>
-        </div> ;
-        break;
+                    </Container> ;
+                break;
         }
             return(
                 <div>

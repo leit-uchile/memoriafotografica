@@ -23,9 +23,9 @@ class UploadAlbum extends Component{
 
   render() {
     return (
-      <Container> 
+      <Container fluid> 
         <Form>
-          <FormGroup>
+          <FormGroup style={{padding:'0px'}}>
             <Input type="text" name="album-name" placeholder="Nombre del album" onChange={this.updateAlbumName} required/>
             <Input type="textarea" name="album-description" placeholder="Descripcion" onChange={this.updateAlbumDesc}/>
           </FormGroup>
