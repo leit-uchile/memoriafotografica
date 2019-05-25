@@ -30,7 +30,7 @@ class RegisterLoginInfo extends Component{
         this.fr.onload = (function(theFile) {
             return function(e) {
             // Render thumbnail.
-            this.setState({avatar: e.target.result})
+            this.setState({avatarPreview: e.target.result})
             };
         })(Props.photo).bind(this);
         this.handleFileSelect = this.handleFileSelect.bind(this)
@@ -75,9 +75,10 @@ class RegisterLoginInfo extends Component{
             }
         }
         if(image){
+            this.setState({avatar: image})
             this.fr.readAsDataURL(image)
         }else{
-            this.setState({avatar: ""})
+            this.setState({avatarPreview: "", avatar: ""})
         }
     }
 
@@ -89,8 +90,8 @@ class RegisterLoginInfo extends Component{
             errorMessage = null;
         }
 
-        var avatarPreview = this.state.avatar === "" ? null : 
-            <img src={this.state.avatar} width="200px" height="200px"
+        var avatarPreview = this.state.avatarPreview === "" ? null : 
+            <img src={this.state.avatarPreview} width="200px" height="200px"
             style={{borderRadius: "50%", margin: "0 auto", display: "block", objectFit: "cover"}}/>
 
         return (
