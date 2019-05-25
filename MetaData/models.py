@@ -17,8 +17,8 @@ class IPTCKeyword(models.Model):
     definition = models.TextField()
     help_text = models.TextField()
   
-
+DEFAULT_IPTC_ID = 1
 class Metadata(models.Model):
     value = models.TextField()
-    metadata = models.ManyToManyField(IPTCKeyword)
+    metadata = models.ForeignKey(IPTCKeyword, on_delete=models.CASCADE, default = DEFAULT_IPTC_ID)
     approved = models.BooleanField(default=False)

@@ -65,7 +65,7 @@ class Photo(models.Model):
             #Have to save the image (and imagefield) first
             super(Photo, self).save(*args, **kwargs)
             #obj is being created for the first time - resize
-            resized = get_thumbnail(self.image, "100x100", crop='center', quality=99)
+            resized = get_thumbnail(self.image, "640x480", crop='center', quality=99)
             #Manually reassign the resized image to the image field
             archivo=self.image.url.split('/')[-1]
             nombre = archivo.split('.')
