@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, FormGroup, Label, Input, Button, Col, Row} from 'reactstrap';
+import {Form, FormGroup, Label, Input, Button, Col, Row, Alert} from 'reactstrap';
 
 class RegisterLoginInfo extends Component{
     constructor(Props){
@@ -18,6 +18,7 @@ class RegisterLoginInfo extends Component{
                 passwordCheck: "",
                 date: "",
                 avatar: "",
+                avatarPreview: "",
                 rol: 1,
                 difusion: ""
             }
@@ -25,6 +26,14 @@ class RegisterLoginInfo extends Component{
         this.checkPassword = this.checkPassword.bind(this);
         this.props = Props
         this.genericChangeHandler = this.genericChangeHandler.bind(this)
+        this.fr = new FileReader();
+        this.fr.onload = (function(theFile) {
+            return function(e) {
+            // Render thumbnail.
+            this.setState({avatar: e.target.result})
+            };
+        })(Props.photo).bind(this);
+        this.handleFileSelect = this.handleFileSelect.bind(this)
     }
 
     genericChangeHandler(event){
@@ -54,13 +63,35 @@ class RegisterLoginInfo extends Component{
         }
     }
 
+    handleFileSelect(e){
+        var image; 
+        var files = e.target.files;
+        for(var i=0,f;f=files[i];i++){
+            if (!f.type.match('image.*')) {
+                continue;
+            }else{
+                image = f
+                break;
+            }
+        }
+        if(image){
+            this.fr.readAsDataURL(image)
+        }else{
+            this.setState({avatar: ""})
+        }
+    }
+
     render(){
         var errorMessage;
         if(this.state.error !== undefined && this.state.error !== null){
-            errorMessage = <div className="alert alert-warning">{this.state.error}</div>
+            errorMessage = <Alert color="warning">{this.state.error}</Alert>
         }else{
             errorMessage = null;
         }
+
+        var avatarPreview = this.state.avatar === "" ? null : 
+            <img src={this.state.avatar} width="200px" height="200px"
+            style={{borderRadius: "50%", margin: "0 auto", display: "block", objectFit: "cover"}}/>
 
         return (
             <div className="container" style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
@@ -69,6 +100,11 @@ class RegisterLoginInfo extends Component{
                 
                 <Form onSubmit={this.onSubmit}>
                     {errorMessage}
+                    {avatarPreview}
+                    <FormGroup>
+                        <Label for="avatar">Avatar</Label>
+                        <Input id="avatar" type="file" multiple={false} onChange={this.handleFileSelect}>Subir imagen</Input>
+                    </FormGroup>
                     <Row form>
                         <Col sm={6}>
                             <FormGroup>
