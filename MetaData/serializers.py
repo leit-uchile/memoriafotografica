@@ -28,8 +28,8 @@ class MetadataAdminSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        m = Metadata.objects.create(value=validated_data["value"], approved=validated_data["approved"])
-        m.metadata.set(validated_data["metadata"])
+        m = Metadata.objects.create(value=validated_data["value"], approved=validated_data["approved"], metadata=validated_data["metadata"] )
+        #m.metadata.set(validated_data["metadata"])
         return m
 
     def update(self, instance, validated_data):
@@ -48,8 +48,10 @@ class MetadataSerializer(serializers.ModelSerializer):
         exclude = ('approved',)
         model = Metadata
     def create(self, validated_data):
-        m = Metadata.objects.create(value=validated_data["value"])
-        m.metadata.set(validated_data["metadata"])
+        m = Metadata.objects.create(metadata=validated_data["metadata"], value=validated_data["value"])
+        #m.value = validated_data["value"]
+        #m.save()
+        #m.metadata.set(validated_data["metadata"])
         return m
 
     def update(self, instance, validated_data):

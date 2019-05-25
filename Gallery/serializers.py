@@ -1,8 +1,6 @@
 # Import models here
 from .models import *
 from datetime import datetime
-#from MetaData.models import Metadata
-#from MetaData.serializers import MetadataSerializer
 from rest_framework import fields, serializers
 from rest_framework.exceptions import NotFound
 from rest_framework.fields import CurrentUserDefault
@@ -74,7 +72,7 @@ class CreateCommentSerializer(serializers.ModelSerializer):
 class CreatePhotoSerializer(serializers.ModelSerializer):
         class Meta:
             model = Photo
-            fields = ('id', 'image', 'description' 'uploadDate', 'title', 'permission')
+            fields = ('id', 'image', 'description', 'uploadDate', 'title', 'permission', 'thumbnail')
 
         def create(self, validated_data):
             photo = Photo.objects.create(**validated_data)
@@ -85,22 +83,22 @@ class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         exclude = ('censure', 'approved','report','comments')
         model = Photo
-        depth = 2
     def update(self, instance, validated_data):
-        #instance.tags = validated_data.get('tags', instance.tags)
         instance.permission = validated_data.get('permission', instance.permission)
         instance.title = validated_data.get('title', instance.title)
         instance.save()
         return instance
+
+class PhotoDetailSerializer(PhotoSerializer):
+    class Meta(PhotoSerializer.Meta):
+        depth = 2
 
 class PhotoAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = "__all__"
         model = Photo
-        depth = 2
     def update(self, instance, validated_data):
-        #instance.tags = validated_data.get('tags', instance.tags)
         instance.approved = validated_data.get('approved', instance.approved)
         instance.censure = validated_data.get('censure', instance.censure)
         instance.permission = validated_data.get('permission', instance.permission)
@@ -116,6 +114,10 @@ class PhotoAdminSerializer(serializers.ModelSerializer):
         instance.title = validated_data.get('title', instance.title)
         instance.save()
         return instance
+
+class PhotoDetailAdminSerializer(PhotoAdminSerializer):
+    class Meta(PhotoAdminSerializer.Meta):
+        depth = 2
 
 class AlbumSerializer(serializers.ModelSerializer):
     class Meta:

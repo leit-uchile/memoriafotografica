@@ -47,7 +47,9 @@ INSTALLED_APPS = [
     'main.apps.MainConfig',
     'rest_framework',
     'knox',
-    'multiselectfield'
+    'multiselectfield',
+    'sorl.thumbnail'
+
 ]
 
 MIDDLEWARE = [

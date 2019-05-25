@@ -97,13 +97,13 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
         )
         if request.user.user_type != 1:
             photo = self.get_object(pk,True)
-            serializer_class = PhotoAdminSerializer
-            serializer = PhotoAdminSerializer(photo)
+            serializer_class = PhotoDetailAdminSerializer
+            serializer = PhotoDetailAdminSerializer(photo)
             serialized_data = serializer.data
         else:
             photo = self.get_object(pk,False)
-            serializer_class = PhotoSerializer
-            serializer = PhotoSerializer(photo)
+            serializer_class = PhotoDetailSerializer
+            serializer = PhotoDetalSerializer(photo)
             serialized_data = serializer.data
             serialized_data['metadata'] = list(filter(lambda x: x['approved'], serialized_data['metadata']))
             serialized_data['metadata'] = list(map(lambda x: x['metadata'][0]['name'] + " : " + x['value'], serialized_data['metadata']))
