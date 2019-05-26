@@ -37,7 +37,7 @@ class Header extends Component{
 
         return(
             <header>
-                <Navbar color="light" light expand="md">
+                <Navbar light expand="md">
                     <NavbarBrand className="mf-navbar"> 
                         <span id="mf-title">
                         <b>Memoria</b> fotogr&aacute;fica 

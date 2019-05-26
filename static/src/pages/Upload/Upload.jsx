@@ -6,6 +6,8 @@ import {auth, misc} from '../../actions';
 import {Link, Redirect} from 'react-router-dom';
 import {Container, Button} from 'reactstrap';
 
+var current;
+
 class UploadPage extends Component{
     constructor(Props){
         super(Props)
@@ -15,7 +17,7 @@ class UploadPage extends Component{
             photos: null,
         }
         this.back = this.back.bind(this);
-        this.siguiente = this.siguiente.bind(this);
+        this.withoutRegister = this.withoutRegister.bind(this);
         this.saveUserInfo = this.saveUserInfo.bind(this);
         this.savePhotos = this.savePhotos.bind(this); 
     }
@@ -27,7 +29,7 @@ class UploadPage extends Component{
             })
         }
     }
-    siguiente(){
+    withoutRegister(){
         if(this.state.currentPage !=4){
             this.setState({
                 currentPage : this.state.currentPage +1
@@ -53,16 +55,25 @@ class UploadPage extends Component{
 
     render(){
         var subupload;
-        var current = this.props.isAuthenticated ? 2 : this.state.currentPage;
-        switch (current){ 
+        var current;
+        if (this.props.isAuthenticated && this.state.currentPage===0){
+            var current = this.props.isAuthenticated ? 2 : this.state.currentPage
+        }
+        if (this.props.isAuthenticated && this.state.currentPage===1){
+            var current = 3
+        }
+        if (!this.props.isAuthenticated){
+            var current=this.state.currentPage
+        }
+        switch (current){  
             case 0: 
-                subupload = <Container style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
-                    <h1 style={{textAlign: "center", fontWeight: "bold"}}>¡Ayudanos aportando material!</h1>
-                    <div style={{textAlign: "center"}}>
-                        <Button color='primary' tag={Link} to="/login">Iniciar sesion</Button>
-                        <Button color='link' onClick={this.siguiente}>Continuar sin registrar</Button>
+                subupload = <Container style={{backgroundColor: 'rgb(245,245,245)', borderRadius: '1em', marginTop: '2em', padding: '2em'}}>
+                    <h1 style={{textAlign: 'center', fontWeight: 'bold'}}>¡Ayudanos aportando material!</h1>
+                    <div style={{textAlign: 'center'}}>
+                        <Button color='primary' tag={Link} to='/login'>Iniciar sesion</Button>
+                        <Button color='link' onClick={this.withoutRegister}>Continuar sin registrar</Button>
                     </div>
-                    <p style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>Si no inicias sesion tendras que ingresar tus datos cada vez que subas una foto</p>
+                    <p style={{textAlign: 'center', display: 'block', margin: 'auto 1em auto 1em'}}>Si no inicias sesion tendras que ingresar tus datos cada vez que subas una foto</p>
                 </Container> ;
                 break;
             case 1:
@@ -72,9 +83,9 @@ class UploadPage extends Component{
                 subupload = <UploadPhoto goBack={this.back} saveAll={this.savePhotos}/>
                 break;
             case 3:
-                subupload = <Container style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
-                    <h1 style={{textAlign: "center", fontWeight: "bold"}}>¡Aporte enviado!</h1>
-                    <span style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>La foto tendra que ser aprobada para que la comunidad la vea. Puedes ver el estado en que se encuentra accediento a tu perfil. Muchas gracias!</span>
+                subupload = <Container style={{backgroundColor: 'rgb(245,245,245)', borderRadius: '1em', marginTop: '2em', padding: '2em'}}>
+                    <h1 style={{textAlign: 'center', fontWeight: 'bold'}}>¡Aporte enviado!</h1>
+                    <span style={{textAlign: 'center', display: 'block', margin: 'auto 1em auto 1em'}}>La foto tendra que ser aprobada para que la comunidad la vea. Puedes ver el estado en que se encuentra accediendo a tu perfil. Muchas gracias!</span>
                     </Container> ;
                 break;
         }

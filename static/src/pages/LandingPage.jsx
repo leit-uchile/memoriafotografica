@@ -4,7 +4,7 @@ import {misc} from '../actions';
 import {connect} from 'react-redux';
 import {home} from '../actions'
 import {Container, Row, Col, Carousel, CarouselItem, CarouselControl, CarouselIndicators, Card, Button, CardImg, CardText, CardDeck, CardBody} from 'reactstrap';
-
+import Photo from '../components/Photo';
 const items = [
     {
       src: 'http://www.adnradio.cl/images_remote/333/3339276_n_vir3.jpg?u=230217',
@@ -79,10 +79,10 @@ class LandingPage extends Component{
           );
         });
         
-        const photos = this.props.photos.slice(0,5).map((el) => {
+        const photos = this.props.photos.slice(0,5).map((el,index) => {
           return (
             <Card>
-              <CardImg top height="100%" src={el.image} alt="Card image cap" />
+              <Photo key={index} name={el.title} url={el.image} tags={el.metadata} url2={el.image} height="150px" useLink redirectUrl={`/photo/${el.id}`}/>
               <CardBody style={{backgroundColor:'#ebeeef'}}>
                 <CardText>{el.description}</CardText>
               </CardBody>

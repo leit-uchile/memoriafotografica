@@ -19,23 +19,34 @@ class Layout extends Component{
     render(){
         return(
             <div>
-                <Header/>
-                <Container fluid  style={{minHeight:'80vh'}}>
-                    <Switch>
-                        <Route exact path={"/"} component={LandingPage}/>
-                        <Route path={"/gallery"} component={Home}/>
-                        <Route path={"/login"} component={Login}/>
-                        <Route path={"/register"} component={Register}/>
-                        <Route path={"/upload"}component={Upload} />
-                        <Route path={"/photo/:id"}component={PhotoDetails}/>
-                        <Route path={"/curador/dashboard"} component={Dashboard} />
-                        <Route component={NoMatch}/>
-                    </Switch>
-                </Container>
-                <Footer/>
+                <div style={styles.backgroundStyle}>
+                    <Header/>
+                    <Container fluid style={{minHeight:'80vh'}}>
+                        <Switch>
+                            <Route exact path={"/"} component={LandingPage}/>
+                            <Route path={"/gallery"} component={Home}/>
+                            <Route path={"/login"} component={Login}/>
+                            <Route path={"/register"} component={Register}/>
+                            <Route path={"/upload"}component={Upload} />
+                            <Route path={"/photo/:id"}component={PhotoDetails}/>
+                            <Route path={"/curador/dashboard"} component={Dashboard} />
+                            <Route component={NoMatch}/>
+                        </Switch>
+                    </Container>
+                </div>
+                <div>
+                    <Footer/>
+                </div>
             </div>
         );
    }
-
+}
+const styles= {
+    backgroundStyle: {
+        backgroundColor: '#dee1e2',
+        background: 'linear-gradient(to bottom, #dee1e2 0%,#ffffff 34%)',
+        background: '-moz-linear-gradient(top, #dee1e2 0%, #ffffff 34%)', 
+        background: '-webkit-linear-gradient(top, #dee1e2 0%,#ffffff 34%)'
+    }
 }
 export default Layout;

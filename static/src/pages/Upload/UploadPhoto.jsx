@@ -1,10 +1,12 @@
 import React, {Component, useCallback} from 'react';
-import ReactTags from 'react-tag-autocomplete'
-import UploadDetails from './UploadDetails'
-import UploadAlbum from './UploadAlbum'
+import ReactTags from 'react-tag-autocomplete';
+import UploadDetails from './UploadDetails';
+import UploadAlbum from './UploadAlbum';
 import {CustomInput, Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
-//import {useDropzone} from 'react-dropzone'
+import Dropzone from 'react-dropzone';
 import {v4} from 'uuid';
+
+const imageMaxSize = 1000000; // KB
 
 class UploadPhoto extends Component{
   constructor(Props) {
@@ -34,16 +36,20 @@ class UploadPhoto extends Component{
     }
   }
 
+  saveAlbum(info){
+    this.setState({albumName: info.albumName, albumDesc: info.albumDesc})
+  }
+
   updateDate =  e => {this.setState({date : e.target.value})}
 
+  additionTag(tag) {
+    const tags = [].concat(this.state.tags, tag)
+    this.setState({ tags: tags })
+  }
   deleteTag(i) {
     const tags = this.state.tags.slice(0)
     tags.splice(i, 1)
     this.setState({ tags })
-  }
-  additionTag(tag) {
-    const tags = [].concat(this.state.tags, tag)
-    this.setState({ tags: tags })
   }
 
   updateCC(selected) {
@@ -56,11 +62,20 @@ class UploadPhoto extends Component{
       this.setState({ cc: [...this.state.cc] });//actualiza
   }
 
-  saveAlbum(info){
-    this.setState({albumName: info.albumName, albumDesc: info.albumDesc})
+  handleOnDrop = (files)=>{
+    var images = [];
+    if (files && files.length>0){
+      for(var i=0,f;f=files[i];i++){
+        if (!f.type.match('image.*') || f.size>imageMaxSize) {
+          alert('Error: Extension no valida o archivo muy pesado');
+        }else{
+          images.push(f)}
+      }
+      this.handleUpload(images)
+    }  
   }
 
-  handleFileSelect= e=>{
+  /* handleFileSelect= e=>{
     var images = []; 
     var files = e.target.files;
     for(var i=0,f;f=files[i];i++){
@@ -70,8 +85,8 @@ class UploadPhoto extends Component{
         images.push(f)}
     }
     this.handleUpload(images)
-  }
-  
+  } */
+
 
   handleUpload(file){
     var f = file.map((el)=>{
@@ -95,7 +110,7 @@ class UploadPhoto extends Component{
     this.setState({photosList: newPhotosList}) ;
   }
 
-  handleErase(info,key){
+  handleErase(key){
     var newPhotosList = []
     for (var i=0; i<this.state.photosList.length;i++){
       if (i!==key){
@@ -136,14 +151,20 @@ class UploadPhoto extends Component{
     if(count===this.state.photosList.length && this.state.photosList.length!==0){
         this.props.saveAll(this.state)
     }else{
-        console.log('No hay fotos o alguna no cuenta con descripcion')}
+      if(this.state.photosList.length===0){
+        alert('Debe enviar al menos una foto')
+      }else{
+        alert('Debe rellenar la descripcion de cada foto')
+      }
+    }
   }
 
   render() {
-    var details = this.state.photosList.map( (el, key) => 
-      <UploadDetails key={el.id} id={el.id} photo={el.photo} save={(info) => this.saveMeta(info, key)} delete={(info) => this.handleErase(info,key)} meta={el.meta} suggestions={this.state.suggestions}/>)
     if (this.state.onAlbum){
-      var left = <UploadAlbum save={(info) => this.saveAlbum(info) }/>}
+      var albumBox = <UploadAlbum save={(info) => this.saveAlbum(info) }/>}
+    var details = this.state.photosList.map( (el, key) => 
+      <UploadDetails key={el.id} id={el.id} photo={el.photo} save={(info) => this.saveMeta(info, key)} delete={() => this.handleErase(key)} meta={el.meta} suggestions={this.state.suggestions}/>)
+    
     return (
       <Container style={{marginTop:'20px'}}>
         <Row>
@@ -154,12 +175,12 @@ class UploadPhoto extends Component{
             </div>            
             <Form onSubmit={this.onSubmit} style={styles.generalInformation}>
               <FormGroup>
-                {left}
+                {albumBox}
                 <div style={styles.hr}>
                   <Label>Informacion general</Label>
                 </div>              
                 <Label style={{color: '#848687'}}>Fecha de las fotos:</Label>
-                <Input type="date" id="date" onChange={this.updateDate} required/>
+                <Input type="date" onChange={this.updateDate} required/>
                 <Label style={{color: '#848687',}}>Etiquetas:</Label>
                 <ReactTags placeholder={'Añadir etiquetas'} autoresize={false} allowNew={true} tags={this.state.tags} suggestions={this.state.suggestions} handleDelete={this.deleteTag.bind(this)} handleAddition={this.additionTag.bind(this)} />
               </FormGroup>
@@ -178,13 +199,21 @@ class UploadPhoto extends Component{
               </FormGroup>
               <ButtonGroup>
                   <Button onClick={this.props.goBack}>Atras</Button>
-                  <Button type="submit">Continuar</Button>
+                  <Button type='submit'>Continuar</Button>
               </ButtonGroup>          
             </Form>
           </Col>
           <Col md='9'>
-            {details}
-            <Input type='file' multiple onChange={this.handleFileSelect}/>
+            <Dropzone onDrop={this.handleOnDrop}> 
+              {({getRootProps, getInputProps}) => (
+                <div style={styles.dropzone} {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  <p>Arrastra y suelta una imagen o haz click aqui</p>
+                  <img style={{width:'100px'}} src={'/assets/cloud-computing.png'}/>
+                </div>// <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+              )}
+            </Dropzone>
+            {details}            
           </Col>
         </Row>
       </Container>
@@ -219,10 +248,20 @@ const styles={
     backgroundColor: "white",
     border:'1px solid rgb(156,158,159)', 
     padding:'15px', 
-    borderRadius:'0px 0px 10px 10px',
+    borderRadius:'0px 0px 10px 10px'
   },
   hr:{
     borderBottom:'1px solid rgb(156,158,159)'
+  },
+  dropzone:{
+    backgroundColor:'#dceaf7', 
+    textAlign:'center', 
+    padding:'15px', 
+    width: '100%', 
+    height:'auto', 
+    borderRadius:'10px', 
+    border:'1px dashed rgb(156,158,159)', 
+    boxShadow: '2px 2px 4px rgb(156,158,159)'
   }
 }
 
