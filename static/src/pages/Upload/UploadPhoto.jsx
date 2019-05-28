@@ -2,7 +2,7 @@ import React, {Component, useCallback} from 'react';
 import ReactTags from 'react-tag-autocomplete';
 import UploadDetails from './UploadDetails';
 import UploadAlbum from './UploadAlbum';
-import {CustomInput, Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import {CustomInput, Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input, FormText, Media} from 'reactstrap';
 import Dropzone from 'react-dropzone';
 import {v4} from 'uuid';
 
@@ -46,7 +46,7 @@ class UploadPhoto extends Component{
     const tags = [].concat(this.state.tags, tag)
     this.setState({ tags: tags })
   }
-  
+
   deleteTag(i) {
     const tags = this.state.tags.slice(0)
     tags.splice(i, 1)
@@ -73,7 +73,7 @@ class UploadPhoto extends Component{
           images.push(f)}
       }
       this.handleUpload(images)
-    }  
+    }
   }
 
   handleUpload(file){
@@ -124,15 +124,15 @@ class UploadPhoto extends Component{
       const combined = [...fotos,...fotosFill]
       this.setState({photosList: combined }) */
       this.props.saveAll(this.state)
-    }   
+    }
   }
 
   render() {
     if (this.state.onAlbum){
       var albumBox = <UploadAlbum save={(info) => this.saveAlbum(info) }/>}
-    var details = this.state.photosList.map( (el, key) => 
+    var details = this.state.photosList.map( (el, key) =>
       <UploadDetails key={el.id} id={el.id} photo={el.photo} save={(info) => this.saveMeta(info, key)} delete={() => this.handleErase(key)} meta={el.meta} suggestions={this.state.suggestions}/>)
-    
+
     return (
       <Container style={{marginTop:'20px'}}>
         <Row>
@@ -140,13 +140,13 @@ class UploadPhoto extends Component{
             <div style={styles.albumBox}>
               <Label style={{fontSize:'18px'}}>Crear Album</Label>
               <Button style={styles.plusButton} color="primary" onClick={() => this.isAlbum()}>+</Button>
-            </div>            
+            </div>
             <Form onSubmit={this.onSubmit} style={styles.generalInformation}>
               <FormGroup>
                 {albumBox}
                 <div style={styles.hr}>
                   <Label>Informacion general</Label>
-                </div>              
+                </div>
                 <Label style={{color: '#848687'}}>Fecha de las fotos:</Label>
                 <Input type="date" onChange={this.updateDate} required/>
                 <Label style={{color: '#848687',}}>Etiquetas:</Label>
@@ -157,22 +157,40 @@ class UploadPhoto extends Component{
                   <Label style={{color: '#848687'}} for="CreativeCommons">Permisos de acceso e intercambio</Label>
                 </div>
                 <div style={{marginTop:'10px'}}>
-                  <CustomInput type="checkbox" id="CreativeCommonsCheckbox1" label="CC BY" onClick={() => this.updateCC('CC BY')}/>
-                  <CustomInput type="checkbox" id="CreativeCommonsCheckbox2" label="CC BY-SA" onClick={() => this.updateCC('CC BY-SA')} />
-                  <CustomInput type="checkbox" id="CreativeCommonsCheckbox3" label="CC BY-ND" onClick={() => this.updateCC('CC BY-ND')}/>
-                  <CustomInput type="checkbox" id="CreativeCommonsCheckbox4" label="CC BY-NC" onClick={() => this.updateCC('CC BY-NC')} />
-                  <CustomInput type="checkbox" id="CreativeCommonsCheckbox5" label="CC BY-NC-SA" onClick={() => this.updateCC('CC BY-NC-SA')} />
-                  <CustomInput type="checkbox" id="CreativeCommonsCheckbox6" label="CC BY-NC-ND" onClick={() => this.updateCC('CC BY-NC-ND')} />
+                  <FormGroup style={{marginTop:'20px'}}>
+                  <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox1" onClick={() => this.updateCC('CC BY')}/>
+                  <img src="/assets/CCBY.svg" style={{marginBottom : -15, width:90}}/>
+                  </FormGroup>
+                  <FormGroup style={{marginTop:'20px'}}>
+                  <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox2" onClick={() => this.updateCC('CC BY-SA')} />
+                  <img src="/assets/CCBYSA.svg" style={{marginBottom : -15, width:90}}/>
+                  </FormGroup>
+                  <FormGroup style={{marginTop:'20px'}}>
+                  <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox3" onClick={() => this.updateCC('CC BY-ND')}/>
+                  <img src="/assets/CCBYND.svg" style={{marginBottom : -15, width:90}}/>
+                  </FormGroup>
+                  <FormGroup style={{marginTop:'20px'}}>
+                  <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox4" onClick={() => this.updateCC('CC BY-NC')} />
+                  <img src="/assets/CCBYNC.svg" style={{marginBottom : -15, width:90}}/>
+                  </FormGroup>
+                  <FormGroup style={{marginTop:'20px'}}>
+                  <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox5" onClick={() => this.updateCC('CC BY-NC-SA')} />
+                  <img src="/assets/CCBYNCSA.svg" style={{marginBottom : -15, width:90}}/>
+                  </FormGroup>
+                  <FormGroup style={{marginTop:'20px'}}>
+                  <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox6" onClick={() => this.updateCC('CC BY-NC-ND')} />
+                  <img src="/assets/CCBYNCND.svg" style={{marginBottom : -15, width:90}}/>
+                  </FormGroup>
                 </div>
               </FormGroup>
-              <ButtonGroup>
+              <ButtonGroup style={{marginTop:'20px'}}>
                   <Button onClick={this.props.goBack}>Atras</Button>
                   <Button type='submit'>Continuar</Button>
-              </ButtonGroup>          
+              </ButtonGroup>
             </Form>
           </Col>
           <Col md='9'>
-            <Dropzone onDrop={this.handleOnDrop}> 
+            <Dropzone onDrop={this.handleOnDrop}>
               {({getRootProps, getInputProps}) => (
                 <div style={styles.dropzone} {...getRootProps()}>
                   <input {...getInputProps()} />
@@ -181,7 +199,7 @@ class UploadPhoto extends Component{
                 </div>// <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
               )}
             </Dropzone>
-            {details}            
+            {details}
           </Col>
         </Row>
       </Container>
@@ -190,45 +208,45 @@ class UploadPhoto extends Component{
 }
 const styles={
   albumBox:{
-    display:'flex', 
-    width:'94%', 
+    display:'flex',
+    width:'94%',
     height:'auto',
     padding:'2px 10px 0px 10px',
-    marginLeft:'auto', 
+    marginLeft:'auto',
     marginRight:'auto',
     marginBottom:'-5px',
-    justifyContent:'space-between', 
-    backgroundColor:'#dceaf7',     
-    borderRadius:'10px 10px 0px 0px', 
+    justifyContent:'space-between',
+    backgroundColor:'#dceaf7',
+    borderRadius:'10px 10px 0px 0px',
     borderTop:'1px solid rgb(156,158,159)',
     borderRight:'1px solid rgb(156,158,159)',
-    borderLeft:'1px solid rgb(156,158,159)', 
+    borderLeft:'1px solid rgb(156,158,159)',
     boxShadow: '2px 2px 3px rgb(156,158,159)'
   },
   plusButton:{
     fontSize:'12px',
     padding:'2px',
-    borderRadius:'50%', 
-    height:'25px', 
+    borderRadius:'50%',
+    height:'25px',
     width:'25px'
   },
   generalInformation:{
     backgroundColor: "white",
-    border:'1px solid rgb(156,158,159)', 
-    padding:'15px', 
+    border:'1px solid rgb(156,158,159)',
+    padding:'15px',
     borderRadius:'0px 0px 10px 10px'
   },
   hr:{
     borderBottom:'1px solid rgb(156,158,159)'
   },
   dropzone:{
-    backgroundColor:'#dceaf7', 
-    textAlign:'center', 
-    padding:'15px', 
-    width: '100%', 
-    height:'auto', 
-    borderRadius:'10px', 
-    border:'1px dashed rgb(156,158,159)', 
+    backgroundColor:'#dceaf7',
+    textAlign:'center',
+    padding:'15px',
+    width: '100%',
+    height:'auto',
+    borderRadius:'10px',
+    border:'1px dashed rgb(156,158,159)',
     boxShadow: '2px 2px 4px rgb(156,158,159)'
   }
 }
