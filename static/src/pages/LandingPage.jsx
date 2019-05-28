@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
 import {misc} from '../actions';
 import {connect} from 'react-redux';
 import {home} from '../actions'
@@ -66,6 +66,11 @@ class LandingPage extends Component{
       }
     
       render() {
+
+        if(this.state.selectedPhoto){
+          return <Redirect to={this.state.selectedPhoto} />
+        }
+
         const { activeIndex } = this.state;
     
         const slides = items.map((item) => {
@@ -82,7 +87,7 @@ class LandingPage extends Component{
         const photos = this.props.photos.slice(0,5).map((el) => {
           return (
             <Card>
-              <CardImg top height="100%" src={el.image} alt="Card image cap" />
+              <CardImg top src={el.thumbnail} alt="Card image cap" onClick={() => this.setState({selectedPhoto: `/photo/${el.id}`})}/>
               <CardBody style={{backgroundColor:'#ebeeef'}}>
                 <CardText>{el.description}</CardText>
               </CardBody>
@@ -93,7 +98,7 @@ class LandingPage extends Component{
         return (
           <Container>
             <Row>
-              <div style={{width:'100%'}}>
+              <div style={{width: "100%", maxWidth:'1024px', margin: "0 auto"}}>
                 <Carousel activeIndex={activeIndex} next={this.next} previous={this.previous}>                    
                     {slides}
                     <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previous} />
@@ -101,12 +106,12 @@ class LandingPage extends Component{
                 </Carousel>
               </div>
             </Row>
-            <Row>
-              <CardDeck style={{marginTop: '30px'}}>
+            <Row style={{marginTop: "1em"}}>
+              <CardDeck>
                 {photos}
               </CardDeck>
             </Row>
-            <Row style={{marginTop: '40px'}}>
+            <Row style={{marginTop: "1em"}}>
               <Col>
                 <h1 style={{fontSize:'25px'}}>¿Quieres participar?</h1>
                 <p style={{textAlign:'justify'}}>Laborend andipsa ipsam ex es ame vent, te dendelit abo. Destis sunt lant eicab iduntios et facestrum quas que eum sime evenitatem qui id mincti voluptatur ma dem venditestor assincia coris

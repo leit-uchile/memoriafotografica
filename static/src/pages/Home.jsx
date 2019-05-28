@@ -2,20 +2,39 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux'
 import {home, misc} from '../actions';
 import Photo from '../components/Photo';
-import {Container, Row, Col, Card, CardImg, CardBody, CardText} from 'reactstrap';
-
-const tags = [{tag:'Ingenieria'},{tag:'Geofisica'},{tag:'TorreChica'},{tag:'NicanorParra'},{tag:'idiem'},{tag:'MariaTeresaSanz'}]
-const categorias = [{categoria:'Departamento'}, {categoria:'Deportes'}, {categoria:'Arte'}, {categoria:'Biblioteca'}, {categoria:'Eventos'}, {categoria:'Otros'},]
+import {Container, Row, Col, Card, CardImg, 
+    Button, CardBody, CardText} from 'reactstrap';
 
 class Home extends Component{
 
+    constructor(props){
+        super(props)
+        this.state = {
+            selected: [],
+            maxAllowedTags: 5,
+            maxAllowedCategories: 8,
+        }
+        this.allowMoreCats = this.allowMoreCats.bind(this)
+        this.allowMoreTags = this.allowMoreTags.bind(this)
+    }
+
     componentWillMount(){
         this.props.setRoute('/gallery/')
-        this.props.onLoad()
+        this.props.onLoadGetPhotos()
+        this.props.onLoadGetTags()
+        this.props.onLoadGetCats()
+    }
+
+    allowMoreTags(){
+        this.setState({maxAllowedTags: this.state.maxAllowedTags + 10})
+    }
+
+    allowMoreCats(){
+        this.setState({maxAllowedCategories: this.state.maxAllowedCategories + 4})
     }
 
     render(){
-        const {photos} = this.props
+        const {photos, tags, cats} = this.props
         return(
             <Container>
                     <Row>
@@ -27,15 +46,17 @@ class Home extends Component{
                         <Col style={{maxWidth:'520px'}}>
                             <h2 style={{fontSize:'20px'}}>Busqueda por tag</h2>
                             <Container fluid>
-                                <Tags tags={tags}/>
+                                <Tags tags={tags ? tags : []} maxAllowed={this.state.maxAllowedTags}/>
                             </Container>
+                            <Button onClick={this.allowMoreTags} color="secondary">Cargar m&aacute;s</Button>
                         </Col>
                         <div style={styles.verticalLine}></div>
                         <Col style={{maxWidth:'580px'}}>
                             <h2 style={{fontSize:'20px'}}>Busqueda por categoria</h2>
                             <Container fluid>
-                                <Categories categorias={categorias}/>
+                                <Categories categorias={cats ? cats : []}/>
                             </Container>
+                            <Button onClick={this.allowMoreCats} color="secondary">Cargar m&aacute;s</Button>
                         </Col>
                     </Row>
                     <Row style={{marginTop:'50px'}}>
@@ -53,27 +74,27 @@ class Home extends Component{
     }
 }
 
-const Tags = ({tags}) => (
+const Tags = ({tags, maxAllowed}) => (
     <Row>
-        {tags.map((el, index) => (
-            <span style={styles.tags}>#{el.tag}</span>
+        {tags.length == 0 ? <h3>No hay tags disponibles</h3> : tags.slice(0,maxAllowed).map((el, index) => (
+            <span key={el.id} style={styles.tags}>#{el.value}</span>
         ))}
     </Row>
 )
 
-const Categories = ({categorias}) => (
+const Categories = ({categorias, maxAllowed}) => (
     <Row>
-        {categorias.map((el, index) => (
-            <div style={styles.categories}>{el.categoria}</div>
+        {categorias.length == 0 ? <h3>No hay categorias disponibles</h3> : categorias.slice(0,maxAllowed).map((el, index) => (
+            <div key={el.id} style={styles.categories}>{el.title}</div>
         ))}
     </Row>
 )
 
 const Gallery = ({photoList}) => (
     <Row>
-        {photoList.map((el, index) => (
+        {photoList.length == 0 ? <h3>No hay fotografias disponibles</h3> : photoList.map((el, index) => (
             <Card style={{marginTop:'30px', marginRight:'15px'}}>
-                <Photo key={index} name={el.title} url={el.image} tags={el.metadata} url2={el.image} height="150px" useLink redirectUrl={`/photo/${el.id}`}/>
+                <Photo key={index} name={el.title} url={el.thumbnail} tags={el.metadata} url2={el.image} height="150px" useLink redirectUrl={`/photo/${el.id}`}/>
                 <CardBody style={{backgroundColor:'#ebeeef'}}>
                 <CardText>{el.description}</CardText>
                 </CardBody>
@@ -92,8 +113,7 @@ const styles = {
     },
     verticalLine:{
         borderLeft:'2px solid rgb(239,112,117)', 
-        marginTop:'32px', 
-        height:'220px'
+        marginTop:'32px'
      },
     categories: {
         fontSize: '11px',
@@ -109,14 +129,22 @@ const styles = {
 }
 const mapStateToProps = state => {
     return {
-        photos: state.home.photos
+        photos: state.home.photos,
+        tags: state.home.all_tags,
+        cats: state.home.all_cats,
     }
 }
 
 const mapActionsToProps = dispatch =>{
     return {
-        onLoad: () => {
+        onLoadGetPhotos: () => {
             return dispatch(home.home());
+        },
+        onLoadGetTags: () => {
+            return dispatch(home.tags());
+        },
+        onLoadGetCats: () => {
+            return dispatch(home.categories());
         },
         setRoute: (route) => {
             return dispatch(misc.setCurrentRoute(route));

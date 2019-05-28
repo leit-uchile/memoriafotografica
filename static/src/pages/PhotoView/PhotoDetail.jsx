@@ -106,7 +106,7 @@ class PhotoDetails extends Component{
 
         var Suggestions = suggestions ? suggestions.slice(0,10).map( (im,k) => 
             <Photo style={{marginBottom: '1em'}} key={k} width={"150px"}
-            url={im.image} name={"Foto relacionada"} useLink redirectUrl={"/photo/"+im.id}/> ) : null
+            url={im.thumbnail} name={"Foto relacionada"} useLink redirectUrl={"/photo/"+im.id}/> ) : null
 
         var userProfile = this.state.userinfo ? 
             <Card>
@@ -138,10 +138,7 @@ class PhotoDetails extends Component{
                 <Row>
                     <Col md={9}>
                         <img alt={photoInfo.details.title} src={photoInfo.details.image} style={{marginRight: "auto", marginLeft: "auto", display: "block", maxWidth: "100%"}}/>
-                        <p style={{backgroundColor: "#ebeeef", padding: "15px"}}>{photoInfo.details.desc}Laborend andipsa ipsam ex es ame vent, te dendelit abo. Destis sunt lant eicab iduntios et facestrum quas que eum sime evenitatem qui id mincti voluptatur ma dem venditestor assincia coris
-      adit ea sitate earit veligni maximpo renimai onsero maiorep eruntus.
-      Pa si si omnimpo rporeri nobist, verovit vero bero et quas eniminum cores maion cus cusdae nobit
-      endipit, quundiat ea idem et que nobis endit quossit ectetur aliquiatur? Untur, quatibus.</p>
+                        <p style={{backgroundColor: "#ebeeef", padding: "15px"}}>{photoInfo.details.description}</p>
                         <Button tag={Link} to="/" className="float-right">
                             Quieres usar la foto
                         </Button>

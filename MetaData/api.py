@@ -19,10 +19,12 @@ from Users.permissions import *
 
 from django.http import Http404, QueryDict
 
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
 from rest_framework.documentation import include_docs_urls
 
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS
 
 class IPTCKeywordListAPI(generics.GenericAPIView):
     """
@@ -129,17 +131,17 @@ class MetadataListAPI(generics.GenericAPIView):
     Create a new metadata.
 
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
-        if request.user.user_type != 1:
+        """ if request.user.user_type != 1:
             metadata_admin = Metadata.objects.all()
             serializer_class = MetadataAdminSerializer
             serializer = MetadataAdminSerializer(metadata_admin, many=True)
-        else:
-            metadata = Metadata.objects.filter(approved=True)
-            serializer_class = MetadataSerializer
-            serializer = MetadataSerializer(metadata, many=True)
+        else: """
+        metadata = Metadata.objects.filter(approved=True)
+        serializer_class = MetadataSerializer
+        serializer = MetadataSerializer(metadata, many=True)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):

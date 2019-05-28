@@ -32,6 +32,14 @@ export default function home(state=initialState,action){
             return{...state, errors: action.data};
         case 'DETAIL':
             return{...state, imageDetails: action.data};
+        case 'RECOVERED_TAGS':
+            return {...state, all_tags: action.data};
+        case 'EMPTY_TAGS':
+            return {...state, all_tags: []};
+        case 'RECOVERED_CATS':
+            return {...state, all_cats: action.data};
+        case 'EMPTY_CATS':
+            return {...state, all_cats: []};
         default:
             return state
     }

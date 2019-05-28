@@ -12,8 +12,7 @@ from MetaData.models import *
 from Users.permissions import *
 from .permissions import *
 from django.http import Http404, QueryDict
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
 from rest_condition import ConditionalPermission, C, And, Or, Not
 from rest_framework.documentation import include_docs_urls
 
@@ -25,6 +24,9 @@ def add_title_description(request, p_id):
         title = MetadataTitle.objects.create(title=t, description=t.lower(), photo=Photo.objects.get(pk=p_id))
         description = MetadataDescription.objects.create(description=d, photo=Photo.objects.get(pk=p_id))
 """
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS
 
 class PhotoListAPI(generics.GenericAPIView):
     """
@@ -318,7 +320,7 @@ class CategoryListAPI(generics.GenericAPIView):
     List all categories, or create a new category.
     """
     serializer_class = CategorySerializer
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
         category = Category.objects.all()

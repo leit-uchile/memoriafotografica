@@ -15,6 +15,41 @@ export const home = () => {return (dispatch,getState) => {
     })
 }}
 
+export const tags = () => { return (dispatch, getState) => {
+  let headers = {"Content-Type": "application/json"};
+
+  return fetch('/api/metadata/',{method: 'GET', headers: headers})
+    .then(function(response) {
+      const r = response
+      if(r.status === 200){
+        return r.json().then(data => {
+          dispatch({type: 'RECOVERED_TAGS', data: data })
+        })
+      }else{
+        dispatch({type: 'EMPTY_TAGS', data: r.data })
+        throw r.data
+      }
+    })
+}}
+
+export const categories = () => { return (dispatch, getState) => {
+  let headers = {"Content-Type": "application/json"};
+
+  return fetch('/api/categories/',{method: 'GET', headers: headers})
+    .then(function(response) {
+      const r = response
+      if(r.status === 200){
+        return r.json().then(data => {
+          dispatch({type: 'RECOVERED_CATS', data: data })
+        })
+      }else{
+        dispatch({type: 'EMPTY_CATS', data: r.data })
+        throw r.data
+      }
+    })
+}}
+
+
 export const detail = (image) => {return (dispatch,getState) =>
 {
     dispatch({type: "DETAIL", data: image})
