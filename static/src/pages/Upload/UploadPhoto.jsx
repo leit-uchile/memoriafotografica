@@ -157,33 +157,33 @@ class UploadPhoto extends Component{
                   <Label style={{color: '#848687'}} for="CreativeCommons">Permisos de acceso e intercambio</Label>
                 </div>
                 <div style={{marginTop:'10px'}}>
-                  <FormGroup inline={true}>
+                  <FormGroup style={{marginTop:'20px'}}>
                   <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox1" onClick={() => this.updateCC('CC BY')}/>
-                  <img src="/assets/CCBY.svg" style={{marginTop : 25, width:120}}/>
+                  <img src="/assets/CCBY.svg" style={{marginBottom : -15, width:90}}/>
                   </FormGroup>
-                  <FormGroup>
+                  <FormGroup style={{marginTop:'20px'}}>
                   <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox2" onClick={() => this.updateCC('CC BY-SA')} />
-                  <img src="/assets/CCBYSA.svg" style={{marginTop : 25}}/>
+                  <img src="/assets/CCBYSA.svg" style={{marginBottom : -15, width:90}}/>
                   </FormGroup>
-                  <FormGroup>
+                  <FormGroup style={{marginTop:'20px'}}>
                   <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox3" onClick={() => this.updateCC('CC BY-ND')}/>
-                  <img src="/assets/CCBYND.svg" style={{marginTop : 25}}/>
+                  <img src="/assets/CCBYND.svg" style={{marginBottom : -15, width:90}}/>
                   </FormGroup>
-                  <FormGroup>
+                  <FormGroup style={{marginTop:'20px'}}>
                   <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox4" onClick={() => this.updateCC('CC BY-NC')} />
-                  <img src="/assets/CCBYNC.svg" style={{marginTop : 25}}/>
+                  <img src="/assets/CCBYNC.svg" style={{marginBottom : -15, width:90}}/>
                   </FormGroup>
-                  <FormGroup>
+                  <FormGroup style={{marginTop:'20px'}}>
                   <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox5" onClick={() => this.updateCC('CC BY-NC-SA')} />
-                  <img src="/assets/CCBYNC.svg" style={{marginTop : 25}}/>
+                  <img src="/assets/CCBYNCSA.svg" style={{marginBottom : -15, width:90}}/>
                   </FormGroup>
-                  <FormGroup>
+                  <FormGroup style={{marginTop:'20px'}}>
                   <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox6" onClick={() => this.updateCC('CC BY-NC-ND')} />
-                  <img src="/assets/CCBYNC.svg" style={{marginTop : 25}}/>
+                  <img src="/assets/CCBYNCND.svg" style={{marginBottom : -15, width:90}}/>
                   </FormGroup>
                 </div>
               </FormGroup>
-              <ButtonGroup>
+              <ButtonGroup style={{marginTop:'20px'}}>
                   <Button onClick={this.props.goBack}>Atras</Button>
                   <Button type='submit'>Continuar</Button>
               </ButtonGroup>
