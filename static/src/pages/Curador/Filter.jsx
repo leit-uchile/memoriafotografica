@@ -6,7 +6,7 @@ var filtrar = [
     {
         id: 1,
         name: "img1",
-        url: "https://www.ssbwiki.com/images/thumb/2/2b/Isabelle_SSBU.png/250px-Isabelle_SSBU.png",
+        url: "https://i.blogs.es/bd5388/banter-snaps-387953-unsplash/1366_2000.jpg",
         tags: ["tag1","tag2"],
         // Lorem ipsum Dolor Sit Amet
         desc: "desc1",
@@ -14,7 +14,7 @@ var filtrar = [
     {
         id: 2,
         name: "img2",
-        url: "https://vignette.wikia.nocookie.net/fantendo/images/b/b6/Waluigi_Artwork_-_Super_Smash_Bros._Brawl.png/revision/latest?cb=20160503203605",
+        url: "http://ingenieria.uchile.cl/u/ImageServlet?idDocumento=106702&indice=0&nocch=20150908170639.0",
         tags: ["tag2","tag3"],
         // Lorem ipsum Dolor Sit Amet
         desc: "desc2",
@@ -22,7 +22,7 @@ var filtrar = [
     {
         id: 3,
         name: "img3",
-        url: "https://vignette.wikia.nocookie.net/fantendo/images/b/b6/Waluigi_Artwork_-_Super_Smash_Bros._Brawl.png/revision/latest?cb=20160503203605",
+        url: "http://festivalingenieriayciencias.cl/wp-content/uploads/2014/08/Beauchef_851-5.jpg",
         tags: ["tag2","tag3"],
         // Lorem ipsum Dolor Sit Amet
         desc: "desc3",
@@ -30,7 +30,7 @@ var filtrar = [
     {
         id: 4,
         name: "img4",
-        url: "https://vignette.wikia.nocookie.net/fantendo/images/b/b6/Waluigi_Artwork_-_Super_Smash_Bros._Brawl.png/revision/latest?cb=20160503203605",
+        url: "https://upload.wikimedia.org/wikipedia/commons/7/79/Beauchef_851.jpg",
         tags: ["tag2","tag3"],
         // Lorem ipsum Dolor Sit Amet
         desc: "desc4",
@@ -38,18 +38,10 @@ var filtrar = [
     {
         id: 5,
         name: "img5",
-        url: "https://vignette.wikia.nocookie.net/fantendo/images/b/b6/Waluigi_Artwork_-_Super_Smash_Bros._Brawl.png/revision/latest?cb=20160503203605",
+        url: "http://festivalingenieriayciencias.cl/wp-content/uploads/2014/08/Beauchef_851-7.jpg",
         tags: ["tag2","tag3"],
         // Lorem ipsum Dolor Sit Amet
         desc: "desc5",
-    },
-    {
-        id: 6,
-        name: "img6",
-        url: "https://vignette.wikia.nocookie.net/fantendo/images/b/b6/Waluigi_Artwork_-_Super_Smash_Bros._Brawl.png/revision/latest?cb=20160503203605",
-        tags: ["tag2","tag3"],
-        // Lorem ipsum Dolor Sit Amet
-        desc: "desc6",
     }
 ];
 
@@ -96,44 +88,55 @@ class Filter extends Component{
         for (var i = 1; i < 6 && i < this.state.list.length; i++) {
             latest.push(
                 <Photo key={this.state.list[i].id} name={this.state.list[i].name}
-                url={this.state.list[i].url} tags={this.state.list[i].tags} state={this.state.list[i].state} height="100px"/>
+                url={this.state.list[i].url} tags={this.state.list[i].tags} state={this.state.list[i].state} width='150px' style={styles.latest}/>
             )
         }
-        var actual = ''
+        latest = latest.slice(0,3).map(el=>el);
+        var actual;
         if(this.state.list.length<1) {
             actual = 'Has filtrado todas las solicitudes'
         }else{
             actual= <Photo key={this.state.list[0].id} name={this.state.list[0].name} url={this.state.list[0].url}
-                        tags={this.state.list[0].tags} desc={this.state.list[0].desc} state={this.state.list[0].state}
-                        height="400px"/>
+                        tags={this.state.list[0].tags} desc={this.state.list[0].desc} state={this.state.list[0].state} style={styles.actual} height='350px'/>
         }
-        return(<Container>
+        return(
+        <Container>
             <Row>
-                <Col sm={10}>
+                <Col>
                     <h2>Filtrar fotograf&iacute;as</h2>
-                    <p>
-                        Se acepta material que siga las reglas de uso de la plataforma.
-                    </p>
-                    <Container>    
-                        <Row>
-                            {actual}
-                        </Row>
-                        {this.state.list.length===0 ? 
-                        null
-                        : <Row>
-                            <ButtonGroup>
-                                <Button onClick={this.updateElementState}>Aceptar</Button>
-                                <Button color="secondary" onClick={this.removeElement}>Rechazar</Button>
-                            </ButtonGroup>
-                        </Row>
-                        }
-                    </Container>
-                </Col>
-                <Col sm={2}>
-                    {latest}
                 </Col>
             </Row>
-        </Container>);
+            <div style={{backgroundColor: 'rgb(245,245,245)', border:'1px solid rgb(156,158,159)', borderRadius:'10px', marginTop: '2em', padding: '2em 0'}}>    
+                <Row>   
+                    <Col md='8'>
+                        {actual}
+                        {this.state.list.length===0 ? null: 
+                            <Row>
+                                <ButtonGroup style={{marginTop:'10px',marginLeft:'auto',marginRight:'auto'}}>
+                                    <Button onClick={this.updateElementState}>Aceptar</Button>
+                                    <Button color="secondary" onClick={this.removeElement}>Rechazar</Button>
+                                </ButtonGroup>
+                            </Row>
+                        }
+                    </Col>
+                    <Col md='4'>
+                        {latest}
+                    </Col>
+                </Row>
+            </div>
+        </Container>
+        );
+    }
+}
+const styles={
+    latest:{
+        width:'150px',
+        marginBottom: '20px',
+        boxShadow: '5px 5px 5px #3c4145',
+    },
+    actual:{
+        height:'350px',
+        textAlign:'center'
     }
 }
 
