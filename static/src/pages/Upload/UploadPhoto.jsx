@@ -6,7 +6,7 @@ import {CustomInput, Container, Row, Col, Button, ButtonGroup, Form, FormGroup, 
 import Dropzone from 'react-dropzone';
 import {v4} from 'uuid';
 
-const imageMaxSize = 1000000; // KB
+const imageMaxSize = 5000000; // KB
 
 class UploadPhoto extends Component{
   constructor(Props) {
@@ -233,4 +233,4 @@ const styles={
   }
 }
 
-export default UploadPhoto
+export default UploadPhoto;

@@ -95,31 +95,35 @@ class UploadDetails extends Component{
                             </FormGroup>
                             <Button color='danger' onClick={this.onDelete}>Eliminar</Button>                            
                             <Button color='primary' style={{marginLeft:'10px'}} onClick={this.toggle}>Informacion por separado</Button>
-                            <Collapse isOpen={this.state.collapse}>
-                                <div style={{display:'flex', marginTop:'10px'}}>
-                                    <Col md='4'>
-                                        <ReactTags placeholder={'Añadir etiquetas'} autoresize={false} allowNew={true} tags={this.state.tags} suggestions={this.props.suggestions} handleDelete={this.deleteTag.bind(this)} handleAddition={this.additionTag.bind(this)} />
-                                    </Col>
-                                    <Col md='8'>                             
-                                        <FormGroup>
-                                            <div style={styles.hr}>
-                                                <Label style={{color: '#848687'}} for='CreativeCommons'>Permisos de acceso e intercambio</Label>
-                                            </div>
-                                            <div style={{marginTop:'10px'}}>
-                                                <CustomInput type='checkbox' id={this.props.id+1} label='CC BY' onClick={() => this.updateCC('CC BY')}/>
-                                                <CustomInput type='checkbox' id={this.props.id+2} label='CC BY-SA' onClick={() => this.updateCC('CC BY-SA')} />
-                                                <CustomInput type='checkbox' id={this.props.id+3} label='CC BY-ND' onClick={() => this.updateCC('CC BY-ND')}/>
-                                                <CustomInput type='checkbox' id={this.props.id+4} label='CC BY-NC' onClick={() => this.updateCC('CC BY-NC')} />
-                                                <CustomInput type='checkbox' id={this.props.id+5} label='CC BY-NC-SA' onClick={() => this.updateCC('CC BY-NC-SA')} />
-                                                <CustomInput type='checkbox' id={this.props.id+6} label='CC BY-NC-ND' onClick={() => this.updateCC('CC BY-NC-ND')} />
-                                            </div>
-                                        </FormGroup>
-                                    </Col>
-                                </div>                                
-                                <Button color='primary' style={{display:'flex', marginLeft:'auto'}} onClick={this.onSubmit}>Guardar cambios</Button>                                                               
-                            </Collapse>
                         </Form>
                     </Col>                    
+                </Row>
+                <Row>
+                    <Collapse isOpen={this.state.collapse} style={{width: '100%', marginBottom: "1em"}}>
+                        <Container fluid>
+                            <Row>
+                                <Col md='4'>
+                                    <ReactTags placeholder={'Añadir etiquetas'} autoresize={false} allowNew={true} tags={this.state.tags} suggestions={this.props.suggestions} handleDelete={this.deleteTag.bind(this)} handleAddition={this.additionTag.bind(this)} />
+                                </Col>
+                                <Col md='8'>                             
+                                    <FormGroup>
+                                        <div style={styles.hr}>
+                                            <Label style={{color: '#848687'}} for='CreativeCommons'>Permisos de acceso e intercambio</Label>
+                                        </div>
+                                        <div style={{marginTop:'10px'}}>
+                                            <CustomInput type='checkbox' id={this.props.id+1} label='CC BY' onClick={() => this.updateCC('CC BY')}/>
+                                            <CustomInput type='checkbox' id={this.props.id+2} label='CC BY-SA' onClick={() => this.updateCC('CC BY-SA')} />
+                                            <CustomInput type='checkbox' id={this.props.id+3} label='CC BY-ND' onClick={() => this.updateCC('CC BY-ND')}/>
+                                            <CustomInput type='checkbox' id={this.props.id+4} label='CC BY-NC' onClick={() => this.updateCC('CC BY-NC')} />
+                                            <CustomInput type='checkbox' id={this.props.id+5} label='CC BY-NC-SA' onClick={() => this.updateCC('CC BY-NC-SA')} />
+                                            <CustomInput type='checkbox' id={this.props.id+6} label='CC BY-NC-ND' onClick={() => this.updateCC('CC BY-NC-ND')} />
+                                        </div>
+                                    </FormGroup>
+                                    <Button color='primary' style={{display:'flex', marginLeft:'auto'}} onClick={this.onSubmit}>Guardar cambios</Button>
+                                </Col>
+                            </Row>
+                        </Container>
+                    </Collapse>
                 </Row>
             </Container>
         )

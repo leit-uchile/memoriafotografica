@@ -2,17 +2,19 @@ import React, {Component} from 'react';
 import UploadUnregister from './UploadUnregister';
 import UploadPhoto from './UploadPhoto';
 import {connect} from 'react-redux';
-import {auth, misc} from '../../actions';
-import {Link, Redirect} from 'react-router-dom';
-import {Container, Button} from 'reactstrap';
+import {auth, misc, upload} from '../../actions';
+import {Link} from 'react-router-dom';
+import {Container, Button, Row} from 'reactstrap';
+import ReactLoading from 'react-loading';
 
 class UploadPage extends Component{
-    constructor(Props){
-        super(Props)
+    constructor(props){
+        super(props)
         this.state = {
             currentPage: 0,
             userInfo: null,
             photos: null,
+            uploading: false,
         }
         this.back = this.back.bind(this);
         this.withoutRegister = this.withoutRegister.bind(this);
@@ -43,12 +45,22 @@ class UploadPage extends Component{
     savePhotos(photos){
         this.setState({
             currentPage : this.state.currentPage + 1,
-            photos: {...photos}
+            photos: {...photos},
+            uploading: true
+        }, () => {
+            this.props.setUploading()
+            this.props.uploadPhotos(this.state.photos, this.props.token)
         })
     }
 
     componentWillMount(){
         this.props.setRoute('/upload')
+    }
+
+    componentDidUpdate(prevProps){
+        if(prevProps.uploading && !this.props.uploading){
+            this.setState({uploading: false})
+        }
     }
 
     render(){
@@ -79,17 +91,27 @@ class UploadPage extends Component{
                 subupload = <UploadPhoto goBack={this.back} saveAll={this.savePhotos}/>
                 break;
             case 3:
-                subupload = <Container style={{backgroundColor: 'rgb(245,245,245)', borderRadius: '1em', marginTop: '2em', padding: '2em'}}>
-                    <h1 style={{textAlign: 'center', fontWeight: 'bold'}}>¡Aporte enviado!</h1>
-                    <span style={{textAlign: 'center', display: 'block', margin: 'auto 1em auto 1em'}}>La foto tendra que ser aprobada para que la comunidad la vea. Puedes ver el estado en que se encuentra accediendo a tu perfil. Muchas gracias!</span>
-                    </Container> ;
+                subupload = this.state.uploading ? 
+                <Container style={{backgroundColor: 'rgb(245,245,245)', borderRadius: '1em', marginTop: '2em', padding: '2em'}}>
+                    <Row>
+                        <h1 style={{textAlign: 'center', fontWeight: 'bold'}}>Enviando aporte...</h1>
+                    </Row>
+                    <Row>
+                        <ReactLoading type="spin" color="red" height={'100px'} width={'100px'} className="centering"/>
+                    </Row>
+                </Container>
+                    :
+                <Container style={{backgroundColor: 'rgb(245,245,245)', borderRadius: '1em', marginTop: '2em', padding: '2em'}}>
+                    <Row>
+                        <h1 style={{textAlign: 'center', fontWeight: 'bold'}}>¡Aporte enviado!</h1>
+                        <span style={{textAlign: 'center', display: 'block', margin: 'auto 1em auto 1em'}}>La foto tendra que ser aprobada para que la comunidad la vea. Puedes ver el estado en que se encuentra accediendo a tu perfil. Muchas gracias!</span>
+                    </Row>
+                </Container>
+                    
+                
                 break;
         }
-            return(
-                <div>
-                {subupload}
-                </div>
-            );
+        return(<div>{subupload}</div>);
     }
 }
 
@@ -102,7 +124,9 @@ const mapStateToProps = state => {
     }
     return {
         errors,
-        isAuthenticated: state.auth.isAuthenticated
+        isAuthenticated: state.auth.isAuthenticated,
+        token: state.auth.token,
+        uploading: state.upload.uploading
     };
 }
 
@@ -110,6 +134,12 @@ const mapActionsToProps = dispatch => {
     return {
         setRoute: (route) => {
             return dispatch(misc.setCurrentRoute(route));
+        },
+        uploadPhotos: (info,auth) => {
+            return dispatch(upload.uploadImages(info,auth));
+        },
+        setUploading: () => {
+            return dispatch(upload.setUploading());
         }
     }
 }
