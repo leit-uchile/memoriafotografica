@@ -24,14 +24,13 @@ class Home extends Component{
                         </Col>
                     </Row>
                     <Row>
-                        <Col style={{maxWidth:'520px'}}>
+                        <Col style={{maxWidth:'520px', borderRight:'1px solid rgb(239,112,117)'}}>
                             <h2 style={{fontSize:'20px'}}>Busqueda por tag</h2>
                             <Container fluid>
                                 <Tags tags={tags}/>
                             </Container>
                         </Col>
-                        <div style={styles.verticalLine}></div>
-                        <Col style={{maxWidth:'580px'}}>
+                        <Col style={{maxWidth:'580px', borderLeft:'1px solid rgb(239,112,117)'}}>
                             <h2 style={{fontSize:'20px'}}>Busqueda por categoria</h2>
                             <Container fluid>
                                 <Categories categorias={categorias}/>
@@ -44,11 +43,9 @@ class Home extends Component{
                             <Container fluid>
                                 <Gallery photoList={photos} />
                             </Container>
-                        </Col>
-                        
+                        </Col>                        
                     </Row>
-            </Container>
-        
+            </Container>        
         )
     }
 }
@@ -90,11 +87,6 @@ const styles = {
         margin:'2px', 
         padding:'4px 12px 4px 12px'
     },
-    verticalLine:{
-        borderLeft:'2px solid rgb(239,112,117)', 
-        marginTop:'32px', 
-        height:'220px'
-     },
     categories: {
         fontSize: '11px',
         textAlign:'center',

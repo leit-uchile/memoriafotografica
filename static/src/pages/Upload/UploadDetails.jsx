@@ -4,22 +4,15 @@ import {upload} from '../../actions';
 import {connect} from 'react-redux';
 import { Container, Row, Col, Button, CustomInput, ButtonGroup, Form, FormGroup, Label, Input, Collapse, Card, CardBody } from 'reactstrap';
 
+var autosave_desc=null;
+
 class UploadDetails extends Component{
     constructor(Props){
         super(Props);
-        if(Props.meta != null){
-            this.state = {
+        this.state = {
                 ...Props.meta,
-            }
-        }else{
-            this.state = {
-                    description: '',                    
-                    tags: [],
-                    cc: [],
-                    previewCalled: false,
-                    collapse: false
-                } 
-            }
+        }
+        
         this.toggle = this.toggle.bind(this);
 
         // Prepare File Reader for preview management
@@ -35,20 +28,31 @@ class UploadDetails extends Component{
     updateDescription = e =>{
         this.setState({description : e.target.value});
     }
+    updateDesc =  e => {
+        this.setState({description : e.target.value});
+        clearTimeout(autosave_desc);
+        autosave_desc = setTimeout(
+          function(){
+            this.props.save(this.state);
+          }
+          .bind(this),
+          500
+          );
+      }
 
     toggle() {
         this.setState(state => ({ collapse: !state.collapse }));
+    }
+
+    additionTag(tag) {
+        const tags = [].concat(this.state.tags, tag)
+        this.setState({ tags: tags })
     }
 
     deleteTag(i) {
         const tags = this.state.tags.slice(0)
         tags.splice(i, 1)
         this.setState({ tags })
-    }
-
-    additionTag(tag) {
-        const tags = [].concat(this.state.tags, tag)
-        this.setState({ tags: tags })
     }
     
     updateCC(selected) {
@@ -84,16 +88,13 @@ class UploadDetails extends Component{
                         <img style={styles.thumb} src={this.state.src} id='thumb'/>
                     </Col>                  
                     <Col md='9' style={{padding:'20px'}}>   
-                        <Form onSubmit={this.onSubmit}>
+                        <Form>
                             <FormGroup>
                                 <Label style={{color: '#848687'}}>Descripcion:</Label>
-                                <Input type='textarea' placeholder='Historia asociada a la foto' onChange={this.updateDescription} value={this.state.description} required/>                                
+                                <Input type='textarea' placeholder='Historia asociada a la foto' onChange={this.updateDesc} value={this.state.description} required/>                                
                             </FormGroup>
-                            <ButtonGroup>
-                                <Button color='success' type='submit'>Guardar cambios</Button>
-                                <Button color='danger' onClick={this.onDelete}>Eliminar</Button>                            
-                            </ButtonGroup>
-                            <Button color='primary' style={{marginLeft:'10px'}} onClick={this.toggle}>Configurar por separado</Button>
+                            <Button color='danger' onClick={this.onDelete}>Eliminar</Button>                            
+                            <Button color='primary' style={{marginLeft:'10px'}} onClick={this.toggle}>Informacion por separado</Button>
                             <Collapse isOpen={this.state.collapse}>
                                 <div style={{display:'flex', marginTop:'10px'}}>
                                     <Col md='4'>
@@ -113,8 +114,9 @@ class UploadDetails extends Component{
                                                 <CustomInput type='checkbox' id={this.props.id+6} label='CC BY-NC-ND' onClick={() => this.updateCC('CC BY-NC-ND')} />
                                             </div>
                                         </FormGroup>
-                                    </Col>    
-                                </div>                                                                
+                                    </Col>
+                                </div>                                
+                                <Button color='primary' style={{display:'flex', marginLeft:'auto'}} onClick={this.onSubmit}>Guardar cambios</Button>                                                               
                             </Collapse>
                         </Form>
                     </Col>                    

@@ -6,8 +6,6 @@ import {auth, misc} from '../../actions';
 import {Link, Redirect} from 'react-router-dom';
 import {Container, Button} from 'reactstrap';
 
-var current;
-
 class UploadPage extends Component{
     constructor(Props){
         super(Props)
@@ -23,14 +21,14 @@ class UploadPage extends Component{
     }
 
     back(){
-        if(this.state.currentPage !=0){
+        if(this.state.currentPage !==0){
             this.setState({
                 currentPage : this.state.currentPage -1
             })
         }
     }
     withoutRegister(){
-        if(this.state.currentPage !=4){
+        if(this.state.currentPage !==4){
             this.setState({
                 currentPage : this.state.currentPage +1
             })
@@ -57,13 +55,11 @@ class UploadPage extends Component{
         var subupload;
         var current;
         if (this.props.isAuthenticated && this.state.currentPage===0){
-            var current = this.props.isAuthenticated ? 2 : this.state.currentPage
-        }
-        if (this.props.isAuthenticated && this.state.currentPage===1){
-            var current = 3
-        }
-        if (!this.props.isAuthenticated){
-            var current=this.state.currentPage
+            current = this.props.isAuthenticated ? 2 : this.state.currentPage
+        }else if (this.props.isAuthenticated && this.state.currentPage===1){
+            current = 3
+        }else{
+            current = this.state.currentPage
         }
         switch (current){  
             case 0: 

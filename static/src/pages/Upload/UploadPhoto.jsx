@@ -46,6 +46,7 @@ class UploadPhoto extends Component{
     const tags = [].concat(this.state.tags, tag)
     this.setState({ tags: tags })
   }
+  
   deleteTag(i) {
     const tags = this.state.tags.slice(0)
     tags.splice(i, 1)
@@ -75,23 +76,10 @@ class UploadPhoto extends Component{
     }  
   }
 
-  /* handleFileSelect= e=>{
-    var images = []; 
-    var files = e.target.files;
-    for(var i=0,f;f=files[i];i++){
-      if (!f.type.match('image.*')) {
-        continue;
-      }else{
-        images.push(f)}
-    }
-    this.handleUpload(images)
-  } */
-
-
   handleUpload(file){
     var f = file.map((el)=>{
       const uuidv4 = require('uuid/v4')
-      return {id: uuidv4(), photo: el, meta: null}
+      return {id: uuidv4(), photo: el, meta: {description: '', tags: [], cc: [], previewCalled: false, collapse: false}}
     })
     this.setState({photosList: [...this.state.photosList , ...f]}) ;
   }
@@ -99,15 +87,15 @@ class UploadPhoto extends Component{
   saveMeta(info,key){
     var newPhotosList = []
     for (var i=0; i<this.state.photosList.length; i++){
-      if (i==key){
-        var el = {id: this.state.photosList[key].id, photo: this.state.photosList[key].photo, meta: info}
+      var el;
+      if (i===key){
+        el = {id: this.state.photosList[key].id, photo: this.state.photosList[key].photo, meta: info}
         newPhotosList = newPhotosList.concat(el)
-      }
-      else{
+      }else{
         newPhotosList = newPhotosList.concat(this.state.photosList[i])
       }
     }
-    this.setState({photosList: newPhotosList}) ;
+    this.setState({photosList: newPhotosList});
   }
 
   handleErase(key){
@@ -121,42 +109,22 @@ class UploadPhoto extends Component{
   }
 
   onSubmit = e => {
-    e.preventDefault()   
-    var count = 0;
-    var globalTags = this.state.tags
-    var globalCC = this.state.cc
-    var fillTags = false
-    var fillCC = false
-    for(var i=0; i<this.state.photosList.length; i++){
-      var meta = this.state.photosList[i].meta
-      if(meta!==null){
-        count+=1        
-        if(meta.tags===""){
-          fillTags = true
-          console.log('Fill Tags',fillTags)
-        }
-        if(meta.cc.length===0){
-          fillCC = true
-          console.log('Fill CC',fillCC)
-        }
-        if(fillTags){
-          meta = {description: meta.description, tags:globalTags, cc: meta.cc, previewCalled:meta.previewCalled, collapse:meta.collapse}
-        }
-        if(fillCC){
-          meta = {description: meta.description, tags:meta.tags, cc: globalCC, previewCalled:meta.previewCalled, collapse:meta.collapse}
-        }
-        this.saveMeta(meta,i)
-      }
-    }
-    if(count===this.state.photosList.length && this.state.photosList.length!==0){
-        this.props.saveAll(this.state)
+    e.preventDefault()
+    if(this.state.photosList.length===0){
+      alert('Debe enviar al menos una foto')
+    }else if (this.state.onAlbum && this.state.albumName===""){
+      alert("Debe rellenar el nombre del Album")
+    }else if (this.state.photosList.some(el => el.meta.description==="")){
+      alert("Debe rellenar la descripcion de todas las fotos")
     }else{
-      if(this.state.photosList.length===0){
-        alert('Debe enviar al menos una foto')
-      }else{
-        alert('Debe rellenar la descripcion de cada foto')
-      }
-    }
+      /* var globalCC = this.state.cc.map(cc => cc)
+      var fotos = this.state.photosList.filter(el => el.meta.cc.lenght!==0)
+      var fotosFill= this.state.photosList.filter(el => el.meta.cc.lenght===0)
+      fotosFill.forEach(el => console.log(el.meta))
+      const combined = [...fotos,...fotosFill]
+      this.setState({photosList: combined }) */
+      this.props.saveAll(this.state)
+    }   
   }
 
   render() {
