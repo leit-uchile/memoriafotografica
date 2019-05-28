@@ -7,3 +7,7 @@ html{
 .centering {
     margin: 0 auto;
 }
+
+.checkbox-album{
+  display: inline;
+}
