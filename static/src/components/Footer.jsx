@@ -11,7 +11,7 @@ const Footer = () =>{
                <div style={styles.contenido}>
                     <Row style={{paddingBottom: '50px'}}>
                         <Col>
-                            <img src={'/mf.ico'} alt={'logo'}/>
+                            <img style={{marginTop:'-15px'}} src={'/assets/mf.jpg'} alt={'logo'}/>
                             <div style={{display:'inline-block', margin:'10px'}}>
                                 <h5 style={{fontSize:'20px', fontWeight:'bold'}}>El Proyecto</h5>
                                 <h2 style={{fontSize:'15px', color:'gray'}}>Memoria Fotografica</h2>
@@ -69,17 +69,16 @@ const styles = {
         backgroundColor: '#dee1e2',
         background: 'linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)', 
         background: '-moz-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)', 
-        background: '-webkit-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)', 
-        
+        background: '-webkit-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)'        
     },
-    contenido:{
+    contenido: {
         fontSize: '12px', 
         marginLeft:'auto',
         marginRight:'auto',
         maxWidth:'1370px', 
         paddingTop:'50px', 
         paddingLeft:'125px', 
-        paddingRight:'125px',
+        paddingRight:'125px'
     }
 
 }

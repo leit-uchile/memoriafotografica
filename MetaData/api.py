@@ -35,7 +35,7 @@ class IPTCKeywordListAPI(generics.GenericAPIView):
     Create a new IPTCKeyword.
 
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
         keyword = IPTCKeyword.objects.all()

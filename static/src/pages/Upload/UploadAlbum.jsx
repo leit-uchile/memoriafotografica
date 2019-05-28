@@ -1,36 +1,48 @@
 import React, {Component} from 'react';
 import { Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
+var autosave_name=null;
+var autosave_desc=null;
+
 class UploadAlbum extends Component{
   constructor(Props) {
     super(Props);
     this.state = {
-      albumName: "",
+      albumName:"",
       albumDesc:"",
     }
   }
 
   updateAlbumName =  e => {
-    e.preventDefault();
     this.setState({albumName : e.target.value});
-    this.props.save(this.state)
+    clearTimeout(autosave_name)
+    autosave_name = setTimeout(
+      function(){
+        this.props.save(this.state);
+      }.bind(this), 500);
   }
   updateAlbumDesc =  e => {
-    e.preventDefault();
     this.setState({albumDesc : e.target.value});
-    this.props.save(this.state)
+    clearTimeout(autosave_desc);
+    autosave_desc = setTimeout(
+      function(){
+        this.props.save(this.state);
+      }
+      .bind(this),
+      500
+      );
   }
 
   render() {
     return (
-      <Container fluid> 
+      <div> 
         <Form>
-          <FormGroup style={{padding:'0px'}}>
-            <Input type="text" name="album-name" placeholder="Nombre del album" onChange={this.updateAlbumName} required/>
-            <Input type="textarea" name="album-description" placeholder="Descripcion" onChange={this.updateAlbumDesc}/>
+          <FormGroup>
+            <Input type="text" placeholder="Nombre del album" onKeyUp={this.updateAlbumName} required/>
+            <Input type="textarea" placeholder="Descripcion (Opcional)" onKeyUp={this.updateAlbumDesc}/>
           </FormGroup>
         </Form>
-      </Container>
+      </div>
     )
   }
 }

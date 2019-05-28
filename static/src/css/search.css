@@ -11,6 +11,8 @@
     /* clicking anywhere will focus the input */
     cursor: text;
     width: 100%;
+
+    background-color: white;
   }
   
   .react-tags.is-focused {

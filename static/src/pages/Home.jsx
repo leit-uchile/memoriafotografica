@@ -66,10 +66,8 @@ class Home extends Component{
                                 <Gallery photoList={photos} />
                             </Container>
                         </Col>
-                        
                     </Row>
             </Container>
-        
         )
     }
 }
