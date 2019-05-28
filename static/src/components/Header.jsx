@@ -4,7 +4,9 @@ import {connect} from 'react-redux';
 import UserModal from './UserModal'
 import {misc} from '../actions'
 import header from '../css/header.css';
-import {Navbar, NavbarBrand, NavbarToggler, Collapse, Nav, NavItem, NavLink} from 'reactstrap';
+import SearchBar from './SearchBar';
+import {Navbar, NavbarBrand, NavbarToggler, Container, Row, Col,
+    Collapse, Nav, NavItem, NavLink} from 'reactstrap';
 
 class Header extends Component{
     constructor(props){
@@ -22,17 +24,11 @@ class Header extends Component{
     render(){
         var doLoginNav;
 
-        const routes = [
-            {to: "/", text: "Inicio"},
-            {to: "/gallery", text: "Galeria"},
-            {to: "/upload", text: "Participa"},
-        ]
-
         const {isAuth, currentRoute} = this.props;
 
         doLoginNav = isAuth ? <NavLink tag={UserModal}></NavLink> : 
                     currentRoute == '/login' ? 
-                    <NavLink tag={Link} to="/login" active><i class="glyphicon glyphicon-user"></i>Ingresar</NavLink> :
+                    <NavLink tag={Link} to="/login" active style={styles.activeLink}><i class="glyphicon glyphicon-user"></i>Ingresar</NavLink> :
                     <NavLink tag={Link} to="/login"><i class="glyphicon glyphicon-user"></i>Ingresar</NavLink>
 
         return(
@@ -47,18 +43,19 @@ class Header extends Component{
                         </span>
                     </NavbarBrand>
                     <NavbarToggler onClick={this.toggleNav} />
+                    <SearchBar />
                     <Collapse isOpen={this.state.toggle} navbar>
                         <Nav className="ml-auto" navbar>
                             <NavItem>{ currentRoute == '/Inicio' ?
-                                <NavLink tag={Link} to={"/"} active>Inicio</NavLink> :
+                                <NavLink tag={Link} to={"/"} active style={styles.activeLink}>Inicio</NavLink> :
                                 <NavLink tag={Link} to={"/"}>Inicio</NavLink>
                             }</NavItem>
                             <NavItem>{ currentRoute == '/gallery/' ? 
-                                <NavLink tag={Link} to={"/gallery"} active>Galer&iacute;a</NavLink> :
+                                <NavLink tag={Link} to={"/gallery"} active style={styles.activeLink}>Galer&iacute;a</NavLink> :
                                 <NavLink tag={Link} to={"/gallery"}>Galer&iacute;a</NavLink>
                             }</NavItem>
                             <NavItem>{ currentRoute == '/upload' ? 
-                            <NavLink tag={Link} to={"/upload"} active>Participa</NavLink> :
+                            <NavLink tag={Link} to={"/upload"} active style={styles.activeLink}>Participa</NavLink> :
                             <NavLink tag={Link} to={"/upload"}>Participa</NavLink>} </NavItem>
                             <NavItem>{doLoginNav}</NavItem>
                         </Nav>
@@ -66,6 +63,12 @@ class Header extends Component{
                 </Navbar>
             </header>
         );
+    }
+}
+
+const styles = {
+    activeLink: {
+        color: "#ce846b"
     }
 }
 

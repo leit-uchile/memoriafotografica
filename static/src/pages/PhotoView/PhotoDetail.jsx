@@ -96,17 +96,11 @@ class PhotoDetails extends Component{
         }
 
         var imageTags = [];
-        /* for (let i = 0; i < this.state.image.tags.length; i++) {
-            imageTags.push(
-                <span style={{color: "white", backgroundColor: "blue", padding: "0.7em", margin: "1em", borderRadius: "1em"}}>
-                    {this.state.image.tags[i]}
-                </span>
-            )   
-        } */
 
-        var Suggestions = suggestions ? suggestions.slice(0,10).map( (im,k) => 
-            <Photo style={{marginBottom: '1em'}} key={k} width={"150px"}
-            url={im.thumbnail} name={"Foto relacionada"} useLink redirectUrl={"/photo/"+im.id}/> ) : null
+        var Suggestions = suggestions && photoInfo ? suggestions.slice(0,10).map( (im,k) => im.id !== photoInfo.details.id ?
+            <Photo style={ this.props.auth.isAuthenticated ? {marginBottom: '1em'} : 
+                {marginRight: '1em', display: 'inline-block'}} key={k} width={"150px"}
+            url={im.thumbnail} name={"Foto relacionada"} useLink redirectUrl={"/photo/"+im.id}/> : null ) : null
 
         var userProfile = this.state.userinfo ? 
             <Card>
@@ -140,7 +134,7 @@ class PhotoDetails extends Component{
                         <img alt={photoInfo.details.title} src={photoInfo.details.image} style={{marginRight: "auto", marginLeft: "auto", display: "block", maxWidth: "100%"}}/>
                         <p style={{backgroundColor: "#ebeeef", padding: "15px"}}>{photoInfo.details.description}</p>
                         <Button tag={Link} to="/" className="float-right">
-                            Quieres usar la foto
+                            ¿Quieres usar la foto?
                         </Button>
                         <ReportModal style={{display: 'inline-block'}} className="float-right"/>
                     </Col>
@@ -150,15 +144,23 @@ class PhotoDetails extends Component{
                     </Col>
                 </Row>
                 <hr style={{backgroundColor: 'gray'}}/>
-                <Row>
-                    <Col md={9} style={{borderRight: '1px solid gray'}}>
-                        {commentDivs}
-                        {newComment}
-                    </Col>
-                    <Col md={3}>
-                        {Suggestions}
-                    </Col>
-                </Row>
+                {this.props.auth.isAuthenticated ? 
+                    <Row>
+                        <Col md={9} style={{borderRight: '1px solid gray'}}>
+                            {commentDivs}
+                            {newComment}
+                        </Col>
+                        <Col md={3}>
+                            {Suggestions}
+                        </Col>
+                    </Row> :
+                    <Row>
+                        <Col>
+                            {Suggestions}
+                        </Col>
+                    </Row>
+                }
+                
             </Container>
         );
     }

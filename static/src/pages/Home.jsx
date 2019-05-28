@@ -61,7 +61,7 @@ class Home extends Component{
                     </Row>
                     <Row style={{marginTop:'50px'}}>
                         <Col>
-                            <h2 style={{fontSize:'20px'}}>Fotografias mas populares</h2>
+                            <h2 style={{fontSize:'20px'}}>Fotografias</h2>
                             <Container fluid>
                                 <Gallery photoList={photos} />
                             </Container>
@@ -93,8 +93,8 @@ const Categories = ({categorias, maxAllowed}) => (
 const Gallery = ({photoList}) => (
     <Row>
         {photoList.length == 0 ? <h3>No hay fotografias disponibles</h3> : photoList.map((el, index) => (
-            <Card style={{marginTop:'30px', marginRight:'15px'}}>
-                <Photo key={index} name={el.title} url={el.thumbnail} tags={el.metadata} url2={el.image} height="150px" useLink redirectUrl={`/photo/${el.id}`}/>
+            <Card style={{marginTop:'1em', marginRight:'1em', width: "200px"}}>
+                <Photo key={index} name={el.title} url={el.thumbnail} url2={el.image} height="150px"useLink redirectUrl={`/photo/${el.id}`}/>
                 <CardBody style={{backgroundColor:'#ebeeef'}}>
                 <CardText>{el.description}</CardText>
                 </CardBody>

@@ -35,7 +35,7 @@ class ReportModal extends Component{
 
         return(
             <div className={className} style={style}>
-                <Button onClick={this.toggle}>Danos tu opinion</Button>
+                <Button onClick={this.toggle}>¿Algo anda mal?</Button>
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
                     <ModalHeader toggle={this.toggle}>Reportar fotografia</ModalHeader>
                     <ModalBody>

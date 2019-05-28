@@ -49,6 +49,23 @@ export const categories = () => { return (dispatch, getState) => {
     })
 }}
 
+export const iptcs = () => { return (dispatch, getState) => {
+  let headers = {"Content-Type": "application/json"};
+
+  return fetch('/api/iptc-keyword/',{method: 'GET', headers: headers})
+    .then(function(response) {
+      const r = response
+      if(r.status === 200){
+        return r.json().then(data => {
+          dispatch({type: 'RECOVERED_IPTCS', data: data })
+        })
+      }else{
+        dispatch({type: 'EMPTY_IPTCS', data: r.data })
+        throw r.data
+      }
+    })
+}}
+
 
 export const detail = (image) => {return (dispatch,getState) =>
 {
