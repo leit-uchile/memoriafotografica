@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {Route, Switch}from 'react-router-dom';
 import {Container} from 'reactstrap';
 
-
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Home from './Home';
@@ -45,7 +44,7 @@ const styles= {
     backgroundStyle: {
         backgroundColor: '#dee1e2',
         background: 'linear-gradient(to bottom, #dee1e2 0%,#ffffff 25%)',
-        background: '-moz-linear-gradient(top, #dee1e2 0%, #ffffff 25%)', 
+        background: '-moz-linear-gradient(top, #dee1e2 0%, #ffffff 25%)',
         background: '-webkit-linear-gradient(top, #dee1e2 0%,#ffffff 25%)'
     }
 }
