@@ -4,53 +4,41 @@ import {Button, ButtonGroup, Row, Col, Container} from 'reactstrap';
 
 var list = [
     {
-        name: "img1",
-        url: "https://www.ssbwiki.com/images/thumb/2/2b/Isabelle_SSBU.png/250px-Isabelle_SSBU.png",
-        tags: ["tag1","tag2"],
-        // Lorem ipsum Dolor Sit Amet
-        desc: "desc1",
-        state: "uploaded"
-    },
-    {
-        name: "img2",
-        url: "https://vignette.wikia.nocookie.net/fantendo/images/b/b6/Waluigi_Artwork_-_Super_Smash_Bros._Brawl.png/revision/latest?cb=20160503203605",
-        tags: ["tag2","tag3"],
-        // Lorem ipsum Dolor Sit Amet
-        desc: "desc2",
-        state: "uploaded"
-    },
-    {
-        name: "img3",
-        url: "https://vignette.wikia.nocookie.net/fantendo/images/b/b6/Waluigi_Artwork_-_Super_Smash_Bros._Brawl.png/revision/latest?cb=20160503203605",
-        tags: ["tag2","tag3"],
-        // Lorem ipsum Dolor Sit Amet
-        desc: "desc3",
-        state: "uploaded"
-    },
-    {
-        name: "img4",
-        url: "https://vignette.wikia.nocookie.net/fantendo/images/b/b6/Waluigi_Artwork_-_Super_Smash_Bros._Brawl.png/revision/latest?cb=20160503203605",
-        tags: ["tag2","tag3"],
-        // Lorem ipsum Dolor Sit Amet
-        desc: "desc4",
-        state: "uploaded"
-    },
-    {
-        name: "img5",
-        url: "https://vignette.wikia.nocookie.net/fantendo/images/b/b6/Waluigi_Artwork_-_Super_Smash_Bros._Brawl.png/revision/latest?cb=20160503203605",
-        tags: ["tag2","tag3"],
-        // Lorem ipsum Dolor Sit Amet
-        desc: "desc5",
-        state: "uploaded"
-    },
-    {
-        name: "img6",
-        url: "https://vignette.wikia.nocookie.net/fantendo/images/b/b6/Waluigi_Artwork_-_Super_Smash_Bros._Brawl.png/revision/latest?cb=20160503203605",
-        tags: ["tag2","tag3"],
-        // Lorem ipsum Dolor Sit Amet
-        desc: "desc6",
-        state: "uploaded"
-    }
+    name: "img1",
+    url: "http://festivalingenieriayciencias.cl/wp-content/uploads/2014/08/Beauchef_851-5.jpg",
+    tags: ["tag1","tag2"],
+    // Lorem ipsum Dolor Sit Amet
+    desc: "desc1",
+    reason: "Foto inapropiada",
+    state: "marked"
+},
+{
+    name: "img2",
+    url: "http://festivalingenieriayciencias.cl/wp-content/uploads/2014/08/Beauchef_851-5.jpg",
+    tags: ["tag2","tag3"],
+    // Lorem ipsum Dolor Sit Amet
+    desc: "desc2",
+    reason: "Foto duplicada",
+    state: "marked"
+},
+{
+    name: "img3",
+    url: "http://festivalingenieriayciencias.cl/wp-content/uploads/2014/08/Beauchef_851-5.jpg",
+    tags: ["tag2","tag3"],
+    // Lorem ipsum Dolor Sit Amet
+    desc: "desc3",
+    reason: "Ninguna",
+    state: "marked"
+},
+{
+    name: "img4",
+    url: "http://festivalingenieriayciencias.cl/wp-content/uploads/2014/08/Beauchef_851-5.jpg",
+    tags: ["tag2","tag3"],
+    // Lorem ipsum Dolor Sit Amet
+    desc: "desc4",
+    reason: "Foto inapropiada",
+    state: "marked"
+}
 ];
 
 class Publish_Photos extends Component{
@@ -94,38 +82,59 @@ class Publish_Photos extends Component{
         var latest = []
         for (var i = 1; i < 4 && i < list.length; i++) {
             latest.push(
-                <Photo name={this.state.elements[i].name} url={this.state.elements[i].url} tags={this.state.elements[i].tags} state={this.state.elements[i].state}/>
+                <Photo name={this.state.elements[i].name} url={this.state.elements[i].url} tags={this.state.elements[i].tags} state={this.state.elements[i].state} width='150px' style={styles.latest}/>
             )
         }
         var actually = ''
-
+        var reason = ''
         if(list.length<1) {
             actually = 'Has revisado todas las solicitudes'
         }
         else{
             actually= <Photo name={this.state.elements[0].name} url={this.state.elements[0].url} tags={this.state.elements[0].tags}
-                             desc={this.state.elements[0].desc} state={this.state.elements[0].state} height="400px"/>
-
+                             desc={this.state.elements[0].desc} state={this.state.elements[0].state}  style={styles.actual} height='350px'/>
+            reason = <p style={{textAlign:'center'}}>Motivo del reporte: {this.state.elements[0].reason}</p>
         }
         return(
             <Container>
-                <Row>
-                    <Col sm={8}>
+            <Row>
+                <Col>
+                    <h2>Fotografias marcadas</h2>
+                </Col>
+            </Row>
+            <div style={{backgroundColor: 'rgb(245,245,245)', border:'1px solid rgb(156,158,159)', borderRadius:'10px', marginTop: '2em', padding: '2em 0'}}>    
+                <Row>   
+                    <Col md='8'>
                         {actually}
-                        {list.length === 0 ? null : 
-                        <ButtonGroup>
-                            <Button onClick={this.updateElementState}>Dar de baja</Button>
-                            <Button onClick={this.removeElement}>Descartar reporte</Button>
-                        </ButtonGroup>}
+                        {reason}
+                        {list.length===0 ? null: 
+                            <Row>
+                                <ButtonGroup style={{marginTop:'10px',marginLeft:'auto',marginRight:'auto'}}>
+                                    <Button color="danger" onClick={this.updateElementState}>Eliminar</Button>
+                                    <Button color="secondary" onClick={this.removeElement}>Descartar reporte</Button>
+                                </ButtonGroup>
+                            </Row>
+                        }
                     </Col>
-                    <Col sm={4}>
+                    <Col md='4'>
                         {latest}
                     </Col>
                 </Row>
-            </Container>
+            </div>
+        </Container>
         );
     }
-
+}
+const styles={
+    latest:{
+        width:'150px',
+        marginBottom: '20px',
+        boxShadow: '5px 5px 5px #3c4145',
+    },
+    actual:{
+        height:'350px',
+        textAlign:'center'
+    }
 }
 Publish_Photos.props = {
     gallery: list
