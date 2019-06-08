@@ -1,54 +1,65 @@
 # Import models here
 from .models import *
-
 from rest_framework import serializers
-
-# Create serializers here :)
 from rest_framework import serializers
 from .models import *
 from Gallery.models import Photo
 
-class MetadataSerializerTitle(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    title = serializers.CharField(required=False, allow_blank=True, max_length=100)
-    description = serializers.CharField(required = False, allow_blank= True)
+
+class IPTCKeywordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IPTCKeyword
+        fields = '__all__'
 
     def create(self, validated_data):
-
-        return MetadataTitle.objects.create(**validated_data)
+        return IPTCKeyword.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-
-        instance.title = validated_data.get('title', instance.title)
-        instance.description = validated_data.get('description', instance.title)
+        instance.name = validated_data.get('name', instance.name)
+        instance.definition = validated_data.get('definition', instance.definition)
+        instance.help_text = validated_data.get('help_text', instance.help_text)
         instance.save()
         return instance
 
 
-class MetadataSerializerDescription(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    description = serializers.CharField(required = False, allow_blank= True)
-
+class MetadataAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Metadata
+        fields = '__all__'
 
     def create(self, validated_data):
-
-        return MetadataDescription.objects.create(**validated_data)
+        m = Metadata.objects.create(value=validated_data["value"], approved=validated_data["approved"], metadata=validated_data["metadata"] )
+        #m.metadata.set(validated_data["metadata"])
+        return m
 
     def update(self, instance, validated_data):
-
-        instance.description = validated_data.get('description', instance.title)
+        instance.value = validated_data.get('value', instance.value)
+        try:
+            validated_data['metadata']
+            instance.metadata.set(validated_data.get('metadata', instance.metadata))
+        except KeyError:
+            pass
+        instance.approved = validated_data.get('approved', instance.approved)
         instance.save()
         return instance
 
-class MetadataSerializerKeyword(serializers.Serializer):
-      id = serializers.IntegerField(read_only=True)
-      keyword = serializers.CharField()
-      def create(self, validated_data):
-          return MetadataKeyword.objects.create(**validated_data)
+class MetadataSerializer(serializers.ModelSerializer):
+    class Meta:
+        exclude = ('approved',)
+        model = Metadata
+    def create(self, validated_data):
+        m = Metadata.objects.create(metadata=validated_data["metadata"], value=validated_data["value"])
+        #m.value = validated_data["value"]
+        #m.save()
+        #m.metadata.set(validated_data["metadata"])
+        return m
 
-      def update(self, instance, validated_data):
-          instance.keyword = validated_data.get('keyword', instance.title)
-
-          instance.save()
-          return instance
-
+    def update(self, instance, validated_data):
+        instance.value = validated_data.get('value', instance.value)
+        try:
+           instance.metadata.set(validated_data.get('metadata', instance.metadata))
+        except KeyError:
+            pass
+        #instance.approved = validated_data.get('approved', instance.approved)
+        instance.save()
+        return instance

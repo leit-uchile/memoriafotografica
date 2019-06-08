@@ -1,0 +1,13 @@
+html{
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.centering {
+    margin: 0 auto;
+}
+
+.checkbox-album{
+  display: inline;
+}

@@ -4,42 +4,40 @@ from django.contrib.auth import authenticate
 # Create serializers here :)
 from rest_framework import serializers
 from .models import User
-from django.contrib.auth.models import User as django_user
+from django.conf import settings
 from Gallery.serializers import AlbumSerializer, PhotoSerializer
-
-class DjangoUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = django_user
-        fields = ('id', 'username')
-
-class UserSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    user = DjangoUserSerializer()
-    avatar = serializers.ImageField(max_length=None, allow_empty_file=True)
-    albums = AlbumSerializer(many = True)
-    photos = PhotoSerializer(many = True)
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = django_user
-        fields = ('id', 'username', 'password')
-        extra_kwargs = {'password':{'write_only': True}}
-
+        model = User
+        fields = ('id', 'email', 'password', 'first_name', 'last_name', 'birth_date', 'rol_type','avatar')
+        extra_kwargs = {'password': {'write_only': True}}
     def create(self, validated_data):
-        d_user = django_user.objects.create_user(validated_data['username'],
-                                        None,
-                                        validated_data['password'])
-        user = User.objects.create(user = d_user)
-        return d_user
+        print("validated data")
+        extra_data = validated_data.copy()
+        extra_data.pop("email")
+        extra_data.pop("password")
+        user = User.objects.create_user(validated_data['email'],
+                                        validated_data['password'], **extra_data)
+        return user
 
+class UserSerializer(serializers.ModelSerializer):
+    #id = serializers.IntegerField(read_only=True)
+    # avatar = serializers.ImageField(max_length=None, allow_empty_file=True)
+    # albums = AlbumSerializer(many = True)
+    # photos = PhotoSerializer(many = True)
+    # user_type = serializers.IntegerField()
+
+    class Meta:
+        model = User
+        exclude=('password',)
 
 
 
 class LoginUserSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    email = serializers.CharField()
     password = serializers.CharField()
-
     def validate(self, data):
         user = authenticate(**data)
         if user and user.is_active:
