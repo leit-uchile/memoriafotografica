@@ -99,8 +99,9 @@ class PhotoDetails extends Component{
 
         var Suggestions = suggestions && photoInfo ? suggestions.slice(0,10).map( (im,k) => im.id !== photoInfo.details.id ?
             <Photo style={ this.props.auth.isAuthenticated ? {marginBottom: '1em'} : 
-                {marginRight: '1em', display: 'inline-block'}} key={k} width={"150px"}
-            url={im.thumbnail} name={"Foto relacionada"} useLink redirectUrl={"/photo/"+im.id}/> : null ) : null
+                {marginRight: '1em', display: 'inline-block'}} key={k} 
+            url={im.thumbnail} name={"Foto relacionada"} useLink redirectUrl={"/photo/"+im.id} 
+            hover hoverText={im.title} hoverStyle={{fontSize: '1.5em'}}/> : null ) : null
 
         var userProfile = this.state.userinfo ? 
             <Card>

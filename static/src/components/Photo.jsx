@@ -1,25 +1,65 @@
 import React from 'react';
-import {Badge} from 'reactstrap';
 import {Link} from 'react-router-dom'
 
-const Photo = ({className, url, name, height="100px", width="auto", tags, onClick, 
-    style, useLink, redirectUrl, ...props}) => useLink  && redirectUrl ? 
+const Photo = ({className, url, name, height="100px", width="cover", onClick, 
+    style, useLink, redirectUrl, hover, hoverText, hoverStyle, ...props}) => useLink  && redirectUrl ? 
     <Link to={redirectUrl}>
-        <div style={style}>
-            <img className={className} src={url} height={height} width={width} alt={name}/>
-        </div>
-        {tags ? 
-            tags.map( (el,i) => {<Badge key={i}>el</Badge>})
-            : null}
+        {
+            hover && hoverText ?
+            <div style={{
+                ...styles.containerDivIm,
+                backgroundImage: "url('"+url+"')",
+                height: height,
+                width: width,
+                ...style,
+                }}>
+                <div className={'doHoverPhoto'} style={{
+                    ...styles.photoHoverDefault,
+                    lineHeight: height,
+                    ...hoverStyle
+                }}>
+                    {hoverText}
+                </div>
+            </div>
+            :
+            <div style={{...style, 
+                ...styles.containerDivIm,
+                backgroundImage: "url('"+url+"')",
+                height: height,
+                width: width,
+                }}>
+            </div>
+        }
     </Link>
     : 
-    <div style={style}>
-        <a onClick={onClick}>
-            <img className={className} src={url} height={height} width={width} alt={name}/>
-        </a>
-        {tags ? 
-            tags.map( (el,i) => {<Badge key={i}>el</Badge>})
-            : null}
-    </div> 
+    <a onClick={onClick}>
+        <div style={{...style, 
+            ...styles.containerDivIm,
+            backgroundImage: "url('"+url+"')",
+            height: height,
+            width: width,
+            }}>
+        </div>
+    </a>
+
+const styles = {
+    containerDivIm: {
+        position: 'relative',
+        backgroundSize: "cover",
+        backgroundPositionY: "center",
+        backgroundPositionX: "center",
+    },
+    photoHoverDefault: {
+        position: 'absolute',
+        top: '0',
+        height: '100%',
+        width: '100%',
+        backgroundColor: 'black',
+        textAlign: 'center',
+        verticalAlign: 'middle',
+        color: "white",
+        fontWeight: '700',
+    }
+}
 
 export default Photo;
