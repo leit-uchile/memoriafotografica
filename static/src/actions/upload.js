@@ -18,8 +18,59 @@ export const uploadImage = (name,description,image) => {
        
         fetch("/api/gallery/upload/", {
             method: 'POST',
-            header,
+            headers: header,
             body: formData
         });
     }
 }
+
+export const putInfo = (uploadInfo) => {
+    return (dispatch, getState) => {
+        return dispatch({type: 'BUFFER_INFO', data: uploadInfo})
+    }
+}
+
+// TODO: complete this quick
+export const uploadImages = (photos, auth) => { return (dispatch, getState) => {
+    
+    let header = {
+        'Authorization' : 'Token '+ auth
+    };
+
+    // Only upload first image
+    const current = photos.photosList[0]
+
+    const permissionBack = [
+        'CC BY',
+        'CC BY-SA',
+        'CC BY-ND',
+        'CC BY-NC',
+        'CC BY-NC-SA',
+        'CC BY-NC-ND'
+    ]
+    
+    var formData = new FormData();
+    formData.append("title","titulo"); // No title yet
+    formData.append("description", current.meta.description); // 
+    formData.append("image", current.photo); //
+    formData.append("permission", current.meta.cc[0] ? permissionBack[0] : permissionBack[0]) // Send first for now harcoded
+   
+    return fetch("/api/photos/", {
+        method: 'POST',
+        headers: header,
+        body: formData
+    }).then(function(response){
+        const r = response
+        if(r.status === 201){
+            return dispatch({type: 'UPLOADED_PHOTO', data: null})
+        }else{
+            dispatch({type: 'ERROR_UPLOADING', data: r.data})
+            throw r.data
+        }
+    })
+}}
+
+export const setUploading = () => { return (dispatch, getState) => {
+    return dispatch({type: 'UPLOADING', data: null})
+}}
+    

@@ -1,0 +1,15 @@
+Event
+Names or describes the specific event at which the photo was taken.
+Enter the name or description of the event where this image was taken.
+
+Location Shown in the Image
+A location shown in the image.
+Enter the details about a location which is shown in this image
+
+Person Shown in the Image
+Name of a person shown in the image.
+Enter the name of the person shown in this image
+
+Keywords
+Keywords to express the subject of the image. Keywords may be free text and don’t have to be taken from a controlled vocabulary. Codes from the controlled vocabulary IPTC Subject NewsCodes must go to the "Subject Code" field.
+Enter any number of keywords, terms or phrases used to express the subject matter in the image.
