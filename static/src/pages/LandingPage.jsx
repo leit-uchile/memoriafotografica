@@ -7,17 +7,17 @@ import {Container, Row, Col, Carousel, CarouselItem, CarouselControl, CarouselIn
 
 const items = [
     {
-      src: 'http://www.adnradio.cl/images_remote/333/3339276_n_vir3.jpg?u=230217',
+      src: 'http://postulante.fcfm.uchile.cl/wordpress/wp-content/uploads/2015/12/31.jpg',
       altText: 'Slide 1',
       caption: 'Les susanda ecusdae odit inctia dolore, ea conseque expliti ossuntorem rae peris et volland erferei untur, tem am num quos secatio. Um hit et is si offictemqui rem numqui non prae sim que antemporia pra velent.'
     },
     {
-      src: 'http://www.uchile.cl/image/f89084-2-o.jpeg?0419',
+      src: 'http://fundacionmellado.cl/wp-content/uploads/2014/09/DSC_0001.jpg',
       altText: 'Slide 2',
       caption: 'Apis ad quatum et, odis doluptature, ut aliquamustia dolupta comnis et remquo opta andam fugitati ab ipsanient Les susanda ecusdae odit inctia dolore, ea conseque expliti ossuntorem rae peris et volland erferei untur, tem am num quos secatio. Um hit et is si offictemqui rem numqui non prae sim que antemporia pra velent.'
     },
     {
-      src:'https://pbs.twimg.com/media/B9krIl1IQAAod2e.jpg',
+      src:'http://postulante.fcfm.uchile.cl/wordpress/wp-content/uploads/2015/12/IMG_3190.jpg',
       altText: 'Slide 3',
       caption: 'Apis ad quatum et, odis doluptature, ut aliquamustia dolupta comnis et remquo opta andam fugitati ab ipsanient.'
     }
