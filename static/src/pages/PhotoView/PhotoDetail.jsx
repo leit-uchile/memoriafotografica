@@ -4,7 +4,8 @@ import Comment from "./Comment";
 import ReportModal from "./ReportModal"
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {Button, Row, Col, Form, Container, Card, CardImg, CardText, CardBody, CardFooter} from 'reactstrap';
+import {Button, Row, Col, Form, Container} from 'reactstrap';
+import {Helmet} from "react-helmet";
 
 import {photoDetails, home} from '../../actions';
 import Photo from '../../components/Photo';
@@ -162,6 +163,14 @@ class PhotoDetails extends Component{
 
         return (
             <div>
+                 <Helmet>
+                    <meta property="og:title" content={photoInfo.details.title} />
+                    <meta property="og:type" content="Vista fotogragia" />
+                    <meta property="og:url" content=" http://memoriafotografica.ing.fcfm.cl/" />
+                    <meta property="og:image" content=" http://example.com/image.jpg" />
+                    <meta property="og:description" content="Descripcion" />
+                    <title>{photoInfo.details.title}</title>
+                </Helmet>
                 <Row style={styles.imageContainer}>
                     <Col md={{offset: 3, size: 6}}>
                         <h1 style={styles.center}>{photoInfo.details.title}</h1>

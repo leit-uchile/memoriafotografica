@@ -3,6 +3,7 @@ import {Redirect} from 'react-router-dom';
 import {misc} from '../actions';
 import {connect} from 'react-redux';
 import {home} from '../actions'
+import {Helmet} from 'react-helmet';
 import {Container, Row, Col, Carousel, CarouselItem, CarouselControl, CarouselIndicators, Card, Button, CardImg, CardText, CardDeck, CardBody} from 'reactstrap';
 
 const items = [
@@ -97,6 +98,14 @@ class LandingPage extends Component{
 
         return (
           <Container>
+            <Helmet>
+              <meta property="og:title" content="Memoria fotográfica FCFM"/>
+              <meta property="og:type" content="Pagina de inicio" />
+              <meta property="og:url" content=" http://memoriafotografica.ing.fcfm.cl/" />
+              <meta property="og:image" content=" http://example.com/image.jpg" />
+              <meta property="og:description" content="Descripcion" />
+              <title>Memoria fotogr&aacute;fica FCFM</title>
+            </Helmet>
             <Row>
               <div style={{width: "100%", maxWidth:'1024px', margin: "0 auto"}}>
                 <Carousel activeIndex={activeIndex} next={this.next} previous={this.previous}>                    

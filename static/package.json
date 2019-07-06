@@ -17,6 +17,7 @@
     "react": "16.8",
     "react-dom": "16.8",
     "react-dropzone": "^10.1.5",
+    "react-helmet": "^5.2.1",
     "react-loading": "^2.0.3",
     "react-redux": "^5.0.7",
     "react-router": "^4.3.1",

@@ -6,6 +6,7 @@ import {auth, misc, upload} from '../../actions';
 import {Link} from 'react-router-dom';
 import {Container, Button, Row} from 'reactstrap';
 import ReactLoading from 'react-loading';
+import {Helmet} from 'react-helmet';
 
 class UploadPage extends Component{
     constructor(props){
@@ -111,7 +112,18 @@ class UploadPage extends Component{
                 
                 break;
         }
-        return(<div>{subupload}</div>);
+        return(
+        <div>
+            <Helmet>
+                <meta property="og:title" content="Aportar material"/>
+                <meta property="og:type" content="Subir contenido a la plataforma" />
+                <meta property="og:url" content=" http://memoriafotografica.ing.fcfm.cl/" />
+                <meta property="og:image" content=" http://example.com/image.jpg" />
+                <meta property="og:description" content="Descripcion" />
+                <title>Aportar material</title>
+            </Helmet>
+            {subupload}
+        </div>);
     }
 }
 

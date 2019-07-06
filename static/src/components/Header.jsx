@@ -68,7 +68,7 @@ class Header extends Component{
 
 const styles = {
     activeLink: {
-        color: "#ce846b"
+        color: "#FF5A60"
     }
 }
 

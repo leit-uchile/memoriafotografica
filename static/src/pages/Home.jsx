@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux'
 import {home, misc} from '../actions';
 import Photo from '../components/Photo';
-import {Container, Row, Col, Card, CardImg, 
+import {Container, Row, Col, Card, 
     Button, CardBody, CardText} from 'reactstrap';
+import {Helmet} from 'react-helmet';
 
 class Home extends Component{
 
@@ -80,6 +81,14 @@ class Home extends Component{
 
         return(
             <Container>
+                <Helmet>
+                    <meta property="og:title" content="Buscar fotografias"/>
+                    <meta property="og:type" content="Motor de búsqueda" />
+                    <meta property="og:url" content=" http://memoriafotografica.ing.fcfm.cl/" />
+                    <meta property="og:image" content=" http://example.com/image.jpg" />
+                    <meta property="og:description" content="Descripcion" />
+                    <title>Buscar fotografias</title>
+                </Helmet>
                     <Row>
                         <Col>
                             <h1 style={{fontSize:'25px', textAlign:'center', marginLeft:'auto', marginRight:'auto', paddingTop:'40px', paddingBottom:'40px'}}>Descubre las fotografias de la Facultad y sus personajes</h1>
