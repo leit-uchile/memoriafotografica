@@ -2,7 +2,9 @@ const initialState = {
     details: {
         title: '[Titulo]',
         image: undefined,
-        desc: undefined
+        desc: undefined,
+        permission: [],
+        metadata: []
     },
     errors: 'INVALID_URL',
     commentsLoaded: false

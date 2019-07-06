@@ -11,7 +11,7 @@ const Footer = () =>{
                <div style={styles.contenido}>
                     <Row style={{paddingBottom: '50px'}}>
                         <Col>
-                            <img style={{marginTop:'-15px'}} src={'/assets/mf.jpg'} alt={'logo'}/>
+                            <img style={{marginTop:'-15px'}} src={'/mf.ico'} alt={'logo'}/>
                             <div style={{display:'inline-block', margin:'10px'}}>
                                 <h5 style={{fontSize:'20px', fontWeight:'bold'}}>El Proyecto</h5>
                                 <h2 style={{fontSize:'15px', color:'gray'}}>Memoria Fotografica</h2>

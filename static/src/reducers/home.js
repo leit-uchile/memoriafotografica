@@ -1,5 +1,7 @@
 const initialState = {
-    photos: []
+    photos: [],
+    all_tags: [],
+    all_iptcs: [],
 }
 
 export default function home(state=initialState,action){

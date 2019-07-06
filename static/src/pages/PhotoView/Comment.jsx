@@ -35,11 +35,18 @@ class Comment extends Component{
             <Row style={style}>
                 {/* <Avatar avatarurl={this.state.userdata.avatar} name={this.state.userdata.name} isComment={true}/> */}
                 <Col sm={leftProportion} xs={3}>
-                    <img width="100%" style={{maxHeight: avatarHeight}}src={this.state.userdata.avatar} alt={this.state.userdata.name}/>
+                    <div style={{
+                        width: "50px",
+                        height: "50px",
+                        borderRadius: "25px",
+                        backgroundSize: "cover",
+                        backgroundRepeat: "no-repeat",
+                        backgroundImage: `url(${this.state.userdata.avatar})`
+                            }}></div>
                 </Col>
                 <Col sm={12 - leftProportion} xs={9}>
-                    <div style={{display: 'inline-block', borderRight: '1px solid gray', padding: '0 15px'}}>
-                        {this.state.userdata.name}
+                    <div style={{display: 'inline-block', borderRight: '2px solid gray', padding: '0 15px 0 0'}}>
+                        <b>{this.state.userdata.name}</b>
                     </div>
                     <div style={{display: 'inline-block', padding: '0 15px'}}>
                         {this.state.userdata.name}
