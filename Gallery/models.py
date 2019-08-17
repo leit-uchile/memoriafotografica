@@ -78,7 +78,7 @@ class Photo(models.Model):
     #thumbnail = get_thumbnail(image, '100x100', crop='center', quality=99)
     def __str__(self):
         try:
-            t = self.metadatatitle.title
+            t = self.title
             return "Photo: "+t
         except:
             return "Photo without title (" + str(self.id) + ")"

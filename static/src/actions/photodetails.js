@@ -39,11 +39,8 @@ export const putComment = (id, comment, auth) => {return (dispatch, getState) =>
     let headers = {
         'Authorization' : 'Token '+ auth,
         'Content-Type' : 'application/json',
-        'www-authenticate': auth
     };
 
-    let formData = new FormData();
-    formData.append("content",comment);
     let jsonthing = JSON.stringify({id: id, content: comment})
 
     return fetch(`/api/photos/${id}/comments/`, 
@@ -59,4 +56,19 @@ export const putComment = (id, comment, auth) => {return (dispatch, getState) =>
             throw r.data;
         }
     })
+}}
+
+export const getMetadataNames = (ids) => {return (dispatch, getState) => {
+    return fetch(`/api/metadata/?ids=${ids.toString()}`).then(
+        function(response){
+            const r = response;
+            if(r.status === 200){
+                return r.json().then(data => {
+                    dispatch({type: 'LOADED_CUSTOM_METADATA', data: data})
+                });
+            }else{
+                dispatch({type: "ERROR_ON_METADATA_FETCH", data: r.data})
+            }
+        }
+    )
 }}

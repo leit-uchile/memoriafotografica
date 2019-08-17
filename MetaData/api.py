@@ -134,14 +134,26 @@ class MetadataListAPI(generics.GenericAPIView):
     permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
-        """ if request.user.user_type != 1:
-            metadata_admin = Metadata.objects.all()
-            serializer_class = MetadataAdminSerializer
-            serializer = MetadataAdminSerializer(metadata_admin, many=True)
-        else: """
-        metadata = Metadata.objects.filter(approved=True)
-        serializer_class = MetadataSerializer
-        serializer = MetadataSerializer(metadata, many=True)
+        try:
+            if request.user.user_type != 1:
+                metadata_admin = Metadata.objects.all()
+                serializer_class = MetadataAdminSerializer
+                serializer = MetadataAdminSerializer(metadata_admin, many=True)
+            else:
+                metadata = Metadata.objects.filter(approved=True)
+                serializer_class = MetadataSerializer
+                serializer = MetadataSerializer(metadata, many=True)
+        except Exception:
+            # No user logged in
+            ids = request.query_params.get('ids', None)
+            if ids != None:
+                ids = ids.split(',')
+                metadata = Metadata.objects.filter(pk__in=ids, approved=True)
+            else:
+                metadata = Metadata.objects.filter(approved=True)
+            serializer_class = MetadataSerializer
+            serializer = MetadataSerializer(metadata, many=True)
+        
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
@@ -171,7 +183,7 @@ class MetadataDetailAPI(generics.GenericAPIView):
     Delete a metadata
 
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
     def get_object(self, pk, admin):
         try:
             metadata = Metadata.objects.get(pk=pk)

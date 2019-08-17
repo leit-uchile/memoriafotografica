@@ -116,7 +116,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
                 u_dict['first_name'] = u.first_name
                 u_dict['last_name'] = u.last_name
                 u_dict['generation'] = u.generation
-                u_dict['avatar'] = u.avatar if u.avatar else None
+                u_dict['avatar'] = u.avatar.url if u.avatar else None
                 u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
                 serialized_data['usuario'] = u_dict
             except:
@@ -269,7 +269,6 @@ class PhotoCommentListAPI(generics.GenericAPIView):
             serialized_class = CommentSerializer
             serializer = CommentSerializer(comments, many = True)
             serialized_data = serializer.data
-            print(serialized_data)
             for c in serialized_data:
                 try:
                     u = comments.get(pk=c['id']).user_set.first()
@@ -277,7 +276,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
                     u_dict['first_name'] = u.first_name
                     u_dict['last_name'] = u.last_name
                     u_dict['generation'] = u.generation
-                    u_dict['avatar'] = u.avatar if u.avatar else None
+                    u_dict['avatar'] = u.avatar.url if u.avatar else None
                     u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
                     c['usuario'] = u_dict                    
                 except:
@@ -295,7 +294,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
                     u_dict['first_name'] = u.first_name
                     u_dict['last_name'] = u.last_name
                     u_dict['generation'] = u.generation
-                    u_dict['avatar'] = u.avatar if u.avatar else None
+                    u_dict['avatar'] = u.avatar.url if u.avatar else None
                     u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
                     c['usuario'] = u_dict
                 except:

@@ -4,7 +4,11 @@ import {Container, Row, Col, Input, Button} from 'reactstrap'
 
 const Footer = () =>{
     const componentDidMount = ()=> 
-        window.scrollTo(0, 0);
+        window.scrollTo({
+            top: 0, 
+            left: 0, 
+            behavior: 'smooth'
+        });
     
     return(
             <footer style={styles.contenedor}>

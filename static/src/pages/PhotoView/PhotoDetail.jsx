@@ -48,11 +48,13 @@ class PhotoDetails extends Component{
             auth: this.props.auth,
             newCommentInfo: "",
             myPhotoID: this.props.match.params.id,
-            newCommentID: "0"
+            newCommentID: "0",
+            firstLoad: true,
         };
         this.sendComment = this.sendComment.bind(this);
         this.storeComment = this.storeComment.bind(this);
         this.getDataFromBack = this.getDataFromBack.bind(this);
+        this.getMetadataNames = this.getMetadataNames.bind(this);
     }
 
     getUserDetails(){
@@ -80,24 +82,44 @@ class PhotoDetails extends Component{
         }
     }
 
+    getMetadataNames(){
+        this.props.loadMetadata(this.props.photoInfo.details.metadata)
+    }
+
     getDataFromBack(){
-        this.props.onLoad(this.state.myPhotoID);
+        // Load elements once props arrive
+        this.getUserDetails();
+        this.getMetadataNames();
         this.getComments();
         this.props.loadSuggestions();
-        this.getUserDetails();
     }
 
     componentDidMount(){
-        this.getDataFromBack()
+        this.imageContainer = React.createRef();
+        // Load info the first time
+        this.props.onLoad(this.state.myPhotoID);
     }
 
     componentDidUpdate(prevProps){
-        if(prevProps.match.params.id !== this.props.match.params.id){
-            this.setState({myPhotoID: this.props.match.params.id}, function(){
-                this.getDataFromBack()
-            })
+        // Load info when new props arrive or it is the first load
+        if(this.state.firstLoad && this.props.photoInfo.details.id !== undefined || 
+            (prevProps.photoInfo.details.id !== this.props.photoInfo.details.id)){
+            this.imageContainer.current.scrollIntoView({block: "start", behavior: "smooth"});
+            this.setState({
+                firstLoad: false}, function(){
+                this.getDataFromBack()})
         }
 
+        // Reload component with new ID
+        if(prevProps.match.params.id !== this.props.match.params.id){
+            this.imageContainer.current.scrollIntoView({block: "start", behavior: "smooth"});
+            this.setState({
+                myPhotoID: this.props.match.params.id}, 
+                    () => {this.props.onLoad(this.state.myPhotoID)}
+                )
+        }
+
+        // Refresh comment list
         if(this.props.photoInfo.new_comment && this.props.photoInfo.new_comment.id !== this.state.newCommentID){
             this.setState({
                 newCommentID: this.props.photoInfo.new_comment.id,
@@ -109,22 +131,19 @@ class PhotoDetails extends Component{
 
     render(){
         const {photoInfo, suggestions, metadata} = this.props;
-        // permission
         var permissions = photoInfo.details.permission.map((el,i) => getPermissionLogo(el,90,32,i));
 
-        // TODO: do a better scalable method for metadata parsing
-        var imageTags = metadata.filter( e => photoInfo.details.metadata.includes(e.id));
+        var imageTags = metadata ? metadata : []
         imageTags = <Container fluid>
             <Tags tags={imageTags} />
         </Container>
         
-
         var commentDivs = [];
         if(photoInfo.commentsLoaded){
             for (let i = 0; i < photoInfo.comments.length; i++) {
                 commentDivs.push(
                     <Comment leftProportion={1} id={photoInfo.comments[i].id}
-                    style={{marginBottom: '1em'}} content={photoInfo.comments[i].content}/>
+                    style={{marginBottom: '1em'}} content={photoInfo.comments[i].content} user={photoInfo.comments[i].usuario}/>
                 )   
             }
         }
@@ -162,7 +181,7 @@ class PhotoDetails extends Component{
             </Row> : null
 
         return (
-            <div>
+            <div ref={this.imageContainer}>
                  <Helmet>
                     <meta property="og:title" content={photoInfo.details.title} />
                     <meta property="og:type" content="Vista fotogragia" />
@@ -264,7 +283,7 @@ const mapStateToProps = state => {
         auth: state.auth,
         photoInfo: state.photoDetails,
         suggestions: state.home.photos,
-        metadata: state.home.all_tags,
+        metadata: state.photoDetails.metadataNames,
     }
 }
 
@@ -281,6 +300,9 @@ const mapActionsToProps = dispatch => {
         },
         newComment: (id, comment, auth) =>{
             return dispatch(photoDetails.putComment(id, comment, auth))
+        },
+        loadMetadata: (ids) => {
+            return dispatch(photoDetails.getMetadataNames(ids));
         }
     }
 }
