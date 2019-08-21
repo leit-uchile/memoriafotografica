@@ -2,7 +2,7 @@ const initialState = {
     metaIDs: []
 }
 
-export default function seaerch(state=initialState,action){
+export default function search(state=initialState,action){
     switch (action.type){
         case 'PUT_META':
             return {...state, metaIDs: [...state.metaIDs, action.data]};
