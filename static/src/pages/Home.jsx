@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux'
 import {home, misc} from '../actions';
 import Photo from '../components/Photo';
-import {Badge, Container, Dropdown, Row, Col, Button, Card, CardBody, CardText, Nav, NavItem, ButtonDropdown, DropdownItem, DropdownToggle, DropdownMenu, NavLink} from 'reactstrap';
+import {Container, Row, Col, Button, Nav, DropdownItem, DropdownMenu} from 'reactstrap';
 import {Redirect} from 'react-router-dom'
 import gallery from '../css/galleryHome.css'
+import {Helmet} from 'react-helmet';
 
 const fotos = ['https://casadecampoconkal.com/images/casa-de-campo-hotel-image-2.JPG','https://casadecampoconkal.com/images/xcasa-de-campo-hotel-image-32.JPG.pagespeed.ic.ZN3mICQlrL.jpg','https://casadecampoconkal.com/images/casa-de-campo-foto-10.JPG', 'https://casadecampoconkal.com/images/casa-de-campo-hotel-image-40.JPG', ]
 class Home extends Component{
@@ -111,6 +112,14 @@ class Home extends Component{
           }
         return(
             <Container fluid>
+                <Helmet>
+                    <meta property="og:title" content="Buscar fotografias"/>
+                    <meta property="og:type" content="Motor de búsqueda" />
+                    <meta property="og:url" content=" http://memoriafotografica.ing.fcfm.cl/" />
+                    <meta property="og:image" content=" http://example.com/image.jpg" />
+                    <meta property="og:description" content="Descripcion" />
+                    <title>Buscar fotografias</title>
+                </Helmet>
                 <Row className='galleryMenu'>
                     <Col>
                         <Nav className='navbar navbar-default navbar-mob'></Nav>

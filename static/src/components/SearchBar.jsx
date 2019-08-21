@@ -69,8 +69,8 @@ class SearchBar extends Component{
                 allowNew={false}
                 placeholder={'Buscar por metadata'}
                 />
-                <Button size="lg" style={{borderRadius: "0 5px 5px 0", border: "#ce846b",
-                backgroundColor: "#ce846b"}} onClick={this.swapPage}>Buscar</Button>
+                <Button size="lg" style={{borderRadius: "0 5px 5px 0", border: "#FF5A60",
+                backgroundColor: "#FF5A60"}} onClick={this.swapPage}>Buscar</Button>
             </Container>
         )
     }

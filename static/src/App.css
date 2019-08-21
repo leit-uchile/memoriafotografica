@@ -11,3 +11,11 @@ html{
 .checkbox-album{
   display: inline;
 }
+
+.doHoverPhoto{
+  opacity: 0;
+}
+
+.doHoverPhoto:hover{
+  opacity: 0.7;
+}

@@ -13,6 +13,7 @@ import PhotoDetails from "./PhotoView/PhotoDetail";
 import PrivateComponent from '../components/PrivateComponent';
 import Dashboard from './Curador/Dashboard'
 import LandingPage from './LandingPage';
+import UserDashboard from './UserDashboard/UserDashboard';
 
 class Layout extends Component{
     render(){
@@ -29,6 +30,7 @@ class Layout extends Component{
                             <Route path={"/upload"}component={Upload} />
                             <Route path={"/photo/:id"}component={PhotoDetails}/>
                             <Route path={"/curador/dashboard"} component={Dashboard} />
+                            <Route path={"/user/dashboard"} component={UserDashboard} />
                             <Route component={NoMatch}/>
                         </Switch>
                     </Container>
