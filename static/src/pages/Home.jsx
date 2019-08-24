@@ -140,7 +140,7 @@ const Gallery = ({photoList, handleOnClick}) => (
         <div className="photo" style={{backgroundImage:  'url(' + el.thumbnail + ')'}} onClick={()=>handleOnClick('/photo/'+el.id)}>
             <div className="info">
                 <h1 style={{fontSize: '1.5em'}}>{el.title}</h1>
-                <h2 style={{fontSize: '1.0em'}}>Autor</h2>    
+                <h2 style={{fontSize: '1.0em'}}>{el.usuario}</h2>    
             </div>
         </div>
         ))}
