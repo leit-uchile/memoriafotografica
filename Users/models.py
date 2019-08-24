@@ -47,6 +47,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     rol_type = models.PositiveSmallIntegerField(choices=ROL_TYPE_CHOICES, default=6)
     is_staff = models.BooleanField(_('staff status'), default=False)
 
+    #LOGGING
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_at = models.DateTimeField(default=datetime.now)
+    
     objects = UserManager()
 
 
