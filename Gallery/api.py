@@ -24,6 +24,31 @@ def add_title_description(request, p_id):
         title = MetadataTitle.objects.create(title=t, description=t.lower(), photo=Photo.objects.get(pk=p_id))
         description = MetadataDescription.objects.create(description=d, photo=Photo.objects.get(pk=p_id))
 """
+
+
+def get_user(photoPair):
+    print(photoPair)
+    try:
+        u = photoPair[0].user_set.first()
+        u_dict = {}
+        u_dict['first_name'] = u.first_name
+        u_dict['last_name'] = u.last_name
+        photoPair[1]['usuario'] = u_dict
+    except AttributeError as e:
+        print("error buscando usuario para la foto con id",str(photoPair[0].id))
+        print(e)
+        print("------------")
+        pass
+    return photoPair[1]
+
+def check_approval(metadata_id):
+    m = Metadata.objects.get(pk=metadata_id)
+    return m.approved
+
+def make_tag(metadata_id):
+    m = Metadata.objects.get(pk=metadata_id)
+    return m.metadata.name + " : " + m.value
+
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
         return request.method in SAFE_METHODS
@@ -39,20 +64,24 @@ class PhotoListAPI(generics.GenericAPIView):
     permission_classes = [IsAuthenticated,]
 
     def get(self, request, *args, **kwargs):
-        photo_admin = Photo.objects.all()
+        photo = "dummy"
         if request.user.user_type != 1:
+            photo =Photo.objects.all()
             serializer_class = PhotoAdminSerializer
-            serializer = PhotoAdminSerializer(photo_admin, many = True)
+            serializer = PhotoAdminSerializer(photo, many = True)
             serialized_data = serializer.data
         else:
             photo = Photo.objects.filter(censure = False, approved = True)
             serializer_class = PhotoSerializer
             serializer = PhotoSerializer(photo, many = True)
             serialized_data = serializer.data
-            for photo in serialized_data:
-                photo['metadata'] = list(filter(lambda x: x['approved'], photo['metadata']))
-                photo['metadata'] = list(map(lambda x: x['metadata'][0]['name'] + " : " + x['value'], photo['metadata']))
-        return Response(serializer.data)
+        for aPhoto in serialized_data:
+            aPhoto['metadata'] = list(filter(lambda x: check_approval(x), aPhoto['metadata']))
+            aPhoto['metadata'] = list(map(lambda x: make_tag(x), aPhoto['metadata']))
+        photos_to_map = list(map(get_user,zip(photo, serialized_data)))
+        # serialized_data = list(map(get_user, serialized_data))
+        # print(serialized_data)
+        return Response(serialized_data)
 
     def post(self, request, *args, **kwargs):
         serializer = CreatePhotoSerializer(data=request.data)
@@ -107,20 +136,20 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
             serializer_class = PhotoDetailSerializer
             serializer = PhotoDetailSerializer(photo)
             serialized_data = serializer.data
-            serialized_data['metadata'] = list(filter(lambda x: x['approved'], serialized_data['metadata']))
-            serialized_data['metadata'] = list(map(lambda x: x['metadata'][0]['name'] + " : " + x['value'], serialized_data['metadata']))
-            try:
-                u = photo.user_set.first()
-                print(u)
-                u_dict = {}
-                u_dict['first_name'] = u.first_name
-                u_dict['last_name'] = u.last_name
-                u_dict['generation'] = u.generation
-                u_dict['avatar'] = u.avatar.url if u.avatar else None
-                u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
-                serialized_data['usuario'] = u_dict
-            except:
-                pass
+        serialized_data['metadata'] = list(filter(lambda x: x['approved'], serialized_data['metadata']))
+        serialized_data['metadata'] = list(map(lambda x: x['metadata']['name'] + " : " + x['value'], serialized_data['metadata']))
+        try:
+            u = photo.user_set.first()
+            print(u)
+            u_dict = {}
+            u_dict['first_name'] = u.first_name
+            u_dict['last_name'] = u.last_name
+            u_dict['generation'] = u.generation
+            u_dict['avatar'] = u.avatar.url if u.avatar else None
+            u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
+            serialized_data['usuario'] = u_dict
+        except:
+            pass
 
         return Response(serialized_data)
 
@@ -278,7 +307,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
                     u_dict['generation'] = u.generation
                     u_dict['avatar'] = u.avatar.url if u.avatar else None
                     u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
-                    c['usuario'] = u_dict                    
+                    c['usuario'] = u_dict
                 except:
                     pass
         else:
