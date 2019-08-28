@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 #from Gallery.models import Photo
 # Create your models here.
 """
@@ -16,9 +17,13 @@ class IPTCKeyword(models.Model):
     name = models.TextField()
     definition = models.TextField()
     help_text = models.TextField()
-  
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_at = models.DateTimeField(default=datetime.now)
+
 DEFAULT_IPTC_ID = 1
 class Metadata(models.Model):
     value = models.TextField()
     metadata = models.ForeignKey(IPTCKeyword, on_delete=models.CASCADE, default = DEFAULT_IPTC_ID)
     approved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_at = models.DateTimeField(default=datetime.now)

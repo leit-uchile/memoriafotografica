@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux'
 import {home, misc} from '../actions';
 import Photo from '../components/Photo';
-import {Container, Row, Col, Card, 
-    Button, CardBody, CardText} from 'reactstrap';
+import {Container, Row, Col, Button, Nav, DropdownItem, DropdownMenu} from 'reactstrap';
+import {Redirect} from 'react-router-dom'
+import gallery from '../css/galleryHome.css'
 import {Helmet} from 'react-helmet';
 
 class Home extends Component{
@@ -12,25 +13,41 @@ class Home extends Component{
         super(props)
         this.state = {
             selectedCategories: [],
-            maxAllowedTags: 5,
             maxAllowedCategories: 8,
             maxPhotos: 10,
+            sortOpen: false,
+            catsOpen: false,
+            redirect: false,
+            link: ''
         }
-        this.allowMoreCats = this.allowMoreCats.bind(this)
-        this.allowMoreTags = this.allowMoreTags.bind(this)
-        this.allowMorePics = this.allowMorePics.bind(this)
+        this.toggleSort = this.toggleSort.bind(this)
+        this.toggleCats = this.toggleCats.bind(this)
+        this.handleOnClick = this.handleOnClick.bind(this)
         this.toggleCategory = this.toggleCategory.bind(this)
+        this.allowMoreCats = this.allowMoreCats.bind(this)
+        this.allowMorePics = this.allowMorePics.bind(this)
+    }
+
+    toggleSort() {
+        this.setState({
+          sortOpen: !this.state.sortOpen
+        });
+    }
+
+    toggleCats() {
+        this.setState({
+          catsOpen: !this.state.catsOpen
+        });
+    }
+
+    handleOnClick = (url) => {
+        this.setState({redirect: true, link: url});
     }
 
     componentWillMount(){
         this.props.setRoute('/gallery/')
         this.props.onLoadGetPhotos()
-        this.props.onLoadGetTags()
         this.props.onLoadGetCats()
-    }
-
-    allowMoreTags(){
-        this.setState({maxAllowedTags: this.state.maxAllowedTags + 10})
     }
 
     allowMoreCats(){
@@ -51,7 +68,7 @@ class Home extends Component{
     }
 
     render(){
-        const {photos, tags, cats, filters} = this.props
+        const {photos, cats, filters} = this.props
 
         // Utility Function
         var isSelected = (id, array) => {
@@ -63,24 +80,30 @@ class Home extends Component{
             return arr1.filter(el => arr2.indexOf(el) > -1).length !== 0
         }
 
-        var currentTags = tags ? tags.slice(0,this.state.maxAllowedTags).map(el => {
-            return {...el, selected: isSelected(el.id,filters)}
-        }) : []
         var currentCats = cats ? cats.slice(0,this.state.maxAllowedCategories).map(el => {
             return {...el, selected: isSelected(el.id,this.state.selectedCategories)}
         }) : []
 
-        // TODO: refactor this code
-        var currentPhotos = photos? 
-            filters && filters.length !== 0 || this.state.selectedCategories.length !== 0 ?
-                photos.filter( el =>
-                    arraysIntersect(el.category,this.state.selectedCategories) || arraysIntersect(el.metadata,filters)
-                ).slice(0,this.state.maxPhotos)
-                : photos.slice(0,this.state.maxPhotos) 
-            : []
+        if (filters && filters.length === 0 && this.state.selectedCategories.length === 0 ){
+            var currentPhotos = photos.slice(0,this.state.maxPhotos) //todas las fotos
+        }
+        else if (filters && filters.length !==0 && this.state.selectedCategories.length !== 0 ){ //hay tag y categoria -> intersectar
+            currentPhotos = photos.filter( el =>
+                             arraysIntersect(el.category,this.state.selectedCategories) && arraysIntersect(el.metadata,filters)
+                         ).slice(0,this.state.maxPhotos)
+                         console.log("Intersectar")
 
+        }else{ //cuando falta uno de los dos -> union
+            currentPhotos = photos.filter( el =>
+                arraysIntersect(el.category,this.state.selectedCategories) || arraysIntersect(el.metadata,filters)
+            ).slice(0,this.state.maxPhotos)
+        }
+        var numberSelectedCats = this.state.selectedCategories.length
+        if (this.state.redirect) {
+            return <Redirect push to={this.state.link} />;
+          }
         return(
-            <Container>
+            <Container fluid>
                 <Helmet>
                     <meta property="og:title" content="Buscar fotografias"/>
                     <meta property="og:type" content="Motor de búsqueda" />
@@ -89,90 +112,42 @@ class Home extends Component{
                     <meta property="og:description" content="Descripcion" />
                     <title>Buscar fotografias</title>
                 </Helmet>
-                    <Row>
-                        <Col>
-                            <h1 style={{fontSize:'25px', textAlign:'center', marginLeft:'auto', marginRight:'auto', paddingTop:'40px', paddingBottom:'40px'}}>Descubre las fotografias de la Facultad y sus personajes</h1>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col style={{maxWidth:'520px'}}>
-                            <h2 style={{fontSize:'20px'}}>Busqueda por tag</h2>
-                            <Container fluid>
-                                <Tags tags={currentTags}/>
-                            </Container>
-                            <Button onClick={this.allowMoreTags} color="secondary">Cargar m&aacute;s</Button>
-                        </Col>
-                        <div style={styles.verticalLine}></div>
-                        <Col style={{maxWidth:'580px'}}>
-                            <h2 style={{fontSize:'20px'}}>Busqueda por categoria</h2>
-                            <Container fluid>
-                                <Categories categorias={currentCats} onClick={this.toggleCategory}/>
-                            </Container>
-                            <Button onClick={this.allowMoreCats} color="secondary">Cargar m&aacute;s</Button>
-                        </Col>
-                    </Row>
-                    <Row style={{marginTop:'50px'}}>
-                        <Col>
-                            <h2 style={{fontSize:'20px'}}>Fotografias</h2>
-                            <Container fluid>
-                                <Gallery photoList={currentPhotos}/>
-                            </Container>
-                            <Button onClick={this.all} color="secondary">Cargar m&aacute;s</Button>
-                        </Col>
-                    </Row>
+                <Row className='galleryMenu'>
+                    <Col>
+                        <Nav className='navbar navbar-default navbar-mob'></Nav>
+                            <div className='navbar-header'>
+                                
+                            </div>
+                    </Col>
+                </Row>
+                <Gallery photoList={currentPhotos} handleOnClick={this.handleOnClick}/>
             </Container>
         )
     }
 }
 
-const Tags = ({tags}) => (
-    <Row>
-        {tags.length == 0 ? <h3>No hay tags disponibles</h3> : tags.map((el, index) => (
-            <span key={el.id} style={el.selected ? styles.selectedTag : styles.tags}>#{el.value}</span>
-        ))}
-    </Row>
-)
-
 const Categories = ({categorias, onClick}) => (
-    <Row>
+    <DropdownMenu>
         {categorias.length == 0 ? <h3>No hay categorias disponibles</h3> : categorias.map((el, index) => (
-            <div key={el.id} style={el.selected ? styles.selectedCategory : styles.categories} onClick={() => onClick(el.id)}>{el.title}</div>
+            <DropdownItem><div key={el.id} style={el.selected ? styles.selectedCategory: styles.categories} onClick={() => onClick(el.id)}>{el.title}</div></DropdownItem>
         ))}
-    </Row>
+    </DropdownMenu>
 )
 
-const Gallery = ({photoList}) => (
-    <Row>
+const Gallery = ({photoList, handleOnClick}) => (
+    <div className="gallery">
         {photoList.length == 0 ? <h3>No hay fotografias disponibles</h3> : photoList.map((el, index) => (
-            <Card style={{marginTop:'1em', marginRight:'1em', width: "200px"}}>
-                <Photo key={index} name={el.title} url={el.thumbnail} url2={el.image} height="150px"useLink redirectUrl={`/photo/${el.id}`}/>
-                <CardBody style={{backgroundColor:'#ebeeef'}}>
-                <CardText>{el.description}</CardText>
-                </CardBody>
-          </Card>
+        <div className="photo" style={{backgroundImage:  'url(' + el.thumbnail + ')'}} onClick={()=>handleOnClick('/photo/'+el.id)}>
+            <div className="info">
+                <h1 style={{fontSize: '1.5em'}}>{el.title}</h1>
+                <h2 style={{fontSize: '1.0em'}}>{el.usuario}</h2>    
+            </div>
+        </div>
         ))}
-    </Row>
+    </div>
 )
 
 const styles = {
-    tags:{
-        color:'white', 
-        borderRadius:'10px', 
-        backgroundColor:'#9a9e9d', 
-        margin:'2px', 
-        padding:'4px 12px 4px 12px'
-    },
-    selectedTag:{
-        color:'white', 
-        borderRadius:'10px', 
-        backgroundColor:'#ce846b', 
-        margin:'2px', 
-        padding:'4px 12px 4px 12px'
-    },
-    verticalLine:{
-        borderLeft:'2px solid rgb(239,112,117)', 
-        marginTop:'32px'
-     },
     categories: {
         fontSize: '11px',
         textAlign:'center',
@@ -194,13 +169,11 @@ const styles = {
         backgroundColor:'#ce846b',
         margin:'2px 20px 20px 0px', 
         paddingTop:'34px'
-    }
-
+    },
 }
 const mapStateToProps = state => {
     return {
         photos: state.home.photos,
-        tags: state.home.all_tags,
         cats: state.home.all_cats,
         filters: state.search.metaIDs,
     }
@@ -210,9 +183,6 @@ const mapActionsToProps = dispatch =>{
     return {
         onLoadGetPhotos: () => {
             return dispatch(home.home());
-        },
-        onLoadGetTags: () => {
-            return dispatch(home.tags());
         },
         onLoadGetCats: () => {
             return dispatch(home.categories());

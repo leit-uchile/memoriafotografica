@@ -21,6 +21,9 @@ PERMISSION_CHOICES = (
 
 class Reporte(models.Model):
     content = models.TextField()
+    resolved = models.BooleanField(default = False)
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_at = models.DateTimeField(default=datetime.now)
     REPORT_TYPE_CHOICES = (
         (1, 'usuario'),
         (2, 'foto'),
@@ -34,11 +37,15 @@ class Comment(models.Model):
     content = models.TextField()
     censure = models.BooleanField(default = False)
     report = models.ManyToManyField(Reporte, blank= True)
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_at = models.DateTimeField(default=datetime.now)
     def __str__(self):
         return "Comentario"
 
 class Category(models.Model):
     title = models.CharField(max_length= 30)
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_at = models.DateTimeField(default=datetime.now)
     def __str__(self):
         return "categoria"
 
@@ -60,6 +67,9 @@ class Photo(models.Model):
     comments = models.ManyToManyField(Comment, blank = True)
     metadata = models.ManyToManyField(Metadata, blank = True)
     report = models.ManyToManyField(Reporte, blank = True)
+
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_at = models.DateTimeField(default=datetime.now)
     def save(self, *args, **kwargs):
         if not self.id:
             #Have to save the image (and imagefield) first
@@ -74,7 +84,7 @@ class Photo(models.Model):
             self.thumbnail.save(nuevoNombre, ContentFile(resized.read()), True)
         else:
             super(Photo, self).save(*args, **kwargs)
-    
+
     #thumbnail = get_thumbnail(image, '100x100', crop='center', quality=99)
     def __str__(self):
         try:
@@ -88,5 +98,7 @@ class Album(models.Model):
     name = models.CharField(max_length=40)
     pictures = models.ManyToManyField(Photo, blank = True)
     description = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_at = models.DateTimeField(default=datetime.now)
     def __str__(self):
         return "Album " + self.name
