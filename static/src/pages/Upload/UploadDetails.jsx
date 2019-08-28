@@ -18,7 +18,7 @@ class UploadDetails extends Component{
         super(Props);
         this.state = {
             ...Props.meta,
-            collapse: false,    
+            collapse: false,
         }
         
         this.toggle = this.toggle.bind(this);
@@ -31,28 +31,20 @@ class UploadDetails extends Component{
             this.setState({src: e.target.result})
             };
         })(Props.photo).bind(this);
-
-        this.updateTitle = this.updateTitle.bind(this);
+        this.updateData = this.updateData.bind(this);
     }
 
-    updateDescription = e =>{
-        this.setState({description : e.target.value});
-    }
+    updateData = (e) => this.setState({ [e.target.name]: e.target.value})
+
     updateDesc =  e => {
         this.setState({description : e.target.value});
         clearTimeout(autosave_desc);
-        autosave_desc = setTimeout(
-          function(){
+        autosave_desc = setTimeout(function(){
             this.props.save(this.state);
-          }
-          .bind(this),
-          500
-          );
+          }.bind(this),500);
       }
 
-    toggle() {
-        this.setState(state => ({ collapse: !state.collapse }));
-    }
+    toggle() {this.setState(state => ({ collapse: !state.collapse }));}
 
     additionTag(tag) {
         const tags = [].concat(this.state.tags, tag)
@@ -64,17 +56,7 @@ class UploadDetails extends Component{
         tags.splice(i, 1)
         this.setState({ tags })
     }
-    
-    updateCC(selected) {
-        const index = this.state.cc.indexOf(selected);
-        if (index < 0) {
-            this.state.cc.push(selected); //agrega
-        } else {
-            this.state.cc.splice(index, 1);//elimina 1 elemento
-        }
-        this.setState({ cc: [...this.state.cc] });//actualiza
-    }
-    updateTitle(e){ this.setState({title: e.target.value}); }
+
     onSubmit = e => {
         e.preventDefault()
         if (this.state.collapse===true){
@@ -83,17 +65,13 @@ class UploadDetails extends Component{
         this.props.save(this.state)
     }
 
-    onDelete = e => {
-        this.props.delete(this.state)
-    }
+    onDelete = e => {this.props.delete(this.state)}
 
-    componentWillMount(){
-        this.fr.readAsDataURL(this.props.photo)
-    }
+    componentWillMount(){this.fr.readAsDataURL(this.props.photo)}
 
     render(){
         return(
-            <Container style={{marginTop:'20px', backgroundColor:'#dceaf7', borderRadius:'10px', border:'1px solid rgb(156,158,159)', boxShadow: '2px 2px 4px rgb(156,158,159)'}}>
+            <Container style={{marginTop:'20px', backgroundColor:'#dceaf7', borderRadius:'10px', border:'1px solid rgb(156,158,159)', boxShadow: '2px 2px 4px rgb(156,158,159)'}} fluid>
                 <Row>
                     <Col md='3'>
                         <img style={styles.thumb} src={this.state.src}/>
@@ -102,7 +80,7 @@ class UploadDetails extends Component{
                         <Form>
                             <FormGroup>
                                 <Label style={{color: '#848687'}}>Descripcion:</Label>
-                                <Input type='textarea' placeholder='Historia asociada a la foto' onChange={this.updateDesc} value={this.state.description} required/>                                
+                                <Input type='textarea' placeholder='Historia asociada a la foto' name="description" onChange={this.updateDesc} value={this.state.description} required/>                                
                             </FormGroup>
                             <ButtonGroup>
                                 <Button color='danger' onClick={this.onDelete}>Eliminar</Button>                            
@@ -130,23 +108,18 @@ class UploadDetails extends Component{
                                         <div style={styles.hr}>
                                             <Label style={{color: '#848687'}} for='CreativeCommons'>Permisos de acceso e intercambio</Label>
                                         </div>
-                                        <FormGroup tag="fieldset">
-                                            {CC_INFO.map( (el,k) => 
-                                            <FormGroup check key={k} style={{marginTop: "5px"}}>
-                                                <Label check>
-                                                    <Input type="radio" name="CC" id={"CreativeCommonsCheckbox"+(k+1)} onClick={() => this.updateCC(el.name)}/>{' '}
-                                                    {el.name+' '}
-                                                </Label>
-                                            </FormGroup>
-                                            )}
+                                        <FormGroup>
+                                            <Input type="select" name="cc" id="exampleSelect" onChange={this.updateData}>
+                                                {CC_INFO.map( (el,k) => <option value={el.name}>{el.name}</option>)}
+                                            </Input>
                                         </FormGroup>
                                     </FormGroup>
                                 </Col>
                                 <Col sm='6' md='4'>
                                     <div style={styles.hr}>
-                                        <Label style={{color: '#848687'}} for='imageTitle'>Titulo de la fotograf&iacute;a</Label>
+                                        <Label style={{color: '#848687'}} for='title'>Titulo de la fotograf&iacute;a</Label>
                                     </div>
-                                    <Input type="text" name="imageTitle" placeholder="Ceremonia de premiación..." onChange={this.updateTitle}/>
+                                    <Input type="text" name="title" placeholder="Ceremonia de premiación..." onChange={this.updateData}/>
                                 </Col>
                             </Row>
                         </Container>

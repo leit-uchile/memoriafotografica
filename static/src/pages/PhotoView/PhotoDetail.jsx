@@ -250,6 +250,7 @@ const styles={
         padding: "3em",
         marginBottom: "2em",
         position: "relative",
+        minHeight: "40vh",
     },
     center: {
         textAlign: "center",
