@@ -1,13 +1,14 @@
 import * as auth from './auth';
-import * as upload from './upload';
+import * as curador from './curador';
 import * as home from './home';
-import * as photoDetails from './photodetails';
 import * as misc from './misc';
+import * as photoDetails from './photodetails';
 import * as search from './search';
-
+import * as upload from './upload';
 export {auth};
 export {upload};
 export {home};
 export {photoDetails};
 export {misc};
 export {search};
+export {curador};

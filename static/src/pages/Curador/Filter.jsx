@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import Photo from '../../components/Photo';
-import {Row, Col, Button, Container, ButtonGroup} from 'reactstrap';
+import {Row, Col, Button, Container, ButtonGroup, Pagination, PaginationItem, PaginationLink, Card, CardHeader, CardFooter, CardBody,
+  CardTitle, CardText, Badge} from 'reactstrap';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faThLarge, faThList, faFilter } from '@fortawesome/free-solid-svg-icons'
 
 var filtrar = [
     {
@@ -9,6 +13,7 @@ var filtrar = [
         url: "https://i.blogs.es/bd5388/banter-snaps-387953-unsplash/1366_2000.jpg",
         tags: ["tag1","tag2"],
         // Lorem ipsum Dolor Sit Amet
+        approved: true,
         desc: "desc1",
     },
     {
@@ -16,6 +21,7 @@ var filtrar = [
         name: "img2",
         url: "http://ingenieria.uchile.cl/u/ImageServlet?idDocumento=106702&indice=0&nocch=20150908170639.0",
         tags: ["tag2","tag3"],
+        approved: false,
         // Lorem ipsum Dolor Sit Amet
         desc: "desc2",
     },
@@ -24,6 +30,7 @@ var filtrar = [
         name: "img3",
         url: "http://festivalingenieriayciencias.cl/wp-content/uploads/2014/08/Beauchef_851-5.jpg",
         tags: ["tag2","tag3"],
+        approved: false,
         // Lorem ipsum Dolor Sit Amet
         desc: "desc3",
     },
@@ -32,6 +39,7 @@ var filtrar = [
         name: "img4",
         url: "https://upload.wikimedia.org/wikipedia/commons/7/79/Beauchef_851.jpg",
         tags: ["tag2","tag3"],
+        approved: true,
         // Lorem ipsum Dolor Sit Amet
         desc: "desc4",
     },
@@ -40,6 +48,52 @@ var filtrar = [
         name: "img5",
         url: "http://festivalingenieriayciencias.cl/wp-content/uploads/2014/08/Beauchef_851-7.jpg",
         tags: ["tag2","tag3"],
+        approved: false,
+        // Lorem ipsum Dolor Sit Amet
+        desc: "desc5",
+    },
+    {
+        id: 10,
+        name: "img1",
+        url: "https://i.blogs.es/bd5388/banter-snaps-387953-unsplash/1366_2000.jpg",
+        tags: ["tag1","tag2"],
+        // Lorem ipsum Dolor Sit Amet
+        approved: true,
+        desc: "desc1",
+    },
+    {
+        id: 11,
+        name: "img2",
+        url: "http://ingenieria.uchile.cl/u/ImageServlet?idDocumento=106702&indice=0&nocch=20150908170639.0",
+        tags: ["tag2","tag3"],
+        approved: false,
+        // Lorem ipsum Dolor Sit Amet
+        desc: "desc2",
+    },
+    {
+        id: 12,
+        name: "img3",
+        url: "http://festivalingenieriayciencias.cl/wp-content/uploads/2014/08/Beauchef_851-5.jpg",
+        tags: ["tag2","tag3"],
+        approved: false,
+        // Lorem ipsum Dolor Sit Amet
+        desc: "desc3",
+    },
+    {
+        id: 13,
+        name: "img4",
+        url: "https://upload.wikimedia.org/wikipedia/commons/7/79/Beauchef_851.jpg",
+        tags: ["tag2","tag3"],
+        approved: true,
+        // Lorem ipsum Dolor Sit Amet
+        desc: "desc4",
+    },
+    {
+        id: 14,
+        name: "img5",
+        url: "http://festivalingenieriayciencias.cl/wp-content/uploads/2014/08/Beauchef_851-7.jpg",
+        tags: ["tag2","tag3"],
+        approved: false,
         // Lorem ipsum Dolor Sit Amet
         desc: "desc5",
     }
@@ -48,21 +102,38 @@ var filtrar = [
 class Filter extends Component{
     constructor(props){
         super(props)
+        this.state = {
+          listView:1,
+          currentPage:0,
+          pageSize: 6,
+          pages: 0
+        }
         this.getLatestElements = this.getLatestElements.bind(this)
         this.removeElement = this.removeElement.bind(this)
         this.updateElementState = this.updateElementState.bind(this)
+        this.cardView = this.cardView.bind(this)
+        this.listView = this.listView.bind(this)
     }
 
     componentWillMount(){
-        this.getLatestElements()
+        this.getLatestElements();
+        //Calculate pages:
+        console.log(this.state)
+        //console.log(this.state.list.length/this.state.pageSize)
     }
+    component
+
 
     getLatestElements(){
         // Call API
-        this.setState({
-            list: [...filtrar]
-        })
-    }
+
+          let totalDocs = filtrar.length;
+          let pages = Math.ceil(totalDocs / this.state.pageSize);
+          this.setState({
+            list: [...filtrar],
+            pages: pages
+          })
+        }
 
     updateElementState(){
         // Send update to API
@@ -83,6 +154,24 @@ class Filter extends Component{
         //this.getLatestElements()
     }
 
+    listView(e){
+      e.preventDefault();
+      console.log("ahora quiero ver como lista")
+      this.setState({listView:1})
+    }
+
+    cardView(e){
+      e.preventDefault();
+      console.log("ahora quiero ver como cartitas")
+      this.setState({listView:0})
+    }
+
+    setCurrentPage(e,p){
+      console.log(p)
+      this.setState({
+        currentPage:p
+      })
+    }
     render(){
         var latest = []
         for (var i = 1; i < 6 && i < this.state.list.length; i++) {
@@ -99,31 +188,102 @@ class Filter extends Component{
             actual= <Photo key={this.state.list[0].id} name={this.state.list[0].name} url={this.state.list[0].url}
                         tags={this.state.list[0].tags} desc={this.state.list[0].desc} state={this.state.list[0].state} style={styles.actual} height='350px'/>
         }
+
+        let photolist = this.state.list.map(e => (
+          <Card style={{width:"100%", margin:"10px 0px"}}>
+            <CardBody>
+              <Row>
+                <Col>
+                  <img src={e.url} width="200px"/>
+                </Col>
+                <Col xs="9">
+                  <h5>{e.name}</h5>
+                  <h6>Subida por <b>Juanito</b> el {e.id} de Enero</h6>
+                  <h5>Tags: {e.tags.map(t => (<Badge style={{margin:"0px 2px"}}>{t}</Badge>))}</h5>
+                </Col>
+              </Row>
+              {
+              // <CardTitle>Special Title Treatment</CardTitle>
+              // <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
+              }
+            </CardBody>
+            <CardFooter>
+              <Col xs="2" style={{display:"inline"}}>
+                <a href="#">Editar Foto</a>
+              </Col>
+              <Col xs="8" style={{display:"inline"}}>
+                {e.approved ? (<div style={{display:"inline"}}>Aprobada <Button color="danger">Quitar Aprobación</Button></div>): (<div style={{display:"inline"}}>No Aprobada <Button color="success">Aprobar</Button></div>)}
+              </Col>
+            </CardFooter>
+          </Card>
+        ))
+
+        let photocards = this.state.list.map(e => (
+          <Card style={{width:"45%", margin:"10px 10px"}}>
+            <CardBody style={{paddingTop:"0px"}}>
+              <Row>
+                <img src={e.url} width="100%" style={{borderRadius:"2.5px"}}/>
+              </Row>
+              <Row>
+                <h5>{e.name}</h5>
+                <h5>Tags: {e.tags.map(t => (<Badge style={{margin:"0px 2px"}}>{t}</Badge>))}</h5>
+              </Row>
+            </CardBody>
+            <CardFooter>
+              <Col style={{display:"inline"}}>
+                <a href="#">Editar Foto</a>
+              </Col>
+              <Col style={{display:"inline"}}>
+                {e.approved ? (<div style={{display:"inline"}}>Aprobada <Button color="danger">Quitar Aprobación</Button></div>): (<div style={{display:"inline"}}>No Aprobada <Button color="success">Aprobar</Button></div>)}
+              </Col>
+            </CardFooter>
+          </Card>
+        ))
+        let pageLowerBound = this.state.currentPage*this.state.pageSize
+        let pageUpperBound = Math.min((pageLowerBound+this.state.pageSize),this.state.list.length)
+        console.log("bounds: "+pageLowerBound+" - "+pageUpperBound-1)
+        let renderphotos = (this.state.listView? photolist : photocards).slice(pageLowerBound, pageUpperBound)
+
+        let paginators = Array.from(Array(this.state.pages)).map((arg, index) => index)
+        paginators = paginators.map( ind => (
+          <PaginationItem active={ind==this.state.currentPage? true:false}>
+            <PaginationLink onClick={e => this.setCurrentPage(e,ind)}>
+              {ind+1}
+            </PaginationLink>
+          </PaginationItem>
+        ))
         return(
         <Container>
+            <h1>Filtrar Fotografías</h1>
             <Row>
-                <Col>
-                    <h2>Filtrar fotograf&iacute;as</h2>
-                </Col>
+              <Col xs="2">
+                <ButtonGroup><Button disabled>Filtrar</Button><Button><FontAwesomeIcon icon={faFilter} /></Button></ButtonGroup>
+              </Col>
+              <Col xs="7"></Col>
+              <Col xs="3">
+                <ButtonGroup><Button disabled>Ver como</Button><Button outline={this.state.listView? true : false} disabled={this.state.listView? true : false} onClick={this.listView} ><FontAwesomeIcon icon={faThList} /></Button><Button outline={this.state.listView? false : true} disabled={this.state.listView? false : true} onClick={this.cardView}><FontAwesomeIcon icon={faThLarge} /></Button></ButtonGroup>
+              </Col>
             </Row>
-            <div style={{backgroundColor: 'rgb(245,245,245)', border:'1px solid rgb(156,158,159)', borderRadius:'10px', marginTop: '2em', padding: '2em 0'}}>    
-                <Row>   
-                    <Col md='8'>
-                        {actual}
-                        {this.state.list.length===0 ? null: 
-                            <Row>
-                                <ButtonGroup style={{marginTop:'10px',marginLeft:'auto',marginRight:'auto'}}>
-                                    <Button onClick={this.updateElementState}>Aceptar</Button>
-                                    <Button color="secondary" onClick={this.removeElement}>Rechazar</Button>
-                                </ButtonGroup>
-                            </Row>
-                        }
-                    </Col>
-                    <Col md='4'>
-                        {latest}
-                    </Col>
-                </Row>
-            </div>
+            <Row>
+              {renderphotos}
+            </Row>
+            <Row>
+              <Pagination aria-label="Page navigation example">
+                <PaginationItem disabled>
+                  <PaginationLink first href="#" />
+                </PaginationItem>
+                <PaginationItem disabled>
+                  <PaginationLink previous href="#" />
+                </PaginationItem>
+                {paginators}
+                <PaginationItem>
+                  <PaginationLink next href="#" />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink last href="#" />
+                </PaginationItem>
+              </Pagination>
+            </Row>
         </Container>
         );
     }
@@ -138,6 +298,7 @@ const styles={
         height:'350px',
         textAlign:'center'
     }
+
 }
 
 export default Filter
