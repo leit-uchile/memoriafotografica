@@ -31,7 +31,7 @@ const getPermissionLogo = (name, w,h, offset) => {
 
 const Tags = ({tags}) => (
     <Row>
-        <Col sm={{offset: 2, size: 6}}>
+        <Col sm={{offset: 2, size: 10}}>
         {tags.length == 0 ? <p>No hay tags asociados</p> : tags.map((el, index) => (
             <span key={el.id} style={styles.tags}>#{el.value}</span>
         ))}
@@ -93,11 +93,14 @@ class PhotoDetails extends Component{
         this.getComments();
         this.props.loadSuggestions();
     }
+    componentWillMount(){
+        this.imageContainer = React.createRef();
+    }
 
     componentDidMount(){
-        this.imageContainer = React.createRef();
+        this.imageContainer.current.scrollIntoView({block: "start", behavior: "smooth"});
         // Load info the first time
-        this.props.onLoad(this.state.myPhotoID);
+        this.setState({loadingPhoto: true}, () => this.props.onLoad(this.state.myPhotoID));
     }
 
     componentDidUpdate(prevProps){
@@ -114,7 +117,7 @@ class PhotoDetails extends Component{
         if(prevProps.match.params.id !== this.props.match.params.id){
             this.imageContainer.current.scrollIntoView({block: "start", behavior: "smooth"});
             this.setState({
-                myPhotoID: this.props.match.params.id}, 
+                myPhotoID: this.props.match.params.id, loadingPhoto: true}, 
                     () => {this.props.onLoad(this.state.myPhotoID)}
                 )
         }
@@ -181,59 +184,61 @@ class PhotoDetails extends Component{
             </Row> : null
 
         return (
-            <div ref={this.imageContainer}>
-                 <Helmet>
-                    <meta property="og:title" content={photoInfo.details.title} />
-                    <meta property="og:type" content="Vista fotogragia" />
-                    <meta property="og:url" content=" http://memoriafotografica.ing.fcfm.cl/" />
-                    <meta property="og:image" content=" http://example.com/image.jpg" />
-                    <meta property="og:description" content="Descripcion" />
-                    <title>{photoInfo.details.title}</title>
-                </Helmet>
-                <Row style={styles.imageContainer}>
-                    <Col md={{offset: 3, size: 6}}>
-                        <h1 style={styles.center}>{photoInfo.details.title}</h1>
-                        <img alt={photoInfo.details.title} src={photoInfo.details.image} style={{display: "block", margin: "0 auto 0 auto",maxHeight: "60vh", maxWidth: "100%"}}/>
-                    </Col>
-                    {permissions}
-                </Row>
-                <Container fluid>
-                    <Row>
-                        <Col md={5}>
-                            {userProfile}
-                            {imageTags}
+            <Container fluid>
+                <div ref={this.imageContainer} style={{width: "100%"}}>
+                    <Helmet>
+                        <meta property="og:title" content={photoInfo.details.title} />
+                        <meta property="og:type" content="Vista fotogragia" />
+                        <meta property="og:url" content=" http://memoriafotografica.ing.fcfm.cl/" />
+                        <meta property="og:image" content=" http://example.com/image.jpg" />
+                        <meta property="og:description" content="Descripcion" />
+                        <title>{photoInfo.details.title}</title>
+                    </Helmet>
+                    <Row style={styles.imageContainer}>
+                        <Col md={{offset: 3, size: 6}}>
+                            <h1 style={styles.center}>{photoInfo.details.title}</h1>
+                            <img alt={photoInfo.details.title} src={photoInfo.details.image} style={{display: "block", margin: "0 auto 0 auto",maxHeight: "60vh", maxWidth: "100%"}}/>
                         </Col>
-                        <Col md={7} >
-                            <p style={styles.description.text}>{photoInfo.details.description}</p>
-                            <Button tag={Link} to="/" className="float-left">
-                                ¿Quieres usar la foto?
-                            </Button>
-                            <ReportModal style={{display: 'inline-block'}} className="float-left"/>
-                        </Col>
+                        {permissions}
                     </Row>
-                    <hr style={{backgroundColor: 'gray'}}/>
-                    {this.props.auth.isAuthenticated ? 
+                    <Container fluid>
                         <Row>
-                            <Col md={9} style={{borderRight: '1px solid gray'}}>
-                                <Container>
-                                    {commentDivs}
-                                    {newComment}
-                                </Container>                                
+                            <Col md={5}>
+                                {userProfile}
+                                {imageTags}
                             </Col>
-                            <Col md={3}>
-                                <Container>
-                                {Suggestions}
-                                </Container>
-                            </Col>
-                        </Row> :
-                        <Row>
-                            <Col>
-                                {Suggestions}
+                            <Col md={7} >
+                                <p style={styles.description.text}>{photoInfo.details.description}</p>
+                                <Button tag={Link} to="/" className="float-left">
+                                    ¿Quieres usar la foto?
+                                </Button>
+                                <ReportModal style={{display: 'inline-block'}} className="float-left"/>
                             </Col>
                         </Row>
-                    }
-                </Container>
-            </div>
+                        <hr style={{backgroundColor: 'gray'}}/>
+                        {this.props.auth.isAuthenticated ? 
+                            <Row>
+                                <Col md={9} style={{borderRight: '1px solid gray'}}>
+                                    <Container>
+                                        {commentDivs}
+                                        {newComment}
+                                    </Container>                                
+                                </Col>
+                                <Col md={3}>
+                                    <Container>
+                                    {Suggestions}
+                                    </Container>
+                                </Col>
+                            </Row> :
+                            <Row>
+                                <Col>
+                                    {Suggestions}
+                                </Col>
+                            </Row>
+                        }
+                    </Container>
+                </div>
+            </Container>    
         );
     }
 }
@@ -245,6 +250,7 @@ const styles={
         padding: "3em",
         marginBottom: "2em",
         position: "relative",
+        minHeight: "40vh",
     },
     center: {
         textAlign: "center",

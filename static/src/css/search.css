@@ -92,12 +92,14 @@
     top: 100%;
     left: 0;
     width: 100%;
+    z-index: 9000;
   }
   
   @media screen and (min-width: 30em) {
   
     .react-tags__suggestions {
       width: 240px;
+      z-index: 9000;
     }
   
   }
@@ -135,4 +137,8 @@
   .react-tags__suggestions li.is-disabled {
     opacity: 0.5;
     cursor: auto;
+  }
+
+  .form-group .react-tags button{
+    width: auto;
   }

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import UploadUnregister from './UploadUnregister';
 import UploadPhoto from './UploadPhoto';
 import {connect} from 'react-redux';
-import {auth, misc, upload} from '../../actions';
+import {auth, misc, upload, home} from '../../actions';
 import {Link} from 'react-router-dom';
 import {Container, Button, Row} from 'reactstrap';
 import ReactLoading from 'react-loading';
@@ -49,13 +49,14 @@ class UploadPage extends Component{
             photos: {...photos},
             uploading: true
         }, () => {
-            this.props.setUploading()
-            this.props.uploadPhotos(this.state.photos, this.props.token)
+            this.props.setUploading();
+            this.props.uploadPhotos(this.state.photos, this.props.token);
         })
     }
 
     componentWillMount(){
-        this.props.setRoute('/upload')
+        this.props.setRoute('/upload');
+        this.props.recoverMetadata();
     }
 
     componentDidUpdate(prevProps){
@@ -89,7 +90,7 @@ class UploadPage extends Component{
                 subupload = <UploadUnregister goBack={this.back} saveInfo={this.saveUserInfo} cache={this.state.userInfo}/>
                 break;
             case 2:
-                subupload = <UploadPhoto goBack={this.back} saveAll={this.savePhotos}/>
+                subupload = <UploadPhoto goBack={this.back} saveAll={this.savePhotos} meta={this.props.meta}/>
                 break;
             case 3:
                 subupload = this.state.uploading ? 
@@ -108,8 +109,6 @@ class UploadPage extends Component{
                         <span style={{textAlign: 'center', display: 'block', margin: 'auto 1em auto 1em'}}>La foto tendra que ser aprobada para que la comunidad la vea. Puedes ver el estado en que se encuentra accediendo a tu perfil. Muchas gracias!</span>
                     </Row>
                 </Container>
-                    
-                
                 break;
         }
         return(
@@ -138,7 +137,8 @@ const mapStateToProps = state => {
         errors,
         isAuthenticated: state.auth.isAuthenticated,
         token: state.auth.token,
-        uploading: state.upload.uploading
+        uploading: state.upload.uploading,
+        meta: state.home.all_tags,
     };
 }
 
@@ -152,6 +152,9 @@ const mapActionsToProps = dispatch => {
         },
         setUploading: () => {
             return dispatch(upload.setUploading());
+        },
+        recoverMetadata: () => {
+            return dispatch(home.tags());
         }
     }
 }

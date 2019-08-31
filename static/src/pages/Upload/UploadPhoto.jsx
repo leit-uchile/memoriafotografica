@@ -1,12 +1,25 @@
-import React, {Component, useCallback} from 'react';
+import React, {Component} from 'react';
 import ReactTags from 'react-tag-autocomplete';
 import UploadDetails from './UploadDetails';
 import UploadAlbum from './UploadAlbum';
-import {CustomInput, Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input, FormText, Media} from 'reactstrap';
+import {Container, Row, Col, Button, ButtonGroup, Form, FormGroup,
+   Label, Input, Collapse, UncontrolledPopover, PopoverBody, PopoverHeader} from 'reactstrap';
 import Dropzone from 'react-dropzone';
 import {v4} from 'uuid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+import '../../css/search.css'
 
 const imageMaxSize = 5000000; // KB
+
+const CC_INFO = [
+  {name: 'CC BY', text: 'Atribución', desc: "Esta licencia permite a otras distribuir, remezclar, retocar, y crear a partir de su obra, incluso con fines comerciales, siempre y cuando den crédito por la creación original. Esta es la más flexible de las licencias ofrecidas. Se recomienda para la máxima difusión y utilización de los materiales licenciados. ", img: '/assets/CCBY.svg'},
+  {name: 'CC BY-SA', text: 'Atribución, Compartir Igual', desc: 'Esta licencia permite a otras remezclar, retocar, y crear a partir de su obra, incluso con fines comerciales, siempre y cuando den crédito y licencien sus nuevas creaciones bajo los mismos términos. Esta licencia suele ser comparada con las licencias «copyleft» de software libre y de código abierto. Todas las nuevas obras basadas en la suya portarán la misma licencia, así que cualesquiera obras derivadas permitirán también uso comercial. Esta es la licencia que usa Wikipedia, y se recomienda para materiales que se beneficiarían de incorporar contenido de Wikipedia y proyectos con licencias similares. ', img: '/assets/CCBYSA.svg'},
+  {name: 'CC BY-ND', text: 'Atribución, Sin Derivadas', desc: 'Esta licencia permite a otras sólo descargar sus obras y compartirlas con otras siempre y cuando den crédito, incluso con fines comerciales, pero no pueden cambiarlas de forma alguna.', img: '/assets/CCBYND.svg'},
+  {name: 'CC BY-NC', text: 'Atribución, No Comercial', desc: 'Esta licencia permite a otras distribuir, remezclar, retocar, y crear a partir de su obra de forma no comercial y, a pesar de que sus nuevas obras deben siempre mencionarle y ser no comerciales, no están obligadas a licenciar sus obras derivadas bajo los mismos términos.', img: '/assets/CCBYNC.svg'},
+  {name: 'CC BY-NC-SA', text: 'Atribución, No Comercial, Compartir Igual', desc: 'Esta licencia permite a otras remezclar, retocar, y crear a partir de su obra de forma no comercial, siempre y cuando den crédito y licencien sus nuevas creaciones bajo los mismos términos. ', img: '/assets/CCBYNCSA.svg'},
+  {name: 'CC BY-NC-ND', text: 'Atribución, No Comercial, Sin Derivadas', desc: 'Esta licencia es la más restrictiva, permitiendo a otras sólo descargar sus obras y compartirlas con otras siempre y cuando den crédito, pero no pueden cambiarlas de forma alguna ni usarlas de forma comercial.', img: '/assets/CCBYNCND.svg'},
+];
 
 class UploadPhoto extends Component{
   constructor(Props) {
@@ -14,15 +27,11 @@ class UploadPhoto extends Component{
     this.state = {
         date:"",
         tags: [],
-        suggestions: [
-          { id: 1, name: "Apples" },
-          { id: 2, name: "Pears" }
-        ],
         cc:[],
         onAlbum: false,
         albumName: "",
         albumDesc:"",
-        photosList: Array()
+        photosList: []
       }
     this.handleErase = this.handleErase.bind(this);
     this.isAlbum = this.isAlbum.bind(this);
@@ -128,58 +137,63 @@ class UploadPhoto extends Component{
   }
 
   render() {
-    if (this.state.onAlbum){
-      var albumBox = <UploadAlbum save={(info) => this.saveAlbum(info) }/>}
+    const {meta} = this.props
+    var suggestions = meta ? meta.map(el => {return {id: el.id, name: el.value}}) : []
+
     var details = this.state.photosList.map( (el, key) =>
-      <UploadDetails key={el.id} id={el.id} photo={el.photo} save={(info) => this.saveMeta(info, key)} delete={() => this.handleErase(key)} meta={el.meta} suggestions={this.state.suggestions}/>)
+      <UploadDetails key={el.id} id={el.id} 
+        photo={el.photo} save={(info) => this.saveMeta(info, key)} 
+        delete={() => this.handleErase(key)} meta={el.meta} 
+        suggestions={suggestions}/>)
 
     return (
-      <Container style={{marginTop:'20px'}}>
+      <Container style={{marginTop:'20px'}} fluid>
         <Row>
           <Col md='3'>
             <div style={styles.albumBox}>
               <Label style={{fontSize:'18px'}}>Crear Album</Label>
-              <Button style={styles.plusButton} color="primary" onClick={() => this.isAlbum()}>+</Button>
+              <Button style={styles.plusButton} color="primary" onClick={() => this.isAlbum()}>
+                <FontAwesomeIcon icon={faPlus}/> 
+              </Button>
             </div>
             <Form onSubmit={this.onSubmit} style={styles.generalInformation}>
               <FormGroup>
-                {albumBox}
+                <Collapse isOpen={this.state.onAlbum}>
+                  <UploadAlbum save={(info) => this.saveAlbum(info) }/>
+                </Collapse>
                 <div style={styles.hr}>
                   <Label>Informacion general</Label>
                 </div>
                 <Label style={{color: '#848687'}}>Fecha de las fotos:</Label>
                 <Input type="date" onChange={this.updateDate} required/>
                 <Label style={{color: '#848687',}}>Etiquetas:</Label>
-                <ReactTags placeholder={'Añadir etiquetas'} autoresize={false} allowNew={true} tags={this.state.tags} suggestions={this.state.suggestions} handleDelete={this.deleteTag.bind(this)} handleAddition={this.additionTag.bind(this)} />
+                <ReactTags 
+                  style={{width: "auto"}}
+                  autoresize={false} allowNew={true} 
+                  tags={this.state.tags} 
+                  suggestions={suggestions}
+                  handleDelete={this.deleteTag.bind(this)} 
+                  handleAddition={this.additionTag.bind(this)} />
               </FormGroup>
               <FormGroup>
                 <div style={styles.hr}>
-                  <Label style={{color: '#848687'}} for="CreativeCommons">Permisos de acceso e intercambio</Label>
+                  <Label >Permisos de acceso e intercambio</Label>
                 </div>
                 <div style={{marginTop:'10px'}}>
-                  <FormGroup style={{marginTop:'20px'}}>
-                  <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox1" onClick={() => this.updateCC('CC BY')}/>
-                  <img src="/assets/CCBY.svg" style={{marginBottom : -15, width:90}}/>
-                  </FormGroup>
-                  <FormGroup style={{marginTop:'20px'}}>
-                  <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox2" onClick={() => this.updateCC('CC BY-SA')} />
-                  <img src="/assets/CCBYSA.svg" style={{marginBottom : -15, width:90}}/>
-                  </FormGroup>
-                  <FormGroup style={{marginTop:'20px'}}>
-                  <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox3" onClick={() => this.updateCC('CC BY-ND')}/>
-                  <img src="/assets/CCBYND.svg" style={{marginBottom : -15, width:90}}/>
-                  </FormGroup>
-                  <FormGroup style={{marginTop:'20px'}}>
-                  <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox4" onClick={() => this.updateCC('CC BY-NC')} />
-                  <img src="/assets/CCBYNC.svg" style={{marginBottom : -15, width:90}}/>
-                  </FormGroup>
-                  <FormGroup style={{marginTop:'20px'}}>
-                  <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox5" onClick={() => this.updateCC('CC BY-NC-SA')} />
-                  <img src="/assets/CCBYNCSA.svg" style={{marginBottom : -15, width:90}}/>
-                  </FormGroup>
-                  <FormGroup style={{marginTop:'20px'}}>
-                  <CustomInput type="checkbox" className="checkbox-album" id="CreativeCommonsCheckbox6" onClick={() => this.updateCC('CC BY-NC-ND')} />
-                  <img src="/assets/CCBYNCND.svg" style={{marginBottom : -15, width:90}}/>
+                  <FormGroup tag="fieldset">
+                    {CC_INFO.map( (el,k) => 
+                    <FormGroup check key={k} style={{marginTop: "5px"}}>
+                      <Label check>
+                        <Input type="radio" name="CC" id={"CreativeCommonsCheckbox"+(k+1)} onClick={() => this.updateCC(el.name)}/>{' '}
+                          {el.name+' '}
+                          <FontAwesomeIcon icon={faQuestionCircle} id={"PopoverFocus"+(k+1)}/> 
+                          <UncontrolledPopover trigger="legacy" placement="top" target={"PopoverFocus"+(k+1)}>
+                            <PopoverHeader><img src={el.img} style={{width: "50%", float: "right"}} />{el.name}</PopoverHeader>
+                            <PopoverBody>{el.desc}</PopoverBody>
+                          </UncontrolledPopover>
+                        </Label>
+                      </FormGroup>
+                    )}
                   </FormGroup>
                 </div>
               </FormGroup>

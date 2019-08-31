@@ -8,34 +8,42 @@
     grid-gap: 10px;
 }
 
-.photo {
+div.photo {
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
-    background-color: red;
     background-size: cover;
     background-repeat: no-repeat;
 }
-.photo:hover{
-    background-color: chartreuse; /*no sirve en los nth-child*/
+
+div.info{
+    width:100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    flex-direction: column;
+    background-color:black;
+    opacity: 0.5;
+    visibility: hidden
 }
-.photo:nth-child(5n){
-    background-color: blue;
-    grid-column-end: span 1;
-    grid-row-end: span 2;
+
+div.photo:hover div.info{
+    visibility: visible
 }
-.photo:nth-child(3n){
-    background-color: yellow;
+
+div.photo:nth-child(2n){
     grid-column-end: span 2;
     grid-row-end: span 1;
 }
 
-.galleryMenu{
-    background-color: white;
-    border-bottom: 1px solid rgb(210,214,218);
-},
+div.photo:nth-child(5n){
+    grid-column-end: span 1;
+    grid-row-end: span 2;
+}
 
-&.NavItem{
-    color: red
+.galleryMenu{
+    border-bottom: 1px solid rgb(210,214,218);
 }

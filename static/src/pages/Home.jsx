@@ -7,7 +7,6 @@ import {Redirect} from 'react-router-dom'
 import gallery from '../css/galleryHome.css'
 import {Helmet} from 'react-helmet';
 
-const fotos = ['https://casadecampoconkal.com/images/casa-de-campo-hotel-image-2.JPG','https://casadecampoconkal.com/images/xcasa-de-campo-hotel-image-32.JPG.pagespeed.ic.ZN3mICQlrL.jpg','https://casadecampoconkal.com/images/casa-de-campo-foto-10.JPG', 'https://casadecampoconkal.com/images/casa-de-campo-hotel-image-40.JPG', ]
 class Home extends Component{
 
     constructor(props){
@@ -34,15 +33,16 @@ class Home extends Component{
           sortOpen: !this.state.sortOpen
         });
     }
+
     toggleCats() {
         this.setState({
           catsOpen: !this.state.catsOpen
         });
     }
+
     handleOnClick = (url) => {
         this.setState({redirect: true, link: url});
-      }
-    
+    }
 
     componentWillMount(){
         this.props.setRoute('/gallery/')
@@ -84,14 +84,6 @@ class Home extends Component{
             return {...el, selected: isSelected(el.id,this.state.selectedCategories)}
         }) : []
 
-        // TO DO: refactor this code
-        // var currentPhotos = photos? 
-        //     filters && filters.length !==0 || this.state.selectedTags.length !== 0 || this.state.selectedCategories.length !== 0 ?
-        //         photos.filter( el =>
-        //             arraysIntersect(el.category,this.state.selectedCategories) || arraysIntersect(el.metadata,this.state.selectedTags) || arraysIntersect(el.metadata,filters)
-        //         ).slice(0,this.state.maxPhotos)
-        //         : photos.slice(0,this.state.maxPhotos) 
-        //     : []
         if (filters && filters.length === 0 && this.state.selectedCategories.length === 0 ){
             var currentPhotos = photos.slice(0,this.state.maxPhotos) //todas las fotos
         }
@@ -128,19 +120,6 @@ class Home extends Component{
                             </div>
                     </Col>
                 </Row>
-                 {/* <div className='container'>
-                    <div className='photo'>1</div>
-                    <div className='photo'>2</div>
-                    <div className='photo'>3</div>
-                    <div className='photo'>4</div>
-                    <div className='photo'>5</div>
-                    <div className='photo'>6</div>
-                    <div className='photo'>7</div>
-                    <div className='photo'>8</div>
-                    <div className='photo'>9</div>
-                    <div className='photo'>10</div>
-                    <div className='photo'>11</div>
-                </div> */}
                 <Gallery photoList={currentPhotos} handleOnClick={this.handleOnClick}/>
             </Container>
         )
@@ -158,7 +137,12 @@ const Categories = ({categorias, onClick}) => (
 const Gallery = ({photoList, handleOnClick}) => (
     <div className="gallery">
         {photoList.length == 0 ? <h3>No hay fotografias disponibles</h3> : photoList.map((el, index) => (
-        <div className="photo" style={{backgroundImage:  'url(' + el.thumbnail + ')'}} onClick={()=>handleOnClick('/photo/'+el.id)}></div>
+        <div className="photo" style={{backgroundImage:  'url(' + el.thumbnail + ')'}} onClick={()=>handleOnClick('/photo/'+el.id)}>
+            <div className="info">
+                <h1 style={{fontSize: '1.5em'}}>{el.title}</h1>
+                <h2 style={{fontSize: '1.0em'}}>{el.usuario}</h2>    
+            </div>
+        </div>
         ))}
     </div>
 )

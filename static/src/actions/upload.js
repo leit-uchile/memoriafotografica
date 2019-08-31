@@ -50,7 +50,7 @@ export const uploadImages = (photos, auth) => { return (dispatch, getState) => {
     ]
     
     var formData = new FormData();
-    formData.append("title","titulo"); // No title yet
+    formData.append("title",current.meta.title); // No title yet
     formData.append("description", current.meta.description); // 
     formData.append("image", current.photo); //
     formData.append("permission", current.meta.cc[0] ? permissionBack[0] : permissionBack[0]) // Send first for now harcoded

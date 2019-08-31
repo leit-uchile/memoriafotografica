@@ -15,6 +15,7 @@ export default function home(state=initialState,action){
         case 'RECOVERED_TAGS':
             return {...state, all_tags: action.data};
         case 'EMPTY_TAGS':
+            console.log('EMPTY_TAGS',action.data);
             return {...state, all_tags: []};
         case 'RECOVERED_CATS':
             return {...state, all_cats: action.data};
