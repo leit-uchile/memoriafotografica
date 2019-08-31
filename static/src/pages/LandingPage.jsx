@@ -98,7 +98,7 @@ class LandingPage extends Component{
 
         return (
           <Container>
-            <Helmet>
+            <Helmet></Col>
               <meta property="og:title" content="Memoria fotográfica FCFM"/>
               <meta property="og:type" content="Pagina de inicio" />
               <meta property="og:url" content=" http://memoriafotografica.ing.fcfm.cl/" />
