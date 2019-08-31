@@ -15,6 +15,10 @@ class ReportSerializer(serializers.ModelSerializer):
         reporte = Reporte.objects.create(**validated_data)
         return reporte
 
+    def update(self, instance, validated_data):
+        instance.resolved = validated_data.get('resolved', instance.resolved)
+        instance.updated_at = datetime.now
+
 
 class CommentAdminSerializer(serializers.ModelSerializer):
     class Meta:
@@ -86,6 +90,7 @@ class PhotoSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.permission = validated_data.get('permission', instance.permission)
         instance.title = validated_data.get('title', instance.title)
+        instance.updated_at = datetime.now
         instance.save()
         return instance
 
