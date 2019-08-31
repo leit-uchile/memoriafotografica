@@ -21,7 +21,7 @@ class Layout extends Component{
             <div>
                 <div style={styles.backgroundStyle}>
                     <Header/>
-                    <Container fluid style={{minHeight:'80vh'}}>
+                    <div style={{minHeight:'80vh'}}>
                         <Switch>
                             <Route exact path={"/"} component={LandingPage}/>
                             <Route path={"/gallery"} component={Home}/>
@@ -33,7 +33,7 @@ class Layout extends Component{
                             <Route path={"/user/dashboard"} component={UserDashboard} />
                             <Route component={NoMatch}/>
                         </Switch>
-                    </Container>
+                    </div>
                 </div>
                 <div>
                     <Footer/>

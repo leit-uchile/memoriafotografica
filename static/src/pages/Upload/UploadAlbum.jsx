@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Container, Row, Col, Button, ButtonGroup, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import {Form, FormGroup, Input} from 'reactstrap';
 
 var autosave_name=null;
 var autosave_desc=null;
