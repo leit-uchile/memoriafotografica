@@ -5,7 +5,17 @@
     color: white;
     background-size: cover;
     background-repeat: no-repeat;
-}
+    background-position: center;}
+
+/* .photo:nth-child(2n){
+    grid-column-end: span 2;
+    grid-row-end: span 1;
+} */
+/*
+.photo:nth-child(5n){
+    grid-column-end: span 1;
+    grid-row-end: span 2;
+} */
 
 .photo .info{
     width:100%;
@@ -16,23 +26,14 @@
     vertical-align: middle;
     flex-direction: column;
     background-color:black;
+    color: white;
     opacity: 0.5;
     visibility: hidden
 }
 
 .photo:hover .info{
     visibility: visible
-}
-
-.photo:nth-child(2n){
-    grid-column-end: span 2;
-    grid-row-end: span 1;
-}
-
-.photo:nth-child(5n){
-    grid-column-end: span 1;
-    grid-row-end: span 2;
-}
+} 
 
 .menu-list{
     display: inline-block;

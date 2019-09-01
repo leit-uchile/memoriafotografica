@@ -69,7 +69,6 @@ const styles = {
     contenedor: {
         borderTop: '1px solid rgb(210,214,218)',
         width:'100%',
-        marginTop:'30px',
         backgroundColor: '#dee1e2',
         background: 'linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)', 
         background: '-moz-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)', 

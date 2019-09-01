@@ -19,9 +19,9 @@ class Layout extends Component{
     render(){
         return(
             <div>
-                <div style={styles.backgroundStyle}>
+                <div style={styles.background}>
                     <Header/>
-                    <div style={{minHeight:'80vh'}}>
+                    <div style={styles.body}>
                         <Switch>
                             <Route exact path={"/"} component={LandingPage}/>
                             <Route path={"/gallery"} component={Home}/>
@@ -43,11 +43,14 @@ class Layout extends Component{
    }
 }
 const styles= {
-    backgroundStyle: {
+    background: {
         backgroundColor: '#dee1e2',
         background: 'linear-gradient(to bottom, #dee1e2 0%,#ffffff 25%)',
         background: '-moz-linear-gradient(top, #dee1e2 0%, #ffffff 25%)',
         background: '-webkit-linear-gradient(top, #dee1e2 0%,#ffffff 25%)'
+    },
+    body:{
+        minHeight:'100vh'
     }
 }
 export default Layout;

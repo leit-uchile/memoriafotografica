@@ -97,8 +97,8 @@ class LandingPage extends Component{
         });
 
         return (
-          <Container>
-            <Helmet></Col>
+          <Container style={{marginBottom: '1em'}}>
+            <Helmet>
               <meta property="og:title" content="Memoria fotográfica FCFM"/>
               <meta property="og:type" content="Pagina de inicio" />
               <meta property="og:url" content=" http://memoriafotografica.ing.fcfm.cl/" />
@@ -153,10 +153,6 @@ class LandingPage extends Component{
 }
 
 const styles = {
-  carouselText: {
-       
-
-},
   section2: {
     backgroundColor: '#ebeeef',
     fontSize: '15px',    
