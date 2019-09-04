@@ -3,12 +3,15 @@ import ReactTags from 'react-tag-autocomplete';
 import UploadDetails from './UploadDetails';
 import UploadAlbum from './UploadAlbum';
 import {Container, Row, Col, Button, ButtonGroup, Form, FormGroup,
-   Label, Input, Collapse, UncontrolledPopover, PopoverBody, PopoverHeader} from 'reactstrap';
+   Label, Input, Collapse, UncontrolledPopover, PopoverBody, PopoverHeader,
+  Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
 import Dropzone from 'react-dropzone';
 import {v4} from 'uuid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import '../../css/search.css'
+import { connect } from 'react-redux';
+import { upload } from '../../actions';
 
 const imageMaxSize = 5000000; // KB
 
@@ -20,6 +23,16 @@ const CC_INFO = [
   {name: 'CC BY-NC-SA', text: 'Atribución, No Comercial, Compartir Igual', desc: 'Esta licencia permite a otras remezclar, retocar, y crear a partir de su obra de forma no comercial, siempre y cuando den crédito y licencien sus nuevas creaciones bajo los mismos términos. ', img: '/assets/CCBYNCSA.svg'},
   {name: 'CC BY-NC-ND', text: 'Atribución, No Comercial, Sin Derivadas', desc: 'Esta licencia es la más restrictiva, permitiendo a otras sólo descargar sus obras y compartirlas con otras siempre y cuando den crédito, pero no pueden cambiarlas de forma alguna ni usarlas de forma comercial.', img: '/assets/CCBYNCND.svg'},
 ];
+
+const DisclosureModal  = ({onClick, isnotSet}) => 
+  <Modal isOpen={isnotSet}>
+    <ModalHeader>Terminos de uso y licencias</ModalHeader>
+    <ModalBody>La plataforma de <b>Memoria Fotogr&aacute;fica</b> 
+      permite a sus usuarios escoger como se usar&aacute;n y compartir&aacute;n 
+      sus fotograf&iacute;as. Los usuarios pueden elegir entre las licencias de <a href="https://creativecommons.org/licenses/?lang=es">Creative Commons</a></ModalBody>
+    <ModalFooter><Button onClick={onClick}>Acepto las condiciones de subida</Button></ModalFooter>
+  </Modal>
+
 
 class UploadPhoto extends Component{
   constructor(Props) {
@@ -126,12 +139,6 @@ class UploadPhoto extends Component{
     }else if (this.state.photosList.some(el => el.meta.description==="")){
       alert("Debe rellenar la descripcion de todas las fotos")
     }else{
-      /* var globalCC = this.state.cc.map(cc => cc)
-      var fotos = this.state.photosList.filter(el => el.meta.cc.lenght!==0)
-      var fotosFill= this.state.photosList.filter(el => el.meta.cc.lenght===0)
-      fotosFill.forEach(el => console.log(el.meta))
-      const combined = [...fotos,...fotosFill]
-      this.setState({photosList: combined }) */
       this.props.saveAll(this.state)
     }
   }
@@ -148,6 +155,10 @@ class UploadPhoto extends Component{
 
     return (
       <Container style={{marginTop:'20px'}} fluid>
+        <DisclosureModal 
+          onClick={this.props.readDisclosure}
+          isnotSet={!this.props.disclosed}
+          />
         <Row>
           <Col md='3'>
             <div style={styles.albumBox}>
@@ -265,4 +276,19 @@ const styles={
   }
 }
 
-export default UploadPhoto
+const mapStateToProps = state => {
+  return {
+    disclosed: state.upload.disclosureSet
+  }
+}
+
+const mapActionsToProps = dispatch => {
+  return {
+    readDisclosure: () => (dispatch(upload.readDisclosure())) 
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapActionsToProps,
+)(UploadPhoto)

@@ -53,7 +53,7 @@ class UploadUnregister extends Component{
         return(
             <Container style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
                 <div>
-                    <h1>Cuentanos un poco sobre ti</h1>
+                    <h2>Cuentanos un poco sobre ti</h2>
                 </div>
 
                 <form onSubmit={this.onSubmit}>

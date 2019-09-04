@@ -78,7 +78,7 @@ class UploadPage extends Component{
         switch (current){  
             case 0: 
                 subupload = <Container style={{backgroundColor: 'rgb(245,245,245)', borderRadius: '1em', marginTop: '2em', padding: '2em'}}>
-                    <h1 style={{textAlign: 'center', fontWeight: 'bold'}}>¡Ayudanos aportando material!</h1>
+                    <h2 style={{textAlign: 'center', fontWeight: 'bold'}}>¡Ayudanos aportando material!</h2>
                     <div style={{textAlign: 'center'}}>
                         <Button color='primary' tag={Link} to='/login'>Iniciar sesion</Button>
                         <Button color='link' onClick={this.withoutRegister}>Continuar sin registrar</Button>
@@ -96,7 +96,7 @@ class UploadPage extends Component{
                 subupload = this.state.uploading ? 
                 <Container style={{backgroundColor: 'rgb(245,245,245)', borderRadius: '1em', marginTop: '2em', padding: '2em'}}>
                     <Row>
-                        <h1 style={{textAlign: 'center', fontWeight: 'bold'}}>Enviando aporte...</h1>
+                        <h2 style={{textAlign: 'center', fontWeight: 'bold'}}>Enviando aporte...</h2>
                     </Row>
                     <Row>
                         <ReactLoading type="spin" color="red" height={'100px'} width={'100px'} className="centering"/>
@@ -105,7 +105,7 @@ class UploadPage extends Component{
                     :
                 <Container style={{backgroundColor: 'rgb(245,245,245)', borderRadius: '1em', marginTop: '2em', padding: '2em'}}>
                     <Row>
-                        <h1 style={{textAlign: 'center', fontWeight: 'bold'}}>¡Aporte enviado!</h1>
+                        <h2 style={{textAlign: 'center', fontWeight: 'bold'}}>¡Aporte enviado!</h2>
                         <span style={{textAlign: 'center', display: 'block', margin: 'auto 1em auto 1em'}}>La foto tendra que ser aprobada para que la comunidad la vea. Puedes ver el estado en que se encuentra accediendo a tu perfil. Muchas gracias!</span>
                     </Row>
                 </Container>

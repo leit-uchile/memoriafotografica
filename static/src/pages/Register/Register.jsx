@@ -62,7 +62,7 @@ class Register extends Component{
         }
 
         const divStyle = {backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"};
-        const h1Style = {textAlign: "center", fontWeight: "bold"}
+        const h2Style = {textAlign: "center", fontWeight: "bold"}
 
         var subRegister;
         switch (this.state.currentPage){
@@ -86,16 +86,16 @@ class Register extends Component{
                     </div>
                 }else{
                     subRegister = <div className="container" style={divStyle} >
-                        <h1 style={h1Style}>
+                        <h2 style={h2Style}>
                             Completando registro
-                        </h1>
+                        </h2>
                         <ReactLoading type="spin" color="red" height={'100px'} width={'100px'} className="centering"/>
                     </div>
                 }
                 break;
             case 2: 
                 subRegister = <div className="container" style={divStyle}>
-                    <h1 style={h1Style}>¡Registro con éxito!</h1>
+                    <h2 style={h2Style}>¡Registro con éxito!</h2>
                     <span style={{textAlign: "center", display: "block", margin: "auto 1em auto 1em"}}>Por favor confirma tu correo electronico</span>
                 </div> ;
                 break;

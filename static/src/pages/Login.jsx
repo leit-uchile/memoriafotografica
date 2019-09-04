@@ -52,7 +52,7 @@ class Login extends Component{
             <div className='modal-dialog text-center'>
                     <div className='col-sm-9 main-section'>
                         <div className='modal-content'>
-                                <h1>Inicia sesión</h1>
+                                <h2>Inicia sesión</h2>
                                 <form onSubmit={this.onSubmit}>
                                     <fieldset>
                                         {this.props.errors.length > 0 &&

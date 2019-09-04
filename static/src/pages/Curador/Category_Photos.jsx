@@ -19,7 +19,7 @@ class Category_Photos extends Component{
       render(){
         return(
             <div>
-                <h1>Titulo Categoria</h1>
+                <h2>Titulo Categoria</h2>
                 <h3>Fotos</h3>
                 <Photo name={biblio[0].name} url={biblio[0].url} tags={biblio[0].tags}/>
                 <Photo name={biblio[1].name} url={biblio[1].url} tags={biblio[1].tags}/>

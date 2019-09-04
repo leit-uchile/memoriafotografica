@@ -174,7 +174,7 @@ const Gallery = ({photoList, handleOnClick}) => (
         {photoList.length == 0 ? <h3>No hay fotografias disponibles</h3> : photoList.map((el, index) => (
          <div className="photo" style={{backgroundImage:  'url(' + el.thumbnail + ')'}} onClick={()=>handleOnClick('/photo/'+el.id)}>
          <div className="info">
-             <h1 style={{fontSize: '1.5em'}}>{el.title}</h1>
+             <h2 style={{fontSize: '1.5em'}}>{el.title}</h2>
              <h2 style={{fontSize: '1.0em'}}>{el.usuario}</h2>    
          </div>
      </div>

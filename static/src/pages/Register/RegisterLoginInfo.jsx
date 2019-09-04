@@ -115,7 +115,7 @@ class RegisterLoginInfo extends Component{
 
         return (
             <Container style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
-                <h1>Registro</h1>
+                <h2>Registro</h2>
                 <Form onSubmit={this.onSubmit}>
                     {errorMessage}
                     {avatarPreview}
