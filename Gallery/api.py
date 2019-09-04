@@ -353,6 +353,15 @@ class CategoryListAPI(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         category = Category.objects.all()
         serializer = CategorySerializer(category, many=True)
+        photos = Photo.objects.all()
+        serialized_data = serializer.data
+        for c in serialized_data:
+            c['count'] = 0
+        for photo in photos:
+            for photocat in photo.category.all():
+                for c in serialized_data:
+                    if(c['id']==photocat.id):
+                        c['count'] += 1
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
