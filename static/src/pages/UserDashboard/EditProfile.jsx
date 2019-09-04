@@ -37,7 +37,7 @@ class EditProfile extends Component{
                                         <DropdownItem divider />
                                         <DropdownItem> Subir foto  </DropdownItem>
                                         <DropdownItem divider />
-                                        <DropdownItem>Elegir foto existente </DropdownItem>
+                                        <DropdownItem>Elegir foto de mi galería </DropdownItem>
                                     </DropdownMenu>
                                 </ButtonDropdown>
                             </CardBody>
