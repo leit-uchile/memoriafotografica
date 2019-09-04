@@ -188,7 +188,7 @@ class PhotoDetails extends Component{
                 <div ref={this.imageContainer} style={{width: "100%"}}>
                     <Helmet>
                         <meta property="og:title" content={photoInfo.details.title} />
-                        <meta property="og:type" content="Vista fotogragia" />
+                        <meta property="og:type" content="website" />
                         <meta property="og:url" content=" http://memoriafotografica.ing.fcfm.cl/" />
                         <meta property="og:image" content=" http://example.com/image.jpg" />
                         <meta property="og:description" content="Descripcion" />

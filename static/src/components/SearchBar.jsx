@@ -1,21 +1,22 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
-import {Container, Button} from 'reactstrap';
+import {Container, Button, FormGroup} from 'reactstrap';
 import {Redirect} from 'react-router-dom';
 import {search, home, misc} from '../actions';
-import ReactTags from 'react-tag-autocomplete'
-import styles from '../css/search.css'
+import Autocomplete from 'react-autocomplete';
 
 class SearchBar extends Component{
     constructor(props){
         super(props)
         this.state = {
             tags: [],
-            swapPage: false
+            swapPage: false,
+            value: ""
         }
         this.onAddition = this.onAddition.bind(this)
         this.onDelete = this.onDelete.bind(this)
         this.swapPage = this.swapPage.bind(this)
+        this.setVisitor = this.setVisitor.bind(this)
     }
 
     onDelete(i) {
@@ -39,12 +40,17 @@ class SearchBar extends Component{
 
     componentWillMount(){
         console.log(this.props)
-        if(this.props.tags === undefined){
+        if(this.props.tags === undefined || this.props.tags.length === 0){
+            console.log("Get tags")
             this.props.onLoadGetTags()
         }
         if(this.props.iptc === undefined){
             this.props.onLoadGetIPTC()
         }
+    }
+
+    setVisitor(e){
+        this.setState({value: e.name})
     }
 
     render(){
@@ -61,16 +67,34 @@ class SearchBar extends Component{
 
         return (
             <Container>
-                <ReactTags
-                tags={this.state.tags}
-                suggestions={suggestions}
-                handleDelete={this.onDelete}
-                handleAddition={this.onAddition}
-                allowNew={false}
-                placeholder={'Buscar por metadata'}
-                />
-                <Button size="lg" style={{borderRadius: "0 5px 5px 0", border: "#FF5A60",
-                backgroundColor: "#FF5A60"}} onClick={this.swapPage}>Buscar</Button>
+                <FormGroup>
+                    <Autocomplete
+                    items={suggestions}
+                    getItemValue={(item) => item.name}
+                    renderItem={(item, isHighlighted) =>
+                    <div style={{ background: isHighlighted ? 'lightgray' : 'white' }}>
+                        {item.name}
+                    </div>
+                    }
+                    shouldItemRender={(item, value) => item.name.toLowerCase().indexOf(value.toLowerCase()) > -1}
+                    renderInput={(props) => 
+                    <input className={"form-control"} name="name" placeholder="Buscar por metadata" {...props} />}
+                    wrapperStyle={{width: "80%", display: "inline-block"}}
+                    value={this.state.value}
+                    onChange={(e) => this.setVisitor({name: e.target.value})}
+                    onSelect={(val, item) => {
+                    this.setVisitor({name: val, id: item._id})}
+                    }
+                    />
+                    <Button type="button" style={{
+                        border: "#FF5A60",
+                        backgroundColor: "#FF5A60", 
+                        width: "20%", 
+                        display: "inline-block",
+                        marginBottom: "5px"
+                    }} 
+                    onClick={this.swapPage} block>Buscar</Button>
+                </FormGroup>
             </Container>
         )
     }

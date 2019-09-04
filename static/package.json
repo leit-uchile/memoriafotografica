@@ -9,6 +9,7 @@
     "bootstrap": "4.1.2",
     "history": "^4.7.2",
     "react": "16.8",
+    "react-autocomplete": "^1.8.1",
     "react-dom": "16.8",
     "react-dropzone": "^10.1.5",
     "react-helmet": "^5.2.1",
@@ -32,5 +33,17 @@
   },
   "autor": "LEIT",
   "license": "",
-  "proxy": "http://localhost:8000"
+  "proxy": "http://localhost:8000",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }

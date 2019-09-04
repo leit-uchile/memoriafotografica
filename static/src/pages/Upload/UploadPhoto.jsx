@@ -88,7 +88,7 @@ class UploadPhoto extends Component{
   handleUpload(file){
     var f = file.map((el)=>{
       const uuidv4 = require('uuid/v4')
-      return {id: uuidv4(), photo: el, meta: {description: '', tags: [], cc: [], previewCalled: false, collapse: false}}
+      return {id: uuidv4(), photo: el, meta: {description: '', tags: [], cc: null, previewCalled: false, collapse: false}}
     })
     this.setState({photosList: [...this.state.photosList , ...f]}) ;
   }
