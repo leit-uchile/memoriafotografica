@@ -362,7 +362,7 @@ class CategoryListAPI(generics.GenericAPIView):
                 for c in serialized_data:
                     if(c['id']==photocat.id):
                         c['count'] += 1
-        return Response(serializer.data)
+        return Response(serialized_data)
 
     def post(self, request, *args, **kwargs):
         usuario = request.user.user_type

@@ -4,38 +4,13 @@ import {Link, Route} from 'react-router-dom';
 import {Col, Row, Container, Button, ButtonGroup, Input,
     Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import { Table } from 'reactstrap';
-
+import {connect} from 'react-redux';
+import {auth, home} from '../../actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 
 import Photo from '../../components/Photo';
 
-var cates = [
-    {
-        name: "DCC",
-        url: "https://pbs.twimg.com/profile_images/3410185634/3b7db5e3effe3286920338b1c8b2cfab_400x400.jpeg",
-        tags: ["tag1","tag2"],
-        count: 3
-    },
-    {
-        name: "DFI",
-        url: "https://pbs.twimg.com/profile_images/634838310989529088/-iiRAsLm_400x400.png",
-        tags: ["tag2","tag3"],
-        count: 18
-    },
-    {
-        name: "Facultad de Derecho",
-        url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR17c1V96m-TXcg75FL3Cez4NjACHlJmU74Oeb2Hs0xIiHO9Mlf",
-        tags: ["tag2","tag3"],
-        count: 2
-    },
-    {
-        name: "DIM",
-        url: "http://www.dim.uchile.cl/u/ImageServlet?idDocumento=110986&indice=3&nocch=20181018153621.0",
-        tags: ["tag2","tag3"],
-        count: 9
-    }
-];
 
 class Categories extends Component{
 
@@ -54,11 +29,10 @@ class Categories extends Component{
     componentWillMount(){
         this.getLatestCategories()
     }
+
     getLatestCategories(){
         // Call API
-        this.setState({
-            categories: [...cates]
-        })
+        this.props.getCategories().then();
     }
 
     updateToDelete(i,isCheck){
@@ -74,7 +48,7 @@ class Categories extends Component{
 
     removeCategories(){
         // Fake call to API : stub function
-        const arr = this.state.categories.filter( (el,i) => {
+        const arr = this.props.cats.filter( (el,i) => {
             for(var j=0; j<this.state.toDelete.length; j++){
                 if(this.state.toDelete[j] === i){return false}
             } return true
@@ -92,15 +66,17 @@ class Categories extends Component{
         const {match} = this.props
         var latest = []
         // Put 3 per row
-        for (let i = 0; i < this.state.categories.length; i++){
+        for (let i = 0; i < this.props.cats.length; i++){
             latest.push(<tr>
                           <th>
                             <input type="checkbox" aria-label="Checkbox for delete Categories"
                             onClick={e => this.updateToDelete(i,e.target.checked)}
-                            checked={false}></input>
+                            checked={this.state.toDelete.includes(i)}></input>
                           </th>
-                          <th>{this.state.categories[i].name}</th>
-                          <td>{this.state.categories[i].count}</td>
+                          <th>{this.props.cats[i].title}</th>
+                          <td>{new Date(this.props.cats[i].created_at).toLocaleString()}</td>
+                          <td>{new Date(this.props.cats[i].updated_at).toLocaleString()}</td>
+                          <td>{this.props.cats[i].count}</td>
                           <td>
                             <Button><FontAwesomeIcon icon={faEdit} /></Button>
                           </td>
@@ -116,7 +92,7 @@ class Categories extends Component{
                   <Col xs="12">
                     <ButtonGroup>
                         <Button tag={Link} to={match.url + "/new-category"}>Crear categorias</Button>
-                        <Button onClick={this.toggleRemoveConfirmation}>Eliminar</Button>
+                        <Button onClick={this.toggleRemoveConfirmation} color={this.state.toDelete.length ? "danger" : "secondary"} disabled={!this.state.toDelete.length}>Eliminar ({this.state.toDelete.length}) Categorías</Button>
                         <Modal isOpen={this.state.deleteModal} toggle={this.toggleRemoveConfirmation}>
                             <ModalHeader>¿Est&aacute;s seguro(a) que quieres eliminar la(s) categoría(s)?</ModalHeader>
                             <ModalBody>
@@ -135,6 +111,8 @@ class Categories extends Component{
                   <thead>
                     <th></th>
                     <th>Nombre</th>
+                    <th>Fecha Creación</th>
+                    <th>Fecha Actualización</th>
                     <th># Fotos</th>
                     <th>Editar</th>
                   </thead>
@@ -147,8 +125,30 @@ class Categories extends Component{
     }
 
 }
-Categories.props = {
-    categories: cates
+
+
+const mapStateToProps = state => {
+  let errors = [];
+  if (state.auth.errors) {
+    errors = Object.keys(state.auth.errors).map(field => {
+        return {field, message: state.auth.errors[field]};
+    });
+  }
+  return {
+    errors,
+    isAuthenticated: state.auth.isAuthenticated,
+    token: state.auth.token,
+    uploading: state.upload.uploading,
+    meta: state.home.all_tags,
+    cats: state.home.all_cats,
+  }
+}
+const mapActionsToProps = dispatch => {
+  return {
+    getCategories: (route) => {
+      return dispatch(home.categories(route));
+    }
+  }
 }
 
-export default Categories
+export default connect(mapStateToProps, mapActionsToProps)(Categories)
