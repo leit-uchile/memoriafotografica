@@ -22,7 +22,7 @@ class SearchBar extends Component{
             this.setState({swapPage: true})
         }
         if(this.state.id !== undefined && this.state.id !== ""){
-            this.props.putSearch(this.state.id)
+            this.props.putSearch(this.state.id, this.state.value)
         }
     }
 
@@ -104,8 +104,8 @@ const mapActionsToProps = dispatch => {
         setRoute: (route) => {
             return dispatch(misc.setCurrentRoute(route));
         },
-        putSearch: (id) => {
-            return dispatch(search.putSearchItem(id));
+        putSearch: (id,value) => {
+            return dispatch(search.putSearchItem(id,value));
         }
     }
 }

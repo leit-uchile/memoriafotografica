@@ -1,18 +1,8 @@
-.photo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;}
-
 /* .photo:nth-child(2n){
     grid-column-end: span 2;
     grid-row-end: span 1;
-} */
-/*
-.photo:nth-child(5n){
+}
+.photo:nth-child(3n){
     grid-column-end: span 1;
     grid-row-end: span 2;
 } */
@@ -43,7 +33,7 @@
 }
 
 .menu-list a{
-    color: red;
+    color: #ff5a60;
     text-decoration: none; /*link no tiene subraya*/
     display: block;
 }
@@ -67,7 +57,7 @@ li.menu-list:hover .menu-sub{
     height: auto; /*mio*/
 }
 .menu-sub#sort{
-    width: 20m; /*mio*/
+    width: 15em; /*mio*/
     height: auto; /*mio*/
 }
 .menu-sub:after{ /*triangulo*/

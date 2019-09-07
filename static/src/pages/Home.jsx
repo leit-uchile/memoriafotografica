@@ -23,24 +23,10 @@ class Home extends Component{
             redirect: false,
             link: ''
         }
-        this.toggleSort = this.toggleSort.bind(this)
-        this.toggleCats = this.toggleCats.bind(this)
         this.handleOnClick = this.handleOnClick.bind(this)
         this.toggleCategory = this.toggleCategory.bind(this)
         this.allowMoreCats = this.allowMoreCats.bind(this)
         this.allowMorePics = this.allowMorePics.bind(this)
-    }
-
-    toggleSort() {
-        this.setState({
-          sortOpen: !this.state.sortOpen
-        });
-    }
-
-    toggleCats() {
-        this.setState({
-          catsOpen: !this.state.catsOpen
-        });
     }
 
     handleOnClick = (url) => {
@@ -72,12 +58,14 @@ class Home extends Component{
 
     render(){
         const {photos, cats, filters} = this.props
+        var filtersId = filters.map(el => el.metaID)
+        var filtersText = filters.length !=0 ? filters.map(el => <span key={el.id} style={styles.tags}>#{el.value}</span>) 
+            : <h3>Mostrando todas</h3>
 
         // Utility Function
         var isSelected = (id, array) => {
             return array ? array.filter( el => el === id).length !== 0 : false 
         }
-
         // arr1 is sorted
         var arraysIntersect = (arr1,arr2) => {
             return arr1.filter(el => arr2.indexOf(el) > -1).length !== 0
@@ -97,16 +85,16 @@ class Home extends Component{
         }
         else if (filters && filters.length !==0 && this.state.selectedCategories.length !== 0 ){ //hay tag y categoria -> intersectar
             currentPhotos = photos.filter( el =>
-                             arraysIntersect(el.category,this.state.selectedCategories) && arraysIntersect(el.metadata,filters)
+                             arraysIntersect(el.category,this.state.selectedCategories) && arraysIntersect(el.metadata,filtersId)
                          ).slice(0,this.state.maxPhotos)
-                         console.log("Intersectar")
 
         }else{ //cuando falta uno de los dos -> union
             currentPhotos = photos.filter( el =>
-                arraysIntersect(el.category,this.state.selectedCategories) || arraysIntersect(el.metadata,filters)
+                arraysIntersect(el.category,this.state.selectedCategories) || arraysIntersect(el.metadata,filtersId)
             ).slice(0,this.state.maxPhotos)
         }
-        var numberSelectedCats = this.state.selectedCategories.length>0 ? <span style={styles.numberSelectedCats}>{this.state.selectedCategories.length}</span> : null
+
+        var selectedCatsNumber = this.state.selectedCategories.length>0 ? <span style={styles.selectedCatsNumber}>{this.state.selectedCategories.length}</span> : null
         if (this.state.redirect) {
             return <Redirect push to={this.state.link} />;
           }
@@ -120,39 +108,43 @@ class Home extends Component{
                     <meta property="og:description" content="Descripcion" />
                     <title>Buscar fotografias</title>
                 </Helmet>
-                    <div style={styles.galleryMenu}>
+                    <Row style={styles.galleryMenu}>
+                        <Col>
+                            {filtersText}
+                        </Col>
+                        <Col>
+                            <ul style={styles.menuMain}>
 
-                        <ul style={styles.menuMain}>
+                                <li className='menu-list'><a href='#'>Categorias {selectedCatsNumber}</a>
+                                    <div id='cat' className='menu-sub'>
+                                        <div style={styles.menu2Col}>
+                                            <Categories categorias={currentCats1} onClick={this.toggleCategory}/>
+                                        </div>
+                                        <div style={styles.menu2Col}>
+                                            <Categories categorias={currentCats2} onClick={this.toggleCategory}/>
+                                        </div>
+                                    </div>
+                                </li>
 
-                            <li className='menu-list'><a href='#'>Categorias {numberSelectedCats}</a>
-                                <div id='cat' className='menu-sub'>
-                                    <div style={styles.menu2Col}>
-                                        <Categories categorias={currentCats1} onClick={this.toggleCategory}/>
+                                <li className='menu-list'><a href='#'>Ordenar</a>
+                                    <div id='sort' className='menu-sub'>
+                                        <div style={styles.menu1Col}>
+                                            <h3 style={styles.menuSubTitle}>Por orden cronológico</h3>
+                                            <ul>
+                                                <li><a href='#'>Más antiguas primero</a></li>
+                                                <li><a href='#'>Más nuevas primero</a></li>
+                                            </ul>
+                                            <h3 style={styles.menuSubTitle}>Por fecha de subida</h3>
+                                            <ul>
+                                                <li><a href='#'>Más antiguas primero</a></li>
+                                                <li><a href='#'>Más nuevas primero</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <div style={styles.menu2Col}>
-                                        <Categories categorias={currentCats2} onClick={this.toggleCategory}/>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <li className='menu-list'><a href='#'>Ordenar</a>
-                                <div id='sort' className='menu-sub'>
-                                    <div style={styles.menu1Col}>
-                                        <h3 style={styles.menuSubTitle}>Por orden cronológico</h3>
-                                        <ul>
-                                            <li><a href='#'>Más antiguas primero</a></li>
-                                            <li><a href='#'>Más nuevas primero</a></li>
-                                        </ul>
-                                        <h3 style={styles.menuSubTitle}>Por fecha de subida</h3>
-                                        <ul>
-                                            <li><a href='#'>Más antiguas primero</a></li>
-                                            <li><a href='#'>Más nuevas primero</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+                                </li>
+                            </ul>
+                        </Col>
+                    </Row>
                 <Container fluid style={styles.galleryContainer}>
                     <Gallery photoList={currentPhotos} handleOnClick={this.handleOnClick}/>
                 </Container>
@@ -164,23 +156,16 @@ class Home extends Component{
 const Categories = ({categorias, onClick}) => (
     <ul>
         {categorias.length == 0 ? '-' : categorias.map((el, index) => (
-            <li><a href='#' style={el.selected ? styles.Selected: styles.unSelected} key={el.id} onClick={() => onClick(el.id)}>{el.title}{el.selected ? <FontAwesomeIcon icon={faCheck}/>: ''}</a></li>
+            <li><a style={el.selected ? styles.Selected: styles.unSelected} href='#' key={el.id} onClick={() => onClick(el.id)}>{el.title}{el.selected ? <FontAwesomeIcon icon={faCheck}/>: ''}</a></li>
         ))}
     </ul>
 )
 
 const Gallery = ({photoList, handleOnClick}) => (
-    <div style={styles.galleryGrid}>
-        {photoList.length == 0 ? <h3>No hay fotografias disponibles</h3> : photoList.map((el, index) => (
-         <div className="photo" style={{backgroundImage:  'url(' + el.thumbnail + ')'}} onClick={()=>handleOnClick('/photo/'+el.id)}>
-         <div className="info">
-             <h2 style={{fontSize: '1.5em'}}>{el.title}</h2>
-             <h2 style={{fontSize: '1.0em'}}>{el.usuario}</h2>    
-         </div>
-     </div>
-        ))}
-    </div>
-)
+    photoList.length == 0 ? <h3>No hay fotografias disponibles</h3> : photoList.map((el, index) => (
+        <Photo url={el.image} name={el.title} useLink redirectUrl={"/photo/"+el.id} 
+        hover hoverText={el.title} hoverStyle={{fontSize: '1.5em'}} style={styles.photo}/>)))
+    
 
 const styles = {
     galleryMenu:{
@@ -195,6 +180,13 @@ const styles = {
         listStyle: 'none',
         textAlign: 'right',
     },
+    tags:{
+        color:'white', 
+        borderRadius:'10px', 
+        backgroundColor:'#9a9e9d', 
+        margin:'2px', 
+        padding:'4px 12px 4px 12px',
+    },
     unSelected: {
         padding: '0',
         color: '#97878f',
@@ -206,15 +198,15 @@ const styles = {
         padding: '0',
         color: '#97878f',
         textDecoration: 'none',
-        display: 'inline',
+        display: 'block',
         marginBottom: '.35em',
         fontWeight: 'bold'
     },
-    numberSelectedCats:{
+    selectedCatsNumber:{
         backgroundColor: '#f2f2f2',
-        color:'red',
+        color:'#ff5a60',
         padding:'0.5em',
-        borderRadius: '0.5em'
+        borderRadius: '0.5em',
     },
     menuSubTitle:{
         display: 'flex',
@@ -235,17 +227,19 @@ const styles = {
         width:'100%',
         minHeight: '100vh', 
         padding:'1.25em 3.1em',
-        backgroundColor:'#f7f8fa'
-    },
-    galleryGrid:{
+        backgroundColor:'#f7f8fa',
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(150px,1fr))', /*repeat(veces, tamaño)*/
-        gridTemplateRows: 'repeat(auto-fit, minmax(150px,1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(150px,300px))', /*repeat(veces, tamaño)*/
+        gridTemplateRows: 'repeat(auto-fit, 300px)',
         gridAutoColumns: 'minmax(150px,1fr)',
         gridAutoRows: 'minmax(150px,1fr)',
         gridAutoFlow: 'row dense',
         gridGap: '0.75em'
-    }    
+    }  ,
+    photo:{
+        height:'200px',
+        width:'auto'
+    }
 }
 const mapStateToProps = state => {
     return {
