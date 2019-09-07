@@ -77,7 +77,7 @@ class CreatePhotoSerializer(serializers.ModelSerializer):
         class Meta:
             model = Photo
             fields = ('id', 'image', 'description',
-                'uploadDate', 'title', 'permission',
+                'upload_date', 'title', 'permission',
                 'thumbnail', 'aspect_h', 'aspect_w')
 
         def create(self, validated_data):
