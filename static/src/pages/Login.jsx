@@ -4,6 +4,8 @@ import {auth, misc} from '../actions';
 import {connect} from 'react-redux';
 import {Alert} from 'reactstrap';
 import '../css/login.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser, faUnlock } from '@fortawesome/free-solid-svg-icons'
 
 class Login extends Component{
 
@@ -66,7 +68,7 @@ class Login extends Component{
                                                     <div className='input-group'>
                                                         <div className='input-group-prepend'>
                                                             <span className='input-group-text'>
-                                                                <i className="fas fa-user"></i>
+                                                                <FontAwesomeIcon icon={faUser} />
                                                             </span>
                                                         </div>
                                                             <input id="email" type="text" className='form-control' onChange={this.genericChangeHandler} placeholder='Correo Electronico'/>
@@ -76,7 +78,7 @@ class Login extends Component{
                                                     <div className='input-group'>
                                                         <div className='input-group-prepend'>
                                                             <span className='input-group-text'>
-                                                                <i className="fas fa-unlock"></i>
+                                                                <FontAwesomeIcon icon={faUnlock} />
                                                             </span>
                                                         </div>
                                                             <input id="password" type="password" className='form-control' onChange={this.genericChangeHandler} placeholder='Contraseña'/>

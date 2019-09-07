@@ -3,9 +3,12 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Button,
-  NavLink
+  NavLink,
+  Container,
+  Row,
+  Col,
+  ModalFooter
 } from "reactstrap";
 import { connect } from "react-redux";
 import { auth } from "../actions";
@@ -29,24 +32,44 @@ const UserModal = ({ logout, auth }) => {
       {`${first_name ? first_name : "Nombre"} ${
         last_name ? last_name : "Apellido"
       }`}
-      {redirect ? <Redirect to="/user/dashboard" /> : null}
+      {redirect ? <Redirect to={redirect} /> : null}
       <Modal isOpen={toggle} toggle={doToggle}>
         <ModalHeader toggle={doToggle}>
           {`${first_name ? first_name : "Nombre"} ${
             last_name ? last_name : "Apellido"
           }`}
         </ModalHeader>
-        <ModalBody></ModalBody>
+        <ModalBody>
+          <Container fluid>
+            <Row>
+              <Col>
+              <h4>Mis fotos</h4>
+              <Button
+                color="primary"
+                onClick={() => {
+                  doToggle();
+                  setRedirect("/user/dashboard/");
+                  setTimeout(() => setRedirect(false), 1000);
+                }}>
+                Ir a Perfil
+              </Button>
+              </Col>
+              <Col>
+                <h4>Interfaz de curador</h4>
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    doToggle();
+                    setRedirect("/curador/dashboard/");
+                    setTimeout(() => setRedirect(false), 1000);
+                  }}>
+                  Dashboard
+                </Button>
+              </Col>
+            </Row>
+          </Container>
+        </ModalBody>
         <ModalFooter>
-          <Button
-            color="primary"
-            onClick={() => {
-              doToggle();
-              setRedirect(true);
-              setTimeout(() => setRedirect(false), 1000);
-            }}>
-            Ir a Perfil
-          </Button>
           <Button color="warning" onClick={doLogout}>
             Cerrar sesi&oacute;n
           </Button>
