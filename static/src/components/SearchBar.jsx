@@ -4,8 +4,8 @@ import { Container, Button, FormGroup } from "reactstrap";
 import { Redirect } from "react-router-dom";
 import { search, home, misc } from "../actions";
 import Autocomplete from "react-autocomplete";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 class SearchBar extends Component {
   constructor(props) {
