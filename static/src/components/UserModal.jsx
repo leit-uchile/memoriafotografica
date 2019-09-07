@@ -3,9 +3,12 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Button,
-  NavLink
+  NavLink,
+  Container,
+  Row,
+  Col,
+  ModalFooter
 } from "reactstrap";
 import { connect } from "react-redux";
 import { auth } from "../actions";
@@ -22,31 +25,67 @@ const UserModal = ({ logout, auth }) => {
     doToggle();
   };
 
-  const { first_name, last_name } = auth.user;
+  const { first_name, last_name, user_type } = auth.user;
 
   return (
     <NavLink href="#" onClick={doToggle}>
       {`${first_name ? first_name : "Nombre"} ${
         last_name ? last_name : "Apellido"
       }`}
-      {redirect ? <Redirect to="/user/dashboard" /> : null}
+      {redirect ? <Redirect to={redirect} /> : null}
       <Modal isOpen={toggle} toggle={doToggle}>
         <ModalHeader toggle={doToggle}>
           {`${first_name ? first_name : "Nombre"} ${
             last_name ? last_name : "Apellido"
           }`}
         </ModalHeader>
-        <ModalBody></ModalBody>
+        <ModalBody>
+          <Container fluid>
+            <Row>
+              {user_type > 2 ? 
+              <Col>
+              <h4>Interfaz de Administrador</h4>
+              <Button
+                color="warning"
+                onClick={() => {
+                  doToggle();
+                  setRedirect(":8000/admin/");
+                  setTimeout(() => setRedirect(false), 1000);
+                }}>
+                Administrar Sitio
+              </Button>
+              </Col> : null
+              }
+              {user_type > 1 ? 
+                <Col>
+                <h4>Interfaz de curador</h4>
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    doToggle();
+                    setRedirect("/curador/dashboard/");
+                    setTimeout(() => setRedirect(false), 1000);
+                  }}>
+                  Dashboard
+                </Button>
+              </Col> : null
+              }
+              <Col>
+              <h4>Gestionar perfil</h4>
+              <Button
+                color="primary"
+                onClick={() => {
+                  doToggle();
+                  setRedirect("/user/dashboard/");
+                  setTimeout(() => setRedirect(false), 1000);
+                }}>
+                Ir a Perfil
+              </Button>
+              </Col>
+            </Row>
+          </Container>
+        </ModalBody>
         <ModalFooter>
-          <Button
-            color="primary"
-            onClick={() => {
-              doToggle();
-              setRedirect(true);
-              setTimeout(() => setRedirect(false), 1000);
-            }}>
-            Ir a Perfil
-          </Button>
           <Button color="warning" onClick={doLogout}>
             Cerrar sesi&oacute;n
           </Button>

@@ -9,10 +9,14 @@ import Register from "./Register/Register";
 import NoMatch from "./NoMatch";
 import Upload from "./Upload/Upload";
 import PhotoDetails from "./PhotoView/PhotoDetail";
-import PrivateComponent from "../components/PrivateComponent";
 import Dashboard from "./Curador/Dashboard";
 import LandingPage from "./LandingPage";
 import UserDashboard from "./UserDashboard/UserDashboard";
+
+// Utils
+import PrivateComponent from "../components/PrivateComponent";
+import ErrorBoundary from "../components/ErrorBoundary";
+import BoundedRoute from '../components/BoundedRoute';
 
 const Layout = () => {
   return (
@@ -22,16 +26,16 @@ const Layout = () => {
         <div style={styles.body}>
           <Switch>
             <Route exact path={"/"} component={LandingPage} />
-            <Route path={"/gallery"} component={Home} />
-            <Route path={"/login"} component={Login} />
-            <Route path={"/register"} component={Register} />
-            <Route path={"/upload"} component={Upload} />
-            <Route path={"/photo/:id"} component={PhotoDetails} />
-            <Route path={"/curador/dashboard"} component={Dashboard} />
-            <Route path={"/user/dashboard"} component={UserDashboard} />
+            <BoundedRoute path={"/gallery"} component={Home} />
+            <BoundedRoute path={"/login"} component={Login} />
+            <BoundedRoute path={"/register"} component={Register} />
+            <BoundedRoute path={"/upload"} component={Upload} />
+            <BoundedRoute path={"/photo/:id"} component={PhotoDetails}/>
+            <PrivateComponent path={"/curador/dashboard"} component={Dashboard} />
+            <PrivateComponent path={"/user/dashboard"} component={UserDashboard} />
             <Route component={NoMatch} />
           </Switch>
-        </div>
+        </div>  
       </div>
       <Footer />
     </Fragment>

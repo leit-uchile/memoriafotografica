@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux'
 import {home, misc} from '../actions';
-import Photo from '../components/Photo';
-import {Container, Row, Col, Button, Nav, DropdownItem, DropdownMenu} from 'reactstrap';
+import {Container, Row, Col} from 'reactstrap';
 import {Redirect} from 'react-router-dom';
 import gallery from '../css/galleryHome.css';
 import {Helmet} from 'react-helmet';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
-
+import Gallery from 'react-photo-gallery';
 
 class Home extends Component{
 
@@ -73,6 +72,12 @@ class Home extends Component{
     render(){
         const {photos, cats, filters} = this.props
 
+        var mapped = photos.map( el => ({
+            src: el.thumbnail,
+            height: el.aspect_h,
+            width: el.aspect_w
+        }))
+
         // Utility Function
         var isSelected = (id, array) => {
             return array ? array.filter( el => el === id).length !== 0 : false 
@@ -93,16 +98,16 @@ class Home extends Component{
         }) : []
 
         if (filters && filters.length === 0 && this.state.selectedCategories.length === 0 ){
-            var currentPhotos = photos.slice(0,this.state.maxPhotos) //todas las fotos
+            var currentPhotos = mapped.slice(0,this.state.maxPhotos) //todas las fotos
         }
         else if (filters && filters.length !==0 && this.state.selectedCategories.length !== 0 ){ //hay tag y categoria -> intersectar
-            currentPhotos = photos.filter( el =>
+            currentPhotos = mapped.filter( el =>
                              arraysIntersect(el.category,this.state.selectedCategories) && arraysIntersect(el.metadata,filters)
                          ).slice(0,this.state.maxPhotos)
                          console.log("Intersectar")
 
         }else{ //cuando falta uno de los dos -> union
-            currentPhotos = photos.filter( el =>
+            currentPhotos = mapped.filter( el =>
                 arraysIntersect(el.category,this.state.selectedCategories) || arraysIntersect(el.metadata,filters)
             ).slice(0,this.state.maxPhotos)
         }
@@ -154,7 +159,7 @@ class Home extends Component{
                         </ul>
                     </div>
                 <Container fluid style={styles.galleryContainer}>
-                    <Gallery photoList={currentPhotos} handleOnClick={this.handleOnClick}/>
+                    <Gallery photos={mapped} targetRowHeight={200}/>
                 </Container>
             </div>
         )
@@ -167,19 +172,6 @@ const Categories = ({categorias, onClick}) => (
             <li><a href='#' style={el.selected ? styles.Selected: styles.unSelected} key={el.id} onClick={() => onClick(el.id)}>{el.title}{el.selected ? <FontAwesomeIcon icon={faCheck}/>: ''}</a></li>
         ))}
     </ul>
-)
-
-const Gallery = ({photoList, handleOnClick}) => (
-    <div style={styles.galleryGrid}>
-        {photoList.length == 0 ? <h3>No hay fotografias disponibles</h3> : photoList.map((el, index) => (
-         <div className="photo" style={{backgroundImage:  'url(' + el.thumbnail + ')'}} onClick={()=>handleOnClick('/photo/'+el.id)}>
-         <div className="info">
-             <h2 style={{fontSize: '1.5em'}}>{el.title}</h2>
-             <h2 style={{fontSize: '1.0em'}}>{el.usuario}</h2>    
-         </div>
-     </div>
-        ))}
-    </div>
 )
 
 const styles = {

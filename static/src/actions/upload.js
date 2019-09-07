@@ -28,6 +28,8 @@ export const uploadImages = (photos, auth) => {
           : `Foto N-${key + 1} subida el ${currentTime}`
       );
       formData.append("description", photo.meta.description);
+      formData.append("aspect_h", photo.meta.aspect_h);
+      formData.append("aspect_w", photo.meta.aspect_w);
       formData.append("image", photo.photo);
       // Send our permissions
       formData.append(

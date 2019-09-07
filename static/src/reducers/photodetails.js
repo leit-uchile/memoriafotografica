@@ -29,7 +29,6 @@ export default function photoDetails(state=initialState, action){
         case 'ERROR_ON_METADATA_FETCH':
             return {...state, metadataNames: []};
         default:
-            console.log("DEFAULT!!")
             return state;
     }
 }

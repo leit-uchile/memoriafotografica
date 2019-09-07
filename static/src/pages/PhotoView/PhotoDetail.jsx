@@ -197,7 +197,7 @@ class PhotoDetails extends Component{
                     <Row style={styles.imageContainer}>
                         <Col md={{offset: 3, size: 6}}>
                             <h2 style={styles.center}>{photoInfo.details.title}</h2>
-                            <img alt={photoInfo.details.title} src={photoInfo.details.image} style={{display: "block", margin: "0 auto 0 auto",maxHeight: "60vh", maxWidth: "100%"}}/>
+                            <img alt={photoInfo.details.title} src={photoInfo.details.thumbnail} style={{display: "block", margin: "0 auto 0 auto",maxHeight: "60vh", maxWidth: "100%"}}/>
                         </Col>
                         {permissions}
                     </Row>

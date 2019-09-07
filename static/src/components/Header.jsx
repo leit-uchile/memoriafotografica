@@ -21,7 +21,7 @@ const Header = ({ isAuth, currentRoute }) => {
 
   var doLoginNav = isAuth ? (
     <NavLink tag={UserModal}></NavLink>
-  ) : currentRoute == "/login" ? (
+  ) : currentRoute === "/login" ? (
     <NavLink tag={Link} to="/login" active style={styles.activeLink}>
       <i class="glyphicon glyphicon-user"></i>Ingresar
     </NavLink>
@@ -59,7 +59,7 @@ const Header = ({ isAuth, currentRoute }) => {
           <Collapse isOpen={toggle} navbar>
             <Nav className="barra">
               <NavItem>
-                {currentRoute == "/Inicio" ? (
+                {currentRoute === "/Inicio" ? (
                   <NavLink tag={Link} to={"/"} active style={styles.activeLink}>
                     Inicio
                   </NavLink>
@@ -70,7 +70,7 @@ const Header = ({ isAuth, currentRoute }) => {
                 )}
               </NavItem>
               <NavItem>
-                {currentRoute == "/gallery/" ? (
+                {currentRoute === "/gallery/" ? (
                   <NavLink
                     tag={Link}
                     to={"/gallery"}
@@ -86,7 +86,7 @@ const Header = ({ isAuth, currentRoute }) => {
                 )}
               </NavItem>
               <NavItem>
-                {currentRoute == "/upload" ? (
+                {currentRoute === "/upload" ? (
                   <NavLink
                     tag={Link}
                     to={"/upload"}

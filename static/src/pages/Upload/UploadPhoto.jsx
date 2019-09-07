@@ -159,7 +159,7 @@ class UploadPhoto extends Component {
           tags: [],
           cc: null,
           previewCalled: false,
-          collapse: false
+          collapse: false,
         }
       };
     });

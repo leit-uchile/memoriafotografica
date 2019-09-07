@@ -5,7 +5,7 @@ import UploadProgress from "./UploadProgress";
 import { connect } from "react-redux";
 import { misc, upload, home } from "../../actions";
 import { Link } from "react-router-dom";
-import { Container, Button, Row, Col, Progress, Alert } from "reactstrap";
+import { Container, Button, Row, Col } from "reactstrap";
 import { Helmet } from "react-helmet";
 
 class UploadPage extends Component {
@@ -145,6 +145,35 @@ class UploadPage extends Component {
           />
         );
         break;
+      default: 
+        subupload = <Container>
+        <Row style={styles.marginTopCenter}>
+          <Col>
+            <h2 style={{ fontWeight: "bold" }}>
+              ¡Ayudanos aportando material!
+            </h2>
+          </Col>
+        </Row>
+        <Row style={styles.marginTopCenter}>
+          <Col>
+            <Button color="primary" tag={Link} to="/login">
+              Iniciar sesion
+            </Button>
+            <Button color="link" onClick={this.withoutRegister}>
+              Continuar sin registrar
+            </Button>
+          </Col>
+        </Row>
+        <Row style={styles.marginTopCenter}>
+          <Col>
+            <p>
+              Si no inicias sesion tendras que ingresar tus datos cada vez
+              que subas una foto
+            </p>
+          </Col>
+        </Row>
+      </Container>
+      break;
     }
     return (
       <div>

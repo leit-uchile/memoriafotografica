@@ -3,7 +3,7 @@ import {Route, Redirect} from 'react-router-dom';
 
 import {connect}  from 'react-redux';
 
-function PrivateComponent({  component: Component, ...rest}){
+const PrivateComponent = ({ component: Component, ...rest}) => {
 
   if(rest.isAuthenticated === null || rest.isAuthenticated === false){
     return <Redirect to="/login" />
