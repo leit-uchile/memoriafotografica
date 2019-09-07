@@ -5,7 +5,7 @@ import {Col, Row, Container, Button, ButtonGroup, Input,
     Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import { Table } from 'reactstrap';
 import {connect} from 'react-redux';
-import {auth, home} from '../../actions';
+import {auth, home, curador} from '../../actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 
@@ -138,16 +138,16 @@ const mapStateToProps = state => {
     errors,
     isAuthenticated: state.auth.isAuthenticated,
     token: state.auth.token,
-    uploading: state.upload.uploading,
     meta: state.home.all_tags,
-    cats: state.home.all_cats,
+    cats: state.curador.categories,
   }
 }
 const mapActionsToProps = dispatch => {
   return {
     getCategories: (route) => {
-      return dispatch(home.categories(route));
+      return dispatch(curador.getCategories(route));
     }
+
   }
 }
 
