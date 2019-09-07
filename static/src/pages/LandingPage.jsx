@@ -97,10 +97,10 @@ class LandingPage extends Component{
         });
 
         return (
-          <Container>
+          <Container style={{marginBottom: '1em'}}>
             <Helmet>
               <meta property="og:title" content="Memoria fotográfica FCFM"/>
-              <meta property="og:type" content="Pagina de inicio" />
+              <meta property="og:type" content="website" />
               <meta property="og:url" content=" http://memoriafotografica.ing.fcfm.cl/" />
               <meta property="og:image" content=" http://example.com/image.jpg" />
               <meta property="og:description" content="Descripcion" />
@@ -122,7 +122,7 @@ class LandingPage extends Component{
             </Row>
             <Row style={{marginTop: "1em"}}>
               <Col>
-                <h1 style={{fontSize:'25px'}}>¿Quieres participar?</h1>
+                <h2 style={{fontSize:'25px'}}>¿Quieres participar?</h2>
                 <p style={{textAlign:'justify'}}>Laborend andipsa ipsam ex es ame vent, te dendelit abo. Destis sunt lant eicab iduntios et facestrum quas que eum sime evenitatem qui id mincti voluptatur ma dem venditestor assincia coris
       adit ea sitate earit veligni maximpo renimai onsero maiorep eruntus.
       Pa si si omnimpo rporeri nobist, verovit vero bero et quas eniminum cores maion cus cusdae nobit
@@ -153,10 +153,6 @@ class LandingPage extends Component{
 }
 
 const styles = {
-  carouselText: {
-       
-
-},
   section2: {
     backgroundColor: '#ebeeef',
     fontSize: '15px',    

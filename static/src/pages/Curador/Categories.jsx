@@ -87,7 +87,7 @@ class Categories extends Component{
         }
         return(
             <Container>
-                <h1>Administrar Categorías</h1>
+                <h2>Administrar Categorías</h2>
                 <Row>
                   <Col xs="12">
                     <ButtonGroup>

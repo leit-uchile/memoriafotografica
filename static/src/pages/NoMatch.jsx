@@ -5,7 +5,7 @@ class NoMatch extends Component{
     render(){
         return(
             <div style={{marginTop: '10%'}}>
-                <h1>404 - Not Found</h1>
+                <h2>404 - Not Found</h2>
             </div>            
         );
     }

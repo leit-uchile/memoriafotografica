@@ -1,25 +1,14 @@
-/* .header {
-    background: #f8f8f8;
-    padding: 15px;
-    overflow: auto;
-}
-.header img {
-    width: 100px;
-    height: auto;
-    float: left;
-}
-.header h1 {
-    font-size: 20px;
-    position: relative;
-    top: 26px;
-    left: 10px;
-} */
+.left {float: left;}
 
-#mf-title{
-    display: block;
-    font-size: 2em;
+ul.barra li {
+    padding: 5px 10px;
 }
 
-.mf-navbar span{
-    font-size: 0.8em;
+h1 {
+      background-image: url("/logo01.svg");
+
+    text-indent: -9999px;
+    background-repeat: no-repeat;
+    background-size: 33%;
+    height: 55px;
 }
