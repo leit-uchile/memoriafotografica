@@ -15,3 +15,13 @@ export const getReportes = () => { //GET REPORTES Y DENUNCIAS
       })
   }
 }
+
+export const editCategory = () => {
+
+}
+
+export const deleteCategories = () => {
+  //hacer llamado a la API, si OK, entonces borrar cat de las props usando el reducer apropiado
+}
+
+//va a faltar poner aca el action de getCategories porque no se va a poder llamar al del home.

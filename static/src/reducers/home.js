@@ -2,6 +2,7 @@ const initialState = {
     photos: [],
     all_tags: [],
     all_iptcs: [],
+    all_cats: [],
 }
 
 export default function home(state=initialState,action){
