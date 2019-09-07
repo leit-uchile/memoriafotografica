@@ -28,7 +28,7 @@
 .menu-list{
     display: inline-block;
     margin: 1em;
-    border: 1px solid black; /*error, se muestra en hijos*/
+    border: 1px solid black;
     padding: 10px;
 }
 

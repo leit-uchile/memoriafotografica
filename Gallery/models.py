@@ -58,7 +58,7 @@ class Photo(models.Model):
     image = models.ImageField(upload_to=gen_uuid)
     thumbnail = models.ImageField(blank=True)
     title = models.CharField(max_length = 30)
-    uploadDate = models.DateTimeField('date published', default=datetime.now, blank=True)
+    upload_date = models.DateTimeField('date published', default=datetime.now, blank=True)
     description = models.CharField(max_length=255, blank=True)
     approved = models.BooleanField(default=True)
     censure = models.BooleanField(default = False)

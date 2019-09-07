@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux'
-import {home, misc} from '../actions';
+import {home, misc, search} from '../actions';
 import Photo from '../components/Photo';
 import {Container, Row, Col, Button, Nav, DropdownItem, DropdownMenu} from 'reactstrap';
 import {Redirect} from 'react-router-dom';
 import gallery from '../css/galleryHome.css';
 import {Helmet} from 'react-helmet';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faCheck,faTimesCircle} from '@fortawesome/free-solid-svg-icons';
 
 
 class Home extends Component{
@@ -59,8 +59,8 @@ class Home extends Component{
     render(){
         const {photos, cats, filters} = this.props
         var filtersId = filters.map(el => el.metaID)
-        var filtersText = filters.length !=0 ? filters.map(el => <span key={el.id} style={styles.tags}>#{el.value}</span>) 
-            : <h3>Mostrando todas</h3>
+        var filtersText = filters.length !=0 ? filters.map(el => <span key={el.id} style={styles.tags} onClick={()=>this.props.removeSearch(el.id, el.value)}>#{el.value} <FontAwesomeIcon icon={faTimesCircle}/> </span>) 
+            : null
 
         // Utility Function
         var isSelected = (id, array) => {
@@ -109,10 +109,12 @@ class Home extends Component{
                     <title>Buscar fotografias</title>
                 </Helmet>
                     <Row style={styles.galleryMenu}>
-                        <Col>
-                            {filtersText}
+                        <Col xs='9'>
+                            <div style={{paddingLeft:'2em', display:'flex',alignItems: 'left', verticalAlign: 'middle', flexDirection: 'row'}}>
+                                {filtersText}
+                            </div>
                         </Col>
-                        <Col>
+                        <Col xs='3'>
                             <ul style={styles.menuMain}>
 
                                 <li className='menu-list'><a href='#'>Categorias {selectedCatsNumber}</a>
@@ -131,8 +133,8 @@ class Home extends Component{
                                         <div style={styles.menu1Col}>
                                             <h3 style={styles.menuSubTitle}>Por orden cronológico</h3>
                                             <ul>
-                                                <li><a href='#'>Más antiguas primero</a></li>
-                                                <li><a href='#'>Más nuevas primero</a></li>
+                                                <li><a href='?sort=created-asc'>Más antiguas primero</a></li>
+                                                <li><a href='?sort=created-desc'>Más nuevas primero</a></li>
                                             </ul>
                                             <h3 style={styles.menuSubTitle}>Por fecha de subida</h3>
                                             <ul>
@@ -176,9 +178,8 @@ const styles = {
         background: 'white'
     },
     menuMain:{
-        marginRight:'10em',
         listStyle: 'none',
-        textAlign: 'right',
+        whiteSpace: 'nowrap'
     },
     tags:{
         color:'white', 
@@ -259,6 +260,9 @@ const mapActionsToProps = dispatch =>{
         },
         setRoute: (route) => {
             return dispatch(misc.setCurrentRoute(route));
+        },
+        removeSearch: (id,value) => {
+            return dispatch(search.removeSearchItem(id,value));
         }
     }
 }

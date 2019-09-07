@@ -1,60 +1,76 @@
-import React, {Component} from 'react';
-import {Modal, ModalHeader, ModalBody, ModalFooter, Button} from 'reactstrap';
-import {connect} from 'react-redux';
-import {auth} from '../actions';
+import React, { useState } from "react";
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  NavLink
+} from "reactstrap";
+import { connect } from "react-redux";
+import { auth } from "../actions";
+import { Redirect } from "react-router-dom";
 
-class UserModal extends Component{
+const UserModal = ({ logout, auth }) => {
+  const [toggle, setToggle] = useState(false);
+  const [redirect, setRedirect] = useState(false);
 
-    constructor(props){
-        super(props)
-        this.state = {
-            modal: false
-        }
-        this.toggle = this.toggle.bind(this)
-        this.logout = this.logout.bind(this)
-    }
+  const doToggle = () => setToggle(!toggle);
 
-    toggle(){
-        this.setState(prevstate => ({modal: !prevstate.modal}))
-    }
+  const doLogout = () => {
+    logout(auth.token);
+    doToggle();
+  };
 
-    logout(){
-        this.props.logout(this.props.auth.token)
-        this.toggle()
-    }
+  const { first_name, last_name } = auth.user;
 
-    render(){
-        const {first_name, last_name} = this.props.auth.user
-
-        return (
-            <div className='nav-link' onClick={this.toggle}>    
-                <span>{`${ first_name? first_name : "Nombre"} ${ last_name? last_name : "Apellido"}`}</span>
-                <Modal isOpen={this.state.modal} toggle={this.toggle}>
-                    <ModalHeader toggle={this.toggle}>
-                        {`${ first_name? first_name : "Nombre"} ${ last_name? last_name : "Apellido"}`}
-                    </ModalHeader>
-                    <ModalFooter>
-                        <Button color="primary" onClick={this.toggle}>Ir a Perfil</Button>
-                        <Button color="warning" onClick={this.logout}>Cerrar sesi&oacute;n</Button>
-                    </ModalFooter>
-                </Modal>
-            </div>
-        )
-    }
-}
+  return (
+    <NavLink href="#" onClick={doToggle}>
+      {`${first_name ? first_name : "Nombre"} ${
+        last_name ? last_name : "Apellido"
+      }`}
+      {redirect ? <Redirect to="/user/dashboard" /> : null}
+      <Modal isOpen={toggle} toggle={doToggle}>
+        <ModalHeader toggle={doToggle}>
+          {`${first_name ? first_name : "Nombre"} ${
+            last_name ? last_name : "Apellido"
+          }`}
+        </ModalHeader>
+        <ModalBody></ModalBody>
+        <ModalFooter>
+          <Button
+            color="primary"
+            onClick={() => {
+              doToggle();
+              setRedirect(true);
+              setTimeout(() => setRedirect(false), 1000);
+            }}>
+            Ir a Perfil
+          </Button>
+          <Button color="warning" onClick={doLogout}>
+            Cerrar sesi&oacute;n
+          </Button>
+        </ModalFooter>
+      </Modal>
+    </NavLink>
+  );
+};
 
 const mapStateToProps = state => {
-    return {
-        auth: state.auth
-    }
-}
+  return {
+    auth: state.auth
+  };
+};
 
 const mapActionsToProps = dispatch => {
-    return {
-        logout: (token) => {
-            return dispatch(auth.logout(token));
-        }
+  return {
+    logout: token => {
+      return dispatch(auth.logout(token));
     }
-}
+  };
+};
 
-export default connect(mapStateToProps,mapActionsToProps)(UserModal)
+export default connect(
+  mapStateToProps,
+  mapActionsToProps
+)(UserModal);

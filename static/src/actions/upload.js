@@ -1,77 +1,79 @@
-export const uploadImage = (name,description,image) => {
-    return (dispatch, getState) => {
-        let header = {"Content-Type": "application/json"};
+/* When uploading each photo will reduce to success or error.
+  In case of error the payload will contain the id for
+  user feedback (and posibly relaunch)
 
-        var formData = new FormData();
-        formData.append("title",name);
-        formData.append("description",description);
-        formData.append("image",image);
-       
-        fetch("/api/gallery/upload/", {
-            method: 'POST',
-            headers: header,
-            body: formData
-        });
-    }
-}
-
-export const putInfo = (uploadInfo) => {
-    return (dispatch, getState) => {
-        return dispatch({type: 'BUFFER_INFO', data: uploadInfo})
-    }
-}
-
-// When uploading each photo will reduce to success or error.
-// In case of error the payload will contain the id for 
-// user feedback (and posibly relaunch)
-export const uploadImages = (photos, auth) => { return (dispatch, getState) => {
-
+  photos : {
+    photoList: Array,
+    cc: String
+  }
+*/
+export const uploadImages = (photos, auth) => {
+  return (dispatch, getState) => {
     let header = {
-        'Authorization' : 'Token '+ auth
+      Authorization: "Token " + auth
     };
 
     var currentTime = new Date();
-    currentTime = `${currentTime.getDay()}-${currentTime.getMonth()}-${currentTime.getFullYear()}`
+    currentTime = `${currentTime.getDay()}-${currentTime.getMonth()}-${currentTime.getFullYear()}`;
 
-    photos.photosList.map( (photo,key) => {
-        let formData = new FormData();
-        // If no title available create one for our date
-        formData.append("title", photo.meta.title ? 
-            photo.meta.title :
-            `Foto N-${key+1} subida el ${currentTime}`
-        );
-        formData.append("description", photo.meta.description);
-        formData.append("image", photo.photo);
-        // Send our permissions
-        formData.append("permission", photo.meta.cc !== null ? 
-            photo.meta.cc : photos.cc[0])
+    dispatch({ type: "UPLOADING", data: photos.length});
 
-        fetch("/api/photos/", {
-            method: 'POST',
-            headers: header,
-            body: formData
-        }).then(function(response){
-            const r = response
-            if(r.status === 201){
-                return dispatch({type: 'UPLOADED_PHOTO', data: null})
-            }else{
-                dispatch({
-                    type: 'ERROR_UPLOADING', 
-                    data: {
-                        photo_id: key,
-                        response: r.data
-                    }
-                })
-                throw r.data
+    const funcs = photos.photosList.map((photo, key) => () => {
+      let formData = new FormData();
+      // If no title available create one for our date
+      formData.append(
+        "title",
+        photo.meta.title
+          ? photo.meta.title
+          : `Foto N-${key + 1} subida el ${currentTime}`
+      );
+      formData.append("description", photo.meta.description);
+      formData.append("image", photo.photo);
+      // Send our permissions
+      formData.append(
+        "permission",
+        photo.meta.cc !== null ? photo.meta.cc : photos.cc ? photos.cc : "CC BY"
+      );
+
+      fetch("/api/photos/", {
+        method: "POST",
+        headers: header,
+        body: formData
+      }).then(function(response) {
+        const r = response;
+        if (r.status === 201) {
+          dispatch({
+            type: "UPLOADED_PHOTO",
+            data: {
+              photo_id: key,
             }
-        })
-    })
-}}
+          });
+        } else {
+          dispatch({
+            type: "ERROR_UPLOADING",
+            data: {
+              photo_id: key,
+              response: r.data
+            }
+          });
+          throw r.data;
+        }
+      }.bind(key));
+    });
 
-export const setUploading = () => { return (dispatch, getState) => {
-    return dispatch({type: 'UPLOADING', data: null});
-}}
+    const callWithTimeout = (id,list) => {
+      if(id !== list.length){
+        list[id]();
+        setTimeout(() => callWithTimeout(id + 1, list), 1000)
+      }
+    }
 
-export const readDisclosure = () => { return (dispatch, getState) => {
-    return dispatch({type: 'READ_DISCLOSURE', data: null});
-}}
+    callWithTimeout(0,funcs);
+  };
+};
+
+export const readDisclosure = () => {
+  return (dispatch, getState) => {
+    return dispatch({ type: "READ_DISCLOSURE", data: null });
+  };
+};
