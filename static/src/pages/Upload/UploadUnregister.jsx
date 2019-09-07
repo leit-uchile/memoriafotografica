@@ -1,117 +1,178 @@
-import React, {Component} from 'react';
-import {Container} from 'reactstrap';
+import React, { useState } from "react";
+import {
+  Container,
+  Form,
+  FormGroup,
+  Label,
+  CustomInput,
+  Input,
+  Button,
+  Row,
+  Col
+} from "reactstrap";
 
-class UploadUnregister extends Component{
-    constructor(Props){
-        super(Props)       
-        if(Props.cache != null){
-            this.state = {
-                ...Props.cache,
-                error: null
-            }
-        }else{
-            this.state = {
-            rol: "",
-            info: {},
-            student : false,
-            email : "",
-            name: "",
-            lastname: "",
-            }
-        }      
-        this.checkGeneration = this.checkGeneration.bind(this);
-    }
-
-    updateGeneration = e =>{e.preventDefault(); this.setState({ info: {...this.state.info, generation: e.target.value}})};
-
-    
-    checkGeneration(e){
-        this.setState({
-            student : e.target.checked,
-            info: {...this.state.info, estudiante : e.target.checked}
-             })
-    }
-
-    updateName = e => {this.setState({name: e.target.value})};
-    updateLastName = e => {this.setState({lastname: e.target.value})};
-    updateEmail = e => {this.setState({email: e.target.value})};
-    onSubmit = e => {
-        e.preventDefault();
-        this.props.saveInfo(this.state)
-    }
-
-    render(){
-
-        var generacion;
-        if (this.state.student){
-            generacion = <label> generación: <input type="Number" max= "3000" onChange={this.updateGeneration} min="1920" placeholder="1920"/> </label>
-        }else{
-            generacion= null
-
+const UploadUnregister = ({ cache, saveInfo, goBack }) => {
+  const [formData, setFormData] = useState(
+    cache == {}
+      ? {
+          ...cache,
+          error: null
         }
-        
-        return(
-            <Container style={{backgroundColor: "rgb(245,245,245)", borderRadius: "1em", marginTop: "2em", padding: "2em"}}>
-                <div>
-                    <h2>Cuentanos un poco sobre ti</h2>
-                </div>
+      : {
+          rol: "",
+          student: false,
+          email: "",
+          name: "",
+          lastname: ""
+        }
+  );
 
-                <form onSubmit={this.onSubmit}>
-                <p>
-                    <label>Información de comunidad FCFM</label>
-                    <hr/>
-                </p>
-                <p>
-                    <label>¿Cuál o cuáles fueron sus roles (o son)?</label>
-                </p>
-                <p>
-                    <label><input type="checkbox" onChange={e =>this.setState({info: {...this.state.info, academico: e.target.checked}})} /> académico  </label>
-                </p>
-                <p>
-                    <label><input type="checkbox" onChange={e => {e.preventDefault(); this.setState({info: {...this.state.info, funcionario: e.target.checked}})}}/> funcionario </label>
-                </p>
-                <p>
-                    <label><input type="checkbox" onChange={e => {this.checkGeneration(e)} }/>estudiante  &nbsp;</label>
-                    {generacion}
-                </p>
-                <p>
-                    <label><input type="checkbox"onChange={e =>this.setState({info: {...this.state.info, externo: e.target.checked}})}/> externo a la comunidad </label>
-                </p>
-            
-                <hr />
+  const [info, setInfo] = useState(
+    cache === null
+      ? { ...cache.info }
+      : {
+          estudiante: false,
+          generation: ""
+        }
+  );
 
-                <div>
-                    <h2>En caso que necesitemos contactarte</h2>
-                </div>
-                
-                <div>
-                    <div className="form-group row">
-                        <label className="col-sm-2 col-form-label">Nombre: </label>
-                        <div className="col-sm-10">
-                            <input className="form-control" type="text" placeholder="Jose" onChange={this.updateName} required value={this.state.name}></input>
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-2 col-form-label">Apellido: </label>
-                        <div className="col-sm-10">
-                            <input className="form-control" type="text" placeholder="Aguirre" onChange={this.updateLastName}required value={this.state.lastname}></input>
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-2 col-form-label">Correo electronico:</label>
-                        <div className="col-sm-10">
-                            <input className="form-control" type="email" placeholder="jose.medina@memoria-uchile.cl" onChange={this.updateEmail}required value={this.state.email}></input>
-                        </div>
-                    </div>
-                </div>
+  const updateForm = e =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
-                <button className="btn btn-secondary" onClick={this.props.goBack}>Atras</button>  
-                <button className="btn btn-success" type="submit">Continuar</button>  
-                </form>
-            </Container>
-        )
-    }
-}
+  const updateInfo = e =>
+    setInfo({ ...info, [e.target.name]: e.target.checked });
 
-export default UploadUnregister
-  
+  const checkGeneration = e => {
+    setFormData({ ...formData, student: e.target.checked });
+    setInfo({ ...info, estudiante: e.target.checked });
+  };
+
+  const updateGeneration = e =>
+    setInfo({ ...info, generation: e.target.value });
+
+  const onSubmit = e => {
+    e.preventDefault();
+    saveInfo({ ...formData, info: { ...info } });
+  };
+
+  return (
+    <Container
+      style={{
+        marginTop: "2em"
+      }}>
+      <Row>
+        <Col>
+          <h2>Cuentanos un poco sobre ti</h2>
+        </Col>
+      </Row>
+      <Form onSubmit={onSubmit}>
+        <FormGroup>
+          <Label>Información de comunidad FCFM</Label>
+          <hr />
+        </FormGroup>
+        <FormGroup>
+          <Label>¿Cuál o cuáles fueron sus roles (o son)?</Label>
+          <div>
+            <CustomInput
+              type="checkbox"
+              id="exampleCustomCheckbox"
+              label="Académico"
+              name="academico"
+              onChange={updateInfo}
+            />
+            <CustomInput
+              type="checkbox"
+              id="exampleCustomCheckbox2"
+              label="Funcionario"
+              name="funcionario"
+              onChange={updateInfo}
+            />
+            <CustomInput
+              type="checkbox"
+              id="exampleCustomCheckbox3"
+              label="Externo a la comunidad"
+              name="externo"
+              onChange={updateInfo}
+            />
+            <CustomInput
+              type="checkbox"
+              id="exampleCustomCheckbox4"
+              label="Estudiante"
+              name="estudiante"
+              onChange={checkGeneration}
+            />
+            {formData.student ? (
+              <label>
+                {" "}
+                generación:{" "}
+                <Input
+                  type="Number"
+                  max="3000"
+                  onChange={updateGeneration}
+                  min="1920"
+                  placeholder="1920"
+                />{" "}
+              </label>
+            ) : null}
+          </div>
+        </FormGroup>
+        <FormGroup>
+          <h2>En caso que necesitemos contactarte</h2>
+        </FormGroup>
+        <FormGroup row>
+          <Col sm={2}>
+            <Label>Nombre: </Label>
+          </Col>
+          <Col sm={10}>
+            <Input
+              type="text"
+              placeholder="Jose"
+              onChange={updateForm}
+              required
+              name="name"
+              value={formData.name}
+            />
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+          <Col sm={2}>
+            <Label>Apellido: </Label>
+          </Col>
+          <Col sm={10}>
+            <Input
+              type="text"
+              placeholder="Aguirre"
+              onChange={updateForm}
+              required
+              name="lastname"
+              value={formData.lastname}
+            />
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+          <Col sm={2}>
+            <Label>Correo electronico: </Label>
+          </Col>
+          <Col sm={10}>
+            <Input
+              type="email"
+              placeholder="jose.medina@memoria-uchile.cl"
+              onChange={updateForm}
+              required
+              name="email"
+              value={formData.email}
+            />
+          </Col>
+        </FormGroup>
+        <Button color="secondary" onClick={goBack}>
+          Atras
+        </Button>
+        <Button color="primary" type="submit">
+          Continuar
+        </Button>
+      </Form>
+    </Container>
+  );
+};
+
+export default UploadUnregister;
