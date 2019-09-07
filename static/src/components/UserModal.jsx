@@ -25,7 +25,7 @@ const UserModal = ({ logout, auth }) => {
     doToggle();
   };
 
-  const { first_name, last_name } = auth.user;
+  const { first_name, last_name, user_type } = auth.user;
 
   return (
     <NavLink href="#" onClick={doToggle}>
@@ -42,19 +42,22 @@ const UserModal = ({ logout, auth }) => {
         <ModalBody>
           <Container fluid>
             <Row>
+              {user_type > 2 ? 
               <Col>
-              <h4>Mis fotos</h4>
+              <h4>Interfaz de Administrador</h4>
               <Button
-                color="primary"
+                color="warning"
                 onClick={() => {
                   doToggle();
-                  setRedirect("/user/dashboard/");
+                  setRedirect(":8000/admin/");
                   setTimeout(() => setRedirect(false), 1000);
                 }}>
-                Ir a Perfil
+                Administrar Sitio
               </Button>
-              </Col>
-              <Col>
+              </Col> : null
+              }
+              {user_type > 1 ? 
+                <Col>
                 <h4>Interfaz de curador</h4>
                 <Button
                   color="primary"
@@ -65,6 +68,19 @@ const UserModal = ({ logout, auth }) => {
                   }}>
                   Dashboard
                 </Button>
+              </Col> : null
+              }
+              <Col>
+              <h4>Gestionar perfil</h4>
+              <Button
+                color="primary"
+                onClick={() => {
+                  doToggle();
+                  setRedirect("/user/dashboard/");
+                  setTimeout(() => setRedirect(false), 1000);
+                }}>
+                Ir a Perfil
+              </Button>
               </Col>
             </Row>
           </Container>
