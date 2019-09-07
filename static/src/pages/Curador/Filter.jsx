@@ -254,7 +254,7 @@ class Filter extends Component{
         ))
         return(
         <Container>
-            <h1>Filtrar Fotografías</h1>
+            <h2>Filtrar Fotografías</h2>
             <Row>
               <Col xs="2">
                 <ButtonGroup><Button disabled>Filtrar</Button><Button><FontAwesomeIcon icon={faFilter} /></Button></ButtonGroup>

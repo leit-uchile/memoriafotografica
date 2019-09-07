@@ -16,16 +16,6 @@ from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_MET
 from rest_condition import ConditionalPermission, C, And, Or, Not
 from rest_framework.documentation import include_docs_urls
 
-"""
-def add_title_description(request, p_id):
-    if request.method == 'POST':
-        t = request.POST.get('title')
-        d = request.POST.get('description')
-        title = MetadataTitle.objects.create(title=t, description=t.lower(), photo=Photo.objects.get(pk=p_id))
-        description = MetadataDescription.objects.create(description=d, photo=Photo.objects.get(pk=p_id))
-"""
-
-
 def get_user(photoPair):
     print(photoPair)
     try:
@@ -64,9 +54,14 @@ class PhotoListAPI(generics.GenericAPIView):
     permission_classes = [IsAuthenticated,]
 
     def get(self, request, *args, **kwargs):
-        photo = "dummy"
+        photo = ""        
+        sort_type = {"asc":"", "desc":"-"}
         if request.user.user_type != 1:
-            photo =Photo.objects.all()
+            photo = Photo.objects.all()
+            if(request.query_params["sort"]):
+                splitted_param = request.query_params["sort"].split("-")
+                query = sort_type[splitted_param[1]]+splitted_param[0]
+                photo = photo.order_by(query)
             serializer_class = PhotoAdminSerializer
             serializer = PhotoAdminSerializer(photo, many = True)
             serialized_data = serializer.data
@@ -140,7 +135,6 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
         serialized_data['metadata'] = list(map(lambda x: x['metadata']['name'] + " : " + x['value'], serialized_data['metadata']))
         try:
             u = photo.user_set.first()
-            print(u)
             u_dict = {}
             u_dict['first_name'] = u.first_name
             u_dict['last_name'] = u.last_name
@@ -362,12 +356,13 @@ class CategoryListAPI(generics.GenericAPIView):
                 for c in serialized_data:
                     if(c['id']==photocat.id):
                         c['count'] += 1
-        return Response(serializer.data)
+        return Response(serialized_data)
 
     def post(self, request, *args, **kwargs):
         usuario = request.user.user_type
         serializer = CategorySerializer(data=request.data)
-        if request.user.user_type == 3:
+        print(usuario)
+        if request.user.user_type != 1:
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)

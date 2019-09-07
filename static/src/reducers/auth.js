@@ -4,7 +4,7 @@ const baseState = {token: null, isAuthenticated: false, isLoading: true, user: n
 // and then remove the cookie if necessary
 const initialState = 
   localStorage.getItem("isAuth") === null ? baseState : 
-  (new Date()).getTime() - JSON.parse(localStorage.getItem("isAuth")).logginDate > 86000000 ? baseState : 
+  (new Date()).getTime() - JSON.parse(localStorage.getItem("isAuth")).timeSet > 86000000 ? baseState : 
   {
     token: localStorage.getItem("token"),
     isAuthenticated: true,

@@ -188,7 +188,7 @@ class PhotoDetails extends Component{
                 <div ref={this.imageContainer} style={{width: "100%"}}>
                     <Helmet>
                         <meta property="og:title" content={photoInfo.details.title} />
-                        <meta property="og:type" content="Vista fotogragia" />
+                        <meta property="og:type" content="website" />
                         <meta property="og:url" content=" http://memoriafotografica.ing.fcfm.cl/" />
                         <meta property="og:image" content=" http://example.com/image.jpg" />
                         <meta property="og:description" content="Descripcion" />
@@ -196,7 +196,7 @@ class PhotoDetails extends Component{
                     </Helmet>
                     <Row style={styles.imageContainer}>
                         <Col md={{offset: 3, size: 6}}>
-                            <h1 style={styles.center}>{photoInfo.details.title}</h1>
+                            <h2 style={styles.center}>{photoInfo.details.title}</h2>
                             <img alt={photoInfo.details.title} src={photoInfo.details.image} style={{display: "block", margin: "0 auto 0 auto",maxHeight: "60vh", maxWidth: "100%"}}/>
                         </Col>
                         {permissions}

@@ -140,7 +140,7 @@ class Home extends Component{
                                     <div style={styles.menu1Col}>
                                         <h3 style={styles.menuSubTitle}>Por orden cronológico</h3>
                                         <ul>
-                                            <li><a>Más antiguas primero</a></li>
+                                            <li><a href='#'>Más antiguas primero</a></li>
                                             <li><a href='#'>Más nuevas primero</a></li>
                                         </ul>
                                         <h3 style={styles.menuSubTitle}>Por fecha de subida</h3>
@@ -153,7 +153,7 @@ class Home extends Component{
                             </li>
                         </ul>
                     </div>
-                <Container fluid style={{width:'100%', backgroundColor:'#f7f8fa'}}>
+                <Container fluid style={styles.galleryContainer}>
                     <Gallery photoList={currentPhotos} handleOnClick={this.handleOnClick}/>
                 </Container>
             </div>
@@ -164,20 +164,20 @@ class Home extends Component{
 const Categories = ({categorias, onClick}) => (
     <ul>
         {categorias.length == 0 ? '-' : categorias.map((el, index) => (
-            <li style={el.selected ? styles.Selected: styles.unSelected}><a key={el.id} onClick={() => onClick(el.id)}>{el.title}{el.selected ? <FontAwesomeIcon icon={faCheck}/>: ''}</a></li>
+            <li><a href='#' style={el.selected ? styles.Selected: styles.unSelected} key={el.id} onClick={() => onClick(el.id)}>{el.title}{el.selected ? <FontAwesomeIcon icon={faCheck}/>: ''}</a></li>
         ))}
     </ul>
 )
 
 const Gallery = ({photoList, handleOnClick}) => (
-    <div style={styles.gallery}>
+    <div style={styles.galleryGrid}>
         {photoList.length == 0 ? <h3>No hay fotografias disponibles</h3> : photoList.map((el, index) => (
-        <div className="photo" style={{backgroundImage:  'url(' + el.thumbnail + ')'}} onClick={()=>handleOnClick('/photo/'+el.id)}>
-            <div className="info">
-                <h1 style={{fontSize: '1.5em'}}>{el.title}</h1>
-                <h2 style={{fontSize: '1.0em'}}>{el.usuario}</h2>    
-            </div>
-        </div>
+         <div className="photo" style={{backgroundImage:  'url(' + el.thumbnail + ')'}} onClick={()=>handleOnClick('/photo/'+el.id)}>
+         <div className="info">
+             <h2 style={{fontSize: '1.5em'}}>{el.title}</h2>
+             <h2 style={{fontSize: '1.0em'}}>{el.usuario}</h2>    
+         </div>
+     </div>
         ))}
     </div>
 )
@@ -187,12 +187,11 @@ const styles = {
         height: '5em',
         width: '100%', /*mio, antes max-width*/
         margin: '0 auto',
-        marginBottom: '10px',
         borderBottom: '1px solid rgb(210,214,218)', /*mio*/
         background: 'white'
     },
     menuMain:{
-        marginRight:'200px',
+        marginRight:'10em',
         listStyle: 'none',
         textAlign: 'right',
     },
@@ -219,7 +218,7 @@ const styles = {
     },
     menuSubTitle:{
         display: 'flex',
-        fontSize: '1.2em',
+        fontSize: '1.1em',
         fontWeight: 'bold',
         color:'#97878f',
         justifyContent: 'center'
@@ -232,14 +231,20 @@ const styles = {
         float: 'left',
         width:'50%'
     },
-    gallery:{
+    galleryContainer:{
+        width:'100%',
+        minHeight: '100vh', 
+        padding:'1.25em 3.1em',
+        backgroundColor:'#f7f8fa'
+    },
+    galleryGrid:{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(150px,1fr))', /*repeat(veces, tamaño)*/
         gridTemplateRows: 'repeat(auto-fit, minmax(150px,1fr))',
         gridAutoColumns: 'minmax(150px,1fr)',
         gridAutoRows: 'minmax(150px,1fr)',
         gridAutoFlow: 'row dense',
-        gridGap: '10px'
+        gridGap: '0.75em'
     }    
 }
 const mapStateToProps = state => {

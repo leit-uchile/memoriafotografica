@@ -7,7 +7,7 @@ const initialState = {
         metadata: []
     },
     errors: 'INVALID_URL',
-    commentsLoaded: false
+    commentsLoaded: false,
 }
 
 export default function photoDetails(state=initialState, action){
