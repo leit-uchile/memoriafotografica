@@ -43,7 +43,18 @@ class EditProfile extends Component{
                             </CardBody>
                         </Card>
                     </Col> 
-                <Row/>
+                    <Col>
+                    <h2> Mis Datos
+                        Name 
+                        Username
+                        Biografía </h2>
+                    <h2> Información Personal
+                        Email 
+                        Constraseña </h2>
+
+                   
+                    </Col>
+                </Row>
                
             </Container>
         )

@@ -13,7 +13,7 @@ import PrivateComponent from "../components/PrivateComponent";
 import Dashboard from "./Curador/Dashboard";
 import LandingPage from "./LandingPage";
 import UserDashboard from "./UserDashboard/UserDashboard";
-
+import EditProfile from "./UserDashboard/EditProfile";
 const Layout = () => {
   return (
     <Fragment>
@@ -29,6 +29,7 @@ const Layout = () => {
             <Route path={"/photo/:id"} component={PhotoDetails} />
             <Route path={"/curador/dashboard"} component={Dashboard} />
             <Route path={"/user/dashboard"} component={UserDashboard} />
+            <Route path={"/user/edit"} component={EditProfile}/>
             <Route component={NoMatch} />
           </Switch>
         </div>
