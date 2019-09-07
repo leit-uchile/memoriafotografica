@@ -105,7 +105,7 @@ class Dashboard extends Component{
                             <CardBody style={{backgroundColor:'#ebeeef'}}>
                                 <CardText>Nombre</CardText>
                                 <CardText> Mail </CardText>
-                                <Button style={{margin: "0 auto"}} color="secondary" tag={Link} to="/"> Editar mi perfil</Button>
+                                <Button style={{margin: "0 auto"}} color="secondary" tag={Link} to="/user/edit"> Editar mi perfil</Button>
                             </CardBody>
                         </Card>
                     </Col>

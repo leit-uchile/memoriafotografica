@@ -60,4 +60,5 @@ class EditProfile extends Component{
         )
 
     }
-}
+};
+export default EditProfile;

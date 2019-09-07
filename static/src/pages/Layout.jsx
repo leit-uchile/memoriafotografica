@@ -12,7 +12,7 @@ import PhotoDetails from "./PhotoView/PhotoDetail";
 import Dashboard from "./Curador/Dashboard";
 import LandingPage from "./LandingPage";
 import UserDashboard from "./UserDashboard/UserDashboard";
-
+import EditProfile from "./UserDashboard/EditProfile";
 // Utils
 import PrivateComponent from "../components/PrivateComponent";
 import ErrorBoundary from "../components/ErrorBoundary";
@@ -33,6 +33,7 @@ const Layout = () => {
             <BoundedRoute path={"/photo/:id"} component={PhotoDetails}/>
             <PrivateComponent path={"/curador/dashboard"} component={Dashboard} />
             <PrivateComponent path={"/user/dashboard"} component={UserDashboard} />
+            <PrivateComponent path={"/user/edit"} component={EditProfile} />
             <Route component={NoMatch} />
           </Switch>
         </div>  
