@@ -49,7 +49,7 @@ const UserModal = ({ logout, auth }) => {
                 color="warning"
                 onClick={() => {
                   doToggle();
-                  setRedirect(":8000/admin/");
+                  window.location.assign("http://localhost:8000/admin");
                   setTimeout(() => setRedirect(false), 1000);
                 }}>
                 Administrar Sitio
