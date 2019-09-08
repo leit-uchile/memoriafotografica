@@ -24,6 +24,8 @@ const CC_INFO = [
   { name: "CC BY-NC-ND", text: "Atribución, No Comercial, Sin Derivadas" }
 ];
 
+const gcd = (a, b) => (b == 0 ? a : gcd(b, a % b));
+
 class UploadDetails extends Component {
   constructor(Props) {
     super(Props);
@@ -38,6 +40,20 @@ class UploadDetails extends Component {
     this.fr = new FileReader();
     this.fr.onload = (function(theFile) {
       return function(e) {
+
+        // Get data from image
+        let img = new Image();
+        img.onload = function() {
+          var gcd_value = gcd(img.height, img.width);
+          this.setState({
+            height: img.height,
+            width: img.width,
+            aspect_h: img.height / gcd_value,
+            aspect_w: img.width / gcd_value
+          });
+        }.bind(this);
+        img.src = e.target.result;
+
         // Render thumbnail.
         this.setState({ src: e.target.result });
       };
@@ -48,14 +64,7 @@ class UploadDetails extends Component {
   updateData = e => this.setState({ [e.target.name]: e.target.value });
 
   updateDesc = e => {
-    this.setState({ description: e.target.value });
-    clearTimeout(autosave_desc);
-    autosave_desc = setTimeout(
-      function() {
-        this.props.save(this.state);
-      }.bind(this),
-      500
-    );
+    this.setState({ description: e.target.value }, () => this.props.save(this.state));
   };
 
   toggle() {

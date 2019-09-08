@@ -3,12 +3,13 @@ const initialState = {
 }
 
 export default function search(state=initialState,action){
+    var newMetaIDs;
     switch (action.type){
         case 'PUT_META':
-            var newMetaIDs = state.metaIDs.filter( el => el.metaID != action.data.metaID)
+            newMetaIDs = state.metaIDs.filter( el => el.metaID != action.data.metaID)
             return {...state, metaIDs: [...newMetaIDs, action.data]};
         case 'REMOVE_META':
-            var newMetaIDs = state.metaIDs.filter( el => el.metaID != action.data.metaID)
+            newMetaIDs = state.metaIDs.filter( el => el.metaID != action.data.metaID)
             return{...state, metaIDs: [...newMetaIDs]};
         default:
             return state

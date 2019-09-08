@@ -51,12 +51,15 @@ class PhotoListAPI(generics.GenericAPIView):
     post:
     Create a new picture.
     """
-    permission_classes = [IsAuthenticated,]
+    # TODO see why ReadOnly works as a mask
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
         photo = ""        
         sort_type = {"asc":"", "desc":"-"}
-        if request.user.user_type != 1:
+        # TODO: This fails when a user is not authenticated
+        # TODO: refactor this part
+        if request.user.user_type == 1: 
             photo = Photo.objects.all()
             if(request.query_params["sort"]):
                 splitted_param = request.query_params["sort"].split("-")

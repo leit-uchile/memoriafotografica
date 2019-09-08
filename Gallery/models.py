@@ -9,6 +9,7 @@ import os
 from uuid import uuid4
 from sorl.thumbnail import get_thumbnail
 from django.core.files.base import ContentFile
+from math import floor
 # Create your models here.
 PERMISSION_CHOICES = (
     ('CC BY', 'Atribución'),
@@ -67,6 +68,8 @@ class Photo(models.Model):
     comments = models.ManyToManyField(Comment, blank = True)
     metadata = models.ManyToManyField(Metadata, blank = True)
     report = models.ManyToManyField(Reporte, blank = True)
+    aspect_h = models.IntegerField(blank=True, default=1)
+    aspect_w = models.IntegerField(blank=True, default=1)
 
     created_at = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)
@@ -75,7 +78,19 @@ class Photo(models.Model):
             #Have to save the image (and imagefield) first
             super(Photo, self).save(*args, **kwargs)
             #obj is being created for the first time - resize
-            resized = get_thumbnail(self.image, "640x480", crop='center', quality=99)
+
+            # Compute the new pixels acording to the aspect ratio
+            tmp_h = self.aspect_h
+            tmp_w = self.aspect_w
+            if self.aspect_h == None:
+                tmp_h = 1
+            if self.aspect_w == None:
+                tmp_w = 1
+            gcd = 480/tmp_h
+            dimH = 480
+            dimW = floor(gcd*tmp_w)
+
+            resized = get_thumbnail(self.image, "{}x{}".format(dimW,dimH), crop='center', quality=99)
             #Manually reassign the resized image to the image field
             archivo=self.image.url.split('/')[-1]
             nombre = archivo.split('.')

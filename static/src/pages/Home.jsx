@@ -8,6 +8,7 @@ import gallery from '../css/galleryHome.css';
 import {Helmet} from 'react-helmet';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCheck,faTimesCircle} from '@fortawesome/free-solid-svg-icons';
+import Gallery from 'react-photo-gallery';
 
 
 class Home extends Component{
@@ -57,10 +58,31 @@ class Home extends Component{
     }
 
     render(){
-        const {photos, cats, filters} = this.props
+        const {
+            photos,
+            cats,
+            filters,
+            removeSearch,
+            sortByTag,
+            sortByUpload,
+            auth
+        } = this.props
+
         var filtersId = filters.map(el => el.metaID)
-        var filtersText = filters.length !=0 ? filters.map(el => <span key={el.id} style={styles.tags} onClick={()=>this.props.removeSearch(el.id, el.value)}>#{el.value} <FontAwesomeIcon icon={faTimesCircle}/> </span>) 
-            : null
+        var filtersText = filters.length !=0 ? filters.map(el => 
+            <span 
+                key={el.metaID}
+                style={styles.tags} 
+                onClick={()=> removeSearch(el.metaID,el.value)}>
+                    #{el.value} <FontAwesomeIcon icon={faTimesCircle}/> 
+            </span>) 
+            : <h2>Las fotos de todos</h2>
+
+        var mapped = photos.map( el => ({
+            src: el.thumbnail,
+            height: el.aspect_h,
+            width: el.aspect_w
+        }))
 
         // Utility Function
         var isSelected = (id, array) => {
@@ -81,7 +103,7 @@ class Home extends Component{
         }) : []
 
         if (filters && filters.length === 0 && this.state.selectedCategories.length === 0 ){
-            var currentPhotos = photos.slice(0,this.state.maxPhotos) //todas las fotos
+            var currentPhotos = mapped.slice(0,this.state.maxPhotos) //todas las fotos
         }
         else if (filters && filters.length !==0 && this.state.selectedCategories.length !== 0 ){ //hay tag y categoria -> intersectar
             currentPhotos = photos.filter( el =>
@@ -109,15 +131,15 @@ class Home extends Component{
                     <title>Buscar fotografias</title>
                 </Helmet>
                     <Row style={styles.galleryMenu}>
-                        <Col xs='9'>
-                            <div style={{paddingLeft:'2em', display:'flex',alignItems: 'left', verticalAlign: 'middle', flexDirection: 'row'}}>
+                        <Col md='9'>
+                            <div style={styles.filtersContainer}>
                                 {filtersText}
                             </div>
                         </Col>
-                        <Col xs='3'>
+                        <Col md='3'>
                             <ul style={styles.menuMain}>
 
-                                <li className='menu-list'><a href='#'>Categorias {selectedCatsNumber}</a>
+                                <li className='menu-list'><a href='#'>Categorias {selectedCatsNumber} ▼</a>
                                     <div id='cat' className='menu-sub'>
                                         <div style={styles.menu2Col}>
                                             <Categories categorias={currentCats1} onClick={this.toggleCategory}/>
@@ -128,13 +150,13 @@ class Home extends Component{
                                     </div>
                                 </li>
 
-                                <li className='menu-list'><a href='#'>Ordenar</a>
+                                <li className='menu-list'><a href='#'>Ordenar ▼</a>
                                     <div id='sort' className='menu-sub'>
                                         <div style={styles.menu1Col}>
                                             <h3 style={styles.menuSubTitle}>Por orden cronológico</h3>
                                             <ul>
-                                                <li><a href='?sort=created-asc'>Más antiguas primero</a></li>
-                                                <li><a href='?sort=created-desc'>Más nuevas primero</a></li>
+                                                <li><span onClick={() => sortByUpload('asc',auth)}>Más antiguas primero</span></li>
+                                                <li><span onClick={() => sortByUpload('desc',auth)}>Más nuevas primero</span></li>
                                             </ul>
                                             <h3 style={styles.menuSubTitle}>Por fecha de subida</h3>
                                             <ul>
@@ -147,8 +169,9 @@ class Home extends Component{
                             </ul>
                         </Col>
                     </Row>
+                <div style={styles.galleryMenuFixSpace}></div>
                 <Container fluid style={styles.galleryContainer}>
-                    <Gallery photoList={currentPhotos} handleOnClick={this.handleOnClick}/>
+                    <Gallery photos={mapped} targetRowHeight={200}/>
                 </Container>
             </div>
         )
@@ -163,30 +186,37 @@ const Categories = ({categorias, onClick}) => (
     </ul>
 )
 
-const Gallery = ({photoList, handleOnClick}) => (
-    photoList.length == 0 ? <h3>No hay fotografias disponibles</h3> : photoList.map((el, index) => (
-        <Photo url={el.image} name={el.title} useLink redirectUrl={"/photo/"+el.id} 
-        hover hoverText={el.title} hoverStyle={{fontSize: '1.5em'}} style={styles.photo}/>)))
-    
-
 const styles = {
     galleryMenu:{
-        height: '5em',
-        width: '100%', /*mio, antes max-width*/
+        width: '100%',
         margin: '0 auto',
-        borderBottom: '1px solid rgb(210,214,218)', /*mio*/
-        background: 'white'
+        borderBottom: '1px solid rgb(210,214,218)',
+        background: 'white',
+        height:'8em',
+        position: 'fixed',
+        zIndex: '1',
+    },
+    galleryMenuFixSpace:{
+        height:'8em'
     },
     menuMain:{
         listStyle: 'none',
         whiteSpace: 'nowrap'
+    },
+    filtersContainer:{
+        paddingTop:'1em', 
+        paddingLeft:'2em', 
+        display:'flex',
+        alignItems: 'left', 
+        verticalAlign: 'middle', 
+        flexDirection: 'row'
     },
     tags:{
         color:'white', 
         borderRadius:'10px', 
         backgroundColor:'#9a9e9d', 
         margin:'2px', 
-        padding:'4px 12px 4px 12px',
+        padding:'4px 12px 4px 12px'
     },
     unSelected: {
         padding: '0',
@@ -207,7 +237,7 @@ const styles = {
         backgroundColor: '#f2f2f2',
         color:'#ff5a60',
         padding:'0.5em',
-        borderRadius: '0.5em',
+        borderRadius: '0.5em'
     },
     menuSubTitle:{
         display: 'flex',
@@ -218,7 +248,7 @@ const styles = {
     },
     menu1Col:{
         float: 'left',
-        width: '100%',
+        width: '100%'
     },
     menu2Col:{
         float: 'left',
@@ -228,18 +258,7 @@ const styles = {
         width:'100%',
         minHeight: '100vh', 
         padding:'1.25em 3.1em',
-        backgroundColor:'#f7f8fa',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(150px,300px))', /*repeat(veces, tamaño)*/
-        gridTemplateRows: 'repeat(auto-fit, 300px)',
-        gridAutoColumns: 'minmax(150px,1fr)',
-        gridAutoRows: 'minmax(150px,1fr)',
-        gridAutoFlow: 'row dense',
-        gridGap: '0.75em'
-    }  ,
-    photo:{
-        height:'200px',
-        width:'auto'
+        backgroundColor:'#f7f8fa'
     }
 }
 const mapStateToProps = state => {
@@ -247,6 +266,7 @@ const mapStateToProps = state => {
         photos: state.home.photos,
         cats: state.home.all_cats,
         filters: state.search.metaIDs,
+        auth: state.auth.token
     }
 }
 
@@ -263,6 +283,12 @@ const mapActionsToProps = dispatch =>{
         },
         removeSearch: (id,value) => {
             return dispatch(search.removeSearchItem(id,value));
+        },
+        sortByTag: (tag,order,auth) => {
+            return dispatch(home.sortByField(tag,order,auth));
+        },
+        sortByUpload: (order,auth) => {
+            return dispatch(home.sortByUpload(order,auth));
         }
     }
 }
