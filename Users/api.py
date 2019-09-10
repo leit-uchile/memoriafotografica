@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from knox.models import AuthToken
 from django.conf import settings
-from .serializers import (CreateUserSerializer,UserSerializer, LoginUserSerializer)
+from .serializers import (CreateUserSerializer,UserSerializer, LoginUserSerializer, UserAlbumSerializer, UserCommentSerializer, UserPhotoSerializer)
 from .models import User
 from .permissions import *
 from rest_framework.documentation import include_docs_urls
@@ -117,3 +117,57 @@ class UserDetailAPI(generics.GenericAPIView):
         user = self.get_object(pk)
         user.delete()
         return Response(status = status.HTTP_204_NO_CONTENT)
+
+class UserPhotosAPI(generics.GenericAPIView):
+    """
+       get:
+       Get photos of a *user*.
+
+       TODO delete:
+       Delete an photo asociated to a *user*.
+       """
+    permission_classes = [IsAuthenticated,]
+    serializer_class = UserPhotoSerializer
+    def get(self, request, pk, *args, **kwargs):
+        try:
+            user = User.objects.get(pk=pk)
+            serializer = UserPhotoSerializer(user)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            raise Http404
+
+class UserAlbumsAPI(generics.GenericAPIView):
+    """
+       get:
+       Get albums of a *user*.
+
+       TODO delete:
+       Delete an album but not the photos asociated to a *user*.
+       """
+    permission_classes = [IsAuthenticated,]
+    serializer_class = UserAlbumSerializer
+    def get(self, request, pk, *args, **kwargs):
+        try:
+            user = User.objects.get(pk=pk)
+            serializer = UserAlbumSerializer(user)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            raise Http404
+
+class UserCommentsAPI(generics.GenericAPIView):
+    """
+       get:
+       Get comments of a *user*.
+
+       TODO delete:
+       Delete an comment asociated to a *user*.
+       """
+    permission_classes = [IsAuthenticated,]
+    serializer_class = UserCommentSerializer
+    def get(self, request, pk, *args, **kwargs):
+        try:
+            user = User.objects.get(pk=pk)
+            serializer = UserCommentSerializer(user)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            raise Http404
