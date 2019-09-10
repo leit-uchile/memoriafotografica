@@ -17,7 +17,6 @@ from rest_condition import ConditionalPermission, C, And, Or, Not
 from rest_framework.documentation import include_docs_urls
 
 def get_user(photoPair):
-    print(photoPair)
     try:
         u = photoPair[0].user_set.first()
         u_dict = {}
@@ -39,6 +38,14 @@ def make_tag(metadata_id):
     m = Metadata.objects.get(pk=metadata_id)
     return m.metadata.name + " : " + m.value
 
+
+def sort_photos(photolist, request):
+    if(request.query_params["sort"]):
+        splitted_param = request.query_params["sort"].split("-")
+        query = sort_type[splitted_param[1]]+splitted_param[0]
+        photolist = photolist.order_by(query)
+    return photolist
+
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
         return request.method in SAFE_METHODS
@@ -51,24 +58,20 @@ class PhotoListAPI(generics.GenericAPIView):
     post:
     Create a new picture.
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
-        photo = ""        
+        photo = ""
         sort_type = {"asc":"", "desc":"-"}
-        if request.user.user_type != 1:
-            photo = Photo.objects.all()
-            if(request.query_params["sort"]):
-                splitted_param = request.query_params["sort"].split("-")
-                query = sort_type[splitted_param[1]]+splitted_param[0]
-                photo = photo.order_by(query)
-            serializer_class = PhotoAdminSerializer
-            serializer = PhotoAdminSerializer(photo, many = True)
-            serialized_data = serializer.data
-        else:
-            photo = Photo.objects.filter(censure = False, approved = True)
+        if request.user.is_anonymous or request.user.user_type == 1:
+            photo = sort_photos(Photo.objects.filter(censure = False, approved = True), request)
             serializer_class = PhotoSerializer
             serializer = PhotoSerializer(photo, many = True)
+            serialized_data = serializer.data
+        else:
+            photo = sort_photos(Photo.objects.all(), request)
+            serializer_class = PhotoAdminSerializer
+            serializer = PhotoAdminSerializer(photo, many = True)
             serialized_data = serializer.data
         for aPhoto in serialized_data:
             aPhoto['metadata'] = list(filter(lambda x: check_approval(x), aPhoto['metadata']))
@@ -99,7 +102,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
     delete:
     Delete a picture.
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get_object(self, pk, admin):
         try:
@@ -121,15 +124,15 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
             (5, 'Funcionario'),
             (6, 'Externo')
         )
-        if request.user.user_type != 1:
-            photo = self.get_object(pk,True)
-            serializer_class = PhotoDetailAdminSerializer
-            serializer = PhotoDetailAdminSerializer(photo)
-            serialized_data = serializer.data
-        else:
+        if request.user.is_anonymous or request.user.user_type == 1:
             photo = self.get_object(pk,False)
             serializer_class = PhotoDetailSerializer
             serializer = PhotoDetailSerializer(photo)
+            serialized_data = serializer.data
+        else:
+            photo = self.get_object(pk,True)
+            serializer_class = PhotoDetailAdminSerializer
+            serializer = PhotoDetailAdminSerializer(photo)
             serialized_data = serializer.data
         serialized_data['metadata'] = list(filter(lambda x: x['approved'], serialized_data['metadata']))
         serialized_data['metadata'] = list(map(lambda x: x['metadata']['name'] + " : " + x['value'], serialized_data['metadata']))
@@ -185,9 +188,9 @@ class CommentListAPI(generics.GenericAPIView):
     get:
     Get a list of ALL comments.
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
     def get(self, request, *args, **kwargs):
-        if request.user.user_type == 1:
+        if request.user.is_anonymous or request.user.user_type == 1:
             comments = Comment.objects.filter(censure=False)
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comments, many = True)
@@ -209,7 +212,7 @@ class CommentDetailAPI(generics.GenericAPIView):
     delete:
     Delete a comment.
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get_object(self, pk, admin):
         comment = Comment.objects.get(pk=pk)
@@ -222,7 +225,7 @@ class CommentDetailAPI(generics.GenericAPIView):
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
-        if request.user.user_type == 1:
+        if request.user.is_anonymous or request.user.user_type == 1:
             comment = self.get_object(pk, False)
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comment)
@@ -265,7 +268,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
     """
     List all comments from a photo, or create a new comment.
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get_object(self, pk, admin):
         try:
@@ -286,7 +289,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
             (5, 'Funcionario'),
             (6, 'Externo')
         )
-        if request.user.user_type == 1:
+        if request.user.is_anonymous or request.user.user_type == 1:
             p = self.get_object(pk, False)
             comments = p.comments.filter(censure=False)
             serialized_class = CommentSerializer
@@ -376,7 +379,7 @@ class CategoryDetailAPI(generics.GenericAPIView):
     Retrieve, update or delete a category.
     """
     serializer_class = CategorySerializer
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get_object(self, pk):
         try:
@@ -449,7 +452,7 @@ class ReportDetailAPI(generics.GenericAPIView):
     Retrieve, update or delete a report instance.
     """
     serializer_class = ReportSerializer
-
+    permission_classes = [IsAuthenticated,]
     def get_object(self, pk):
         try:
             return Reporte.objects.get(pk=pk)
@@ -489,7 +492,7 @@ class AlbumListAPI(generics.GenericAPIView):
     List all albums, or create a new album.
     """
     serializer_class = AlbumSerializer
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
         category = Album.objects.all()
@@ -511,7 +514,7 @@ class AlbumDetailAPI(generics.GenericAPIView):
     Retrieve, update or delete an album instance.
     """
     serializer_class = AlbumSerializer
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get_object(self, pk):
         try:
@@ -548,7 +551,7 @@ class CategoryPhotoListAPI(generics.GenericAPIView):
     """
     List all photos from a category, or update a new category.
     """
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated|ReadOnly,)
 
     def get_object(self, pk):
         try:
@@ -559,7 +562,7 @@ class CategoryPhotoListAPI(generics.GenericAPIView):
     def get(self, request, pk, *args, **kwargs):
         category = self.get_object(pk)
 
-        if request.user.user_type == 1:
+        if request.user.is_anonymous or request.user.user_type == 1:
             pictures = category.photo_set.filter(censure = False, approved = True)
             serializer = PhotoSerializer(pictures, many=True)
         else:
