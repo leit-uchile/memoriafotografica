@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import User
 from django.conf import settings
-from Gallery.serializers import AlbumSerializer, PhotoSerializer
+from Gallery.serializers import AlbumSerializer, PhotoSerializer, CommentSerializer
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -31,9 +31,28 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        exclude=('password',)
+        exclude=('password','photos','albums','comments')
 
+class UserPhotoSerializer(serializers.ModelSerializer):
+    photos = PhotoSerializer(many = True)
 
+    class Meta:
+        model = User
+        fields=('photos',)
+
+class UserAlbumSerializer(serializers.ModelSerializer):
+    albums = AlbumSerializer(many = True)
+
+    class Meta:
+        model = User
+        fields=('albums',)
+
+class UserCommentSerializer(serializers.ModelSerializer):
+    comments = CommentSerializer(many = True)
+
+    class Meta:
+        model = User
+        fields=('comments',)
 
 class LoginUserSerializer(serializers.Serializer):
     email = serializers.CharField()
