@@ -4,8 +4,8 @@ import { Container, Button, FormGroup } from "reactstrap";
 import { Redirect } from "react-router-dom";
 import { search, home, misc } from "../actions";
 import Autocomplete from "react-autocomplete";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 class SearchBar extends Component {
   constructor(props) {
@@ -19,14 +19,15 @@ class SearchBar extends Component {
     this.swapPage = this.swapPage.bind(this);
   }
 
-  swapPage() {
-    if (this.props.currentPage !== "/gallery/") {
-      this.setState({ swapPage: true });
+  swapPage(){
+    if(this.props.currentPage !== "/gallery/"){
+        this.setState({swapPage: true})
     }
-    if (this.state.id !== undefined && this.state.id !== "") {
-      this.props.putSearch(this.state.id);
+    if(this.state.id !== undefined && this.state.id !== ""){
+        this.props.putSearch(this.state.id, this.state.value)
     }
   }
+
 
   componentWillMount() {
     console.log(this.props);
@@ -110,24 +111,24 @@ const mapStateToProps = state => {
 };
 
 const mapActionsToProps = dispatch => {
-  return {
-    onLoadGetPhotos: () => {
-      return dispatch(home.home());
-    },
-    onLoadGetTags: () => {
-      return dispatch(home.tags());
-    },
-    onLoadGetIPTC: () => {
-      return dispatch(home.iptcs());
-    },
-    setRoute: route => {
-      return dispatch(misc.setCurrentRoute(route));
-    },
-    putSearch: id => {
-      return dispatch(search.putSearchItem(id));
+    return {
+        onLoadGetPhotos: () => {
+            return dispatch(home.home());
+        },
+        onLoadGetTags: () => {
+            return dispatch(home.tags());
+        },
+        onLoadGetIPTC: () => {
+            return dispatch(home.iptcs());
+        },
+        setRoute: (route) => {
+            return dispatch(misc.setCurrentRoute(route));
+        },
+        putSearch: (id,value) => {
+            return dispatch(search.putSearchItem(id,value));
+        }
     }
   };
-};
 
 export default connect(
   mapStateToProps,

@@ -1,23 +1,4 @@
-.photo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;}
-
-/* .photo:nth-child(2n){
-    grid-column-end: span 2;
-    grid-row-end: span 1;
-} */
-/*
-.photo:nth-child(5n){
-    grid-column-end: span 1;
-    grid-row-end: span 2;
-} */
-
-.photo .info{
+/* .photo .info{
     width:100%;
     height: 100%;
     display: flex;
@@ -33,18 +14,18 @@
 
 .photo:hover .info{
     visibility: visible
-} 
+}  */
 
 .menu-list{
     display: inline-block;
     margin: 1em;
-    border: 1px solid black; /*error, se muestra en hijos*/
+    border: 1px solid black;
     padding: 10px;
 }
 
 .menu-list a{
-    color: red;
-    text-decoration: none; /*link no tiene subraya*/
+    color: #ff5a60;
+    text-decoration: none;
     display: block;
 }
 
@@ -55,20 +36,20 @@ li.menu-list:hover .menu-sub{
 .menu-sub{
     position: absolute;
     background: #ffffff;
-    display: none; /*no se muestra hasta hover*/
+    display: none;
     margin-top: 1em;
     padding: 1.2em;
-    border: 1px solid rgb(210,214,218); /*mio*/
-    box-shadow: 0 0 15px 0 rgba(0,0,0,.20); /*mio*/
+    border: 1px solid rgb(210,214,218);
+    box-shadow: 0 0 15px 0 rgba(0,0,0,.20);
     box-sizing: border-box;
 }
 .menu-sub#cat{
-    width: 18em; /*mio*/
-    height: auto; /*mio*/
+    width: 18em;
+    height: auto;
 }
 .menu-sub#sort{
-    width: 20m; /*mio*/
-    height: auto; /*mio*/
+    width: 15em;
+    height: auto;
 }
 .menu-sub:after{ /*triangulo*/
     position: absolute;
@@ -79,7 +60,7 @@ li.menu-list:hover .menu-sub{
     border-bottom: 0px solid rgb(210,214,218);
     border-left: 1px solid rgb(210,214,218);
     top:0%;
-    left: 15%;
+    left: 32%;
     margin-left: -10px;
     content: ''; 
     transform: rotate(45deg);

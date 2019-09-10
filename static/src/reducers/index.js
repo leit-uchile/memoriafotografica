@@ -5,6 +5,7 @@ import photoDetails from './photodetails';
 import misc from './misc';
 import search from './search';
 import upload from './upload';
+import user from './user';
 import {combineReducers} from 'redux';
 
 const rootReducer = combineReducers({
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
   photoDetails: photoDetails,
   misc: misc,
   search: search,
-  upload: upload
+  upload: upload,
+  user: user,
 })
 
 export default rootReducer;
