@@ -40,6 +40,7 @@ def make_tag(metadata_id):
 
 
 def sort_photos(photolist, request):
+    sort_type = {"asc":"", "desc":"-"}
     if(request.query_params["sort"]):
         splitted_param = request.query_params["sort"].split("-")
         query = sort_type[splitted_param[1]]+splitted_param[0]
@@ -62,7 +63,7 @@ class PhotoListAPI(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         photo = ""
-        sort_type = {"asc":"", "desc":"-"}
+
         if request.user.is_anonymous or request.user.user_type == 1:
             photo = sort_photos(Photo.objects.filter(censure = False, approved = True), request)
             serializer_class = PhotoSerializer
