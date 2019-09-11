@@ -1,7 +1,7 @@
 export const getPhoto = (id) => {return (dispatch, getState) => {
     let headers = {'Content-Type' : 'application/json'};
 
-    return fetch(`/api/photo/${id}`, {method: 'GET', headers: headers}).then(
+    return fetch(`/api/photos/${id}`, {method: 'GET', headers: headers}).then(
     function(response){
         const r = response;
         if(r.status === 200){
