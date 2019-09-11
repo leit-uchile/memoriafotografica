@@ -5,11 +5,7 @@ import Photo from "../components/Photo";
 import {
   Container,
   Row,
-  Col,
-  Button,
-  Nav,
-  DropdownItem,
-  DropdownMenu
+  Col
 } from "reactstrap";
 import { Redirect } from "react-router-dom";
 import gallery from "../css/galleryHome.css";

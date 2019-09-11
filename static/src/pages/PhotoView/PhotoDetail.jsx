@@ -280,7 +280,7 @@ class PhotoDetails extends Component {
                     <p>
                       {photoInfo.details.description}
                     </p>
-                    <Button tag={Link} to="/" className="float-left">
+                    <Button tag={Link} to="/request-photo" className="float-left">
                       ¿Quieres usar la foto?
                     </Button>
                     <ReportModal
