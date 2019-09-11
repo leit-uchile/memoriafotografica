@@ -1,7 +1,8 @@
 .leftcol{
   padding-left: 0;
   padding-right: 0;
-  border-top: 1px solid grey;
+  background-color: #e9ecef;
+  border-right: 1px solid rgb(210, 214, 218);
 }
 
 
@@ -12,7 +13,7 @@
   text-align: left;
   font-size:14px;
   margin:0px;
-  background-color:#dceaf7;
+  background-color: #e9ecef;
   border-radius:0;
   display: inline-block;
   border:0px;
@@ -26,9 +27,4 @@
   border-bottom:1px solid rgba(0,0,0,0.05);
   font-size: 16px;
   font-weight: 400;
-}
-
-.navEnding{
-  height: 50px;
-  background-image: linear-gradient(#dceaf7, rgba(0,0,0,0));
 }
