@@ -1,7 +1,7 @@
 export const getPhoto = (id) => {return (dispatch, getState) => {
     let headers = {'Content-Type' : 'application/json'};
 
-    return fetch(`/gallery/photo/${id}`, {method: 'GET', headers: headers}).then(
+    return fetch(`/api/photo/${id}`, {method: 'GET', headers: headers}).then(
     function(response){
         const r = response;
         if(r.status === 200){
@@ -43,7 +43,7 @@ export const putComment = (id, comment, auth) => {return (dispatch, getState) =>
 
     let jsonthing = JSON.stringify({id: id, content: comment})
 
-    return fetch(`/api/photos/${id}/comments/`, 
+    return fetch(`/api/photos/${id}/comments/`,
         {method: 'POST', headers: headers, body: jsonthing}).then(
     function(response){
         const r = response;
