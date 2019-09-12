@@ -41,10 +41,13 @@ def make_tag(metadata_id):
 
 def sort_photos(photolist, request):
     sort_type = {"asc":"", "desc":"-"}
-    if(request.query_params["sort"]):
-        splitted_param = request.query_params["sort"].split("-")
-        query = sort_type[splitted_param[1]]+splitted_param[0]
-        photolist = photolist.order_by(query)
+    try:
+        if(request.query_params["sort"]):
+            splitted_param = request.query_params["sort"].split("-")
+            query = sort_type[splitted_param[1]]+splitted_param[0]
+            photolist = photolist.order_by(query)
+    except KeyError as e:
+        pass
     return photolist
 
 class ReadOnly(BasePermission):

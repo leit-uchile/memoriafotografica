@@ -129,7 +129,7 @@ class Dashboard extends Component {
         <Row style={{ marginTop: "2em" }}>
           <Col md="4">
             <Card>
-              <CardImg top width="100%" src={user.avatar} />
+              <CardImg top width="100%"src={user.avatar} />
               <CardBody
                 style={{ backgroundColor: "#ebeeef", textAlign: "center" }}>
                 <CardText>{`${user.first_name} ${user.last_name}`}</CardText>

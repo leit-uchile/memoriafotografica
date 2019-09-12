@@ -20,6 +20,9 @@ class IPTCKeyword(models.Model):
     created_at = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)
 
+    def __str__(self):
+        return "IPTC Metadata Keyword: "+self.name
+
 DEFAULT_IPTC_ID = 1
 class Metadata(models.Model):
     value = models.TextField()
@@ -27,3 +30,6 @@ class Metadata(models.Model):
     approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)
+
+    def __str__(self):
+        return "Metadata ["+self.metadata.name+":"+self.value+"]"
