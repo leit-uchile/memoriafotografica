@@ -92,7 +92,7 @@ class RequestPhoto extends Component{
                   <Input type='text' style={{marginBottom:'0.5em'}} placeholder='Apellidos' required/>
                   <Input type='text' style={{marginBottom:'0.5em'}} placeholder='Actividad/Profesión' required/>
                   <Input type='text' style={{marginBottom:'0.5em'}} placeholder='Comuna' required/>
-                  <Input type='text' style={{marginBottom:'0.5em'}} placeholder='Email' required/>
+                  <Input type='email' style={{marginBottom:'0.5em'}} placeholder='Email' required/>
                   <Input type='text' style={{marginBottom:'0.5em'}} placeholder='Razón Social' required/>
                   <Input type='text' style={{marginBottom:'0.5em'}} placeholder='Teléfono Institución' required/>
                 </Col>

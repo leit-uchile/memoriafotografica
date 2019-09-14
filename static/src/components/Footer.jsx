@@ -37,10 +37,10 @@ const Footer = () => {
           </Col>
           <Col md="3">
             <h5 style={{ fontSize: "12px" }}>
-              <b>Equipo</b>
+              <b>Acerca de</b>
             </h5>
             <ul>
-              <li>Acerca de</li>
+              <li>El Proyecto</li>
               <li>LEIT</li>
               <li>Integrate al Proyecto</li>
             </ul>
@@ -92,8 +92,7 @@ const styles = {
   contenedor: {
     borderTop: "1px solid rgb(210,214,218)",
     width: "100%",
-    background: "linear-gradient(top, #fbfcfc 0%, #dee1e2 100%), -moz-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%) -webkit-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)",
-    marginTop: "2em"
+    background: "linear-gradient(top, #fbfcfc 0%, #dee1e2 100%), -moz-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%) -webkit-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)"
   },
   contenido: {
     fontSize: "12px",

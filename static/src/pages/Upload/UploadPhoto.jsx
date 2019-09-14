@@ -264,6 +264,7 @@ class UploadPhoto extends Component {
                 <Label style={{ color: "#848687" }}>Etiquetas:</Label>
                 <ReactTags
                   style={{ width: "auto" }}
+                  placeholder={"Añadir etiquetas"}
                   autoresize={false}
                   allowNew={true}
                   tags={this.state.tags}

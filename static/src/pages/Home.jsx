@@ -5,7 +5,12 @@ import Photo from "../components/Photo";
 import {
   Container,
   Row,
-  Col
+  Col,
+  ButtonDropdown,
+  UncontrolledButtonDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
 } from "reactstrap";
 import { Redirect } from "react-router-dom";
 import gallery from "../css/galleryHome.css";
@@ -14,6 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
 
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -21,16 +27,17 @@ class Home extends Component {
       selectedCategories: [],
       maxAllowedCategories: 8,
       maxPhotos: 40,
-      sortOpen: false,
-      catsOpen: false,
       redirect: false,
       link: "",
+      catsOpen: false,
+      sortOpen: false,
       chosenPhotoIndex: 0
     };
     this.handleOnClick = this.handleOnClick.bind(this);
-    this.toggleCategory = this.toggleCategory.bind(this);
+    this.pickCategory = this.pickCategory.bind(this);
     this.allowMoreCats = this.allowMoreCats.bind(this);
     this.allowMorePics = this.allowMorePics.bind(this);
+    this.toggleCategory = this.toggleCategory.bind(this);
   }
 
   handleOnClick = obj => {
@@ -53,7 +60,11 @@ class Home extends Component {
     this.setState({ maxPhotos: this.state.maxPhotos + 10 });
   }
 
-  toggleCategory(id) {
+  toggleCategory(){
+    this.setState({catsOpen: !this.state.catsOpen});
+  }
+
+  pickCategory(id) {
     // Remove if in already
     if (this.state.selectedCategories.filter(el => el === id).length !== 0) {
       this.setState({
@@ -119,7 +130,9 @@ class Home extends Component {
         })
       : [];
     var currentCats1 = currentCats
-      ? currentCats.slice(0, currentCats.length / 2).map(el => {
+      ? currentCats
+          .filter((e,i)=>i%2===0)
+          .map(el => {
           return {
             ...el,
             selected: isSelected(el.id, this.state.selectedCategories)
@@ -128,7 +141,7 @@ class Home extends Component {
       : [];
     var currentCats2 = currentCats
       ? currentCats
-          .slice(currentCats.length / 2, currentCats.length)
+          .filter((e,i)=>i%2===1)
           .map(el => {
             return {
               ...el,
@@ -196,59 +209,61 @@ class Home extends Component {
           <title>Buscar fotografias</title>
         </Helmet>
         <Row style={styles.galleryMenu}>
-          <Col md="9">
+          <Col xs="9">
             <div style={styles.filtersContainer}>{filtersText}</div>
           </Col>
-          <Col md="3">
-            <ul style={styles.menuMain}>
-              <li className="menu-list">
-                <a href="#">Categorias {selectedCatsNumber} ▼</a>
-                <div id="cat" className="menu-sub">
-                  <div style={styles.menu2Col}>
-                    <Categories
-                      categorias={currentCats1}
-                      onClick={this.toggleCategory}
-                    />
-                  </div>
-                  <div style={styles.menu2Col}>
-                    <Categories
-                      categorias={currentCats2}
-                      onClick={this.toggleCategory}
-                    />
-                  </div>
-                </div>
-              </li>
-
-              <li className="menu-list">
-                <a href="#">Ordenar ▼</a>
-                <div id="sort" className="menu-sub">
-                  <div style={styles.menu1Col}>
-                    <h3 style={styles.menuSubTitle}>Por orden cronológico</h3>
-                    <ul>
-                      <li>
-                        <span onClick={() => sortByUpload("asc", auth)}>
+          <Col xs="3">
+            <ButtonDropdown isOpen={this.state.catsOpen} toggle={this.toggleCategory} direction='down'>
+              <DropdownToggle caret style={styles.dropdownButton} color='danger'>
+                Categorias {selectedCatsNumber}
+              </DropdownToggle>
+              <DropdownMenu style={styles.dropdownMenu} 
+              style={this.state.catsOpen 
+                ? {width:'16em', boxShadow: '0 0 15px 0 rgba(0,0,0,.20)'} 
+                : {visibility:'hidden'}}>
+                  <Row>
+                    <Categories 
+                      categorias={currentCats1} 
+                      onClick={this.pickCategory}/>
+                    <Categories 
+                      categorias={currentCats2} 
+                      onClick={this.pickCategory}/>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <DropdownItem 
+                      style={{paddingLeft:'16%'}}
+                      onClick={this.allowMoreCats}>
+                        Cargar más categorias
+                      </DropdownItem>
+                    </Col>
+                  </Row>
+              </DropdownMenu>
+                
+              </ButtonDropdown>
+              
+              <UncontrolledButtonDropdown>
+              <DropdownToggle caret style={styles.dropdownButton} color='danger'>
+                Ordenar
+              </DropdownToggle>
+              <DropdownMenu style={{boxShadow: '0 0 15px 0 rgba(0,0,0,.20)'}}>
+                <DropdownItem header>Por orden cronológico</DropdownItem>
+                <DropdownItem onClick={() => sortByUpload("asc", auth)}>
                           Más antiguas primero
-                        </span>
-                      </li>
-                      <li>
-                        <span onClick={() => sortByUpload("desc", auth)}>
+                </DropdownItem>
+                <DropdownItem onClick={() => sortByUpload("desc", auth)}>
                           Más nuevas primero
-                        </span>
-                      </li>
-                    </ul>
-                    <h3 style={styles.menuSubTitle}>Por fecha de subida</h3>
-                    <ul>
-                      <li>
-                        <a href="#">Más antiguas primero</a>
-                      </li>
-                      <li>
-                        <a href="#">Más nuevas primero</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </li>
-            </ul>
+                </DropdownItem>
+                <DropdownItem divider/>
+                <DropdownItem header>Por fecha de subida</DropdownItem>
+                <DropdownItem>
+                          Más antiguas primero
+                </DropdownItem>
+                <DropdownItem>
+                          Más nuevas primero
+                </DropdownItem>
+              </DropdownMenu>
+              </UncontrolledButtonDropdown>
           </Col>
         </Row>
         <div style={styles.galleryMenuFixSpace}></div>
@@ -265,22 +280,19 @@ class Home extends Component {
 }
 
 const Categories = ({ categorias, onClick }) => (
-  <ul>
+  <Col style={{minWidth:'50%'}}>
     {categorias.length == 0
       ? "-"
       : categorias.map((el, index) => (
-          <li>
-            <a
-              style={el.selected ? styles.Selected : styles.unSelected}
-              href="#"
-              key={el.id}
-              onClick={() => onClick(el.id)}>
-              {el.title}
-              {el.selected ? <FontAwesomeIcon icon={faCheck} /> : ""}
-            </a>
-          </li>
+          <DropdownItem 
+          key={el.id}
+          onClick={() => onClick(el.id)}
+          style={el.selected ? styles.Selected : styles.unSelected}>
+            {el.title}
+            {el.selected ? <FontAwesomeIcon icon={faCheck} /> : ""}
+          </DropdownItem>
         ))}
-  </ul>
+  </Col>
 );
 
 const styles = {
@@ -289,16 +301,12 @@ const styles = {
     margin: "0 auto",
     borderBottom: "1px solid rgb(210,214,218)",
     background: "white",
-    height: "8em",
+    height: "5em",
     position: "fixed",
     zIndex: "1"
   },
   galleryMenuFixSpace: {
-    height: "8em"
-  },
-  menuMain: {
-    listStyle: "none",
-    whiteSpace: "nowrap"
+    height: "5em"
   },
   filtersContainer: {
     paddingTop: "1em",
@@ -315,20 +323,13 @@ const styles = {
     margin: "2px",
     padding: "4px 12px 4px 12px"
   },
-  unSelected: {
-    padding: "0",
-    color: "#97878f",
-    textDecoration: "none",
-    display: "block",
-    marginBottom: ".35em"
-  },
-  Selected: {
-    padding: "0",
-    color: "#97878f",
-    textDecoration: "none",
-    display: "block",
-    marginBottom: ".35em",
-    fontWeight: "bold"
+  dropdownButton:{
+    color: '#ff5a60',
+    backgroundColor:'white',
+    margin: '1em 1em 0 1em',
+    border: '1px solid black',
+    borderRadius:'0',
+    padding: '10px'
   },
   selectedCatsNumber: {
     backgroundColor: "#f2f2f2",
@@ -336,20 +337,12 @@ const styles = {
     padding: "0.5em",
     borderRadius: "0.5em"
   },
-  menuSubTitle: {
-    display: "flex",
-    fontSize: "1.1em",
-    fontWeight: "bold",
+  unSelected: {
+    color: "#97878f"
+  },
+  Selected: {
     color: "#97878f",
-    justifyContent: "center"
-  },
-  menu1Col: {
-    float: "left",
-    width: "100%"
-  },
-  menu2Col: {
-    float: "left",
-    width: "50%"
+    fontWeight: "bold"
   },
   galleryContainer: {
     width: "100%",

@@ -14,6 +14,7 @@ import Dashboard from "./Curador/Dashboard";
 import LandingPage from "./LandingPage";
 import UserDashboard from "./UserDashboard/UserDashboard";
 import EditProfile from "./UserDashboard/EditProfile";
+import Index from "./Miscellaneous/Index";
 // Utils
 import PrivateComponent from "../components/PrivateComponent";
 import ErrorBoundary from "../components/ErrorBoundary";
@@ -33,6 +34,7 @@ const Layout = () => {
             <BoundedRoute path={"/register"} component={Register} />
             <BoundedRoute path={"/upload"} component={Upload} />
             <BoundedRoute path={"/photo/:id"} component={PhotoDetails}/>
+            <BoundedRoute path={"/misc"} component={Index}/>
             <PrivateComponent path={"/request-photo"} component={RequestPhoto}/>
             <PrivateComponent path={"/curador/dashboard"} component={Dashboard} />
             <PrivateComponent path={"/user/dashboard"} component={UserDashboard} />
