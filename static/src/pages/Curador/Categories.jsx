@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Category_New from './Category_New'
 import {Link, Route} from 'react-router-dom';
 import {Col, Row, Container, Button, ButtonGroup, Input,
-    Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
+    Modal, ModalBody, ModalFooter, ModalHeader, Spinner} from 'reactstrap';
 import { Table } from 'reactstrap';
 import {connect} from 'react-redux';
 import {auth, home, curador} from '../../actions';
@@ -28,6 +28,16 @@ class Categories extends Component{
 
     componentWillMount(){
         this.getLatestCategories()
+
+
+    }
+
+    componentWillUpdate(){
+      console.log(this.props)
+      if (this.props.refresh){
+        console.log("completado, a refrescar!")
+        window.location.reload();
+      }
     }
 
     getLatestCategories(){
@@ -47,15 +57,10 @@ class Categories extends Component{
     }
 
     removeCategories(){
-        // Fake call to API : stub function
-        const arr = this.props.cats.filter( (el,i) => {
-            for(var j=0; j<this.state.toDelete.length; j++){
-                if(this.state.toDelete[j] === i){return false}
-            } return true
-        })
-        // Arr should come from redux with a reducer
-        this.setState({toDelete: [], categories: arr, deleteModal: false})
-        //this.getLatestCategories()
+        console.log(this.props.cats)
+        console.log(this.state.toDelete)
+        this.props.deleteCategories(this.props.token, this.state.toDelete)
+
     }
 
     toggleRemoveConfirmation(){
@@ -70,8 +75,8 @@ class Categories extends Component{
             latest.push(<tr>
                           <th>
                             <input type="checkbox" aria-label="Checkbox for delete Categories"
-                            onClick={e => this.updateToDelete(i,e.target.checked)}
-                            checked={this.state.toDelete.includes(i)}></input>
+                            onClick={e => this.updateToDelete(this.props.cats[i].id,e.target.checked)}
+                            checked={this.state.toDelete.includes(this.props.cats[i].id)}></input>
                           </th>
                           <th>{this.props.cats[i].title}</th>
                           <td>{new Date(this.props.cats[i].created_at).toLocaleString()}</td>
@@ -99,7 +104,7 @@ class Categories extends Component{
                                 No se eliminar&aacute;n las fotos asociadas, sólo la categoría. Esta acción no se puede deshacer.
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="danger" onClick={this.removeCategories}>Eliminar</Button>
+                                <Button color="danger" onClick={this.removeCategories}> Eliminar <Spinner size="sm" color="light" style={{display: (this.props.loading ? "inline-block" : "none")}}/> </Button>
                                 <Button onClick={this.toggleRemoveConfirmation}>Volver</Button>
                             </ModalFooter>
                         </Modal>
@@ -140,12 +145,17 @@ const mapStateToProps = state => {
     token: state.auth.token,
     meta: state.home.all_tags,
     cats: state.curador.categories,
+    loading: state.curador.loading,
+    refresh: state.curador.refresh
   }
 }
 const mapActionsToProps = dispatch => {
   return {
     getCategories: (route) => {
       return dispatch(curador.getCategories(route));
+    },
+    deleteCategories: (auth, catArray) => {
+      return dispatch(curador.deleteCategories(auth, catArray))
     }
 
   }

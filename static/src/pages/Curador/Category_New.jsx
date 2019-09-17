@@ -24,8 +24,7 @@ class Category_New extends Component{
     handleSubmit(e){
         e.preventDefault()
         this.props.createCategory(this.props.token, this.state.category_name)
-        console.log("wenaaaaaaaa")
-        //this.cates.push([name,tags])
+
     }
     render(){
         return(
