@@ -24,7 +24,7 @@ import {
 import Dropzone from "react-dropzone";
 import { v4 } from "uuid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faQuestionCircle, faChevronCircleLeft, faChevronCircleRight, faCloudUploadAlt } from "@fortawesome/free-solid-svg-icons";
 import "../../css/search.css";
 import { connect } from "react-redux";
 import { upload } from "../../actions";
@@ -287,7 +287,7 @@ class UploadPhoto extends Component {
                             id={"CreativeCommonsCheckbox" + (k + 1)}
                             onClick={() => this.updateCC(el.name)}
                           />{" "}
-                          {el.name + " "}
+                          <span className="CCName">{el.name + " "}</span>
                           <FontAwesomeIcon
                             icon={faQuestionCircle}
                             id={"PopoverFocus" + (k + 1)}
@@ -311,9 +311,9 @@ class UploadPhoto extends Component {
                   </FormGroup>
                 </div>
               </FormGroup>
-              <ButtonGroup style={{ marginTop: "20px" }}>
-                <Button onClick={this.props.goBack}>Atras</Button>
-                <Button type="submit">Continuar</Button>
+              <ButtonGroup style={{ marginTop: "20px", width: "100%" }}>
+                <Button onClick={this.props.goBack}><FontAwesomeIcon icon={faChevronCircleLeft} /></Button>
+                <Button type="submit" color="success"><FontAwesomeIcon icon={faChevronCircleRight} /></Button>
               </ButtonGroup>
             </Form>
           </Col>
@@ -323,10 +323,7 @@ class UploadPhoto extends Component {
                 <div style={styles.dropzone} {...getRootProps()}>
                   <input {...getInputProps()} />
                   <p>Arrastra y suelta una imagen o haz click aqui</p>
-                  <img
-                    style={{ width: "100px" }}
-                    src={"/assets/cloud-computing.png"}
-                  />
+                  <FontAwesomeIcon icon={faCloudUploadAlt} size="3x"/>
                 </div> // <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
               )}
             </Dropzone>
