@@ -12,6 +12,7 @@ import {
 } from "reactstrap";
 import Photo from "../../components/Photo";
 import Comment from "../PhotoView/Comment";
+import EditPhotos from "./EditPhotos"
 import { connect } from "react-redux";
 import { user, misc } from "../../actions";
 import { Link } from "react-router-dom";
@@ -28,6 +29,7 @@ class Dashboard extends Component {
     this.state = {
       activeIndex: 0,
       entering: true,
+      toRight: true,
       selectedAlbs: [],
       selectedComs: [],
       maxAllowedAlbums: 4,
@@ -55,10 +57,10 @@ class Dashboard extends Component {
   next() {
     if (this.animating) return;
     const nextIndex =
-      this.state.activeIndex === (this.props.data.photos.length - 1) / 4
-        ? 0
+      this.state.activeIndex + 4 >= this.props.data.photos.length - 1
+        ? this.state.activeIndex
         : this.state.activeIndex + 4;
-    this.setState({ entering: false }, () =>
+    this.setState({ entering: false, toRight: true }, () =>
       setTimeout(
         function() {
           this.setState({ activeIndex: nextIndex, entering: true });
@@ -72,8 +74,10 @@ class Dashboard extends Component {
   previous() {
     if (this.animating) return;
     const prevIndex =
-      this.state.activeIndex <= 0 ? 0 : this.state.activeIndex - 4;
-    this.setState({ entering: false }, () =>
+      this.state.activeIndex <= 0 
+      ? 0 
+      : this.state.activeIndex - 4;
+    this.setState({ entering: false, toRight: false }, () =>
       setTimeout(
         function() {
           this.setState({ activeIndex: prevIndex, entering: true });
@@ -126,6 +130,7 @@ class Dashboard extends Component {
       : [];
     return (
       <Container>
+        {/* <EditPhotos isOpen={true} photos={photos} onClick={this.next}/> */}
         <Row style={{ marginTop: "2em" }}>
           <Col md="4">
             <Card>
@@ -169,9 +174,15 @@ class Dashboard extends Component {
                         .map(el => (
                           <img
                             className={
-                              this.state.entering
-                                ? "animated fadeIn"
-                                : "animated fadeOut"
+                              this.state.toRight
+                              ?
+                                this.state.entering
+                                  ? "animated slideInRight"
+                                  : "animated slideOutLeft"
+                              :
+                                this.state.entering
+                                  ? "animated slideInLeft"
+                                  : "animated slideOutRight"
                             }
                             width="calc(25%-4px)"
                             width="160em"
@@ -188,12 +199,22 @@ class Dashboard extends Component {
                 </Container>
 
                 <ButtonGroup style={{ margin: "0 auto" }}>
-                  <Button onClick={this.previous}>
+                  <Button 
+                  disabled = 
+                  {this.state.activeIndex <=0
+                  ? true
+                  : false}
+                  onClick={this.previous}>
                     {" "}
                     <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}
                   </Button>
                   <Button onClick={this.all}> Ver Todas</Button>
-                  <Button onClick={this.next}>
+                  <Button 
+                  disabled = 
+                    {this.state.activeIndex + 4 >= this.props.data.photos.length - 1
+                    ? true
+                    : false}
+                  onClick={this.next}>
                     {" "}
                     <FontAwesomeIcon icon={faArrowAltCircleRight} />{" "}
                   </Button>

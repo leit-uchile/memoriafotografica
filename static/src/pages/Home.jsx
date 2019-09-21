@@ -241,6 +241,7 @@ class Home extends Component {
                       <Row>
                         <Col>
                           <DropdownItem
+                            style={{textAlign:'center'}}
                             onClick={this.allowMoreCats}>
                             Cargar más categorias
                           </DropdownItem>
