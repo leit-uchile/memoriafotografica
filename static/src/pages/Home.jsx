@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { home, misc, search } from "../actions";
 import Photo from "../components/Photo";
@@ -17,7 +17,6 @@ import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
-
 
 class Home extends Component {
   constructor(props) {
@@ -59,8 +58,8 @@ class Home extends Component {
     this.setState({ maxPhotos: this.state.maxPhotos + 10 });
   }
 
-  toggleCategory(){
-    this.setState({catsOpen: !this.state.catsOpen});
+  toggleCategory() {
+    this.setState({ catsOpen: !this.state.catsOpen });
   }
 
   pickCategory(id) {
@@ -102,7 +101,7 @@ class Home extends Component {
           </span>
         ))
       ) : (
-        <h2>Las fotos de todos</h2>
+        <h2>Todas las fotograf&iacute;as</h2>
       );
 
     var mapped = photos.map(el => ({
@@ -130,17 +129,17 @@ class Home extends Component {
       : [];
     var currentCats1 = currentCats
       ? currentCats
-          .filter((e,i)=>i%2===0)
+          .filter((e, i) => i % 2 === 0)
           .map(el => {
-          return {
-            ...el,
-            selected: isSelected(el.id, this.state.selectedCategories)
-          };
-        })
+            return {
+              ...el,
+              selected: isSelected(el.id, this.state.selectedCategories)
+            };
+          })
       : [];
     var currentCats2 = currentCats
       ? currentCats
-          .filter((e,i)=>i%2===1)
+          .filter((e, i) => i % 2 === 1)
           .map(el => {
             return {
               ...el,
@@ -195,7 +194,7 @@ class Home extends Component {
       );
     }
     return (
-      <div>
+      <Fragment>
         <Helmet>
           <meta property="og:title" content="Buscar fotografias" />
           <meta property="og:type" content="Motor de búsqueda" />
@@ -207,67 +206,74 @@ class Home extends Component {
           <meta property="og:description" content="Descripcion" />
           <title>Buscar fotografias</title>
         </Helmet>
-        <Row style={styles.galleryMenu}>
-          <Col xs="9">
-            <div style={styles.filtersContainer}>{filtersText}</div>
-          </Col>
-          <Col xs="3">
-            <ButtonDropdown isOpen={this.state.catsOpen} toggle={this.toggleCategory} direction='down'>
-              <DropdownToggle caret style={styles.dropdownButton} color='danger'>
-                Categorias {selectedCatsNumber}
-              </DropdownToggle>
-              <DropdownMenu
-              style={this.state.catsOpen 
-                ? {width:'16em', boxShadow: '0 0 15px 0 rgba(0,0,0,.20)'} 
-                : {visibility:'hidden'}}>
-                  <div style={styles.triangulo}></div>
-                  <Row>
-                    <Categories 
-                      categorias={currentCats1} 
-                      onClick={this.pickCategory}/>
-                    <Categories 
-                      categorias={currentCats2} 
-                      onClick={this.pickCategory}/>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <DropdownItem 
-                      style={{paddingLeft:'16%'}}
-                      onClick={this.allowMoreCats}>
-                        Cargar más categorias
-                      </DropdownItem>
-                    </Col>
-                  </Row>
-              </DropdownMenu>
-                
-              </ButtonDropdown>
-              
-              <UncontrolledButtonDropdown>
-              <DropdownToggle caret style={styles.dropdownButton} color='danger'>
-                Ordenar
-              </DropdownToggle>
-              <DropdownMenu style={{boxShadow: '0 0 15px 0 rgba(0,0,0,.20)'}}>
-                <div style={styles.triangulo}></div>
-                <DropdownItem header>Por orden cronológico</DropdownItem>
-                <DropdownItem onClick={() => sortByUpload("asc", auth)}>
-                          Más antiguas primero
-                </DropdownItem>
-                <DropdownItem onClick={() => sortByUpload("desc", auth)}>
-                          Más nuevas primero
-                </DropdownItem>
-                <DropdownItem divider/>
-                <DropdownItem header>Por fecha de subida</DropdownItem>
-                <DropdownItem>
-                          Más antiguas primero
-                </DropdownItem>
-                <DropdownItem>
-                          Más nuevas primero
-                </DropdownItem>
-              </DropdownMenu>
-              </UncontrolledButtonDropdown>
-          </Col>
-        </Row>
-        <div style={styles.galleryMenuFixSpace}></div>
+        <div style={styles.galleryMenu}>
+          <Container >
+            <Row>
+              <Col md="9">
+                <div style={styles.filtersContainer}>{filtersText}</div>
+              </Col>
+              <Col md="3">
+                <ButtonDropdown
+                  isOpen={this.state.catsOpen}
+                  toggle={this.toggleCategory}
+                  direction="down">
+                  <DropdownToggle
+                    caret
+                    style={styles.dropdownButton}
+                    color="danger">
+                    Categorias {selectedCatsNumber}
+                  </DropdownToggle>
+                  <DropdownMenu
+                  style={this.state.catsOpen 
+                    ? {width:'16em', boxShadow: '0 0 15px 0 rgba(0,0,0,.20)'} 
+                    : {visibility:'hidden'}}>
+                      <div style={styles.triangulo}></div>
+                      <Row>
+                        <Categories
+                          categorias={currentCats1}
+                          onClick={this.pickCategory}
+                        />
+                        <Categories
+                          categorias={currentCats2}
+                          onClick={this.pickCategory}
+                        />
+                      </Row>
+                      <Row>
+                        <Col>
+                          <DropdownItem
+                            onClick={this.allowMoreCats}>
+                            Cargar más categorias
+                          </DropdownItem>
+                        </Col>
+                      </Row>
+                  </DropdownMenu>
+                </ButtonDropdown>
+                <UncontrolledButtonDropdown>
+                  <DropdownToggle
+                    caret
+                    style={styles.dropdownButton}
+                    color="danger">
+                    Ordenar
+                  </DropdownToggle>
+                  <DropdownMenu style={{boxShadow: '0 0 15px 0 rgba(0,0,0,.20)'}}>
+                    <div style={styles.triangulo}></div>
+                    <DropdownItem header>Por orden cronológico</DropdownItem>
+                    <DropdownItem onClick={() => sortByUpload("asc", auth)}>
+                      Más antiguas primero
+                    </DropdownItem>
+                    <DropdownItem onClick={() => sortByUpload("desc", auth)}>
+                      Más nuevas primero
+                    </DropdownItem>
+                    <DropdownItem divider />
+                    <DropdownItem header>Por fecha de subida</DropdownItem>
+                    <DropdownItem>Más antiguas primero</DropdownItem>
+                    <DropdownItem>Más nuevas primero</DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledButtonDropdown>
+              </Col>
+            </Row>
+          </Container>
+        </div>
         <Container fluid style={styles.galleryContainer}>
           <Gallery
             photos={mapped}
@@ -275,20 +281,20 @@ class Home extends Component {
             onClick={(e, index) => this.handleOnClick(index)}
           />
         </Container>
-      </div>
+      </Fragment>
     );
   }
 }
 
 const Categories = ({ categorias, onClick }) => (
-  <Col style={{minWidth:'50%'}}>
+  <Col>
     {categorias.length == 0
       ? "-"
       : categorias.map((el, index) => (
-          <DropdownItem 
-          key={el.id}
-          onClick={() => onClick(el.id)}
-          style={el.selected ? styles.Selected : styles.unSelected}>
+          <DropdownItem
+            key={el.id}
+            onClick={() => onClick(el.id)}
+            style={el.selected ? styles.Selected : styles.unSelected}>
             {el.title}
             {el.selected ? <FontAwesomeIcon icon={faCheck} /> : ""}
           </DropdownItem>
@@ -298,20 +304,14 @@ const Categories = ({ categorias, onClick }) => (
 
 const styles = {
   galleryMenu: {
-    width: "100%",
     margin: "0 auto",
     borderBottom: "1px solid rgb(210,214,218)",
     background: "white",
-    height: "5em",
-    position: "fixed",
-    zIndex: "2"
-  },
-  galleryMenuFixSpace: {
-    height: "5em"
+    position: "sticky",
+    top: "4em"
   },
   filtersContainer: {
     paddingTop: "1em",
-    paddingLeft: "2em",
     display: "flex",
     alignItems: "left",
     verticalAlign: "middle",
