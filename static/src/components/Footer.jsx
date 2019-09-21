@@ -14,15 +14,7 @@ const Footer = () => {
       <Container style={styles.contenido}>
         <Row style={{ paddingBottom: "50px" }}>
           <Col>
-            <img style={{ marginTop: "-15px" }} src={"/mf.ico"} alt={"logo"} />
-            <div style={{ display: "inline-block", margin: "10px" }}>
-              <h5 style={{ fontSize: "20px", fontWeight: "bold" }}>
-                El Proyecto
-              </h5>
-              <h2 style={{ fontSize: "15px", color: "gray" }}>
-                Memoria Fotografica
-              </h2>
-            </div>
+            <img src={"/logo01.svg"} alt={"logo"} height="55px"/>
           </Col>
         </Row>
         <Row>
@@ -91,17 +83,11 @@ const Footer = () => {
 const styles = {
   contenedor: {
     borderTop: "1px solid rgb(210,214,218)",
-    width: "100%",
     background: "linear-gradient(top, #fbfcfc 0%, #dee1e2 100%), -moz-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%) -webkit-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)"
   },
   contenido: {
     fontSize: "12px",
-    marginLeft: "auto",
-    marginRight: "auto",
-    maxWidth: "1370px",
     paddingTop: "50px",
-    paddingLeft: "125px",
-    paddingRight: "125px"
   }
 };
 export default Footer;

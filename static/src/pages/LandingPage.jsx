@@ -4,17 +4,10 @@ import { misc } from "../actions";
 import { connect } from "react-redux";
 import { home } from "../actions";
 import { Helmet } from "react-helmet";
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  CardImg,
-  CardText,
-  CardDeck,
-  CardBody
-} from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import Slider from "react-slick";
+import "../css/landing.css";
+import Gallery from "react-photo-gallery";
 
 const items = [
   {
@@ -59,23 +52,19 @@ const LandingPage = props => {
     pauseOnFocus: true
   };
 
-  const [redirect, setRedirect] = useState(false);
+  var mapped = props.photos.slice(0, 10).map(el => ({
+    src: el.thumbnail,
+    height: el.aspect_h,
+    width: el.aspect_w,
+    id: el.id
+  }));
 
-  const photos = props.photos.slice(0, 5).map(el => {
-    return (
-      <Card>
-        <CardImg
-          top
-          src={el.thumbnail}
-          alt="Card image cap"
-          onClick={() => setRedirect(`/photo/${el.id}`)}
-        />
-        <CardBody style={{ backgroundColor: "#ebeeef" }}>
-          <CardText>{el.description}</CardText>
-        </CardBody>
-      </Card>
-    );
-  });
+  var onClickPhoto = (o) => {
+    console.log(o, mapped)
+    setRedirect(`/photo/${mapped[o.index].id}`);
+  }
+
+  const [redirect, setRedirect] = useState(false);
 
   return (
     <Container style={{ marginTop: "2em" }}>
@@ -98,17 +87,25 @@ const LandingPage = props => {
               <div>
                 <Container fluid>
                   <Row>
-                    <Col md={6}>
-                      <h3>{it.head}</h3>
-                      <p>{it.caption}</p>
-                    </Col>
-                    <Col md={6}>
-                      <img
+                    <Col
+                      className="LandingPhoto"
+                      style={{
+                        background: `url(${it.src}), #e9ecef`,
+                        backgroundRepeat: " no-repeat ",
+                        backgroundSize: "cover",
+                        backgroundPositionX: "center",
+                        backgroundPositionY: "center",
+                        backgroundBlendMode: "multiply",
+                        height: "60vh"
+                      }}>
+                      {/* <img
                         src={it.src}
                         width="100%"
                         altText={it.altText}
                         style={{ maxHeight: "60vh", minHeight: "250px" }}
-                      />
+                      /> */}
+                      <h3>{it.head}</h3>
+                      <p>{it.caption}</p>
                     </Col>
                   </Row>
                 </Container>
@@ -117,30 +114,70 @@ const LandingPage = props => {
           </Slider>
         </Col>
       </Row>
-      <Row style={{ marginTop: "2em" }}>
+      <Row>
+        <Col className="colTitle">
+          <h2>Nuestra misi&oacute;n</h2>
+        </Col>
+      </Row>
+      <Row style={{ marginTop: "2em" }} className="missionDiv">
+        <Col sm={4}>
+          <h3>Recuperar</h3>
+          <img src="/assets/photoSave.svg" width="100px" height="100px" />
+        </Col>
+        <Col sm={4}>
+          <h3>Preservar</h3>
+          <img src="/assets/server.svg" width="100px" height="100px" />
+        </Col>
+        <Col sm={4}>
+          <h3>Compartir</h3>
+          <img src="/assets/speech-bubble.svg" width="100px" height="100px" />
+        </Col>
+      </Row>
+      <Row>
         <Col>
-          <h2>
-            Fotograf&iacute;as recientes
-          </h2>
+          <p className="detailText">
+            Nuestra misi&oacute;n consiste en recuperar la historia y memoria
+            fotogr&aacute;fica de la Facultad de Ciencias f&iacute;sicas y
+            matem&aacute;ticas de forma transparente y colaborativa.
+          </p>
+        </Col>
+      </Row>
+      <Row>
+        <Col className="colTitle">
+          <h2>Fotograf&iacute;as recientes</h2>
         </Col>
       </Row>
       <Row style={{ marginTop: "2em" }}>
         <Col>
-          <CardDeck>{photos}</CardDeck>
+          <Gallery
+            photos={mapped}
+            targetRowHeight={200}
+            onClick={(e, index) => onClickPhoto(index)}
+          />
         </Col>
       </Row>
-      <Row style={{ marginTop: "2em", textAlign: "center" }}>
+      <Row>
         <Col>
-          <h3>¿ Quieres participar ?</h3>
-          <p>
+          <div style={{ textAlign: "right", padding: "1em" }}>
+            <Link to="/gallery" style={{ fontSize: "1.5em" }}>
+              Ver galeria
+            </Link>
+          </div>
+        </Col>
+      </Row>
+      <Row style={{ marginTop: "2em" }}>
+        <Col className="colTitle">
+          <h2>¿Quieres participar?</h2>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <p className="detailText">
             Estamos en b&uacute;squeda de contenido hist&oacute;rico tales como
             fotograf&iacute;as de eventos, lugares, personajes, actividades,
             entre otros. Si tienes material puedes subirlo{" "}
             <Link to="/upload">aqu&iacute;</Link>.
           </p>
-        </Col>
-        <Col>
-          <Link to="/gallery">Ver galeria</Link>
         </Col>
       </Row>
     </Container>

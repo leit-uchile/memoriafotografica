@@ -1,0 +1,42 @@
+.slick-prev::before, .slick-next::before{
+  color: #ff5a60;
+}
+
+.LandingPhoto p, .LandingPhoto h3{
+  color: white;
+  text-shadow: black 1px 1px 1px ;
+}
+
+.LandingPhoto h3{
+  font-size: 4em;
+  padding: 1em;
+}
+
+.LandingPhoto p{
+  font-size: 2em;
+  padding: 2em;
+}
+.colTitle{
+  margin-top: 2em;
+  border-bottom: 1px solid rgb(210,214,218);
+}
+
+.colTitle h2{
+  font-size: 2.5em;
+}
+
+.missionDiv div{
+  align-content: center;
+  text-align: center;
+  padding: 2em;
+}
+
+.missionDiv div img{
+  margin: 1em 0;
+}
+
+/* Future optimization ? */
+.row div p.detailText{
+  padding: 1.5em 0;
+  font-size: 1.3em;
+}
