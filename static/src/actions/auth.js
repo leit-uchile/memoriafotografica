@@ -69,8 +69,6 @@ export const loadUser = () => {
 export const register = (email, password, first_name, last_name, birth_date, rol_type, avatar) => {
   return (dispatch, getState) => {
 
-    let headers = {"Content-Type": "application/json"};
-
     var formData = new FormData();
     formData.append("email",email);
     formData.append("password",password);
@@ -80,7 +78,7 @@ export const register = (email, password, first_name, last_name, birth_date, rol
     formData.append("rol_type",parseInt(rol_type));
     formData.append("avatar", avatar)
         
-    return fetch("/api/auth/register/", {headers, body: formData, method: "POST"})
+    return fetch("/api/auth/register/", {body: formData, method: "POST"})
       .then(res => {
         if (res.status < 500) {
           return res.json().then(data => {
