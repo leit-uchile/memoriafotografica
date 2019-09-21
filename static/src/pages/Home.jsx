@@ -13,7 +13,6 @@ import {
   DropdownItem
 } from "reactstrap";
 import { Redirect } from "react-router-dom";
-import gallery from "../css/galleryHome.css";
 import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
@@ -217,10 +216,11 @@ class Home extends Component {
               <DropdownToggle caret style={styles.dropdownButton} color='danger'>
                 Categorias {selectedCatsNumber}
               </DropdownToggle>
-              <DropdownMenu style={styles.dropdownMenu} 
+              <DropdownMenu
               style={this.state.catsOpen 
                 ? {width:'16em', boxShadow: '0 0 15px 0 rgba(0,0,0,.20)'} 
                 : {visibility:'hidden'}}>
+                  <div style={styles.triangulo}></div>
                   <Row>
                     <Categories 
                       categorias={currentCats1} 
@@ -247,6 +247,7 @@ class Home extends Component {
                 Ordenar
               </DropdownToggle>
               <DropdownMenu style={{boxShadow: '0 0 15px 0 rgba(0,0,0,.20)'}}>
+                <div style={styles.triangulo}></div>
                 <DropdownItem header>Por orden cronológico</DropdownItem>
                 <DropdownItem onClick={() => sortByUpload("asc", auth)}>
                           Más antiguas primero
@@ -303,7 +304,7 @@ const styles = {
     background: "white",
     height: "5em",
     position: "fixed",
-    zIndex: "1"
+    zIndex: "2"
   },
   galleryMenuFixSpace: {
     height: "5em"
@@ -326,7 +327,7 @@ const styles = {
   dropdownButton:{
     color: '#ff5a60',
     backgroundColor:'white',
-    margin: '1em 1em 0 1em',
+    margin: '1em 1em 0.5em 1em',
     border: '1px solid black',
     borderRadius:'0',
     padding: '10px'
@@ -349,6 +350,22 @@ const styles = {
     minHeight: "100vh",
     padding: "1.25em 3.1em",
     backgroundColor: "#f7f8fa"
+  },
+  triangulo:{
+    position: 'absolute',
+    width: '20px',
+    height: '20px',
+    borderTop: '1px solid rgb(210,214,218)',
+    borderRight: '0px solid rgb(210,214,218)',
+    borderBottom: '0px solid rgb(210,214,218)',
+    borderLeft: '1px solid rgb(210,214,218)',
+    top:'0',
+    right: '46%',
+    marginLeft: '-10px',
+    content: '',
+    transform: 'rotate(45deg)',
+    marginTop: '-10px',
+    background: '#ffff',
   }
 };
 const mapStateToProps = state => {

@@ -55,9 +55,9 @@ const ContactUs = () => {
             />
           </Col>
           <Col xs="3">
-            <p>Para más información puede visitarnos en la Facultad de Ciencias Físicas y Matemáticas, Universidad de Chile
+            <p>Para más información puede visitarnos en la Biblioteca Central de la Facultad de Ciencias Físicas y Matemáticas ubicada en
               Beauchef 850, Santiago</p>
-            <div style={{display:'block', backgroundColor: '#f7f7f7', textAlign:'center', padding:'0.2em'}}>
+            <div style={{display:'block', backgroundColor: '#f7f7f7', textAlign: 'justify', textJustify: 'inter-word', padding:'0.2em'}}>
               <FontAwesomeIcon icon={faPhoneAlt} style={{marginRight:'0.2em'}}/>
               Biblioteca Central  
               +56 22 978 4074

@@ -101,7 +101,7 @@ class RequestPhoto extends Component{
             </Form>
           </Col>
           <Col sm={4}>
-          <p>
+          <p style={{textAlign: 'justify', textJustify: 'inter-word'}}>
         La Biblioteca Central de la FCFM, respondiendo a su misión de
         centralizar, sistematizar y poner a disposición información de interés
         para la comunidad, ofrece al público una recopilación de fotografías que

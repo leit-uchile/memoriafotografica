@@ -100,7 +100,7 @@ const LandingPage = props => {
                   <Row>
                     <Col md={6}>
                       <h3>{it.head}</h3>
-                      <p>{it.caption}</p>
+                      <p style={{textAlign: 'justify', textJustify: 'inter-word',}}>{it.caption}</p>
                     </Col>
                     <Col md={6}>
                       <img
