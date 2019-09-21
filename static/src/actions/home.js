@@ -82,7 +82,7 @@ export const sortByField = (field,order,auth) => { return (dispatch, getState) =
     return dispatch({type: 'EMPTY', data: 'wrong order parameter' })
   }
 
-  fetch(`/api/photos/?sort=${field}-${order}`, {method: 'GET', headers: header}).then( response => {
+  fetch(`/api/photos/?sort=${field}-${order}`, {method: 'GET'}).then( response => {
       const r = response;
       if(r.status === 200){
         return r.json().then(data => {
@@ -106,7 +106,7 @@ export const sortByUpload = (order,auth) => { return (dispatch, getState) => {
     return dispatch({type: 'EMPTY', data: 'wrong order parameter' })
   }
 
-  fetch(`/api/photos/?sort=created_at-${order}`, {method: 'GET', headers: header}).then( response => {
+  fetch(`/api/photos/?sort=created_at-${order}`, {method: 'GET'}).then( response => {
       const r = response;
       if(r.status === 200){
         return r.json().then(data => {

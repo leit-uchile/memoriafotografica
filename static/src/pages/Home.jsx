@@ -90,19 +90,6 @@ class Home extends Component {
     } = this.props;
 
     var filtersId = filters.map(el => el.metaID);
-    var filtersText =
-      filters.length != 0 ? (
-        filters.map(el => (
-          <span
-            key={el.metaID}
-            style={styles.tags}
-            onClick={() => removeSearch(el.metaID, el.value)}>
-            #{el.value} <FontAwesomeIcon icon={faTimesCircle} />
-          </span>
-        ))
-      ) : (
-        <h2>Todas las fotograf&iacute;as</h2>
-      );
 
     var mapped = photos.map(el => ({
       src: el.thumbnail,
@@ -177,19 +164,12 @@ class Home extends Component {
         )
         .slice(0, this.state.maxPhotos);
     }
-
-    var selectedCatsNumber =
-      this.state.selectedCategories.length > 0 ? (
-        <span style={styles.selectedCatsNumber}>
-          {this.state.selectedCategories.length}
-        </span>
-      ) : null;
     if (this.state.redirect) {
       setRoute("/photo/");
       return (
         <Redirect
           push
-          to={`/photo/${currentPhotos[this.state.chosenPhotoIndex].id}`}
+          to={`/photo/${mapped[this.state.chosenPhotoIndex].id}`}
         />
       );
     }
@@ -207,12 +187,25 @@ class Home extends Component {
           <title>Buscar fotografias</title>
         </Helmet>
         <div style={styles.galleryMenu}>
-          <Container >
+          <Container>
             <Row>
-              <Col md="9">
-                <div style={styles.filtersContainer}>{filtersText}</div>
+              <Col md="7" lg="9">
+                <div style={styles.filtersContainer}>
+                  {filters.length != 0 ? (
+                    filters.map(el => (
+                      <span
+                        key={el.metaID}
+                        style={styles.tags}
+                        onClick={() => removeSearch(el.metaID, el.value)}>
+                        #{el.value} <FontAwesomeIcon icon={faTimesCircle} />
+                      </span>
+                    ))
+                  ) : (
+                    <h2>Todas las fotograf&iacute;as</h2>
+                  )}
+                </div>
               </Col>
-              <Col md="3">
+              <Col md="5" lg="3">
                 <ButtonDropdown
                   isOpen={this.state.catsOpen}
                   toggle={this.toggleCategory}
@@ -221,31 +214,36 @@ class Home extends Component {
                     caret
                     style={styles.dropdownButton}
                     color="danger">
-                    Categorias {selectedCatsNumber}
+                    Categorias
+                    {this.state.selectedCategories.length > 0 ? (
+                      <span style={styles.selectedCatsNumber}>
+                        {this.state.selectedCategories.length}
+                      </span>
+                    ) : null}
                   </DropdownToggle>
                   <DropdownMenu
-                  style={this.state.catsOpen 
-                    ? {width:'16em', boxShadow: '0 0 15px 0 rgba(0,0,0,.20)'} 
-                    : {visibility:'hidden'}}>
-                      <div style={styles.triangulo}></div>
-                      <Row>
-                        <Categories
-                          categorias={currentCats1}
-                          onClick={this.pickCategory}
-                        />
-                        <Categories
-                          categorias={currentCats2}
-                          onClick={this.pickCategory}
-                        />
-                      </Row>
-                      <Row>
-                        <Col>
-                          <DropdownItem
-                            onClick={this.allowMoreCats}>
-                            Cargar más categorias
-                          </DropdownItem>
-                        </Col>
-                      </Row>
+                    style={{
+                      width: "30em",
+                      boxShadow: "0 0 15px 0 rgba(0,0,0,.20)"
+                    }}>
+                    <div style={styles.triangulo}></div>
+                    <Row>
+                      <Categories
+                        categorias={currentCats1}
+                        onClick={this.pickCategory}
+                      />
+                      <Categories
+                        categorias={currentCats2}
+                        onClick={this.pickCategory}
+                      />
+                    </Row>
+                    <Row>
+                      <Col>
+                        <DropdownItem onClick={this.allowMoreCats}>
+                          Cargar más categorias
+                        </DropdownItem>
+                      </Col>
+                    </Row>
                   </DropdownMenu>
                 </ButtonDropdown>
                 <UncontrolledButtonDropdown>
@@ -255,7 +253,8 @@ class Home extends Component {
                     color="danger">
                     Ordenar
                   </DropdownToggle>
-                  <DropdownMenu style={{boxShadow: '0 0 15px 0 rgba(0,0,0,.20)'}}>
+                  <DropdownMenu
+                    style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}>
                     <div style={styles.triangulo}></div>
                     <DropdownItem header>Por orden cronológico</DropdownItem>
                     <DropdownItem onClick={() => sortByUpload("asc", auth)}>
@@ -324,13 +323,13 @@ const styles = {
     margin: "2px",
     padding: "4px 12px 4px 12px"
   },
-  dropdownButton:{
-    color: '#ff5a60',
-    backgroundColor:'white',
-    margin: '1em 1em 0.5em 1em',
-    border: '1px solid black',
-    borderRadius:'0',
-    padding: '10px'
+  dropdownButton: {
+    color: "#ff5a60",
+    backgroundColor: "white",
+    margin: "1em 1em 0.5em 1em",
+    border: "1px solid black",
+    borderRadius: "0",
+    padding: "10px"
   },
   selectedCatsNumber: {
     backgroundColor: "#f2f2f2",
@@ -351,21 +350,21 @@ const styles = {
     padding: "1.25em 3.1em",
     backgroundColor: "#f7f8fa"
   },
-  triangulo:{
-    position: 'absolute',
-    width: '20px',
-    height: '20px',
-    borderTop: '1px solid rgb(210,214,218)',
-    borderRight: '0px solid rgb(210,214,218)',
-    borderBottom: '0px solid rgb(210,214,218)',
-    borderLeft: '1px solid rgb(210,214,218)',
-    top:'0',
-    right: '46%',
-    marginLeft: '-10px',
-    content: '',
-    transform: 'rotate(45deg)',
-    marginTop: '-10px',
-    background: '#ffff',
+  triangulo: {
+    position: "absolute",
+    width: "20px",
+    height: "20px",
+    borderTop: "1px solid rgb(210,214,218)",
+    borderRight: "0px solid rgb(210,214,218)",
+    borderBottom: "0px solid rgb(210,214,218)",
+    borderLeft: "1px solid rgb(210,214,218)",
+    top: "0",
+    left: "8em",
+    marginLeft: "-10px",
+    content: "",
+    transform: "rotate(45deg)",
+    marginTop: "-10px",
+    background: "#ffff"
   }
 };
 const mapStateToProps = state => {
