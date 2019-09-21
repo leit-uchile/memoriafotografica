@@ -7,7 +7,6 @@ import {Route, Link} from 'react-router-dom'
 
 const Index = ({match}) =>
     <Container fluid style={styles.container}>
-      <div>
           <Row>
             <Col xs="2" style={styles.leftcol}>
               <Button tag={Link} style={styles.button} to={match.path + "/about"} className="navButton">Acerca de</Button>
@@ -22,7 +21,6 @@ const Index = ({match}) =>
               <Route path={match.path + "/resources/contact-us"} component={ContactUs}/>
             </Col>
           </Row>
-        </div>
     </Container>
 
 const styles = {
@@ -30,7 +28,7 @@ const styles = {
     marginBottom:"2em"
   },
   leftcol:{
-    marginLeft:'-1em',
+    paddingLeft:'10em',
     borderRight:"1px solid rgb(210, 214, 218)"
   },
   rightcol:{

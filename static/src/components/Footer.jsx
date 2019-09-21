@@ -1,5 +1,17 @@
 import React from "react";
-import { Container, Row, Col, Input, Button } from "reactstrap";
+import About from '../pages/Miscellaneous/About';
+import FAQ from '../pages/Miscellaneous/FAQ';
+import ContactUs from '../pages/Miscellaneous/ContactUs';
+import { 
+  Container, 
+  Row, 
+  Col, 
+  Input, 
+  Button,
+  Nav,
+  NavItem,
+  NavLink } from "reactstrap";
+import {Route, Link} from 'react-router-dom'
 
 const Footer = () => {
   const componentDidMount = () =>
@@ -28,24 +40,36 @@ const Footer = () => {
             <p>+56 22 978 4074</p>
           </Col>
           <Col md="3">
-            <h5 style={{ fontSize: "12px" }}>
+            <p style={{ fontSize: "12px" }}>
               <b>Acerca de</b>
-            </h5>
-            <ul>
-              <li>El Proyecto</li>
-              <li>LEIT</li>
-              <li>Integrate al Proyecto</li>
-            </ul>
+            </p>
+            <Nav vertical>
+              <NavItem>
+                <NavLink tag={Link} to={"/misc/about"} active>El Proyecto</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to={"/misc/about"} active>LEIT</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to={"/misc/about"} active>Intégrate</NavLink>
+              </NavItem>
+            </Nav>
           </Col>
           <Col md="3">
-            <h5 style={{ fontSize: "12px" }}>
+          <p style={{ fontSize: "12px" }}>
               <b>Enlaces</b>
-            </h5>
-            <ul>
-              <li>Preguntas Frecuentes</li>
-              <li>Contactenos</li>
-              <li>Mapa del Sitio</li>
-            </ul>
+            </p>
+            <Nav vertical>
+              <NavItem>
+                <NavLink tag={Link} to={"/misc/resources/faq"} active>Preguntas frecuentes</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to={"/misc/resources/contact-us"} active>Contáctenos</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to={"/misc/resources/sitemap"} active>Mapa del sitio</NavLink>
+              </NavItem>
+            </Nav>
           </Col>
           <Col md="3">
             <h5 style={{ fontSize: "12px" }}>

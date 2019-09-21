@@ -13,7 +13,6 @@ import {
   DropdownItem
 } from "reactstrap";
 import { Redirect } from "react-router-dom";
-//import gallery from "../css/galleryHome.css";
 import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
@@ -208,74 +207,72 @@ class Home extends Component {
           <title>Buscar fotografias</title>
         </Helmet>
         <div style={styles.galleryMenu}>
-        <Container >
-        <Row>
-          <Col md="9">
-            <div style={styles.filtersContainer}>{filtersText}</div>
-          </Col>
-          <Col md="3">
-            <ButtonDropdown
-              isOpen={this.state.catsOpen}
-              toggle={this.toggleCategory}
-              direction="down">
-              <DropdownToggle
-                caret
-                style={styles.dropdownButton}
-                color="danger">
-                Categorias {selectedCatsNumber}
-              </DropdownToggle>
-              <DropdownMenu
-                style={
-                  this.state.catsOpen
-                    ? { boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }
-                    : { visibility: "hidden" }
-                }>
-                <Container fluid>
-                  <Row>
-                    <Categories
-                      categorias={currentCats1}
-                      onClick={this.pickCategory}
-                    />
-                    <Categories
-                      categorias={currentCats2}
-                      onClick={this.pickCategory}
-                    />
-                  </Row>
-                  <Row>
-                    <Col>
-                      <DropdownItem
-                        onClick={this.allowMoreCats}>
-                        Cargar más categorias
-                      </DropdownItem>
-                    </Col>
-                  </Row>
-                </Container>
-              </DropdownMenu>
-            </ButtonDropdown>
-            <UncontrolledButtonDropdown>
-              <DropdownToggle
-                caret
-                style={styles.dropdownButton}
-                color="danger">
-                Ordenar
-              </DropdownToggle>
-              <DropdownMenu style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}>
-                <DropdownItem header>Por orden cronológico</DropdownItem>
-                <DropdownItem onClick={() => sortByUpload("asc", auth)}>
-                  Más antiguas primero
-                </DropdownItem>
-                <DropdownItem onClick={() => sortByUpload("desc", auth)}>
-                  Más nuevas primero
-                </DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem header>Por fecha de subida</DropdownItem>
-                <DropdownItem>Más antiguas primero</DropdownItem>
-                <DropdownItem>Más nuevas primero</DropdownItem>
-              </DropdownMenu>
-            </UncontrolledButtonDropdown>
-          </Col>
-        </Row>
-        </Container>
+          <Container >
+            <Row>
+              <Col md="9">
+                <div style={styles.filtersContainer}>{filtersText}</div>
+              </Col>
+              <Col md="3">
+                <ButtonDropdown
+                  isOpen={this.state.catsOpen}
+                  toggle={this.toggleCategory}
+                  direction="down">
+                  <DropdownToggle
+                    caret
+                    style={styles.dropdownButton}
+                    color="danger">
+                    Categorias {selectedCatsNumber}
+                  </DropdownToggle>
+                  <DropdownMenu
+                  style={this.state.catsOpen 
+                    ? {width:'16em', boxShadow: '0 0 15px 0 rgba(0,0,0,.20)'} 
+                    : {visibility:'hidden'}}>
+                      <div style={styles.triangulo}></div>
+                      <Row>
+                        <Categories
+                          categorias={currentCats1}
+                          onClick={this.pickCategory}
+                        />
+                        <Categories
+                          categorias={currentCats2}
+                          onClick={this.pickCategory}
+                        />
+                      </Row>
+                      <Row>
+                        <Col>
+                          <DropdownItem
+                            onClick={this.allowMoreCats}>
+                            Cargar más categorias
+                          </DropdownItem>
+                        </Col>
+                      </Row>
+                  </DropdownMenu>
+                </ButtonDropdown>
+                <UncontrolledButtonDropdown>
+                  <DropdownToggle
+                    caret
+                    style={styles.dropdownButton}
+                    color="danger">
+                    Ordenar
+                  </DropdownToggle>
+                  <DropdownMenu style={{boxShadow: '0 0 15px 0 rgba(0,0,0,.20)'}}>
+                    <div style={styles.triangulo}></div>
+                    <DropdownItem header>Por orden cronológico</DropdownItem>
+                    <DropdownItem onClick={() => sortByUpload("asc", auth)}>
+                      Más antiguas primero
+                    </DropdownItem>
+                    <DropdownItem onClick={() => sortByUpload("desc", auth)}>
+                      Más nuevas primero
+                    </DropdownItem>
+                    <DropdownItem divider />
+                    <DropdownItem header>Por fecha de subida</DropdownItem>
+                    <DropdownItem>Más antiguas primero</DropdownItem>
+                    <DropdownItem>Más nuevas primero</DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledButtonDropdown>
+              </Col>
+            </Row>
+          </Container>
         </div>
         <Container fluid style={styles.galleryContainer}>
           <Gallery
@@ -327,13 +324,13 @@ const styles = {
     margin: "2px",
     padding: "4px 12px 4px 12px"
   },
-  dropdownButton: {
-    color: "#ff5a60",
-    backgroundColor: "white",
-    margin: "1em 1em 0 1em",
-    border: "1px solid black",
-    borderRadius: "0",
-    padding: "10px"
+  dropdownButton:{
+    color: '#ff5a60',
+    backgroundColor:'white',
+    margin: '1em 1em 0.5em 1em',
+    border: '1px solid black',
+    borderRadius:'0',
+    padding: '10px'
   },
   selectedCatsNumber: {
     backgroundColor: "#f2f2f2",
@@ -353,6 +350,22 @@ const styles = {
     minHeight: "100vh",
     padding: "1.25em 3.1em",
     backgroundColor: "#f7f8fa"
+  },
+  triangulo:{
+    position: 'absolute',
+    width: '20px',
+    height: '20px',
+    borderTop: '1px solid rgb(210,214,218)',
+    borderRight: '0px solid rgb(210,214,218)',
+    borderBottom: '0px solid rgb(210,214,218)',
+    borderLeft: '1px solid rgb(210,214,218)',
+    top:'0',
+    right: '46%',
+    marginLeft: '-10px',
+    content: '',
+    transform: 'rotate(45deg)',
+    marginTop: '-10px',
+    background: '#ffff',
   }
 };
 const mapStateToProps = state => {
