@@ -1,10 +1,77 @@
 import React, { Component } from "react";
 import RegisterLoginInfo from "./RegisterLoginInfo";
-
 import { connect } from "react-redux";
 import { auth } from "../../actions";
-import { Button, Spinner, Container, Row, Col } from "reactstrap";
+import { Button, Container, Row, Col } from "reactstrap";
 import { Redirect } from "react-router-dom";
+import StepWizard from "react-step-wizard";
+import LeitSpinner from "../../components/LeitSpinner";
+
+const FailedRegistration = props => (
+  <Container style={{ textAlign: "center", marginTop: "2em" }}>
+    <Row>
+      <Col>
+        <h2> No pudimos realizar tu registro </h2>
+      </Col>
+    </Row>
+    <Row>
+      <Col>
+        <p style={{ marginTop: "2em" }}>
+          Si esto persiste por favor informanos a{" "}
+          <a href="mailto:soporte@leit.cl?Subject=Error%20en%20el%20sitio">
+            soporte&#64;leit.cl
+          </a>
+        </p>
+        <Button color="warning" onClick={() => {
+          props.back()
+          props.goToStep(1)
+          }}>
+          Volver
+        </Button>
+      </Col>
+    </Row>
+  </Container>
+);
+
+const RegisterSent = ({ isAuthenticated, goToStep, errors }) => {
+  if (isAuthenticated) {
+    goToStep(4);
+  }
+  if (errors.length !== 0) {
+    goToStep(3);
+  }
+  return (
+    <Container style={{ textAlign: "center", marginTop: "2em" }}>
+      <Row>
+        <Col>
+          <h2>Completando registro</h2>
+        </Col>
+      </Row>
+      <Row>
+        <Col style={{ marginTop: "2em" }}>
+          <LeitSpinner />
+        </Col>
+      </Row>
+    </Container>
+  );
+};
+
+const SuccessfulRegistration = props => (
+  <Container style={{ textAlign: "center", marginTop: "2em" }}>
+    <Row>
+      <Col>
+        <h2>¡Registro con éxito!</h2>
+      </Col>
+    </Row>
+    <Row>
+      <Col>
+        <p style={{ marginTop: "2em" }}>
+          Por favor confirma tu correo electronico
+        </p>
+      </Col>
+    </Row>
+  </Container>
+);
 
 class Register extends Component {
   constructor(Props) {
@@ -12,7 +79,7 @@ class Register extends Component {
     this.state = {
       currentPage: 0,
       loginInfo: null,
-      calledResgister: false
+      calledResgister: false,
     };
     this.volver = this.volver.bind(this);
     this.saveUserLogin = this.saveUserLogin.bind(this);
@@ -20,11 +87,6 @@ class Register extends Component {
   }
 
   volver() {
-    if (this.state.currentPage !== 0) {
-      this.setState({
-        currentPage: this.state.currentPage - 1
-      });
-    }
     // Clear errors
     this.props.cleanErrors();
     this.setState({
@@ -33,14 +95,16 @@ class Register extends Component {
   }
 
   saveUserLogin(info) {
-    this.setState({
-      currentPage: this.state.currentPage + 1,
-      loginInfo: { ...info }
-    });
+    this.setState(
+      {
+        currentPage: this.state.currentPage + 1,
+        loginInfo: { ...info },
+      },
+      () => this.registerToBack()
+    );
   }
 
   registerToBack() {
-    console.log("Called the API");
     this.setState({ calledResgister: true });
     setTimeout(
       this.props.register,
@@ -56,89 +120,28 @@ class Register extends Component {
   }
 
   render() {
-    if (this.props.isAuthenticated) {
+    // Just in case!
+    if (this.props.isAuthenticated && !this.state.calledResgister) {
       return <Redirect to="/" />;
     }
 
-    const divStyle = {
-      borderRadius: "1em",
-      marginTop: "2em",
-      padding: "2em"
-    };
-    const h2Style = { textAlign: "center", fontWeight: "bold" };
-
-    var subRegister;
-    switch (this.state.currentPage) {
-      case 0:
-        subRegister = (
-          <RegisterLoginInfo
-            saveInfo={this.saveUserLogin}
-            cache={this.state.loginInfo}
-          />
-        );
-        break;
-      case 1:
-        // Call the API
-        if (!this.state.calledResgister) {
-          this.registerToBack();
-        }
-
-        if (this.props.isAuthenticated) {
-          this.setState({ currentPage: this.state.currentPage + 1 });
-        }
-
-        if (this.props.errors.length > 0) {
-          subRegister = (
-            <div className="container" style={divStyle}>
-              <h2> No pudimos realizar tu registro </h2>
-              <Button color="warning" onClick={this.volver}>
-                Volver
-              </Button>
-            </div>
-          );
-        } else {
-          subRegister = (
-            <Container className="container" style={divStyle}>
-              <Row>
-                <Col>
-                  <h2 style={h2Style}>Completando registro</h2>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Spinner style={{ width: "3rem", height: "3rem" }} />
-                </Col>
-              </Row>
-            </Container>
-          );
-        }
-        break;
-      case 2:
-        subRegister = (
-          <div className="container" style={divStyle}>
-            <h2 style={h2Style}>¡Registro con éxito!</h2>
-            <span
-              style={{
-                textAlign: "center",
-                display: "block",
-                margin: "auto 1em auto 1em"
-              }}>
-              Por favor confirma tu correo electronico
-            </span>
-          </div>
-        );
-        break;
-      default:
-        subRegister = (
-          <RegisterLoginInfo
-            saveInfo={this.saveUserLogin}
-            cache={this.state.loginInfo}
-          />
-        );
-        break;
-    }
-
-    return <div>{subRegister}</div>;
+    return (
+      <StepWizard
+        className="stepContainer"
+        isHashEnabled
+        initialStep={1}>
+        <RegisterLoginInfo
+          saveInfo={this.saveUserLogin}
+          cache={this.state.loginInfo}
+        />
+        <RegisterSent
+          isAuthenticated={this.props.isAuthenticated}
+          errors={this.props.errors}
+        />
+        <FailedRegistration back={this.volver} />
+        <SuccessfulRegistration />
+      </StepWizard>
+    );
   }
 }
 

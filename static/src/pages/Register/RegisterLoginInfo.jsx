@@ -96,6 +96,8 @@ class RegisterLoginInfo extends Component {
     if (this.checkPassword()) {
       this.setState({ error: null });
       this.props.saveInfo(this.state);
+      // From StepWizard
+      this.props.nextStep();
     }
   };
 
@@ -296,7 +298,7 @@ class RegisterLoginInfo extends Component {
               </div>
               
               <FormGroup>
-                <Button>Finalizar</Button>
+                <Button color="success">¡Reg&iacute;strame!</Button>
               </FormGroup>
             </Form>
           </Col>
