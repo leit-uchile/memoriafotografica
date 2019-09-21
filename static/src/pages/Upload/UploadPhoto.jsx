@@ -242,7 +242,7 @@ class UploadPhoto extends Component {
               <Label style={{ fontSize: "18px" }}>Crear Album</Label>
               <Button
                 style={styles.plusButton}
-                color="primary"
+                color="danger"
                 onClick={() => this.isAlbum()}>
                 <FontAwesomeIcon icon={faPlus} />
               </Button>
@@ -346,7 +346,7 @@ const styles = {
     marginRight: "auto",
     marginBottom: "-5px",
     justifyContent: "space-between",
-    backgroundColor: "#dceaf7",
+    backgroundColor: "#f7f7f7",
     borderRadius: "10px 10px 0px 0px",
     borderTop: "1px solid rgb(156,158,159)",
     borderRight: "1px solid rgb(156,158,159)",
@@ -362,7 +362,7 @@ const styles = {
   },
   generalInformation: {
     backgroundColor: "white",
-    border: "1px solid rgb(156,158,159)",
+    border: "1px solid rgb(210,214,218)",
     padding: "15px",
     borderRadius: "0px 0px 10px 10px"
   },
@@ -370,7 +370,7 @@ const styles = {
     borderBottom: "1px solid rgb(156,158,159)"
   },
   dropzone: {
-    backgroundColor: "#dceaf7",
+    backgroundColor: "#f7f7f7",
     textAlign: "center",
     padding: "15px",
     width: "100%",

@@ -150,7 +150,7 @@ class RegisterLoginInfo extends Component {
         </Row>
         <Row>
           <Col>
-            <Form onSubmit={this.onSubmit} style={{backgroundColor: '#f7f7f7', padding:'2em', border:'1px solid rgb(210,214,218)'}}>
+            <Form onSubmit={this.onSubmit} style={styles.form}>
               <div style={styles.formTitle}>
                 <FontAwesomeIcon icon={faUserCircle} style={{marginRight: '1em'}}/>
                 <Label for='avatar'>Avatar</Label>
@@ -366,6 +366,12 @@ const TermsOfUseModal = ({
 );
 
 const styles = {
+  form:{
+    backgroundColor: '#f7f7f7', 
+    padding:'2em', 
+    marginBottom:'2em',
+    border:'1px solid rgb(210,214,218)'
+  },
   title:{
     color:'#ff5a60',
     textAlign:'center',
