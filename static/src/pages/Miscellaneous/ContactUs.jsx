@@ -16,8 +16,8 @@ const ContactUs = () => {
   return(
     <Container>
         <Row>
-          <Col style={styles.title}>
-            <h2>Contáctenos</h2>
+          <Col>
+            <h2 style={styles.title}>Contáctenos</h2>
           </Col>
         </Row>
         <Row>
@@ -83,8 +83,7 @@ const Map = ({ source }) => {
 const styles = {
   title:{
     color:'#ff5a60',
-    display:'flex',
-    margin:'1em 25% 1em'
+    margin:'1em 28% 1em'
   },
   formTitle: {
     fontSize:'14px',

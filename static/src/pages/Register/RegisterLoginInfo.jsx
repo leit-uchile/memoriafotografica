@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserCircle, faUser, faUserTag } from "@fortawesome/free-solid-svg-icons";
 import {
   Form,
   FormGroup,
@@ -140,19 +142,22 @@ class RegisterLoginInfo extends Component {
       );
 
     return (
-      <Container style={{ marginTop: "2em" }}>
+      <Container>
         <Row>
           <Col>
-            <h2>Registro</h2>
+            <h2 style={styles.title}>Registro</h2>
           </Col>
         </Row>
         <Row>
           <Col>
-            <Form onSubmit={this.onSubmit}>
+            <Form onSubmit={this.onSubmit} style={{backgroundColor: '#f7f7f7', padding:'2em', border:'1px solid rgb(210,214,218)'}}>
+              <div style={styles.formTitle}>
+                <FontAwesomeIcon icon={faUserCircle} style={{marginRight: '1em'}}/>
+                <Label for='avatar'>Avatar</Label>
+              </div>
               {errorMessage}
               {avatarPreview}
               <FormGroup>
-                <Label for="avatar">Avatar</Label>
                 <Input
                   id="avatar"
                   type="file"
@@ -161,6 +166,14 @@ class RegisterLoginInfo extends Component {
                   Subir imagen
                 </Input>
               </FormGroup>
+              <Row>
+                <Col>
+                  <div style={styles.formTitle}>
+                      <FontAwesomeIcon icon={faUser} style={{marginRight: '1em'}}/>
+                      <Label>Datos personales</Label>
+                  </div>
+                </Col>
+              </Row>
               <Row form>
                 <Col sm={6}>
                   <FormGroup>
@@ -196,6 +209,14 @@ class RegisterLoginInfo extends Component {
                   required
                   value={this.state.date}></Input>
               </FormGroup>
+              <Row>
+                <Col>
+                  <div style={styles.formTitle}>
+                      <FontAwesomeIcon icon={faUserTag} style={{marginRight: '1em'}}/>
+                      <Label>Datos de usuario</Label>
+                  </div>
+                </Col>
+              </Row>
               <FormGroup>
                 <Label for="email">Correo electronico</Label>
                 <Input
@@ -343,5 +364,20 @@ const TermsOfUseModal = ({
     </ModalFooter>
   </Modal>
 );
+
+const styles = {
+  title:{
+    color:'#ff5a60',
+    textAlign:'center',
+    margin:'1em'
+  },
+  formTitle: {
+    fontSize:'14px',
+    fontWeight:'bold',
+    padding:'0.5em',
+    borderBottom: '1px solid rgb(210,214,218)',
+    marginBottom: '10px',
+  },
+}
 
 export default RegisterLoginInfo;

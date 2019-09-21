@@ -51,8 +51,8 @@ class RequestPhoto extends Component{
     return(
       <Container>
         <Row>
-          <Col style={styles.title}>
-            <h2>Formulario para solicitud de material audiovisual</h2>
+          <Col>
+            <h2 style={styles.title}>Formulario para solicitud de material audiovisual</h2>
           </Col>
         </Row>
         <Row>
@@ -146,8 +146,8 @@ class RequestPhoto extends Component{
 const styles = {
   title:{
     color:'#ff5a60',
-    display:'flex',
-    margin:'1em 25% 1em'
+    textAlign:'center',
+    margin:'1em'
   },
   formTitle: {
     fontSize:'14px',
