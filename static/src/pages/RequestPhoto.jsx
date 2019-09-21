@@ -146,8 +146,7 @@ class RequestPhoto extends Component{
 const styles = {
   form:{
     backgroundColor: '#f7f7f7', 
-    padding:'2em', 
-    marginBottom:'2em',
+    padding:'2em',
     border:'1px solid rgb(210,214,218)'
   },
   title:{
