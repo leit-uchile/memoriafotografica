@@ -13,7 +13,9 @@ import {
   Collapse,
   Nav,
   NavItem,
-  NavLink
+  NavLink,
+  Row,
+  NavbarBrand
 } from "reactstrap";
 
 const Header = ({ isAuth, currentRoute }) => {
@@ -35,81 +37,104 @@ const Header = ({ isAuth, currentRoute }) => {
 
   return (
     <Fragment>
-      <header className="jumbotron" style={currentRoute ==='/gallery/' ? {marginBottom: "0", width:'100%', position: 'fixed', zIndex: '2'}: {marginBottom: "0" }}>
+      <header
+        className="jumbotron"
+        style={{ marginBottom: "0", paddingBottom: "2rem" }}>
         <Container>
-          {redirect ? 
-            <Redirect to="/" />
-            : null
-          }
-          <Col sm={6} className="left" onClick={() => {
-            setRedirect(true);
-            setTimeout(() => setRedirect(false), 1000)
-          }}>
-            <h1>Memoria fotográfica</h1>
-            <p>
-              Facultad de Ciencias Fisicas y Matematicas - Universidad de Chile
-            </p>
-          </Col>
-          <Navbar
-            expand={"sm"}
-            className="justify-content-center"
-            light
-            style={{ float: "right" }}
-          >
-            <NavbarToggler onClick={() => setToggle(!toggle)} />
-            <Collapse isOpen={toggle} navbar>
-              <Nav className="barra">
-                <NavItem>
-                  {currentRoute === "/Inicio" ? (
-                    <NavLink tag={Link} to={"/"} active style={styles.activeLink}>
-                      Inicio
-                    </NavLink>
-                  ) : (
-                    <NavLink tag={Link} to={"/"}>
-                      Inicio
-                    </NavLink>
-                  )}
-                </NavItem>
-                <NavItem>
-                  {currentRoute === "/gallery/" ? (
-                    <NavLink
-                      tag={Link}
-                      to={"/gallery"}
-                      active
-                      style={styles.activeLink}
-                    >
-                      Galer&iacute;a
-                    </NavLink>
-                  ) : (
-                    <NavLink tag={Link} to={"/gallery"}>
-                      Galer&iacute;a
-                    </NavLink>
-                  )}
-                </NavItem>
-                <NavItem>
-                  {currentRoute === "/upload" ? (
-                    <NavLink
-                      tag={Link}
-                      to={"/upload"}
-                      active
-                      style={styles.activeLink}
-                    >
-                      Participa
-                    </NavLink>
-                  ) : (
-                    <NavLink tag={Link} to={"/upload"}>
-                      Participa
-                    </NavLink>
-                  )}{" "}
-                </NavItem>
-                <NavItem>{doLoginNav}</NavItem>
-              </Nav>
-            </Collapse>
-          </Navbar>
+          {redirect ? <Redirect to="/" /> : null}
+          <Row>
+            <Col>
+              <Navbar expand={"sm"} light>
+                <NavbarBrand
+                  onClick={() => {
+                    setRedirect(true);
+                    setTimeout(() => setRedirect(false), 1000);
+                  }}
+                  tag={"div"}
+                  style={{ maxWidth: "50%" }}>
+                  <h1>Memoria fotográfica</h1>
+                  <p style={{ fontSize: "0.8em", whiteSpace: "normal" }}>
+                    Facultad de Ciencias Fisicas y Matematicas - Universidad de
+                    Chile
+                  </p>
+                </NavbarBrand>
+                <NavbarToggler onClick={() => setToggle(!toggle)} />
+                <Collapse isOpen={toggle} navbar>
+                  <Nav className="ml-auto" navbar>
+                    <NavItem>
+                      {currentRoute === "/Inicio" ? (
+                        <NavLink
+                          tag={Link}
+                          to={"/"}
+                          active
+                          style={styles.activeLink}>
+                          Inicio
+                        </NavLink>
+                      ) : (
+                        <NavLink tag={Link} to={"/"}>
+                          Inicio
+                        </NavLink>
+                      )}
+                    </NavItem>
+                    <NavItem>
+                      {currentRoute === "/gallery/" ? (
+                        <NavLink
+                          tag={Link}
+                          to={"/gallery"}
+                          active
+                          style={styles.activeLink}>
+                          Galer&iacute;a
+                        </NavLink>
+                      ) : (
+                        <NavLink tag={Link} to={"/gallery"}>
+                          Galer&iacute;a
+                        </NavLink>
+                      )}
+                    </NavItem>
+                    <NavItem>
+                      {currentRoute === "/upload" ? (
+                        <NavLink
+                          tag={Link}
+                          to={"/upload"}
+                          active
+                          style={styles.activeLink}>
+                          Participa
+                        </NavLink>
+                      ) : (
+                        <NavLink tag={Link} to={"/upload"}>
+                          Participa
+                        </NavLink>
+                      )}{" "}
+                    </NavItem>
+                    <NavItem>{doLoginNav}</NavItem>
+                  </Nav>
+                </Collapse>
+              </Navbar>
+            </Col>
+          </Row>
         </Container>
-        <SearchBar />
       </header>
-      {currentRoute==='/gallery/' ? <div style={{width:'100%',height:'228px'}}></div>: null}
+      <div
+        style={
+          currentRoute === "/gallery/"
+            ? {
+                position: "sticky",
+                top: "0",
+                backgroundColor: "#e9ecef",
+                height: "4em",
+                padding: "1em 0",
+                borderBottom: "1px solid rgb(210,214,218)",
+                zIndex: "4"
+              }
+            : {
+                backgroundColor: "#e9ecef",
+                borderBottom: "1px solid rgb(210,214,218)",
+                height: "4em",
+                padding: "1em 0"
+              }
+        }>
+        <SearchBar />
+      </div>
     </Fragment>
   );
 };
@@ -127,4 +152,7 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, null)(Header);
+export default connect(
+  mapStateToProps,
+  null
+)(Header);
