@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBook, faAddressCard, faPhoneAlt } from "@fortawesome/free-solid-svg-icons";
+import { faBook, faAddressCard, faPhoneAlt, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import {
   Container,
   Row,
@@ -22,7 +22,7 @@ const ContactUs = () => {
         </Row>
         <Row>
           <Col>
-            <Form style={{width:'60.8em', backgroundColor: '#f7f7f7', padding:'2em', border:'1px solid rgb(210,214,218)'}}>
+            <Form style={styles.form}>
               <div style={styles.formTitle}>
                 <FontAwesomeIcon icon={faAddressCard } style={{marginRight: '1em'}} />
                 <Label>Identificación de contacto</Label>
@@ -39,7 +39,7 @@ const ContactUs = () => {
               </FormGroup>
               <FormGroup>
                 <div style={styles.formTitle}>
-                <FontAwesomeIcon icon={faBook} style={{marginRight: '1em'}}/>
+                <FontAwesomeIcon icon={faEnvelope} style={{marginRight: '1em'}}/>
                 <Label>Motivo</Label>
                 </div>
                 <Input type='textarea' placeholder="Mensaje" required/>
@@ -55,9 +55,9 @@ const ContactUs = () => {
             />
           </Col>
           <Col xs="3">
-            <p>Para más información puede visitarnos en la Biblioteca Central de la Facultad de Ciencias Físicas y Matemáticas ubicada en
+            <p style={styles.info}>Para más información puede visitarnos en la Biblioteca Central de la Facultad de Ciencias Físicas y Matemáticas ubicada en
               Beauchef 850, Santiago</p>
-            <div style={{display:'block', backgroundColor: '#f7f7f7', textAlign: 'justify', textJustify: 'inter-word', padding:'0.2em'}}>
+            <div style={styles.phoneInfo}>
               <FontAwesomeIcon icon={faPhoneAlt} style={{marginRight:'0.2em'}}/>
               Biblioteca Central  
               +56 22 978 4074
@@ -70,17 +70,23 @@ const ContactUs = () => {
 
 const Map = ({ source }) => {
   if (!source) {
-    return <div style={{width:"460px", height:"300px", border:'1px solid black'}}>No se ha podido cargar el mapa</div>;
+    return <div style={styles.mapError}>No se ha podido cargar el mapa</div>;
   }
   const src = source;     
   return (
     <div>
-      <iframe src={src} style={{width:"460px", height:"300px", border:"0", allowFullScreen:""}}></iframe>
+      <iframe src={src} style={styles.map}></iframe>
     </div>
   );
 };
 
 const styles = {
+  form:{
+    width:'60.8em', 
+    backgroundColor: '#f7f7f7', 
+    padding:'2em', 
+    border:'1px solid rgb(210,214,218)'
+  },
   title:{
     color:'#ff5a60',
     margin:'1em 28% 1em'
@@ -92,5 +98,26 @@ const styles = {
     borderBottom: '1px solid rgb(210,214,218)',
     marginBottom: '10px',
   },
+  mapError:{
+    width:"460px", 
+    height:"300px", 
+    border:'1px solid black'
+  },
+  map:{
+    width:"460px", 
+    height:"300px", 
+    border:"0", 
+    allowFullScreen:""
+  },
+  info:{
+    textAlign: 'justify', 
+    textJustify: 'inter-word'
+  },
+  phoneInfo:{
+    display:'block', 
+    backgroundColor: '#f7f7f7', 
+    textAlign:'center', 
+    padding:'0.2em'
+  }
 }
 export default ContactUs;

@@ -57,7 +57,7 @@ class RequestPhoto extends Component{
         </Row>
         <Row>
           <Col sm={8}>
-            <Form style={{backgroundColor: '#f7f7f7', padding:'2em', border:'1px solid rgb(210,214,218)'}}>
+            <Form style={styles.form}>
               <FormGroup>
                 <div style={styles.formTitle}>
                   <FontAwesomeIcon icon={faImages} style={{marginRight: '1em'}}/>
@@ -144,6 +144,11 @@ class RequestPhoto extends Component{
 }
 
 const styles = {
+  form:{
+    backgroundColor: '#f7f7f7', 
+    padding:'2em',
+    border:'1px solid rgb(210,214,218)'
+  },
   title:{
     color:'#ff5a60',
     textAlign:'center',
