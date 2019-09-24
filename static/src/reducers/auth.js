@@ -13,7 +13,6 @@ const baseState = {
   token: null,
   isAuthenticated: false,
   isLoading: true,
-  user: null,
   errors: {}
 };
 
@@ -30,33 +29,20 @@ const initialState =
         token: localStorage.getItem("token"),
         isAuthenticated: true,
         isLoading: true,
-        user: JSON.parse(localStorage.getItem("user")),
         errors: {}
       };
 
 export default function auth(state = initialState, action) {
-  // TODO: Actually load the info in a different State!
   let logginDate = new Date();
-
   switch (action.type) {
-    case USER_LOADED:
-      return {
-        ...state,
-        isAuthenticated: true,
-        isLoading: false,
-        user: action.user
-      };
-
     case LOGIN_SUCCESS:
       localStorage.setItem("token", action.data.token);
       localStorage.setItem(
         "isAuth",
         JSON.stringify({ loggedIn: true, timeSet: logginDate.getTime() })
       );
-      localStorage.setItem("user", JSON.stringify(action.data.user));
       return {
         ...state,
-        ...action.data,
         isAuthenticated: true,
         isLoading: false,
         errors: null
@@ -68,7 +54,6 @@ export default function auth(state = initialState, action) {
         "isAuth",
         JSON.stringify({ loggedIn: true, timeSet: logginDate.getTime() })
       );
-      localStorage.setItem("user", JSON.stringify(action.data.user));
       return {
         ...state,
         ...action.data,
@@ -92,7 +77,6 @@ export default function auth(state = initialState, action) {
         ...state,
         errors: action.data,
         token: null,
-        user: null,
         isAuthenticated: false,
         isLoading: false
       };

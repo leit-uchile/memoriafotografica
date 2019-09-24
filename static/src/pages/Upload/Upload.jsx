@@ -255,7 +255,6 @@ const mapStateToProps = state => {
   return {
     errors,
     isAuthenticated: state.auth.isAuthenticated,
-    token: state.auth.token,
     upload: state.upload,
     meta: state.home.all_tags
   };
@@ -266,8 +265,8 @@ const mapActionsToProps = dispatch => {
     setRoute: route => {
       return dispatch(misc.setCurrentRoute(route));
     },
-    uploadPhotos: (info, auth) => {
-      return dispatch(upload.uploadImages(info, auth));
+    uploadPhotos: info => {
+      return dispatch(upload.uploadImages(info));
     },
     recoverMetadata: () => {
       return dispatch(home.tags());

@@ -19,7 +19,11 @@ import {
   Form,
   FormGroup,
   Label,
-  Input
+  Input,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter
 } from "reactstrap";
 
 import UserDashboard from "./UserDashboard";
@@ -28,8 +32,11 @@ class EditProfile extends Component {
   constructor(props) {
     super(props);
     this.toggle = this.toggle.bind(this);
+
     this.state = {
-      dropdownOpen: false
+      dropdownOpen: false,
+      user: { ...props.user },
+      modal: false
     };
     this.genericChangeHandler = this.genericChangeHandler.bind(this);
     this.checkPassword = this.checkPassword.bind(this);
@@ -43,9 +50,10 @@ class EditProfile extends Component {
   }
 
   toggle() {
-    this.setState({
-      dropdownOpen: !this.state.dropdownOpen
-    });
+    this.setState(prevState => ({
+      dropdownOpen: !this.state.dropdownOpen,
+      modal: !prevState.modal
+    }));
   }
   componentWillMount() {
     const { user, auth } = this.props;
@@ -53,7 +61,9 @@ class EditProfile extends Component {
     this.props.setRoute("/userDashboard/");
   }
   genericChangeHandler(event) {
-    this.setState({ [event.target.id]: event.target.value });
+    this.setState({
+      user: { ...this.state.user, [event.target.id]: event.target.value }
+    });
   }
 
   checkPassword() {
@@ -78,6 +88,7 @@ class EditProfile extends Component {
     if (this.checkPassword()) {
       this.setState({ error: null });
       this.props.saveInfo(this.state);
+      this.props.nextStep();
     }
   };
 
@@ -100,8 +111,13 @@ class EditProfile extends Component {
     }
   }
   render() {
-    const { user } = this.props;
+    var { user } = this.state;
     var errorMessage;
+    const closeBtn = (
+      <button className="close" onClick={this.toggle}>
+        &times;
+      </button>
+    );
     if (this.state.error !== undefined && this.state.error !== null) {
       errorMessage = <Alert color="warning">{this.state.error}</Alert>;
     } else {
@@ -163,11 +179,11 @@ class EditProfile extends Component {
                   </Label>
                   <Col sm={9}>
                     <Input
-                      id="name"
+                      id="first_name"
                       type="text"
                       onChange={this.genericChangeHandler}
                       required
-                      value={user.first_name}></Input>
+                      value={this.state.user.first_name}></Input>
                   </Col>
                 </FormGroup>
                 <FormGroup row>
@@ -176,11 +192,11 @@ class EditProfile extends Component {
                   </Label>
                   <Col sm={9}>
                     <Input
-                      id="lastname"
+                      id="last_name"
                       type="text"
                       onChange={this.genericChangeHandler}
                       required
-                      value={user.last_name}></Input>
+                      value={this.state.user.last_name}></Input>
                   </Col>
                 </FormGroup>
                 <FormGroup row>
@@ -189,11 +205,11 @@ class EditProfile extends Component {
                   </Label>
                   <Col sm={9}>
                     <Input
-                      id="date"
+                      id="birth_date"
                       type="date"
                       onChange={this.genericChangeHandler}
                       required
-                      value={user.birth_date}></Input>
+                      value={this.state.user.birth_date}></Input>
                   </Col>
                 </FormGroup>
                 <FormGroup row>
@@ -205,7 +221,7 @@ class EditProfile extends Component {
                       id="email"
                       type="email"
                       onChange={this.genericChangeHandler}
-                      value={user.email}
+                      value={this.state.user.email}
                       required></Input>
                   </Col>
                 </FormGroup>
@@ -218,7 +234,7 @@ class EditProfile extends Component {
                       id="passwordCheck"
                       type="password"
                       onChange={this.genericChangeHandler}
-                      placeholder="..."
+                      value={this.state.user.passwordCheck}
                       required></Input>
                   </Col>
                 </FormGroup>
@@ -231,18 +247,20 @@ class EditProfile extends Component {
                       id="password"
                       type="password"
                       onChange={this.genericChangeHandler}
+                      value={this.state.user.password}
                       required></Input>
                   </Col>
                 </FormGroup>
                 <FormGroup row>
-                  <Label for="passwordCheck" sm={3}>
+                  <Label for="newPasswordCheck" sm={3}>
                     Repetir Contraseña
                   </Label>
                   <Col sm={9}>
                     <Input
-                      id="passwordCheck"
+                      id="newPasswordCheck"
                       type="password"
                       onChange={this.genericChangeHandler}
+                      value={this.state.user.newPasswordCheck}
                       required></Input>
                   </Col>
                 </FormGroup>
@@ -253,10 +271,10 @@ class EditProfile extends Component {
                   </Label>
                   <Col sm={9}>
                     <Input
-                      id="rol"
+                      id="rol_type"
                       type="select"
                       onChange={this.genericChangeHandler}
-                      value={`${user.rol_type}`}
+                      value={`${this.state.user.rol_type}`}
                       required>
                       <option value="1">Alumno</option>
                       <option value="2">Ex-Alumno</option>
@@ -267,7 +285,44 @@ class EditProfile extends Component {
                     </Input>
                   </Col>
                 </FormGroup>
-                <Button color="success"> Guardar </Button>
+                <Button color="danger" onClick={this.toggle}>
+                  Guardar Cambios
+                </Button>
+                <Modal
+                  isOpen={this.state.modal}
+                  fade={false}
+                  toggle={this.toggle}>
+                  <ModalHeader toggle={this.toggle} close={closeBtn}>
+                    Editar mis datos
+                  </ModalHeader>
+                  <ModalBody>
+                    <FormGroup row style={{ textAlign: "center", offset: 2 }}>
+                      <Label
+                        for="passwordCheck"
+                        sm={4}
+                        style={{ textAlign: "center" }}>
+                        Ingresa tu constraseña
+                      </Label>
+                      <Col sm={{ size: 6, offset: 0.5 }}>
+                        <Input
+                          id="passwordCheck"
+                          type="password"
+                          onChange={this.genericChangeHandler}
+                          value={this.state.user.passwordCheck}
+                          required
+                          block></Input>
+                      </Col>
+                    </FormGroup>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="primary" onClick={this.toggle}>
+                      Guardar
+                    </Button>{" "}
+                    <Button color="secondary" onClick={this.toggle}>
+                      Cancelar
+                    </Button>
+                  </ModalFooter>
+                </Modal>
               </Form>
             </Container>
           </Col>
@@ -287,16 +342,16 @@ const styles = {
 
 const mapStateToProps = state => {
   return {
-    data: state.user,
-    user: state.auth.user,
-    auth: state.auth.token
+    user: state.user.userData
   };
 };
 
 const mapActionsToProps = dispatch => {
   return {
-    onLoadGetPhotos: (auth, user_id, limit, offset) => {
-      return dispatch(user.getUserPhotos(auth, user_id, limit, offset));
+    update: (first_name, last_name, password, birth_date, rol_type) => {
+      return dispatch(
+        user.update(first_name, last_name, password, birth_date, rol_type)
+      );
     },
     setRoute: route => {
       return dispatch(misc.setCurrentRoute(route));

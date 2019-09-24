@@ -12,7 +12,7 @@ import {
 } from "reactstrap";
 import Photo from "../../components/Photo";
 import Comment from "../PhotoView/Comment";
-import EditPhotos from "./EditPhotos"
+import EditPhotos from "./EditPhotos";
 import { connect } from "react-redux";
 import { user, misc } from "../../actions";
 import { Link } from "react-router-dom";
@@ -74,9 +74,7 @@ class Dashboard extends Component {
   previous() {
     if (this.animating) return;
     const prevIndex =
-      this.state.activeIndex <= 0 
-      ? 0 
-      : this.state.activeIndex - 4;
+      this.state.activeIndex <= 0 ? 0 : this.state.activeIndex - 4;
     this.setState({ entering: false, toRight: false }, () =>
       setTimeout(
         function() {
@@ -94,12 +92,12 @@ class Dashboard extends Component {
   }
 
   componentWillMount() {
-    const { user, auth } = this.props;
+    const { user } = this.props;
 
     this.props.setRoute("/userDashboard/");
-    this.props.onLoadGetPhotos(auth, user.id, 15, 0);
-    this.props.onLoadGetAlbums(auth, user.id, 15, 0);
-    this.props.onLoadGetComments(auth, user.id, 10, 0);
+    this.props.onLoadGetPhotos(user.id, 15, 0);
+    this.props.onLoadGetAlbums(user.id, 15, 0);
+    this.props.onLoadGetComments(user.id, 10, 0);
   }
   allowMorePics() {
     this.setState({ maxPhotos: this.state.maxPhotos + 10 });
@@ -134,7 +132,7 @@ class Dashboard extends Component {
         <Row style={{ marginTop: "2em" }}>
           <Col md="4">
             <Card>
-              <CardImg top width="100%"src={user.avatar} />
+              <CardImg top width="100%" src={user.avatar} />
               <CardBody
                 style={{ backgroundColor: "#ebeeef", textAlign: "center" }}>
                 <CardText>{`${user.first_name} ${user.last_name}`}</CardText>
@@ -145,7 +143,7 @@ class Dashboard extends Component {
                   style={{ margin: "0 auto" }}
                   color="secondary"
                   tag={Link}
-                  to="/user/edit">
+                  to="/user/editProfile">
                   {" "}
                   Editar mi perfil
                 </Button>
@@ -175,14 +173,12 @@ class Dashboard extends Component {
                           <img
                             className={
                               this.state.toRight
-                              ?
-                                this.state.entering
+                                ? this.state.entering
                                   ? "animated slideInRight"
                                   : "animated slideOutLeft"
-                              :
-                                this.state.entering
-                                  ? "animated slideInLeft"
-                                  : "animated slideOutRight"
+                                : this.state.entering
+                                ? "animated slideInLeft"
+                                : "animated slideOutRight"
                             }
                             width="calc(25%-4px)"
                             width="160em"
@@ -199,22 +195,21 @@ class Dashboard extends Component {
                 </Container>
 
                 <ButtonGroup style={{ margin: "0 auto" }}>
-                  <Button 
-                  disabled = 
-                  {this.state.activeIndex <=0
-                  ? true
-                  : false}
-                  onClick={this.previous}>
+                  <Button
+                    disabled={this.state.activeIndex <= 0 ? true : false}
+                    onClick={this.previous}>
                     {" "}
                     <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}
                   </Button>
                   <Button onClick={this.all}> Ver Todas</Button>
-                  <Button 
-                  disabled = 
-                    {this.state.activeIndex + 4 >= this.props.data.photos.length - 1
-                    ? true
-                    : false}
-                  onClick={this.next}>
+                  <Button
+                    disabled={
+                      this.state.activeIndex + 4 >=
+                      this.props.data.photos.length - 1
+                        ? true
+                        : false
+                    }
+                    onClick={this.next}>
                     {" "}
                     <FontAwesomeIcon icon={faArrowAltCircleRight} />{" "}
                   </Button>
@@ -280,22 +275,25 @@ const Comments = ({ commentList, onClick }) => (
 
 const mapStateToProps = state => {
   return {
-    data: state.user,
-    user: state.auth.user,
-    auth: state.auth.token
+    data: {
+      photos: state.user.photos,
+      comments: state.user.comments,
+      albums: state.user.albums
+    },
+    user: state.user.userData
   };
 };
 
 const mapActionsToProps = dispatch => {
   return {
-    onLoadGetPhotos: (auth, user_id, limit, offset) => {
-      return dispatch(user.getUserPhotos(auth, user_id, limit, offset));
+    onLoadGetPhotos: (user_id, limit, offset) => {
+      return dispatch(user.getUserPhotos(user_id, limit, offset));
     },
-    onLoadGetAlbums: (auth, user_id, limit, offset) => {
-      return dispatch(user.getUserAlbums(auth, user_id, limit, offset));
+    onLoadGetAlbums: (user_id, limit, offset) => {
+      return dispatch(user.getUserAlbums(user_id, limit, offset));
     },
-    onLoadGetComments: (auth, user_id, limit, offset) => {
-      return dispatch(user.getUserComments(auth, user_id, limit, offset));
+    onLoadGetComments: (user_id, limit, offset) => {
+      return dispatch(user.getUserComments(user_id, limit, offset));
     },
     setRoute: route => {
       return dispatch(misc.setCurrentRoute(route));

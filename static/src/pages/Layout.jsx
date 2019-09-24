@@ -38,7 +38,7 @@ const Layout = () => {
             <PrivateComponent path={"/request-photo"} component={RequestPhoto}/>
             <PrivateComponent path={"/curador/dashboard"} component={Dashboard} />
             <PrivateComponent path={"/user/dashboard"} component={UserDashboard} />
-            <PrivateComponent path={"/user/edit"} component={EditProfile} />
+            <PrivateComponent path={"/user/editProfile"} component={EditProfile} />
             <Route component={NoMatch} />
           </Switch>
         </div>  

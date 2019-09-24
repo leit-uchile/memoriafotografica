@@ -4,17 +4,45 @@ import {
   USER_RECOVERED_ALBUM,
   USER_RECOVERED_COMMENTS,
   USER_RECOVERED_ALBUM_ERROR,
-  USER_RECOVERED_COMMENTS_ERROR
+  USER_RECOVERED_COMMENTS_ERROR,
+  USER_UPDATE_SUCCESS,
+  USER_UPDATE_FAILED,
+  USER_LOADED
 } from "../actions/types";
 
-const initialState = {
+/**
+ * User will be loaded by the auth actions and dispatched here!
+ * User deletion is done as a logout is successful
+ */
+const baseState = {
   photos: [],
   comments: [],
-  albums: []
+  albums: [],
+  userData: null
 };
+
+const initialState =
+  localStorage.getItem("isAuth") === null
+    ? baseState
+    : new Date().getTime() -
+        JSON.parse(localStorage.getItem("isAuth")).timeSet >
+      86000000
+    ? baseState
+    : {
+        photos: [],
+        comments: [],
+        albums: [],
+        userData: JSON.parse(localStorage.getItem("user"))
+      };
 
 export default function user(state = initialState, action) {
   switch (action.type) {
+    case USER_LOADED:
+      localStorage.setItem("user", JSON.stringify(action.data));
+      return {
+        ...state,
+        userData: { ...action.data } // user
+      };
     case USER_RECOVERED_PHOTO:
       return {
         ...state,
@@ -23,7 +51,7 @@ export default function user(state = initialState, action) {
     case USER_RECOVERED_ALBUM:
       return {
         ...state,
-        albmus: action.data
+        albums: action.data
       };
     case USER_RECOVERED_COMMENTS:
       return {
@@ -48,6 +76,14 @@ export default function user(state = initialState, action) {
         comments: [],
         error: action.data
       };
+    case USER_UPDATE_SUCCESS:
+      localStorage.setItem("user", JSON.stringify(action.data));
+      return {
+        ...state,
+        userData: { ...action.data }
+      };
+    case USER_UPDATE_FAILED:
+      return { ...state, errors: action.data };
     default:
       return { ...state };
   }

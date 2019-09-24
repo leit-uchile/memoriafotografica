@@ -14,10 +14,10 @@ import {
     cc: String
   }
 */
-export const uploadImages = (photos, auth) => {
+export const uploadImages = photos => {
   return (dispatch, getState) => {
     let header = {
-      Authorization: "Token " + auth
+      Authorization: "Token " + getState().auth.token
     };
 
     var currentTime = new Date();

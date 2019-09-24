@@ -14,18 +14,18 @@ import { connect } from "react-redux";
 import { auth } from "../actions";
 import { Redirect } from "react-router-dom";
 
-const UserModal = ({ logout, auth }) => {
+const UserModal = ({ logout, user }) => {
   const [toggle, setToggle] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
   const doToggle = () => setToggle(!toggle);
 
   const doLogout = () => {
-    logout(auth.token);
+    logout();
     doToggle();
   };
 
-  const { first_name, last_name, user_type } = auth.user;
+  const { first_name, last_name, user_type } = user;
 
   return (
     <NavLink href="#" onClick={doToggle}>
@@ -113,14 +113,14 @@ const UserModal = ({ logout, auth }) => {
 
 const mapStateToProps = state => {
   return {
-    auth: state.auth
+    user: state.user.userData
   };
 };
 
 const mapActionsToProps = dispatch => {
   return {
-    logout: token => {
-      return dispatch(auth.logout(token));
+    logout: () => {
+      return dispatch(auth.logout());
     }
   };
 };
