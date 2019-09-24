@@ -273,33 +273,24 @@ const Comments = ({ commentList, onClick }) => (
   </div>
 );
 
-const mapStateToProps = state => {
-  return {
-    data: {
-      photos: state.user.photos,
-      comments: state.user.comments,
-      albums: state.user.albums
-    },
-    user: state.user.userData
-  };
-};
+const mapStateToProps = state => ({
+  data: {
+    photos: state.user.photos,
+    comments: state.user.comments,
+    albums: state.user.albums
+  },
+  user: state.user.userData
+});
 
-const mapActionsToProps = dispatch => {
-  return {
-    onLoadGetPhotos: (user_id, limit, offset) => {
-      return dispatch(user.getUserPhotos(user_id, limit, offset));
-    },
-    onLoadGetAlbums: (user_id, limit, offset) => {
-      return dispatch(user.getUserAlbums(user_id, limit, offset));
-    },
-    onLoadGetComments: (user_id, limit, offset) => {
-      return dispatch(user.getUserComments(user_id, limit, offset));
-    },
-    setRoute: route => {
-      return dispatch(misc.setCurrentRoute(route));
-    }
-  };
-};
+const mapActionsToProps = dispatch => ({
+  onLoadGetPhotos: (user_id, limit, offset) =>
+    dispatch(user.getUserPhotos(user_id, limit, offset)),
+  onLoadGetAlbums: (user_id, limit, offset) =>
+    dispatch(user.getUserAlbums(user_id, limit, offset)),
+  onLoadGetComments: (user_id, limit, offset) =>
+    dispatch(user.getUserComments(user_id, limit, offset)),
+  setRoute: route => dispatch(misc.setCurrentRoute(route))
+});
 
 export default connect(
   mapStateToProps,

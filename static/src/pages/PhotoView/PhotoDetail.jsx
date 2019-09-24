@@ -271,6 +271,7 @@ class PhotoDetails extends Component {
                     <ReportModal
                       style={{ display: "inline-block" }}
                       className="float-left"
+                      photoId={this.props.match.params.id}
                     />
                   </Col>
                   <Col md={1}>

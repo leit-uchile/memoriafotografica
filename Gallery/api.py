@@ -442,12 +442,12 @@ class ReportListAPI(generics.GenericAPIView):
                     m = Photo.objects.get(pk=id)
                 elif (t == '3'):
                     m = Comment.objects.get(pk=id)
+                r = serializer.save()
+                m.report.add(r)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             except Exception as e:
                 print(e)
                 raise NotFound(detail="ID de "+t_class[t]+" inválido o no existente. Campo 'id' es requerido. ")
-            r = serializer.save()
-            m.report.add(r)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

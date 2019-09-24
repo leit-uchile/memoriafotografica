@@ -6,7 +6,10 @@ import {
   RECOVERED_PHOTO_COMMENTS,
   PHOTO_COMMENTS_ERROR,
   LOADED_CUSTOM_METADATA,
-  CUSTOM_METADATA_ERROR
+  CUSTOM_METADATA_ERROR,
+  REPORTED_PHOTO,
+  PHOTO_REPORT_FAILED,
+  REPORTING_PHOTO
 } from "../actions/types";
 
 const initialState = {
@@ -20,7 +23,9 @@ const initialState = {
   errors: "INVALID_URL",
   commentsLoaded: false,
   comments: [],
-  metadataNames: []
+  metadataNames: [],
+  photoReportSent: false,
+  reportComplete: false,
 };
 
 export default function photoDetails(state = initialState, action) {
@@ -41,6 +46,12 @@ export default function photoDetails(state = initialState, action) {
       return { ...state, metadataNames: action.data };
     case CUSTOM_METADATA_ERROR:
       return { ...state, metadataNames: [] };
+    case REPORTING_PHOTO:
+      return { ...state, photoReportSent: false};
+    case REPORTED_PHOTO:
+      return {...state, photoReportSent: true, reportComplete: true}
+    case PHOTO_REPORT_FAILED:
+        return {...state, photoReportSent: true, reportComplete: false}
     default:
       return state;
   }
