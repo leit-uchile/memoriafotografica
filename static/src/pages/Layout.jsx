@@ -1,13 +1,14 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment } from "react";
 import { Route, Switch } from "react-router-dom";
 
+import Alert from '../components/Alert';
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Home from "./Home";
 import Login from "./Login";
 import Register from "./Register/Register";
 import NoMatch from "./NoMatch";
-import Upload from "./Upload/Upload";
+import UploadPage from "./Upload/UploadPage";
 import PhotoDetails from "./PhotoView/PhotoDetail";
 import RequestPhoto from "./RequestPhoto";
 import Dashboard from "./Curador/Dashboard";
@@ -17,7 +18,6 @@ import EditProfile from "./UserDashboard/EditProfile";
 import Index from "./Miscellaneous/Index";
 // Utils
 import PrivateComponent from "../components/PrivateComponent";
-import ErrorBoundary from "../components/ErrorBoundary";
 import BoundedRoute from '../components/BoundedRoute';
 
 
@@ -27,12 +27,13 @@ const Layout = () => {
       <div style={styles.background}>
         <Header />
         <div style={styles.body}>
+          <Alert />
           <Switch>
             <Route exact path={"/"} component={LandingPage} />
             <BoundedRoute path={"/gallery"} component={Home} />
             <BoundedRoute path={"/login"} component={Login} />
             <BoundedRoute path={"/register"} component={Register} />
-            <BoundedRoute path={"/upload"} component={Upload} />
+            <BoundedRoute path={"/upload"} component={UploadPage} />
             <BoundedRoute path={"/photo/:id"} component={PhotoDetails}/>
             <BoundedRoute path={"/misc"} component={Index}/>
             <PrivateComponent path={"/request-photo"} component={RequestPhoto}/>

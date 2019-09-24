@@ -144,7 +144,7 @@ class UploadDetails extends Component {
                 <Button color="danger" onClick={this.onDelete}>
                   Eliminar
                 </Button>
-                <Button color="primary" onClick={this.toggle}>
+                <Button onClick={this.toggle}>
                   {this.state.collapse
                     ? "Descartar cambios"
                     : "Información por separado"}{" "}

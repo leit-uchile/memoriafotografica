@@ -65,10 +65,14 @@ class UploadPage extends Component {
 
   retryFailed() {
     // Create new array with ids from props
-    var newList = this.state.photos.photosList.filter(
-      (el, key) => this.props.upload.photosUploaded.indexOf(key) !== -1
-    );
-    this.savePhotos(newList);
+    var newPhotos = {
+      ...this.state.photos,
+      photoList: this.state.photos.photosList.filter(
+        (el, key) => this.props.upload.photosUploaded.indexOf(key) === -1
+      )
+    };
+
+    this.savePhotos(newPhotos);
   }
 
   componentWillMount() {
@@ -92,16 +96,14 @@ class UploadPage extends Component {
           <Container>
             <Row>
               <Col>
-                <h2 style={styles.title}>
-                  ¡Ayúdanos aportando material!
-                </h2>
+                <h2 style={styles.title}>¡Ayúdanos aportando material!</h2>
               </Col>
             </Row>
             <Container style={styles.container}>
               <Row>
-                <Col style={{borderRight:'1px solid rgb(210,214,218)'}}>
+                <Col style={{ borderRight: "1px solid rgb(210,214,218)" }}>
                   <Row style={styles.item}>
-                    <FontAwesomeIcon icon={faSignInAlt} size="6x"/>
+                    <FontAwesomeIcon icon={faSignInAlt} size="6x" />
                   </Row>
                   <Row style={styles.item}>
                     <Button color="primary" tag={Link} to="/login">
@@ -111,20 +113,20 @@ class UploadPage extends Component {
                 </Col>
                 <Col>
                   <Row style={styles.item}>
-                    <FontAwesomeIcon icon={faUserPlus} size="6x"/>
+                    <FontAwesomeIcon icon={faUserPlus} size="6x" />
                   </Row>
                   <Row style={styles.item}>
                     <Button color="success" tag={Link} to="/register">
-                        Registrarme
-                      </Button>
+                      Registrarme
+                    </Button>
                     <Button color="link" onClick={this.withoutRegister}>
                       Continuar sin registrar
                     </Button>
                   </Row>
                   <Row style={styles.item}>
                     <p>
-                      Si continuas sin registrar tendrás que ingresar tus datos cada vez
-                      que subas una foto
+                      Si continuas sin registrar tendrás que ingresar tus datos
+                      cada vez que subas una foto
                     </p>
                   </Row>
                 </Col>
@@ -162,21 +164,19 @@ class UploadPage extends Component {
           />
         );
         break;
-      default: 
-        subupload = 
-        <Container>
+      default:
+        subupload = (
+          <Container>
             <Row>
               <Col>
-                <h2 style={styles.title}>
-                  ¡Ayúdanos aportando material!
-                </h2>
+                <h2 style={styles.title}>¡Ayúdanos aportando material!</h2>
               </Col>
             </Row>
             <Container style={styles.container}>
               <Row>
-                <Col style={{borderRight:'1px solid rgb(210,214,218)'}}>
+                <Col style={{ borderRight: "1px solid rgb(210,214,218)" }}>
                   <Row style={styles.item}>
-                    <FontAwesomeIcon icon={faSignInAlt} size="6x"/>
+                    <FontAwesomeIcon icon={faSignInAlt} size="6x" />
                   </Row>
                   <Row style={styles.item}>
                     <Button color="primary" tag={Link} to="/login">
@@ -186,27 +186,28 @@ class UploadPage extends Component {
                 </Col>
                 <Col>
                   <Row style={styles.item}>
-                    <FontAwesomeIcon icon={faUserPlus} size="6x"/>
+                    <FontAwesomeIcon icon={faUserPlus} size="6x" />
                   </Row>
                   <Row style={styles.item}>
                     <Button color="success" tag={Link} to="/register">
-                        Registrarme
-                      </Button>
+                      Registrarme
+                    </Button>
                     <Button color="link" onClick={this.withoutRegister}>
                       Continuar sin registrar
                     </Button>
                   </Row>
                   <Row style={styles.item}>
                     <p>
-                      Si continuas sin registrar tendrás que ingresar tus datos cada vez
-                      que subas una foto
+                      Si continuas sin registrar tendrás que ingresar tus datos
+                      cada vez que subas una foto
                     </p>
                   </Row>
                 </Col>
               </Row>
             </Container>
           </Container>
-      break;
+        );
+        break;
     }
     return (
       <div>
@@ -228,22 +229,22 @@ class UploadPage extends Component {
 }
 
 const styles = {
-  container:{
-    backgroundColor: '#f7f7f7', 
-    padding:'2em', 
-    marginBottom:'2em',
-    border:'1px solid rgb(210,214,218)'
+  container: {
+    backgroundColor: "#f7f7f7",
+    padding: "2em",
+    marginBottom: "2em",
+    border: "1px solid rgb(210,214,218)"
   },
-  title:{
-    color:'#ff5a60',
-    textAlign:'center',
-    margin:'1em'
+  title: {
+    color: "#ff5a60",
+    textAlign: "center",
+    margin: "1em"
   },
-  item:{
-    justifyContent:'center', 
-    margin:'1em'
+  item: {
+    justifyContent: "center",
+    margin: "1em"
   }
-}
+};
 
 const mapStateToProps = state => {
   let errors = [];

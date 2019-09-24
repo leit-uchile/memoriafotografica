@@ -148,7 +148,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
             u_dict['generation'] = u.generation
             u_dict['avatar'] = u.avatar.url if u.avatar else None
             u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
-            serialized_data['usuario'] = u_dict
+            serialized_data['user'] = u_dict
         except:
             pass
 

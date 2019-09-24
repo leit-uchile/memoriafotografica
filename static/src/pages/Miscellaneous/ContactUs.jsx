@@ -49,12 +49,12 @@ const ContactUs = () => {
           </Col>
         </Row>
         <Row style={{marginTop:'3em'}}>
-          <Col xs="5">
+          <Col md="7">
             <Map 
             source={"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d832.1722723612256!2d-70.66411451184945!3d-33.457405879914106!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI3JzI2LjciUyA3MMKwMzknNDguOCJX!5e0!3m2!1ses!2sus!4v1568426455672!5m2!1ses!2sus"}
             />
           </Col>
-          <Col xs="3">
+          <Col md="3" style={{margin: "0 1em"}}>
             <p style={styles.info}>Para más información puede visitarnos en la Biblioteca Central de la Facultad de Ciencias Físicas y Matemáticas ubicada en
               Beauchef 850, Santiago</p>
             <div style={styles.phoneInfo}>
@@ -82,7 +82,6 @@ const Map = ({ source }) => {
 
 const styles = {
   form:{
-    width:'60.8em', 
     backgroundColor: '#f7f7f7', 
     padding:'2em', 
     border:'1px solid rgb(210,214,218)'
@@ -104,7 +103,7 @@ const styles = {
     border:'1px solid black'
   },
   map:{
-    width:"460px", 
+    width:"100%", 
     height:"300px", 
     border:"0", 
     allowFullScreen:""

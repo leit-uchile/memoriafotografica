@@ -80,20 +80,8 @@ class PhotoDetails extends Component {
     this.redirectToSearch = this.redirectToSearch.bind(this);
   }
 
-  getUserDetails() {
-    this.setState({
-      userinfo: {
-        id: 1,
-        name: "Juan",
-        avatar:
-          "https://lithespeed.com/wp-content/uploads/2019/04/listermann-profile-picture-e1556572036426.jpg"
-      }
-    });
-  }
-
   getDataFromBack() {
     // Load elements once props arrive
-    this.getUserDetails();
     this.props.loadSuggestions();
   }
 
@@ -184,19 +172,19 @@ class PhotoDetails extends Component {
             )
         : null;
 
-    var userProfile = this.state.userinfo ? (
+    var userProfile = photoInfo.details.user ? (
       <Container fluid>
         <Row>
           <Col sm={2}>
             <div
               style={{
                 ...styles.avatarStyle.avatarImg,
-                backgroundImage: `url(${this.state.userinfo.avatar})`
+                backgroundImage: `url(${photoInfo.details.user.avatar})`
               }}></div>
           </Col>
           <Col sm={10}>
-            <b>{this.state.userinfo.name}</b>
-            <p>Generacion 2013</p>
+            <b>{`${photoInfo.details.user.first_name} ${photoInfo.details.user.last_name}`}</b>
+            <p>{photoInfo.details.user.rol_type}</p>
           </Col>
         </Row>
       </Container>

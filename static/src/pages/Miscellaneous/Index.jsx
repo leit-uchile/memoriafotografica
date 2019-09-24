@@ -6,16 +6,16 @@ import {Container, Row, Button, Col} from 'reactstrap'
 import {Route, Link} from 'react-router-dom'
 
 const Index = ({match}) =>
-    <Container fluid style={styles.container}>
+    <Container style={styles.container}>
           <Row>
-            <Col xs="2" style={styles.leftcol}>
+            <Col sm="2" style={styles.leftcol}>
               <Button tag={Link} style={styles.button} to={match.path + "/about"} className="navButton">Acerca de</Button>
               <Button tag={Link} style={styles.button} to={match.path + "/resources/faq"} className="navButton">FAQ</Button>
               <Button tag={Link} style={styles.button} to={match.path + "/resources/contact-us"} className="navButton">Contáctenos</Button>
               <Button tag={Link} style={styles.button} to={match.path + "/resources/"} className="navButton">Mapa del sitio</Button>
               <div className="navEnding"></div>
             </Col>
-            <Col xs="10" style={styles.rightcol}>
+            <Col sm="10" style={styles.rightcol}>
               <Route path={match.path + "/about"} component={About}/>
               <Route path={match.path + "/resources/faq"} component={FAQ}/>
               <Route path={match.path + "/resources/contact-us"} component={ContactUs}/>
@@ -28,7 +28,6 @@ const styles = {
     marginBottom:"2em"
   },
   leftcol:{
-    paddingLeft:'10em',
     borderRight:"1px solid rgb(210, 214, 218)"
   },
   rightcol:{
