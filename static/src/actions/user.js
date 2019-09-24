@@ -64,3 +64,38 @@ export const getUserComments = (auth, user_id, limit, offset) => {
     );
   };
 };
+
+
+export const editProfile = (auth, user) => {
+  return (dispatch, getState) => {
+    let headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Token " + auth,
+    };
+    let body = JSON.stringify({user});
+
+    return fetch(`api/users/${user.id}/`, {headers, body, method: "PUT"})
+      .then(res => {
+        if (res.status < 500) {
+          return res.json().then(data => {
+            return {status: res.status, data};
+          })
+        } else {
+          console.log("Server Error!");
+          throw res;
+        }
+      })
+      .then(res => {
+        if (res.status === 200) {
+          dispatch({type: 'UPDATE_SUCCESSFUL', data: res.data });
+          return res.data;
+        } else if (res.status === 403 || res.status === 401) {
+          dispatch({type: "AUTHENTICATION_ERROR", data: res.data});
+          throw res.data;
+        } else {
+          dispatch({type: "UPDATED_FAILED", data: res.data});
+          throw res.data;
+        }
+      })
+  }
+}

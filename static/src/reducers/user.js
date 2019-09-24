@@ -39,6 +39,16 @@ export default function user(state = initialState, action) {
         comments: [],
         error: action.data
       };
+    case "UPDATE_SUCCESFUL":
+      localStorage.setItem("user", JSON.stringify(action.data.user));
+      return {
+        ...state,
+        user: action.data
+      };
+    case "AUTHENTICATION_ERROR":
+      return { ...state };
+    case "UPDATE_FAILED":
+      return { ...state, errors: action.data };
     default:
       return { ...state };
   }
