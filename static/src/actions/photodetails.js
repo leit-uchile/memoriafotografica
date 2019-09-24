@@ -1,3 +1,5 @@
+import { RECOVERED_PHOTOS, RECOVERED_PHOTO_DETAILS, PHOTO_DETAILS_ERROR, RECOVERED_PHOTO_COMMENTS, PHOTO_COMMENTS_ERROR, CREATED_COMMENT, NEW_COMMENT_ERROR, CUSTOM_METADATA_ERROR, LOADED_CUSTOM_METADATA } from './types';
+
 export const getPhoto = (id) => {return (dispatch, getState) => {
     let headers = {'Content-Type' : 'application/json'};
 
@@ -6,10 +8,10 @@ export const getPhoto = (id) => {return (dispatch, getState) => {
         const r = response;
         if(r.status === 200){
             return r.json().then(data => {
-                dispatch({type: 'RECOVERED_PHOTO_DETAILS', data: data})
+                dispatch({type: RECOVERED_PHOTO_DETAILS, data: data})
             })
         }else{
-            dispatch({type: 'ERROR_ON_FETCH', data: r.data})
+            dispatch({type: PHOTO_DETAILS_ERROR, data: r.data})
             throw r.data;
         }
     })
@@ -26,10 +28,10 @@ export const getComments = (id, auth) => {return (dispatch, getState) => {
         const r = response;
         if(r.status === 200){
             return r.json().then(data => {
-                dispatch({type: 'RECOVERED_PHOTO_COMMENTS', data: data})
+                dispatch({type: RECOVERED_PHOTO_COMMENTS, data: data})
             })
         }else{
-            dispatch({type: 'ERROR_ON_COMMENT_FETCH', data: r.data})
+            dispatch({type: PHOTO_COMMENTS_ERROR, data: r.data})
             throw r.data;
         }
     })
@@ -49,10 +51,10 @@ export const putComment = (id, comment, auth) => {return (dispatch, getState) =>
         const r = response;
         if(r.status === 201){
             return r.json().then(data => {
-                dispatch({type: 'CREATED_COMMENT', data: data})
+                dispatch({type: CREATED_COMMENT, data: data})
             })
         }else{
-            dispatch({type: 'ERROR_ON_NEW_COMMENT', data: r.data})
+            dispatch({type: NEW_COMMENT_ERROR, data: r.data})
             throw r.data;
         }
     })
@@ -64,10 +66,10 @@ export const getMetadataNames = (ids) => {return (dispatch, getState) => {
             const r = response;
             if(r.status === 200){
                 return r.json().then(data => {
-                    dispatch({type: 'LOADED_CUSTOM_METADATA', data: data})
+                    dispatch({type: LOADED_CUSTOM_METADATA, data: data})
                 });
             }else{
-                dispatch({type: "ERROR_ON_METADATA_FETCH", data: r.data})
+                dispatch({type: CUSTOM_METADATA_ERROR, data: r.data})
             }
         }
     )

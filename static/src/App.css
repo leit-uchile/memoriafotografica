@@ -23,3 +23,12 @@ html{
 .CCName {
   margin-left: 0.5em;
 }
+
+.progress-bar.progress-bar-animated.progress-bar-striped {
+  background-color: #ff5a60;
+}
+
+.btn-primary {
+  background-color: #ff5a60;
+  border-color: #ff5a60;
+}

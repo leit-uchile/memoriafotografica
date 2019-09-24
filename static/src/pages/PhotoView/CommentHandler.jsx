@@ -32,7 +32,7 @@ const CommentHandler = ({
       <Col
         md={{
           size: 8,
-          offset: key % 2 == 0 ? 0 : 4
+          offset: 2
         }}
         style={styles.commentContainerStyle}>
         <Comment content={el} />

@@ -139,7 +139,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
             serializer = PhotoDetailAdminSerializer(photo)
             serialized_data = serializer.data
         serialized_data['metadata'] = list(filter(lambda x: x['approved'], serialized_data['metadata']))
-        serialized_data['metadata'] = list(map(lambda x: x['metadata']['name'] + " : " + x['value'], serialized_data['metadata']))
+        #serialized_data['metadata'] = list(map(lambda x: x['metadata']['name'] + " : " + x['value'], serialized_data['metadata']))
         try:
             u = photo.user_set.first()
             u_dict = {}

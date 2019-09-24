@@ -1,3 +1,13 @@
+import {
+  AUTH_ERROR,
+  LOGIN_FAILED,
+  LOGIN_SUCCESS,
+  USER_LOADED,
+  REGISTRATION_FAILED,
+  REGISTRATION_SUCCESS,
+  AUTH_CLEAR_ERRORS,
+  LOGOUT_SUCCESS
+} from './types';
 
 export const login = (email, password) => {
   return (dispatch, getState) => {
@@ -17,13 +27,13 @@ export const login = (email, password) => {
       })
       .then(res => {
         if (res.status === 200) {
-          dispatch({type: 'LOGIN_SUCCESSFUL', data: res.data });
+          dispatch({type: LOGIN_SUCCESS, data: res.data });
           return res.data;
         } else if (res.status === 403 || res.status === 401) {
-          dispatch({type: "AUTHENTICATION_ERROR", data: res.data});
+          dispatch({type: AUTH_ERROR, data: res.data});
           throw res.data;
         } else {
-          dispatch({type: "LOGIN_FAILED", data: res.data});
+          dispatch({type: LOGIN_FAILED, data: res.data});
           throw res.data;
         }
       })
@@ -56,10 +66,10 @@ export const loadUser = () => {
       })
       .then(res => {
         if (res.status === 200) {
-          dispatch({type: 'USER_LOADED', user: res.data });
+          dispatch({type: USER_LOADED, user: res.data });
           return res.data;
         } else if (res.status >= 400 && res.status < 500) {
-          dispatch({type: "AUTHENTICATION_ERROR", data: res.data});
+          dispatch({type: AUTH_ERROR, data: res.data});
           throw res.data;
         }
       })
@@ -86,19 +96,19 @@ export const register = (email, password, first_name, last_name, birth_date, rol
           })
         } else {
           console.log("Server Error!");
-          dispatch({type: "REGISTRATION_FAILED", data: res.data})
+          dispatch({type: REGISTRATION_FAILED, data: res.data})
           throw res;
         }
       })
       .then(res => {
         if (res.status === 200) {
-          dispatch({type: 'REGISTRATION_SUCCESSFUL', data: res.data });
+          dispatch({type: REGISTRATION_SUCCESS, data: res.data });
           return res.data;
         } else if (res.status === 403 || res.status === 401) {
-          dispatch({type: "AUTHENTICATION_ERROR", data: res.data});
+          dispatch({type: AUTH_ERROR, data: res.data});
           throw res.data;
         } else {
-          dispatch({type: "REGISTRATION_FAILED", data: res.data});
+          dispatch({type: REGISTRATION_FAILED, data: res.data});
           throw res.data;
         }
       })
@@ -107,13 +117,13 @@ export const register = (email, password, first_name, last_name, birth_date, rol
 
 export const cleanErrors  = () => {
   return (dispatch, getState) => {
-    dispatch({type: "CLEAR_AUTH_ERRORS", data: null})
+    dispatch({type: AUTH_CLEAR_ERRORS, data: null})
   }
 }
 
 export const logout = (token) => {
   let headers = {"Content-Type": "application/json"};
   return (dispatch, getState) => {
-    dispatch({type: "LOGOUT_SUCCESSFUL", data: null})
+    dispatch({type: LOGOUT_SUCCESS, data: null})
   }
 }
