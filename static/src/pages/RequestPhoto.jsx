@@ -14,7 +14,8 @@ import {
   FormGroup,
   Input,
   Label,
-  Button
+  Button,
+  ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText 
 } from "reactstrap";
 
 class RequestPhoto extends Component{
@@ -47,7 +48,11 @@ class RequestPhoto extends Component{
   }
 
   render() {
-
+    const {
+      requestedPhotos
+    } = this.props;
+    if (this.props.requestedPhotos.length!==0){
+    console.log(this.props.requestedPhotos[0].title)}
     return(
       <Container>
         <Row>
@@ -63,9 +68,7 @@ class RequestPhoto extends Component{
                   <FontAwesomeIcon icon={faImages} style={{marginRight: '1em'}}/>
                   <Label>Material solicitado</Label>
                 </div>
-                <Input type="select" multiple>{/*Listado obtenido de props*/}
-                  <option>foto1</option>
-                </Input>
+                <Requested list={this.props.requestedPhotos}/>
               </FormGroup>
               <FormGroup>
                 <div style={styles.formTitle}>
@@ -143,6 +146,74 @@ class RequestPhoto extends Component{
   }
 }
 
+var Requested = ({list}) => (
+  <ListGroup>
+    {list.length === 0
+    ? <ListGroupItem disabled>No hay fotos solicitadas</ListGroupItem>
+    : list.map((el)=>
+      <ListGroupItem>
+        <Row>
+          <Col style={{textAlign:'center'}}>
+            <img 
+              src={el.thumbnail} 
+              alt="photo" 
+              width={el.aspect_w * 50}
+              height={el.aspect_h * 50}/>
+            {getPermissionLogo(el, 90, 32)}
+          </Col>
+          <Col>
+          <ListGroupItemHeading 
+            tag="a" 
+            href={'/photo/' + el.id}>
+            {el.title}
+          </ListGroupItemHeading>
+          <ListGroupItemText>
+            ID:{el.id}
+          </ListGroupItemText>
+          <ListGroupItemText>
+            DESCRIPCION: {el.description}
+          </ListGroupItemText>
+          </Col>
+        </Row>
+      </ListGroupItem>
+    )}
+  </ListGroup>
+);
+
+const getPermissionLogo = (name, w, h) => {
+  var url;
+  switch (name) {
+    case "CC BY":
+      url = "/assets/CCBY.svg";
+      break;
+    case "CC BY-NC":
+      url = "/assets/CCBYNC.svg";
+      break;
+    case "CC BY-NC-ND":
+      url = "/assets/CCBYNCND.svg";
+      break;
+    case "CC BY-NC-SA":
+      url = "/assets/CCBYNCSA.svg";
+      break;
+    case "CC BY-ND":
+      url = "/assets/CCBYND.svg";
+      break;
+    case "CC BY-SA":
+      url = "/assets/CCBYSA.svg";
+      break;
+    default:
+      url = "/assets/CCBYSA.svg";
+  }
+  return (
+    <img
+      width={w}
+      height={h}
+      src={url}
+      style={{position:'absolute', left:'50%', bottom:'-10px'}}
+    />
+  );
+};
+
 const styles = {
   form:{
     backgroundColor: '#f7f7f7', 
@@ -165,7 +236,7 @@ const styles = {
 
 const mapStateToProps = state => {
   return {
-    //necesito el listado de fotos
+    requestedPhotos: state.home.requestedPhotos
   };
 };
 
