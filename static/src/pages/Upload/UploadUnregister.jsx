@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserFriends, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserFriends,
+  faEnvelope,
+  faChevronCircleRight,
+  faChevronCircleLeft
+} from "@fortawesome/free-solid-svg-icons";
 import {
   Container,
   Form,
@@ -10,7 +15,8 @@ import {
   Input,
   Button,
   Row,
-  Col
+  Col,
+  ButtonGroup
 } from "reactstrap";
 
 const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
@@ -168,12 +174,14 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
             />
           </Col>
         </FormGroup>
-        <Button color="secondary" onClick={previousStep}>
-          Atras
-        </Button>
-        <Button color="primary" type="submit">
-          Continuar
-        </Button>
+        <ButtonGroup style={{minWidth: "15em"}}>
+          <Button onClick={previousStep}>
+            <FontAwesomeIcon icon={faChevronCircleLeft} />
+          </Button>
+          <Button type="submit" color="primary">
+            <FontAwesomeIcon icon={faChevronCircleRight} />
+          </Button>
+        </ButtonGroup>
       </Form>
     </Container>
   );

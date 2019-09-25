@@ -32,3 +32,8 @@ html{
   background-color: #ff5a60;
   border-color: #ff5a60;
 }
+
+.btn-primary:hover {
+  background-color: #e15454f0;
+  border-color: #e15454f0;
+}

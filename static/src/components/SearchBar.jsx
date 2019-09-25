@@ -99,11 +99,10 @@ class SearchBar extends Component {
           <Button
             type="button"
             style={{
-              border: "#FF5A60",
-              backgroundColor: "#FF5A60",
               display: "inline-block",
               width: "10%"
             }}
+            color="primary"
             onClick={this.swapPage}
             block
           >
