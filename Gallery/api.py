@@ -39,8 +39,16 @@ def make_tag(metadata_id):
     return m.metadata.name + " : " + m.value
 
 
-def sort_photos(photolist, request):
+def filter_photos(photolist, request):
     sort_type = {"asc":"", "desc":"-"}
+    try:
+        if(request.query_params["category"]):            
+            q = list(filter(('').__ne__, request.query_params["category"].split(',')))
+            photolist = photolist.filter(category__id__in = q).distinct()
+            photolist = photolist.order_by("-created_at")
+    except KeyError:
+        pass
+
     try:
         if(request.query_params["sort"]):
             splitted_param = request.query_params["sort"].split("-")
@@ -48,6 +56,7 @@ def sort_photos(photolist, request):
             photolist = photolist.order_by(query)
     except KeyError as e:
         pass
+
     return photolist
 
 class ReadOnly(BasePermission):
@@ -68,12 +77,12 @@ class PhotoListAPI(generics.GenericAPIView):
         photo = ""
 
         if request.user.is_anonymous or request.user.user_type == 1:
-            photo = sort_photos(Photo.objects.filter(censure = False, approved = True), request)
+            photo = filter_photos(Photo.objects.filter(censure = False, approved = True), request)
             serializer_class = PhotoSerializer
             serializer = PhotoSerializer(photo, many = True)
             serialized_data = serializer.data
         else:
-            photo = sort_photos(Photo.objects.all(), request)
+            photo = filter_photos(Photo.objects.all(), request)
             serializer_class = PhotoAdminSerializer
             serializer = PhotoAdminSerializer(photo, many = True)
             serialized_data = serializer.data
