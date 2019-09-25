@@ -6,14 +6,16 @@ import {
   HOME_RECOVERED_CATEGORIES,
   HOME_EMPTY_CATEGORIES,
   HOME_RECOVERED_IPTCS,
-  HOME_EMPTY_IPTCS
+  HOME_EMPTY_IPTCS,
+  REQUESTPHOTO
 } from "../actions/types";
 
 const initialState = {
   photos: [],
   all_tags: [],
   all_iptcs: [],
-  all_cats: []
+  all_cats: [],
+  requestedPhotos: [],
 };
 
 export default function home(state = initialState, action) {
@@ -36,6 +38,8 @@ export default function home(state = initialState, action) {
       return { ...state, all_iptcs: action.data };
     case HOME_EMPTY_IPTCS:
       return { ...state, all_iptcs: [] };
+    case REQUESTPHOTO:
+      return { ...state, requestedPhotos: [...state.requestedPhotos, action.data]}
     default:
       return state;
   }

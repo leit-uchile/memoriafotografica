@@ -7,7 +7,7 @@ import { Helmet } from "react-helmet";
 import ReportModal from "./ReportModal";
 import CommentHandler from "./CommentHandler";
 import Photo from "../../components/Photo";
-import { photoDetails, home, search } from "../../actions";
+import { photoDetails, home, search, requestPhoto} from "../../actions";
 import moment from "moment";
 
 const getPermissionLogo = (name, w, h, offset) => {
@@ -253,7 +253,8 @@ class PhotoDetails extends Component {
                     <Button
                       tag={Link}
                       to="/request-photo"
-                      className="float-left">
+                      className="float-left"
+                      onClick={()=>{this.props.putRequestPhoto(photoInfo.details)}}>
                       ¿Quieres usar la foto?
                     </Button>
                     <ReportModal
@@ -337,6 +338,9 @@ const mapActionsToProps = dispatch => {
     },
     putSearch: (id, value) => {
       return dispatch(search.putSearchItem(id, value));
+    },
+    putRequestPhoto:(value) => {
+      return dispatch(requestPhoto.putRequestPhoto(value))
     }
   };
 };

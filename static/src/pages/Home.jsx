@@ -239,7 +239,9 @@ class Home extends Component {
                     </Row>
                     <Row>
                       <Col>
-                        <DropdownItem onClick={this.allowMoreCats}>
+                        <DropdownItem 
+                        style={{textAlign:'center'}}
+                        onClick={this.allowMoreCats}>
                           Cargar más categorias
                         </DropdownItem>
                       </Col>
@@ -360,7 +362,7 @@ const styles = {
     borderLeft: "1px solid rgb(210,214,218)",
     top: "0",
     left: "8em",
-    marginLeft: "-10px",
+    marginLeft: "-25px",
     content: "",
     transform: "rotate(45deg)",
     marginTop: "-10px",
