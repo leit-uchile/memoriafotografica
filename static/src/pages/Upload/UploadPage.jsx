@@ -1,48 +1,49 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import UploadUnregister from "./UploadUnregister";
 import UploadPhoto from "./UploadPhoto";
 import UploadProgress from "./UploadProgress";
 import { connect } from "react-redux";
 import { misc, upload, home } from "../../actions";
-import { Link } from "react-router-dom";
-import { Container, Button, Row, Col } from "reactstrap";
 import { Helmet } from "react-helmet";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignInAlt, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import StepWizard from "react-step-wizard";
+import UnregisteredPrompt from "./UnregisterPrompt";
+
+// Example nav from https://github.com/jcmcneal/react-step-wizard/blob/master/app/components/nav.js
+const Nav = props => {
+  const dots = [];
+  /* onClick={() => props.goToStep(i)}> */
+  for (let i = 1; i <= props.totalSteps; i += 1) {
+    const isActive = props.currentStep === i;
+    dots.push(
+      <span
+        key={`step-${i}`}
+        style={isActive ? { ...styles.dot, ...styles.active } : styles.dot}>
+        &bull;
+      </span>
+    );
+  }
+  return <div style={styles.nav}>{dots}</div>;
+};
 
 class UploadPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentPage: 0,
       userInfo: {},
       photos: null,
       uploading: false,
       prog: 0
     };
-    this.back = this.back.bind(this);
-    this.withoutRegister = this.withoutRegister.bind(this);
     this.saveUserInfo = this.saveUserInfo.bind(this);
     this.savePhotos = this.savePhotos.bind(this);
     this.retryFailed = this.retryFailed.bind(this);
   }
 
-  // Go one step back
-  back() {
-    if (this.state.currentPage !== 0) {
-      this.setState({
-        currentPage: this.state.currentPage - 1
-      });
-    }
+  componentWillMount() {
+    this.props.setRoute("/upload");
+    this.props.recoverMetadata();
   }
-  // Save user info in case is anonymous
-  withoutRegister() {
-    if (this.state.currentPage !== 4) {
-      this.setState({
-        currentPage: 1
-      });
-    }
-  }
+
   saveUserInfo(info) {
     this.setState({
       currentPage: 2,
@@ -75,142 +76,9 @@ class UploadPage extends Component {
     this.savePhotos(newPhotos);
   }
 
-  componentWillMount() {
-    this.props.setRoute("/upload");
-    this.props.recoverMetadata();
-  }
-
   render() {
-    var subupload;
-    var current;
-    if (this.props.isAuthenticated && this.state.currentPage === 0) {
-      current = this.props.isAuthenticated ? 2 : this.state.currentPage;
-    } else if (this.props.isAuthenticated && this.state.currentPage === 1) {
-      current = 3;
-    } else {
-      current = this.state.currentPage;
-    }
-    switch (current) {
-      case 0:
-        subupload = (
-          <Container>
-            <Row>
-              <Col>
-                <h2 style={styles.title}>¡Ayúdanos aportando material!</h2>
-              </Col>
-            </Row>
-            <Container style={styles.container}>
-              <Row>
-                <Col style={{ borderRight: "1px solid rgb(210,214,218)" }}>
-                  <Row style={styles.item}>
-                    <FontAwesomeIcon icon={faSignInAlt} size="6x" />
-                  </Row>
-                  <Row style={styles.item}>
-                    <Button color="primary" tag={Link} to="/login">
-                      Iniciar sesion
-                    </Button>
-                  </Row>
-                </Col>
-                <Col>
-                  <Row style={styles.item}>
-                    <FontAwesomeIcon icon={faUserPlus} size="6x" />
-                  </Row>
-                  <Row style={styles.item}>
-                    <Button color="success" tag={Link} to="/register">
-                      Registrarme
-                    </Button>
-                    <Button color="link" onClick={this.withoutRegister}>
-                      Continuar sin registrar
-                    </Button>
-                  </Row>
-                  <Row style={styles.item}>
-                    <p>
-                      Si continuas sin registrar tendrás que ingresar tus datos
-                      cada vez que subas una foto
-                    </p>
-                  </Row>
-                </Col>
-              </Row>
-            </Container>
-          </Container>
-        );
-        break;
-      case 1:
-        subupload = (
-          <UploadUnregister
-            goBack={this.back}
-            saveInfo={this.saveUserInfo}
-            cache={this.state.userInfo}
-          />
-        );
-        break;
-      case 2:
-        subupload = (
-          <UploadPhoto
-            goBack={this.back}
-            saveAll={this.savePhotos}
-            meta={this.props.meta}
-          />
-        );
-        break;
-      case 3:
-        subupload = (
-          <UploadProgress
-            photosUploading={this.props.upload.photosUploading}
-            opsFinished={this.props.upload.opsFinished}
-            uploading={this.props.upload.uploading}
-            completed={this.props.upload.photosUploaded.length}
-            retry={this.retryFailed}
-          />
-        );
-        break;
-      default:
-        subupload = (
-          <Container>
-            <Row>
-              <Col>
-                <h2 style={styles.title}>¡Ayúdanos aportando material!</h2>
-              </Col>
-            </Row>
-            <Container style={styles.container}>
-              <Row>
-                <Col style={{ borderRight: "1px solid rgb(210,214,218)" }}>
-                  <Row style={styles.item}>
-                    <FontAwesomeIcon icon={faSignInAlt} size="6x" />
-                  </Row>
-                  <Row style={styles.item}>
-                    <Button color="primary" tag={Link} to="/login">
-                      Iniciar sesion
-                    </Button>
-                  </Row>
-                </Col>
-                <Col>
-                  <Row style={styles.item}>
-                    <FontAwesomeIcon icon={faUserPlus} size="6x" />
-                  </Row>
-                  <Row style={styles.item}>
-                    <Button color="success" tag={Link} to="/register">
-                      Registrarme
-                    </Button>
-                    <Button color="link" onClick={this.withoutRegister}>
-                      Continuar sin registrar
-                    </Button>
-                  </Row>
-                  <Row style={styles.item}>
-                    <p>
-                      Si continuas sin registrar tendrás que ingresar tus datos
-                      cada vez que subas una foto
-                    </p>
-                  </Row>
-                </Col>
-              </Row>
-            </Container>
-          </Container>
-        );
-        break;
-    }
     return (
-      <div>
+      <Fragment>
         <Helmet>
           <meta property="og:title" content="Aportar material" />
           <meta property="og:type" content="Subir contenido a la plataforma" />
@@ -222,27 +90,65 @@ class UploadPage extends Component {
           <meta property="og:description" content="Descripcion" />
           <title>Aportar material</title>
         </Helmet>
-        {subupload}
-      </div>
+        {!this.props.isAuthenticated ? (
+          <StepWizard
+            className="stepContainer"
+            onStepChange={() => {}}
+            nav={<Nav />}>
+            <UnregisteredPrompt />
+            <UploadUnregister
+              saveInfo={this.saveUserInfo}
+              cache={this.state.userInfo}
+            />
+            <UploadPhoto saveAll={this.savePhotos} meta={this.props.meta} />
+            <UploadProgress
+              photosUploading={this.props.upload.photosUploading}
+              opsFinished={this.props.upload.opsFinished}
+              uploading={this.props.upload.uploading}
+              completed={this.props.upload.photosUploaded.length}
+              retry={this.retryFailed}
+            />
+          </StepWizard>
+        ) : (
+          <StepWizard
+            className="stepContainer"
+            onStepChange={() => {}}
+            nav={<Nav />}>
+            <UploadPhoto saveAll={this.savePhotos} meta={this.props.meta} />
+            <UploadProgress
+              photosUploading={this.props.upload.photosUploading}
+              opsFinished={this.props.upload.opsFinished}
+              uploading={this.props.upload.uploading}
+              completed={this.props.upload.photosUploaded.length}
+              retry={this.retryFailed}
+            />
+          </StepWizard>
+        )}
+      </Fragment>
     );
   }
 }
 
 const styles = {
-  container: {
-    backgroundColor: "#f7f7f7",
-    padding: "2em",
-    marginBottom: "2em",
-    border: "1px solid rgb(210,214,218)"
+  nav: {
+    marginBottom: "15px",
+    textAlign: "center"
   },
-  title: {
+  dot: {
+    color: "black",
+    cursor: "pointer",
+    fontSize: "36px",
+    lineHeight: "1",
+    margin: "0 15px",
+    opacity: ".4",
+    textShadow: "none",
+    transition: "opacity 1s ease, text-shadow 1s ease",
+    willChange: "opacity, text-shadow"
+  },
+  active: {
     color: "#ff5a60",
-    textAlign: "center",
-    margin: "1em"
-  },
-  item: {
-    justifyContent: "center",
-    margin: "1em"
+    opacity: "1",
+    textShadow: "0 0px 8px"
   }
 };
 
@@ -261,19 +167,11 @@ const mapStateToProps = state => {
   };
 };
 
-const mapActionsToProps = dispatch => {
-  return {
-    setRoute: route => {
-      return dispatch(misc.setCurrentRoute(route));
-    },
-    uploadPhotos: info => {
-      return dispatch(upload.uploadImages(info));
-    },
-    recoverMetadata: () => {
-      return dispatch(home.tags());
-    }
-  };
-};
+const mapActionsToProps = dispatch => ({
+  setRoute: route => dispatch(misc.setCurrentRoute(route)),
+  uploadPhotos: info => dispatch(upload.uploadImages(info)),
+  recoverMetadata: () => dispatch(home.tags())
+});
 
 export default connect(
   mapStateToProps,

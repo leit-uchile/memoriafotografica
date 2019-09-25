@@ -47,14 +47,21 @@ class EditProfile extends Component {
       };
     })(props.photo).bind(this);
     this.handleFileSelect = this.handleFileSelect.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
   }
 
   toggle() {
     this.setState(prevState => ({
       dropdownOpen: !this.state.dropdownOpen,
+    }));
+  }
+
+  toggleModal() {
+    this.setState(prevState => ({
       modal: !prevState.modal
     }));
   }
+
   componentWillMount() {
     const { user, auth } = this.props;
 
@@ -285,14 +292,14 @@ class EditProfile extends Component {
                     </Input>
                   </Col>
                 </FormGroup>
-                <Button color="danger" onClick={this.toggle}>
+                <Button color="danger" onClick={this.toggleModal}>
                   Guardar Cambios
                 </Button>
                 <Modal
                   isOpen={this.state.modal}
                   fade={false}
-                  toggle={this.toggle}>
-                  <ModalHeader toggle={this.toggle} close={closeBtn}>
+                  toggle={this.toggleModal}>
+                  <ModalHeader toggle={this.toggleModal} close={closeBtn}>
                     Editar mis datos
                   </ModalHeader>
                   <ModalBody>
@@ -315,10 +322,10 @@ class EditProfile extends Component {
                     </FormGroup>
                   </ModalBody>
                   <ModalFooter>
-                    <Button color="primary" onClick={this.toggle}>
+                    <Button color="primary" onClick={this.toggleModal}>
                       Guardar
                     </Button>{" "}
-                    <Button color="secondary" onClick={this.toggle}>
+                    <Button color="secondary" onClick={this.toggleModal}>
                       Cancelar
                     </Button>
                   </ModalFooter>
