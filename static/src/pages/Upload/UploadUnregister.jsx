@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserFriends, faEnvelope, } from "@fortawesome/free-solid-svg-icons";
+import { faUserFriends, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import {
   Container,
   Form,
@@ -13,7 +13,7 @@ import {
   Col
 } from "reactstrap";
 
-const UploadUnregister = ({ cache, saveInfo, goBack }) => {
+const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
   const [formData, setFormData] = useState(
     cache == {}
       ? {
@@ -55,6 +55,7 @@ const UploadUnregister = ({ cache, saveInfo, goBack }) => {
   const onSubmit = e => {
     e.preventDefault();
     saveInfo({ ...formData, info: { ...info } });
+    nextStep();
   };
 
   return (
@@ -65,10 +66,13 @@ const UploadUnregister = ({ cache, saveInfo, goBack }) => {
         </Col>
       </Row>
       <Form onSubmit={onSubmit} style={styles.form}>
-          <div style={styles.formTitle}>
-            <FontAwesomeIcon icon={faUserFriends} style={{marginRight: '1em'}}/>
-            <Label>Acerca de la comunidad FCFM</Label>
-          </div>
+        <div style={styles.formTitle}>
+          <FontAwesomeIcon
+            icon={faUserFriends}
+            style={{ marginRight: "1em" }}
+          />
+          <Label>Acerca de la comunidad FCFM</Label>
+        </div>
         <FormGroup>
           <Label>¿Cuál o cuáles fueron sus roles (o son)?</Label>
           <div>
@@ -116,7 +120,7 @@ const UploadUnregister = ({ cache, saveInfo, goBack }) => {
           </div>
         </FormGroup>
         <div style={styles.formTitle}>
-          <FontAwesomeIcon icon={faEnvelope} style={{marginRight: '1em'}}/>
+          <FontAwesomeIcon icon={faEnvelope} style={{ marginRight: "1em" }} />
           <Label>Si necesitamos contactarte</Label>
         </div>
         <FormGroup row>
@@ -164,7 +168,7 @@ const UploadUnregister = ({ cache, saveInfo, goBack }) => {
             />
           </Col>
         </FormGroup>
-        <Button color="secondary" onClick={goBack}>
+        <Button color="secondary" onClick={previousStep}>
           Atras
         </Button>
         <Button color="primary" type="submit">
@@ -175,23 +179,23 @@ const UploadUnregister = ({ cache, saveInfo, goBack }) => {
   );
 };
 const styles = {
-  form:{
-    backgroundColor: '#f7f7f7', 
-    padding:'2em', 
-    marginBottom:'2em',
-    border:'1px solid rgb(210,214,218)'
+  form: {
+    backgroundColor: "#f7f7f7",
+    padding: "2em",
+    marginBottom: "2em",
+    border: "1px solid rgb(210,214,218)"
   },
-  title:{
-    color:'#ff5a60',
-    textAlign:'center',
-    margin:'1em'
+  title: {
+    color: "#ff5a60",
+    textAlign: "center",
+    margin: "1em"
   },
   formTitle: {
-    fontSize:'14px',
-    fontWeight:'bold',
-    padding:'0.5em',
-    borderBottom: '1px solid rgb(210,214,218)',
-    marginBottom: '10px',
-  },
-}
+    fontSize: "14px",
+    fontWeight: "bold",
+    padding: "0.5em",
+    borderBottom: "1px solid rgb(210,214,218)",
+    marginBottom: "10px"
+  }
+};
 export default UploadUnregister;

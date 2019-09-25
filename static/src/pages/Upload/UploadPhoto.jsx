@@ -24,7 +24,13 @@ import {
 import Dropzone from "react-dropzone";
 import { v4 } from "uuid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faQuestionCircle, faChevronCircleLeft, faChevronCircleRight, faCloudUploadAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faQuestionCircle,
+  faChevronCircleLeft,
+  faChevronCircleRight,
+  faCloudUploadAlt
+} from "@fortawesome/free-solid-svg-icons";
 import "../../css/search.css";
 import { connect } from "react-redux";
 import { upload } from "../../actions";
@@ -159,7 +165,7 @@ class UploadPhoto extends Component {
           tags: [],
           cc: null,
           previewCalled: false,
-          collapse: false,
+          collapse: false
         }
       };
     });
@@ -207,6 +213,7 @@ class UploadPhoto extends Component {
       alert("Debe rellenar la descripcion de todas las fotos");
     } else {
       this.props.saveAll(this.state);
+      this.props.nextStep();
     }
   };
 
@@ -242,7 +249,7 @@ class UploadPhoto extends Component {
               <Label style={{ fontSize: "18px" }}>Crear Album</Label>
               <Button
                 style={styles.plusButton}
-                color="danger"
+                color="primary"
                 onClick={() => this.isAlbum()}>
                 <FontAwesomeIcon icon={faPlus} />
               </Button>
@@ -313,8 +320,12 @@ class UploadPhoto extends Component {
                 </div>
               </FormGroup>
               <ButtonGroup style={{ marginTop: "20px", width: "100%" }}>
-                <Button onClick={this.props.goBack}><FontAwesomeIcon icon={faChevronCircleLeft} /></Button>
-                <Button type="submit" color="success"><FontAwesomeIcon icon={faChevronCircleRight} /></Button>
+                <Button onClick={this.props.previousStep}>
+                  <FontAwesomeIcon icon={faChevronCircleLeft} />
+                </Button>
+                <Button type="submit" color="success">
+                  <FontAwesomeIcon icon={faChevronCircleRight} />
+                </Button>
               </ButtonGroup>
             </Form>
           </Col>
@@ -324,7 +335,7 @@ class UploadPhoto extends Component {
                 <div style={styles.dropzone} {...getRootProps()}>
                   <input {...getInputProps()} />
                   <p>Arrastra y suelta una imagen o haz click aqui</p>
-                  <FontAwesomeIcon icon={faCloudUploadAlt} size="3x"/>
+                  <FontAwesomeIcon icon={faCloudUploadAlt} size="3x" />
                 </div> // <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
               )}
             </Dropzone>
