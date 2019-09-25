@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { Button, Row, Col, Container, Badge } from "reactstrap";
 import { Helmet } from "react-helmet";
@@ -7,71 +7,44 @@ import { Helmet } from "react-helmet";
 import ReportModal from "./ReportModal";
 import CommentHandler from "./CommentHandler";
 import Photo from "../../components/Photo";
-import { photoDetails, home } from "../../actions";
+import { photoDetails, home, search } from "../../actions";
 import moment from "moment";
 
 const getPermissionLogo = (name, w, h, offset) => {
+  var url;
   switch (name) {
     case "CC BY":
-      return (
-        <img
-          width={w}
-          height={h}
-          src="/assets/CCBY.svg"
-          style={{ ...styles.cc, right: `${offset * w}px` }}
-        />
-      );
+      url = "/assets/CCBY.svg";
+      break;
     case "CC BY-NC":
-      return (
-        <img
-          width={w}
-          height={h}
-          src="/assets/CCBYNC.svg"
-          style={{ ...styles.cc, right: `${offset * w}px` }}
-        />
-      );
+      url = "/assets/CCBYNC.svg";
+      break;
     case "CC BY-NC-ND":
-      return (
-        <img
-          width={w}
-          height={h}
-          src="/assets/CCBYNCND.svg"
-          style={{ ...styles.cc, right: `${offset * w}px` }}
-        />
-      );
+      url = "/assets/CCBYNCND.svg";
+      break;
     case "CC BY-NC-SA":
-      return (
-        <img
-          width={w}
-          height={h}
-          src="/assets/CCBYNCSA.svg"
-          style={{ ...styles.cc, right: `${offset * w}px` }}
-        />
-      );
+      url = "/assets/CCBYNCSA.svg";
+      break;
     case "CC BY-ND":
-      return (
-        <img
-          width={w}
-          height={h}
-          src="/assets/CCBYND.svg"
-          style={{ ...styles.cc, right: `${offset * w}px` }}
-        />
-      );
+      url = "/assets/CCBYND.svg";
+      break;
     case "CC BY-SA":
-      return (
-        <img
-          width={w}
-          height={h}
-          src="/assets/CCBYSA.svg"
-          style={{ ...styles.cc, right: `${offset * w}px` }}
-        />
-      );
+      url = "/assets/CCBYSA.svg";
+      break;
     default:
-      return null;
+      url = "/assets/CCBYSA.svg";
   }
+  // style={{ ...styles.cc, right: `${offset * w}px` }}
+  return (
+    <img
+      width={w}
+      height={h}
+      src={url}
+    />
+  );
 };
 
-const Tags = ({ tags }) => (
+const Tags = ({ tags, onRedirect }) => (
   <Container fluid>
     <Row>
       <Col sm={{ offset: 2, size: 10 }} style={{ fontSize: "1.2em" }}>
@@ -79,7 +52,11 @@ const Tags = ({ tags }) => (
           <p>No hay tags asociados</p>
         ) : (
           tags.map((el, index) => (
-            <Badge key={el.id} color="secondary" pill>
+            <Badge
+              key={el.id}
+              color="secondary"
+              pill
+              onClick={e => onRedirect(el.id, el.value)}>
               #{el.value}
             </Badge>
           ))
@@ -96,32 +73,23 @@ class PhotoDetails extends Component {
       suggestionsLoaded: false,
       auth: this.props.auth,
       myPhotoID: this.props.match.params.id,
-      firstLoad: true
+      firstLoad: true,
+      redirectToGallery: false
     };
     this.getDataFromBack = this.getDataFromBack.bind(this);
-    this.getMetadataNames = this.getMetadataNames.bind(this);
-  }
-
-  getUserDetails() {
-    this.setState({
-      userinfo: {
-        id: 1,
-        name: "Juan",
-        avatar:
-          "https://lithespeed.com/wp-content/uploads/2019/04/listermann-profile-picture-e1556572036426.jpg"
-      }
-    });
-  }
-
-  getMetadataNames() {
-    this.props.loadMetadata(this.props.photoInfo.details.metadata);
+    this.redirectToSearch = this.redirectToSearch.bind(this);
   }
 
   getDataFromBack() {
     // Load elements once props arrive
-    this.getUserDetails();
-    this.getMetadataNames();
     this.props.loadSuggestions();
+  }
+
+  redirectToSearch(tagId, value) {
+    if (tagId !== undefined && tagId !== "") {
+      this.props.putSearch(tagId, value);
+      this.setState({ redirectToGallery: true });
+    }
   }
 
   componentWillMount() {
@@ -178,7 +146,11 @@ class PhotoDetails extends Component {
   }
 
   render() {
-    const { photoInfo, suggestions, metadata } = this.props;
+    if (this.state.redirectToGallery) {
+      return <Redirect to="/gallery" />;
+    }
+
+    const { photoInfo, suggestions } = this.props;
 
     var Suggestions =
       suggestions && photoInfo
@@ -200,19 +172,19 @@ class PhotoDetails extends Component {
             )
         : null;
 
-    var userProfile = this.state.userinfo ? (
+    var userProfile = photoInfo.details.user ? (
       <Container fluid>
         <Row>
           <Col sm={2}>
             <div
               style={{
                 ...styles.avatarStyle.avatarImg,
-                backgroundImage: `url(${this.state.userinfo.avatar})`
+                backgroundImage: `url(${photoInfo.details.user.avatar})`
               }}></div>
           </Col>
           <Col sm={10}>
-            <b>{this.state.userinfo.name}</b>
-            <p>Generacion 2013</p>
+            <b>{`${photoInfo.details.user.first_name} ${photoInfo.details.user.last_name}`}</b>
+            <p>{photoInfo.details.user.rol_type}</p>
           </Col>
         </Row>
       </Container>
@@ -257,9 +229,6 @@ class PhotoDetails extends Component {
             <Col>
               <div style={{ textAlign: "center" }}>{Suggestions}</div>
             </Col>
-            {photoInfo.details.permission.map((el, i) =>
-              getPermissionLogo(el, 90, 32, i)
-            )}
           </Row>
           <Row>
             <Col>
@@ -267,9 +236,12 @@ class PhotoDetails extends Component {
                 <Row>
                   <Col md={5}>
                     {userProfile}
-                    <Tags tags={metadata} />
+                    <Tags
+                      tags={photoInfo.details.metadata}
+                      onRedirect={this.redirectToSearch}
+                    />
                   </Col>
-                  <Col md={7}>
+                  <Col md={6}>
                     <h3>Descripcion</h3>
                     <h5 style={{ color: "#999" }}>
                       Subida el{" "}
@@ -277,22 +249,30 @@ class PhotoDetails extends Component {
                         "DD/MM/YYYY"
                       )}
                     </h5>
-                    <p>
-                      {photoInfo.details.description}
-                    </p>
-                    <Button tag={Link} to="/" className="float-left">
+                    <p>{photoInfo.details.description}</p>
+                    <Button
+                      tag={Link}
+                      to="/request-photo"
+                      className="float-left">
                       ¿Quieres usar la foto?
                     </Button>
                     <ReportModal
                       style={{ display: "inline-block" }}
                       className="float-left"
+                      photoId={this.props.match.params.id}
                     />
+                  </Col>
+                  <Col md={1}>
+                    <h3>Licencias</h3>
+                    {photoInfo.details.permission.map((el, i) =>
+                      getPermissionLogo(el, 90, 32, i)
+                    )}
                   </Col>
                 </Row>
               </Container>
             </Col>
           </Row>
-          <Row style={{borderTop: "solid 1px gray", marginTop: "2em"}}>
+          <Row style={{ borderTop: "solid 1px gray", marginTop: "2em" }}>
             <Col>
               <CommentHandler id={this.props.match.params.id} />
             </Col>
@@ -334,8 +314,7 @@ const mapStateToProps = state => {
   return {
     auth: state.auth,
     photoInfo: state.photoDetails,
-    suggestions: state.home.photos,
-    metadata: state.photoDetails.metadataNames
+    suggestions: state.home.photos
   };
 };
 
@@ -355,6 +334,9 @@ const mapActionsToProps = dispatch => {
     },
     loadMetadata: ids => {
       return dispatch(photoDetails.getMetadataNames(ids));
+    },
+    putSearch: (id, value) => {
+      return dispatch(search.putSearchItem(id, value));
     }
   };
 };

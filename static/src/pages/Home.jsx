@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { home, misc, search } from "../actions";
 import Photo from "../components/Photo";
@@ -6,13 +6,13 @@ import {
   Container,
   Row,
   Col,
-  Button,
-  Nav,
-  DropdownItem,
-  DropdownMenu
+  ButtonDropdown,
+  UncontrolledButtonDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
 } from "reactstrap";
 import { Redirect } from "react-router-dom";
-import gallery from "../css/galleryHome.css";
 import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
@@ -25,16 +25,17 @@ class Home extends Component {
       selectedCategories: [],
       maxAllowedCategories: 8,
       maxPhotos: 40,
-      sortOpen: false,
-      catsOpen: false,
       redirect: false,
       link: "",
+      catsOpen: false,
+      sortOpen: false,
       chosenPhotoIndex: 0
     };
     this.handleOnClick = this.handleOnClick.bind(this);
-    this.toggleCategory = this.toggleCategory.bind(this);
+    this.pickCategory = this.pickCategory.bind(this);
     this.allowMoreCats = this.allowMoreCats.bind(this);
     this.allowMorePics = this.allowMorePics.bind(this);
+    this.toggleCategory = this.toggleCategory.bind(this);
   }
 
   handleOnClick = obj => {
@@ -57,7 +58,11 @@ class Home extends Component {
     this.setState({ maxPhotos: this.state.maxPhotos + 10 });
   }
 
-  toggleCategory(id) {
+  toggleCategory() {
+    this.setState({ catsOpen: !this.state.catsOpen });
+  }
+
+  pickCategory(id) {
     // Remove if in already
     if (this.state.selectedCategories.filter(el => el === id).length !== 0) {
       this.setState({
@@ -85,19 +90,6 @@ class Home extends Component {
     } = this.props;
 
     var filtersId = filters.map(el => el.metaID);
-    var filtersText =
-      filters.length != 0 ? (
-        filters.map(el => (
-          <span
-            key={el.metaID}
-            style={styles.tags}
-            onClick={() => removeSearch(el.metaID, el.value)}>
-            #{el.value} <FontAwesomeIcon icon={faTimesCircle} />
-          </span>
-        ))
-      ) : (
-        <h2>Las fotos de todos</h2>
-      );
 
     var mapped = photos.map(el => ({
       src: el.thumbnail,
@@ -123,16 +115,18 @@ class Home extends Component {
         })
       : [];
     var currentCats1 = currentCats
-      ? currentCats.slice(0, currentCats.length / 2).map(el => {
-          return {
-            ...el,
-            selected: isSelected(el.id, this.state.selectedCategories)
-          };
-        })
+      ? currentCats
+          .filter((e, i) => i % 2 === 0)
+          .map(el => {
+            return {
+              ...el,
+              selected: isSelected(el.id, this.state.selectedCategories)
+            };
+          })
       : [];
     var currentCats2 = currentCats
       ? currentCats
-          .slice(currentCats.length / 2, currentCats.length)
+          .filter((e, i) => i % 2 === 1)
           .map(el => {
             return {
               ...el,
@@ -170,24 +164,17 @@ class Home extends Component {
         )
         .slice(0, this.state.maxPhotos);
     }
-
-    var selectedCatsNumber =
-      this.state.selectedCategories.length > 0 ? (
-        <span style={styles.selectedCatsNumber}>
-          {this.state.selectedCategories.length}
-        </span>
-      ) : null;
     if (this.state.redirect) {
       setRoute("/photo/");
       return (
         <Redirect
           push
-          to={`/photo/${currentPhotos[this.state.chosenPhotoIndex].id}`}
+          to={`/photo/${mapped[this.state.chosenPhotoIndex].id}`}
         />
       );
     }
     return (
-      <div>
+      <Fragment>
         <Helmet>
           <meta property="og:title" content="Buscar fotografias" />
           <meta property="og:type" content="Motor de búsqueda" />
@@ -199,63 +186,93 @@ class Home extends Component {
           <meta property="og:description" content="Descripcion" />
           <title>Buscar fotografias</title>
         </Helmet>
-        <Row style={styles.galleryMenu}>
-          <Col md="9">
-            <div style={styles.filtersContainer}>{filtersText}</div>
-          </Col>
-          <Col md="3">
-            <ul style={styles.menuMain}>
-              <li className="menu-list">
-                <a href="#">Categorias {selectedCatsNumber} ▼</a>
-                <div id="cat" className="menu-sub">
-                  <div style={styles.menu2Col}>
-                    <Categories
-                      categorias={currentCats1}
-                      onClick={this.toggleCategory}
-                    />
-                  </div>
-                  <div style={styles.menu2Col}>
-                    <Categories
-                      categorias={currentCats2}
-                      onClick={this.toggleCategory}
-                    />
-                  </div>
+        <div style={styles.galleryMenu}>
+          <Container>
+            <Row>
+              <Col md="7" lg="9">
+                <div style={styles.filtersContainer}>
+                  {filters.length != 0 ? (
+                    filters.map(el => (
+                      <span
+                        key={el.metaID}
+                        style={styles.tags}
+                        onClick={() => removeSearch(el.metaID, el.value)}>
+                        #{el.value} <FontAwesomeIcon icon={faTimesCircle} />
+                      </span>
+                    ))
+                  ) : (
+                    <h2>Todas las fotograf&iacute;as</h2>
+                  )}
                 </div>
-              </li>
-
-              <li className="menu-list">
-                <a href="#">Ordenar ▼</a>
-                <div id="sort" className="menu-sub">
-                  <div style={styles.menu1Col}>
-                    <h3 style={styles.menuSubTitle}>Por orden cronológico</h3>
-                    <ul>
-                      <li>
-                        <span onClick={() => sortByUpload("asc", auth)}>
-                          Más antiguas primero
-                        </span>
-                      </li>
-                      <li>
-                        <span onClick={() => sortByUpload("desc", auth)}>
-                          Más nuevas primero
-                        </span>
-                      </li>
-                    </ul>
-                    <h3 style={styles.menuSubTitle}>Por fecha de subida</h3>
-                    <ul>
-                      <li>
-                        <a href="#">Más antiguas primero</a>
-                      </li>
-                      <li>
-                        <a href="#">Más nuevas primero</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </Col>
-        </Row>
-        <div style={styles.galleryMenuFixSpace}></div>
+              </Col>
+              <Col md="5" lg="3">
+                <ButtonDropdown
+                  isOpen={this.state.catsOpen}
+                  toggle={this.toggleCategory}
+                  direction="down">
+                  <DropdownToggle
+                    caret
+                    style={styles.dropdownButton}
+                    color="danger">
+                    Categorias
+                    {this.state.selectedCategories.length > 0 ? (
+                      <span style={styles.selectedCatsNumber}>
+                        {this.state.selectedCategories.length}
+                      </span>
+                    ) : null}
+                  </DropdownToggle>
+                  <DropdownMenu
+                    style={{
+                      width: "30em",
+                      boxShadow: "0 0 15px 0 rgba(0,0,0,.20)"
+                    }}>
+                    <div style={styles.triangulo}></div>
+                    <Row>
+                      <Categories
+                        categorias={currentCats1}
+                        onClick={this.pickCategory}
+                      />
+                      <Categories
+                        categorias={currentCats2}
+                        onClick={this.pickCategory}
+                      />
+                    </Row>
+                    <Row>
+                      <Col>
+                        <DropdownItem onClick={this.allowMoreCats}>
+                          Cargar más categorias
+                        </DropdownItem>
+                      </Col>
+                    </Row>
+                  </DropdownMenu>
+                </ButtonDropdown>
+                <UncontrolledButtonDropdown>
+                  <DropdownToggle
+                    caret
+                    style={styles.dropdownButton}
+                    color="danger">
+                    Ordenar
+                  </DropdownToggle>
+                  <DropdownMenu
+                    style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}>
+                    <div style={styles.triangulo}></div>
+                    <DropdownItem header>Por orden cronológico</DropdownItem>
+                    <DropdownItem onClick={() => sortByUpload("asc", auth)}>
+                      Más antiguas primero
+                    </DropdownItem>
+                    <DropdownItem onClick={() => sortByUpload("desc", auth)}>
+                      Más nuevas primero
+                    </DropdownItem>
+                    <DropdownItem divider />
+                    <DropdownItem header>Por fecha de subida</DropdownItem>
+                    <DropdownItem>Más antiguas primero</DropdownItem>
+                    <DropdownItem>Más nuevas primero</DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledButtonDropdown>
+              </Col>
+            </Row>
+          </Container>
+        </div>
         <Container fluid style={styles.galleryContainer}>
           <Gallery
             photos={mapped}
@@ -263,50 +280,37 @@ class Home extends Component {
             onClick={(e, index) => this.handleOnClick(index)}
           />
         </Container>
-      </div>
+      </Fragment>
     );
   }
 }
 
 const Categories = ({ categorias, onClick }) => (
-  <ul>
+  <Col>
     {categorias.length == 0
       ? "-"
       : categorias.map((el, index) => (
-          <li>
-            <a
-              style={el.selected ? styles.Selected : styles.unSelected}
-              href="#"
-              key={el.id}
-              onClick={() => onClick(el.id)}>
-              {el.title}
-              {el.selected ? <FontAwesomeIcon icon={faCheck} /> : ""}
-            </a>
-          </li>
+          <DropdownItem
+            key={el.id}
+            onClick={() => onClick(el.id)}
+            style={el.selected ? styles.Selected : styles.unSelected}>
+            {el.title}
+            {el.selected ? <FontAwesomeIcon icon={faCheck} /> : ""}
+          </DropdownItem>
         ))}
-  </ul>
+  </Col>
 );
 
 const styles = {
   galleryMenu: {
-    width: "100%",
     margin: "0 auto",
     borderBottom: "1px solid rgb(210,214,218)",
     background: "white",
-    height: "8em",
-    position: "fixed",
-    zIndex: "1"
-  },
-  galleryMenuFixSpace: {
-    height: "8em"
-  },
-  menuMain: {
-    listStyle: "none",
-    whiteSpace: "nowrap"
+    position: "sticky",
+    top: "4em"
   },
   filtersContainer: {
     paddingTop: "1em",
-    paddingLeft: "2em",
     display: "flex",
     alignItems: "left",
     verticalAlign: "middle",
@@ -319,20 +323,13 @@ const styles = {
     margin: "2px",
     padding: "4px 12px 4px 12px"
   },
-  unSelected: {
-    padding: "0",
-    color: "#97878f",
-    textDecoration: "none",
-    display: "block",
-    marginBottom: ".35em"
-  },
-  Selected: {
-    padding: "0",
-    color: "#97878f",
-    textDecoration: "none",
-    display: "block",
-    marginBottom: ".35em",
-    fontWeight: "bold"
+  dropdownButton: {
+    color: "#ff5a60",
+    backgroundColor: "white",
+    margin: "1em 1em 0.5em 1em",
+    border: "1px solid black",
+    borderRadius: "0",
+    padding: "10px"
   },
   selectedCatsNumber: {
     backgroundColor: "#f2f2f2",
@@ -340,26 +337,34 @@ const styles = {
     padding: "0.5em",
     borderRadius: "0.5em"
   },
-  menuSubTitle: {
-    display: "flex",
-    fontSize: "1.1em",
-    fontWeight: "bold",
+  unSelected: {
+    color: "#97878f"
+  },
+  Selected: {
     color: "#97878f",
-    justifyContent: "center"
-  },
-  menu1Col: {
-    float: "left",
-    width: "100%"
-  },
-  menu2Col: {
-    float: "left",
-    width: "50%"
+    fontWeight: "bold"
   },
   galleryContainer: {
     width: "100%",
     minHeight: "100vh",
     padding: "1.25em 3.1em",
     backgroundColor: "#f7f8fa"
+  },
+  triangulo: {
+    position: "absolute",
+    width: "20px",
+    height: "20px",
+    borderTop: "1px solid rgb(210,214,218)",
+    borderRight: "0px solid rgb(210,214,218)",
+    borderBottom: "0px solid rgb(210,214,218)",
+    borderLeft: "1px solid rgb(210,214,218)",
+    top: "0",
+    left: "8em",
+    marginLeft: "-10px",
+    content: "",
+    transform: "rotate(45deg)",
+    marginTop: "-10px",
+    background: "#ffff"
   }
 };
 const mapStateToProps = state => {

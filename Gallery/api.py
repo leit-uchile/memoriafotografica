@@ -148,7 +148,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
             serializer = PhotoDetailAdminSerializer(photo)
             serialized_data = serializer.data
         serialized_data['metadata'] = list(filter(lambda x: x['approved'], serialized_data['metadata']))
-        serialized_data['metadata'] = list(map(lambda x: x['metadata']['name'] + " : " + x['value'], serialized_data['metadata']))
+        #serialized_data['metadata'] = list(map(lambda x: x['metadata']['name'] + " : " + x['value'], serialized_data['metadata']))
         try:
             u = photo.user_set.first()
             u_dict = {}
@@ -157,7 +157,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
             u_dict['generation'] = u.generation
             u_dict['avatar'] = u.avatar.url if u.avatar else None
             u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
-            serialized_data['usuario'] = u_dict
+            serialized_data['user'] = u_dict
         except:
             pass
 
@@ -451,12 +451,12 @@ class ReportListAPI(generics.GenericAPIView):
                     m = Photo.objects.get(pk=id)
                 elif (t == '3'):
                     m = Comment.objects.get(pk=id)
+                r = serializer.save()
+                m.report.add(r)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             except Exception as e:
                 print(e)
                 raise NotFound(detail="ID de "+t_class[t]+" inválido o no existente. Campo 'id' es requerido. ")
-            r = serializer.save()
-            m.report.add(r)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

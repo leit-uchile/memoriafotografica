@@ -15,14 +15,13 @@ import Comment from "./Comment";
 
 const CommentHandler = ({
   id,
-  auth: { token },
   comments,
   commentsLoaded,
   newComment,
   fetchComments
 }) => {
   useEffect(() => {
-    fetchComments(id, token);
+    fetchComments(id);
   }, [id, commentsLoaded]);
 
   const [comment, setComment] = useState("");
@@ -32,7 +31,7 @@ const CommentHandler = ({
       <Col
         md={{
           size: 8,
-          offset: key % 2 == 0 ? 0 : 4
+          offset: 2
         }}
         style={styles.commentContainerStyle}>
         <Comment content={el} />
@@ -53,7 +52,7 @@ const CommentHandler = ({
           <Form
             onSubmit={e => {
               e.preventDefault();
-              newComment(id, comment, token);
+              newComment(id, comment);
               setComment("");
             }}>
             <FormGroup>
@@ -83,7 +82,6 @@ const styles = {
 
 const mapStateToProps = state => {
   return {
-    auth: state.auth,
     comments: state.photoDetails.comments,
     commentsLoaded: state.photoDetails.commentsLoaded
   };
@@ -91,11 +89,11 @@ const mapStateToProps = state => {
 
 const mapActionsToProps = dispatch => {
   return {
-    newComment: (id, comment, auth) => {
-      return dispatch(photoDetails.putComment(id, comment, auth));
+    newComment: (id, comment) => {
+      return dispatch(photoDetails.putComment(id, comment));
     },
     fetchComments: (id, auth) => {
-      return dispatch(photoDetails.getComments(id, auth));
+      return dispatch(photoDetails.getComments(id));
     }
   };
 };

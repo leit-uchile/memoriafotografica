@@ -14,18 +14,18 @@ import { connect } from "react-redux";
 import { auth } from "../actions";
 import { Redirect } from "react-router-dom";
 
-const UserModal = ({ logout, auth }) => {
+const UserModal = ({ logout, user }) => {
   const [toggle, setToggle] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
   const doToggle = () => setToggle(!toggle);
 
   const doLogout = () => {
-    logout(auth.token);
+    logout();
     doToggle();
   };
 
-  const { first_name, last_name, user_type } = auth.user;
+  const { first_name, last_name, user_type } = user;
 
   return (
     <NavLink href="#" onClick={doToggle}>
@@ -42,45 +42,61 @@ const UserModal = ({ logout, auth }) => {
         <ModalBody>
           <Container fluid>
             <Row>
-              {user_type > 2 ? 
-              <Col>
-              <h4>Interfaz de Administrador</h4>
-              <Button
-                color="warning"
-                onClick={() => {
-                  doToggle();
-                  window.location.assign("http://localhost:8000/admin");
-                  setTimeout(() => setRedirect(false), 1000);
-                }}>
-                Administrar Sitio
-              </Button>
-              </Col> : null
-              }
-              {user_type > 1 ? 
+              {user_type > 2 ? (
                 <Col>
-                <h4>Interfaz de curador</h4>
+                  <h4 style={styles.headers}>Interfaz de Administrador</h4>
+                </Col>
+              ) : null}
+              {user_type > 1 ? (
+                <Col>
+                  <h4 style={styles.headers}>Interfaz de curador</h4>
+                </Col>
+              ) : null}
+
+              <Col>
+                <h4 style={styles.headers}>Gestionar perfil</h4>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "0.5em"}}>
+              {user_type > 2 ? (
+                <Col>
+                  <Button
+                    block
+                    color="warning"
+                    onClick={() => {
+                      doToggle();
+                      window.location.assign("http://localhost:8000/admin");
+                      setTimeout(() => setRedirect(false), 1000);
+                    }}>
+                    Administrar Sitio
+                  </Button>
+                </Col>
+              ) : null}
+              {user_type > 1 ? (
+                <Col>
+                  <Button
+                    block
+                    color="primary"
+                    onClick={() => {
+                      doToggle();
+                      setRedirect("/curador/dashboard/");
+                      setTimeout(() => setRedirect(false), 1000);
+                    }}>
+                    Dashboard
+                  </Button>
+                </Col>
+              ) : null}
+              <Col>
                 <Button
+                  block
                   color="primary"
                   onClick={() => {
                     doToggle();
-                    setRedirect("/curador/dashboard/");
+                    setRedirect("/user/dashboard/");
                     setTimeout(() => setRedirect(false), 1000);
                   }}>
-                  Dashboard
+                  Ir a Perfil
                 </Button>
-              </Col> : null
-              }
-              <Col>
-              <h4>Gestionar perfil</h4>
-              <Button
-                color="primary"
-                onClick={() => {
-                  doToggle();
-                  setRedirect("/user/dashboard/");
-                  setTimeout(() => setRedirect(false), 1000);
-                }}>
-                Ir a Perfil
-              </Button>
               </Col>
             </Row>
           </Container>
@@ -97,16 +113,23 @@ const UserModal = ({ logout, auth }) => {
 
 const mapStateToProps = state => {
   return {
-    auth: state.auth
+    user: state.user.userData
   };
 };
 
 const mapActionsToProps = dispatch => {
   return {
-    logout: token => {
-      return dispatch(auth.logout(token));
+    logout: () => {
+      return dispatch(auth.logout());
     }
   };
+};
+
+const styles = {
+  headers: {
+    fontSize: "1.2em",
+    textAlign: "center",
+  }
 };
 
 export default connect(

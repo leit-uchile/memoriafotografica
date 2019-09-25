@@ -1,3 +1,5 @@
+import { HOME_RECOVERED_PHOTOS, HOME_EMPTY_PHOTOS, HOME_RECOVERED_TAGS, HOME_EMPTY_TAGS, HOME_RECOVERED_CATEGORIES, HOME_EMPTY_CATEGORIES, HOME_RECOVERED_IPTCS, HOME_EMPTY_IPTCS } from './types';
+
 export const home = () => {return (dispatch,getState) => {
     let headers = {"Content-Type": "application/json"};
 
@@ -6,10 +8,10 @@ export const home = () => {return (dispatch,getState) => {
       const r = response
       if(r.status === 200){
         return r.json().then(data => {
-          dispatch({type: 'RECOVERED_PHOTO', data: data })
+          dispatch({type: HOME_RECOVERED_PHOTOS, data: data })
         })
       }else{
-        dispatch({type: 'EMPTY', data: r.data })
+        dispatch({type: HOME_EMPTY_PHOTOS, data: r.data })
         throw r.data
       }
     })
@@ -23,10 +25,10 @@ export const tags = () => { return (dispatch, getState) => {
       const r = response
       if(r.status === 200){
         return r.json().then(data => {
-          dispatch({type: 'RECOVERED_TAGS', data: data })
+          dispatch({type: HOME_RECOVERED_TAGS, data: data })
         })
       }else{
-        dispatch({type: 'EMPTY_TAGS', data: r.data })
+        dispatch({type: HOME_EMPTY_TAGS, data: r.data })
         throw r.data
       }
     })
@@ -40,10 +42,10 @@ export const categories = () => { return (dispatch, getState) => {
       const r = response
       if(r.status === 200){
         return r.json().then(data => {
-          dispatch({type: 'RECOVERED_CATS', data: data })
+          dispatch({type: HOME_RECOVERED_CATEGORIES, data: data })
         })
       }else{
-        dispatch({type: 'EMPTY_CATS', data: r.data })
+        dispatch({type: HOME_EMPTY_CATEGORIES, data: r.data })
         throw r.data
       }
     })
@@ -57,10 +59,10 @@ export const iptcs = () => { return (dispatch, getState) => {
       const r = response
       if(r.status === 200){
         return r.json().then(data => {
-          dispatch({type: 'RECOVERED_IPTCS', data: data })
+          dispatch({type: HOME_RECOVERED_IPTCS, data: data })
         })
       }else{
-        dispatch({type: 'EMPTY_IPTCS', data: r.data })
+        dispatch({type: HOME_EMPTY_IPTCS, data: r.data })
         throw r.data
       }
     })
@@ -82,7 +84,7 @@ export const sortByField = (field,order,auth) => { return (dispatch, getState) =
     return dispatch({type: 'EMPTY', data: 'wrong order parameter' })
   }
 
-  fetch(`/api/photos/?sort=${field}-${order}`, {method: 'GET', headers: header}).then( response => {
+  fetch(`/api/photos/?sort=${field}-${order}`, {method: 'GET'}).then( response => {
       const r = response;
       if(r.status === 200){
         return r.json().then(data => {
@@ -106,7 +108,7 @@ export const sortByUpload = (order,auth) => { return (dispatch, getState) => {
     return dispatch({type: 'EMPTY', data: 'wrong order parameter' })
   }
 
-  fetch(`/api/photos/?sort=created_at-${order}`, {method: 'GET', headers: header}).then( response => {
+  fetch(`/api/photos/?sort=created_at-${order}`, {method: 'GET'}).then( response => {
       const r = response;
       if(r.status === 200){
         return r.json().then(data => {

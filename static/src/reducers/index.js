@@ -1,3 +1,4 @@
+import alert from './alert';
 import auth from "./auth";
 import curador from "./curador"
 import home from "./home";
@@ -9,6 +10,7 @@ import user from './user';
 import {combineReducers} from 'redux';
 
 const rootReducer = combineReducers({
+  alert: alert,
   auth: auth,
   curador: curador,
   home: home,

@@ -40,7 +40,6 @@ class UploadDetails extends Component {
     this.fr = new FileReader();
     this.fr.onload = (function(theFile) {
       return function(e) {
-
         // Get data from image
         let img = new Image();
         img.onload = function() {
@@ -64,7 +63,9 @@ class UploadDetails extends Component {
   updateData = e => this.setState({ [e.target.name]: e.target.value });
 
   updateDesc = e => {
-    this.setState({ description: e.target.value }, () => this.props.save(this.state));
+    this.setState({ description: e.target.value }, () =>
+      this.props.save(this.state)
+    );
   };
 
   toggle() {
@@ -103,9 +104,9 @@ class UploadDetails extends Component {
       <Container
         style={{
           marginTop: "20px",
-          backgroundColor: "#dceaf7",
+          backgroundColor: "#f7f7f7",
           borderRadius: "10px",
-          border: "1px solid rgb(156,158,159)",
+          border: "1px solid rgb(210,214,218)",
           boxShadow: "2px 2px 4px rgb(156,158,159)"
         }}
         fluid>
@@ -117,20 +118,33 @@ class UploadDetails extends Component {
             <Form>
               <FormGroup>
                 <Label style={{ color: "#848687" }}>Descripcion:</Label>
-                <Input
-                  type="textarea"
-                  placeholder="Historia asociada a la foto"
-                  name="description"
-                  onChange={this.updateDesc}
-                  value={this.state.description}
-                  required
-                />
+                {this.state.description.length > 8 ? (
+                  <Input
+                    type="textarea"
+                    placeholder="Historia asociada a la foto"
+                    name="description"
+                    onChange={this.updateDesc}
+                    value={this.state.description}
+                    required
+                    valid
+                  />
+                ) : (
+                  <Input
+                    type="textarea"
+                    placeholder="Historia asociada a la foto"
+                    name="description"
+                    onChange={this.updateDesc}
+                    value={this.state.description}
+                    required
+                    invalid
+                  />
+                )}
               </FormGroup>
               <ButtonGroup>
                 <Button color="danger" onClick={this.onDelete}>
                   Eliminar
                 </Button>
-                <Button color="primary" onClick={this.toggle}>
+                <Button onClick={this.toggle}>
                   {this.state.collapse
                     ? "Descartar cambios"
                     : "Información por separado"}{" "}

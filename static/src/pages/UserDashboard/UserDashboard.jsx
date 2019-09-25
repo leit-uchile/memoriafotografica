@@ -12,6 +12,7 @@ import {
 } from "reactstrap";
 import Photo from "../../components/Photo";
 import Comment from "../PhotoView/Comment";
+import EditPhotos from "./EditPhotos";
 import { connect } from "react-redux";
 import { user, misc } from "../../actions";
 import { Link } from "react-router-dom";
@@ -28,6 +29,7 @@ class Dashboard extends Component {
     this.state = {
       activeIndex: 0,
       entering: true,
+      toRight: true,
       selectedAlbs: [],
       selectedComs: [],
       maxAllowedAlbums: 4,
@@ -55,10 +57,10 @@ class Dashboard extends Component {
   next() {
     if (this.animating) return;
     const nextIndex =
-      this.state.activeIndex === (this.props.data.photos.length - 1) / 4
-        ? 0
+      this.state.activeIndex + 4 >= this.props.data.photos.length - 1
+        ? this.state.activeIndex
         : this.state.activeIndex + 4;
-    this.setState({ entering: false }, () =>
+    this.setState({ entering: false, toRight: true }, () =>
       setTimeout(
         function() {
           this.setState({ activeIndex: nextIndex, entering: true });
@@ -73,7 +75,7 @@ class Dashboard extends Component {
     if (this.animating) return;
     const prevIndex =
       this.state.activeIndex <= 0 ? 0 : this.state.activeIndex - 4;
-    this.setState({ entering: false }, () =>
+    this.setState({ entering: false, toRight: false }, () =>
       setTimeout(
         function() {
           this.setState({ activeIndex: prevIndex, entering: true });
@@ -90,12 +92,12 @@ class Dashboard extends Component {
   }
 
   componentWillMount() {
-    const { user, auth } = this.props;
+    const { user } = this.props;
 
     this.props.setRoute("/userDashboard/");
-    this.props.onLoadGetPhotos(auth, user.id, 15, 0);
-    this.props.onLoadGetAlbums(auth, user.id, 15, 0);
-    this.props.onLoadGetComments(auth, user.id, 10, 0);
+    this.props.onLoadGetPhotos(user.id, 15, 0);
+    this.props.onLoadGetAlbums(user.id, 15, 0);
+    this.props.onLoadGetComments(user.id, 10, 0);
   }
   allowMorePics() {
     this.setState({ maxPhotos: this.state.maxPhotos + 10 });
@@ -126,6 +128,7 @@ class Dashboard extends Component {
       : [];
     return (
       <Container>
+        {/* <EditPhotos isOpen={true} photos={photos} onClick={this.next}/> */}
         <Row style={{ marginTop: "2em" }}>
           <Col md="4">
             <Card>
@@ -140,7 +143,7 @@ class Dashboard extends Component {
                   style={{ margin: "0 auto" }}
                   color="secondary"
                   tag={Link}
-                  to="/user/edit">
+                  to="/user/editProfile">
                   {" "}
                   Editar mi perfil
                 </Button>
@@ -169,9 +172,13 @@ class Dashboard extends Component {
                         .map(el => (
                           <img
                             className={
-                              this.state.entering
-                                ? "animated fadeIn"
-                                : "animated fadeOut"
+                              this.state.toRight
+                                ? this.state.entering
+                                  ? "animated slideInRight"
+                                  : "animated slideOutLeft"
+                                : this.state.entering
+                                ? "animated slideInLeft"
+                                : "animated slideOutRight"
                             }
                             width="calc(25%-4px)"
                             width="160em"
@@ -188,12 +195,21 @@ class Dashboard extends Component {
                 </Container>
 
                 <ButtonGroup style={{ margin: "0 auto" }}>
-                  <Button onClick={this.previous}>
+                  <Button
+                    disabled={this.state.activeIndex <= 0 ? true : false}
+                    onClick={this.previous}>
                     {" "}
                     <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}
                   </Button>
                   <Button onClick={this.all}> Ver Todas</Button>
-                  <Button onClick={this.next}>
+                  <Button
+                    disabled={
+                      this.state.activeIndex + 4 >=
+                      this.props.data.photos.length - 1
+                        ? true
+                        : false
+                    }
+                    onClick={this.next}>
                     {" "}
                     <FontAwesomeIcon icon={faArrowAltCircleRight} />{" "}
                   </Button>
@@ -257,30 +273,24 @@ const Comments = ({ commentList, onClick }) => (
   </div>
 );
 
-const mapStateToProps = state => {
-  return {
-    data: state.user,
-    user: state.auth.user,
-    auth: state.auth.token
-  };
-};
+const mapStateToProps = state => ({
+  data: {
+    photos: state.user.photos,
+    comments: state.user.comments,
+    albums: state.user.albums
+  },
+  user: state.user.userData
+});
 
-const mapActionsToProps = dispatch => {
-  return {
-    onLoadGetPhotos: (auth, user_id, limit, offset) => {
-      return dispatch(user.getUserPhotos(auth, user_id, limit, offset));
-    },
-    onLoadGetAlbums: (auth, user_id, limit, offset) => {
-      return dispatch(user.getUserAlbums(auth, user_id, limit, offset));
-    },
-    onLoadGetComments: (auth, user_id, limit, offset) => {
-      return dispatch(user.getUserComments(auth, user_id, limit, offset));
-    },
-    setRoute: route => {
-      return dispatch(misc.setCurrentRoute(route));
-    }
-  };
-};
+const mapActionsToProps = dispatch => ({
+  onLoadGetPhotos: (user_id, limit, offset) =>
+    dispatch(user.getUserPhotos(user_id, limit, offset)),
+  onLoadGetAlbums: (user_id, limit, offset) =>
+    dispatch(user.getUserAlbums(user_id, limit, offset)),
+  onLoadGetComments: (user_id, limit, offset) =>
+    dispatch(user.getUserComments(user_id, limit, offset)),
+  setRoute: route => dispatch(misc.setCurrentRoute(route))
+});
 
 export default connect(
   mapStateToProps,

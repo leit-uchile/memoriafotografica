@@ -1,3 +1,10 @@
+import {
+  UPLOADING,
+  UPLOADED_PHOTO,
+  ERROR_UPLOADING_PHOTO,
+  READ_UPLOAD_DISCLOSURE
+} from "../actions/types";
+
 /*
   To upload we have a counter of current operations,
   an array to store successuf photos ids or keys,
@@ -17,7 +24,7 @@ const initialState = {
 export default function upload(state = initialState, action) {
   let counter;
   switch (action.type) {
-    case "UPLOADING":
+    case UPLOADING:
       return {
         ...state,
         uploading: true,
@@ -25,7 +32,7 @@ export default function upload(state = initialState, action) {
         opsFinished: 0,
         photosUploaded: []
       };
-    case "UPLOADED_PHOTO":
+    case UPLOADED_PHOTO:
       counter = state.opsFinished + 1;
       return {
         ...state,
@@ -33,7 +40,7 @@ export default function upload(state = initialState, action) {
         opsFinished: counter,
         uploading: !(counter === state.photosUploading)
       };
-    case "ERROR_UPLOADING":
+    case ERROR_UPLOADING_PHOTO:
       counter = state.opsFinished + 1;
       // Assume that a component will resolve the id in action.data
       return {
@@ -42,7 +49,7 @@ export default function upload(state = initialState, action) {
         uploading: !(counter === state.photosUploading),
         error: action.data
       };
-    case "READ_DISCLOSURE":
+    case READ_UPLOAD_DISCLOSURE:
       localStorage.setItem("disclosed", true);
       return { ...state, disclosureSet: true };
     default:

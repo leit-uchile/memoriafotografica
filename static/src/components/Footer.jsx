@@ -1,5 +1,17 @@
 import React from "react";
-import { Container, Row, Col, Input, Button } from "reactstrap";
+import About from '../pages/Miscellaneous/About';
+import FAQ from '../pages/Miscellaneous/FAQ';
+import ContactUs from '../pages/Miscellaneous/ContactUs';
+import { 
+  Container, 
+  Row, 
+  Col, 
+  Input, 
+  Button,
+  Nav,
+  NavItem,
+  NavLink } from "reactstrap";
+import {Route, Link} from 'react-router-dom'
 
 const Footer = () => {
   const componentDidMount = () =>
@@ -14,15 +26,7 @@ const Footer = () => {
       <Container style={styles.contenido}>
         <Row style={{ paddingBottom: "50px" }}>
           <Col>
-            <img style={{ marginTop: "-15px" }} src={"/mf.ico"} alt={"logo"} />
-            <div style={{ display: "inline-block", margin: "10px" }}>
-              <h5 style={{ fontSize: "20px", fontWeight: "bold" }}>
-                El Proyecto
-              </h5>
-              <h2 style={{ fontSize: "15px", color: "gray" }}>
-                Memoria Fotografica
-              </h2>
-            </div>
+            <img src={"/logo01.svg"} alt={"logo"} height="55px"/>
           </Col>
         </Row>
         <Row>
@@ -36,24 +40,36 @@ const Footer = () => {
             <p>+56 22 978 4074</p>
           </Col>
           <Col md="3">
-            <h5 style={{ fontSize: "12px" }}>
-              <b>Equipo</b>
-            </h5>
-            <ul>
-              <li>Acerca de</li>
-              <li>LEIT</li>
-              <li>Integrate al Proyecto</li>
-            </ul>
+            <p style={{ fontSize: "12px" }}>
+              <b>Acerca de</b>
+            </p>
+            <Nav vertical>
+              <NavItem>
+                <NavLink tag={Link} to={"/misc/about"} active>El Proyecto</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to={"/misc/about"} active>LEIT</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to={"/misc/about"} active>Intégrate</NavLink>
+              </NavItem>
+            </Nav>
           </Col>
           <Col md="3">
-            <h5 style={{ fontSize: "12px" }}>
+          <p style={{ fontSize: "12px" }}>
               <b>Enlaces</b>
-            </h5>
-            <ul>
-              <li>Preguntas Frecuentes</li>
-              <li>Contactenos</li>
-              <li>Mapa del Sitio</li>
-            </ul>
+            </p>
+            <Nav vertical>
+              <NavItem>
+                <NavLink tag={Link} to={"/misc/resources/faq"} active>Preguntas frecuentes</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to={"/misc/resources/contact-us"} active>Contáctenos</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to={"/misc/resources/sitemap"} active>Mapa del sitio</NavLink>
+              </NavItem>
+            </Nav>
           </Col>
           <Col md="3">
             <h5 style={{ fontSize: "12px" }}>
@@ -90,20 +106,13 @@ const Footer = () => {
 
 const styles = {
   contenedor: {
+    marginTop: "2em",
     borderTop: "1px solid rgb(210,214,218)",
-    width: "100%",
-    backgroundColor: "#dee1e2",
-    background: "linear-gradient(top, #fbfcfc 0%, #dee1e2 100%), -moz-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%) -webkit-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)",
-    marginTop: "2em"
+    background: "linear-gradient(top, #fbfcfc 0%, #dee1e2 100%), -moz-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%) -webkit-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)"
   },
   contenido: {
     fontSize: "12px",
-    marginLeft: "auto",
-    marginRight: "auto",
-    maxWidth: "1370px",
     paddingTop: "50px",
-    paddingLeft: "125px",
-    paddingRight: "125px"
   }
 };
 export default Footer;

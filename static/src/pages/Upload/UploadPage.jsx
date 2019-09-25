@@ -7,6 +7,8 @@ import { misc, upload, home } from "../../actions";
 import { Link } from "react-router-dom";
 import { Container, Button, Row, Col } from "reactstrap";
 import { Helmet } from "react-helmet";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignInAlt, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 
 class UploadPage extends Component {
   constructor(props) {
@@ -63,10 +65,14 @@ class UploadPage extends Component {
 
   retryFailed() {
     // Create new array with ids from props
-    var newList = this.state.photos.photosList.filter(
-      (el, key) => this.props.upload.photosUploaded.indexOf(key) !== -1
-    );
-    this.savePhotos(newList);
+    var newPhotos = {
+      ...this.state.photos,
+      photoList: this.state.photos.photosList.filter(
+        (el, key) => this.props.upload.photosUploaded.indexOf(key) === -1
+      )
+    };
+
+    this.savePhotos(newPhotos);
   }
 
   componentWillMount() {
@@ -88,31 +94,44 @@ class UploadPage extends Component {
       case 0:
         subupload = (
           <Container>
-            <Row style={styles.marginTopCenter}>
+            <Row>
               <Col>
-                <h2 style={{ fontWeight: "bold" }}>
-                  ¡Ayudanos aportando material!
-                </h2>
+                <h2 style={styles.title}>¡Ayúdanos aportando material!</h2>
               </Col>
             </Row>
-            <Row style={styles.marginTopCenter}>
-              <Col>
-                <Button color="primary" tag={Link} to="/login">
-                  Iniciar sesion
-                </Button>
-                <Button color="link" onClick={this.withoutRegister}>
-                  Continuar sin registrar
-                </Button>
-              </Col>
-            </Row>
-            <Row style={styles.marginTopCenter}>
-              <Col>
-                <p>
-                  Si no inicias sesion tendras que ingresar tus datos cada vez
-                  que subas una foto
-                </p>
-              </Col>
-            </Row>
+            <Container style={styles.container}>
+              <Row>
+                <Col style={{ borderRight: "1px solid rgb(210,214,218)" }}>
+                  <Row style={styles.item}>
+                    <FontAwesomeIcon icon={faSignInAlt} size="6x" />
+                  </Row>
+                  <Row style={styles.item}>
+                    <Button color="primary" tag={Link} to="/login">
+                      Iniciar sesion
+                    </Button>
+                  </Row>
+                </Col>
+                <Col>
+                  <Row style={styles.item}>
+                    <FontAwesomeIcon icon={faUserPlus} size="6x" />
+                  </Row>
+                  <Row style={styles.item}>
+                    <Button color="success" tag={Link} to="/register">
+                      Registrarme
+                    </Button>
+                    <Button color="link" onClick={this.withoutRegister}>
+                      Continuar sin registrar
+                    </Button>
+                  </Row>
+                  <Row style={styles.item}>
+                    <p>
+                      Si continuas sin registrar tendrás que ingresar tus datos
+                      cada vez que subas una foto
+                    </p>
+                  </Row>
+                </Col>
+              </Row>
+            </Container>
           </Container>
         );
         break;
@@ -145,35 +164,50 @@ class UploadPage extends Component {
           />
         );
         break;
-      default: 
-        subupload = <Container>
-        <Row style={styles.marginTopCenter}>
-          <Col>
-            <h2 style={{ fontWeight: "bold" }}>
-              ¡Ayudanos aportando material!
-            </h2>
-          </Col>
-        </Row>
-        <Row style={styles.marginTopCenter}>
-          <Col>
-            <Button color="primary" tag={Link} to="/login">
-              Iniciar sesion
-            </Button>
-            <Button color="link" onClick={this.withoutRegister}>
-              Continuar sin registrar
-            </Button>
-          </Col>
-        </Row>
-        <Row style={styles.marginTopCenter}>
-          <Col>
-            <p>
-              Si no inicias sesion tendras que ingresar tus datos cada vez
-              que subas una foto
-            </p>
-          </Col>
-        </Row>
-      </Container>
-      break;
+      default:
+        subupload = (
+          <Container>
+            <Row>
+              <Col>
+                <h2 style={styles.title}>¡Ayúdanos aportando material!</h2>
+              </Col>
+            </Row>
+            <Container style={styles.container}>
+              <Row>
+                <Col style={{ borderRight: "1px solid rgb(210,214,218)" }}>
+                  <Row style={styles.item}>
+                    <FontAwesomeIcon icon={faSignInAlt} size="6x" />
+                  </Row>
+                  <Row style={styles.item}>
+                    <Button color="primary" tag={Link} to="/login">
+                      Iniciar sesion
+                    </Button>
+                  </Row>
+                </Col>
+                <Col>
+                  <Row style={styles.item}>
+                    <FontAwesomeIcon icon={faUserPlus} size="6x" />
+                  </Row>
+                  <Row style={styles.item}>
+                    <Button color="success" tag={Link} to="/register">
+                      Registrarme
+                    </Button>
+                    <Button color="link" onClick={this.withoutRegister}>
+                      Continuar sin registrar
+                    </Button>
+                  </Row>
+                  <Row style={styles.item}>
+                    <p>
+                      Si continuas sin registrar tendrás que ingresar tus datos
+                      cada vez que subas una foto
+                    </p>
+                  </Row>
+                </Col>
+              </Row>
+            </Container>
+          </Container>
+        );
+        break;
     }
     return (
       <div>
@@ -195,9 +229,20 @@ class UploadPage extends Component {
 }
 
 const styles = {
-  marginTopCenter: {
+  container: {
+    backgroundColor: "#f7f7f7",
+    padding: "2em",
+    marginBottom: "2em",
+    border: "1px solid rgb(210,214,218)"
+  },
+  title: {
+    color: "#ff5a60",
     textAlign: "center",
-    marginTop: "2em"
+    margin: "1em"
+  },
+  item: {
+    justifyContent: "center",
+    margin: "1em"
   }
 };
 
@@ -211,7 +256,6 @@ const mapStateToProps = state => {
   return {
     errors,
     isAuthenticated: state.auth.isAuthenticated,
-    token: state.auth.token,
     upload: state.upload,
     meta: state.home.all_tags
   };
@@ -222,8 +266,8 @@ const mapActionsToProps = dispatch => {
     setRoute: route => {
       return dispatch(misc.setCurrentRoute(route));
     },
-    uploadPhotos: (info, auth) => {
-      return dispatch(upload.uploadImages(info, auth));
+    uploadPhotos: info => {
+      return dispatch(upload.uploadImages(info));
     },
     recoverMetadata: () => {
       return dispatch(home.tags());
