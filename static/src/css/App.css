@@ -4,6 +4,11 @@ html{
     font-size: 12px;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+}
+
 .centering {
     margin: 0 auto;
 }
@@ -36,4 +41,9 @@ html{
 .btn-primary:hover {
   background-color: #e15454f0;
   border-color: #e15454f0;
+}
+
+.page-item .page-link{
+  color: #ff5a60;
+  font-weight: 600;
 }

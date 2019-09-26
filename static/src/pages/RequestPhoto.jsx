@@ -163,8 +163,8 @@ var Requested = ({list}) => (
           </Col>
           <Col>
           <ListGroupItemHeading 
-            tag="a" 
-            href={'/photo/' + el.id}>
+            tag={Link} 
+            to={'/photo/' + el.id}>
             {el.title}
           </ListGroupItemHeading>
           <ListGroupItemText>

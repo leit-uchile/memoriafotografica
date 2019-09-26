@@ -30,9 +30,7 @@ class SearchBar extends Component {
 
 
   componentWillMount() {
-    console.log(this.props);
     if (this.props.tags === undefined || this.props.tags.length === 0) {
-      console.log("Get tags");
       this.props.onLoadGetTags();
     }
     if (this.props.iptc === undefined) {

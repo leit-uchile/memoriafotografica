@@ -83,8 +83,8 @@ const LandingPage = props => {
       <Row style={{ marginTop: "2em" }}>
         <Col>
           <Slider {...settings}>
-            {items.map(it => (
-              <div>
+            {items.map( (it, key) => (
+              <div key={key}>
                 <Container fluid>
                   <Row>
                     <Col

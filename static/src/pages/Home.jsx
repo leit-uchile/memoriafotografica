@@ -10,72 +10,131 @@ import {
   UncontrolledButtonDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
+  Pagination,
+  PaginationItem,
+  PaginationLink
 } from "reactstrap";
 import { Redirect } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
+import LeitSpinner from "../components/LeitSpinner";
 
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedCategories: [],
+      searchOrder: "desc",
+      photoPagination: {
+        page: 0,
+        maxAllowed: 15
+      },
       maxAllowedCategories: 8,
-      maxPhotos: 40,
-      redirect: false,
-      link: "",
       catsOpen: false,
       sortOpen: false,
-      chosenPhotoIndex: 0
+      chosenPhotoIndex: 0, // For redirect
+      redirect: false,
+      link: ""
     };
-    this.handleOnClick = this.handleOnClick.bind(this);
-    this.pickCategory = this.pickCategory.bind(this);
-    this.allowMoreCats = this.allowMoreCats.bind(this);
-    this.allowMorePics = this.allowMorePics.bind(this);
-    this.toggleCategory = this.toggleCategory.bind(this);
+
+    // componentWillLoad
+    this.props.setRoute("/gallery/");
+    this.props.onLoadGetPhotos();
+    this.props.onLoadGetCats();
   }
 
   handleOnClick = obj => {
     this.setState({ redirect: true, chosenPhotoIndex: obj.index });
   };
 
-  componentWillMount() {
-    this.props.setRoute("/gallery/");
-    this.props.onLoadGetPhotos();
-    this.props.onLoadGetCats();
-  }
-
-  allowMoreCats() {
+  allowMoreCats = () => {
     this.setState({
       maxAllowedCategories: this.state.maxAllowedCategories + 4
     });
-  }
+  };
 
-  allowMorePics() {
+  allowMorePics = () => {
     this.setState({ maxPhotos: this.state.maxPhotos + 10 });
-  }
+  };
 
-  toggleCategory() {
+  toggleCategory = () => {
     this.setState({ catsOpen: !this.state.catsOpen });
-  }
+  };
 
-  pickCategory(id) {
+  pickCategory = id => {
     // Remove if in already
     if (this.state.selectedCategories.filter(el => el === id).length !== 0) {
-      this.setState({
-        selectedCategories: this.state.selectedCategories.filter(
-          el => el !== id
-        )
-      });
+      this.setState(
+        {
+          selectedCategories: this.state.selectedCategories.filter(
+            el => el !== id
+          )
+        },
+        this.reloadOnChange
+      );
     } else {
-      this.setState({
-        selectedCategories: [...this.state.selectedCategories, id]
-      });
+      this.setState(
+        {
+          selectedCategories: [...this.state.selectedCategories, id]
+        },
+        this.reloadOnChange
+      );
     }
-  }
+  };
+
+  setSortingOrder = order => {
+    this.setState({ searchOrder: order }, this.reloadOnChange);
+  };
+
+  reloadOnChange = () => {
+    const { sortByUpload, recoverByCats, sortByField } = this.props;
+    if (this.state.selectedCategories.length !== 0) {
+      recoverByCats(this.state.selectedCategories, this.state.searchOrder);
+    } else {
+      sortByUpload(this.state.searchOrder);
+    }
+    this.setState({
+      photoPagination: {
+        maxAllowed: this.state.photoPagination.maxAllowed,
+        page: 0
+      }
+    });
+  };
+
+  changePage = direction => {
+    const { maxAllowed, page } = this.state.photoPagination;
+    if (direction < 0) {
+      if (this.state.photoPagination.page > 0) {
+        this.setState({
+          photoPagination: { maxAllowed: maxAllowed, page: page - 1 }
+        });
+      }
+    } else {
+      if (
+        Math.floor(
+          this.props.photos.length / this.state.photoPagination.maxAllowed
+        ) >=
+        page + 1
+      ) {
+        this.setState({
+          photoPagination: { maxAllowed: maxAllowed, page: page + 1 }
+        });
+      }
+    }
+  };
+
+  setPage = number => {
+    console.log(number);
+    this.setState({
+      photoPagination: {
+        maxAllowed: this.state.photoPagination.maxAllowed,
+        page: number
+      }
+    });
+  };
 
   render() {
     const {
@@ -83,20 +142,25 @@ class Home extends Component {
       cats,
       filters,
       removeSearch,
-      sortByTag,
-      sortByUpload,
-      auth,
-      setRoute
+      setRoute,
+      loadingPhotos
     } = this.props;
 
-    var filtersId = filters.map(el => el.metaID);
+    const { maxAllowed, page } = this.state.photoPagination;
 
-    var mapped = photos.map(el => ({
-      src: el.thumbnail,
-      height: el.aspect_h,
-      width: el.aspect_w,
-      id: el.id
-    }));
+    const pageLimit = Math.floor(
+      photos.length / this.state.photoPagination.maxAllowed
+    );
+
+    // For gallery
+    var mapped = photos
+      .slice(page * maxAllowed, (page + 1) * maxAllowed)
+      .map(el => ({
+        src: el.thumbnail,
+        height: el.aspect_h,
+        width: el.aspect_w,
+        id: el.id
+      }));
 
     // Utility Function
     var isSelected = (id, array) => {
@@ -114,56 +178,7 @@ class Home extends Component {
           };
         })
       : [];
-    var currentCats1 = currentCats
-      ? currentCats
-          .filter((e, i) => i % 2 === 0)
-          .map(el => {
-            return {
-              ...el,
-              selected: isSelected(el.id, this.state.selectedCategories)
-            };
-          })
-      : [];
-    var currentCats2 = currentCats
-      ? currentCats
-          .filter((e, i) => i % 2 === 1)
-          .map(el => {
-            return {
-              ...el,
-              selected: isSelected(el.id, this.state.selectedCategories)
-            };
-          })
-      : [];
 
-    if (
-      filters &&
-      filters.length === 0 &&
-      this.state.selectedCategories.length === 0
-    ) {
-      var currentPhotos = mapped.slice(0, this.state.maxPhotos); //todas las fotos
-    } else if (
-      filters &&
-      filters.length !== 0 &&
-      this.state.selectedCategories.length !== 0
-    ) {
-      //hay tag y categoria -> intersectar
-      currentPhotos = photos
-        .filter(
-          el =>
-            arraysIntersect(el.category, this.state.selectedCategories) &&
-            arraysIntersect(el.metadata, filtersId)
-        )
-        .slice(0, this.state.maxPhotos);
-    } else {
-      //cuando falta uno de los dos -> union
-      currentPhotos = photos
-        .filter(
-          el =>
-            arraysIntersect(el.category, this.state.selectedCategories) ||
-            arraysIntersect(el.metadata, filtersId)
-        )
-        .slice(0, this.state.maxPhotos);
-    }
     if (this.state.redirect) {
       setRoute("/photo/");
       return (
@@ -173,6 +188,7 @@ class Home extends Component {
         />
       );
     }
+
     return (
       <Fragment>
         <Helmet>
@@ -229,19 +245,27 @@ class Home extends Component {
                     <div style={styles.triangulo}></div>
                     <Row>
                       <Categories
-                        categorias={currentCats1}
+                        categorias={
+                          currentCats
+                            ? currentCats.filter((e, i) => i % 2 === 0)
+                            : []
+                        }
                         onClick={this.pickCategory}
                       />
                       <Categories
-                        categorias={currentCats2}
+                        categorias={
+                          currentCats
+                            ? currentCats.filter((e, i) => i % 2 === 1)
+                            : []
+                        }
                         onClick={this.pickCategory}
                       />
                     </Row>
                     <Row>
                       <Col>
-                        <DropdownItem 
-                        style={{textAlign:'center'}}
-                        onClick={this.allowMoreCats}>
+                        <DropdownItem
+                          style={{ textAlign: "center" }}
+                          onClick={this.allowMoreCats}>
                           Cargar más categorias
                         </DropdownItem>
                       </Col>
@@ -259,16 +283,16 @@ class Home extends Component {
                     style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}>
                     <div style={styles.triangulo}></div>
                     <DropdownItem header>Por orden cronológico</DropdownItem>
-                    <DropdownItem onClick={() => sortByUpload("asc", auth)}>
-                      Más antiguas primero
-                    </DropdownItem>
-                    <DropdownItem onClick={() => sortByUpload("desc", auth)}>
-                      Más nuevas primero
-                    </DropdownItem>
-                    <DropdownItem divider />
-                    <DropdownItem header>Por fecha de subida</DropdownItem>
                     <DropdownItem>Más antiguas primero</DropdownItem>
                     <DropdownItem>Más nuevas primero</DropdownItem>
+                    <DropdownItem divider />
+                    <DropdownItem header>Por fecha de subida</DropdownItem>
+                    <DropdownItem onClick={() => this.setSortingOrder("asc")}>
+                      Más antiguas primero
+                    </DropdownItem>
+                    <DropdownItem onClick={() => this.setSortingOrder("desc")}>
+                      Más nuevas primero
+                    </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledButtonDropdown>
               </Col>
@@ -276,11 +300,53 @@ class Home extends Component {
           </Container>
         </div>
         <Container fluid style={styles.galleryContainer}>
-          <Gallery
-            photos={mapped}
-            targetRowHeight={200}
-            onClick={(e, index) => this.handleOnClick(index)}
-          />
+          <Row>
+            <Col>
+              {loadingPhotos ? (
+                <LeitSpinner />
+              ) : (
+                <Gallery
+                  photos={mapped}
+                  targetRowHeight={200}
+                  onClick={(e, index) => this.handleOnClick(index)}
+                />
+              )}
+            </Col>
+          </Row>
+          <Row style={{ marginTop: "2em" }}>
+            <Col>
+              <Pagination
+                size="lg"
+                aria-label="Page navigation example"
+                style={{ justifyContent: "center" }}>
+                <PaginationItem
+                  disabled={0 === this.state.photoPagination.page}>
+                  <PaginationLink first onClick={() => this.setPage(0)} />
+                </PaginationItem>
+                <PaginationItem
+                  disabled={0 === this.state.photoPagination.page}>
+                  <PaginationLink
+                    previous
+                    onClick={() => this.changePage(-1)}
+                  />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink >{this.state.photoPagination.page + 1}</PaginationLink>
+                </PaginationItem>
+                <PaginationItem
+                  disabled={pageLimit < this.state.photoPagination.page + 1}>
+                  <PaginationLink next onClick={() => this.changePage(1)} />
+                </PaginationItem>
+                <PaginationItem
+                  disabled={pageLimit < this.state.photoPagination.page + 1}>
+                  <PaginationLink
+                    last
+                    onClick={() => this.setPage(pageLimit)}
+                  />
+                </PaginationItem>
+              </Pagination>
+            </Col>
+          </Row>
         </Container>
       </Fragment>
     );
@@ -309,7 +375,15 @@ const styles = {
     borderBottom: "1px solid rgb(210,214,218)",
     background: "white",
     position: "sticky",
-    top: "4em"
+    top: "4em",
+    zIndex: "2"
+  },
+  galleryContainer: {
+    width: "100%",
+    minHeight: "100vh",
+    padding: "1.25em 3.1em",
+    backgroundColor: "#f7f8fa",
+    textAlign: "center"
   },
   filtersContainer: {
     paddingTop: "1em",
@@ -346,12 +420,6 @@ const styles = {
     color: "#97878f",
     fontWeight: "bold"
   },
-  galleryContainer: {
-    width: "100%",
-    minHeight: "100vh",
-    padding: "1.25em 3.1em",
-    backgroundColor: "#f7f8fa"
-  },
   triangulo: {
     position: "absolute",
     width: "20px",
@@ -369,37 +437,26 @@ const styles = {
     background: "#ffff"
   }
 };
+
 const mapStateToProps = state => {
   return {
     photos: state.home.photos,
     cats: state.home.all_cats,
     filters: state.search.metaIDs,
-    auth: state.auth.token
+    auth: state.auth.token,
+    loadingPhotos: state.home.loading
   };
 };
 
-const mapActionsToProps = dispatch => {
-  return {
-    onLoadGetPhotos: () => {
-      return dispatch(home.home());
-    },
-    onLoadGetCats: () => {
-      return dispatch(home.categories());
-    },
-    setRoute: route => {
-      return dispatch(misc.setCurrentRoute(route));
-    },
-    removeSearch: (id, value) => {
-      return dispatch(search.removeSearchItem(id, value));
-    },
-    sortByTag: (tag, order, auth) => {
-      return dispatch(home.sortByField(tag, order, auth));
-    },
-    sortByUpload: (order, auth) => {
-      return dispatch(home.sortByUpload(order, auth));
-    }
-  };
-};
+const mapActionsToProps = dispatch => ({
+  onLoadGetPhotos: () => dispatch(home.home()),
+  onLoadGetCats: () => dispatch(home.categories()),
+  setRoute: route => dispatch(misc.setCurrentRoute(route)),
+  removeSearch: (id, value) => dispatch(search.removeSearchItem(id, value)),
+  sortByField: (tag, order) => dispatch(home.sortByField(tag, order)),
+  sortByUpload: order => dispatch(home.sortByUpload(order)),
+  recoverByCats: (catIds, order) => dispatch(home.recoverByCats(catIds, order))
+});
 
 export default connect(
   mapStateToProps,

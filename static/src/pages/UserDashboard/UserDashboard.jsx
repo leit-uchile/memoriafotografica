@@ -103,6 +103,23 @@ class Dashboard extends Component {
     this.setState({ maxPhotos: this.state.maxPhotos + 10 });
   }
 
+  componentDidMount() {
+    const { user } = this.props;
+    if (user.avatar === null) {
+      var canvas = document.getElementById("myCanvas");
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#FF0000";
+      ctx.fillRect(0, 0, 200, 200);
+      ctx.font = "100px Arial";
+      ctx.fillStyle = "#FFF";
+      ctx.fillText(
+        user.first_name.slice(0, 1) + user.last_name.slice(0, 1),
+        30,
+        130
+      );
+    }
+  }
+
   render() {
     const { albums, comments, photos } = this.props.data;
     const { user } = this.props;
@@ -130,9 +147,18 @@ class Dashboard extends Component {
       <Container>
         {/* <EditPhotos isOpen={true} photos={photos} onClick={this.next}/> */}
         <Row style={{ marginTop: "2em" }}>
-          <Col md="4">
+          <Col style={{ color: "#ff5a60", textAlign: "center" }}>
+            <h2>Mi perfil</h2>
+          </Col>
+        </Row>
+        <Row style={{ marginTop: "2em" }}>
+          <Col md="3">
             <Card>
-              <CardImg top width="100%" src={user.avatar} />
+              {user.avatar === null ? (
+                <canvas id="myCanvas" height="200px" width="200px" />
+              ) : (
+                <CardImg top width="100%" src={user.avatar} />
+              )}
               <CardBody
                 style={{ backgroundColor: "#ebeeef", textAlign: "center" }}>
                 <CardText>{`${user.first_name} ${user.last_name}`}</CardText>
@@ -150,8 +176,7 @@ class Dashboard extends Component {
               </CardBody>
             </Card>
           </Col>
-
-          <Col md="8">
+          <Col md="9">
             <Container fluid>
               <Row>
                 <h2 style={{ fontSize: "20px" }}> Mis Fotos </h2>
@@ -183,11 +208,13 @@ class Dashboard extends Component {
                             width="calc(25%-4px)"
                             width="160em"
                             height="130em"
-                            style={{ display: "inline-block" }}
+                            style={{
+                              display: "inline-block",
+                              margin: "1em auto"
+                            }}
                             hspace="2em"
                             src={el.image}
-                            margin="1em"
-                            style={{ margin: "1em auto" }}
+                            key={el.id}
                           />
                         ))
                     )}
@@ -268,7 +295,7 @@ const Comments = ({ commentList, onClick }) => (
     {commentList.length == 0 ? (
       <h5> No has publicado comentarios </h5>
     ) : (
-      commentList.map((el, index) => <p> {el.content} </p>)
+      commentList.map((el, index) => <p key={el.id}> {el.content} </p>)
     )}
   </div>
 );

@@ -1,14 +1,23 @@
-.left {float: left;}
+.left {
+  float: left;
+}
 
 ul.barra li {
-    padding: 5px 10px;
+  padding: 5px 10px;
 }
 
 h1 {
-      background-image: url("/logo01.svg");
-
-    text-indent: -9999px;
-    background-repeat: no-repeat;
-    /*background-size: 33%;*/
-    height: 55px;
+  background-image: url("/logo01.svg");
+  text-indent: -9999px;
+  background-repeat: no-repeat;
+  /*background-size: 33%;*/
+  height: 55px;
+  min-width: 200px;
 }
+
+@media screen and (max-width: 768px) {
+    .navbar-brand p{
+        display: none;
+    }
+}
+

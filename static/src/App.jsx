@@ -3,7 +3,7 @@ import { Router } from "react-router-dom";
 import { Provider} from 'react-redux';
 import history from './history'
 
-import './App.css';
+import './css/App.css';
 import './css/animate.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
