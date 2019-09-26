@@ -1,7 +1,6 @@
 import React from 'react';
-import { Router } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import { Provider} from 'react-redux';
-import history from './history'
 
 import './css/App.css';
 import './css/animate.css';
@@ -12,7 +11,7 @@ import store from "./store";
 
 const App = () => 
   <Provider store={store}>
-    <Router history={history}>
+    <Router>
       <Layout/>
     </Router>
   </Provider>

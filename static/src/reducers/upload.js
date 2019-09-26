@@ -2,7 +2,10 @@ import {
   UPLOADING,
   UPLOADED_PHOTO,
   ERROR_UPLOADING_PHOTO,
-  READ_UPLOAD_DISCLOSURE
+  READ_UPLOAD_DISCLOSURE,
+  CREATE_ALBUM_SENT,
+  CREATED_ALBUM,
+  CREATED_ALBUM_ERROR
 } from "../actions/types";
 
 /*
@@ -17,8 +20,11 @@ const initialState = {
   uploading: false,
   photosUploading: 0,
   photosUploaded: [],
+  newPhotosIds: [],
   opsFinished: 0,
-  disclosureSet: localStorage.getItem("disclosed") == "true" ? true : false
+  disclosureSet: localStorage.getItem("disclosed") == "true" ? true : false,
+  error: [],
+  createAlbum: {sent: false, success: false},
 };
 
 export default function upload(state = initialState, action) {
@@ -30,13 +36,16 @@ export default function upload(state = initialState, action) {
         uploading: true,
         photosUploading: action.data, // Nb of photos to be uploaded
         opsFinished: 0,
-        photosUploaded: []
+        photosUploaded: [],
+        newPhotosIds: [],
+        error: [],
       };
     case UPLOADED_PHOTO:
       counter = state.opsFinished + 1;
       return {
         ...state,
-        photosUploaded: [...state.photosUploaded, action.data.key],
+        photosUploaded: [...state.photosUploaded, action.data.photo_index],
+        newPhotosIds: [...state.newPhotosIds, action.data.photo_id],
         opsFinished: counter,
         uploading: !(counter === state.photosUploading)
       };
@@ -47,11 +56,17 @@ export default function upload(state = initialState, action) {
         ...state,
         opsFinished: counter,
         uploading: !(counter === state.photosUploading),
-        error: action.data
+        error: [...state.error, action.data]
       };
     case READ_UPLOAD_DISCLOSURE:
       localStorage.setItem("disclosed", true);
       return { ...state, disclosureSet: true };
+    case CREATE_ALBUM_SENT:
+      return {...state, createAlbum: {sent: false, success: false}};
+    case CREATED_ALBUM:
+      return {...state, createAlbum: {sent: true, success: true}};
+    case CREATED_ALBUM_ERROR:
+      return {...state, createAlbum: {sent: true, success: false}};
     default:
       return { ...state };
   }

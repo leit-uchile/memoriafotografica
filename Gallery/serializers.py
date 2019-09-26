@@ -132,7 +132,7 @@ class AlbumSerializer(serializers.ModelSerializer):
         model = Album
 
     def create(self, validated_data):
-        a = Album(name=validated_data['name'])
+        a = Album(name=validated_data['name'], description=validated_data['description'])
         a.save()
         my_user = self.context['request'].user
         valid_pics = list(filter(lambda x: x in my_user.photos.all() ,validated_data['pictures']))

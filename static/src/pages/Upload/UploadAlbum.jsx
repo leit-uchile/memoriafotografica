@@ -36,8 +36,9 @@ const UploadAlbum = ({
     tags: [],
     cc: "",
     onAlbum: false,
-    albumName: "",
-    albumDesc: ""
+    // Album related info
+    name: "", 
+    description: ""
   });
 
   const suggestions = meta
@@ -74,15 +75,13 @@ const UploadAlbum = ({
 
   const onSubmitD = e => {
     e.preventDefault();
-    console.log("SQDQS", formData)
-    if (formData.onAlbum && formData.albumName === "") {
+    if (formData.onAlbum && formData.name === "") {
       sendAlert("Debe rellenar el nombre del Album","warning");
     } else if(formData.date === ""){
       sendAlert("Debe rellenar la fecha","warning");
     } else if(formData.cc === ""){
       sendAlert("Debe seleccionar una licencia","warning");
     }else {
-      console.log("SQDQS", formData)
       saveAll(formData);
       nextStep();
     }
@@ -111,14 +110,14 @@ const UploadAlbum = ({
               <Collapse isOpen={formData.onAlbum}>
                 <Fragment>
                   <Input
-                    name="albumName"
+                    name="name"
                     type="text"
                     placeholder="Nombre del album"
                     onChange={info => saveAlbum(info)}
                     required
                   />
                   <Input
-                    name="albumDesc"
+                    name="description"
                     type="textarea"
                     placeholder="Descripcion (Opcional)"
                     onKeyUp={info => saveAlbum(info)}

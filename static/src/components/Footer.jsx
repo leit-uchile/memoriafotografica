@@ -1,17 +1,15 @@
 import React from "react";
-import About from '../pages/Miscellaneous/About';
-import FAQ from '../pages/Miscellaneous/FAQ';
-import ContactUs from '../pages/Miscellaneous/ContactUs';
-import { 
-  Container, 
-  Row, 
-  Col, 
-  Input, 
+import {
+  Container,
+  Row,
+  Col,
+  Input,
   Button,
   Nav,
   NavItem,
-  NavLink } from "reactstrap";
-import {Route, Link} from 'react-router-dom'
+  NavLink
+} from "reactstrap";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const componentDidMount = () =>
@@ -26,7 +24,7 @@ const Footer = () => {
       <Container style={styles.contenido}>
         <Row style={{ paddingBottom: "50px" }}>
           <Col>
-            <img src={"/logo01.svg"} alt={"logo"} height="55px"/>
+            <img src={"/logo01.svg"} alt={"logo"} height="55px" />
           </Col>
         </Row>
         <Row>
@@ -45,29 +43,41 @@ const Footer = () => {
             </p>
             <Nav vertical>
               <NavItem>
-                <NavLink tag={Link} to={"/misc/about"} active>El Proyecto</NavLink>
+                <NavLink tag={Link} to={"/misc/about"} active>
+                  El Proyecto
+                </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} to={"/misc/about"} active>LEIT</NavLink>
+                <NavLink tag={Link} to={"/misc/about"} active>
+                  LEIT
+                </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} to={"/misc/about"} active>Intégrate</NavLink>
+                <NavLink tag={Link} to={"/misc/about"} active>
+                  Intégrate
+                </NavLink>
               </NavItem>
             </Nav>
           </Col>
           <Col md="3">
-          <p style={{ fontSize: "12px" }}>
+            <p style={{ fontSize: "12px" }}>
               <b>Enlaces</b>
             </p>
             <Nav vertical>
               <NavItem>
-                <NavLink tag={Link} to={"/misc/resources/faq"} active>Preguntas frecuentes</NavLink>
+                <NavLink tag={Link} to={"/misc/resources/faq"} active>
+                  Preguntas frecuentes
+                </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} to={"/misc/resources/contact-us"} active>Contáctenos</NavLink>
+                <NavLink tag={Link} to={"/misc/resources/contact-us"} active>
+                  Contáctenos
+                </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} to={"/misc/resources/sitemap"} active>Mapa del sitio</NavLink>
+                <NavLink tag={Link} to={"/misc/resources/sitemap"} active>
+                  Mapa del sitio
+                </NavLink>
               </NavItem>
             </Nav>
           </Col>
@@ -108,11 +118,12 @@ const styles = {
   contenedor: {
     marginTop: "2em",
     borderTop: "1px solid rgb(210,214,218)",
-    background: "linear-gradient(top, #fbfcfc 0%, #dee1e2 100%), -moz-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%) -webkit-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)"
+    background:
+      "linear-gradient(top, #fbfcfc 0%, #dee1e2 100%), -moz-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%) -webkit-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)"
   },
   contenido: {
     fontSize: "12px",
-    paddingTop: "50px",
+    paddingTop: "50px"
   }
 };
 export default Footer;

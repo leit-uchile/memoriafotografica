@@ -2,8 +2,13 @@ import {
   UPLOADING,
   UPLOADED_PHOTO,
   ERROR_UPLOADING_PHOTO,
-  READ_UPLOAD_DISCLOSURE
+  READ_UPLOAD_DISCLOSURE,
+  CREATE_ALBUM_SENT,
+  CREATED_ALBUM,
+  CREATED_ALBUM_ERROR
 } from "./types";
+
+import { setAlert } from "./alert";
 
 /* When uploading each photo will reduce to success or error.
   In case of error the payload will contain the id for
@@ -48,28 +53,43 @@ export const uploadImages = photos => {
         method: "POST",
         headers: header,
         body: formData
-      }).then(
-        function(response) {
-          const r = response;
-          if (r.status === 201) {
-            dispatch({
-              type: UPLOADED_PHOTO,
-              data: {
-                photo_id: key
-              }
-            });
-          } else {
-            dispatch({
-              type: ERROR_UPLOADING_PHOTO,
-              data: {
-                photo_id: key,
-                response: r.data
-              }
-            });
-            throw r.data;
-          }
-        }.bind(key)
-      );
+      })
+        .then(
+          function(response) {
+            const r = response;
+            if (r.status === 201) {
+              r.json().then(payload => {
+                dispatch({
+                  type: UPLOADED_PHOTO,
+                  data: {
+                    photo_index: key,
+                    photo_id: payload.id
+                  }
+                });
+              });
+            } else {
+              console.log("EEEEEEEEEEEROR");
+              dispatch(setAlert("Error al subir fotografia", "warning"));
+
+              dispatch({
+                type: ERROR_UPLOADING_PHOTO,
+                data: {
+                  photo_index: key
+                }
+              });
+            }
+          }.bind(key)
+        )
+        .catch(error => {
+          dispatch(setAlert("Error al subir fotografia", "warning"));
+          dispatch({
+            type: ERROR_UPLOADING_PHOTO,
+            data: {
+              photo_index: key,
+              response: error
+            }
+          });
+        });
     });
 
     const callWithTimeout = (id, list) => {
@@ -83,8 +103,43 @@ export const uploadImages = photos => {
   };
 };
 
-export const readDisclosure = () => {
-  return (dispatch, getState) => {
-    return dispatch({ type: READ_UPLOAD_DISCLOSURE, data: null });
+export const readDisclosure = () => (dispatch, getState) =>
+  dispatch({ type: READ_UPLOAD_DISCLOSURE, data: null });
+
+export const createAlbum = formData => (dispatch, getState) => {
+  dispatch({ type: CREATE_ALBUM_SENT, data: null });
+
+  let header = {
+    Authorization: "Token " + getState().auth.token,
+    "Content-Type": "application/json"
   };
+
+  fetch("/api/albums/", {
+    method: "POST",
+    headers: header,
+    body: JSON.stringify(formData)
+  })
+    .then(res => {
+      if (res.status === 201) {
+        dispatch({
+          type: CREATED_ALBUM,
+          data: null
+        });
+      } else {
+        dispatch(setAlert("Error al crear album", "warning"));
+        res.json().then(payload => {
+          dispatch({
+            type: CREATED_ALBUM_ERROR,
+            error: payload
+          });
+        });
+      }
+    })
+    .catch(error => {
+      dispatch(setAlert("Error al subir fotografia", "warning"));
+      dispatch({
+        type: CREATED_ALBUM_ERROR,
+        error: error
+      });
+    });
 };

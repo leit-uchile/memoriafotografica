@@ -33,9 +33,10 @@ class UploadPage extends Component {
     super(props);
     this.state = {
       userInfo: {},
-      photos: null,
+      photos: {onAlbum: false},
       uploading: false,
-      prog: 0
+      prog: 0,
+      cacheCreatedPhotoIds: []
     };
   }
 
@@ -67,16 +68,37 @@ class UploadPage extends Component {
     );
   };
 
+  saveAlbum = info => {
+    // Asume name and description in info
+    let formData = {
+      ...info,
+      pictures: [
+        ...this.props.upload.newPhotosIds,
+        ...this.state.cacheCreatedPhotoIds
+      ]
+    };
+    this.props.createAlbum(formData);
+  };
+
   retryFailed = () => {
     // Create new array with ids from props
     var newPhotos = {
       ...this.state.photos,
-      photoList: this.state.photos.photosList.filter(
+      photosList: this.state.photos.photosList.filter(
         (el, key) => this.props.upload.photosUploaded.indexOf(key) === -1
       )
     };
-
-    this.savePhotos(newPhotos);
+    newPhotos.length = newPhotos.photosList.length;
+    // Save our already created photos Ids
+    this.setState(
+      {
+        cacheCreatedPhotoIds: [
+          ...this.state.cacheCreatedPhotoIds,
+          ...this.props.upload.newPhotosIds
+        ]
+      },
+      this.savePhotos(newPhotos)
+    );
   };
 
   render() {
@@ -115,7 +137,11 @@ class UploadPage extends Component {
               opsFinished={this.props.upload.opsFinished}
               uploading={this.props.upload.uploading}
               completed={this.props.upload.photosUploaded.length}
+              doAlbum={this.state.photos.onAlbum}
+              albumInfo={this.state.photos} // TODO: remove data redundancy
+              albumState={this.props.upload.createAlbum}
               retry={this.retryFailed}
+              saveAlbum={this.saveAlbum}
             />
           </StepWizard>
         ) : (
@@ -135,7 +161,11 @@ class UploadPage extends Component {
               opsFinished={this.props.upload.opsFinished}
               uploading={this.props.upload.uploading}
               completed={this.props.upload.photosUploaded.length}
+              doAlbum={this.state.photos.onAlbum}
+              albumInfo={this.state.photos}
+              albumState={this.props.upload.createAlbum}
               retry={this.retryFailed}
+              saveAlbum={this.saveAlbum}
             />
           </StepWizard>
         )}
@@ -186,7 +216,8 @@ const mapActionsToProps = dispatch => ({
   setRoute: route => dispatch(misc.setCurrentRoute(route)),
   uploadPhotos: info => dispatch(upload.uploadImages(info)),
   recoverMetadata: () => dispatch(home.tags()),
-  sendAlert: (message, color) => dispatch(alert.setAlert(message, color))
+  sendAlert: (message, color) => dispatch(alert.setAlert(message, color)),
+  createAlbum: formData => dispatch(upload.createAlbum(formData))
 });
 
 export default connect(

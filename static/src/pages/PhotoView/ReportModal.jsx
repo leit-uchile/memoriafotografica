@@ -42,12 +42,13 @@ class ReportModal extends Component {
   }
 
   updateReport(e) {
+    var arr;
     if (e.target.checked) {
-      var arr = this.state.formData.content.slice();
+      arr = this.state.formData.content.slice();
       arr.push(e.target.value);
       this.setState({ formData: { ...this.state.formData, content: arr } });
     } else {
-      var arr = this.state.formData.content.filter(el => el != e.target.value);
+      arr = this.state.formData.content.filter(el => el != e.target.value);
       this.setState({ formData: { ...this.state.formData, content: arr } });
     }
   }
