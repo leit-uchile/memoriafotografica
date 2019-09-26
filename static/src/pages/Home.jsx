@@ -30,7 +30,7 @@ class Home extends Component {
       searchOrder: "desc",
       photoPagination: {
         page: 0,
-        maxAllowed: 15
+        maxAllowed: 35
       },
       maxAllowedCategories: 8,
       catsOpen: false,
@@ -143,7 +143,8 @@ class Home extends Component {
       filters,
       removeSearch,
       setRoute,
-      loadingPhotos
+      loadingPhotos,
+      setSelectedId,
     } = this.props;
 
     const { maxAllowed, page } = this.state.photoPagination;
@@ -180,7 +181,8 @@ class Home extends Component {
       : [];
 
     if (this.state.redirect) {
-      setRoute("/photo/");
+      setRoute("/photo/"); // For NavLink in Navbar
+      setSelectedId(this.state.chosenPhotoIndex); // For in photo navigation
       return (
         <Redirect
           push
@@ -455,7 +457,8 @@ const mapActionsToProps = dispatch => ({
   removeSearch: (id, value) => dispatch(search.removeSearchItem(id, value)),
   sortByField: (tag, order) => dispatch(home.sortByField(tag, order)),
   sortByUpload: order => dispatch(home.sortByUpload(order)),
-  recoverByCats: (catIds, order) => dispatch(home.recoverByCats(catIds, order))
+  recoverByCats: (catIds, order) => dispatch(home.recoverByCats(catIds, order)),
+  setSelectedId: id => dispatch(home.setSelectedId(id)),
 });
 
 export default connect(

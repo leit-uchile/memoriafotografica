@@ -7,7 +7,7 @@ import { Helmet } from "react-helmet";
 import ReportModal from "./ReportModal";
 import CommentHandler from "./CommentHandler";
 import Photo from "../../components/Photo";
-import { photoDetails, home, search, requestPhoto} from "../../actions";
+import { photoDetails, home, search, requestPhoto } from "../../actions";
 import moment from "moment";
 
 const getPermissionLogo = (name, w, h, offset) => {
@@ -35,13 +35,7 @@ const getPermissionLogo = (name, w, h, offset) => {
       url = "/assets/CCBYSA.svg";
   }
   // style={{ ...styles.cc, right: `${offset * w}px` }}
-  return (
-    <img
-      width={w}
-      height={h}
-      src={url}
-    />
-  );
+  return <img width={w} height={h} src={url} />;
 };
 
 const Tags = ({ tags, onRedirect }) => (
@@ -76,25 +70,22 @@ class PhotoDetails extends Component {
       firstLoad: true,
       redirectToGallery: false
     };
-    this.getDataFromBack = this.getDataFromBack.bind(this);
-    this.redirectToSearch = this.redirectToSearch.bind(this);
+    this.imageContainer = React.createRef();
   }
 
-  getDataFromBack() {
+  getDataFromBack = () => {
     // Load elements once props arrive
-    this.props.loadSuggestions();
-  }
+    if (this.props.suggestions.length === 0) {
+      this.props.loadSuggestions();
+    }
+  };
 
-  redirectToSearch(tagId, value) {
+  redirectToSearch = (tagId, value) => {
     if (tagId !== undefined && tagId !== "") {
       this.props.putSearch(tagId, value);
       this.setState({ redirectToGallery: true });
     }
-  }
-
-  componentWillMount() {
-    this.imageContainer = React.createRef();
-  }
+  };
 
   componentDidMount() {
     this.imageContainer.current.scrollIntoView({
@@ -152,25 +143,46 @@ class PhotoDetails extends Component {
 
     const { photoInfo, suggestions } = this.props;
 
-    var Suggestions =
-      suggestions && photoInfo
-        ? suggestions
-            .slice(0, 10)
-            .map((im, k) =>
-              im.id !== photoInfo.details.id ? (
-                <Photo
-                  style={{ marginLeft: "2px", display: "inline-block" }}
-                  key={k}
-                  url={im.thumbnail}
-                  name={"Foto relacionada"}
-                  useLink
-                  redirectUrl={"/photo/" + im.id}
-                  height={"50px"}
-                  width={"50px"}
-                />
-              ) : null
+    /*
+     Suggestions are loaded by the gallery with an 
+     index of our photo on the current group.
+     If no group is selected one by default will be loaded
+     and the index is -1
+    */
+    // TODO: when clicking navigate updating the selectedIndex
+    var Suggestions = suggestions
+      ? suggestions
+          .slice(0, 10)
+          .map((im, k) =>
+            im.id !== photoInfo.details.id ? (
+              <Photo
+                style={{ marginLeft: "2px", display: "inline-block" }}
+                key={k}
+                url={im.thumbnail}
+                name={"Foto relacionada"}
+                useLink
+                redirectUrl={"/photo/" + im.id}
+                height={"50px"}
+                width={"50px"}
+              />
+            ) : (
+              <Photo
+                style={{
+                  marginLeft: "2px",
+                  display: "inline-block",
+                  backgroundBlendMode: "lighten",
+                  backgroundColor: "#ff5a60"
+                }}
+                key={k}
+                url={im.thumbnail}
+                name={"Foto relacionada"}
+                height={"50px"}
+                width={"50px"}
+                onClick={() => {}}
+              />
             )
-        : null;
+          )
+      : null;
 
     var userProfile = photoInfo.details.user ? (
       <Container fluid>
@@ -254,7 +266,9 @@ class PhotoDetails extends Component {
                       tag={Link}
                       to="/request-photo"
                       className="float-left"
-                      onClick={()=>{this.props.putRequestPhoto(photoInfo.details)}}>
+                      onClick={() => {
+                        this.props.putRequestPhoto(photoInfo.details);
+                      }}>
                       ¿Quieres usar la foto?
                     </Button>
                     <ReportModal
@@ -311,39 +325,24 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  return {
-    auth: state.auth,
-    photoInfo: state.photoDetails,
-    suggestions: state.home.photos
-  };
-};
+const mapStateToProps = state => ({
+  auth: state.auth,
+  photoInfo: state.photoDetails,
+  suggestions: state.home.photos,
+  photoIndex: state.home.selectedIndex
+});
 
-const mapActionsToProps = dispatch => {
-  return {
-    onLoad: id => {
-      return dispatch(photoDetails.getPhoto(id));
-    },
-    fetchComments: (id, auth) => {
-      return dispatch(photoDetails.getComments(id, auth));
-    },
-    loadSuggestions: () => {
-      return dispatch(home.home());
-    },
-    newComment: (id, comment, auth) => {
-      return dispatch(photoDetails.putComment(id, comment, auth));
-    },
-    loadMetadata: ids => {
-      return dispatch(photoDetails.getMetadataNames(ids));
-    },
-    putSearch: (id, value) => {
-      return dispatch(search.putSearchItem(id, value));
-    },
-    putRequestPhoto:(value) => {
-      return dispatch(requestPhoto.putRequestPhoto(value))
-    }
-  };
-};
+const mapActionsToProps = dispatch => ({
+  onLoad: id => dispatch(photoDetails.getPhoto(id)),
+  fetchComments: (id, auth) => dispatch(photoDetails.getComments(id, auth)),
+  loadSuggestions: () => dispatch(home.home()),
+  newComment: (id, comment, auth) =>
+    dispatch(photoDetails.putComment(id, comment, auth)),
+  loadMetadata: ids => dispatch(photoDetails.getMetadataNames(ids)),
+  putSearch: (id, value) => dispatch(search.putSearchItem(id, value)),
+  putRequestPhoto: value => dispatch(requestPhoto.putRequestPhoto(value)),
+  setSelectedId: id => dispatch(home.setSelectedId(id))
+});
 
 export default connect(
   mapStateToProps,

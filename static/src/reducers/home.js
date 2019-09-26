@@ -8,7 +8,8 @@ import {
   HOME_RECOVERED_IPTCS,
   HOME_EMPTY_IPTCS,
   REQUESTPHOTO,
-  HOME_LOADING
+  HOME_LOADING,
+  HOME_SET_SELECTED_INDEX
 } from "../actions/types";
 
 const initialState = {
@@ -18,12 +19,13 @@ const initialState = {
   all_cats: [],
   requestedPhotos: [],
   loading: false,
+  selectedIndex: -1
 };
 
 export default function home(state = initialState, action) {
   switch (action.type) {
     case HOME_RECOVERED_PHOTOS:
-      return { ...state, photos: action.data, loading: false};
+      return { ...state, photos: action.data, loading: false };
     case HOME_EMPTY_PHOTOS:
       return { ...state, errors: action.data, loading: false };
     case HOME_RECOVERED_TAGS:
@@ -39,9 +41,14 @@ export default function home(state = initialState, action) {
     case HOME_EMPTY_IPTCS:
       return { ...state, all_iptcs: [] };
     case REQUESTPHOTO:
-      return { ...state, requestedPhotos: [...state.requestedPhotos, action.data]}
+      let filtered = state.requestedPhotos.filter(
+        el => el.id !== action.data.id
+      );
+      return { ...state, requestedPhotos: [...filtered, action.data] };
     case HOME_LOADING:
-      return {...state, loading: true};
+      return { ...state, loading: true };
+    case HOME_SET_SELECTED_INDEX:
+      return { ...state, selectedIndex: action.data };
     default:
       return state;
   }
