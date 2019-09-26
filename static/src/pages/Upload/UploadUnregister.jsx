@@ -68,7 +68,9 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
     <Container>
       <Row>
         <Col>
-          <h2 style={styles.title}>Cuentanos un poco sobre ti</h2>
+          <h2 style={styles.title}>
+            Subir Fotograf&iacute;a / Cuentanos un poco sobre ti
+          </h2>
         </Col>
       </Row>
       <Form onSubmit={onSubmit} style={styles.form}>
@@ -174,7 +176,7 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
             />
           </Col>
         </FormGroup>
-        <ButtonGroup style={{minWidth: "15em"}}>
+        <ButtonGroup style={{ minWidth: "20em" }}>
           <Button onClick={previousStep}>
             <FontAwesomeIcon icon={faChevronCircleLeft} />
           </Button>
@@ -196,7 +198,7 @@ const styles = {
   title: {
     color: "#ff5a60",
     textAlign: "center",
-    margin: "1em"
+    marginBottom: "2em"
   },
   formTitle: {
     fontSize: "14px",

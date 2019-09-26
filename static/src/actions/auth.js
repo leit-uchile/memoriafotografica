@@ -28,7 +28,7 @@ export const login = (email, password) => {
       .then(res => {
         if (res.status === 200) {
           dispatch({ type: USER_LOADED, data: res.data.user });
-          dispatch({ type: LOGIN_SUCCESS, data: res.data });
+          dispatch({ type: LOGIN_SUCCESS, data: res.data.token });
           return res.data;
         } else if (res.status === 403 || res.status === 401) {
           dispatch({ type: AUTH_ERROR, data: res.data });

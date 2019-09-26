@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Container, Button, Row, Col, Progress, Alert } from "reactstrap";
 
 const UploadProgress = ({
@@ -8,45 +8,52 @@ const UploadProgress = ({
   uploading,
   retry
 }) => (
-  <Container
-    style={{
-      marginTop: "2em",
-      padding: "2em"
-    }}>
-    <Row style={{padding: "inherit"}}>
+  <Container>
+    <Row>
       <Col>
-        <h2 style={{ textAlign: "center", fontWeight: "bold" }}>
-          {uploading ? "Enviando aporte..." : "¡Operacion completada!"}
+        <h2
+          style={{
+            color: "#ff5a60",
+            textAlign: "center",
+            marginBottom: "2em"
+          }}>
+          Subir Fotograf&iacute;a /
+          {uploading ? "Enviando aporte..." : "¡Operación completada!"}
         </h2>
       </Col>
     </Row>
-    <Row style={{padding: "inherit"}}>
+    <Row>
       <Col>
-        {uploading ? 
-          <Progress animated value={(opsFinished * 100) / photosUploading} /> :
+        {uploading ? (
+          <Progress animated value={(opsFinished * 100) / photosUploading} />
+        ) : (
           <Progress value={100} color="success" />
-        }
+        )}
       </Col>
     </Row>
     {!uploading && completed !== opsFinished ? (
-      <Row style={{padding: "inherit"}}>
+      <Row>
         <Col>
           <Alert color="warning">
             Algunas fotografias no pudieron ser agregadas con exito. Por favor
             intenta subirlas de nuevo.
           </Alert>
-          <Button color="primary" onClick={retry}> Reintentar</Button>
+          <Button color="primary" onClick={retry}>
+            {" "}
+            Reintentar
+          </Button>
         </Col>
       </Row>
     ) : null}
     {!uploading ? (
-      <Row style={{padding: "inherit"}}>
+      <Row>
         <Col>
           <p
             style={{
               textAlign: "center",
               display: "block",
-              margin: "auto 1em auto 1em"
+              margin: "auto 1em auto 1em",
+              padding: "2em"
             }}>
             La foto tendra que ser aprobada para que la comunidad la vea. Puedes
             ver el estado en que se encuentra accediendo a tu perfil. Muchas

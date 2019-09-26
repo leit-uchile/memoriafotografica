@@ -8,7 +8,7 @@ const UnregisteredPrompt = ({ nextStep }) => (
   <Container>
     <Row>
       <Col>
-        <h2 style={styles.title}>¡Ayúdanos aportando material!</h2>
+        <h2 style={styles.title}>Subir Fotograf&iacute;a / Registro</h2>
       </Col>
     </Row>
     <Container style={styles.container}>

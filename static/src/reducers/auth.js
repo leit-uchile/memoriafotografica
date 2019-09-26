@@ -36,13 +36,14 @@ export default function auth(state = initialState, action) {
   let logginDate = new Date();
   switch (action.type) {
     case LOGIN_SUCCESS:
-      localStorage.setItem("token", action.data.token);
+      localStorage.setItem("token", action.data);
       localStorage.setItem(
         "isAuth",
         JSON.stringify({ loggedIn: true, timeSet: logginDate.getTime() })
       );
       return {
         ...state,
+        token: action.data,
         isAuthenticated: true,
         isLoading: false,
         errors: null

@@ -1,12 +1,15 @@
 import React, { Component, Fragment } from "react";
+
+import UnregisteredPrompt from "./UnregisterPrompt";
 import UploadUnregister from "./UploadUnregister";
+import UploadAlbum from "./UploadAlbum";
 import UploadPhoto from "./UploadPhoto";
 import UploadProgress from "./UploadProgress";
+
 import { connect } from "react-redux";
-import { misc, upload, home } from "../../actions";
+import { misc, upload, home, alert } from "../../actions";
 import { Helmet } from "react-helmet";
 import StepWizard from "react-step-wizard";
-import UnregisteredPrompt from "./UnregisterPrompt";
 
 // Example nav from https://github.com/jcmcneal/react-step-wizard/blob/master/app/components/nav.js
 const Nav = props => {
@@ -34,9 +37,6 @@ class UploadPage extends Component {
       uploading: false,
       prog: 0
     };
-    this.saveUserInfo = this.saveUserInfo.bind(this);
-    this.savePhotos = this.savePhotos.bind(this);
-    this.retryFailed = this.retryFailed.bind(this);
   }
 
   componentWillMount() {
@@ -44,17 +44,20 @@ class UploadPage extends Component {
     this.props.recoverMetadata();
   }
 
-  saveUserInfo(info) {
+  saveUserInfo = info => {
     this.setState({
-      currentPage: 2,
       userInfo: { ...info }
     });
-  }
-  savePhotos(photos) {
+  };
+
+  saveAlbumInfo = info => {
+    this.setState({ photos: { ...this.state.photos, ...info } });
+  };
+
+  savePhotos = photos => {
     this.setState(
       {
-        currentPage: 3,
-        photos: { ...photos },
+        photos: { ...this.state.photos, ...photos },
         uploading: true
       },
       () => {
@@ -62,9 +65,9 @@ class UploadPage extends Component {
         this.props.uploadPhotos(this.state.photos, this.props.token);
       }
     );
-  }
+  };
 
-  retryFailed() {
+  retryFailed = () => {
     // Create new array with ids from props
     var newPhotos = {
       ...this.state.photos,
@@ -74,7 +77,7 @@ class UploadPage extends Component {
     };
 
     this.savePhotos(newPhotos);
-  }
+  };
 
   render() {
     return (
@@ -100,6 +103,12 @@ class UploadPage extends Component {
               saveInfo={this.saveUserInfo}
               cache={this.state.userInfo}
             />
+            <UploadAlbum
+              isAuth={this.props.isAuthenticated}
+              saveAll={this.saveAlbumInfo}
+              meta={this.props.meta}
+              sendAlert={this.props.sendAlert}
+            />
             <UploadPhoto saveAll={this.savePhotos} meta={this.props.meta} />
             <UploadProgress
               photosUploading={this.props.upload.photosUploading}
@@ -114,6 +123,12 @@ class UploadPage extends Component {
             className="stepContainer"
             onStepChange={() => {}}
             nav={<Nav />}>
+            <UploadAlbum
+              isAuth={this.props.isAuthenticated}
+              saveAll={this.saveAlbumInfo}
+              meta={this.props.meta}
+              sendAlert={this.props.sendAlert}
+            />
             <UploadPhoto saveAll={this.savePhotos} meta={this.props.meta} />
             <UploadProgress
               photosUploading={this.props.upload.photosUploading}
@@ -170,7 +185,8 @@ const mapStateToProps = state => {
 const mapActionsToProps = dispatch => ({
   setRoute: route => dispatch(misc.setCurrentRoute(route)),
   uploadPhotos: info => dispatch(upload.uploadImages(info)),
-  recoverMetadata: () => dispatch(home.tags())
+  recoverMetadata: () => dispatch(home.tags()),
+  sendAlert: (message, color) => dispatch(alert.setAlert(message, color))
 });
 
 export default connect(

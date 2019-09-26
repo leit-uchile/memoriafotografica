@@ -44,6 +44,7 @@ class Home extends Component {
     this.props.setRoute("/gallery/");
     this.props.onLoadGetPhotos();
     this.props.onLoadGetCats();
+    this.topRef = React.createRef();
   }
 
   handleOnClick = obj => {
@@ -124,6 +125,10 @@ class Home extends Component {
         });
       }
     }
+    this.topRef.current.scrollIntoView({
+      block: "start",
+      behavior: "smooth"
+    })
   };
 
   setPage = number => {
@@ -134,6 +139,10 @@ class Home extends Component {
         page: number
       }
     });
+    this.topRef.current.scrollIntoView({
+      block: "start",
+      behavior: "smooth"
+    })
   };
 
   render() {
@@ -304,15 +313,17 @@ class Home extends Component {
         <Container fluid style={styles.galleryContainer}>
           <Row>
             <Col>
-              {loadingPhotos ? (
-                <LeitSpinner />
-              ) : (
-                <Gallery
-                  photos={mapped}
-                  targetRowHeight={200}
-                  onClick={(e, index) => this.handleOnClick(index)}
-                />
-              )}
+              <div ref={this.topRef}>
+                {loadingPhotos ? (
+                  <LeitSpinner />
+                ) : (
+                  <Gallery
+                    photos={mapped}
+                    targetRowHeight={200}
+                    onClick={(e, index) => this.handleOnClick(index)}
+                  />
+                )}
+              </div>
             </Col>
           </Row>
           <Row style={{ marginTop: "2em" }}>
