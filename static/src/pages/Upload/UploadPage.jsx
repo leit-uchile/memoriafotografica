@@ -7,7 +7,7 @@ import UploadPhoto from "./UploadPhoto";
 import UploadProgress from "./UploadProgress";
 
 import { connect } from "react-redux";
-import { misc, upload, home, alert } from "../../actions";
+import { misc, upload, home, alert, metadata } from "../../actions";
 import { Helmet } from "react-helmet";
 import StepWizard from "react-step-wizard";
 
@@ -33,14 +33,12 @@ class UploadPage extends Component {
     super(props);
     this.state = {
       userInfo: {},
-      photos: {onAlbum: false},
+      photos: { onAlbum: false },
       uploading: false,
       prog: 0,
       cacheCreatedPhotoIds: []
     };
-  }
-
-  componentWillMount() {
+    // componentWillMount() (soon deprecated)
     this.props.setRoute("/upload");
     this.props.recoverMetadata();
   }
@@ -55,7 +53,7 @@ class UploadPage extends Component {
     this.setState({ photos: { ...this.state.photos, ...info } });
   };
 
-  savePhotos = photos => {
+  startUploading = photos => {
     this.setState(
       {
         photos: { ...this.state.photos, ...photos },
@@ -63,10 +61,14 @@ class UploadPage extends Component {
       },
       () => {
         // Upload all
-        this.props.uploadPhotos(this.state.photos, this.props.token);
+        this.props.uploadPhotos(this.state.photos);
       }
     );
   };
+
+  createMetadata = () => {
+    
+  }
 
   saveAlbum = info => {
     // Asume name and description in info
@@ -97,7 +99,7 @@ class UploadPage extends Component {
           ...this.props.upload.newPhotosIds
         ]
       },
-      this.savePhotos(newPhotos)
+      this.startUploading(newPhotos)
     );
   };
 
@@ -131,7 +133,7 @@ class UploadPage extends Component {
               meta={this.props.meta}
               sendAlert={this.props.sendAlert}
             />
-            <UploadPhoto saveAll={this.savePhotos} meta={this.props.meta} />
+            <UploadPhoto saveAll={this.startUploading} meta={this.props.meta} />
             <UploadProgress
               photosUploading={this.props.upload.photosUploading}
               opsFinished={this.props.upload.opsFinished}
@@ -155,7 +157,7 @@ class UploadPage extends Component {
               meta={this.props.meta}
               sendAlert={this.props.sendAlert}
             />
-            <UploadPhoto saveAll={this.savePhotos} meta={this.props.meta} />
+            <UploadPhoto saveAll={this.startUploading} meta={this.props.meta} />
             <UploadProgress
               photosUploading={this.props.upload.photosUploading}
               opsFinished={this.props.upload.opsFinished}
@@ -197,27 +199,20 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  let errors = [];
-  if (state.auth.errors) {
-    errors = Object.keys(state.auth.errors).map(field => {
-      return { field, message: state.auth.errors[field] };
-    });
-  }
-  return {
-    errors,
-    isAuthenticated: state.auth.isAuthenticated,
-    upload: state.upload,
-    meta: state.home.all_tags
-  };
-};
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated,
+  upload: state.upload,
+  meta: state.home.all_tags,
+  metadataCreation: state.metadata
+});
 
 const mapActionsToProps = dispatch => ({
   setRoute: route => dispatch(misc.setCurrentRoute(route)),
   uploadPhotos: info => dispatch(upload.uploadImages(info)),
   recoverMetadata: () => dispatch(home.tags()),
   sendAlert: (message, color) => dispatch(alert.setAlert(message, color)),
-  createAlbum: formData => dispatch(upload.createAlbum(formData))
+  createAlbum: formData => dispatch(upload.createAlbum(formData)),
+  createMultipleMetas: name => dispatch(metadata.createMultipleMetas(name)),
 });
 
 export default connect(

@@ -95,7 +95,7 @@ const UploadAlbum = ({
         </Col>
       </Row>
       <Row style={{ marginTop: "2em" }}>
-        <Col md={8}>
+        <Col md={{size: 6, offset: 2}}>
           <div style={styles.albumBox}>
             <Label style={{ fontSize: "18px" }}>Crear Album</Label>
             <Button
