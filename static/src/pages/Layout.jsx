@@ -9,7 +9,7 @@ import Login from "./Login";
 import Register from "./Register/Register";
 import NoMatch from "./NoMatch";
 import UploadPage from "./Upload/UploadPage";
-import PhotoDetails from "./PhotoView/PhotoDetail";
+import PhotoDetails from "./PhotoView/PhotoDetails";
 import RequestPhoto from "./RequestPhoto";
 import Dashboard from "./Curador/Dashboard";
 import LandingPage from "./LandingPage";

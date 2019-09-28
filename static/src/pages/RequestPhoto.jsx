@@ -156,9 +156,13 @@ var Requested = ({list}) => (
           <Col style={{textAlign:'center'}}>
             <img 
               src={el.thumbnail} 
-              alt="photo" 
+              alt="photo"
+              height={el.aspect_h * 50}
               width={el.aspect_w * 50}
-              height={el.aspect_h * 50}/>
+              style={ el.aspect_w > el.aspect_h
+                ? {maxHeight:'128px', maxWidth:'225px'}
+                : {maxHeight:'128px', maxWidth:'100px'}}
+            />
             {getPermissionLogo(el, 90, 32)}
           </Col>
           <Col>
@@ -209,7 +213,7 @@ const getPermissionLogo = (name, w, h) => {
       width={w}
       height={h}
       src={url}
-      style={{position:'absolute', left:'50%', bottom:'-10px'}}
+      style={{position:'absolute', right:'0', bottom:'0'}}
     />
   );
 };
