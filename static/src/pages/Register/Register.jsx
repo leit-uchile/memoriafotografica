@@ -128,7 +128,9 @@ class Register extends Component {
     return (
       <StepWizard
         className="stepContainer"
-        isHashEnabled
+        onStepChange={() => {
+          window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+        }}
         initialStep={1}>
         <RegisterLoginInfo
           saveInfo={this.saveUserLogin}

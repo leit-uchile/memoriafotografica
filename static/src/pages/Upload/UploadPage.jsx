@@ -11,7 +11,7 @@ import { misc, upload, home, alert, metadata } from "../../actions";
 import { Helmet } from "react-helmet";
 import StepWizard from "react-step-wizard";
 
-import '../../css/uploadPhoto.css';
+import "../../css/uploadPhoto.css";
 
 // Example nav from https://github.com/jcmcneal/react-step-wizard/blob/master/app/components/nav.js
 const Nav = props => {
@@ -68,9 +68,7 @@ class UploadPage extends Component {
     );
   };
 
-  createMetadata = () => {
-    
-  }
+  createMetadata = () => {};
 
   saveAlbum = info => {
     // Asume name and description in info
@@ -122,7 +120,9 @@ class UploadPage extends Component {
         {!this.props.isAuthenticated ? (
           <StepWizard
             className="stepContainer"
-            onStepChange={() => {}}
+            onStepChange={() => {
+              window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+            }}
             nav={<Nav />}>
             <UnregisteredPrompt />
             <UploadUnregister
@@ -151,7 +151,9 @@ class UploadPage extends Component {
         ) : (
           <StepWizard
             className="stepContainer"
-            onStepChange={() => {}}
+            onStepChange={() => {
+              window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+            }}
             nav={<Nav />}>
             <UploadAlbum
               isAuth={this.props.isAuthenticated}
@@ -214,7 +216,7 @@ const mapActionsToProps = dispatch => ({
   recoverMetadata: () => dispatch(home.tags()),
   sendAlert: (message, color) => dispatch(alert.setAlert(message, color)),
   createAlbum: formData => dispatch(upload.createAlbum(formData)),
-  createMultipleMetas: name => dispatch(metadata.createMultipleMetas(name)),
+  createMultipleMetas: name => dispatch(metadata.createMultipleMetas(name))
 });
 
 export default connect(
