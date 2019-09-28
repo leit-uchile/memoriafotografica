@@ -9,13 +9,18 @@ import {
   EMPTY_PHOTOS,
   SWICH_PHOTO_APPROVAL,
   SWICH_PHOTO_APPROVAL_ERROR,
-  CURADOR_LOADING
+  CURADOR_LOADING,
+  RECOVERED_REPORTS,
+  RECOVERED_REPORTS_ERROR
 } from "./types";
 
 export const getReportes = () => {
   //GET REPORTES Y DENUNCIAS
   return (dispatch, getState) => {
-    let headers = { "Content-Type": "application/json" };
+    let headers = {
+      Authorization: "Token " + getState().auth.token,
+      "Content-Type": "application/json"
+    };
 
     return fetch("/api/reports/", { method: "GET", headers: headers }).then(
       res => {
@@ -141,11 +146,11 @@ export const getPhotos = auth => {
   };
 };
 
-export const switchPhotoApproval = (auth, photoID, curr_value) => {
-  return (dispatch, getState) => {
+export const switchPhotoApproval = (auth, photoID, curr_value) => 
+  (dispatch, getState) => {
     let headers = {
       "Content-Type": "application/json",
-      Authorization: "Token " + auth
+      Authorization: "Token " + getState().auth.token
     };
     let sent_data = JSON.stringify({ approved: !curr_value });
     return fetch("/api/photos/" + photoID + "/", {
@@ -165,4 +170,3 @@ export const switchPhotoApproval = (auth, photoID, curr_value) => {
       }
     });
   };
-};

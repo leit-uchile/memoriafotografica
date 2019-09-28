@@ -374,13 +374,19 @@ class CategoryListAPI(generics.GenericAPIView):
                         c['count'] += 1
         return Response(serialized_data)
 
+    # TODO: test it out!
     def post(self, request, *args, **kwargs):
         usuario = request.user.user_type
         serializer = CategorySerializer(data=request.data)
-        print(usuario)
         if request.user.user_type != 1:
             if serializer.is_valid():
                 serializer.save()
+                p_pictures = request.data['pictures']
+                photos = Photo.objects.filter(pk__in=p_pictures)
+                for photo in photos:
+                    photo.category.add(serializer.data['id'])
+                    photo.save()
+                
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -431,7 +437,8 @@ class ReportListAPI(generics.GenericAPIView):
     permission_classes = [IsAuthenticated,]
 
     def get(self, request, *args, **kwargs):
-        if request.user.user_type == 3:
+        # TODO: I changed it from == 3 to > 1 ... is it correct?
+        if request.user.user_type > 1:
             report = Reporte.objects.all()
             serializer = ReportSerializer(report, many=True)
             return Response(serializer.data)

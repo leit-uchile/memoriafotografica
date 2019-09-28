@@ -25,6 +25,7 @@ import {
   faThList,
   faFilter
 } from "@fortawesome/free-solid-svg-icons";
+import LeitSpinner from '../../components/LeitSpinner';
 
 var filtrar = [
   {
@@ -410,7 +411,7 @@ class Filter extends Component {
             </ButtonGroup>
           </Col>
         </Row>
-        <Row>{renderphotos}</Row>
+        <Row>{this.props.loading ? <Col style={{textAlign: "center"}}><LeitSpinner /></Col>: renderphotos}</Row>
         <Row>
           <Pagination aria-label="Page navigation example">
             <PaginationItem disabled>
