@@ -157,7 +157,7 @@ class Dashboard extends Component {
               {user.avatar === null ? (
                 <canvas id="myCanvas" height="200px" width="200px" />
               ) : (
-                <CardImg top width="100%" src={user.avatar} />
+                <CardImg top width="100%" src={user.avatar.slice(21)} />
               )}
               <CardBody
                 style={{ backgroundColor: "#ebeeef", textAlign: "center" }}>
