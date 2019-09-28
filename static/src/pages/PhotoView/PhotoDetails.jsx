@@ -170,9 +170,10 @@ class PhotoDetails extends Component {
      and the index is -1
     */
     // TODO: when clicking navigate updating the selectedIndex
+    const k = this.props.photoIndex //Math.floor(this.props.photoIndex/10)*10
     var Suggestions = suggestions
       ? suggestions
-          .slice(0, 10)
+          .slice(k, k + 10)
           .map((im, k) =>
             im.id !== photoInfo.details.id ? (
               <Photo
@@ -272,7 +273,6 @@ class PhotoDetails extends Component {
                       tags={photoInfo.details.metadata}
                       onRedirect={this.redirectToSearch}
                     />
-                    {console.log(photoInfo.details.category)}
                     <Categories
                       cats={photoInfo.details.category}
                       onRedirect={this.redirectToSearch}

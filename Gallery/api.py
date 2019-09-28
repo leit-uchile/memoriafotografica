@@ -113,14 +113,15 @@ class PhotoListAPI(generics.GenericAPIView):
             p = Photo.objects.get(pk=serializer.data['id'])
             request.user.photos.add(p)
             request.user.save()
-            #add metadata to photo if any metadata is found:
-            recovered_metadata = Metadata.objects.filter(pk__in=p_metadata)
-            p.metadata.add(*recovered_metadata)
-            # save photo to persist modifications.
-            p.save()
-            #modify output serializer to display hand-added data.
             serialized_data = serializer.data
-            serialized_data['metadata'] = list(map(lambda x: x.pk, recovered_metadata))
+            if p_metadata:
+                #add metadata to photo if any metadata is found:
+                recovered_metadata = Metadata.objects.filter(pk__in=p_metadata)
+                p.metadata.add(*recovered_metadata)
+                # save photo to persist modifications.
+                p.save()
+                #modify output serializer to display hand-added data.
+                serialized_data['metadata'] = list(map(lambda x: x.pk, recovered_metadata))
             #return modified serializer
             return Response(serialized_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -407,7 +408,7 @@ class CategoryListAPI(generics.GenericAPIView):
                 for photo in photos:
                     photo.category.add(serializer.data['id'])
                     photo.save()
-                
+
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
