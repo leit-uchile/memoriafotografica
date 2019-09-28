@@ -17,7 +17,17 @@
   display: inline-block;
   border:0px;
   border-bottom:1px solid rgba(0,0,0,0.05);
-  //box-shadow: 2px 2px 4px rgb(156,158,159);
+}
+
+.leftcol .navButton:hover{
+  border-color: none;
+}
+
+.navButton:hover{
+  border: none;
+  border-right: #ff5a60 solid 3px;
+  background-color: white;
+  color: #000;
 }
 
 .navSpacer{

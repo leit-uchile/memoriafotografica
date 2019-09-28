@@ -10,35 +10,42 @@ import { Container, Row, Button, Col } from "reactstrap";
 import { Route, Link } from "react-router-dom";
 import "./styles.css";
 
-const Dashboard = ({ match }) => (
+/**
+ * TODO:
+ * arreglar estilo de nav
+ * Agregar pega sin terminar con pelotita roja
+ * Agregar estilo active a boton
+ * Breadcrumbs a interfaces (no hay nada que indique donde estas parado)
+ */
+const availableRoutes = [
+  {to : "categories", display: "Categorías"},
+  {to : "filter", display: "Curación"},
+  {to : "flagged", display: "Denuncias"},
+  {to : "reported", display: "Reportes"},
+  {to : "tags", display: "Etiquetas"}
+];
+
+const Dashboard = ({ match, location }) => (
   <Container
     style={{ marginBottom: "-2em", borderTop: "1px solid rgb(210, 214, 218)" }}>
     <Row>
       <Col xs="2" className="leftcol">
-        <Button tag={Link} to={match.path + "/"} className="navButton">
-          Dashboard
-        </Button>
-        <div className="navSpacer">
-          <span>Curar Imágenes</span>
-        </div>
         <Button
           tag={Link}
-          to={match.path + "/categories"}
-          className="navButton">
-          Categorías
+          to={match.path + "/"}
+          className={
+            "navButton" + (location.pathname === "/curador/dashboard/" ? " active" : "")
+          }>
+          Dashboard
         </Button>
-        <Button tag={Link} to={match.path + "/filter"} className="navButton">
-          Curación
-        </Button>
-        <Button tag={Link} to={match.path + "/flagged"} className="navButton">
-          Denuncias
-        </Button>
-        <Button tag={Link} to={match.path + "/reported"} className="navButton">
-          Reportes
-        </Button>
-        <Button tag={Link} to={match.path + "/tags"} className="navButton">
-          Etiquetas
-        </Button>
+        {availableRoutes.map( el => <Button
+          tag={Link}
+          to={match.path + "/" + el.to}
+          className={
+            "navButton" + (location.pathname.includes(`/curador/dashboard/${el.to}`) ? " active" : "")
+          }>
+          {el.display}
+        </Button>)}
         <div className="navEnding"></div>
       </Col>
       <Col

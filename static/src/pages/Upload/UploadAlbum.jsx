@@ -90,8 +90,8 @@ const UploadAlbum = ({
   return (
     <Container>
       <Row>
-        <Col style={{ textAlign: "center", color: "#ff5a60" }}>
-          <h2>Subir Fotograf&iacute;a / Informacion general de las fotograf&iacute;as</h2>
+        <Col>
+          <h2 className="upload-title">Subir Fotograf&iacute;a / Informacion general de las fotograf&iacute;as</h2>
         </Col>
       </Row>
       <Row style={{ marginTop: "2em" }}>
@@ -193,7 +193,7 @@ const UploadAlbum = ({
                     <FontAwesomeIcon icon={faChevronCircleLeft} />
                   </Button>
                 ) : null}
-                <Button color="primary" type="submit" onClick={onSubmitD}>
+                <Button color="success" type="submit" onClick={onSubmitD}>
                   <FontAwesomeIcon icon={faChevronCircleRight} />
                 </Button>
               </ButtonGroup>

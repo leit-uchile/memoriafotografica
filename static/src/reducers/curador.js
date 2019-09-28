@@ -26,7 +26,7 @@ export default function curador(state = initialState, action) {
     case EMPTY_CATEGORIES:
       return { ...state, categories: [] };
     case RECOVERED_PHOTOS:
-      return { ...state, photos: action.data };
+      return { ...state, photos: action.data, loading: false };
     case EMPTY_PHOTOS:
       return { ...state, photos: [] };
     case RECOVERED_REPORT:

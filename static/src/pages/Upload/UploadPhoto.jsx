@@ -156,8 +156,8 @@ class UploadPhoto extends Component {
           isnotSet={!this.props.disclosed}
         />
         <Row>
-          <Col style={{ textAlign: "center", color: "#ff5a60" }}>
-            <h2>Subir Fotograf&iacute;a / Agregar fotograf&iacute;as</h2>
+          <Col>
+            <h2 className="upload-title">Subir Fotograf&iacute;a / Agregar fotograf&iacute;as</h2>
           </Col>
         </Row>
         <Row style={{ marginTop: "2em" }}>

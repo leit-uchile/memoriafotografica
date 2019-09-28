@@ -11,10 +11,11 @@ class Landing extends Component{
   render(){
     return(
       <Container>
-        <ul>
-          <li> 10 Fotos </li>
-          <li> 20 Tags </li>
-        </ul>
+        <Row>
+          <Col>
+            <h2>Estad&iacute;sticas del sitio</h2>
+          </Col>
+        </Row>
       </Container>
     )
   }

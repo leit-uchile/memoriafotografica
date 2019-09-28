@@ -40,12 +40,7 @@ const UploadProgress = ({
     <Container>
       <Row>
         <Col>
-          <h2
-            style={{
-              color: "#ff5a60",
-              textAlign: "center",
-              marginBottom: "2em"
-            }}>
+          <h2 className="upload-title">
             Subir Fotograf&iacute;a /
             {uploading ? "Enviando aporte..." : "¡Operación completada!"}
           </h2>

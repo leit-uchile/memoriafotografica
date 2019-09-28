@@ -11,6 +11,8 @@ import { misc, upload, home, alert, metadata } from "../../actions";
 import { Helmet } from "react-helmet";
 import StepWizard from "react-step-wizard";
 
+import '../../css/uploadPhoto.css';
+
 // Example nav from https://github.com/jcmcneal/react-step-wizard/blob/master/app/components/nav.js
 const Nav = props => {
   const dots = [];

@@ -44,7 +44,6 @@ class Home extends Component {
     this.props.setRoute("/gallery/");
     this.props.onLoadGetPhotos();
     this.props.onLoadGetCats();
-    this.topRef = React.createRef();
   }
 
   handleOnClick = obj => {
@@ -109,9 +108,13 @@ class Home extends Component {
     const { maxAllowed, page } = this.state.photoPagination;
     if (direction < 0) {
       if (this.state.photoPagination.page > 0) {
-        this.setState({
-          photoPagination: { maxAllowed: maxAllowed, page: page - 1 }
-        });
+        setTimeout(
+          () =>
+            this.setState({
+              photoPagination: { maxAllowed: maxAllowed, page: page - 1 }
+            }),
+          300
+        );
       }
     } else {
       if (
@@ -120,29 +123,34 @@ class Home extends Component {
         ) >=
         page + 1
       ) {
-        this.setState({
-          photoPagination: { maxAllowed: maxAllowed, page: page + 1 }
-        });
+        setTimeout(
+          () =>
+            this.setState({
+              photoPagination: { maxAllowed: maxAllowed, page: page + 1 }
+            }),
+          300
+        );
       }
     }
-    this.topRef.current.scrollIntoView({
-      block: "start",
+    window.scrollTo({
+      top: 0,
+      left: 0,
       behavior: "smooth"
-    })
+    });
   };
 
   setPage = number => {
-    console.log(number);
-    this.setState({
+    setTimeout(() => this.setState({
       photoPagination: {
         maxAllowed: this.state.photoPagination.maxAllowed,
         page: number
       }
-    });
-    this.topRef.current.scrollIntoView({
-      block: "start",
+    }), 300)
+    window.scrollTo({
+      top: 0,
+      left: 0,
       behavior: "smooth"
-    })
+    });
   };
 
   render() {
@@ -153,7 +161,7 @@ class Home extends Component {
       removeSearch,
       setRoute,
       loadingPhotos,
-      setSelectedId,
+      setSelectedId
     } = this.props;
 
     const { maxAllowed, page } = this.state.photoPagination;
@@ -228,7 +236,7 @@ class Home extends Component {
                       </span>
                     ))
                   ) : (
-                    <h2>Todas las fotograf&iacute;as</h2>
+                    <h2> Todas las fotograf&iacute;as</h2>
                   )}
                 </div>
               </Col>
@@ -236,11 +244,18 @@ class Home extends Component {
                 <ButtonDropdown
                   isOpen={this.state.catsOpen}
                   toggle={this.toggleCategory}
-                  direction="down">
+                  direction="down"
+                  className="home-button">
                   <DropdownToggle
                     caret
-                    style={styles.dropdownButton}
-                    color="danger">
+                    style={
+                      !this.state.catsOpen
+                        ? { ...styles.dropdownButton }
+                        : {
+                            ...styles.dropdownButton,
+                            backgroundColor: "#e9ecef8a"
+                          }
+                    }>
                     Categorias
                     {this.state.selectedCategories.length > 0 ? (
                       <span style={styles.selectedCatsNumber}>
@@ -283,11 +298,8 @@ class Home extends Component {
                     </Row>
                   </DropdownMenu>
                 </ButtonDropdown>
-                <UncontrolledButtonDropdown>
-                  <DropdownToggle
-                    caret
-                    style={styles.dropdownButton}
-                    color="danger">
+                <UncontrolledButtonDropdown className="home-button">
+                  <DropdownToggle caret style={styles.dropdownButton}>
                     Ordenar
                   </DropdownToggle>
                   <DropdownMenu
@@ -313,17 +325,15 @@ class Home extends Component {
         <Container fluid style={styles.galleryContainer}>
           <Row>
             <Col>
-              <div ref={this.topRef}>
-                {loadingPhotos ? (
-                  <LeitSpinner />
-                ) : (
-                  <Gallery
-                    photos={mapped}
-                    targetRowHeight={200}
-                    onClick={(e, index) => this.handleOnClick(index)}
-                  />
-                )}
-              </div>
+              {loadingPhotos ? (
+                <LeitSpinner />
+              ) : (
+                <Gallery
+                  photos={mapped}
+                  targetRowHeight={200}
+                  onClick={(e, index) => this.handleOnClick(index)}
+                />
+              )}
             </Col>
           </Row>
           <Row style={{ marginTop: "2em" }}>
@@ -344,7 +354,9 @@ class Home extends Component {
                   />
                 </PaginationItem>
                 <PaginationItem>
-                  <PaginationLink >{this.state.photoPagination.page + 1}</PaginationLink>
+                  <PaginationLink>
+                    {this.state.photoPagination.page + 1}
+                  </PaginationLink>
                 </PaginationItem>
                 <PaginationItem
                   disabled={pageLimit < this.state.photoPagination.page + 1}>
@@ -396,7 +408,8 @@ const styles = {
     minHeight: "100vh",
     padding: "1.25em 3.1em",
     backgroundColor: "#f7f8fa",
-    textAlign: "center"
+    textAlign: "center",
+    marginBottom: "-2em"
   },
   filtersContainer: {
     paddingTop: "1em",
@@ -416,9 +429,9 @@ const styles = {
     color: "#ff5a60",
     backgroundColor: "white",
     margin: "1em 1em 0.5em 1em",
-    border: "1px solid black",
     borderRadius: "0",
-    padding: "10px"
+    padding: "10px",
+    border: "none"
   },
   selectedCatsNumber: {
     backgroundColor: "#f2f2f2",
@@ -469,7 +482,7 @@ const mapActionsToProps = dispatch => ({
   sortByField: (tag, order) => dispatch(home.sortByField(tag, order)),
   sortByUpload: order => dispatch(home.sortByUpload(order)),
   recoverByCats: (catIds, order) => dispatch(home.recoverByCats(catIds, order)),
-  setSelectedId: id => dispatch(home.setSelectedId(id)),
+  setSelectedId: id => dispatch(home.setSelectedId(id))
 });
 
 export default connect(

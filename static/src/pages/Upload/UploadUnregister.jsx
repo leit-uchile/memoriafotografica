@@ -68,7 +68,7 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
     <Container>
       <Row>
         <Col>
-          <h2 style={styles.title}>
+          <h2 className="upload-title">
             Subir Fotograf&iacute;a / Cuentanos un poco sobre ti
           </h2>
         </Col>
@@ -180,7 +180,7 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
           <Button onClick={previousStep}>
             <FontAwesomeIcon icon={faChevronCircleLeft} />
           </Button>
-          <Button type="submit" color="primary">
+          <Button type="submit" color="success">
             <FontAwesomeIcon icon={faChevronCircleRight} />
           </Button>
         </ButtonGroup>

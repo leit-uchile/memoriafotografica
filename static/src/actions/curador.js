@@ -53,33 +53,32 @@ export const getCategories = () => {
   };
 };
 
-export const createCategory = (token, data) => {
-  return (dispatch, getState) => {
-    let headers = {
-      Authorization: "Token " + token,
-      "Content-Type": "application/json"
-    };
-    let sent_data = JSON.stringify({ title: data });
-    console.log(sent_data);
-    //dispatch({type: 'CREATING', data: "" })
-    fetch("/api/categories/", {
-      method: "POST",
-      headers: headers,
-      body: sent_data
-    }).then(function(response) {
-      const r = response;
-      console.log(r);
-      if (r.status === 200) {
-        return r.json().then(data => {
-          dispatch({ type: CREATED_CATEGORY, data: data });
-        });
-      } else {
-        dispatch({ type: CREATED_CATEGORY_ERROR, data: r.data });
-        throw r.data;
-      }
-    });
+export const createCategory = data => (dispatch, getState) => {
+  let headers = {
+    Authorization: "Token " + getState().auth.token,
+    "Content-Type": "application/json"
   };
+  let sent_data = JSON.stringify(data);
+  console.log(sent_data);
+  //dispatch({type: 'CREATING', data: "" })
+  fetch("/api/categories/", {
+    method: "POST",
+    headers: headers,
+    body: sent_data
+  }).then(function(response) {
+    const r = response;
+    console.log(r);
+    if (r.status === 200) {
+      return r.json().then(data => {
+        dispatch({ type: CREATED_CATEGORY, data: data });
+      });
+    } else {
+      dispatch({ type: CREATED_CATEGORY_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
 };
+
 export const editCategory = () => {};
 
 export const deleteCategories = (auth, catArray) => {
@@ -120,8 +119,10 @@ export const getPhotos = auth => {
   return (dispatch, getState) => {
     let headers = {
       "Content-Type": "application/json",
-      Authorization: "Token " + auth
+      Authorization: "Token " + getState().auth.token
     };
+
+    dispatch({ type: CURADOR_LOADING });
 
     return fetch("/api/photos/", { method: "GET", headers: headers }).then(
       function(response) {
