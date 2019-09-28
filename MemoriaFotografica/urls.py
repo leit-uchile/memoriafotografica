@@ -22,7 +22,7 @@ from django.views.generic import TemplateView
 from Users import endpoints as user_endpoints
 from Gallery import endpoints as gallery_endpoints
 from MetaData import endpoints as metadata_endpoints
-
+from Metrics import endpoints as metrics_endpoints
 #DOCUMENTACION API
 from rest_framework.documentation import include_docs_urls
 
@@ -36,6 +36,7 @@ urlpatterns = [
     re_path(r'^api/', include(user_endpoints)),
     re_path(r'^api/', include(gallery_endpoints)),
     re_path(r'^api/', include(metadata_endpoints)),
+    re_path(r'^api/metrics/', include(metrics_endpoints)),
     re_path(r'^api/auth/', include('knox.urls')),
     #re_path(r'^', TemplateView.as_view(template_name="index.html")),
     url(r'^docs/', include_docs_urls(title="API Memfoto", public=False))

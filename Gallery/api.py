@@ -42,7 +42,7 @@ def make_tag(metadata_id):
 def filter_photos(photolist, request):
     sort_type = {"asc":"", "desc":"-"}
     try:
-        if(request.query_params["category"]):            
+        if(request.query_params["category"]):
             q = list(filter(('').__ne__, request.query_params["category"].split(',')))
             photolist = photolist.filter(category__id__in = q).distinct()
             photolist = photolist.order_by("-created_at")
@@ -96,12 +96,33 @@ class PhotoListAPI(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         serializer = CreatePhotoSerializer(data=request.data)
+        #dummy variables if no metadata is included
+        p_metadata = None
+        recovered_metadata = []
+        try:
+            #recover metadata from string. String format ex.: "1,2,3,4,5"
+            p_metadata = request.data['metadata'].split(',')
+        except KeyError:
+            pass
+        #if metadata, get metadata objects
+        if p_metadata:
+            recovered_metadata = Metadata.objects.filter(pk__in=p_metadata)
+
         if serializer.is_valid():
             serializer.save()
             p = Photo.objects.get(pk=serializer.data['id'])
             request.user.photos.add(p)
             request.user.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            #add metadata to photo if any metadata is found:
+            recovered_metadata = Metadata.objects.filter(pk__in=p_metadata)
+            p.metadata.add(*recovered_metadata)
+            # save photo to persist modifications.
+            p.save()
+            #modify output serializer to display hand-added data.
+            serialized_data = serializer.data
+            serialized_data['metadata'] = list(map(lambda x: x.pk, recovered_metadata))
+            #return modified serializer
+            return Response(serialized_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
