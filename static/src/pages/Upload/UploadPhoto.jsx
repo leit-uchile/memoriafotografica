@@ -56,7 +56,7 @@ class UploadPhoto extends Component {
     if (files && files.length > 0) {
       for (var i = 0, f; (f = files[i]); i++) {
         if (!f.type.match("image.*") || f.size > imageMaxSize) {
-          alert("Error: Extension no valida o archivo muy pesado");
+          this.props.sendAlert("Error: Extension no valida o archivo muy pesado", "warning");
         } else {
           images.push(f);
         }

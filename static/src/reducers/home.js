@@ -9,7 +9,8 @@ import {
   HOME_EMPTY_IPTCS,
   REQUESTPHOTO,
   HOME_LOADING,
-  HOME_SET_SELECTED_INDEX
+  HOME_SET_SELECTED_INDEX,
+  HOME_PHOTO_PAGINATION
 } from "../actions/types";
 
 const initialState = {
@@ -19,7 +20,8 @@ const initialState = {
   all_cats: [],
   requestedPhotos: [],
   loading: false,
-  selectedIndex: -1
+  selectedIndex: -1,
+  photoPagination: {}
 };
 
 export default function home(state = initialState, action) {
@@ -49,6 +51,8 @@ export default function home(state = initialState, action) {
       return { ...state, loading: true };
     case HOME_SET_SELECTED_INDEX:
       return { ...state, selectedIndex: action.data };
+    case HOME_PHOTO_PAGINATION:
+      return { ...state, photoPagination: action.data };
     default:
       return state;
   }

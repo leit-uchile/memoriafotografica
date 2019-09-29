@@ -11,6 +11,7 @@ import { photoDetails, home, search, requestPhoto } from "../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faCalendarPlus, faCamera } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
+import { setPhotoPagination } from "../../actions/home";
 
 const getPermissionLogo = (name, w, h, offset) => {
   var url;
@@ -42,9 +43,11 @@ const getPermissionLogo = (name, w, h, offset) => {
 const Tags = ({ tags, onRedirect }) => (
   <Container fluid>
     <Row>
-      <Col sm={{ offset: 2, size: 10 }} style={{ fontSize: "1.2em" }}>
+      <Col sm={{ offset: 2, size: 10 }} style={{ fontSize: "1.2em", display:'flex'}}>
         {tags.length == 0 ? (
-          <p>No hay tags asociados</p>
+          <p>
+            No hay tags asociados
+          </p>
         ) : (
           tags.map((el, index) => (
             <Badge
@@ -56,6 +59,7 @@ const Tags = ({ tags, onRedirect }) => (
             </Badge>
           ))
         )}
+        <Link style={{marginLeft:'0.2em', fontSize:'12px'}} to='#'>Sugerir</Link>
       </Col>
     </Row>
   </Container>
@@ -66,14 +70,17 @@ const Categories = ({ cats, onRedirect }) => (
     <Row>
       <Col sm={{ offset: 2, size: 10 }} style={{ fontSize: "1.2em" }}>
         <p>
-        {!cats 
+        {cats.length == 0
         ? (
           "No se encuentra en una categoría"
-        ) : (
+          ) 
+        : (
           cats.map((el, index) => (
             <span style={{marginRight:'0.2em'}}>{el.title}</span>
           ))
-        )}
+          )
+        }
+        <Link style={{marginLeft:'0.2em'}} to='#'>Sugerir</Link>
         </p>
       </Col>
     </Row>
@@ -161,7 +168,7 @@ class PhotoDetails extends Component {
       return <Redirect to="/gallery" />;
     }
 
-    const { photoInfo, suggestions } = this.props;
+    const { photoInfo, suggestions, photoPagination } = this.props;
 
     /*
      Suggestions are loaded by the gallery with an 
@@ -170,10 +177,13 @@ class PhotoDetails extends Component {
      and the index is -1
     */
     // TODO: when clicking navigate updating the selectedIndex
-    const k = this.props.photoIndex //Math.floor(this.props.photoIndex/10)*10
+    // console.log(this.props.photoIndex + (35*photoPagination.page) + 10)
+     const k = this.props.photoIndex + (35*photoPagination.page) + 10 <= suggestions.length
+     ? this.props.photoIndex + 10
+     : suggestions.length
     var Suggestions = suggestions
       ? suggestions
-          .slice(k, k + 10)
+          .slice(k-10, k)
           .map((im, k) =>
             im.id !== photoInfo.details.id ? (
               <Photo
@@ -366,6 +376,7 @@ const styles = {
 
 const mapStateToProps = state => ({
   auth: state.auth,
+  photoPagination: state.home.photoPagination,
   photoInfo: state.photoDetails,
   suggestions: state.home.photos,
   photoIndex: state.home.selectedIndex

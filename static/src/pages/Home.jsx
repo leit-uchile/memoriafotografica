@@ -21,6 +21,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
 import LeitSpinner from "../components/LeitSpinner";
+import { setPhotoPagination } from "../actions/home";
 
 class Home extends Component {
   constructor(props) {
@@ -161,7 +162,8 @@ class Home extends Component {
       removeSearch,
       setRoute,
       loadingPhotos,
-      setSelectedId
+      setSelectedId,
+      setPhotoPagination
     } = this.props;
 
     const { maxAllowed, page } = this.state.photoPagination;
@@ -200,6 +202,7 @@ class Home extends Component {
     if (this.state.redirect) {
       setRoute("/photo/"); // For NavLink in Navbar
       setSelectedId(this.state.chosenPhotoIndex); // For in photo navigation
+      setPhotoPagination(this.state.photoPagination)
       return (
         <Redirect
           push
@@ -265,7 +268,7 @@ class Home extends Component {
                   </DropdownToggle>
                   <DropdownMenu
                     style={{
-                      width: "30em",
+                      width:'38em',
                       boxShadow: "0 0 15px 0 rgba(0,0,0,.20)"
                     }}>
                     <div style={styles.triangulo}></div>
@@ -482,7 +485,8 @@ const mapActionsToProps = dispatch => ({
   sortByField: (tag, order) => dispatch(home.sortByField(tag, order)),
   sortByUpload: order => dispatch(home.sortByUpload(order)),
   recoverByCats: (catIds, order) => dispatch(home.recoverByCats(catIds, order)),
-  setSelectedId: id => dispatch(home.setSelectedId(id))
+  setSelectedId: id => dispatch(home.setSelectedId(id)),
+  setPhotoPagination: obj => dispatch(home.setPhotoPagination(obj))
 });
 
 export default connect(

@@ -9,7 +9,7 @@ import {
   LOADED_CUSTOM_METADATA,
   REPORTED_PHOTO,
   PHOTO_REPORT_FAILED,
-  REPORTING_PHOTO
+  REPORTING_PHOTO,
 } from "./types";
 
 export const getPhoto = id => {

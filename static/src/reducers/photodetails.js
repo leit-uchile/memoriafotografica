@@ -18,6 +18,7 @@ const initialState = {
     image: undefined,
     desc: undefined,
     permission: [],
+    category: [],
     metadata: []
   },
   errors: "INVALID_URL",

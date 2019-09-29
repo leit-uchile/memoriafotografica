@@ -8,7 +8,8 @@ import {
   HOME_RECOVERED_IPTCS,
   HOME_EMPTY_IPTCS,
   HOME_LOADING,
-  HOME_SET_SELECTED_INDEX
+  HOME_SET_SELECTED_INDEX,
+  HOME_PHOTO_PAGINATION
 } from "./types";
 
 export const home = () => (dispatch, getState) => {
@@ -147,3 +148,6 @@ export const recoverByCats = (catIds, order) => (dispatch, getState) => {
 
 export const setSelectedId = id => (dispatch, getState) =>
   dispatch({ type: HOME_SET_SELECTED_INDEX, data: id });
+
+export const setPhotoPagination = obj => (dispatch, getState) =>
+  dispatch({ type: HOME_PHOTO_PAGINATION, data: obj})
