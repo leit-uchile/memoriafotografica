@@ -15,6 +15,7 @@ import Dashboard from "./Curador/Dashboard";
 import LandingPage from "./LandingPage";
 import UserDashboard from "./UserDashboard/UserDashboard";
 import EditProfile from "./UserDashboard/EditProfile";
+import UserPhotos from "./UserDashboard/UserPhotos";
 import Index from "./Miscellaneous/Index";
 // Utils
 import PrivateComponent from "../components/PrivateComponent";
@@ -40,6 +41,7 @@ const Layout = () => {
             <PrivateComponent path={"/curador/dashboard"} component={Dashboard} />
             <PrivateComponent path={"/user/dashboard"} component={UserDashboard} />
             <PrivateComponent path={"/user/editProfile"} component={EditProfile} />
+            <PrivateComponent path={"/user/photos"} component={UserPhotos} />
             <Route component={NoMatch} />
           </Switch>
         </div>  

@@ -12,7 +12,7 @@ import {
 } from "reactstrap";
 import Photo from "../../components/Photo";
 import Comment from "../PhotoView/Comment";
-import EditPhotos from "./EditPhotos";
+import EditPhotos from "./UserPhotos";
 import { connect } from "react-redux";
 import { user, misc } from "../../actions";
 import { Link } from "react-router-dom";
@@ -145,7 +145,6 @@ class Dashboard extends Component {
       : [];
     return (
       <Container>
-        {/* <EditPhotos isOpen={true} photos={photos} onClick={this.next}/> */}
         <Row style={{ marginTop: "2em" }}>
           <Col style={{ color: "#ff5a60", textAlign: "center" }}>
             <h2>Mi perfil</h2>
@@ -228,7 +227,13 @@ class Dashboard extends Component {
                     {" "}
                     <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}
                   </Button>
-                  <Button onClick={this.all}> Ver Todas</Button>
+                  <Button 
+                    style={{ margin: "0 auto" }}
+                    tag={Link}
+                    to="/user/photos">
+                    {" "}
+                    Ver Todas
+                  </Button>
                   <Button
                     disabled={
                       this.state.activeIndex + 4 >=
