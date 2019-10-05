@@ -35,10 +35,10 @@ class UserPhotos extends Component {
     const { user } = this.props;
   }
   handleRedirect = obj => { //no funcionando
-    this.setState({ redirect: true, chosenPhotoIndex: obj.index });
+    
   };
 
-  changeMode(){ //se cae
+  changeMode = () => { //se cae
     this.setState({ edit: !this.state.edit });
   };
 
@@ -49,10 +49,10 @@ class UserPhotos extends Component {
     this.props.createCategory(this.state);
   };
 
-  handleOnClick = obj => {
-    const {id} = obj.photo;
-    const newList = this.state.picturesToEdit.filter(el => el !== id);
-    this.setState({picturesToEdit: [...newList, id]});
+  handleOnClick = obj => { //falta remover al desclickear
+    const id = obj.photo.id;
+    const newList = this.state.picturesToEdit.filter(el => el.id !== id);
+    this.setState({picturesToEdit: [...newList, obj.photo]});
   };
 
   render() {
@@ -75,7 +75,9 @@ class UserPhotos extends Component {
           <Col>
             <h2>Mis fotos</h2>
             <Button
-            onClick={this.changeMode}>Modo edición</Button>
+              onClick={this.changeMode}>
+              Modo edición
+            </Button>
           </Col>
         </Row>
         <Row>
@@ -88,7 +90,8 @@ class UserPhotos extends Component {
               />) :(
               <div>
                 <EditPhotosModal
-                photos={this.state.picturesToEdit[0]}/>
+                photos={this.state.picturesToEdit}
+                />
                 
                 <PhotoSelector
                 photos={mapped}

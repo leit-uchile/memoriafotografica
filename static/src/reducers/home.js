@@ -8,6 +8,7 @@ import {
   HOME_RECOVERED_IPTCS,
   HOME_EMPTY_IPTCS,
   REQUESTPHOTO,
+  REMOVE_REQUESTPHOTO,
   HOME_LOADING,
   HOME_SET_SELECTED_INDEX,
   HOME_PHOTO_PAGINATION
@@ -47,6 +48,11 @@ export default function home(state = initialState, action) {
         el => el.id !== action.data.id
       );
       return { ...state, requestedPhotos: [...filtered, action.data] };
+    case REMOVE_REQUESTPHOTO:
+      let filtered2 = state.requestedPhotos.filter(
+        el => el.id !== action.data.id
+      );
+      return { ...state, requestedPhotos: [...filtered2] };
     case HOME_LOADING:
       return { ...state, loading: true };
     case HOME_SET_SELECTED_INDEX:
