@@ -62,7 +62,7 @@ class Dashboard extends Component {
         : this.state.activeIndex + 4;
     this.setState({ entering: false, toRight: true }, () =>
       setTimeout(
-        function() {
+        function () {
           this.setState({ activeIndex: nextIndex, entering: true });
         }.bind(this),
         1000
@@ -77,7 +77,7 @@ class Dashboard extends Component {
       this.state.activeIndex <= 0 ? 0 : this.state.activeIndex - 4;
     this.setState({ entering: false, toRight: false }, () =>
       setTimeout(
-        function() {
+        function () {
           this.setState({ activeIndex: prevIndex, entering: true });
         }.bind(this),
         1000
@@ -129,19 +129,19 @@ class Dashboard extends Component {
     };
     var currentAlbs = albums
       ? albums.slice(0, this.state.maxAllowedAlbums).map(el => {
-          return {
-            ...el,
-            selected: isSelected(el.id, this.state.selectedAlbs)
-          };
-        })
+        return {
+          ...el,
+          selected: isSelected(el.id, this.state.selectedAlbs)
+        };
+      })
       : [];
     var currentComments = comments
       ? comments.slice(0, this.state.maxAllowedComments).map(el => {
-          return {
-            ...el,
-            selected: isSelected(el.id, this.state.selectedComs)
-          };
-        })
+        return {
+          ...el,
+          selected: isSelected(el.id, this.state.selectedComs)
+        };
+      })
       : [];
     return (
       <Container>
@@ -156,8 +156,8 @@ class Dashboard extends Component {
               {user.avatar === null ? (
                 <canvas id="myCanvas" height="200px" width="200px" />
               ) : (
-                <CardImg top width="100%" src={user.avatar.slice(21)} />
-              )}
+                  <CardImg top width="100%" src={user.avatar.slice(21)} />
+                )}
               <CardBody
                 style={{ backgroundColor: "#ebeeef", textAlign: "center" }}>
                 <CardText>{`${user.first_name} ${user.last_name}`}</CardText>
@@ -188,35 +188,35 @@ class Dashboard extends Component {
                     {photos.length == 0 ? (
                       <h5> No has subido fotos </h5>
                     ) : (
-                      photos
-                        .slice(
-                          this.state.activeIndex,
-                          4 + this.state.activeIndex
-                        )
-                        .map(el => (
-                          <img
-                            className={
-                              this.state.toRight
-                                ? this.state.entering
-                                  ? "animated slideInRight"
-                                  : "animated slideOutLeft"
-                                : this.state.entering
-                                ? "animated slideInLeft"
-                                : "animated slideOutRight"
-                            }
-                            width="calc(25%-4px)"
-                            width="160em"
-                            height="130em"
-                            style={{
-                              display: "inline-block",
-                              margin: "1em auto"
-                            }}
-                            hspace="2em"
-                            src={el.image}
-                            key={el.id}
-                          />
-                        ))
-                    )}
+                        photos
+                          .slice(
+                            this.state.activeIndex,
+                            4 + this.state.activeIndex
+                          )
+                          .map(el => (
+                            <img
+                              className={
+                                this.state.toRight
+                                  ? this.state.entering
+                                    ? "animated slideInRight"
+                                    : "animated slideOutLeft"
+                                  : this.state.entering
+                                    ? "animated slideInLeft"
+                                    : "animated slideOutRight"
+                              }
+                              width="calc(25%-4px)"
+                              width="160em"
+                              height="130em"
+                              style={{
+                                display: "inline-block",
+                                margin: "1em auto"
+                              }}
+                              hspace="2em"
+                              src={el.image}
+                              key={el.id}
+                            />
+                          ))
+                      )}
                   </Row>
                 </Container>
 
@@ -227,7 +227,7 @@ class Dashboard extends Component {
                     {" "}
                     <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}
                   </Button>
-                  <Button 
+                  <Button
                     style={{ margin: "0 auto" }}
                     tag={Link}
                     to="/user/photos">
@@ -237,7 +237,7 @@ class Dashboard extends Component {
                   <Button
                     disabled={
                       this.state.activeIndex + 4 >=
-                      this.props.data.photos.length - 1
+                        this.props.data.photos.length - 1
                         ? true
                         : false
                     }
@@ -252,7 +252,10 @@ class Dashboard extends Component {
                 <Container fluid>
                   <Albums albumList={currentAlbs} />
                 </Container>
-                <Button style={{ margin: "1em auto" }} onClick={this.all}>
+                <Button style={{ margin: "1em auto" }} 
+                 
+                  tag={Link}
+                  to="/user/albums">
                   {" "}
                   Ver Todos
                 </Button>
@@ -280,18 +283,18 @@ const Albums = ({ albumList, onClick }) => (
     {albumList.length == 0 ? (
       <h5> No has subido albumes</h5>
     ) : (
-      albumList.map((el, index) => (
-        <Card>
-          <Photo
-            name={el.title}
-            url={el.thumbnail}
-            height="150px"
-            useLink
-            redirectUrl={`/albums/${el.di}`}
-          />
-        </Card>
-      ))
-    )}
+        albumList.map((el, index) => (
+          <Card>
+            <Photo
+              name={el.title}
+              url={el.thumbnail}
+              height="150px"
+              useLink
+              redirectUrl={`/albums/${el.di}`}
+            />
+          </Card>
+        ))
+      )}
   </div>
 );
 
@@ -300,8 +303,8 @@ const Comments = ({ commentList, onClick }) => (
     {commentList.length == 0 ? (
       <h5> No has publicado comentarios </h5>
     ) : (
-      commentList.map((el, index) => <p key={el.id}> {el.content} </p>)
-    )}
+        commentList.map((el, index) => <p key={el.id}> {el.content} </p>)
+      )}
   </div>
 );
 
