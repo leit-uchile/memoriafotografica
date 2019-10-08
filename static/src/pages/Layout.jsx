@@ -18,8 +18,8 @@ import EditProfile from "./UserDashboard/EditProfile";
 import UserPhotos from "./UserDashboard/UserPhotos";
 import Index from "./Miscellaneous/Index";
 // Utils
-import PrivateComponent from "../components/PrivateComponent";
-import BoundedRoute from '../components/BoundedRoute';
+import PrivateComponent from "../components/Routes/PrivateComponent";
+import BoundedRoute from '../components/Routes/BoundedRoute';
 
 
 const Layout = () => {

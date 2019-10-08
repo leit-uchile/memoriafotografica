@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import LeitSpinner from "../../components/LeitSpinner";
+import LeitSpinner from "./LeitSpinner";
 import {
   Button,
   Modal,
@@ -12,7 +12,10 @@ import {
   Label
 } from "reactstrap";
 import { connect } from "react-redux";
-import { photoDetails } from "../../actions";
+import { photoDetails } from "../actions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFlag } from "@fortawesome/free-solid-svg-icons";
+import PropTypes from "prop-types";
 
 class ReportModal extends Component {
   constructor(props) {
@@ -22,7 +25,7 @@ class ReportModal extends Component {
       sent: false,
       formData: {
         id: props.photoId,
-        type: "2", // Photo
+        type: Number(props.reportType),
         content: []
       }
     };
@@ -36,7 +39,7 @@ class ReportModal extends Component {
   toggle() {
     this.setState({
       modal: !this.state.modal,
-      sent: false,
+      sent: false
     });
     setTimeout(this.props.resetReport, 1000);
   }
@@ -61,40 +64,37 @@ class ReportModal extends Component {
   }
 
   render() {
-    const labelStyle = { display: "block" };
-    const { style, className, photoReportSent, reportComplete } = this.props;
+    const {
+      style,
+      className,
+      photoReportSent,
+      reportComplete,
+      reportTitle,
+      helpText,
+      options
+    } = this.props;
 
     var ReportForm = (
       <Fragment>
         <p>
-          Si consideras que hay un problema con esta fotograf&iacute;a por favor
-          env&iacute;amos un reporte mediante este formulario.
+          {helpText
+            ? helpText
+            : "Si consideras que hay un problema con esta fotografía por favor envíamos un reporte mediante este formulario."}
         </p>
         <Form>
           <FormGroup>
             <Label for="exampleCheckbox">Problemas</Label>
             <div>
-              <CustomInput
-                type="checkbox"
-                id="p1"
-                value="Contenido inapropiado"
-                label="Contenido inapropiado"
-                onClick={this.updateReport}
-              />
-              <CustomInput
-                type="checkbox"
-                id="p2"
-                value="Incita a la violencia"
-                label="Incita a la violencia"
-                onClick={this.updateReport}
-              />
-              <CustomInput
-                type="checkbox"
-                id="p3"
-                value="Usuario no es autor del contenido"
-                label="Usuario no es autor del contenido"
-                onClick={this.updateReport}
-              />
+              {options.map((opt, key) => (
+                <CustomInput
+                  key={`option-${key}`}
+                  type="checkbox"
+                  id={`option-${key}`}
+                  value={opt}
+                  label={opt}
+                  onClick={this.updateReport}
+                />
+              ))}
             </div>
           </FormGroup>
         </Form>
@@ -102,10 +102,14 @@ class ReportModal extends Component {
     );
 
     return (
-      <div className={className} style={style}>
-        <Button onClick={this.toggle}>¿Algo anda mal?</Button>
+      <Fragment>
+        <Button className={className} onClick={this.toggle} style={style}>
+          <FontAwesomeIcon icon={faFlag} />
+        </Button>
         <Modal isOpen={this.state.modal} toggle={this.toggle}>
-          <ModalHeader toggle={this.toggle}>Reportar fotografia</ModalHeader>
+          <ModalHeader toggle={this.toggle}>
+            {reportTitle ? reportTitle : "Reportar fotografia"}
+          </ModalHeader>
           <ModalBody>
             {this.state.sent ? (
               !photoReportSent ? (
@@ -115,7 +119,7 @@ class ReportModal extends Component {
                 </div>
               ) : reportComplete ? (
                 <div style={{ textAlign: "center" }}>
-                  <h5>¡Fotograf&iacute;a reportada!</h5>
+                  <h5>¡Reporte enviado!</h5>
                 </div>
               ) : (
                 <div style={{ textAlign: "center" }}>
@@ -145,10 +149,19 @@ class ReportModal extends Component {
             )}
           </ModalFooter>
         </Modal>
-      </div>
+      </Fragment>
     );
   }
 }
+
+ReportModal.propTypes = {
+  reportType: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    .isRequired,
+  reportTitle: PropTypes.string,
+  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  helpText: PropTypes.string.isRequired,
+  style: PropTypes.object // Optional
+};
 
 const mapStateToProps = state => ({
   photoReportSent: state.photoDetails.photoReportSent,

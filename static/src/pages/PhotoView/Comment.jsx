@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import Avatar from "./Avatar";
 import { Container, Row, Col } from "reactstrap";
+import ReportModal from "../../components/ReportModal";
 
-const Comment = ({ content: { content, censure, usuario } }) => {
+const Comment = ({ content: { content, censure, usuario, id } }) => {
   var userName =
     usuario.first_name !== "" && usuario.first_name !== null
       ? `${usuario.first_name} ${usuario.last_name}`
@@ -43,6 +44,22 @@ const Comment = ({ content: { content, censure, usuario } }) => {
           <div style={{ display: "inline-block", padding: "0 15px" }}>
             {usuario.rol_type}
           </div>
+          <ReportModal
+            style={{ display: "inline-block" }}
+            className="float-right"
+            photoId={id}
+            reportTitle={"Reportar Comentario"}
+            options={[
+              "Contenido inapropiado",
+              "Incita a la violencia",
+              "Contenido difamatorio"
+            ]}
+            helpText={
+              "Si consideras que hay un problema con esta comentario por favor envíamos un reporte mediante este formulario."
+            }
+            reportType={3}
+            buttonTitle={"Comentario inapropiado"}
+          />
           <p style={{ display: "block" }}>{content}</p>
         </Col>
       </Row>

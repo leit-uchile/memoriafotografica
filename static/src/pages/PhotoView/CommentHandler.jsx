@@ -18,7 +18,10 @@ const CommentHandler = ({
   comments,
   commentsLoaded,
   newComment,
-  fetchComments
+  fetchComments,
+  auth,
+  style,
+  fluid
 }) => {
   useEffect(() => {
     fetchComments(id);
@@ -26,21 +29,18 @@ const CommentHandler = ({
 
   const [comment, setComment] = useState("");
 
+  // If is auth then allow reports
   var commentRows = comments.map((el, key) => (
     <Row>
       <Col
-        md={{
-          size: 8,
-          offset: 2
-        }}
         style={styles.commentContainerStyle}>
-        <Comment content={el} />
+        <Comment content={el} modal={auth} />
       </Col>
     </Row>
   ));
 
   return (
-    <Container style={{ marginBottom: "2em", marginTop: "2em" }}>
+    <Container style={style} fluid={fluid}>
       <Row>
         <Col>
           <h3>Comentarios</h3>
@@ -80,23 +80,16 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  return {
-    comments: state.photoDetails.comments,
-    commentsLoaded: state.photoDetails.commentsLoaded
-  };
-};
+const mapStateToProps = state => ({
+  comments: state.photoDetails.comments,
+  commentsLoaded: state.photoDetails.commentsLoaded,
+  auth: state.auth.isAuthenticated
+});
 
-const mapActionsToProps = dispatch => {
-  return {
-    newComment: (id, comment) => {
-      return dispatch(photoDetails.putComment(id, comment));
-    },
-    fetchComments: (id, auth) => {
-      return dispatch(photoDetails.getComments(id));
-    }
-  };
-};
+const mapActionsToProps = dispatch => ({
+  newComment: (id, comment) => dispatch(photoDetails.putComment(id, comment)),
+  fetchComments: (id, auth) => dispatch(photoDetails.getComments(id))
+});
 export default connect(
   mapStateToProps,
   mapActionsToProps

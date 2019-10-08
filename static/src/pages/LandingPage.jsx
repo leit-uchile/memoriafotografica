@@ -151,7 +151,7 @@ const LandingPage = props => {
         <Col>
           <Gallery
             photos={mapped}
-            targetRowHeight={200}
+            targetRowHeight={150}
             onClick={(e, index) => onClickPhoto(index)}
           />
         </Col>

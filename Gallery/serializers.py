@@ -87,7 +87,7 @@ class CreatePhotoSerializer(serializers.ModelSerializer):
 class PhotoSerializer(serializers.ModelSerializer):
     #Para usuario colaborador
     class Meta:
-        exclude = ('censure', 'approved','report','comments')
+        exclude = ('censure', 'report','comments')
         model = Photo
     def update(self, instance, validated_data):
         instance.permission = validated_data.get('permission', instance.permission)
@@ -137,6 +137,8 @@ class AlbumSerializer(serializers.ModelSerializer):
         my_user = self.context['request'].user
         valid_pics = list(filter(lambda x: x in my_user.photos.all() ,validated_data['pictures']))
         a.pictures.add(*valid_pics)
+        # Save thumbnail
+        a.thumbnail = valid_pics[0].thumbnail.url
         a.save()
         return a
 
