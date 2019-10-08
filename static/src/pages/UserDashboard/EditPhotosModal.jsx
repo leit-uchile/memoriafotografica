@@ -16,7 +16,16 @@ import {
     Input,
     Form,
     CustomInput } from "reactstrap";
+import ReactTags from "react-tag-autocomplete"; 
 
+const CC_INFO = [
+    { name: "CC BY", text: "Atribución" },
+    { name: "CC BY-SA", text: "Atribución, Compartir Igual" },
+    { name: "CC BY-ND", text: "Atribución, Sin Derivadas" },
+    { name: "CC BY-NC", text: "Atribución, No Comercial" },
+    { name: "CC BY-NC-SA", text: "Atribución, No Comercial, Compartir Igual" },
+    { name: "CC BY-NC-ND", text: "Atribución, No Comercial, Sin Derivadas" }
+    ];
 class EditPhotosModal extends Component {
     constructor(props){
         super(props);
@@ -24,17 +33,19 @@ class EditPhotosModal extends Component {
             modal: false,
             sent: false,
             formData:{
-                title : '',
+                name : '',
                 description: '',
                 created_date: '',
+                tags:'',
                 permissions: ''
             }
         }
         this.toggle = this.toggle.bind(this);
+        this.updateData = this.updateData.bind(this);
+        this.additionTag = this.additionTag.bind(this);
+        this.deleteTag = this.deleteTag.bind(this);
         this.sendChanges = this.sendChanges.bind(this);
     };
-
-    componentWillMount() {}
 
     toggle(){
         this.setState({
@@ -43,6 +54,17 @@ class EditPhotosModal extends Component {
         });
     }
 
+    updateData = e => this.setState({ formData: {...this.state.formData, [e.target.name]: e.target.value }});
+    
+    additionTag(tag) {
+        const tags = [].concat(this.state.formData.tags, tag);
+        this.setState({ tags: tags });
+      }
+    deleteTag(i) {
+    const tags = this.state.formData.tags.slice(0);
+    tags.splice(i, 1);
+    this.setState({ tags });
+    }
     sendChanges(){
         this.setState({
             sent: true});
@@ -59,7 +81,12 @@ class EditPhotosModal extends Component {
                         <p>Título</p>
                     </Col>
                     <Col>
-                        <Input type="text"/>
+                        <Input 
+                            type="text"
+                            placeholder="Título de la fotografía"
+                            name="name"
+                            onChange={this.updateData}
+                        />
                     </Col>
                 </Row>
                 <Row style={{marginBottom:'0.5em'}}>
@@ -67,15 +94,24 @@ class EditPhotosModal extends Component {
                         <p>Descripción</p>
                     </Col>
                     <Col>
-                        <Input type="textarea"/>
+                        <Input 
+                            type="textarea"
+                            placeholder="Historia asociada a la foto"
+                            name="description"
+                            onChange={this.updateData}
+                        />
                     </Col>
                 </Row>
                 <Row style={{marginBottom:'0.5em'}}>
                     <Col>
-                        <p>Fecha</p>
+                        <p>Fecha de captura</p>
                     </Col>
                     <Col>
-                        <Input type="date"/>
+                        <Input 
+                            type="date"
+                            name="created_date"
+                            onChange={this.updateData}
+                        />
                     </Col>
                 </Row>
                 <Row style={{marginBottom:'0.5em'}}>
@@ -83,7 +119,16 @@ class EditPhotosModal extends Component {
                         <p>Etiquetas</p>
                     </Col>
                     <Col>
-                        <Input></Input>
+                        {/* <ReactTags
+                            style={{ width: "auto" }}
+                            placeholder={"Añadir etiquetas"}
+                            autoresize={false}
+                            allowNew={true}
+                            tags={this.state.formData.tags}
+                            
+                            handleDelete={()=>this.deleteTag()}
+                            handleAddition={()=>this.additionTag()}
+                        /> */}
                     </Col>
                 </Row>
                 <Row style={{marginBottom:'0.5em'}}>
@@ -95,16 +140,22 @@ class EditPhotosModal extends Component {
                             <DropdownToggle
                                 caret
                                 color="link"
-                                style={{padding:'0',margin:'0'}}>
-                                Seleccionar
+                                style={{padding:'0',margin:'0'}}
+                                name="permissions"
+                                >
+                                {this.state.formData.permissions === ''
+                                ? "Seleccionar"
+                                : this.state.formData.permissions}
                             </DropdownToggle>
                             <DropdownMenu>
-                                <DropdownItem>CC BY</DropdownItem>
-                                <DropdownItem>CC BY-SA</DropdownItem>
-                                <DropdownItem>CC BY-ND</DropdownItem>
-                                <DropdownItem>CC BY-NC</DropdownItem>
-                                <DropdownItem>CC BY-NC-SA</DropdownItem>
-                                <DropdownItem>CC BY-NC-ND</DropdownItem>
+                                {CC_INFO.map((el, k) => (
+                                    <DropdownItem 
+                                        name="permissions" 
+                                        value={el.name} 
+                                        onClick={this.updateData}>
+                                        {el.name}
+                                    </DropdownItem>
+                                ))}
                             </DropdownMenu>
                         </UncontrolledButtonDropdown>
                     </Col>
@@ -146,16 +197,16 @@ class EditPhotosModal extends Component {
                     Editar selección
                 </Button>
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
-                    {/* {this.props.photos.length===1
+                    {this.props.photos.length===1
                     ? <ModalHeader><h4 style={{fontWeight:'bold'}}>Editando 1 foto</h4></ModalHeader>
-                    : <ModalHeader><h4 style={{fontWeight:'bold'}}>Editando {this.props.photos.length} fotos</h4></ModalHeader>} */}
+                    : <ModalHeader><h4 style={{fontWeight:'bold'}}>Editando {this.props.photos.length} fotos</h4></ModalHeader>}
                     <ModalBody>
                         {PhotosForm}
                     </ModalBody>
                     <ModalFooter>
                         {!this.state.sent ? (
                         <Fragment>
-                            <Button color="primary" onClick={this.sendChanges}>
+                            <Button color="success" onClick={this.sendChanges}>
                             Guardar cambios
                             </Button>
                             <Button color="secondary" onClick={this.toggle}>

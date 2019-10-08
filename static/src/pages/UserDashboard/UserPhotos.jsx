@@ -23,36 +23,25 @@ class UserPhotos extends Component {
     this.state = {
       redirect: false,
       chosenPhotoIndex: 0,
-      edit: true,
+      edit: false,
       picturesToEdit: [],
     };
-  }
-  componentWillMount() {
-    const { user } = this.props;
-    this.props.onLoadGetPhotos(user.id, 100, 0);
-  }
-  componentDidMount(){
-    const { user } = this.props;
+    this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
   }
   handleRedirect = obj => { //no funcionando
     
   };
-
-  changeMode = () => { //se cae
-    this.setState({ edit: !this.state.edit });
-  };
-
   
-
-  handleSubmit = e => {
-    e.preventDefault();
-    this.props.createCategory(this.state);
+  changeMode = () => {
+    this.setState({ edit: !this.state.edit });
   };
 
   handleOnClick = obj => { //falta remover al desclickear
     const id = obj.photo.id;
     const newList = this.state.picturesToEdit.filter(el => el.id !== id);
-    this.setState({picturesToEdit: [...newList, obj.photo]});
+    {newList.length === this.state.picturesToEdit.length //el objeto no esta
+    ? (this.setState({picturesToEdit: [...newList, obj.photo] }) )
+    : (this.setState({picturesToEdit: [...newList] }) )}
   };
 
   render() {
@@ -66,16 +55,16 @@ class UserPhotos extends Component {
       created_date: el.created_at,
       permissions: el.permissions
     }));
-    const { photos } = this.props.photos;
-    const { user } = this.props.user;
-
     return (
       <Container>
         <Row>
           <Col>
             <h2>Mis fotos</h2>
             <Button
-              onClick={this.changeMode}>
+              onClick={this.changeMode}
+              color={this.state.edit
+              ? 'success'
+              : 'secondary'}>
               Modo edición
             </Button>
           </Col>
