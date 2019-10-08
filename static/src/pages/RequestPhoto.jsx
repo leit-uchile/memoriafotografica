@@ -1,11 +1,10 @@
 import React, { useState, Component } from "react";
 import { Redirect, Link } from "react-router-dom";
-import { misc } from "../actions";
+import { home, misc, requestPhoto } from "../actions";
 import { connect } from "react-redux";
-import { home } from "../actions";
 import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImages, faBook, faAddressCard } from "@fortawesome/free-solid-svg-icons";
+import { faImages, faBook, faAddressCard, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   Container,
   Row,
@@ -48,11 +47,7 @@ class RequestPhoto extends Component{
   }
 
   render() {
-    const {
-      requestedPhotos
-    } = this.props;
-    if (this.props.requestedPhotos.length!==0){
-    console.log(this.props.requestedPhotos[0].title)}
+    const {requestedPhotos} = this.props;
     return(
       <Container>
         <Row>
@@ -68,7 +63,7 @@ class RequestPhoto extends Component{
                   <FontAwesomeIcon icon={faImages} style={{marginRight: '1em'}}/>
                   <Label>Material solicitado</Label>
                 </div>
-                <Requested list={this.props.requestedPhotos}/>
+                <Requested list={this.props.requestedPhotos} removeRequestPhoto={this.props.removeRequestPhoto}/>
               </FormGroup>
               <FormGroup>
                 <div style={styles.formTitle}>
@@ -146,7 +141,7 @@ class RequestPhoto extends Component{
   }
 }
 
-var Requested = ({list}) => (
+var Requested = ({list, removeRequestPhoto}) => (
   <ListGroup>
     {list.length === 0
     ? <ListGroupItem disabled>No hay fotos solicitadas</ListGroupItem>
@@ -166,17 +161,28 @@ var Requested = ({list}) => (
             {getPermissionLogo(el, 90, 32)}
           </Col>
           <Col>
-          <ListGroupItemHeading 
-            tag={Link} 
-            to={'/photo/' + el.id}>
-            {el.title}
-          </ListGroupItemHeading>
-          <ListGroupItemText>
-            ID:{el.id}
-          </ListGroupItemText>
-          <ListGroupItemText>
-            DESCRIPCION: {el.description}
-          </ListGroupItemText>
+            <Row>
+              <Col md={10}>
+                <ListGroupItemHeading 
+                  tag={Link} 
+                  to={'/photo/' + el.id}>
+                  {el.title}
+                </ListGroupItemHeading>
+              </Col>
+              <Col md={2}>
+                <FontAwesomeIcon 
+                  icon={faTimes} 
+                  style={{marginRight: '1em'}}
+                  onClick={()=>removeRequestPhoto(el)}
+                />
+              </Col>
+            </Row>
+            <ListGroupItemText>
+              ID:{el.id}
+            </ListGroupItemText>
+            <ListGroupItemText style={{textAlign: 'justify', textJustify: 'inter-word'}}>
+              Descripción: {el.description}
+            </ListGroupItemText>
           </Col>
         </Row>
       </ListGroupItem>
@@ -252,6 +258,7 @@ const mapActionsToProps = dispatch => {
     setRoute: route => {
       return dispatch(misc.setCurrentRoute(route));
     },
+    removeRequestPhoto: value => dispatch(requestPhoto.removeRequestPhoto(value)),
     sendRequest: (info) => {
       return dispatch() //enviar informacion formulario
     }

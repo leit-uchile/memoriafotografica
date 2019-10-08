@@ -36,7 +36,7 @@ class EditPhotosModal extends Component {
 
     componentWillMount() {}
 
-    toggle() {
+    toggle(){
         this.setState({
           modal: !this.state.modal,
           sent: false,
@@ -140,7 +140,11 @@ class EditPhotosModal extends Component {
 
         return(
             <div className={className} style={style}>
-                <Button onClick={this.toggle}>Editar</Button>
+                <Button 
+                    disabled={this.props.photos.length == 0} 
+                    onClick={this.toggle}>
+                    Editar selección
+                </Button>
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
                     {/* {this.props.photos.length===1
                     ? <ModalHeader><h4 style={{fontWeight:'bold'}}>Editando 1 foto</h4></ModalHeader>
