@@ -1,6 +1,12 @@
 import React, { Component, Fragment } from "react";
 import { user, misc } from "../../actions";
 import { connect } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faArrowAltCircleRight,
+    faArrowAltCircleLeft
+} from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 import {
     Container,
     Row,
@@ -42,7 +48,7 @@ class EditProfile extends Component {
         };
         this.genericChangeHandler = this.genericChangeHandler.bind(this);
         this.checkPassword = this.checkPassword.bind(this);
-       
+
         this.fr = new FileReader();
         this.fr.onload = (function (theFile) {
             return function (e) {
@@ -50,6 +56,22 @@ class EditProfile extends Component {
             };
         })(props.photo).bind(this);
         this.handleFileSelect = this.handleFileSelect.bind(this);
+    }
+    componentDidMount() {
+        const { user } = this.props;
+        if (user.avatar === null) {
+            var canvas = document.getElementById("myCanvas");
+            var ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#FF0000";
+            ctx.fillRect(0, 0, 200, 200);
+            ctx.font = "100px Arial";
+            ctx.fillStyle = "#FFF";
+            ctx.fillText(
+                user.first_name.slice(0, 1) + user.last_name.slice(0, 1),
+                30,
+                130
+            );
+        }
     }
 
     toggle() {
@@ -63,7 +85,7 @@ class EditProfile extends Component {
             modal: !prevState.modal
         }))
     }
-    toggleModalpass(){
+    toggleModalpass() {
         this.setState(prevState => ({
             modal_pass: !prevState.modal_pass
         }))
@@ -96,11 +118,11 @@ class EditProfile extends Component {
             return true;
         }
     }
-    
+
     onSubmit = e => {
         e.preventDefault();
         if (this.checkPassword()) {
-            this.props.update(user)            
+            this.props.update(user)
         }
     };
     handleFileSelect(e) {
@@ -136,15 +158,28 @@ class EditProfile extends Component {
         }
         return (
             <Container>
-                <Row>
-                    <Col>
+                <Row >
+                    <Col sm="3" style={{ marginTop: "2em" }}>
+                        <Button style={{ margin: "0 auto" }}
+                  color="secondary"
+                  tag={Link}
+                  to="./dashboard" >
+                            <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}
+                        </Button>
+                    </Col>
+                    <Col sm="9">
                         <h2 style={styles.title}> Editar mi perfil</h2>
                     </Col>
+
                 </Row>
-                <Row style={{ marginTop: "1em" }}>
-                    <Col sm="4" style={{ marginTop: "1em" }}>
+                <Row >
+                    <Col sm="3" style={{ marginTop: "1em" }}>
                         <Card>
-                            <CardImg top width="100%" src={user.avatar} />
+                            {user.avatar === null ? (
+                                <canvas id="myCanvas" height="200px" width="200px" />
+                            ) : (
+                                    <CardImg top width="100%" src={user.avatar.slice(21)} />
+                                )}
                             <CardBody style={{ backgroundColor: "#ebeeef" }}>
                                 <ButtonDropdown
                                     isOpen={this.state.dropdownOpen}
@@ -174,7 +209,7 @@ class EditProfile extends Component {
                             </CardBody>
                         </Card>
                     </Col>
-                    <Col sm="8">
+                    <Col sm="9">
                         <Container fluid>
                             <Row>
                                 <Col>
@@ -259,62 +294,11 @@ class EditProfile extends Component {
                                     </Col>
                                 </FormGroup>
 
-                                <Button color="link" onClick={this.toggleModalpass}>Cambiar contraeña </Button>
-                                <Modal isOpen={this.state.modal_pass} toggle={this.toggleModalpass} >
-                                    <ModalHeader toggle={this.toggleModalpass}>Actualizar Contraseña</ModalHeader>
-                                    <ModalBody>
-                                        <FormGroup row>
-                                            <Label for="passwordCheck" sm={3}>
-                                                Actual Contraseña
-                                         </Label>
-                                            <Col sm={9}>
-                                                <Input
-                                                    id="passwordCheck"
-                                                    type="password"
-                                                    onChange={this.genericChangeHandler}
-                                                    value={this.state.user.passwordCheck}
-                                                    required></Input>
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Label for="password" sm={3}>
-                                                Nueva Contraseña
-                                        </Label>
-                                            <Col sm={9}>
-                                                <Input
-                                                    id="password"
-                                                    type="password"
-                                                    onChange={this.genericChangeHandler}
-                                                    value={this.state.user.password}
-                                                    required></Input>
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Label for="newPasswordCheck" sm={3}>
-                                                Repetir Contraseña
-                                        </Label>
-                                            <Col sm={9}>
-                                                <Input
-                                                    id="newPasswordCheck"
-                                                    type="password"
-                                                    onChange={this.genericChangeHandler}
-                                                    value={this.state.user.newPasswordCheck}
-                                                    required></Input>
-                                            </Col>
-                                        </FormGroup>
-
-                                    </ModalBody>
-                                    <ModalFooter>
-                                        <Button color="primary" onClick={this.toggleModalpass}>Actualizar</Button>{' '}
-                                        <Button color="secondary" onClick={this.toggleModalpass}>Cancelar</Button>
-                                    </ModalFooter>
-                                </Modal>
-
                                 <Row>
 
                                     <Button color="danger" onClick={this.toggleModal}>
                                         Guardar Cambios
-                                    </Button>
+</Button>
                                 </Row>
                                 <Modal
                                     isOpen={this.state.modal}
@@ -322,7 +306,7 @@ class EditProfile extends Component {
                                     toggle={this.toggleModal}>
                                     <ModalHeader toggle={this.toggleModal} >
                                         Editar mis datos
-                  </ModalHeader>
+</ModalHeader>
                                     <ModalBody>
                                         <FormGroup row style={{ textAlign: "center", offset: 2 }}>
                                             <Label
@@ -330,7 +314,7 @@ class EditProfile extends Component {
                                                 sm={4}
                                                 style={{ textAlign: "center" }}>
                                                 Ingresa tu constraseña
-                      </Label>
+</Label>
                                             <Col sm={{ size: 6, offset: 0.5 }}>
                                                 <Input
                                                     id="passwordCheck"
@@ -345,16 +329,70 @@ class EditProfile extends Component {
                                     <ModalFooter>
                                         <Button color="primary" onClick={this.toggleModal}>
                                             Guardar
-                    </Button>{" "}
+</Button>{" "}
                                         <Button color="secondary" onClick={this.toggleModal}>
                                             Cancelar
-                    </Button>
+</Button>
                                     </ModalFooter>
                                 </Modal>
                             </Form>
                         </Container>
                     </Col>
                 </Row>
+
+
+                <Button color="link" onClick={this.toggleModalpass}>Cambiar contraseña </Button>
+                <Modal isOpen={this.state.modal_pass} toggle={this.toggleModalpass} >
+                    <ModalHeader toggle={this.toggleModalpass}>Actualizar Contraseña</ModalHeader>
+                    <ModalBody>
+                        <FormGroup row>
+                            <Label for="passwordCheck" sm={3}>
+                                Actual Contraseña
+                                         </Label>
+                            <Col sm={9}>
+                                <Input
+                                    id="passwordCheck"
+                                    type="password"
+                                    onChange={this.genericChangeHandler}
+                                    value={this.state.user.passwordCheck}
+                                    required></Input>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label for="password" sm={3}>
+                                Nueva Contraseña
+                                        </Label>
+                            <Col sm={9}>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    onChange={this.genericChangeHandler}
+                                    value={this.state.user.password}
+                                    required></Input>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label for="newPasswordCheck" sm={3}>
+                                Repetir Contraseña
+                                        </Label>
+                            <Col sm={9}>
+                                <Input
+                                    id="newPasswordCheck"
+                                    type="password"
+                                    onChange={this.genericChangeHandler}
+                                    value={this.state.user.newPasswordCheck}
+                                    required></Input>
+                            </Col>
+                        </FormGroup>
+
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="primary" onClick={this.toggleModalpass}>Actualizar</Button>{' '}
+                        <Button color="secondary" onClick={this.toggleModalpass}>Cancelar</Button>
+                    </ModalFooter>
+                </Modal>
+
+
             </Container>
         );
     }
