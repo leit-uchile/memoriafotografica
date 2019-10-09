@@ -1,4 +1,5 @@
 import React, {Component, Fragment} from "react";
+import { Link, Redirect } from "react-router-dom";
 import { 
     Button, 
     UncontrolledButtonDropdown,
@@ -194,7 +195,13 @@ class EditPhotosModal extends Component {
                 <Button 
                     disabled={this.props.photos.length == 0} 
                     onClick={this.toggle}>
-                    Editar selección
+                    Editar selección ({this.props.photos.length})
+                </Button>
+                <Button
+                    disabled={this.props.photos.length == 0}
+                    tag={Link}
+                    to="#">
+                    Crear album
                 </Button>
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
                     {this.props.photos.length===1
@@ -224,5 +231,4 @@ class EditPhotosModal extends Component {
         )
     }
 }
-
 export default EditPhotosModal;
