@@ -16,6 +16,7 @@ import LandingPage from "./LandingPage";
 import UserDashboard from "./UserDashboard/UserDashboard";
 import EditProfile from "./UserDashboard/EditProfile";
 import UserPhotos from "./UserDashboard/UserPhotos";
+import UserAlbums from "./UserDashboard/UserAlbums";
 import Index from "./Miscellaneous/Index";
 // Utils
 import PrivateComponent from "../components/Routes/PrivateComponent";
@@ -42,6 +43,7 @@ const Layout = () => {
             <PrivateComponent path={"/user/dashboard"} component={UserDashboard} />
             <PrivateComponent path={"/user/editProfile"} component={EditProfile} />
             <PrivateComponent path={"/user/photos"} component={UserPhotos} />
+            <PrivateComponent path={"/user/albums"} component={UserAlbums} />
             <Route component={NoMatch} />
           </Switch>
         </div>  

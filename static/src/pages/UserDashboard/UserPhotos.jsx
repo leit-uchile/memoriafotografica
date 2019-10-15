@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Link, Redirect } from "react-router-dom";
 import { auth, home, curador } from "../../actions";
 import {
   Button,
@@ -16,6 +17,8 @@ import Gallery from "react-photo-gallery";
 import EditPhotosModal from "./EditPhotosModal"
 import PhotoSelector from "../../components/PhotoSelector";
 import LeitSpinner from "../../components/LeitSpinner";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {faArrowAltCircleLeft} from "@fortawesome/free-solid-svg-icons";
 
 class UserPhotos extends Component {
   constructor(props) {
@@ -23,36 +26,25 @@ class UserPhotos extends Component {
     this.state = {
       redirect: false,
       chosenPhotoIndex: 0,
-      edit: true,
+      edit: false,
       picturesToEdit: [],
     };
-  }
-  componentWillMount() {
-    const { user } = this.props;
-    this.props.onLoadGetPhotos(user.id, 100, 0);
-  }
-  componentDidMount(){
-    const { user } = this.props;
+    this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
   }
   handleRedirect = obj => { //no funcionando
     
   };
-
-  changeMode = () => { //se cae
-    this.setState({ edit: !this.state.edit });
-  };
-
   
-
-  handleSubmit = e => {
-    e.preventDefault();
-    this.props.createCategory(this.state);
+  changeMode = () => {
+    this.setState({ edit: !this.state.edit });
   };
 
   handleOnClick = obj => { //falta remover al desclickear
     const id = obj.photo.id;
     const newList = this.state.picturesToEdit.filter(el => el.id !== id);
-    this.setState({picturesToEdit: [...newList, obj.photo]});
+    {newList.length === this.state.picturesToEdit.length //el objeto no esta
+    ? (this.setState({picturesToEdit: [...newList, obj.photo] }) )
+    : (this.setState({picturesToEdit: [...newList] }) )}
   };
 
   render() {
@@ -66,48 +58,77 @@ class UserPhotos extends Component {
       created_date: el.created_at,
       permissions: el.permissions
     }));
-    const { photos } = this.props.photos;
-    const { user } = this.props.user;
-
     return (
       <Container>
         <Row>
-          <Col>
+          <Col md={1}>
+            <Button style={{ margin: "0 auto" }}
+                color="secondary"
+                tag={Link}
+                to="./dashboard" >
+                <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}
+            </Button>
+          </Col>
+          <Col style={{display:'flex'}}>
             <h2>Mis fotos</h2>
             <Button
-              onClick={this.changeMode}>
-              Modo edición
+                onClick={this.changeMode}
+                color={this.state.edit
+                ? 'success'
+                : 'secondary'}
+                style={{marginLeft:'10px'}}>
+                Modo edición
             </Button>
           </Col>
         </Row>
-        <Row>
-          <Col style={{ textAlign: "center" }}>
-            {!this.state.edit ? (
-              <Gallery
-                photos={mapped}
-                targetRowHeight={200}
-                onClick={(e, index) => this.handleRedirect(index)}
-              />) :(
-              <div>
-                <EditPhotosModal
-                photos={this.state.picturesToEdit}
-                />
-                
-                <PhotoSelector
-                photos={mapped}
-                targetRowHeight={200}
-                onClick={(e, index) => this.handleOnClick(index)}
-                />
-              </div>
+        <div>
+            {!this.state.edit 
+            ? (
+              <Row>
+                <Col md={10}>
+                  <Gallery
+                    photos={mapped}
+                    targetRowHeight={200}
+                    onClick={(e, index) => this.handleRedirect(index)}
+                  />
+                </Col>
+                <Col md={2}>
+                  <h2>FILTRO</h2>
+                </Col>
+              </Row>
+              ) 
+            :(
+              <Row>
+                <Col md={10}>
+                  <PhotoSelector
+                  photos={mapped}
+                  targetRowHeight={200}
+                  onClick={(e, index) => this.handleOnClick(index)}
+                  />
+                </Col>
+                <Col md={2} style={styles.editMenu}>
+                  <EditPhotosModal
+                    photos={this.state.picturesToEdit}
+                  />
+                </Col>
+              </Row>
               )
             }
-          </Col>
-        </Row>
+        </div>
       </Container>
     );
   }
 }
 
+const styles = {
+  editMenu:{
+      position: "sticky",
+      top: "0",
+      height: "4em",
+      padding: "1em 0",
+      zIndex: "4"
+  }
+}
 const mapStateToProps = state => ({
   photos: state.user.photos,
   user: state.user.userData

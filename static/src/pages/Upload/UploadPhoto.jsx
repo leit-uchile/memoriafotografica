@@ -120,7 +120,7 @@ class UploadPhoto extends Component {
       this.props.sendAlert("Debe enviar al menos una foto", "warning");
     } else if (this.state.photosList.some(el => el.meta.description === "")) {
       this.props.sendAlert(
-        "Debe rellenar la descripcion de todas las fotos",
+        "Debe rellenar la descripción de todas las fotos",
         "warning"
       );
     } else {

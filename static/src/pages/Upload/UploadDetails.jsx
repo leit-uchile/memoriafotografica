@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import CropPhoto from "./CropPhoto";
 import ReactTags from "react-tag-autocomplete";
 import {
   Container,
@@ -111,8 +112,9 @@ class UploadDetails extends Component {
         }}
         fluid>
         <Row>
-          <Col md="3">
+          <Col md="3" style={{textAlign:'center'}}>
             <img style={styles.thumb} src={this.state.src} />
+            <CropPhoto src={this.state.src}/>
           </Col>
           <Col md="9" style={{ padding: "20px" }}>
             <Form>
