@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { Button, Row, Col, Container, Badge } from "reactstrap";
@@ -9,8 +9,14 @@ import CommentHandler from "./CommentHandler";
 import Photo from "../../components/Photo";
 import { photoDetails, home, search, requestPhoto } from "../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarPlus, faCamera } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCalendarPlus,
+  faCamera,
+  faChevronCircleLeft,
+  faChevronCircleRight
+} from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
+import "../../css/photoInfo.css";
 
 const getPermissionLogo = (name, w, h, offset) => {
   var url;
@@ -39,12 +45,10 @@ const getPermissionLogo = (name, w, h, offset) => {
   return <img width={w} height={h} src={url} />;
 };
 
-const Tags = ({ tags, onRedirect }) => (
-  <Container fluid>
+const Tags = ({ tags, onRedirect, style }) => (
+  <Container fluid style={style}>
     <Row>
-      <Col
-        sm={{ offset: 2, size: 10 }}
-        style={{ fontSize: "1.2em", display: "flex" }}>
+      <Col style={{ fontSize: "1.2em" }}>
         {tags.length == 0 ? (
           <p>No hay tags asociados</p>
         ) : (
@@ -66,10 +70,10 @@ const Tags = ({ tags, onRedirect }) => (
   </Container>
 );
 
-const Categories = ({ cats, onRedirect }) => (
-  <Container fluid>
+const Categories = ({ cats, onRedirect, style }) => (
+  <Container fluid style={style}>
     <Row>
-      <Col sm={{ offset: 2, size: 10 }} style={{ fontSize: "1.2em" }}>
+      <Col style={{ fontSize: "1.2em" }}>
         <p>
           {cats.length == 0
             ? "No se encuentra en una categoría"
@@ -90,12 +94,15 @@ class PhotoDetails extends Component {
     super(props);
     this.state = {
       suggestionsLoaded: false,
-      auth: this.props.auth,
       myPhotoID: this.props.match.params.id,
       firstLoad: true,
       redirectToGallery: false,
+      // Page management
+      currentIndex: -1,
+      leftIndex: -1,
+      rightIndex: -1,
       pageViewLimit: 10,
-      interactionLimit: 8
+      leftPage: 0
     };
     this.imageContainer = React.createRef();
   }
@@ -119,11 +126,38 @@ class PhotoDetails extends Component {
       block: "start",
       behavior: "smooth"
     });
+
     // Load info the first time
     this.setState({ loadingPhoto: true }, () =>
       this.props.onLoad(this.state.myPhotoID)
     );
   }
+
+  computeIndexes = () => {
+    const { suggestions } = this.props;
+    let index;
+    suggestions.map((el, key) => {
+      if (el.id == this.state.myPhotoID) {
+        index = key;
+      }
+    });
+
+    var leftPage =
+      this.state.pageViewLimit * Math.floor(index / this.state.pageViewLimit);
+    let leftPhotoId = index > 0 ? suggestions[index - 1].id : suggestions[0].id;
+    let rightPhotoId =
+      index < suggestions.length - 1
+        ? suggestions[index + 1].id
+        : suggestions[index].id;
+
+    this.props.setSelectedId(index);
+    this.setState({
+      currentIndex: index,
+      leftIndex: leftPhotoId,
+      rightIndex: rightPhotoId,
+      leftPage: leftPage
+    });
+  };
 
   componentDidUpdate(prevProps) {
     // Load info when new props arrive or it is the first load
@@ -135,7 +169,10 @@ class PhotoDetails extends Component {
         block: "start",
         behavior: "smooth"
       });
-      this.setState({ firstLoad: false }, () => this.getDataFromBack());
+
+      this.setState({ firstLoad: false, redirectWithButton: false }, () =>
+        this.getDataFromBack()
+      );
     }
 
     // Reload component with new ID
@@ -144,12 +181,19 @@ class PhotoDetails extends Component {
         block: "start",
         behavior: "smooth"
       });
+
       this.setState(
         {
           myPhotoID: this.props.match.params.id,
-          loadingPhoto: true
+          loadingPhoto: true,
+          redirectWithButton: false
         },
-        () => this.props.onLoad(this.state.myPhotoID)
+        () => {
+          // If page was refreshed we need to get our index
+          this.computeIndexes();
+
+          this.props.onLoad(this.state.myPhotoID);
+        }
       );
     }
   }
@@ -159,7 +203,16 @@ class PhotoDetails extends Component {
       return <Redirect to="/gallery" />;
     }
 
-    const { photoInfo, suggestions, photoPagination, photoIndex } = this.props;
+    const { photoInfo, suggestions } = this.props;
+
+    // Populate on first load with data
+    if (
+      this.state.myPhotoID &&
+      suggestions.length !== 0 &&
+      this.state.currentIndex === -1
+    ) {
+      this.computeIndexes();
+    }
 
     /*
      Suggestions are loaded by the gallery with an 
@@ -167,59 +220,43 @@ class PhotoDetails extends Component {
      If no group is selected one by default will be loaded
      and the index is -1
     */
-    // TODO: when clicking navigate updating the selectedIndex
-    // console.log(this.props.photoIndex + (35*photoPagination.page) + 10)
-    let Kindex = photoIndex !== -1 ? photoIndex : 0;
 
     var Suggestions = suggestions
-      ? suggestions.slice(0, 10).map((im, k) =>
-          im.id !== photoInfo.details.id ? (
-            <Photo
-              style={{ marginLeft: "2px", display: "inline-block" }}
-              key={k}
-              url={im.thumbnail}
-              name={"Foto relacionada"}
-              useLink
-              redirectUrl={"/photo/" + im.id}
-              height={"50px"}
-              width={"50px"}
-            />
-          ) : (
-            <Photo
-              style={{
-                marginLeft: "2px",
-                display: "inline-block",
-                backgroundBlendMode: "lighten",
-                backgroundColor: "#ff5a60"
-              }}
-              key={k}
-              url={im.thumbnail}
-              name={"Foto relacionada"}
-              height={"50px"}
-              width={"50px"}
-              onClick={() => {}}
-            />
+      ? suggestions
+          .slice(
+            this.state.leftPage,
+            this.state.leftPage + this.state.pageViewLimit
           )
-        )
+          .map((im, k) =>
+            im.id !== photoInfo.details.id ? (
+              <Photo
+                style={{ marginLeft: "2px", display: "inline-block" }}
+                key={k}
+                url={im.thumbnail}
+                name={"Foto relacionada"}
+                useLink
+                redirectUrl={"/photo/" + im.id}
+                height={"50px"}
+                width={"50px"}
+              />
+            ) : (
+              <Photo
+                style={{
+                  marginLeft: "2px",
+                  display: "inline-block",
+                  backgroundBlendMode: "lighten",
+                  backgroundColor: "#ff5a60"
+                }}
+                key={k}
+                url={im.thumbnail}
+                name={"Foto relacionada"}
+                height={"50px"}
+                width={"50px"}
+                onClick={() => {}}
+              />
+            )
+          )
       : null;
-
-    var userProfile = photoInfo.details.user ? (
-      <Container fluid>
-        <Row>
-          <Col sm={4}>
-            <div
-              style={{
-                ...styles.avatarStyle.avatarImg,
-                backgroundImage: `url(${photoInfo.details.user.avatar})`
-              }}></div>
-          </Col>
-          <Col sm={8}>
-            <b>{`${photoInfo.details.user.first_name} ${photoInfo.details.user.last_name}`}</b>
-            <p>{photoInfo.details.user.rol_type}</p>
-          </Col>
-        </Row>
-      </Container>
-    ) : null;
 
     return (
       <div ref={this.imageContainer}>
@@ -230,7 +267,7 @@ class PhotoDetails extends Component {
             property="og:url"
             content=" http://memoriafotografica.ing.fcfm.cl/"
           />
-          <meta property="og:image" content=" http://example.com/image.jpg" />
+          <meta property="og:image" content={photoInfo.details.thumbnail} />
           <meta property="og:description" content="Descripcion" />
           <title>{photoInfo.details.title}</title>
         </Helmet>
@@ -238,16 +275,42 @@ class PhotoDetails extends Component {
           <Row style={styles.imageContainer}>
             <Col md={{ offset: 3, size: 6 }}>
               <h2 style={styles.center}>{photoInfo.details.title}</h2>
-              <img
-                alt={photoInfo.details.title}
-                src={photoInfo.details.thumbnail}
-                style={{
-                  display: "block",
-                  margin: "0 auto 0 auto",
-                  maxHeight: "60vh",
-                  maxWidth: "100%"
-                }}
-              />
+              <div style={{ textAlign: "center" }}>
+                <Link
+                  className="photoDetailNavigation"
+                  style={{
+                    display: "inline-block",
+                    marginRight: "1em"
+                  }}
+                  to={`/photo/${this.state.leftIndex}`}>
+                  <FontAwesomeIcon
+                    icon={faChevronCircleLeft}
+                    style={{ height: "25px", width: "25px" }}
+                  />
+                </Link>
+                <img
+                  alt={photoInfo.details.title}
+                  src={photoInfo.details.thumbnail}
+                  style={{
+                    display: "inline-block",
+                    margin: "0 auto",
+                    maxHeight: "60vh",
+                    maxWidth: "75%"
+                  }}
+                />
+                <Link
+                  className="photoDetailNavigation"
+                  style={{
+                    display: "inline-block",
+                    marginLeft: "1em"
+                  }}
+                  to={`/photo/${this.state.rightIndex}`}>
+                  <FontAwesomeIcon
+                    icon={faChevronCircleRight}
+                    style={{ height: "25px", width: "25px" }}
+                  />
+                </Link>
+              </div>
             </Col>
           </Row>
           <Row
@@ -266,10 +329,23 @@ class PhotoDetails extends Component {
               <Container>
                 <Row>
                   <Col md={3}>
-                    {userProfile}
+                    {photoInfo.details.user ? (
+                      <Fragment>
+                        <div
+                          style={{
+                            ...styles.avatarStyle.avatarImg,
+                            backgroundImage: `url(${photoInfo.details.user.avatar})`
+                          }}></div>
+                        <div style={{ marginLeft: "6em" }}>
+                          <b>{`${photoInfo.details.user.first_name} ${photoInfo.details.user.last_name}`}</b>
+                          <p>{photoInfo.details.user.rol_type}</p>
+                        </div>
+                      </Fragment>
+                    ) : null}
                     <Tags
                       tags={photoInfo.details.metadata}
                       onRedirect={this.redirectToSearch}
+                      style={{ clear: "both" }}
                     />
                     <Categories
                       cats={photoInfo.details.category}
@@ -355,19 +431,21 @@ class PhotoDetails extends Component {
               marginTop: "2em",
               paddingTop: "2em"
             }}>
-            <Container>
-              <Row>
-                <Col md={3}>
-                  <h3>Licencias</h3>
-                  {photoInfo.details.permission.map((el, i) =>
-                    getPermissionLogo(el, 90, 32, i)
-                  )}
-                </Col>
-                <Col md={9}>
-                  <CommentHandler id={this.props.match.params.id} fluid />
-                </Col>
-              </Row>
-            </Container>
+            <Col>
+              <Container>
+                <Row>
+                  <Col md={3}>
+                    <h3>Licencias</h3>
+                    {photoInfo.details.permission.map((el, i) =>
+                      getPermissionLogo(el, 90, 32, i)
+                    )}
+                  </Col>
+                  <Col md={9}>
+                    <CommentHandler id={this.props.match.params.id} fluid />
+                  </Col>
+                </Row>
+              </Container>
+            </Col>
           </Row>
         </Container>
       </div>
@@ -379,7 +457,7 @@ const styles = {
   imageContainer: {
     backgroundColor: "#212124",
     color: "white",
-    padding: "3em",
+    padding: "3em 0",
     position: "relative",
     minHeight: "40vh"
   },
@@ -392,7 +470,8 @@ const styles = {
       height: "50px",
       borderRadius: "25px",
       backgroundSize: "cover",
-      backgroundRepeat: "no-repeat"
+      backgroundRepeat: "no-repeat",
+      float: "left"
     },
     avatarText: {}
   },
