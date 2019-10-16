@@ -11,7 +11,9 @@ import {
   SWICH_PHOTO_APPROVAL_ERROR,
   CURADOR_LOADING,
   RECOVERED_REPORTS,
-  RECOVERED_REPORTS_ERROR
+  RECOVERED_REPORTS_ERROR,
+  GET_GENERAL_STATS,
+  GET_GENERAL_STATS_ERROR
 } from "./types";
 
 export const getReportes = () => {
@@ -146,27 +148,54 @@ export const getPhotos = auth => {
   };
 };
 
-export const switchPhotoApproval = (auth, photoID, curr_value) => 
-  (dispatch, getState) => {
+export const switchPhotoApproval = (auth, photoID, curr_value) => (
+  dispatch,
+  getState
+) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().auth.token
+  };
+  let sent_data = JSON.stringify({ approved: !curr_value });
+  return fetch("/api/photos/" + photoID + "/", {
+    method: "PUT",
+    headers: headers,
+    body: sent_data
+  }).then(function(response) {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then(data => {
+        dispatch({ type: SWICH_PHOTO_APPROVAL, data: data });
+      });
+    } else {
+      dispatch({ type: SWICH_PHOTO_APPROVAL_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
+export const getGeneralStats = () => (dispatch, getState) => {
+  try {
     let headers = {
       "Content-Type": "application/json",
       Authorization: "Token " + getState().auth.token
     };
-    let sent_data = JSON.stringify({ approved: !curr_value });
-    return fetch("/api/photos/" + photoID + "/", {
-      method: "PUT",
-      headers: headers,
-      body: sent_data
-    }).then(function(response) {
-      console.log(response);
+    return fetch("/api/metrics/general/", {
+      method: "GET",
+      headers: headers
+    }).then(response => {
       const r = response;
       if (r.status === 200) {
         return r.json().then(data => {
-          dispatch({ type: SWICH_PHOTO_APPROVAL, data: data });
+          dispatch({ type: GET_GENERAL_STATS, data: data });
         });
       } else {
-        dispatch({ type: SWICH_PHOTO_APPROVAL_ERROR, data: r.data });
+        dispatch({ type: GET_GENERAL_STATS_ERROR, data: r.data });
         throw r.data;
       }
     });
-  };
+  } catch (err) {
+    dispatch({ type: GET_GENERAL_STATS_ERROR, data: "Error on general stats action" });
+    throw err;
+  }
+};

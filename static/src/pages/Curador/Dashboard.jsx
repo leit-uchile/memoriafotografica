@@ -9,6 +9,9 @@ import Landing from "./Landing";
 import { Container, Row, Button, Col } from "reactstrap";
 import { Route, Link } from "react-router-dom";
 import "./styles.css";
+// Important for ReactVis
+import '../../../node_modules/react-vis/dist/style.css';
+import '../../css/semantic-ui-min-custom.css'
 
 /**
  * TODO:
