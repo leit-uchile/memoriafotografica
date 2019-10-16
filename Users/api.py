@@ -114,17 +114,22 @@ class UserDetailAPI(generics.GenericAPIView):
         return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
-        user = self.get_object(pk)
-        serializer = UserSerializer(user, data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        user = self.get_object(pk)        
+     
+        if str(request.user.id) == pk or request.user.user_type != 1:
+            serializer = UserSerializer(user, data = request.data, context={'user_type': request.user.user_type}, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     def delete(self, request, pk, *args, **kwargs):
         user = self.get_object(pk)
         user.delete()
         return Response(status = status.HTTP_204_NO_CONTENT)
+
 
 class UserPhotosAPI(generics.GenericAPIView):
     """

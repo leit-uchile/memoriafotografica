@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import User
 from django.conf import settings
+from datetime import datetime
 from Gallery.serializers import AlbumSerializer, PhotoSerializer, CommentSerializer
 
 
@@ -28,10 +29,24 @@ class UserSerializer(serializers.ModelSerializer):
     # albums = AlbumSerializer(many = True)
     # photos = PhotoSerializer(many = True)
     # user_type = serializers.IntegerField()
-
     class Meta:
         model = User
-        exclude=('password','photos','albums','comments')
+        exclude=('photos','albums','comments', 'groups', 'user_permissions')
+        extra_kwargs = {            
+            "password": {"write_only": True},
+        }
+    
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            if attr == 'password':
+                instance.set_password(value)
+            elif attr == 'report':
+                continue
+            else:
+                setattr(instance, attr, value)
+        instance.updated_at = datetime.now()
+        instance.save()
+        return instance
 
 class UserPhotoSerializer(serializers.ModelSerializer):
     photos = PhotoSerializer(many = True)
