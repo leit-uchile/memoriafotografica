@@ -7,7 +7,9 @@ import {
   EMPTY_REPORTS,
   CURADOR_LOADING,
   CREATED_CATEGORY,
-  CREATED_CATEGORY_ERROR
+  CREATED_CATEGORY_ERROR,
+  GET_GENERAL_STATS,
+  GET_GENERAL_STATS_ERROR
 } from "../actions/types";
 
 const initialState = {
@@ -16,7 +18,10 @@ const initialState = {
   categories: [],
   loading: false,
   error: "",
-  refresh: false
+  refresh: false,
+  stats: {
+    general: null
+  }
 };
 
 export default function curador(state = initialState, action) {
@@ -60,6 +65,19 @@ export default function curador(state = initialState, action) {
         error:
           "Se produjo un error, intente nuevamente. Si persiste, contacte gente especializada."
       };
+    case GET_GENERAL_STATS:
+      return {
+        ...state,
+        stats: {
+          ...state.stats,
+          general: action.data,
+        },
+      }
+    case GET_GENERAL_STATS_ERROR:
+      return {
+        ...state,
+        error: action.data
+      }
     default:
       return state;
   }

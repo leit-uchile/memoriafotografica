@@ -47,3 +47,11 @@ body {
   color: #ff5a60;
   font-weight: 600;
 }
+
+.children-margin > div{
+  margin-bottom: 2em;
+}
+
+.curador-donut-chart {
+  display: inline-block;
+}

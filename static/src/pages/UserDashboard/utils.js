@@ -19,11 +19,11 @@ export const userRolTranslation =id => {
       return "Ex-Alumno";
     case 3:
       return "Académico";
-    case 3:
+    case 4:
       return "Ex-Académico";
-    case 3:
+    case 5:
       return "Funcionario";
-    case 3:
+    case 6:
       return "Externo";
     default:
       return "Externo";
