@@ -17,7 +17,8 @@ class ReportSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.resolved = validated_data.get('resolved', instance.resolved)
-        instance.updated_at = datetime.now
+        instance.updated_at = datetime.now()
+        instance.save()
 
 
 class CommentAdminSerializer(serializers.ModelSerializer):
@@ -32,6 +33,7 @@ class CommentAdminSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.content = validated_data.get('content', instance.content)
         instance.censure = validated_data.get('censure', instance.censure)
+        instance.updated_at = datetime.now()
         instance.save()
         return instance
 
@@ -60,6 +62,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
+        instance.updated_at = datetime.now()
         instance.save()
         return instance
 
@@ -92,7 +95,7 @@ class PhotoSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.permission = validated_data.get('permission', instance.permission)
         instance.title = validated_data.get('title', instance.title)
-        instance.updated_at = datetime.now
+        instance.updated_at = datetime.now()
         instance.save()
         return instance
 
@@ -110,6 +113,7 @@ class PhotoAdminSerializer(serializers.ModelSerializer):
         instance.censure = validated_data.get('censure', instance.censure)
         instance.permission = validated_data.get('permission', instance.permission)
         instance.description = validated_data.get('description', instance.description)
+        
         try:
             instance.metadata.set(validated_data['metadata'])
         except KeyError:
@@ -119,6 +123,7 @@ class PhotoAdminSerializer(serializers.ModelSerializer):
         except KeyError:
             pass
         instance.title = validated_data.get('title', instance.title)
+        instance.updated_at = datetime.now()
         instance.save()
         return instance
 
@@ -132,24 +137,68 @@ class AlbumSerializer(serializers.ModelSerializer):
         model = Album
 
     def create(self, validated_data):
-        a = Album(name=validated_data['name'], description=validated_data['description'])
+        #Create incomplete album
+        a = Album(name=validated_data['name'])
+        a.description = validated_data.get('description', a.description)
         a.save()
+        # Get user from request data
         my_user = self.context['request'].user
-        valid_pics = list(filter(lambda x: x in my_user.photos.all() ,validated_data['pictures']))
-        a.pictures.add(*valid_pics)
-        # Save thumbnail
-        a.thumbnail = valid_pics[0].thumbnail.url
+        # If user is admin or collab, set collection flag:
+        if my_user.user_type != 1:
+            try:
+                    c = validated_data['collection']
+                    a.collection = c
+                    a.save()
+            except KeyError:
+                pass
+
+        # TODO: Handle error if no photos are passed to the album,
+        #       a.thumbnail call will throw an error!!!!!
+        try:
+            #TODO: Error handler if no pictures in request
+            validated_data['pictures']
+        except:
+            a.save()
+            return a
+
+        if a.collection:            
+            a.pictures.add(*validated_data['pictures'])            
+            # Save thumbnail
+            a.thumbnail = validated_data['pictures'][0].thumbnail.url
+        else:    
+            valid_pics = list(filter(lambda x: x in my_user.photos.all() ,validated_data['pictures']))
+            a.pictures.add(*valid_pics)
+            # Save thumbnail
+            a.thumbnail = valid_pics[0].thumbnail.url        
         a.save()
         return a
 
     def update(self, instance, validated_data):
+
         instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
+        my_user = self.context['request'].user        
+        if my_user.user_type != 1:
+            try:
+                c = validated_data['collection']
+                instance.collection = c
+                instance.save()
+            except KeyError:
+                pass
+
         try:
             validated_data['pictures']
-            my_user = self.context['request'].user
-            valid_pics = list(filter(lambda x: x in my_user.photos.all() ,validated_data['pictures']))
-            instance.pictures.set(valid_pics)
+            if instance.collection:
+                instance.pictures.set(validated_data['pictures'])            
+                # Save thumbnail
+                instance.thumbnail = validated_data['pictures'][0].thumbnail.url           
+            else:           
+                valid_pics = list(filter(lambda x: x in my_user.photos.all() ,validated_data['pictures']))
+                instance.pictures.set(valid_pics)
+                instance.thumbnail = valid_pics[0].thumbnail.url        
         except KeyError:
             pass
+        
+        instance.updated_at = datetime.now()
         instance.save()
         return instance

@@ -116,5 +116,6 @@ class Album(models.Model):
     created_at = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)
     thumbnail = models.CharField(max_length=60, blank = True)
+    collection = models.BooleanField(default=False)
     def __str__(self):
         return "Album " + self.name
