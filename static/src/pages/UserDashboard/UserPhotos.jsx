@@ -36,16 +36,23 @@ class UserPhotos extends Component {
   };
   
   changeMode = () => {
-    this.setState({ edit: !this.state.edit });
+    this.setState({ edit: !this.state.edit,
+                    picturesToEdit: []});
   };
 
-  handleOnClick = obj => { //falta remover al desclickear
+  handleOnClick = obj => {
     const id = obj.photo.id;
     const newList = this.state.picturesToEdit.filter(el => el.id !== id);
     {newList.length === this.state.picturesToEdit.length //el objeto no esta
     ? (this.setState({picturesToEdit: [...newList, obj.photo] }) )
     : (this.setState({picturesToEdit: [...newList] }) )}
   };
+
+  putAlltoEdit(mapped,selectAll){
+    selectAll
+    ? this.setState({picturesToEdit: mapped})
+    : this.setState({picturesToEdit: []})
+  }
 
   render() {
     var mapped = this.props.photos.map(el => ({
@@ -89,7 +96,7 @@ class UserPhotos extends Component {
                   <Gallery
                     photos={mapped}
                     targetRowHeight={200}
-                    onClick={(e, index) => this.handleRedirect(index)}
+                    onClick={(e) => this.handleRedirect(e)}
                   />
                 </Col>
                 <Col md={2}>
@@ -104,6 +111,7 @@ class UserPhotos extends Component {
                   photos={mapped}
                   targetRowHeight={200}
                   onClick={(e, index) => this.handleOnClick(index)}
+                  putAll={(state) => this.putAlltoEdit(mapped,state)}
                   />
                 </Col>
                 <Col md={2} style={styles.editMenu}>

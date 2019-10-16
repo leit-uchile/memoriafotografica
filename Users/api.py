@@ -8,9 +8,12 @@ from .models import User
 from .permissions import *
 from rest_framework.documentation import include_docs_urls
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_condition import ConditionalPermission, C, And, Or, Not
 
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS
 
 class RegistrationAPI(generics.GenericAPIView):
     """
@@ -65,7 +68,9 @@ class UserListAPI(generics.GenericAPIView):
     post:
     Create a new user instance.
     """
-   
+    
+    permission_classes = [IsAuthenticated,]
+
     serializer_class = UserSerializer
     def get(self, request, *args, **kwargs):
         user = User.objects.all()
@@ -92,7 +97,7 @@ class UserDetailAPI(generics.GenericAPIView):
        delete:
        Delete an user.
        """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
     serializer_class = UserSerializer
     def get_object(self, pk):
         try:
@@ -102,6 +107,9 @@ class UserDetailAPI(generics.GenericAPIView):
 
     def get(self, request, pk, *args, **kwargs):
         user = self.get_object(pk)
+        if not request.user.is_authenticated :            
+            if not user.public_profile:                
+                return Response(status=status.HTTP_401_UNAUTHORIZED)        
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
@@ -122,9 +130,6 @@ class UserPhotosAPI(generics.GenericAPIView):
     """
        get:
        Get photos of a *user*.
-
-       TODO delete:
-       Delete an photo asociated to a *user*.
        """
     permission_classes = [IsAuthenticated,]
     serializer_class = UserPhotoSerializer
@@ -141,8 +146,6 @@ class UserAlbumsAPI(generics.GenericAPIView):
        get:
        Get albums of a *user*.
 
-       TODO delete:
-       Delete an album but not the photos asociated to a *user*.
        """
     permission_classes = [IsAuthenticated,]
     serializer_class = UserAlbumSerializer
