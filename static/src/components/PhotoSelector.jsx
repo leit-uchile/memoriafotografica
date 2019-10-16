@@ -96,11 +96,12 @@ const SelectedImage = ({
   );
 };
 
-const PhotoSelector = ({photos, ...props}) => {
+const PhotoSelector = ({photos, putAll=e => {},...props}) => {
   const [selectAll, setSelectAll] = useState(false);
 
   const toggleSelectAll = () => {
     setSelectAll(!selectAll);
+    putAll(!selectAll)
   };
 
   const imageRenderer = useCallback(

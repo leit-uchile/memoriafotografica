@@ -13,7 +13,7 @@ import {
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {} from "@fortawesome/free-solid-svg-icons";
+import {faCropAlt} from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
 import { upload, alert } from "../../actions";
 
@@ -38,6 +38,7 @@ class CropPhoto extends Component {
     super(Props);
     this.state = {
       modal: false,
+      rotation: 0,
       crop:{
         unit: '%',
         width: 50,
@@ -47,15 +48,26 @@ class CropPhoto extends Component {
       }
     };
     this.toggle = this.toggle.bind(this);
+    this.rotate = this.rotate.bind(this);
     this.setDimension = this.setDimension.bind(this);
   }
 
   toggle(){
     this.setState({
-      modal: !this.state.modal
+      modal: !this.state.modal,
+      rotation: 0
     });
   }
 
+  rotate(){
+    let newRotation = this.state.rotation - 90;
+    if(newRotation <= -360){
+      newRotation = 360;
+    }
+    this.setState({
+      rotation: newRotation,
+    })
+  }
   setDimension = (dimension) =>{
     this.setState({crop: dimension})
   }
@@ -69,9 +81,11 @@ class CropPhoto extends Component {
   }
 
   render() {
+    const { rotation } =  this.state;
     var Crop = (
       <ReactCrop 
         src={this.props.src} 
+        imageStyle={{transform: `rotate(${rotation}deg)`}}
         crop={this.state.crop} 
         onChange={this.handleOnCrop}
         onComplete = {this.handleOnCropComplete}
@@ -80,13 +94,15 @@ class CropPhoto extends Component {
     return (
       <Container>
         <Button
-          onClick={this.toggle}>
-          Cortar foto
+          onClick={this.toggle}
+          style={{marginTop:'1em'}}>
+          <FontAwesomeIcon icon={faCropAlt} style={{marginRight: '1em'}} />
+          Recortar
         </Button>
         <Modal isOpen={this.state.modal} toggle={this.toggle} size={'lg'}>
           <ModalHeader>
             <h4 style={{fontWeight:'bold'}}>
-              Cortando foto
+              Recortando foto
             </h4>
           </ModalHeader>
           <ModalBody style={{textAlign:'center'}}>
@@ -97,6 +113,11 @@ class CropPhoto extends Component {
             </Row>
             <Row>
               <Col>
+                <Button color="primary" onClick={this.rotate}>
+                  Rotar
+                </Button>
+              </Col>
+              <Col>
                 <Button color="primary" onClick={()=>this.setDimension(dimensions.full)}>
                   Tamaño completo
                 </Button>
@@ -104,12 +125,16 @@ class CropPhoto extends Component {
                   Volver al centro
                 </Button>
               </Col>
+              
             </Row>
           </ModalBody>
           <ModalFooter>
-            <p>La foto con su tamaño original quedará respaldada en nuestros servidores.</p>
+            <p>Importante: La foto se subirá con el tamaño indicado, no se respaldará la foto original.</p>
             <Button color="success" onClick={this.toggle}>
               Guardar edición
+            </Button>
+            <Button color="secondary" onClick={this.toggle}>
+              Descartar
             </Button>
           </ModalFooter>
         </Modal>

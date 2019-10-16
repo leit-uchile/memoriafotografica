@@ -194,6 +194,7 @@ class EditPhotosModal extends Component {
             <div className={className} style={style}>
                 <Button 
                     disabled={this.props.photos.length == 0} 
+                    color='success'
                     onClick={this.toggle}>
                     Editar selección ({this.props.photos.length})
                 </Button>
@@ -208,7 +209,9 @@ class EditPhotosModal extends Component {
                     ? <ModalHeader><h4 style={{fontWeight:'bold'}}>Editando 1 foto</h4></ModalHeader>
                     : <ModalHeader><h4 style={{fontWeight:'bold'}}>Editando {this.props.photos.length} fotos</h4></ModalHeader>}
                     <ModalBody>
-                        {PhotosForm}
+                        {!this.state.sent ?
+                        PhotosForm
+                        : 'Estado de la solicitud (Cambios guardados, Error, etc)'}
                     </ModalBody>
                     <ModalFooter>
                         {!this.state.sent ? (
