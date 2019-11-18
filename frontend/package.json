@@ -43,7 +43,7 @@
   },
   "autor": "LEIT",
   "license": "",
-  "proxy": "http://localhost:8000",
+  "proxy": "http://leit-backend:8000",
   "browserslist": {
     "production": [
       ">0.2%",
