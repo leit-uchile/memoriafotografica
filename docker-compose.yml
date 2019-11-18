@@ -1,6 +1,8 @@
 version: '3'
 
 services:
+  leit-db:
+    image: postgres
   leit-backend:
     build: ./backend
     command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
@@ -8,6 +10,8 @@ services:
       - ./backend:/app
     ports:
       - "8000:8000"
+    depends_on:
+      - leit-db
   leit-frontend:
     build: ./frontend
     volumes:

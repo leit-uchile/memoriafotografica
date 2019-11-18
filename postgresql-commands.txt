@@ -1,0 +1,6 @@
+CREATE DATABASE leitmemoriafotografica;
+CREATE USER leitadmin WITH ENCRYPTED PASSWORD 'leitrosa';
+ALTER ROLE leitadmin SET client_encoding TO 'utf8';
+ALTER ROLE leitadmin SET default_transaction_isolation TO 'read committed';
+ALTER ROLE leitadmin SET timezone TO 'America/Santiago';
+GRANT ALL PRIVILEGES ON DATABASE leitmemoriafotografica TO leitadmin;
