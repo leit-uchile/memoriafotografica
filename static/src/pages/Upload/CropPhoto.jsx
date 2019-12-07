@@ -18,7 +18,7 @@ import { connect } from "react-redux";
 import { upload, alert } from "../../actions";
 
 const dimensions = {
-  default:{
+  standar:{
     unit: '%',
     width: 50,
     height: 50,
@@ -33,19 +33,24 @@ const dimensions = {
     height:100
   }
 }
+const onLoadValues = {
+  crop: {
+    unit: '%',
+    width: 50,
+    height: 50,
+    x: 25,
+    y: 25
+  },
+  rotation: 0
+}
+
 class CropPhoto extends Component {
   constructor(Props) {
     super(Props);
     this.state = {
       modal: false,
-      rotation: 0,
-      crop:{
-        unit: '%',
-        width: 50,
-        height: 50,
-        x: 25,
-        y: 25
-      }
+      rotation: onLoadValues.rotation,
+      crop: onLoadValues.crop
     };
     this.toggle = this.toggle.bind(this);
     this.rotate = this.rotate.bind(this);
@@ -55,7 +60,8 @@ class CropPhoto extends Component {
   toggle(){
     this.setState({
       modal: !this.state.modal,
-      rotation: 0
+      rotation: onLoadValues.rotation,
+      crop: onLoadValues.crop
     });
   }
 
@@ -76,8 +82,10 @@ class CropPhoto extends Component {
     this.setState({crop: crop})
   }
 
-  handleOnCropComplete = (crop,percentCrop) => {
-    console.log(crop,percentCrop)
+  onSave = () => {
+    onLoadValues.crop = this.state.crop
+    onLoadValues.rotation = this.state.rotation
+    this.toggle()
   }
 
   render() {
@@ -88,7 +96,6 @@ class CropPhoto extends Component {
         imageStyle={{transform: `rotate(${rotation}deg)`}}
         crop={this.state.crop} 
         onChange={this.handleOnCrop}
-        onComplete = {this.handleOnCropComplete}
       />
     )
     return (
@@ -121,7 +128,7 @@ class CropPhoto extends Component {
                 <Button color="primary" onClick={()=>this.setDimension(dimensions.full)}>
                   Tamaño completo
                 </Button>
-                <Button color="primary" onClick={()=>this.setDimension(dimensions.default)}>
+                <Button color="primary" onClick={()=>this.setDimension(dimensions.standar)}>
                   Volver al centro
                 </Button>
               </Col>
@@ -130,7 +137,7 @@ class CropPhoto extends Component {
           </ModalBody>
           <ModalFooter>
             <p>Importante: La foto se subirá con el tamaño indicado, no se respaldará la foto original.</p>
-            <Button color="success" onClick={this.toggle}>
+            <Button color="success" onClick={this.onSave}>
               Guardar edición
             </Button>
             <Button color="secondary" onClick={this.toggle}>
