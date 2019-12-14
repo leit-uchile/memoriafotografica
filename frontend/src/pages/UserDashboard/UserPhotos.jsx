@@ -15,6 +15,7 @@ import {
 import { user, misc } from "../../actions";
 import Gallery from "react-photo-gallery";
 import EditPhotosModal from "./EditPhotosModal"
+import PhotoEditor from "../../components/PhotoEditor";
 import PhotoSelector from "../../components/PhotoSelector";
 import LeitSpinner from "../../components/LeitSpinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,21 +27,20 @@ class UserPhotos extends Component {
     this.state = {
       redirect: false,
       chosenPhotoIndex: 0,
-      edit: false,
       picturesToEdit: [],
     };
     this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
   }
+
   handleRedirect = obj => { //no funcionando
-    
+    this.setState({
+      redirect: true,
+      chosenPhotoIndex: obj.index
+    });
+    console.log('Redireccionando')
   };
   
-  changeMode = () => {
-    this.setState({ edit: !this.state.edit,
-                    picturesToEdit: []});
-  };
-
-  handleOnClick = obj => {
+  handleOnSelect = obj => {
     const id = obj.photo.id;
     const newList = this.state.picturesToEdit.filter(el => el.id !== id);
     {newList.length === this.state.picturesToEdit.length //el objeto no esta
@@ -66,7 +66,7 @@ class UserPhotos extends Component {
       permissions: el.permissions
     }));
     return (
-      <Container>
+      <Container fluid style={styles.photosContainer}>
         <Row>
           <Col md={1}>
             <Button style={{ margin: "0 auto" }}
@@ -78,50 +78,27 @@ class UserPhotos extends Component {
           </Col>
           <Col style={{display:'flex'}}>
             <h2>Mis fotos</h2>
-            <Button
-                onClick={this.changeMode}
-                color={this.state.edit
-                ? 'success'
-                : 'secondary'}
-                style={{marginLeft:'10px'}}>
-                Modo edición
-            </Button>
           </Col>
         </Row>
         <div>
-            {!this.state.edit 
-            ? (
-              <Row>
-                <Col md={10}>
-                  <Gallery
-                    photos={mapped}
-                    targetRowHeight={200}
-                    onClick={(e) => this.handleRedirect(e)}
-                  />
-                </Col>
-                <Col md={2}>
-                  <h2>FILTRO</h2>
-                </Col>
-              </Row>
-              ) 
-            :(
-              <Row>
-                <Col md={10}>
-                  <PhotoSelector
+          <Row>
+            <Col md={10}>
+              <PhotoEditor
                   photos={mapped}
-                  targetRowHeight={200}
-                  onClick={(e, index) => this.handleOnClick(index)}
+                  targetRowHeight={132}
+                  onClick={(e, index) => this.handleOnSelect(index)}
                   putAll={(state) => this.putAlltoEdit(mapped,state)}
-                  />
-                </Col>
-                <Col md={2} style={styles.editMenu}>
-                  <EditPhotosModal
+                  redirect={(e, index) => this.handleRedirect(index)}
+              />
+            </Col>
+            <Col md={2} style={styles.filterMenu}>
+              <h2>Ordenar</h2>
+              <Button>Ordenar por</Button>
+              <EditPhotosModal
                     photos={this.state.picturesToEdit}
                   />
-                </Col>
-              </Row>
-              )
-            }
+            </Col>
+          </Row>
         </div>
       </Container>
     );
@@ -129,13 +106,18 @@ class UserPhotos extends Component {
 }
 
 const styles = {
-  editMenu:{
+  filterMenu:{
       position: "sticky",
       top: "0",
       height: "4em",
       padding: "1em 0",
       zIndex: "4"
-  }
+  },
+  photosContainer: {
+    width: "100%",
+    backgroundColor: "#f7f8fa",
+    textAlign: "center",
+  },
 }
 const mapStateToProps = state => ({
   photos: state.user.photos,

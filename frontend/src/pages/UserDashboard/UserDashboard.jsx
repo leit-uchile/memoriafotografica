@@ -8,7 +8,10 @@ import {
   CardImg,
   ButtonGroup,
   CardText,
-  CardBody
+  CardBody,
+  Nav,
+  NavItem,
+  NavLink
 } from "reactstrap";
 import Photo from "../../components/Photo";
 import Comment from "../PhotoView/Comment";
@@ -17,6 +20,7 @@ import { connect } from "react-redux";
 import { user, misc } from "../../actions";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImages, faBook, faAddressCard, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   faArrowAltCircleRight,
   faArrowAltCircleLeft
@@ -150,35 +154,50 @@ class Dashboard extends Component {
             <h2>Mi perfil</h2>
           </Col>
         </Row>
-        <Row style={{ marginTop: "2em" }}>
+        <Row style={styles.container}>
           <Col md="3">
-            <Card>
-              {user.avatar === null ? (
-                <canvas id="myCanvas" height="200px" width="200px" />
-              ) : (
-                  <CardImg top width="100%" src={user.avatar.slice(21)} />
-                )}
-              <CardBody
-                style={{ backgroundColor: "#ebeeef", textAlign: "center" }}>
-                <CardText>{`${user.first_name} ${user.last_name}`}</CardText>
-                <CardText>{user.email}</CardText>
-                <CardText>{userTypeTranslation(user.user_type)}</CardText>
-                <CardText>{userRolTranslation(user.rol_type)}</CardText>
-                <Button
-                  style={{ margin: "0 auto" }}
-                  color="secondary"
-                  tag={Link}
-                  to="/user/editProfile">
-                  {" "}
-                  Editar mi perfil
-                </Button>
-              </CardBody>
-            </Card>
+            <Row>
+              <Card>
+                {user.avatar === null ? (
+                  <canvas id="myCanvas" height="200px" width="200px" />
+                ) : (
+                    <CardImg top width="100%" src={user.avatar.slice(21)} />
+                  )}
+                <CardBody
+                  style={{ backgroundColor: "#ebeeef", textAlign: "center" }}>
+                  <CardText>{`${user.first_name} ${user.last_name}`}</CardText>
+                  <CardText>{user.email}</CardText>
+                  <CardText>{userTypeTranslation(user.user_type)}</CardText>
+                  <CardText>{userRolTranslation(user.rol_type)}</CardText>
+                  <Button
+                    style={{ margin: "0 auto" }}
+                    color="secondary"
+                    tag={Link}
+                    to="/user/editProfile">
+                    {" "}
+                    Editar mi perfil
+                  </Button>
+                </CardBody>
+              </Card>
+            </Row>
+            <Row>
+              <Nav vertical>
+                <NavItem>
+                  <NavLink href="#">Mis fotos</NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink href="#">Mis albumes</NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink href="#">Mis comentarios</NavLink>
+                </NavItem>
+              </Nav>
+            </Row>
           </Col>
           <Col md="9">
             <Container fluid>
               <Row>
-                <h2 style={{ fontSize: "20px" }}> Mis Fotos </h2>
+                <h2 style={styles.title}>Mis fotos</h2>
                 <Container fluid>
                   <Row
                     style={{ margin: "1em auto" }}
@@ -248,7 +267,7 @@ class Dashboard extends Component {
                 </ButtonGroup>
               </Row>
               <Row>
-                <h2 style={{ fontSize: "20px" }}> Mis Albumes </h2>
+                <h2 style={styles.title}>Mis Albumes</h2>
                 <Container fluid>
                   <Albums albumList={currentAlbs} />
                 </Container>
@@ -261,7 +280,7 @@ class Dashboard extends Component {
                 </Button>
               </Row>
               <Row>
-                <h2 style={{ fontSize: "20px" }}> Mis Comentarios </h2>
+                <h2 style={styles.title}>Mis Comentarios</h2>
                 <Container fluid>
                   <Comments commentList={currentComments} />
                 </Container>
@@ -307,7 +326,20 @@ const Comments = ({ commentList, onClick }) => (
       )}
   </div>
 );
-
+const styles = {
+  container:{
+    marginTop:'2em',
+    backgroundColor: '#f7f7f7',
+    border:'1px solid rgb(210,214,218)'
+  },
+  title: {
+    fontSize:'20px',
+    fontWeight:'bold',
+    padding:'0.5em',
+    borderBottom: '1px solid rgb(210,214,218)',
+    marginBottom: '10px',
+  },
+}
 const mapStateToProps = state => ({
   data: {
     photos: state.user.photos,
