@@ -25,7 +25,7 @@ class ReportModal extends Component {
       sent: false,
       formData: {
         id: props.photoId,
-        type: Number(props.reportType),
+        type: String(props.reportType),
         content: []
       }
     };
