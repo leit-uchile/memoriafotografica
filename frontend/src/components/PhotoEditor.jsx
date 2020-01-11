@@ -59,7 +59,7 @@ const SelectedImage = ({
   left,
   selected,
   onClick,
-  redirect
+  onRedirect
 }) => {
   const [isSelected, setIsSelected] = useState(selected);
   //calculate x,y scale
@@ -73,8 +73,8 @@ const SelectedImage = ({
     cont.top = top;
   }
 
-  const handleRedirect = e => {
-    redirect(e, {index});
+  const handleOnRedirect = e => {
+    onRedirect(e, {photo}.photo.id);
   };
 
   const handleOnSelect = e => {
@@ -106,7 +106,7 @@ const SelectedImage = ({
       {!isSelected
       ? <div class="middle">
           <div class="icons">
-            <FontAwesomeIcon icon={faEye} style={{marginRight: '0.35em'}} onClick={handleRedirect}/>
+            <FontAwesomeIcon icon={faEye} style={{marginRight: '0.35em'}} onClick={handleOnRedirect}/>
             <FontAwesomeIcon icon={faPencilAlt} onClick={handleOnSelect} />
           </div>
         </div>
@@ -118,16 +118,16 @@ const SelectedImage = ({
   );
 };
 
-const PhotoEditor = ({photos, putAll=e => {},...props}) => {
-  const [selectAll, setSelectAll] = useState(false);
+const PhotoEditor = ({photos, putAll=e => {},selectAll,redirectFunction,...props}) => {
+  // const [setSelectAll] = useState(false);
 
-  const toggleSelectAll = () => {
-    setSelectAll(!selectAll);
-    putAll(!selectAll)
-  };
+  // const toggleSelectAll = () => {
+  //    setSelectAll(!selectAll);
+  //    putAll(!selectAll)
+  //  };
 
   const imageRenderer = useCallback(
-    ({ index, left, top, key, photo, onClick, redirect }) => (
+    ({ index, left, top, key, photo, onClick, redirectFunction }) => (
       <SelectedImage
         selected={selectAll ? true : false}
         key={key}
@@ -137,7 +137,7 @@ const PhotoEditor = ({photos, putAll=e => {},...props}) => {
         left={left}
         top={top}
         onClick={onClick}
-        redirect={redirect}
+        onRedirect={redirectFunction}
       />
     ),
     [selectAll]
@@ -147,10 +147,10 @@ const PhotoEditor = ({photos, putAll=e => {},...props}) => {
     <Container fluid>
       <Row>
         <Col>
-        {!selectAll
+        {/*{!selectAll
         ?(<Button onClick={toggleSelectAll}>Seleccionar todas</Button>)
         :(<Button onClick={toggleSelectAll}>Borrar selección</Button>)
-        }
+        } */}
         </Col>
       </Row>
       <Row>
