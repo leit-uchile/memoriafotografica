@@ -1,4 +1,4 @@
-Django==2.1.5
+Django==2.2.10
 djangorestframework==3.9.0
 django-rest-knox==3.1.4
 django-multiselectfield==0.1.8
