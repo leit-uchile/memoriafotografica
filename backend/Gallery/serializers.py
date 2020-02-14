@@ -4,9 +4,27 @@ from datetime import datetime
 from rest_framework import fields, serializers
 from rest_framework.exceptions import NotFound
 from rest_framework.fields import CurrentUserDefault
+from django.utils.timezone import now
 
 
 class ReportSerializer(serializers.ModelSerializer):
+
+    content_id = serializers.SerializerMethodField()
+
+    def get_content_id(self, obj):
+        """
+        Recover the id of it's reported element
+        """
+        if len(obj.photo_set.all()) != 0:
+            photo = obj.photo_set.all()[0]
+            return {"id": photo.id, "thumbnail": photo.thumbnail.url}
+        elif len(obj.comment_set.all()) != 0:
+            return obj.comment_set.all()[0].id
+        elif len(obj.user_set.all()) != 0:
+            return obj.user_set.all()[0].id
+        else:
+            return -1
+
     class Meta:
         model = Reporte
         fields = '__all__'

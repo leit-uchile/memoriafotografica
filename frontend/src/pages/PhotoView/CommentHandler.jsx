@@ -25,7 +25,7 @@ const CommentHandler = ({
 }) => {
   useEffect(() => {
     fetchComments(id);
-  }, [id, commentsLoaded]);
+  }, [id, commentsLoaded, fetchComments]);
 
   const [comment, setComment] = useState("");
 

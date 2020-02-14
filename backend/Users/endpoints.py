@@ -13,6 +13,7 @@ urlpatterns = [
     re_path("^auth/register/$", RegistrationAPI.as_view()),
     re_path("^auth/login/$", LoginAPI.as_view()),
     re_path("^auth/user/$", UserTokenAPI.as_view()),
+    re_path("^auth/password/$", PasswordAPI.as_view()),
     re_path("^users/$", UserListAPI.as_view()),
     re_path("^users/(?P<pk>[0-9]+)/$", UserDetailAPI.as_view()),
     re_path("^users/photos/(?P<pk>[0-9]+)/$", UserPhotosAPI.as_view()),

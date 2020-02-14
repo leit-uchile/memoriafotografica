@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { home, misc, search } from "../actions";
-import Photo from "../components/Photo";
 import {
   Container,
   Row,
@@ -21,7 +20,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
 import LeitSpinner from "../components/LeitSpinner";
-import { setPhotoPagination } from "../actions/home";
 
 class Home extends Component {
   constructor(props) {

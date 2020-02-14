@@ -7,7 +7,19 @@ from .models import User
 from django.conf import settings
 from datetime import datetime
 from Gallery.serializers import AlbumSerializer, PhotoSerializer, CommentSerializer
+from django.contrib.auth.password_validation import validate_password
 
+class ChangePasswordSerializer(serializers.Serializer):
+    """
+    Serializer for password change endpoint.
+    Reference at https://stackoverflow.com/questions/38845051/how-to-update-user-password-in-django-rest-framework
+    """
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
 
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:

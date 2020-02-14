@@ -51,7 +51,7 @@ class ReportModal extends Component {
       arr.push(e.target.value);
       this.setState({ formData: { ...this.state.formData, content: arr } });
     } else {
-      arr = this.state.formData.content.filter(el => el != e.target.value);
+      arr = this.state.formData.content.filter(el => el !== e.target.value);
       this.setState({ formData: { ...this.state.formData, content: arr } });
     }
   }
@@ -173,7 +173,4 @@ const mapActionToProps = dispatch => ({
   resetReport: () => dispatch(photoDetails.reportPhotoReset())
 });
 
-export default connect(
-  mapStateToProps,
-  mapActionToProps
-)(ReportModal);
+export default connect(mapStateToProps, mapActionToProps)(ReportModal);

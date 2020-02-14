@@ -42,7 +42,7 @@ const getPermissionLogo = (name, w, h, offset) => {
     default:
       url = "/assets/CCBYSA.svg";
   }
-  return <img width={w} height={h} src={url} />;
+  return <img width={w} height={h} src={url} alt=''/>;
 };
 
 const Tags = ({ tags, onRedirect, style }) => (

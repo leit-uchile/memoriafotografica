@@ -1,16 +1,10 @@
 import React from "react";
-import { Redirect, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Photo from "../../components/Photo";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Container,
   Row,
   Col,
-  Form,
-  FormGroup,
-  Input,
-  Label,
-  Button
 } from "reactstrap";
 
 const photos =  [

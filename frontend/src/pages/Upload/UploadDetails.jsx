@@ -13,6 +13,7 @@ import {
   Input,
   Collapse
 } from "reactstrap";
+import uuidv1 from 'uuid'
 
 var autosave_desc = null;
 
@@ -114,7 +115,7 @@ class UploadDetails extends Component {
         <Row>
           <Col md="3" style={{textAlign:'center'}}>
             <img style={styles.thumb} src={this.state.src} />
-            <CropPhoto src={this.state.src}/>
+            <CropPhoto src={this.state.src} key={uuidv1()}/>
           </Col>
           <Col md="9" style={{ padding: "20px" }}>
             <Form>

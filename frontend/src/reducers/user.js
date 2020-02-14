@@ -7,7 +7,9 @@ import {
   USER_RECOVERED_COMMENTS_ERROR,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAILED,
-  USER_LOADED
+  USER_LOADED,
+  USER_PASSWORD_UPDATED,
+  USER_PASSWORD_UPDATE_FAILED
 } from "../actions/types";
 
 /**
@@ -84,6 +86,10 @@ export default function user(state = initialState, action) {
       };
     case USER_UPDATE_FAILED:
       return { ...state, errors: action.data };
+    case USER_PASSWORD_UPDATED:
+      return { ...state };
+    case USER_PASSWORD_UPDATE_FAILED:
+      return { ...state };
     default:
       return { ...state };
   }

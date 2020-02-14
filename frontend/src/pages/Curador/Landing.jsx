@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Fragment } from "react";
-import { Row, Col, Button, Container } from "reactstrap";
+import { Row, Col, Container } from "reactstrap";
 import {
   LineSeries,
   HorizontalGridLines,
@@ -13,7 +13,7 @@ import {
   Hint,
   DiscreteColorLegend
 } from "react-vis";
-import {EXTENDED_DISCRETE_COLOR_RANGE, DISCRETE_COLOR_RANGE} from "react-vis/dist/theme"
+import {EXTENDED_DISCRETE_COLOR_RANGE} from "react-vis/dist/theme"
 import { Statistic } from "semantic-ui-react";
 import { curveCatmullRom } from "d3-shape";
 
@@ -134,7 +134,7 @@ const DonutChart = ({ rawData, crossHairTitle, crossHairValue }) => {
 const Landing = ({ stats: { general }, loadGeneralStats }) => {
   useEffect(() => {
     loadGeneralStats();
-  }, []);
+  }, [loadGeneralStats]);
 
   return (
     <Container className="children-margin" style={{ textAlign: "center" }}>

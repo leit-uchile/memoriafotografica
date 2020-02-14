@@ -28,13 +28,13 @@ const UploadProgress = ({
     if (doAlbum && photosUploading === completed) {
       saveAlbum(albumInfo);
     }
-  }, [completed]);
+  }, [completed, doAlbum, saveAlbum]);
 
   useEffect(() => {
     if (doAlbum && albumState.sent && !albumState.success) {
       setRetryAlbum(true);
     }
-  }, [albumState]);
+  }, [albumState, doAlbum]);
 
   return (
     <Container>

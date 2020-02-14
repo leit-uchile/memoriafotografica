@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBook, faAddressCard, faPhoneAlt, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faAddressCard, faPhoneAlt, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import {
   Container,
   Row,
@@ -75,7 +75,7 @@ const Map = ({ source }) => {
   const src = source;     
   return (
     <div>
-      <iframe src={src} style={styles.map}></iframe>
+      <iframe src={src} style={styles.map} title="Location Map" ></iframe>
     </div>
   );
 };

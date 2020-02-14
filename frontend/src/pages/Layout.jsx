@@ -1,9 +1,13 @@
 import React, { Fragment } from "react";
 import { Route, Switch } from "react-router-dom";
 
-import Alert from '../components/Alert';
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import {
+  Alert,
+  Header,
+  Footer,
+  PrivateComponent,
+  BoundedRoute
+} from "../components";
 import Home from "./Home";
 import Login from "./Login";
 import Register from "./Register/Register";
@@ -18,10 +22,6 @@ import EditProfile from "./UserDashboard/EditProfile";
 import UserPhotos from "./UserDashboard/UserPhotos";
 import UserAlbums from "./UserDashboard/UserAlbums";
 import Index from "./Miscellaneous/Index";
-// Utils
-import PrivateComponent from "../components/Routes/PrivateComponent";
-import BoundedRoute from '../components/Routes/BoundedRoute';
-
 
 const Layout = () => {
   return (
@@ -36,17 +36,29 @@ const Layout = () => {
             <BoundedRoute path={"/login"} component={Login} />
             <BoundedRoute path={"/register"} component={Register} />
             <BoundedRoute path={"/upload"} component={UploadPage} />
-            <BoundedRoute path={"/photo/:id"} component={PhotoDetails}/>
-            <BoundedRoute path={"/misc"} component={Index}/>
-            <PrivateComponent path={"/request-photo"} component={RequestPhoto}/>
-            <PrivateComponent path={"/curador/dashboard"} component={Dashboard} />
-            <PrivateComponent path={"/user/dashboard"} component={UserDashboard} />
-            <PrivateComponent path={"/user/editProfile"} component={EditProfile} />
+            <BoundedRoute path={"/photo/:id"} component={PhotoDetails} />
+            <BoundedRoute path={"/misc"} component={Index} />
+            <PrivateComponent
+              path={"/request-photo"}
+              component={RequestPhoto}
+            />
+            <PrivateComponent
+              path={"/curador/dashboard"}
+              component={Dashboard}
+            />
+            <PrivateComponent
+              path={"/user/dashboard"}
+              component={UserDashboard}
+            />
+            <PrivateComponent
+              path={"/user/editProfile"}
+              component={EditProfile}
+            />
             <PrivateComponent path={"/user/photos"} component={UserPhotos} />
             <PrivateComponent path={"/user/albums"} component={UserAlbums} />
             <Route component={NoMatch} />
           </Switch>
-        </div>  
+        </div>
       </div>
       <Footer />
     </Fragment>
