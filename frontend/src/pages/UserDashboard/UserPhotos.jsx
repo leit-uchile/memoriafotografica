@@ -10,11 +10,17 @@ import {
   Col,
   Input,
   Label,
-  Container
+  Container,
+  ButtonDropdown,
+  UncontrolledButtonDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from "reactstrap";
 import { user, misc } from "../../actions";
 import Gallery from "react-photo-gallery";
 import EditPhotosModal from "./EditPhotosModal"
+import PhotoEditor from "../../components/PhotoEditor";
 import PhotoSelector from "../../components/PhotoSelector";
 import LeitSpinner from "../../components/LeitSpinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,21 +32,21 @@ class UserPhotos extends Component {
     this.state = {
       redirect: false,
       chosenPhotoIndex: 0,
-      edit: false,
       picturesToEdit: [],
+      selectedAll: false
     };
     this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
   }
-  handleRedirect = obj => { //no funcionando
-    
+
+  handleOnRedirect(obj){ //no funcionando
+    this.setState({
+      redirect: true,
+      chosenPhotoIndex: obj.photo.id
+    });
+    console.log('Redireccionando')
   };
   
-  changeMode = () => {
-    this.setState({ edit: !this.state.edit,
-                    picturesToEdit: []});
-  };
-
-  handleOnClick = obj => {
+  handleOnSelect = obj => {
     const id = obj.photo.id;
     const newList = this.state.picturesToEdit.filter(el => el.id !== id);
     {newList.length === this.state.picturesToEdit.length //el objeto no esta
@@ -48,10 +54,10 @@ class UserPhotos extends Component {
     : (this.setState({picturesToEdit: [...newList] }) )}
   };
 
-  putAlltoEdit(mapped,selectAll){
-    selectAll
-    ? this.setState({picturesToEdit: mapped})
-    : this.setState({picturesToEdit: []})
+  putAllToEdit(mapped, state){
+    state
+    ? this.setState({picturesToEdit: mapped, selectedAll: true})
+    : this.setState({picturesToEdit: [], selectedAll: false}) //falta que al borrar la selección las fotos cambien su propiedad a deseleccionada useEffect()
   }
 
   render() {
@@ -66,62 +72,66 @@ class UserPhotos extends Component {
       permissions: el.permissions
     }));
     return (
-      <Container>
-        <Row>
-          <Col md={1}>
-            <Button style={{ margin: "0 auto" }}
+      <Container fluid>
+        <Row style={styles.titleContainer}>
+          <Col style={styles.title}>
+            <Button
                 color="secondary"
                 tag={Link}
                 to="./dashboard" >
                 <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}
             </Button>
-          </Col>
-          <Col style={{display:'flex'}}>
-            <h2>Mis fotos</h2>
-            <Button
-                onClick={this.changeMode}
-                color={this.state.edit
-                ? 'success'
-                : 'secondary'}
-                style={{marginLeft:'10px'}}>
-                Modo edición
-            </Button>
+            <h2 style={{marginLeft:"10px"}}>Mis fotos</h2>
           </Col>
         </Row>
-        <div>
-            {!this.state.edit 
-            ? (
-              <Row>
-                <Col md={10}>
-                  <Gallery
-                    photos={mapped}
-                    targetRowHeight={200}
-                    onClick={(e) => this.handleRedirect(e)}
-                  />
-                </Col>
-                <Col md={2}>
-                  <h2>FILTRO</h2>
-                </Col>
-              </Row>
-              ) 
-            :(
-              <Row>
-                <Col md={10}>
-                  <PhotoSelector
+        <div style={styles.photosContainer}>
+          <Row>
+            <Col md={10}>
+              <PhotoEditor
                   photos={mapped}
-                  targetRowHeight={200}
-                  onClick={(e, index) => this.handleOnClick(index)}
-                  putAll={(state) => this.putAlltoEdit(mapped,state)}
-                  />
-                </Col>
-                <Col md={2} style={styles.editMenu}>
-                  <EditPhotosModal
-                    photos={this.state.picturesToEdit}
-                  />
-                </Col>
-              </Row>
-              )
-            }
+                  targetRowHeight={132}
+                  onClick={(e, index) => this.handleOnSelect(index)}
+                  //putAll={(state) => this.putAllToEdit(mapped,state)}
+                  selectAll = {this.state.selectedAll}
+                  redirectFunction={(e, obj) => this.handleOnRedirect(obj)}
+              />
+            </Col>
+            <Col md={2} style={styles.filterMenu}>
+              <UncontrolledButtonDropdown className="home-button">
+                  <DropdownToggle caret>
+                    Ordenar
+                  </DropdownToggle>
+                  <DropdownMenu
+                    style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}>
+                    <div style={styles.triangulo}></div>
+                    <DropdownItem header>Por orden cronológico</DropdownItem>
+                    <DropdownItem>Más antiguas primero</DropdownItem>
+                    <DropdownItem>Más nuevas primero</DropdownItem>
+                    <DropdownItem divider />
+                    <DropdownItem header>Por fecha de subida</DropdownItem>
+                    <DropdownItem>
+                      Más antiguas primero
+                    </DropdownItem>
+                    <DropdownItem>
+                      Más nuevas primero
+                    </DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledButtonDropdown>
+              <Button
+                onClick={()=>this.putAllToEdit(mapped, true)}>
+                Seleccionar todas
+              </Button>
+              <EditPhotosModal
+                photos={this.state.picturesToEdit}
+              />
+              <Button
+                disabled={this.state.picturesToEdit.length == 0}
+                color="danger"
+                onClick={()=>this.putAllToEdit(mapped, false)}>
+                Deseleccionar
+              </Button>
+            </Col>
+          </Row>
         </div>
       </Container>
     );
@@ -129,13 +139,50 @@ class UserPhotos extends Component {
 }
 
 const styles = {
-  editMenu:{
-      position: "sticky",
-      top: "0",
-      height: "4em",
-      padding: "1em 0",
-      zIndex: "4"
-  }
+  titleContainer:{
+    paddingTop: "1em",
+    paddingLeft:"6em",
+    paddingBottom:"1em",
+    borderBottom: "1px solid rgb(210,214,218)",
+    background: "white",
+  },
+  title:{
+    textAlign: "left",
+    display: "flex",
+    //verticalAlign: "middle",
+    //flexDirection: "row",
+  },
+  filterMenu:{
+    position: "sticky",
+    top: "0",
+    height: "4em",
+    padding: "1em 0",
+    zIndex: "4"
+  },
+  triangulo: {
+    position: "absolute",
+    width: "20px",
+    height: "20px",
+    borderTop: "1px solid rgb(210,214,218)",
+    borderRight: "0px solid rgb(210,214,218)",
+    borderBottom: "0px solid rgb(210,214,218)",
+    borderLeft: "1px solid rgb(210,214,218)",
+    top: "0",
+    left: "8em",
+    marginLeft: "-45px",
+    content: "",
+    transform: "rotate(45deg)",
+    marginTop: "-10px",
+    background: "#ffff"
+  },
+  photosContainer: {
+    width: "100%",
+    paddingTop: "1.25em",
+    paddingBottom: "1.25em",
+    marginBottom:"-2em",
+    backgroundColor: "#f7f8fa",
+    textAlign: "center",
+  },
 }
 const mapStateToProps = state => ({
   photos: state.user.photos,

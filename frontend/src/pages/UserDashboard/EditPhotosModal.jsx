@@ -198,12 +198,6 @@ class EditPhotosModal extends Component {
                     onClick={this.toggle}>
                     Editar selección ({this.props.photos.length})
                 </Button>
-                <Button
-                    disabled={this.props.photos.length == 0}
-                    tag={Link}
-                    to="#">
-                    Crear album
-                </Button>
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
                     {this.props.photos.length===1
                     ? <ModalHeader><h4 style={{fontWeight:'bold'}}>Editando 1 foto</h4></ModalHeader>
