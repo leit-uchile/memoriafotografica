@@ -36,28 +36,31 @@ class UserPhotos extends Component {
       selectedAll: false
     };
     this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
+    
   }
 
   handleOnRedirect(obj){ //no funcionando
     this.setState({
       redirect: true,
       chosenPhotoIndex: obj.photo.id
-    });
-    console.log('Redireccionando')
-  };
+    })
+  }
   
-  handleOnSelect = obj => {
+  handleOnSelect = obj=> {
     const id = obj.photo.id;
-    const newList = this.state.picturesToEdit.filter(el => el.id !== id);
-    {newList.length === this.state.picturesToEdit.length //el objeto no esta
-    ? (this.setState({picturesToEdit: [...newList, obj.photo] }) )
-    : (this.setState({picturesToEdit: [...newList] }) )}
+    const newList = this.state.picturesToEdit.filter(el => el !== id);
+    {newList.length === this.state.picturesToEdit.length //el objeto no estaba
+    ? (this.setState({picturesToEdit: [...newList, id] }) ) //lo agregamos
+    : (this.setState({picturesToEdit: [...newList] }) )} //si estaba, asi que lo eliminamos
+    // {this.state.picturesToEdit.length === mapped.length
+    // ? (this.setState({selectedAll: true}))
+    // : (this.setState({selectedAll: false}))}
   };
 
   putAllToEdit(mapped, state){
     state
-    ? this.setState({picturesToEdit: mapped, selectedAll: true})
-    : this.setState({picturesToEdit: [], selectedAll: false}) //falta que al borrar la selección las fotos cambien su propiedad a deseleccionada useEffect()
+    ? this.setState({picturesToEdit: mapped.map(el => (el.id)), selectedAll: state})
+    : this.setState({picturesToEdit: [], selectedAll: state})
   }
 
   render() {
@@ -65,11 +68,7 @@ class UserPhotos extends Component {
       src: el.thumbnail,
       height: el.aspect_h,
       width: el.aspect_w,
-      id: el.id,
-      title: el.title,
-      description: el.description,
-      created_date: el.created_at,
-      permissions: el.permissions
+      id: el.id
     }));
     return (
       <Container fluid>

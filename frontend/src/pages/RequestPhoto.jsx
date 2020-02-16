@@ -172,7 +172,7 @@ var Requested = ({list, removeRequestPhoto}) => (
               <Col md={2}>
                 <FontAwesomeIcon 
                   icon={faTimes} 
-                  style={{marginRight: '1em'}}
+                  style={{marginRight: '1em', cursor: 'pointer'}}
                   onClick={()=>removeRequestPhoto(el)}
                 />
               </Col>

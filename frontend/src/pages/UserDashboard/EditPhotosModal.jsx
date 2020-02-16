@@ -1,5 +1,6 @@
-import React, {Component, Fragment} from "react";
+import React, {Component, Fragment, useEffect, useState} from "react";
 import { Link, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 import { 
     Button, 
     UncontrolledButtonDropdown,
@@ -16,8 +17,10 @@ import {
     Label, 
     Input,
     Form,
-    CustomInput } from "reactstrap";
+    CustomInput, 
+    ButtonDropdown} from "reactstrap";
 import ReactTags from "react-tag-autocomplete"; 
+import { photoDetails } from "../../actions";
 
 const CC_INFO = [
     { name: "CC BY", text: "Atribución" },
@@ -27,112 +30,68 @@ const CC_INFO = [
     { name: "CC BY-NC-SA", text: "Atribución, No Comercial, Compartir Igual" },
     { name: "CC BY-NC-ND", text: "Atribución, No Comercial, Sin Derivadas" }
     ];
-class EditPhotosModal extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            modal: false,
-            sent: false,
-            formData:{
-                name : '',
-                description: '',
-                created_date: '',
-                tags:'',
-                permissions: ''
-            }
-        }
-        this.toggle = this.toggle.bind(this);
-        this.updateData = this.updateData.bind(this);
-        this.additionTag = this.additionTag.bind(this);
-        this.deleteTag = this.deleteTag.bind(this);
-        this.sendChanges = this.sendChanges.bind(this);
-    };
 
-    toggle(){
-        this.setState({
-          modal: !this.state.modal,
-          sent: false,
-        });
-    }
+const EditPhotosModal = (props) =>{
+    const [toggle, setToggle] = useState(false);
+    const [sent, setSent] = useState(false); 
+    const [formData, setData] = useState({
+        name : '',
+        description: '',
+        created_date: '',
+        tags:'',
+        permission: ''
+    });
 
-    updateData = e => this.setState({ formData: {...this.state.formData, [e.target.name]: e.target.value }});
+    useEffect( () => {
+        props.onLoad(props.photos)
+    }, [props.photos]);
+
+    const updateData = e => setData({...formData, [e.target.name]: e.target.value });
     
-    additionTag(tag) {
-        const tags = [].concat(this.state.formData.tags, tag);
-        this.setState({ tags: tags });
-      }
-    deleteTag(i) {
-    const tags = this.state.formData.tags.slice(0);
-    tags.splice(i, 1);
-    this.setState({ tags });
-    }
-    sendChanges(){
-        this.setState({
-            sent: true});
-        // this.props.updatePhoto(this.state.formData);
-    }
-    render(){
-        const { style, className } = this.props;
-        var PhotosForm = (
-            <Fragment>
-              <Form>
-                <FormGroup>
-                <Row style={{marginBottom:'0.5em'}}>
-                    <Col>
-                        <p>Título</p>
-                    </Col>
-                    <Col>
-                        <Input 
-                            type="text"
-                            placeholder="Título de la fotografía"
-                            name="name"
-                            onChange={this.updateData}
-                        />
-                    </Col>
-                </Row>
-                <Row style={{marginBottom:'0.5em'}}>
-                    <Col>
-                        <p>Descripción</p>
-                    </Col>
-                    <Col>
-                        <Input 
-                            type="textarea"
-                            placeholder="Historia asociada a la foto"
-                            name="description"
-                            onChange={this.updateData}
-                        />
-                    </Col>
-                </Row>
-                <Row style={{marginBottom:'0.5em'}}>
-                    <Col>
-                        <p>Fecha de captura</p>
-                    </Col>
-                    <Col>
-                        <Input 
-                            type="date"
-                            name="created_date"
-                            onChange={this.updateData}
-                        />
-                    </Col>
-                </Row>
-                <Row style={{marginBottom:'0.5em'}}>
-                    <Col>
-                        <p>Etiquetas</p>
-                    </Col>
-                    <Col>
-                        {/* <ReactTags
-                            style={{ width: "auto" }}
-                            placeholder={"Añadir etiquetas"}
-                            autoresize={false}
-                            allowNew={true}
-                            tags={this.state.formData.tags}
-                            
-                            handleDelete={()=>this.deleteTag()}
-                            handleAddition={()=>this.additionTag()}
-                        /> */}
-                    </Col>
-                </Row>
-                <Row style={{marginBottom:'0.5em'}}>
+    const { style, className, photoInfo } = props;
+    const PhotosForm = (
+        <Fragment>
+            <Form>
+            <FormGroup>
+            <Row style={{marginBottom:'0.5em'}}>
+                <Col>
+                    <p>Título</p>
+                </Col>
+                <Col>
+                    <Input 
+                        type="text"
+                        placeholder={photoInfo.title}
+                        name="name"
+                        onChange={updateData}
+                    />
+                </Col>
+            </Row>
+            <Row style={{marginBottom:'0.5em'}}>
+                <Col>
+                    <p>Descripción</p>
+                </Col>
+                <Col>
+                    <Input 
+                        type="textarea"
+                        placeholder={photoInfo.description}
+                        name="description"
+                        onChange={updateData}
+                    />
+                </Col>
+            </Row>
+            <Row style={{marginBottom:'0.5em'}}>
+                <Col>
+                    <p>Fecha de captura</p>
+                </Col>
+                <Col>
+                    <Input 
+                        type="date"
+                        name="created_date"
+                        onChange={updateData}
+                    />
+                </Col>
+            </Row>
+            <Row style={{marginBottom:'0.5em'}}>
                     <Col>
                         <p>Permisos de acceso e intercambio</p>
                     </Col>
@@ -141,84 +100,63 @@ class EditPhotosModal extends Component {
                             <DropdownToggle
                                 caret
                                 color="link"
-                                style={{padding:'0',margin:'0'}}
-                                name="permissions"
+                                
+                                name="permission"
                                 >
-                                {this.state.formData.permissions === ''
+                                {formData.permission === ''
                                 ? "Seleccionar"
-                                : this.state.formData.permissions}
+                                : formData.permission}
                             </DropdownToggle>
                             <DropdownMenu>
                                 {CC_INFO.map((el, k) => (
                                     <DropdownItem 
-                                        name="permissions" 
+                                        name="permission" 
                                         value={el.name} 
-                                        onClick={this.updateData}>
+                                        onClick={updateData}>
                                         {el.name}
                                     </DropdownItem>
                                 ))}
                             </DropdownMenu>
                         </UncontrolledButtonDropdown>
                     </Col>
-                </Row>
-                <Row style={{marginBottom:'0.5em'}}>
-                    <Col>
-                        <p>Quíen puede comentar</p>
-                    </Col>
-                    <Col>
-                        <UncontrolledButtonDropdown>
-                            <DropdownToggle
-                                caret
-                                color="link"
-                                style={{padding:'0',margin:'0'}}>
-                                Seleccionar
-                            </DropdownToggle>
-                            <DropdownMenu>
-                                <DropdownItem>Usuarios registrados</DropdownItem>
-                                <DropdownItem>Nadie</DropdownItem>
-                            </DropdownMenu>
-                        </UncontrolledButtonDropdown>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col style={{textAlign:'right', display: 'inline-block'}}>
-                        <p>Recuerda que los cambios deberán ser aprobados</p>
-                    </Col>
-                </Row> 
-                </FormGroup>
-              </Form>
-            </Fragment>
-          );
+            </Row>
+            </FormGroup>
+            </Form>
+        </Fragment>
+        );
 
         return(
-            <div className={className} style={style}>
+            <div>
                 <Button 
-                    disabled={this.props.photos.length == 0} 
+                    disabled={props.photos.length == 0} 
                     color='success'
-                    onClick={this.toggle}>
-                    Editar selección ({this.props.photos.length})
+                    onClick={()=>setToggle(!toggle)}>
+                    Editar selección ({props.photos.length})
                 </Button>
-                <Modal isOpen={this.state.modal} toggle={this.toggle}>
-                    {this.props.photos.length===1
+                <Modal isOpen={toggle} toggle={()=>setToggle(!toggle)}>
+                    {props.photos.length===1
                     ? <ModalHeader><h4 style={{fontWeight:'bold'}}>Editando 1 foto</h4></ModalHeader>
-                    : <ModalHeader><h4 style={{fontWeight:'bold'}}>Editando {this.props.photos.length} fotos</h4></ModalHeader>}
+                    : <ModalHeader><h4 style={{fontWeight:'bold'}}>Editando {props.photos.length} fotos</h4></ModalHeader>}
                     <ModalBody>
-                        {!this.state.sent ?
+                        {!sent ?
                         PhotosForm
                         : 'Estado de la solicitud (Cambios guardados, Error, etc)'}
                     </ModalBody>
                     <ModalFooter>
-                        {!this.state.sent ? (
+                        {!sent ? (
                         <Fragment>
-                            <Button color="success" onClick={this.sendChanges}>
+                            <Button color="success">
                             Guardar cambios
                             </Button>
-                            <Button color="secondary" onClick={this.toggle}>
+                            <Button color="secondary" onClick={()=>setToggle(!toggle)}>
                             Cancelar
+                            </Button>
+                            <Button color="danger" onClick={()=>setToggle(!toggle)}>
+                            Eliminar
                             </Button>
                         </Fragment>
                         ) : (
-                        <Button color="secondary" onClick={this.toggle}>
+                        <Button color="secondary" onClick={()=>setToggle(!toggle)}>
                             Cerrar
                         </Button>
                         )}
@@ -226,6 +164,19 @@ class EditPhotosModal extends Component {
                 </Modal>
             </div>
         )
-    }
-}
-export default EditPhotosModal;
+};
+
+const mapStateToProps = state => {
+    return {
+        photoInfo: state.photoDetails.details,
+    };
+};
+
+const mapActionsToProps = dispatch => ({
+    onLoad: id => dispatch(photoDetails.getPhoto(id))
+  });
+  
+  export default connect(
+    mapStateToProps,
+    mapActionsToProps
+  )(EditPhotosModal);
