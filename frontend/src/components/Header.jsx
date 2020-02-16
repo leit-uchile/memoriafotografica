@@ -2,7 +2,6 @@ import React, { useState, Fragment } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import UserModal from "./UserModal";
-import { misc } from "../actions";
 import "../css/header.css";
 import SearchBar from "./SearchBar";
 import {
@@ -17,6 +16,8 @@ import {
   Row,
   NavbarBrand
 } from "reactstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 const Header = ({ isAuth, currentRoute }) => {
   const [toggle, setToggle] = useState(false);
@@ -25,11 +26,13 @@ const Header = ({ isAuth, currentRoute }) => {
     <NavLink tag={UserModal}></NavLink>
   ) : currentRoute === "/login" ? (
     <NavLink tag={Link} to="/login" active style={styles.activeLink}>
-      <i class="glyphicon glyphicon-user"></i>Ingresar
+      <FontAwesomeIcon icon={faUser} />
+      {" "}Ingresar
     </NavLink>
   ) : (
     <NavLink tag={Link} to="/login">
-      <i class="glyphicon glyphicon-user"></i>Ingresar
+      <FontAwesomeIcon icon={faUser} />
+      {" "}Ingresar
     </NavLink>
   );
 
@@ -39,7 +42,8 @@ const Header = ({ isAuth, currentRoute }) => {
     <Fragment>
       <header
         className="jumbotron"
-        style={{ marginBottom: "0", paddingBottom: "2rem" }}>
+        style={{ marginBottom: "0", paddingBottom: "2rem" }}
+      >
         <Container>
           {redirect ? <Redirect to="/" /> : null}
           <Row>
@@ -51,7 +55,8 @@ const Header = ({ isAuth, currentRoute }) => {
                     setTimeout(() => setRedirect(false), 1000);
                   }}
                   tag={"div"}
-                  style={{ maxWidth: "50%" }}>
+                  style={{ maxWidth: "50%" }}
+                >
                   <h1>Memoria fotográfica</h1>
                   <p style={{ fontSize: "0.8em", whiteSpace: "normal" }}>
                     Facultad de Ciencias Fisicas y Matematicas - Universidad de
@@ -67,7 +72,8 @@ const Header = ({ isAuth, currentRoute }) => {
                           tag={Link}
                           to={"/"}
                           active
-                          style={styles.activeLink}>
+                          style={styles.activeLink}
+                        >
                           Inicio
                         </NavLink>
                       ) : (
@@ -82,7 +88,8 @@ const Header = ({ isAuth, currentRoute }) => {
                           tag={Link}
                           to={"/gallery"}
                           active
-                          style={styles.activeLink}>
+                          style={styles.activeLink}
+                        >
                           Galer&iacute;a
                         </NavLink>
                       ) : (
@@ -97,7 +104,8 @@ const Header = ({ isAuth, currentRoute }) => {
                           tag={Link}
                           to={"/upload"}
                           active
-                          style={styles.activeLink}>
+                          style={styles.activeLink}
+                        >
                           Participa
                         </NavLink>
                       ) : (
@@ -132,7 +140,8 @@ const Header = ({ isAuth, currentRoute }) => {
                 height: "4em",
                 padding: "1em 0"
               }
-        }>
+        }
+      >
         <SearchBar />
       </div>
     </Fragment>
@@ -152,7 +161,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  null
-)(Header);
+export default connect(mapStateToProps, null)(Header);

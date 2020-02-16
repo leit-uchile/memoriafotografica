@@ -1,9 +1,12 @@
 version: '3'
 
 services:
-  leit-db:
+  db:
     image: postgres
-  leit-backend:
+    restart: always
+    volumes: 
+      - ./db/postgresql:/var/lib/postgresql/data
+  backend:
     build: ./backend
     command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
     volumes:
@@ -11,13 +14,10 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - leit-db
-  leit-frontend:
+      - db
+  frontend:
     build: ./frontend
     volumes:
-      - ./frontend:/app/frontend
-      - node-modules:/app/frontend/node_modules
+      - ./frontend:/app/frontend:rw
     ports:
       - '3000:3000'
-volumes:
-  node-modules:

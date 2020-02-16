@@ -49,6 +49,8 @@ export const uploadImages = photos => {
         photo.meta.cc !== null ? photo.meta.cc : photos.cc ? photos.cc : "CC BY"
       );
 
+      const this_key = key; // avoid binding bellow
+
       fetch("/api/photos/", {
         method: "POST",
         headers: header,
@@ -62,30 +64,29 @@ export const uploadImages = photos => {
                 dispatch({
                   type: UPLOADED_PHOTO,
                   data: {
-                    photo_index: key,
+                    photo_index: this_key,
                     photo_id: payload.id
                   }
                 });
               });
             } else {
-              console.log("EEEEEEEEEEEROR");
               dispatch(setAlert("Error al subir fotografia", "warning"));
 
               dispatch({
                 type: ERROR_UPLOADING_PHOTO,
                 data: {
-                  photo_index: key
+                  photo_index: this_key
                 }
               });
             }
-          }.bind(key)
+          }
         )
         .catch(error => {
           dispatch(setAlert("Error al subir fotografia", "warning"));
           dispatch({
             type: ERROR_UPLOADING_PHOTO,
             data: {
-              photo_index: key,
+              photo_index: this_key,
               response: error
             }
           });

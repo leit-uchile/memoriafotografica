@@ -14,8 +14,6 @@ import {
   NavLink
 } from "reactstrap";
 import Photo from "../../components/Photo";
-import Comment from "../PhotoView/Comment";
-import EditPhotos from "./UserPhotos";
 import { connect } from "react-redux";
 import { user, misc } from "../../actions";
 import { Link } from "react-router-dom";
@@ -26,6 +24,7 @@ import {
   faArrowAltCircleLeft
 } from "@fortawesome/free-solid-svg-icons";
 import { userRolTranslation, userTypeTranslation } from "./utils";
+import UserPicture from '../../components/UserPicture';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -35,30 +34,20 @@ class Dashboard extends Component {
       entering: true,
       toRight: true,
       selectedAlbs: [],
-      selectedComs: [],
-      maxAllowedAlbums: 4,
-      maxAllowedComments: 5
+      maxAllowedAlbums: 4
     };
-    this.next = this.next.bind(this);
-    this.previous = this.previous.bind(this);
-    this.goToIndex = this.goToIndex.bind(this);
-    this.allowMorePics = this.allowMorePics.bind(this);
   }
 
-  toggleAlbs() {
+  toggleAlbs = () => {
     this.setState({
       albsOpen: !this.state.albsOpen
     });
-  }
+  };
   handleOnClick = url => {
     this.setState({ redirect: true, link: url });
   };
-  toggleComments() {
-    this.setState({
-      comOpen: !this.state.comOpen
-    });
-  }
-  next() {
+
+  next = () => {
     if (this.animating) return;
     const nextIndex =
       this.state.activeIndex + 4 >= this.props.data.photos.length - 1
@@ -66,34 +55,34 @@ class Dashboard extends Component {
         : this.state.activeIndex + 4;
     this.setState({ entering: false, toRight: true }, () =>
       setTimeout(
-        function () {
+        function() {
           this.setState({ activeIndex: nextIndex, entering: true });
         }.bind(this),
         1000
       )
     );
     //this.setState({ activeIndex: nextIndex });
-  }
+  };
 
-  previous() {
+  previous = () => {
     if (this.animating) return;
     const prevIndex =
       this.state.activeIndex <= 0 ? 0 : this.state.activeIndex - 4;
     this.setState({ entering: false, toRight: false }, () =>
       setTimeout(
-        function () {
+        function() {
           this.setState({ activeIndex: prevIndex, entering: true });
         }.bind(this),
         1000
       )
     );
     //this.setState({ activeIndex: nextIndex });
-  }
+  };
 
-  goToIndex(newIndex) {
+  goToIndex = newIndex => {
     if (this.animating) return;
     this.setState({ activeIndex: newIndex });
-  }
+  };
 
   componentWillMount() {
     const { user } = this.props;
@@ -103,26 +92,9 @@ class Dashboard extends Component {
     this.props.onLoadGetAlbums(user.id, 15, 0);
     this.props.onLoadGetComments(user.id, 10, 0);
   }
-  allowMorePics() {
+  allowMorePics = () => {
     this.setState({ maxPhotos: this.state.maxPhotos + 10 });
-  }
-
-  componentDidMount() {
-    const { user } = this.props;
-    if (user.avatar === null) {
-      var canvas = document.getElementById("myCanvas");
-      var ctx = canvas.getContext("2d");
-      ctx.fillStyle = "#FF0000";
-      ctx.fillRect(0, 0, 200, 200);
-      ctx.font = "100px Arial";
-      ctx.fillStyle = "#FFF";
-      ctx.fillText(
-        user.first_name.slice(0, 1) + user.last_name.slice(0, 1),
-        30,
-        130
-      );
-    }
-  }
+  };
 
   render() {
     const { albums, comments, photos } = this.props.data;
@@ -133,20 +105,13 @@ class Dashboard extends Component {
     };
     var currentAlbs = albums
       ? albums.slice(0, this.state.maxAllowedAlbums).map(el => {
-        return {
-          ...el,
-          selected: isSelected(el.id, this.state.selectedAlbs)
-        };
-      })
+          return {
+            ...el,
+            selected: isSelected(el.id, this.state.selectedAlbs)
+          };
+        })
       : [];
-    var currentComments = comments
-      ? comments.slice(0, this.state.maxAllowedComments).map(el => {
-        return {
-          ...el,
-          selected: isSelected(el.id, this.state.selectedComs)
-        };
-      })
-      : [];
+
     return (
       <Container>
         <Row style={{ marginTop: "2em" }}>
@@ -156,43 +121,32 @@ class Dashboard extends Component {
         </Row>
         <Row style={styles.container}>
           <Col md="3">
-            <Row>
-              <Card>
-                {user.avatar === null ? (
-                  <canvas id="myCanvas" height="200px" width="200px" />
-                ) : (
-                    <CardImg top width="100%" src={user.avatar.slice(21)} />
-                  )}
-                <CardBody
-                  style={{ backgroundColor: "#ebeeef", textAlign: "center" }}>
-                  <CardText>{`${user.first_name} ${user.last_name}`}</CardText>
-                  <CardText>{user.email}</CardText>
-                  <CardText>{userTypeTranslation(user.user_type)}</CardText>
-                  <CardText>{userRolTranslation(user.rol_type)}</CardText>
-                  <Button
-                    style={{ margin: "0 auto" }}
-                    color="secondary"
-                    tag={Link}
-                    to="/user/editProfile">
-                    {" "}
-                    Editar mi perfil
-                  </Button>
-                </CardBody>
-              </Card>
-            </Row>
-            <Row>
-              <Nav vertical>
-                <NavItem>
-                  <NavLink href="#">Mis fotos</NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink href="#">Mis albumes</NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink href="#">Mis comentarios</NavLink>
-                </NavItem>
-              </Nav>
-            </Row>
+            <Card>
+              <UserPicture
+                user={user}
+                dims={200}
+                render={user => (
+                  <CardImg top width="100%" src={user.avatar} />
+                )}
+              />
+              <CardBody
+                style={{ backgroundColor: "#ebeeef", textAlign: "center" }}
+              >
+                <CardText>{`${user.first_name} ${user.last_name}`}</CardText>
+                <CardText>{user.email}</CardText>
+                <CardText>{userTypeTranslation(user.user_type)}</CardText>
+                <CardText>{userRolTranslation(user.rol_type)}</CardText>
+                <Button
+                  style={{ margin: "0 auto" }}
+                  color="secondary"
+                  tag={Link}
+                  to="/user/editProfile"
+                >
+                  {" "}
+                  Editar mi perfil
+                </Button>
+              </CardBody>
+            </Card>
           </Col>
           <Col md="9">
             <Container fluid>
@@ -203,64 +157,68 @@ class Dashboard extends Component {
                     style={{ margin: "1em auto" }}
                     xs="9"
                     className="text-center"
-                    align="center">
+                    align="center"
+                  >
                     {photos.length == 0 ? (
                       <h5> No has subido fotos </h5>
                     ) : (
-                        photos
-                          .slice(
-                            this.state.activeIndex,
-                            4 + this.state.activeIndex
-                          )
-                          .map(el => (
-                            <img
-                              className={
-                                this.state.toRight
-                                  ? this.state.entering
-                                    ? "animated slideInRight"
-                                    : "animated slideOutLeft"
-                                  : this.state.entering
-                                    ? "animated slideInLeft"
-                                    : "animated slideOutRight"
-                              }
-                              width="calc(25%-4px)"
-                              width="160em"
-                              height="130em"
-                              style={{
-                                display: "inline-block",
-                                margin: "1em auto"
-                              }}
-                              hspace="2em"
-                              src={el.image}
-                              key={el.id}
-                            />
-                          ))
-                      )}
+                      photos
+                        .slice(
+                          this.state.activeIndex,
+                          4 + this.state.activeIndex
+                        )
+                        .map(el => (
+                          <img
+                            className={
+                              this.state.toRight
+                                ? this.state.entering
+                                  ? "animated slideInRight"
+                                  : "animated slideOutLeft"
+                                : this.state.entering
+                                ? "animated slideInLeft"
+                                : "animated slideOutRight"
+                            }
+                            width="calc(25%-4px)"
+                            width="160em"
+                            height="130em"
+                            style={{
+                              display: "inline-block",
+                              margin: "1em auto"
+                            }}
+                            hspace="2em"
+                            src={el.image}
+                            key={el.id}
+                          />
+                        ))
+                    )}
                   </Row>
                 </Container>
 
                 <ButtonGroup style={{ margin: "0 auto" }}>
                   <Button
                     disabled={this.state.activeIndex <= 0 ? true : false}
-                    onClick={this.previous}>
+                    onClick={this.previous}
+                  >
                     {" "}
                     <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}
                   </Button>
                   <Button
                     style={{ margin: "0 auto" }}
                     tag={Link}
-                    to="/user/photos">
+                    to="/user/photos"
+                  >
                     {" "}
                     Ver Todas
                   </Button>
                   <Button
                     disabled={
                       this.state.activeIndex + 4 >=
-                        this.props.data.photos.length - 1
+                      this.props.data.photos.length - 1
                         ? true
                         : false
                     }
-                    onClick={this.next}>
+                    onClick={this.next}
+                  >
                     {" "}
                     <FontAwesomeIcon icon={faArrowAltCircleRight} />{" "}
                   </Button>
@@ -271,20 +229,11 @@ class Dashboard extends Component {
                 <Container fluid>
                   <Albums albumList={currentAlbs} />
                 </Container>
-                <Button style={{ margin: "1em auto" }} 
-                 
+                <Button
+                  style={{ margin: "1em auto" }}
                   tag={Link}
-                  to="/user/albums">
-                  {" "}
-                  Ver Todos
-                </Button>
-              </Row>
-              <Row>
-                <h2 style={styles.title}>Mis Comentarios</h2>
-                <Container fluid>
-                  <Comments commentList={currentComments} />
-                </Container>
-                <Button style={{ margin: "1em auto" }} onClick={this.all}>
+                  to="/user/albums"
+                >
                   {" "}
                   Ver Todos
                 </Button>
@@ -302,28 +251,18 @@ const Albums = ({ albumList, onClick }) => (
     {albumList.length == 0 ? (
       <h5> No has subido albumes</h5>
     ) : (
-        albumList.map((el, index) => (
-          <Card>
-            <Photo
-              name={el.title}
-              url={el.thumbnail}
-              height="150px"
-              useLink
-              redirectUrl={`/albums/${el.di}`}
-            />
-          </Card>
-        ))
-      )}
-  </div>
-);
-
-const Comments = ({ commentList, onClick }) => (
-  <div style={{ margin: "1em auto" }}>
-    {commentList.length == 0 ? (
-      <h5> No has publicado comentarios </h5>
-    ) : (
-        commentList.map((el, index) => <p key={el.id}> {el.content} </p>)
-      )}
+      albumList.map((el, index) => (
+        <Card>
+          <Photo
+            name={el.title}
+            url={el.thumbnail}
+            height="150px"
+            useLink
+            redirectUrl={`/albums/${el.di}`}
+          />
+        </Card>
+      ))
+    )}
   </div>
 );
 const styles = {
@@ -359,7 +298,4 @@ const mapActionsToProps = dispatch => ({
   setRoute: route => dispatch(misc.setCurrentRoute(route))
 });
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(Dashboard);
+export default connect(mapStateToProps, mapActionsToProps)(Dashboard);

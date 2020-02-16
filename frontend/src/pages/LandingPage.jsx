@@ -36,10 +36,12 @@ const items = [
 ];
 
 const LandingPage = props => {
+  const {setRoute, onLoad} = props;
+
   useEffect(() => {
-    props.setRoute("/Inicio");
-    props.onLoad();
-  }, [props.onLoad]);
+    setRoute("/Inicio");
+    onLoad();
+  }, [onLoad, setRoute]);
 
   var settings = {
     dots: true,
@@ -122,15 +124,15 @@ const LandingPage = props => {
       <Row style={{ marginTop: "2em" }} className="missionDiv">
         <Col sm={4}>
           <h3>Recuperar</h3>
-          <img src="/assets/photoSave.svg" width="100px" height="100px" />
+          <img src="/assets/photoSave.svg" width="100px" height="100px" alt=""/>
         </Col>
         <Col sm={4}>
           <h3>Preservar</h3>
-          <img src="/assets/server.svg" width="100px" height="100px" />
+          <img src="/assets/server.svg" width="100px" height="100px" alt=""/>
         </Col>
         <Col sm={4}>
           <h3>Compartir</h3>
-          <img src="/assets/speech-bubble.svg" width="100px" height="100px" />
+          <img src="/assets/speech-bubble.svg" width="100px" height="100px" alt=""/>
         </Col>
       </Row>
       <Row>
