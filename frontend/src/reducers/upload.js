@@ -22,7 +22,7 @@ const initialState = {
   photosUploaded: [],
   newPhotosIds: [],
   opsFinished: 0,
-  disclosureSet: localStorage.getItem("disclosed") == "true" ? true : false,
+  disclosureSet: localStorage.getItem("disclosed") === "true" ? true : false,
   error: [],
   createAlbum: {sent: false, success: false},
 };

@@ -21,7 +21,7 @@ import {
 
 const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
   const [formData, setFormData] = useState(
-    cache == {}
+    cache === {}
       ? {
           ...cache,
           error: null

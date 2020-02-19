@@ -9,16 +9,12 @@ import {
   ButtonGroup,
   CardText,
   CardBody,
-  Nav,
-  NavItem,
-  NavLink
 } from "reactstrap";
 import Photo from "../../components/Photo";
 import { connect } from "react-redux";
 import { user, misc } from "../../actions";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImages, faBook, faAddressCard, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   faArrowAltCircleRight,
   faArrowAltCircleLeft
@@ -97,7 +93,7 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { albums, comments, photos } = this.props.data;
+    const { albums, photos } = this.props.data;
     const { user } = this.props;
 
     var isSelected = (id, array) => {
@@ -159,7 +155,7 @@ class Dashboard extends Component {
                     className="text-center"
                     align="center"
                   >
-                    {photos.length == 0 ? (
+                    {photos.length === 0 ? (
                       <h5> No has subido fotos </h5>
                     ) : (
                       photos
@@ -169,6 +165,7 @@ class Dashboard extends Component {
                         )
                         .map(el => (
                           <img
+                            alt=''
                             className={
                               this.state.toRight
                                 ? this.state.entering
@@ -178,7 +175,6 @@ class Dashboard extends Component {
                                 ? "animated slideInLeft"
                                 : "animated slideOutRight"
                             }
-                            width="calc(25%-4px)"
                             width="160em"
                             height="130em"
                             style={{
@@ -248,7 +244,7 @@ class Dashboard extends Component {
 
 const Albums = ({ albumList, onClick }) => (
   <div style={{ margin: "1em auto" }}>
-    {albumList.length == 0 ? (
+    {albumList.length === 0 ? (
       <h5> No has subido albumes</h5>
     ) : (
       albumList.map((el, index) => (

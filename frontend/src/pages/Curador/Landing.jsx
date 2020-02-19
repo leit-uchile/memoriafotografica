@@ -72,6 +72,7 @@ const PhotoCountChart = ({ rawData }) => {
           }
         }}
         itemsFormat={function defaultItemsFormat(values) {
+          // eslint-disable-next-line
           return values.map((v, i) => {
             if (v) {
               return { value: v.y, title: "Total" };

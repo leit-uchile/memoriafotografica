@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { auth, home, curador } from "../../actions";
+import { curador } from "../../actions";
 import {
   Button,
   Form,
@@ -37,9 +37,9 @@ class Category_New extends Component {
   };
 
   handleOnClick = obj => {
-    const {id} = obj.photo;
+    const { id } = obj.photo;
     const newList = this.state.pictures.filter(el => el !== id);
-    this.setState({pictures: [...newList, id]});
+    this.setState({ pictures: [...newList, id] });
   };
 
   render() {
@@ -67,7 +67,8 @@ class Category_New extends Component {
                   id="catName"
                   type="text"
                   placeholder="Categoria Nueva"
-                  name="categoryName"></Input>
+                  name="categoryName"
+                ></Input>
               </FormGroup>
               <Button color="success" type="submit">
                 Crear
@@ -76,7 +77,7 @@ class Category_New extends Component {
           </Col>
         </Row>
         <Row>
-          <Col style={{marginTop: "2em"}}>
+          <Col style={{ marginTop: "2em" }}>
             <h3>Seleccionar fotografias</h3>
           </Col>
         </Row>
@@ -120,7 +121,4 @@ const mapActionsToProps = dispatch => ({
   getPhotos: () => dispatch(curador.getPhotos())
 });
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(Category_New);
+export default connect(mapStateToProps, mapActionsToProps)(Category_New);

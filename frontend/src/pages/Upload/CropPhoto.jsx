@@ -4,7 +4,6 @@ import {
   Row,
   Col,
   Button,
-  ButtonGroup,
   Modal,
   ModalHeader,
   ModalBody,
@@ -15,7 +14,6 @@ import 'react-image-crop/dist/ReactCrop.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faCropAlt} from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
-import { upload, alert } from "../../actions";
 
 const dimensions = {
   standar:{

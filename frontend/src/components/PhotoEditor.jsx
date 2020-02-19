@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import Gallery from "react-photo-gallery";
-import {Button, Container, Row, Col} from 'reactstrap';
+import { Container, Row, Col} from 'reactstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faEye, faPencilAlt} from "@fortawesome/free-solid-svg-icons";
 import "../css/photoEditor.css";

@@ -131,6 +131,7 @@ class RegisterLoginInfo extends Component {
     var avatarPreview =
       this.state.avatarPreview === "" ? null : (
         <img
+          alt='avatar preview'
           src={this.state.avatarPreview}
           width="200px"
           height="200px"

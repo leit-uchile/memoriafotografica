@@ -169,6 +169,7 @@ const UploadAlbum = ({
                           target={"PopoverFocus" + (k + 1)}>
                           <PopoverHeader>
                             <img
+                              alt="Uploaded content"
                               src={el.img}
                               style={{ width: "50%", float: "right" }}
                             />

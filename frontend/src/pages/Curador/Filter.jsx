@@ -10,121 +10,19 @@ import {
   PaginationItem,
   PaginationLink,
   Card,
-  CardHeader,
   CardFooter,
   CardBody,
-  CardTitle,
-  CardText,
   Badge
 } from "reactstrap";
 import { connect } from "react-redux";
-import { auth, home, curador } from "../../actions";
+import { curador } from "../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faThLarge,
   faThList,
   faFilter
 } from "@fortawesome/free-solid-svg-icons";
-import LeitSpinner from '../../components/LeitSpinner';
-
-var filtrar = [
-  {
-    id: 1,
-    name: "img1",
-    url: "https://i.blogs.es/bd5388/banter-snaps-387953-unsplash/1366_2000.jpg",
-    tags: ["tag1", "tag2"],
-    // Lorem ipsum Dolor Sit Amet
-    approved: true,
-    desc: "desc1"
-  },
-  {
-    id: 2,
-    name: "img2",
-    url:
-      "http://ingenieria.uchile.cl/u/ImageServlet?idDocumento=106702&indice=0&nocch=20150908170639.0",
-    tags: ["tag2", "tag3"],
-    approved: false,
-    // Lorem ipsum Dolor Sit Amet
-    desc: "desc2"
-  },
-  {
-    id: 3,
-    name: "img3",
-    url:
-      "http://festivalingenieriayciencias.cl/wp-content/uploads/2014/08/Beauchef_851-5.jpg",
-    tags: ["tag2", "tag3"],
-    approved: false,
-    // Lorem ipsum Dolor Sit Amet
-    desc: "desc3"
-  },
-  {
-    id: 4,
-    name: "img4",
-    url: "https://upload.wikimedia.org/wikipedia/commons/7/79/Beauchef_851.jpg",
-    tags: ["tag2", "tag3"],
-    approved: true,
-    // Lorem ipsum Dolor Sit Amet
-    desc: "desc4"
-  },
-  {
-    id: 5,
-    name: "img5",
-    url:
-      "http://festivalingenieriayciencias.cl/wp-content/uploads/2014/08/Beauchef_851-7.jpg",
-    tags: ["tag2", "tag3"],
-    approved: false,
-    // Lorem ipsum Dolor Sit Amet
-    desc: "desc5"
-  },
-  {
-    id: 10,
-    name: "img1",
-    url: "https://i.blogs.es/bd5388/banter-snaps-387953-unsplash/1366_2000.jpg",
-    tags: ["tag1", "tag2"],
-    // Lorem ipsum Dolor Sit Amet
-    approved: true,
-    desc: "desc1"
-  },
-  {
-    id: 11,
-    name: "img2",
-    url:
-      "http://ingenieria.uchile.cl/u/ImageServlet?idDocumento=106702&indice=0&nocch=20150908170639.0",
-    tags: ["tag2", "tag3"],
-    approved: false,
-    // Lorem ipsum Dolor Sit Amet
-    desc: "desc2"
-  },
-  {
-    id: 12,
-    name: "img3",
-    url:
-      "http://festivalingenieriayciencias.cl/wp-content/uploads/2014/08/Beauchef_851-5.jpg",
-    tags: ["tag2", "tag3"],
-    approved: false,
-    // Lorem ipsum Dolor Sit Amet
-    desc: "desc3"
-  },
-  {
-    id: 13,
-    name: "img4",
-    url: "https://upload.wikimedia.org/wikipedia/commons/7/79/Beauchef_851.jpg",
-    tags: ["tag2", "tag3"],
-    approved: true,
-    // Lorem ipsum Dolor Sit Amet
-    desc: "desc4"
-  },
-  {
-    id: 14,
-    name: "img5",
-    url:
-      "http://festivalingenieriayciencias.cl/wp-content/uploads/2014/08/Beauchef_851-7.jpg",
-    tags: ["tag2", "tag3"],
-    approved: false,
-    // Lorem ipsum Dolor Sit Amet
-    desc: "desc5"
-  }
-];
+import LeitSpinner from "../../components/LeitSpinner";
 
 class Filter extends Component {
   constructor(props) {
@@ -226,30 +124,13 @@ class Filter extends Component {
       );
     }
     latest = latest.slice(0, 3).map(el => el);
-    var actual;
-    if (this.state.list.length < 1) {
-      actual = "Has filtrado todas las solicitudes";
-    } else {
-      actual = (
-        <Photo
-          key={this.state.list[0].id}
-          name={this.state.list[0].name}
-          url={this.state.list[0].url}
-          tags={this.state.list[0].tags}
-          desc={this.state.list[0].desc}
-          state={this.state.list[0].state}
-          style={styles.actual}
-          height="350px"
-        />
-      );
-    }
 
     let photolist = this.state.list.map(e => (
       <Card style={{ width: "100%", margin: "10px 0px" }}>
         <CardBody>
           <Row>
             <Col>
-              <img src={e.thumbnail} width="200px" />
+              <img alt={e.title} src={e.thumbnail} width="200px" />
             </Col>
             <Col xs="9">
               <h5>{e.name}</h5>
@@ -287,7 +168,8 @@ class Filter extends Component {
                   onClick={() =>
                     this.approvePhoto(this.props.token, e.id, e.approved)
                   }
-                  color="danger">
+                  color="danger"
+                >
                   Quitar Aprobación
                 </Button>
               </div>
@@ -298,7 +180,8 @@ class Filter extends Component {
                   onClick={() =>
                     this.approvePhoto(this.props.token, e.id, e.approved)
                   }
-                  color="success">
+                  color="success"
+                >
                   Aprobar
                 </Button>
               </div>
@@ -313,6 +196,7 @@ class Filter extends Component {
         <CardBody style={{ paddingTop: "0px" }}>
           <Row>
             <img
+              alt={e.title}
               src={e.thumbnail}
               width="100%"
               style={{ borderRadius: "2.5px" }}
@@ -340,7 +224,8 @@ class Filter extends Component {
                   color="danger"
                   onClick={() =>
                     this.approvePhoto(this.props.token, e.id, e.approved)
-                  }>
+                  }
+                >
                   Quitar Aprobación
                 </Button>
               </div>
@@ -351,7 +236,8 @@ class Filter extends Component {
                   color="success"
                   onClick={() =>
                     this.approvePhoto(this.props.token, e.id, e.approved)
-                  }>
+                  }
+                >
                   Aprobar
                 </Button>
               </div>
@@ -374,7 +260,7 @@ class Filter extends Component {
       (arg, index) => index
     );
     paginators = paginators.map(ind => (
-      <PaginationItem active={ind == this.state.currentPage ? true : false}>
+      <PaginationItem active={ind === this.state.currentPage ? true : false}>
         <PaginationLink onClick={e => this.setCurrentPage(e, ind)}>
           {ind + 1}
         </PaginationLink>
@@ -399,19 +285,29 @@ class Filter extends Component {
               <Button
                 outline={this.state.listView ? true : false}
                 disabled={this.state.listView ? true : false}
-                onClick={this.listView}>
+                onClick={this.listView}
+              >
                 <FontAwesomeIcon icon={faThList} />
               </Button>
               <Button
                 outline={this.state.listView ? false : true}
                 disabled={this.state.listView ? false : true}
-                onClick={this.cardView}>
+                onClick={this.cardView}
+              >
                 <FontAwesomeIcon icon={faThLarge} />
               </Button>
             </ButtonGroup>
           </Col>
         </Row>
-        <Row>{this.props.loading ? <Col style={{textAlign: "center"}}><LeitSpinner /></Col>: renderphotos}</Row>
+        <Row>
+          {this.props.loading ? (
+            <Col style={{ textAlign: "center" }}>
+              <LeitSpinner />
+            </Col>
+          ) : (
+            renderphotos
+          )}
+        </Row>
         <Row>
           <Pagination aria-label="Page navigation example">
             <PaginationItem disabled>
@@ -468,7 +364,4 @@ const mapActionsToProps = dispatch => ({
     dispatch(curador.switchPhotoApproval(auth, pID, val))
 });
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(Filter);
+export default connect(mapStateToProps, mapActionsToProps)(Filter);

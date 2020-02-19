@@ -1,13 +1,11 @@
 import React, { Component } from "react";
-import Category_New from "./Category_New";
-import { Link, Route } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Col,
   Row,
   Container,
   Button,
   ButtonGroup,
-  Input,
   Modal,
   ModalBody,
   ModalFooter,
@@ -16,11 +14,9 @@ import {
 } from "reactstrap";
 import { Table } from "reactstrap";
 import { connect } from "react-redux";
-import { auth, home, curador } from "../../actions";
+import { curador } from "../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
-
-import Photo from "../../components/Photo";
 
 class Categories extends Component {
   constructor(props) {
@@ -47,43 +43,42 @@ class Categories extends Component {
       this.setState({ toDelete: this.state.toDelete.filter(el => el != i) });
     }
     // Update
-  }
+  };
 
   removeCategories = () => {
     this.props.deleteCategories(this.props.token, this.state.toDelete);
-  }
+  };
 
   toggleRemoveConfirmation = () => {
     this.setState({ deleteModal: !this.state.deleteModal });
-  }
+  };
 
   render() {
     const { match, cats } = this.props;
 
     // Put 3 per row
-    var latest = cats.map(el => <tr>
-      <th>
-        <input
-          type="checkbox"
-          aria-label="Checkbox for delete Categories"
-          onClick={e =>
-            this.updateToDelete(el.id, e.target.checked)
-          }
-          checked={this.state.toDelete.includes(
-            el.id
-          )}></input>
-      </th>
-      <th>{el.title}</th>
-      <td>{new Date(el.created_at).toLocaleString()}</td>
-      <td>{new Date(el.updated_at).toLocaleString()}</td>
-      <td>{el.count}</td>
-      <td>
-        <Button>
-          <FontAwesomeIcon icon={faEdit} />
-        </Button>
-      </td>
-    </tr>);
-    
+    var latest = cats.map(el => (
+      <tr>
+        <th>
+          <input
+            type="checkbox"
+            aria-label="Checkbox for delete Categories"
+            onClick={e => this.updateToDelete(el.id, e.target.checked)}
+            checked={this.state.toDelete.includes(el.id)}
+          ></input>
+        </th>
+        <th>{el.title}</th>
+        <td>{new Date(el.created_at).toLocaleString()}</td>
+        <td>{new Date(el.updated_at).toLocaleString()}</td>
+        <td>{el.count}</td>
+        <td>
+          <Button>
+            <FontAwesomeIcon icon={faEdit} />
+          </Button>
+        </td>
+      </tr>
+    ));
+
     if (latest.length < 1) {
       latest = <span>No existen categorias</span>;
     }
@@ -99,12 +94,14 @@ class Categories extends Component {
               <Button
                 onClick={this.toggleRemoveConfirmation}
                 color={this.state.toDelete.length ? "danger" : "secondary"}
-                disabled={!this.state.toDelete.length}>
+                disabled={!this.state.toDelete.length}
+              >
                 Eliminar ({this.state.toDelete.length}) Categorías
               </Button>
               <Modal
                 isOpen={this.state.deleteModal}
-                toggle={this.toggleRemoveConfirmation}>
+                toggle={this.toggleRemoveConfirmation}
+              >
                 <ModalHeader>
                   ¿Est&aacute;s seguro(a) que quieres eliminar la(s)
                   categoría(s)?
@@ -167,18 +164,10 @@ const mapStateToProps = state => {
     refresh: state.curador.refresh
   };
 };
-const mapActionsToProps = dispatch => {
-  return {
-    getCategories: route => {
-      return dispatch(curador.getCategories(route));
-    },
-    deleteCategories: (auth, catArray) => {
-      return dispatch(curador.deleteCategories(auth, catArray));
-    }
-  };
-};
+const mapActionsToProps = dispatch => ({
+  getCategories: route => dispatch(curador.getCategories(route)),
+  deleteCategories: (auth, catArray) =>
+    dispatch(curador.deleteCategories(auth, catArray))
+});
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(Categories);
+export default connect(mapStateToProps, mapActionsToProps)(Categories);

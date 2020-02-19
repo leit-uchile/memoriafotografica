@@ -10,8 +10,6 @@ import {
   SWICH_PHOTO_APPROVAL,
   SWICH_PHOTO_APPROVAL_ERROR,
   CURADOR_LOADING,
-  RECOVERED_REPORTS,
-  RECOVERED_REPORTS_ERROR,
   GET_GENERAL_STATS,
   GET_GENERAL_STATS_ERROR
 } from "./types";
@@ -104,12 +102,12 @@ export const deleteCategories = (auth, catArray) => {
         method: "DELETE",
         headers: headers
       }).then(response => {
-        if (response.status == 204) {
+        if (response.status === 204) {
           ++completed_ok;
         } else {
           ++completed_err;
         }
-        if (completed_err + completed_ok == to_send) {
+        if (completed_err + completed_ok === to_send) {
           console.log("done");
           console.log("errors: " + completed_err);
           console.log("ok: " + completed_ok);

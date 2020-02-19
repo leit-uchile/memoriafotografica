@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import Avatar from "./Avatar";
+import React from "react";
 import { Container, Row, Col } from "reactstrap";
 import ReportModal from "../../components/ReportModal";
 

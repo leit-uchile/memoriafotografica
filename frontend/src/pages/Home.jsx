@@ -89,7 +89,7 @@ class Home extends Component {
   };
 
   reloadOnChange = () => {
-    const { sortByUpload, recoverByCats, sortByField } = this.props;
+    const { sortByUpload, recoverByCats } = this.props;
     if (this.state.selectedCategories.length !== 0) {
       recoverByCats(this.state.selectedCategories, this.state.searchOrder);
     } else {
@@ -139,12 +139,16 @@ class Home extends Component {
   };
 
   setPage = number => {
-    setTimeout(() => this.setState({
-      photoPagination: {
-        maxAllowed: this.state.photoPagination.maxAllowed,
-        page: number
-      }
-    }), 300)
+    setTimeout(
+      () =>
+        this.setState({
+          photoPagination: {
+            maxAllowed: this.state.photoPagination.maxAllowed,
+            page: number
+          }
+        }),
+      300
+    );
     window.scrollTo({
       top: 0,
       left: 0,
@@ -185,6 +189,7 @@ class Home extends Component {
       return array ? array.filter(el => el === id).length !== 0 : false;
     };
     // arr1 is sorted
+    // eslint-disable-next-line
     var arraysIntersect = (arr1, arr2) => {
       return arr1.filter(el => arr2.indexOf(el) > -1).length !== 0;
     };
@@ -200,7 +205,7 @@ class Home extends Component {
     if (this.state.redirect) {
       setRoute("/photo/"); // For NavLink in Navbar
       setSelectedId(this.state.chosenPhotoIndex); // For in photo navigation
-      setPhotoPagination(this.state.photoPagination)
+      setPhotoPagination(this.state.photoPagination);
       return (
         <Redirect
           push
@@ -227,12 +232,13 @@ class Home extends Component {
             <Row>
               <Col md="7" lg="9">
                 <div style={styles.filtersContainer}>
-                  {filters.length != 0 ? (
+                  {filters.length !== 0 ? (
                     filters.map(el => (
                       <span
                         key={el.metaID}
                         style={styles.tags}
-                        onClick={() => removeSearch(el.metaID, el.value)}>
+                        onClick={() => removeSearch(el.metaID, el.value)}
+                      >
                         #{el.value} <FontAwesomeIcon icon={faTimesCircle} />
                       </span>
                     ))
@@ -246,7 +252,8 @@ class Home extends Component {
                   isOpen={this.state.catsOpen}
                   toggle={this.toggleCategory}
                   direction="down"
-                  className="home-button">
+                  className="home-button"
+                >
                   <DropdownToggle
                     caret
                     style={
@@ -256,7 +263,8 @@ class Home extends Component {
                             ...styles.dropdownButton,
                             backgroundColor: "#e9ecef8a"
                           }
-                    }>
+                    }
+                  >
                     Categorias
                     {this.state.selectedCategories.length > 0 ? (
                       <span style={styles.selectedCatsNumber}>
@@ -266,9 +274,10 @@ class Home extends Component {
                   </DropdownToggle>
                   <DropdownMenu
                     style={{
-                      width:'38em',
+                      width: "38em",
                       boxShadow: "0 0 15px 0 rgba(0,0,0,.20)"
-                    }}>
+                    }}
+                  >
                     <div style={styles.triangulo}></div>
                     <Row>
                       <Categories
@@ -292,7 +301,8 @@ class Home extends Component {
                       <Col>
                         <DropdownItem
                           style={{ textAlign: "center" }}
-                          onClick={this.allowMoreCats}>
+                          onClick={this.allowMoreCats}
+                        >
                           Cargar más categorias
                         </DropdownItem>
                       </Col>
@@ -304,7 +314,8 @@ class Home extends Component {
                     Ordenar
                   </DropdownToggle>
                   <DropdownMenu
-                    style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}>
+                    style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}
+                  >
                     <div style={styles.triangulo}></div>
                     <DropdownItem header>Por orden cronológico</DropdownItem>
                     <DropdownItem>Más antiguas primero</DropdownItem>
@@ -342,13 +353,16 @@ class Home extends Component {
               <Pagination
                 size="lg"
                 aria-label="Page navigation example"
-                style={{ justifyContent: "center" }}>
+                style={{ justifyContent: "center" }}
+              >
                 <PaginationItem
-                  disabled={0 === this.state.photoPagination.page}>
+                  disabled={0 === this.state.photoPagination.page}
+                >
                   <PaginationLink first onClick={() => this.setPage(0)} />
                 </PaginationItem>
                 <PaginationItem
-                  disabled={0 === this.state.photoPagination.page}>
+                  disabled={0 === this.state.photoPagination.page}
+                >
                   <PaginationLink
                     previous
                     onClick={() => this.changePage(-1)}
@@ -360,11 +374,13 @@ class Home extends Component {
                   </PaginationLink>
                 </PaginationItem>
                 <PaginationItem
-                  disabled={pageLimit < this.state.photoPagination.page + 1}>
+                  disabled={pageLimit < this.state.photoPagination.page + 1}
+                >
                   <PaginationLink next onClick={() => this.changePage(1)} />
                 </PaginationItem>
                 <PaginationItem
-                  disabled={pageLimit < this.state.photoPagination.page + 1}>
+                  disabled={pageLimit < this.state.photoPagination.page + 1}
+                >
                   <PaginationLink
                     last
                     onClick={() => this.setPage(pageLimit)}
@@ -381,13 +397,14 @@ class Home extends Component {
 
 const Categories = ({ categorias, onClick }) => (
   <Col>
-    {categorias.length == 0
+    {categorias.length === 0
       ? "-"
       : categorias.map((el, index) => (
           <DropdownItem
             key={el.id}
             onClick={() => onClick(el.id)}
-            style={el.selected ? styles.Selected : styles.unSelected}>
+            style={el.selected ? styles.Selected : styles.unSelected}
+          >
             {el.title}
             {el.selected ? <FontAwesomeIcon icon={faCheck} /> : ""}
           </DropdownItem>
@@ -465,21 +482,21 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  return {
-    photos: state.home.photos,
-    cats: state.home.all_cats,
-    filters: state.search.metaIDs,
-    auth: state.auth.token,
-    loadingPhotos: state.home.loading
-  };
-};
+const mapStateToProps = state => ({
+  photos: state.home.photos,
+  cats: state.home.all_cats,
+  filters: state.search.metaIDs,
+  auth: state.auth.token,
+  loadingPhotos: state.home.loading
+});
 
 const mapActionsToProps = dispatch => ({
   onLoadGetPhotos: () => dispatch(home.home()),
   onLoadGetCats: () => dispatch(home.categories()),
   setRoute: route => dispatch(misc.setCurrentRoute(route)),
   removeSearch: (id, value) => dispatch(search.removeSearchItem(id, value)),
+  // TODO: use it!
+  // eslint-disable-next-line
   sortByField: (tag, order) => dispatch(home.sortByField(tag, order)),
   sortByUpload: order => dispatch(home.sortByUpload(order)),
   recoverByCats: (catIds, order) => dispatch(home.recoverByCats(catIds, order)),
@@ -487,7 +504,4 @@ const mapActionsToProps = dispatch => ({
   setPhotoPagination: obj => dispatch(home.setPhotoPagination(obj))
 });
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(Home);
+export default connect(mapStateToProps, mapActionsToProps)(Home);

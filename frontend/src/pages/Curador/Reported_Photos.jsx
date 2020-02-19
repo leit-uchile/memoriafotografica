@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Row,
@@ -6,16 +6,16 @@ import {
   Container,
   Card,
   CardBody,
-  CardFooter,
+  CardFooter
 } from "reactstrap";
 import { connect } from "react-redux";
 import { curador } from "../../actions";
-import LeitSpinner from '../../components/LeitSpinner';
+import LeitSpinner from "../../components/LeitSpinner";
 
 const Reported_Photos = ({ reports, getReports, loading }) => {
   useEffect(() => {
     getReports();
-  }, []);
+  }, [getReports]);
 
   let photolist = reports
     .filter(el => el.type === 2) // Only pictures
@@ -24,7 +24,7 @@ const Reported_Photos = ({ reports, getReports, loading }) => {
         <CardBody>
           <Row>
             <Col>
-              <img src={e.thumbnail} width="200px" />
+              <img src={e.thumbnail} width="200px" alt={e.title}/>
             </Col>
             <Col xs="9">
               <h5>
@@ -50,7 +50,8 @@ const Reported_Photos = ({ reports, getReports, loading }) => {
                   onClick={() =>
                     this.approvePhoto(this.props.token, e.id, e.approved)
                   }
-                  color="danger">
+                  color="danger"
+                >
                   Quitar Aprobación
                 </Button>
               </div>
@@ -61,7 +62,8 @@ const Reported_Photos = ({ reports, getReports, loading }) => {
                   onClick={() =>
                     this.approvePhoto(this.props.token, e.id, e.approved)
                   }
-                  color="success">
+                  color="success"
+                >
                   Aprobar
                 </Button>
               </div>
@@ -80,7 +82,7 @@ const Reported_Photos = ({ reports, getReports, loading }) => {
     <Container>
       <Row>
         <Col>
-        <h2>Resolver Reportes de fotograf&iacute;as</h2>
+          <h2>Resolver Reportes de fotograf&iacute;as</h2>
         </Col>
       </Row>
       <Row>
@@ -105,7 +107,4 @@ const mapActionsToProps = dispatch => ({
   getReports: () => dispatch(curador.getReportes())
 });
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(Reported_Photos);
+export default connect(mapStateToProps, mapActionsToProps)(Reported_Photos);

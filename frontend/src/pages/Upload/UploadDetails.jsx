@@ -15,8 +15,6 @@ import {
 } from "reactstrap";
 import uuidv1 from 'uuid'
 
-var autosave_desc = null;
-
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },
   { name: "CC BY-SA", text: "Atribución, Compartir Igual" },
@@ -26,7 +24,7 @@ const CC_INFO = [
   { name: "CC BY-NC-ND", text: "Atribución, No Comercial, Sin Derivadas" }
 ];
 
-const gcd = (a, b) => (b == 0 ? a : gcd(b, a % b));
+const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
 
 class UploadDetails extends Component {
   constructor(Props) {
@@ -114,7 +112,7 @@ class UploadDetails extends Component {
         fluid>
         <Row>
           <Col md="3" style={{textAlign:'center'}}>
-            <img style={styles.thumb} src={this.state.src} />
+            <img style={styles.thumb} src={this.state.src} alt="Thumbnail"/>
             <CropPhoto src={this.state.src} key={uuidv1()}/>
           </Col>
           <Col md="9" style={{ padding: "20px" }}>

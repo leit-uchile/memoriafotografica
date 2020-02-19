@@ -120,10 +120,4 @@ const Dashboard = ({ match, location }) => (
   </Container>
 );
 
-const classes = {
-  leftcol: {
-    marginLeft: 0
-  }
-};
-
 export default Dashboard;

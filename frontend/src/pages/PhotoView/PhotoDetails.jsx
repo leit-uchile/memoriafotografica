@@ -49,7 +49,7 @@ const Tags = ({ tags, onRedirect, style }) => (
   <Container fluid style={style}>
     <Row>
       <Col style={{ fontSize: "1.2em" }}>
-        {tags.length == 0 ? (
+        {tags.length === 0 ? (
           <p>No hay tags asociados</p>
         ) : (
           tags.map((el, index) => (
@@ -75,7 +75,7 @@ const Categories = ({ cats, onRedirect, style }) => (
     <Row>
       <Col style={{ fontSize: "1.2em" }}>
         <p>
-          {cats.length == 0
+          {cats.length === 0
             ? "No se encuentra en una categoría"
             : cats.map((el, index) => (
                 <span style={{ marginRight: "0.2em" }}>{el.title}</span>
@@ -137,6 +137,7 @@ class PhotoDetails extends Component {
     const { suggestions } = this.props;
     let index;
     suggestions.map((el, key) => {
+      // eslint-disable-next-line
       if (el.id == this.state.myPhotoID) {
         index = key;
       }
