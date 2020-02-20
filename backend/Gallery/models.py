@@ -10,6 +10,16 @@ from uuid import uuid4
 from sorl.thumbnail import get_thumbnail
 from django.core.files.base import ContentFile
 from math import floor
+
+"""
+Follow issue on
+https://github.com/goinnn/django-multiselectfield/issues/74#issuecomment-423914610
+"""
+class PatchedMultiSelectField(MultiSelectField):
+  def value_to_string(self, obj):
+    value = self.value_from_object(obj)
+    return self.get_prep_value(value)
+
 # Create your models here.
 PERMISSION_CHOICES = (
     ('CC BY', 'Atribución'),
@@ -63,7 +73,7 @@ class Photo(models.Model):
     description = models.CharField(max_length=255, blank=True)
     approved = models.BooleanField(default=True)
     censure = models.BooleanField(default = False)
-    permission = MultiSelectField(choices=PERMISSION_CHOICES, max_choices=3)
+    permission = PatchedMultiSelectField(choices=PERMISSION_CHOICES, max_choices=3)
     category = models.ManyToManyField(Category, blank = True)
     comments = models.ManyToManyField(Comment, blank = True)
     metadata = models.ManyToManyField(Metadata, blank = True)
