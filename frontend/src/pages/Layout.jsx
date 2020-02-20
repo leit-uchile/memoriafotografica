@@ -10,18 +10,18 @@ import {
 } from "../components";
 import Home from "./Home";
 import Login from "./Login";
-import Register from "./Register/Register";
-import NoMatch from "./NoMatch";
-import UploadPage from "./Upload/UploadPage";
-import PhotoDetails from "./PhotoView/PhotoDetails";
+import Register from "./Register";
+import NoMatch from "../components/Routes/NoMatch";
+import UploadPage from "./Upload";
+import PhotoDetails from "./PhotoView";
 import RequestPhoto from "./RequestPhoto";
-import Dashboard from "./Curador/Dashboard";
+import Dashboard from "./Curador";
 import LandingPage from "./LandingPage";
-import UserDashboard from "./UserDashboard/UserDashboard";
+import UserDashboard from "./UserDashboard";
 import EditProfile from "./UserDashboard/EditProfile";
 import UserPhotos from "./UserDashboard/UserPhotos";
 import UserAlbums from "./UserDashboard/UserAlbums";
-import Index from "./Miscellaneous/Index";
+import Index from "./Miscellaneous";
 
 const Layout = () => {
   return (

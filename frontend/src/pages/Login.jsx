@@ -8,18 +8,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUnlock } from "@fortawesome/free-solid-svg-icons";
 
 class Login extends Component {
-  constructor() {
-    super();
-    this.state = {
-      email: "",
-      password: ""
-    };
-    this.genericChangeHandler = this.genericChangeHandler.bind(this);
-  }
+  state = {
+    email: "",
+    password: ""
+  };
 
-  genericChangeHandler(event) {
+  genericChangeHandler = event => {
     this.setState({ [event.target.id]: event.target.value });
-  }
+  };
 
   onSubmit = e => {
     e.preventDefault();
@@ -30,7 +26,7 @@ class Login extends Component {
     this.props.setRoute("/login");
   }
 
-  translateError(error) {
+  translateError = error => {
     var errorMessage;
     var firstError = error.length ? error[0] : error;
     console.log(firstError);
@@ -43,7 +39,7 @@ class Login extends Component {
         break;
     }
     return errorMessage;
-  }
+  };
 
   render() {
     if (this.props.isAuthenticated) {
@@ -127,18 +123,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapActionsToProps = dispatch => {
-  return {
-    login: (email, password) => {
-      return dispatch(auth.login(email, password));
-    },
-    setRoute: route => {
-      return dispatch(misc.setCurrentRoute(route));
-    }
-  };
-};
+const mapActionsToProps = dispatch => ({
+  login: (email, password) => dispatch(auth.login(email, password)),
+  setRoute: route => dispatch(misc.setCurrentRoute(route))
+});
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(Login);
+export default connect(mapStateToProps, mapActionsToProps)(Login);

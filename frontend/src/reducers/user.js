@@ -23,12 +23,13 @@ const baseState = {
   userData: null
 };
 
+// Compare if the token is valid (12 hours)
 const initialState =
   localStorage.getItem("isAuth") === null
     ? baseState
     : new Date().getTime() -
         JSON.parse(localStorage.getItem("isAuth")).timeSet >
-      86000000
+      43200000
     ? baseState
     : {
         photos: [],

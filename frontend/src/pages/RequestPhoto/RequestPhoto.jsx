@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { home, misc, requestPhoto } from "../actions";
+import { home, misc, requestPhoto } from "../../actions";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,6 +24,7 @@ import {
   ListGroupItemHeading,
   ListGroupItemText
 } from "reactstrap";
+import { getPermissionLogo } from "../../utils";
 
 class RequestPhoto extends Component {
   constructor(props) {
@@ -233,8 +234,8 @@ var Requested = ({ list, removeRequestPhoto }) => (
     {list.length === 0 ? (
       <ListGroupItem disabled>No hay fotos solicitadas</ListGroupItem>
     ) : (
-      list.map(el => (
-        <ListGroupItem>
+      list.map( (el, i) => (
+        <ListGroupItem key={i}>
           <Row>
             <Col style={{ textAlign: "center" }}>
               <img
@@ -278,41 +279,6 @@ var Requested = ({ list, removeRequestPhoto }) => (
     )}
   </ListGroup>
 );
-
-const getPermissionLogo = (name, w, h) => {
-  var url;
-  switch (name) {
-    case "CC BY":
-      url = "/assets/CCBY.svg";
-      break;
-    case "CC BY-NC":
-      url = "/assets/CCBYNC.svg";
-      break;
-    case "CC BY-NC-ND":
-      url = "/assets/CCBYNCND.svg";
-      break;
-    case "CC BY-NC-SA":
-      url = "/assets/CCBYNCSA.svg";
-      break;
-    case "CC BY-ND":
-      url = "/assets/CCBYND.svg";
-      break;
-    case "CC BY-SA":
-      url = "/assets/CCBYSA.svg";
-      break;
-    default:
-      url = "/assets/CCBYSA.svg";
-  }
-  return (
-    <img
-      alt="CC licence"
-      width={w}
-      height={h}
-      src={url}
-      style={{ position: "absolute", right: "0", bottom: "0" }}
-    />
-  );
-};
 
 const styles = {
   form: {

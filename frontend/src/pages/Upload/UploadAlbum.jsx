@@ -23,6 +23,18 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ReactTags from "react-tag-autocomplete";
 
+/**
+ * Upload Album
+ * 
+ * Saves general information about the pictures and allows to
+ * create an album with an optional prompt
+ * 
+ * @param isAuth changes behavior to include previou step (add contact information)
+ * @param saveAll function that saves the info on the parent component
+ * @param nextStep StepWizard function
+ * @param meta metadata info
+ * @param sendAlert
+ */
 const UploadAlbum = ({
   isAuth,
   saveAll,
@@ -146,7 +158,7 @@ const UploadAlbum = ({
               />
             </FormGroup>
             <FormGroup>
-              <Label style={styles.hr}>Permisos de acceso e intercambio</Label>
+              <Label style={styles.hr}>Licencias: permisos de acceso e intercambio</Label>
               <div style={{ marginTop: "10px" }}>
                 <FormGroup tag="fieldset">
                   {CC_INFO.map((el, k) => (
@@ -205,7 +217,7 @@ const UploadAlbum = ({
             Subida de contenido
           </h4>
           <ul>
-            <li>Las fotos pueden agruparse en un &aacute;lbum</li>
+            <li>Las fotos pueden agruparse en un <b>&aacute;lbum</b></li>
             <li>Es necesario seleccionar una licencia de Creative Commons</li>
           </ul>
           <h4 style={{fontWeight: "600"}}>

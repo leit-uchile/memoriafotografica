@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { Button, Row, Col, Container, Badge } from "reactstrap";
+import { Button, Row, Col, Container } from "reactstrap";
 import { Helmet } from "react-helmet";
 
 import ReportModal from "../../components/ReportModal";
@@ -17,77 +17,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import "../../css/photoInfo.css";
-
-const getPermissionLogo = (name, w, h, offset) => {
-  var url;
-  switch (name) {
-    case "CC BY":
-      url = "/assets/CCBY.svg";
-      break;
-    case "CC BY-NC":
-      url = "/assets/CCBYNC.svg";
-      break;
-    case "CC BY-NC-ND":
-      url = "/assets/CCBYNCND.svg";
-      break;
-    case "CC BY-NC-SA":
-      url = "/assets/CCBYNCSA.svg";
-      break;
-    case "CC BY-ND":
-      url = "/assets/CCBYND.svg";
-      break;
-    case "CC BY-SA":
-      url = "/assets/CCBYSA.svg";
-      break;
-    default:
-      url = "/assets/CCBYSA.svg";
-  }
-  return <img width={w} height={h} src={url} alt=''/>;
-};
-
-const Tags = ({ tags, onRedirect, style }) => (
-  <Container fluid style={style}>
-    <Row>
-      <Col style={{ fontSize: "1.2em" }}>
-        {tags.length === 0 ? (
-          <p>No hay tags asociados</p>
-        ) : (
-          tags.map((el, index) => (
-            <Badge
-              key={el.id}
-              color="secondary"
-              pill
-              onClick={e => onRedirect(el.id, el.value)}>
-              #{el.value}
-            </Badge>
-          ))
-        )}
-        <Link style={{ marginLeft: "0.2em", fontSize: "12px" }} to="#">
-          Sugerir
-        </Link>
-      </Col>
-    </Row>
-  </Container>
-);
-
-const Categories = ({ cats, onRedirect, style }) => (
-  <Container fluid style={style}>
-    <Row>
-      <Col style={{ fontSize: "1.2em" }}>
-        <p>
-          {cats.length === 0
-            ? "No se encuentra en una categoría"
-            : cats.map((el, index) => (
-                <span style={{ marginRight: "0.2em" }}>{el.title}</span>
-              ))}
-          <Link style={{ marginLeft: "0.2em" }} to="#">
-            Sugerir
-          </Link>
-        </p>
-      </Col>
-    </Row>
-  </Container>
-);
+import { getPermissionLogo } from "../../utils";
+import Tags from './Tags';
+import Categories from './Categories';
 
 class PhotoDetails extends Component {
   constructor(props) {
@@ -283,7 +215,8 @@ class PhotoDetails extends Component {
                     display: "inline-block",
                     marginRight: "1em"
                   }}
-                  to={`/photo/${this.state.leftIndex}`}>
+                  to={`/photo/${this.state.leftIndex}`}
+                >
                   <FontAwesomeIcon
                     icon={faChevronCircleLeft}
                     style={{ height: "25px", width: "25px" }}
@@ -305,7 +238,8 @@ class PhotoDetails extends Component {
                     display: "inline-block",
                     marginLeft: "1em"
                   }}
-                  to={`/photo/${this.state.rightIndex}`}>
+                  to={`/photo/${this.state.rightIndex}`}
+                >
                   <FontAwesomeIcon
                     icon={faChevronCircleRight}
                     style={{ height: "25px", width: "25px" }}
@@ -320,7 +254,8 @@ class PhotoDetails extends Component {
               padding: "1em",
               minHeight: "auto",
               marginBottom: "2em"
-            }}>
+            }}
+          >
             <Col>
               <div style={{ textAlign: "center" }}>{Suggestions}</div>
             </Col>
@@ -336,7 +271,8 @@ class PhotoDetails extends Component {
                           style={{
                             ...styles.avatarStyle.avatarImg,
                             backgroundImage: `url(${photoInfo.details.user.avatar})`
-                          }}></div>
+                          }}
+                        ></div>
                         <div style={{ marginLeft: "6em" }}>
                           <b>{`${photoInfo.details.user.first_name} ${photoInfo.details.user.last_name}`}</b>
                           <p>{photoInfo.details.user.rol_type}</p>
@@ -400,7 +336,8 @@ class PhotoDetails extends Component {
                             className="float-left"
                             onClick={() => {
                               this.props.putRequestPhoto(photoInfo.details);
-                            }}>
+                            }}
+                          >
                             ¿Quieres usar la foto?
                           </Button>
                           <ReportModal
@@ -431,14 +368,15 @@ class PhotoDetails extends Component {
               borderTop: "solid 1px gray",
               marginTop: "2em",
               paddingTop: "2em"
-            }}>
+            }}
+          >
             <Col>
               <Container>
                 <Row>
                   <Col md={3}>
-                    <h3>Licencias</h3>
-                    {photoInfo.details.permission.map((el, i) =>
-                      getPermissionLogo(el, 90, 32, i)
+                    <h3>Licencia</h3>
+                    {photoInfo.details.permission.map(el =>
+                      getPermissionLogo(el, 90, 32)
                     )}
                   </Col>
                   <Col md={9}>
@@ -501,7 +439,4 @@ const mapActionsToProps = dispatch => ({
   setSelectedId: id => dispatch(home.setSelectedId(id))
 });
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(PhotoDetails);
+export default connect(mapStateToProps, mapActionsToProps)(PhotoDetails);

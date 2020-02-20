@@ -31,7 +31,7 @@ const CommentHandler = ({
 
   // If is auth then allow reports
   var commentRows = comments.map((el, key) => (
-    <Row>
+    <Row key={"Comment"+key}>
       <Col
         style={styles.commentContainerStyle}>
         <Comment content={el} modal={auth} />

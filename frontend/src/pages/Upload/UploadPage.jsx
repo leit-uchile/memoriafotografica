@@ -13,23 +13,12 @@ import StepWizard from "react-step-wizard";
 
 import "../../css/uploadPhoto.css";
 
-// Example nav from https://github.com/jcmcneal/react-step-wizard/blob/master/app/components/nav.js
-const Nav = props => {
-  const dots = [];
-  /* onClick={() => props.goToStep(i)}> */
-  for (let i = 1; i <= props.totalSteps; i += 1) {
-    const isActive = props.currentStep === i;
-    dots.push(
-      <span
-        key={`step-${i}`}
-        style={isActive ? { ...styles.dot, ...styles.active } : styles.dot}>
-        &bull;
-      </span>
-    );
-  }
-  return <div style={styles.nav}>{dots}</div>;
-};
-
+/**
+ * Upload page
+ * 
+ * Main component that handle subcomponent transitions, saves information
+ * and uploads info to the server
+ */
 class UploadPage extends Component {
   constructor(props) {
     super(props);
@@ -218,6 +207,24 @@ const mapActionsToProps = dispatch => ({
   createAlbum: formData => dispatch(upload.createAlbum(formData)),
   createMultipleMetas: name => dispatch(metadata.createMultipleMetas(name))
 });
+
+
+// Example nav from https://github.com/jcmcneal/react-step-wizard/blob/master/app/components/nav.js
+const Nav = props => {
+  const dots = [];
+  /* onClick={() => props.goToStep(i)}> */
+  for (let i = 1; i <= props.totalSteps; i += 1) {
+    const isActive = props.currentStep === i;
+    dots.push(
+      <span
+        key={`step-${i}`}
+        style={isActive ? { ...styles.dot, ...styles.active } : styles.dot}>
+        &bull;
+      </span>
+    );
+  }
+  return <div style={styles.nav}>{dots}</div>;
+};
 
 export default connect(
   mapStateToProps,
