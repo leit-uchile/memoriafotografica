@@ -15,19 +15,21 @@ import "../../css/uploadPhoto.css";
 
 /**
  * Upload page
- * 
- * Main component that handle subcomponent transitions, saves information
+ *
+ * Main component that handles subcomponent transitions, saves information
  * and uploads info to the server
  */
 class UploadPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userInfo: {},
-      photos: { onAlbum: false },
+      userInfo: {}, // For anonymous upload
+      photos: { onAlbum: false }, // All info to upload
       uploading: false,
-      prog: 0,
-      cacheCreatedPhotoIds: []
+      prog: 0, // May delete this later
+      cacheCreatedPhotoIds: [], // In case of upload error
+      metadata: [], // Used during metadata creation
+      newMetaCount: 0
     };
     // componentWillMount() (soon deprecated)
     this.props.setRoute("/upload");
@@ -44,11 +46,116 @@ class UploadPage extends Component {
     this.setState({ photos: { ...this.state.photos, ...info } });
   };
 
+  /**
+   * Function called when all inputs are ok
+   */
+  startProcess = (photos, meta) => {
+    // Manage metadata creation:
+    // Merge tags in one array
+    let metadata = {};
+    this.state.photos.tags.forEach(tag => {
+      metadata[tag.value] = { ...tag };
+    });
+    meta.forEach(tag => {
+      metadata[tag.value] = { ...tag };
+    });
+
+    this.setState({ photos: { ...this.state.photos, ...photos } }, () =>
+      this.createMetadata(Object.values(metadata))
+    );
+  };
+
+  // On success componentDidUpdate will call
+  // associateMeta()
+  createMetadata = meta => {
+    let new_metas = meta.filter(el => el.id === undefined).map(el => el.value);
+    let id_metas = meta.filter(el => el.id !== undefined);
+
+    // If API call isn't necessary
+    if (new_metas.length === 0) {
+      this.setState(
+        {
+          metadata: id_metas,
+          newMetaCount: 0
+        },
+        () => this.associateMeta()
+      );
+    } else {
+      // Save partial metadata state
+      // New metadata will be populated later
+      this.setState({
+        metadata: id_metas,
+        newMetaCount: new_metas.length
+      });
+
+      this.props.createMultipleMetas(new_metas);
+    }
+  };
+
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.metadataCreation.creating && // We were creating
+      !this.props.metadataCreation.creating // Its done!
+    ) {
+      // Update metadata from props info
+      this.setState(
+        {
+          metadata: [
+            ...this.state.metadata,
+            ...this.props.metadataCreation.newIds
+          ],
+          newMetaCount: 0
+        },
+        // Call AssociateMeta after state update
+        () => this.associateMeta()
+      );
+    }
+  }
+
+  associateMeta = () => {
+    let meta_mapped = new Object();
+    this.state.metadata.forEach(t => {
+      meta_mapped[t.value] = t.id;
+    });
+
+    // get default metadata
+    // As an array of IDs as 1,2,3
+    let default_metadata = this.state.photos.tags
+      .map(t => {
+        return meta_mapped[t.value];
+      })
+      .join();
+
+    // Read from photoList and change meta
+    let photo_copy = this.state.photos.photosList.map(el => {
+      // If the information is uniform
+      if (el.meta.tags.length === 0) {
+        return { ...el, meta: { ...el.meta, tags: default_metadata } };
+      } else {
+        let custom_metadata = el.meta.tags
+          .map(t => {
+            // They have name saved
+            return meta_mapped[t.value];
+          })
+          .join();
+        return { ...el, meta: { ...el.meta, tags: custom_metadata } };
+      }
+    });
+
+    // Start process
+    this.setState(
+      { photos: { ...this.state.photos, photosList: photo_copy } },
+      () => this.startUploading({})
+    );
+  };
+
   startUploading = photos => {
+    // Merge album info and photosList from arg photos
+    // Important: photosList is used to store the images
     this.setState(
       {
         photos: { ...this.state.photos, ...photos },
-        uploading: true
+        uploading: true // This may be removed (?)
       },
       () => {
         // Upload all
@@ -57,8 +164,9 @@ class UploadPage extends Component {
     );
   };
 
-  createMetadata = () => {};
-
+  /**
+   * Create album using photo IDs and Album info
+   */
   saveAlbum = info => {
     // Asume name and description in info
     let formData = {
@@ -112,7 +220,8 @@ class UploadPage extends Component {
             onStepChange={() => {
               window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
             }}
-            nav={<Nav />}>
+            nav={<Nav />}
+          >
             <UnregisteredPrompt />
             <UploadUnregister
               saveInfo={this.saveUserInfo}
@@ -124,7 +233,7 @@ class UploadPage extends Component {
               meta={this.props.meta}
               sendAlert={this.props.sendAlert}
             />
-            <UploadPhoto saveAll={this.startUploading} meta={this.props.meta} />
+            <UploadPhoto saveAll={this.startProcess} meta={this.props.meta} />
             <UploadProgress
               photosUploading={this.props.upload.photosUploading}
               opsFinished={this.props.upload.opsFinished}
@@ -143,14 +252,15 @@ class UploadPage extends Component {
             onStepChange={() => {
               window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
             }}
-            nav={<Nav />}>
+            nav={<Nav />}
+          >
             <UploadAlbum
               isAuth={this.props.isAuthenticated}
               saveAll={this.saveAlbumInfo}
               meta={this.props.meta}
               sendAlert={this.props.sendAlert}
             />
-            <UploadPhoto saveAll={this.startUploading} meta={this.props.meta} />
+            <UploadPhoto saveAll={this.startProcess} meta={this.props.meta} />
             <UploadProgress
               photosUploading={this.props.upload.photosUploading}
               opsFinished={this.props.upload.opsFinished}
@@ -208,7 +318,6 @@ const mapActionsToProps = dispatch => ({
   createMultipleMetas: name => dispatch(metadata.createMultipleMetas(name))
 });
 
-
 // Example nav from https://github.com/jcmcneal/react-step-wizard/blob/master/app/components/nav.js
 const Nav = props => {
   const dots = [];
@@ -218,7 +327,8 @@ const Nav = props => {
     dots.push(
       <span
         key={`step-${i}`}
-        style={isActive ? { ...styles.dot, ...styles.active } : styles.dot}>
+        style={isActive ? { ...styles.dot, ...styles.active } : styles.dot}
+      >
         &bull;
       </span>
     );
@@ -226,7 +336,4 @@ const Nav = props => {
   return <div style={styles.nav}>{dots}</div>;
 };
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(UploadPage);
+export default connect(mapStateToProps, mapActionsToProps)(UploadPage);

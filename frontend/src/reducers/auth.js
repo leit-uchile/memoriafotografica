@@ -22,7 +22,7 @@ const initialState =
     ? baseState
     : new Date().getTime() -
         JSON.parse(localStorage.getItem("isAuth")).timeSet >
-      86000000
+      43200000
     ? baseState
     : {
         token: localStorage.getItem("token"),

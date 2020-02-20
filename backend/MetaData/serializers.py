@@ -28,7 +28,8 @@ class MetadataAdminSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        m = Metadata.objects.create(value=validated_data["value"], approved=validated_data["approved"], metadata=validated_data["metadata"] )
+        # Default admin serializer to approved
+        m = Metadata.objects.create(value=validated_data["value"], approved=True, metadata=validated_data["metadata"] )
         #m.metadata.set(validated_data["metadata"])
         return m
 

@@ -2,15 +2,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {Alert as BTAlert, Container, Row, Col} from 'reactstrap';
 import PropTypes from 'prop-types';
-
 const Alert = ({ alerts }) => 
+
   alerts !== null &&
   alerts.length > 0 ?
   <Container style={{marginTop:"1em"}}>
     {alerts.map(alert => (
-      <Row>
+      <Row key={alert.id}>
         <Col>
-          <BTAlert key={alert.id} color={alert.alertType}>
+          <BTAlert color={alert.alertType}>
             {alert.msg}
           </BTAlert>
         </Col>

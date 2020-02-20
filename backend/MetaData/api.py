@@ -158,7 +158,7 @@ class MetadataListAPI(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         if request.user.user_type != 1:
-            serializer = MetadataAdminSerializer(data=request.data)
+            serializer = MetadataAdminSerializer(data=request.data, partial=True)
 
         elif request.user.user_type == 1:
             serializer = MetadataSerializer(data = request.data)
