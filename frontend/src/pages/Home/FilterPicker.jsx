@@ -11,7 +11,7 @@ import {
 } from "reactstrap";
 import Categories from "./Categories";
 import { connect } from "react-redux";
-import { home, misc, search } from "../../actions";
+import { home } from "../../actions";
 
 /**
  * FilterPicker

@@ -13,6 +13,7 @@ import UserPicture from './UserPicture';
 import BoundedRoute from './Routes/BoundedRoute';
 import ErrorBoundary from './Routes/ErrorBoundary';
 import PrivateComponent from './Routes/PrivateComponent';
+import SuspenseFallback from './SuspenseFallback';
 
 export {
   Alert,
@@ -27,5 +28,6 @@ export {
   UserPicture,
   BoundedRoute,
   ErrorBoundary,
-  PrivateComponent
+  PrivateComponent,
+  SuspenseFallback
 };
