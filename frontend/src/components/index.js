@@ -14,6 +14,7 @@ import BoundedRoute from './Routes/BoundedRoute';
 import ErrorBoundary from './Routes/ErrorBoundary';
 import PrivateComponent from './Routes/PrivateComponent';
 import SuspenseFallback from './SuspenseFallback';
+import LazyRoutedComponent from './Routes/LazyRoutedComponent';
 
 export {
   Alert,
@@ -29,5 +30,6 @@ export {
   BoundedRoute,
   ErrorBoundary,
   PrivateComponent,
-  SuspenseFallback
+  SuspenseFallback,
+  LazyRoutedComponent
 };
