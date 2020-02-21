@@ -113,7 +113,7 @@ class UploadDetails extends Component {
         <Row>
           <Col md="3" style={{textAlign:'center'}}>
             <img style={styles.thumb} src={this.state.src} alt="Thumbnail"/>
-            <CropPhoto src={this.state.src} key={uuidv1()}/>
+            {/* <CropPhoto src={this.state.src} key={uuidv1()}/> */}
           </Col>
           <Col md="9" style={{ padding: "20px" }}>
             <Form>

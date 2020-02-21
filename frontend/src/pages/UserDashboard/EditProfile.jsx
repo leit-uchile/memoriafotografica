@@ -26,6 +26,7 @@ import {
   ModalFooter
 } from "reactstrap";
 import UserPicture from "../../components/UserPicture";
+import CropPhoto from "../Upload/CropPhoto";
 import "./style.css";
 
 class EditProfile extends Component {
@@ -34,7 +35,8 @@ class EditProfile extends Component {
     this.state = {
       dropdownOpen: false,
       user: { ...props.user },
-      modal_pass: false
+      modal_pass: false,
+      modal_crop: false,
     };
     this.fr = new FileReader();
     this.fr.onload = (function(theFile) {
@@ -74,6 +76,12 @@ class EditProfile extends Component {
   toggleModalpass = () => {
     this.setState(prevState => ({
       modal_pass: !prevState.modal_pass
+    }));
+  };
+
+  toggleModalCrop = () => {
+    this.setState(prevState => ({
+      modal_crop: !prevState.modal_crop
     }));
   };
 
@@ -186,18 +194,23 @@ class EditProfile extends Component {
                 >
                   <DropdownToggle caret>Cambiar foto de perfil</DropdownToggle>
                   <DropdownMenu>
+                    <DropdownItem onClick={this.toggleModalCrop}>
+                      Editar fotografía
+                      <CropPhoto src={user.avatar} modal={this.state.modal_crop} handleToggle={this.toggleModalCrop}/>
+                    </DropdownItem>
+                    <DropdownItem divider />
                     <DropdownItem className="upload-btn-wrapper" name="untoggle">
                       Subir fotografia
                       <input
                         id="file-upload-1"
                         type="file"
+                        style={{cursor:'pointer'}}
                         multiple={false}
                         onChange={this.handleFileSelect}
                         name="untoggle"
                       ></input>
                     </DropdownItem>
-                    <DropdownItem divider />
-                    <DropdownItem>Elegir foto de mi galería </DropdownItem>
+                    <DropdownItem>Elegir foto de mi galería</DropdownItem>
                   </DropdownMenu>
                 </ButtonDropdown>
                 <Button color="primary" onClick={this.toggleModalpass} block>

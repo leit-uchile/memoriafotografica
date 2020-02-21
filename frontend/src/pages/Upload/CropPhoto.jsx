@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import {
   Container,
   Row,
@@ -7,7 +7,8 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter
+  ModalFooter,
+  DropdownItem
 } from "reactstrap";
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -15,8 +16,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faCropAlt} from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
 
-const dimensions = {
-  standar:{
+const dimensions = { // dimensiones disponibles para el usuario
+  standard:{
     unit: '%',
     width: 50,
     height: 50,
@@ -31,7 +32,7 @@ const dimensions = {
     height:100
   }
 }
-const onLoadValues = {
+const onLoadValues = { // dimensiones por default al cargar
   crop: {
     unit: '%',
     width: 50,
@@ -46,9 +47,9 @@ class CropPhoto extends Component {
   constructor(Props) {
     super(Props);
     this.state = {
-      modal: false,
-      rotation: onLoadValues.rotation,
-      crop: onLoadValues.crop
+      modal: this.props.modal, // modal de CropPhoto
+      crop: onLoadValues.crop, // selector de linea discontinua
+      rotation: onLoadValues.rotation // rotacion de la imagen
     };
     this.toggle = this.toggle.bind(this);
     this.rotate = this.rotate.bind(this);
@@ -57,10 +58,9 @@ class CropPhoto extends Component {
 
   toggle(){
     this.setState({
-      modal: !this.state.modal,
-      rotation: onLoadValues.rotation,
-      crop: onLoadValues.crop
+      modal: !this.state.modal // cierra el modal
     });
+    this.props.handleToggle() // abre y cierra el modal independiente de DropdownButton
   }
 
   rotate(){
@@ -72,15 +72,15 @@ class CropPhoto extends Component {
       rotation: newRotation,
     })
   }
-  setDimension = (dimension) =>{
+  setDimension = (dimension) =>{ // cambia el tamaño del crop a una dimension especifica
     this.setState({crop: dimension})
   }
 
-  handleOnCrop = (crop) => {
+  handleOnCrop = (crop) => { // actualiza el tamaño y posicion del crop segun el mouse
     this.setState({crop: crop})
   }
 
-  onSave = () => {
+  onSave = () => { // guarda el estado del crop y la rotacion de la foto en los valores de carga para una nueva edicion posible
     onLoadValues.crop = this.state.crop
     onLoadValues.rotation = this.state.rotation
     this.toggle()
@@ -97,14 +97,13 @@ class CropPhoto extends Component {
       />
     )
     return (
-      <Container>
-        <Button
-          onClick={this.toggle}
-          style={{marginTop:'1em'}}>
-          <FontAwesomeIcon icon={faCropAlt} style={{marginRight: '1em'}} />
-          Recortar
-        </Button>
-        <Modal isOpen={this.state.modal} toggle={this.toggle} size={'lg'}>
+      // <Fragment>
+      //   <Button
+      //   onClick={this.toggle}
+      //   className="dropdown-item">
+      //     Editar foto
+      //   </Button>
+        <Modal isOpen={this.state.modal} size={'lg'}>
           <ModalHeader>
             <h4 style={{fontWeight:'bold'}}>
               Recortando foto
@@ -126,7 +125,7 @@ class CropPhoto extends Component {
                 <Button color="primary" onClick={()=>this.setDimension(dimensions.full)}>
                   Tamaño completo
                 </Button>
-                <Button color="primary" onClick={()=>this.setDimension(dimensions.standar)}>
+                <Button color="primary" onClick={()=>this.setDimension(dimensions.standard)}>
                   Volver al centro
                 </Button>
               </Col>
@@ -134,16 +133,16 @@ class CropPhoto extends Component {
             </Row>
           </ModalBody>
           <ModalFooter>
-            <p>Importante: La foto se subirá con el tamaño indicado, no se respaldará la foto original.</p>
+            <p>Importante: Una vez guardado los cambios no se respaldará la foto original.</p>
             <Button color="success" onClick={this.onSave}>
-              Guardar edición
+              Conservar
             </Button>
             <Button color="secondary" onClick={this.toggle}>
               Descartar
             </Button>
           </ModalFooter>
         </Modal>
-      </Container>
+      
     );
   }
 }
