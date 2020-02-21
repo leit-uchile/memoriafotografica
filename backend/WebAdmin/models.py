@@ -50,3 +50,17 @@ class PhotoRequest(models.Model):
 
   def __str__(self):
     return "Peticion por "+self.first_name+"por"+str(self.photos.all().count())
+
+class ContactRequest(models.Model):
+  first_name = models.CharField(max_length=30)
+  last_name = models.CharField(max_length=30)
+  phone_number = models.IntegerField()
+  email = models.EmailField(unique=False)
+  message = models.TextField();
+
+  resolved = models.BooleanField(default=False)
+  email_sent = models.BooleanField(default=False)
+  created_at = models.DateTimeField(default=datetime.now)
+  
+  def __str__(self):
+    return "Mensaje de "+self.first_name+" sobre: "+self.message[:10]+"..."

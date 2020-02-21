@@ -29,9 +29,10 @@ import { home } from "../../actions";
 const FilterPicker = ({
   defaultMaxAllowed,
   resetHomePagination,
+  filters,
   // Actions
   onLoadGetCats,
-  sortByUpload,
+  sortByField,
   recoverByCats,
   // Store
   cats,
@@ -40,7 +41,7 @@ const FilterPicker = ({
   const [filterState, setFilterState] = useState({
     selectedCategories: [],
     maxAllowed: defaultMaxAllowed,
-    searchOrder: "desc"
+    searchOrder: {field: "created_at", order: "desc"}
   });
 
   // Initial Load
@@ -63,7 +64,7 @@ const FilterPicker = ({
     if (filterState.selectedCategories.length !== 0) {
       recoverByCats(filterState.selectedCategories, filterState.searchOrder);
     } else {
-      sortByUpload(filterState.searchOrder);
+      sortByField(filterState.searchOrder.field, filterState.searchOrder.order);
     }
     resetHomePagination();
   };
@@ -89,7 +90,7 @@ const FilterPicker = ({
   // Reload Search Effect
   useEffect(() => {
     reloadOnChange();
-  }, [filterState.searchOrder, filterState.selectedCategories]);
+  }, [filterState.searchOrder, filterState.selectedCategories, filters]);
 
   // Utility Function
   var isSelected = (id, array) => {
@@ -175,14 +176,14 @@ const FilterPicker = ({
         <DropdownMenu style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}>
           <div style={styles.triangulo}></div>
           <DropdownItem header>Por orden cronológico</DropdownItem>
-          <DropdownItem>Más antiguas primero</DropdownItem>
-          <DropdownItem>Más nuevas primero</DropdownItem>
+          <DropdownItem onClick={() => setSortingOrder({field: "upload_date", order: "asc"})}>Más antiguas primero</DropdownItem>
+          <DropdownItem onClick={() => setSortingOrder({field: "upload_date", order: "desc"})}>Más nuevas primero</DropdownItem>
           <DropdownItem divider />
           <DropdownItem header>Por fecha de subida</DropdownItem>
-          <DropdownItem onClick={() => setSortingOrder("asc")}>
+          <DropdownItem onClick={() => setSortingOrder({field: "created_at", order: "asc"})}>
             Más antiguas primero
           </DropdownItem>
-          <DropdownItem onClick={() => setSortingOrder("desc")}>
+          <DropdownItem onClick={() => setSortingOrder({field: "created_at", order: "desc"})}>
             Más nuevas primero
           </DropdownItem>
         </DropdownMenu>
@@ -225,19 +226,13 @@ const styles = {
 };
 
 const mapStateToProps = state => ({
-  photos: state.home.photos,
   cats: state.home.all_cats,
   filters: state.search.metaIDs,
-  auth: state.auth.token,
-  loadingPhotos: state.home.loading
 });
 
 const mapActionstoProps = dispatch => ({
   onLoadGetCats: () => dispatch(home.categories()),
-  // TODO: use it!
-  // eslint-disable-next-line
   sortByField: (tag, order) => dispatch(home.sortByField(tag, order)),
-  sortByUpload: order => dispatch(home.sortByUpload(order)),
   recoverByCats: (catIds, order) => dispatch(home.recoverByCats(catIds, order))
 });
 
