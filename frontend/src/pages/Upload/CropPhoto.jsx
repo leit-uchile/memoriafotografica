@@ -17,28 +17,31 @@ import {faCropAlt} from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
 
 const dimensions = { // dimensiones disponibles para el usuario
+  aspect4_3: {
+    unit: '%',
+    aspect: 4 / 3,
+    width: 100
+  },
+  aspect16_9: {
+    unit: '%',
+    aspect: 16 / 9,
+    width: 100
+  },
   standard:{
     unit: '%',
-    width: 50,
-    height: 50,
     x: 25,
-    y: 25
-  },
-  full:{
-    x:0,
-    y:0,
-    unit:'%',
-    width:100,
-    height:100
+    y: 25,
+    width: 50,
+    height: 50    
   }
 }
 const onLoadValues = { // dimensiones por default al cargar
   crop: {
     unit: '%',
-    width: 50,
-    height: 50,
-    x: 25,
-    y: 25
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0
   },
   rotation: 0
 }
@@ -76,14 +79,27 @@ class CropPhoto extends Component {
     this.setState({crop: dimension})
   }
 
-  handleOnCrop = (crop) => { // actualiza el tamaño y posicion del crop segun el mouse
+  onChange = (crop) => { // actualiza el tamaño y posicion del crop segun el mouse
     this.setState({crop: crop})
   }
 
-  onSave = () => { // guarda el estado del crop y la rotacion de la foto en los valores de carga para una nueva edicion posible
+  onSave = () => { // guarda el estado del crop y la rotacion de la foto en los valores de carga para una nueva edicion
     onLoadValues.crop = this.state.crop
     onLoadValues.rotation = this.state.rotation
     this.toggle()
+  }
+
+  onDefault = () => {
+    this.setState({
+      crop: {
+        unit:'%',
+        x:0,
+        y:0,
+        width:0,
+        height:0
+      },
+      rotation: 0
+    })
   }
 
   render() {
@@ -93,7 +109,8 @@ class CropPhoto extends Component {
         src={this.props.src} 
         imageStyle={{transform: `rotate(${rotation}deg)`}}
         crop={this.state.crop} 
-        onChange={this.handleOnCrop}
+        onChange={this.onChange}
+        
       />
     )
     return (
@@ -122,23 +139,30 @@ class CropPhoto extends Component {
                 </Button>
               </Col>
               <Col>
-                <Button color="primary" onClick={()=>this.setDimension(dimensions.full)}>
-                  Tamaño completo
+                <h3>Dimensiones</h3>
+                <Button color="primary" onClick={()=>this.setDimension(dimensions.aspect4_3)}>
+                  4:3
+                </Button>
+                <Button color="primary" onClick={()=>this.setDimension(dimensions.aspect16_9)}>
+                  16:9
                 </Button>
                 <Button color="primary" onClick={()=>this.setDimension(dimensions.standard)}>
-                  Volver al centro
+                  Libre
                 </Button>
               </Col>
               
             </Row>
           </ModalBody>
           <ModalFooter>
-            <p>Importante: Una vez guardado los cambios no se respaldará la foto original.</p>
+            <p>Deberás guardar los cambios para que la foto se actualice</p>
             <Button color="success" onClick={this.onSave}>
-              Conservar
+              Seleccionar
             </Button>
             <Button color="secondary" onClick={this.toggle}>
               Descartar
+            </Button>
+            <Button color="secondary" onClick={this.onDefault}>
+              Original
             </Button>
           </ModalFooter>
         </Modal>
