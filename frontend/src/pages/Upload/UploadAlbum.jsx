@@ -25,10 +25,10 @@ import ReactTags from "react-tag-autocomplete";
 
 /**
  * Upload Album
- * 
+ *
  * Saves general information about the pictures and allows to
  * create an album with an optional prompt
- * 
+ *
  * @param isAuth changes behavior to include previou step (add contact information)
  * @param saveAll function that saves the info on the parent component
  * @param nextStep StepWizard function
@@ -49,15 +49,11 @@ const UploadAlbum = ({
     cc: "",
     onAlbum: false,
     // Album related info
-    name: "", 
+    name: "",
     description: ""
   });
 
-  const suggestions = meta
-      ? meta.map(el => {
-          return { id: el.id, name: el.value };
-        })
-      : [];
+  const suggestions = meta ? meta.map(e => ({ name: e.value, id: e.id })) : [];
 
   const updateCC = selected => {
     setFormData({ ...formData, cc: selected });
@@ -88,13 +84,18 @@ const UploadAlbum = ({
   const onSubmitD = e => {
     e.preventDefault();
     if (formData.onAlbum && formData.name === "") {
-      sendAlert("Debe rellenar el nombre del Album","warning");
-    } else if(formData.date === ""){
-      sendAlert("Debe rellenar la fecha","warning");
-    } else if(formData.cc === ""){
-      sendAlert("Debe seleccionar una licencia","warning");
-    }else {
-      saveAll(formData);
+      sendAlert("Debe rellenar el nombre del Album", "warning");
+    } else if (formData.date === "") {
+      sendAlert("Debe rellenar la fecha", "warning");
+    } else if (formData.cc === "") {
+      sendAlert("Debe seleccionar una licencia", "warning");
+    } else {
+      // Map to value: el.name
+      let mapped_tags = formData.tags.map(tag => ({
+        value: tag.name,
+        id: tag.id
+      }));
+      saveAll({ ...formData, tags: mapped_tags });
       nextStep();
     }
   };
@@ -103,17 +104,21 @@ const UploadAlbum = ({
     <Container>
       <Row>
         <Col>
-          <h2 className="upload-title">Subir Fotograf&iacute;a / Informacion general de las fotograf&iacute;as</h2>
+          <h2 className="upload-title">
+            Subir Fotograf&iacute;a / Informacion general de las
+            fotograf&iacute;as
+          </h2>
         </Col>
       </Row>
       <Row style={{ marginTop: "2em" }}>
-        <Col md={{size: 6, offset: 1}}>
+        <Col md={{ size: 6, offset: 1 }}>
           <div style={styles.albumBox}>
             <Label style={{ fontSize: "18px" }}>Crear Album</Label>
             <Button
               style={styles.plusButton}
               color="primary"
-              onClick={() => isAlbum()}>
+              onClick={() => isAlbum()}
+            >
               <FontAwesomeIcon icon={faPlus} />
             </Button>
           </div>
@@ -158,7 +163,9 @@ const UploadAlbum = ({
               />
             </FormGroup>
             <FormGroup>
-              <Label style={styles.hr}>Licencias: permisos de acceso e intercambio</Label>
+              <Label style={styles.hr}>
+                Licencias: permisos de acceso e intercambio
+              </Label>
               <div style={{ marginTop: "10px" }}>
                 <FormGroup tag="fieldset">
                   {CC_INFO.map((el, k) => (
@@ -178,7 +185,8 @@ const UploadAlbum = ({
                         <UncontrolledPopover
                           trigger="legacy"
                           placement="top"
-                          target={"PopoverFocus" + (k + 1)}>
+                          target={"PopoverFocus" + (k + 1)}
+                        >
                           <PopoverHeader>
                             <img
                               alt="Uploaded content"
@@ -195,37 +203,42 @@ const UploadAlbum = ({
                 </FormGroup>
               </div>
             </FormGroup>
-              <ButtonGroup
-                style={
-                  !isAuth
-                    ? { marginTop: "20px", width: "10em" }
-                    : { marginTop: "20px", width: "20em" }
-                }>
-                {!isAuth ? (
-                  <Button onClick={previousStep}>
-                    <FontAwesomeIcon icon={faChevronCircleLeft} />
-                  </Button>
-                ) : null}
-                <Button color="success" type="submit" onClick={onSubmitD}>
-                  <FontAwesomeIcon icon={faChevronCircleRight} />
+            <ButtonGroup
+              style={
+                !isAuth
+                  ? { marginTop: "20px", width: "10em" }
+                  : { marginTop: "20px", width: "20em" }
+              }
+            >
+              {!isAuth ? (
+                <Button onClick={previousStep}>
+                  <FontAwesomeIcon icon={faChevronCircleLeft} />
                 </Button>
-              </ButtonGroup>
+              ) : null}
+              <Button color="success" type="submit" onClick={onSubmitD}>
+                <FontAwesomeIcon icon={faChevronCircleRight} />
+              </Button>
+            </ButtonGroup>
           </Form>
         </Col>
         <Col md={4}>
-          <h4 style={{fontWeight: "600"}}>
-            Subida de contenido
-          </h4>
+          <h4 style={{ fontWeight: "600" }}>Subida de contenido</h4>
           <ul>
-            <li>Las fotos pueden agruparse en un <b>&aacute;lbum</b></li>
+            <li>
+              Las fotos pueden agruparse en un <b>&aacute;lbum</b>
+            </li>
             <li>Es necesario seleccionar una licencia de Creative Commons</li>
           </ul>
-          <h4 style={{fontWeight: "600"}}>
-            Creaci&oacute;n de metadata
-          </h4>
+          <h4 style={{ fontWeight: "600" }}>Creaci&oacute;n de metadata</h4>
           <ul>
-            <li>Los metadatos permiten realizar b&uacute;squedas y ordenar el contenido</li>
-            <li>Estas etiquedas quedar&aacute;n sujetas a aprobaci&oacute;n del equipo de LEIT</li>
+            <li>
+              Los metadatos permiten realizar b&uacute;squedas y ordenar el
+              contenido
+            </li>
+            <li>
+              Estas etiquedas quedar&aacute;n sujetas a aprobaci&oacute;n del
+              equipo de LEIT
+            </li>
           </ul>
         </Col>
       </Row>

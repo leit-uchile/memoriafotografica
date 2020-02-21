@@ -12,6 +12,9 @@ import {
   HOME_PHOTO_PAGINATION
 } from "./types";
 
+/**
+ * Recover photos without any filters or sorting options
+ */
 export const home = () => (dispatch, getState) => {
   let headers = { "Content-Type": "application/json" };
 
@@ -32,6 +35,9 @@ export const home = () => (dispatch, getState) => {
   );
 };
 
+/**
+ * Recover all tags
+ */
 export const tags = () => (dispatch, getState) => {
   let headers = { "Content-Type": "application/json" };
 
@@ -50,6 +56,9 @@ export const tags = () => (dispatch, getState) => {
   );
 };
 
+/**
+ * Recover all categories
+ */
 export const categories = () => (dispatch, getState) => {
   let headers = { "Content-Type": "application/json" };
 
@@ -68,6 +77,9 @@ export const categories = () => (dispatch, getState) => {
   );
 };
 
+/**
+ * Recover all IPTC Tags
+ */
 export const iptcs = () => (dispatch, getState) => {
   let headers = { "Content-Type": "application/json" };
 
@@ -87,34 +99,22 @@ export const iptcs = () => (dispatch, getState) => {
   });
 };
 
+/**
+ * Recover photos using only field sorting
+ * 
+ * @param {String} field 
+ * @param {String} order 
+ */
 export const sortByField = (field, order) => (dispatch, getState) => {
   if (order !== "asc" && order !== "desc") {
     return dispatch({ type: "EMPTY", data: "wrong order parameter" });
   }
   dispatch({ type: HOME_LOADING, data: null });
 
-  fetch(`/api/photos/?sort=${field}-${order}`, { method: "GET" }).then(
-    response => {
-      const r = response;
-      if (r.status === 200) {
-        return r.json().then(data => {
-          dispatch({ type: "RECOVERED_PHOTO", data: data });
-        });
-      } else {
-        dispatch({ type: "EMPTY", data: r.data });
-        throw r.data;
-      }
-    }
-  );
-};
+  let selected_meta = getState().search.metaIDs;
+  let meta_text = selected_meta.length === 0 ? "" : `metadata=${selected_meta.map(m => m.metaID ).join()}&`
 
-export const sortByUpload = order => (dispatch, getState) => {
-  if (order !== "asc" && order !== "desc") {
-    return dispatch({ type: "EMPTY", data: "wrong order parameter" });
-  }
-  dispatch({ type: HOME_LOADING, data: null });
-
-  fetch(`/api/photos/?sort=created_at-${order}`, { method: "GET" }).then(
+  fetch(`/api/photos/?${meta_text}sort=${field}-${order}`, { method: "GET" }).then(
     response => {
       const r = response;
       if (r.status === 200) {
@@ -129,9 +129,19 @@ export const sortByUpload = order => (dispatch, getState) => {
   );
 };
 
-export const recoverByCats = (catIds, order) => (dispatch, getState) => {
+/**
+ * Recover photos using categories on the filter and sorting options
+ * 
+ * @param {Array} catIds 
+ * @param {Object} pair like {field, order}
+ */
+export const recoverByCats = (catIds, pair) => (dispatch, getState) => {
   dispatch({ type: HOME_LOADING, data: null });
-  fetch(`/api/photos/?category=${catIds.join(",")}&sort=created_at-${order}`, {
+
+  let selected_meta = getState().search.metaIDs;
+  let meta_text = selected_meta.length === 0 ? "" : `metadata=${selected_meta.map(m => m.metaID ).join()}&`
+
+  fetch(`/api/photos/?${meta_text}category=${catIds.join(",")}&sort=${pair.field}-${pair.order}`, {
     method: "GET"
   }).then(response => {
     const r = response;
@@ -146,8 +156,16 @@ export const recoverByCats = (catIds, order) => (dispatch, getState) => {
   });
 };
 
+/**
+ * Set Photo to visualize over the search result by ID
+ * @param {*} id 
+ */
 export const setSelectedId = id => (dispatch, getState) =>
   dispatch({ type: HOME_SET_SELECTED_INDEX, data: id });
 
+/**
+ * Set Number of page on PhotoDetails (persistent data)
+ * @param {*} index 
+ */
 export const setPhotoPagination = index => dispatch =>
   dispatch({ type: HOME_PHOTO_PAGINATION, data: index})

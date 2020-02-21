@@ -50,6 +50,13 @@ def filter_photos(photolist, request):
         pass
 
     try:
+        if(request.query_params["metadata"]):
+            meta_query = list(filter(('').__ne__, request.query_params["metadata"].split(',')))
+            photolist = photolist.filter(metadata__id__in = meta_query)
+    except KeyError:
+        pass
+
+    try:
         if(request.query_params["sort"]):
             splitted_param = request.query_params["sort"].split("-")
             query = sort_type[splitted_param[1]]+splitted_param[0]

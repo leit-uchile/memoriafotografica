@@ -22,11 +22,11 @@ import "../../css/search.css";
 import { connect } from "react-redux";
 import { upload, alert } from "../../actions";
 
-const imageMaxSize = 5000000; // KB
+const imageMaxSize = 8000000; // Bytes ~ 8MB
 
 const DisclosureModal = ({ onClick, isnotSet }) => (
   <Modal isOpen={isnotSet}>
-    <ModalHeader>Terminos de uso y licencias</ModalHeader>
+    <ModalHeader>Términos de uso y licencias</ModalHeader>
     <ModalBody>
       La plataforma de <b>Memoria Fotogr&aacute;fica</b>
       permite a sus usuarios escoger como se usar&aacute;n y compartir&aacute;n
@@ -41,6 +41,11 @@ const DisclosureModal = ({ onClick, isnotSet }) => (
   </Modal>
 );
 
+/**
+ * UploadPhoto
+ *
+ * Manage Local Photo Upload and delegate specific info to UploadDetails
+ */
 class UploadPhoto extends Component {
   constructor(Props) {
     super(Props);
@@ -56,7 +61,10 @@ class UploadPhoto extends Component {
     if (files && files.length > 0) {
       for (var i = 0, f; (f = files[i]); i++) {
         if (!f.type.match("image.*") || f.size > imageMaxSize) {
-          this.props.sendAlert("Error: Extension no valida o archivo muy pesado", "warning");
+          this.props.sendAlert(
+            "Error: Extension no valida o archivo muy pesado",
+            "warning"
+          );
         } else {
           images.push(f);
         }
@@ -94,7 +102,7 @@ class UploadPhoto extends Component {
         el = {
           id: this.state.photosList[key].id,
           photo: this.state.photosList[key].photo,
-          meta: info
+          meta: { ...info }
         };
         newPhotosList = newPhotosList.concat(el);
       } else {
@@ -124,17 +132,26 @@ class UploadPhoto extends Component {
         "warning"
       );
     } else {
-      this.props.saveAll(this.state);
+      // Create additional meta from photos
+      // Using a dictionnary
+      let additional_metadata = {};
+      this.state.photosList.forEach(current_photo => {
+        current_photo.meta.tags.forEach(tag => {
+          additional_metadata[tag.name] = { ...tag };
+        });
+      });
+
+      // Call for Upload photos
+      this.props.saveAll(this.state, Object.values(additional_metadata));
+      // Go forward for progress display
       this.props.nextStep();
     }
   };
 
   render() {
     const { meta } = this.props;
-    var suggestions = meta
-      ? meta.map(el => {
-          return { id: el.id, name: el.value };
-        })
+    const suggestions = meta
+      ? meta.map(el => ({ id: el.id, name: el.value }))
       : [];
 
     var details = this.state.photosList.map((el, key) => (
@@ -157,7 +174,9 @@ class UploadPhoto extends Component {
         />
         <Row>
           <Col>
-            <h2 className="upload-title">Subir Fotograf&iacute;a / Agregar fotograf&iacute;as</h2>
+            <h2 className="upload-title">
+              Subir Fotograf&iacute;a / Agregar fotograf&iacute;as
+            </h2>
           </Col>
         </Row>
         <Row style={{ marginTop: "2em" }}>
@@ -221,7 +240,4 @@ const mapActionsToProps = dispatch => ({
   sendAlert: (message, color) => dispatch(alert.setAlert(message, color))
 });
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(UploadPhoto);
+export default connect(mapStateToProps, mapActionsToProps)(UploadPhoto);

@@ -13,7 +13,7 @@ import {
   Input,
   Collapse
 } from "reactstrap";
-import uuidv1 from 'uuid'
+import uuidv1 from "uuid";
 
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },
@@ -33,8 +33,6 @@ class UploadDetails extends Component {
       ...Props.meta,
       collapse: false
     };
-
-    this.toggle = this.toggle.bind(this);
 
     // Prepare File Reader for preview management
     this.fr = new FileReader();
@@ -57,7 +55,6 @@ class UploadDetails extends Component {
         this.setState({ src: e.target.result });
       };
     })(Props.photo).bind(this);
-    this.updateData = this.updateData.bind(this);
   }
 
   updateData = e => this.setState({ [e.target.name]: e.target.value });
@@ -68,27 +65,31 @@ class UploadDetails extends Component {
     );
   };
 
-  toggle() {
+  toggle = () => {
     this.setState(state => ({ collapse: !state.collapse }));
-  }
+  };
 
-  additionTag(tag) {
+  additionTag = tag => {
     const tags = [].concat(this.state.tags, tag);
     this.setState({ tags: tags });
-  }
+  };
 
-  deleteTag(i) {
+  deleteTag = i => {
     const tags = this.state.tags.slice(0);
     tags.splice(i, 1);
     this.setState({ tags });
-  }
+  };
 
   onSubmit = e => {
     e.preventDefault();
     if (this.state.collapse === true) {
       this.toggle();
     }
-    this.props.save(this.state);
+    let mapped_tags = this.state.tags.map(tag => ({
+      value: tag.name,
+      id: tag.id
+    }));
+    this.props.save({ ...this.state, tags: mapped_tags });
   };
 
   onDelete = e => {
@@ -109,7 +110,8 @@ class UploadDetails extends Component {
           border: "1px solid rgb(210,214,218)",
           boxShadow: "2px 2px 4px rgb(156,158,159)"
         }}
-        fluid>
+        fluid
+      >
         <Row>
           <Col md="3" style={{textAlign:'center'}}>
             <img style={styles.thumb} src={this.state.src} alt="Thumbnail"/>
@@ -162,7 +164,8 @@ class UploadDetails extends Component {
         <Row>
           <Collapse
             isOpen={this.state.collapse}
-            style={{ width: "100%", marginBottom: "1em" }}>
+            style={{ width: "100%", marginBottom: "1em" }}
+          >
             <Container fluid>
               <Row>
                 <Col sm="12" md="4">
@@ -173,12 +176,13 @@ class UploadDetails extends Component {
                   </div>
                   <ReactTags
                     placeholder={"Añadir etiquetas"}
+                    labelField={"value"}
                     autoresize={false}
                     allowNew={true}
                     tags={this.state.tags}
                     suggestions={this.props.suggestions}
-                    handleDelete={this.deleteTag.bind(this)}
-                    handleAddition={this.additionTag.bind(this)}
+                    handleDelete={this.deleteTag}
+                    handleAddition={this.additionTag}
                   />
                 </Col>
                 <Col sm="6" md="4">
@@ -193,9 +197,12 @@ class UploadDetails extends Component {
                         type="select"
                         name="cc"
                         id="exampleSelect"
-                        onChange={this.updateData}>
+                        onChange={this.updateData}
+                      >
                         {CC_INFO.map((el, k) => (
-                          <option value={el.name}>{el.name}</option>
+                          <option key={k} value={el.name}>
+                            {el.name}
+                          </option>
                         ))}
                       </Input>
                     </FormGroup>

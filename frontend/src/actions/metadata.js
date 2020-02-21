@@ -1,22 +1,33 @@
 import {
   CREATED_METADATA,
   CREATED_METADATA_ERROR,
-  CREATING_METADATA
+  CREATING_METADATA,
+  RESET_METADATA_STORE
 } from "./types";
 
+/**
+ * Creates one metadata by name and associates it to the default
+ * IPTC tag (Keywords)
+ *
+ * @param {string} name
+ *
+ * On success saves the metadata on store.metadata.newIDs
+ * On failure saves reason and name on store.metadata.failedCreations
+ */
 export const createMetadataByName = name => (dispatch, getState) => {
   let headers = {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().auth.token
   };
 
+  // NOTE: metadata defaults to 1
   fetch("/api/metadata/", {
     method: "POST",
     headers: headers,
-    body: JSON.stringify({ value: name })
+    body: JSON.stringify({ value: name, metadata: 1 })
   }).then(function(response) {
     const r = response;
-    if (r.status === 200) {
+    if (r.status === 201) {
       r.json().then(data => dispatch({ type: CREATED_METADATA, data: data }));
     } else {
       r.json().then(data =>
@@ -26,8 +37,19 @@ export const createMetadataByName = name => (dispatch, getState) => {
   });
 };
 
+/**
+ * Creates multiple metadata from a list of names
+ * doing multiple calls to the API
+ * @param {Array} nameList
+ */
 export const createMultipleMetas = nameList => (dispatch, getState) => {
-  
+  // Failsafe
+  if (nameList.length === 0) {
+    return;
+  }
+  // Set process in motion
+  dispatch({ type: CREATING_METADATA, data: nameList.length });
+
   const funcs = nameList.map(name => () =>
     createMetadataByName(name)(dispatch, getState)
   );
@@ -35,13 +57,18 @@ export const createMultipleMetas = nameList => (dispatch, getState) => {
   const callWithTimeout = (id, list) => {
     if (id !== list.length) {
       list[id]();
-      setTimeout(() => callWithTimeout(id + 1, list), 500);
+      setTimeout(() => callWithTimeout(id + 1, list), 200);
     }
   };
 
   callWithTimeout(0, funcs);
 };
 
+/**
+ * Create custom metadata with asociation
+ * @param {String} name
+ * @param {Number} iptcId
+ */
 export const createMetadata = (name, iptcId) => (dispatch, getState) => {
   let headers = {
     "Content-Type": "application/json",
@@ -68,4 +95,4 @@ export const createMetadata = (name, iptcId) => (dispatch, getState) => {
  * Reset the array containing the ids from new created metadata
  */
 export const resetNewMetadataIds = () => (dispatch, getState) =>
-  dispatch({ type: CREATING_METADATA, data: null });
+  dispatch({ type: RESET_METADATA_STORE, data: null });

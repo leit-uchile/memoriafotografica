@@ -1,10 +1,10 @@
 # =============== PyCharm ==============
 
 __pycache__/
+backend/*/migrations/*.py
 .DS_Store
 .idea/
 .venv/
-**/__pycache__
 *.pyc
 **/db.sqlite3
 db.sqlite3

@@ -77,11 +77,13 @@ const About = () => {
   let joinUs = React.createRef();
 
   useEffect(() => {
-    joinUs.current.focus({
-      block: "start",
-      behavior: "smooth"
-    });
-  }, [joinUs]);
+    if (joinUs.current !== null) {
+      joinUs.current.focus({
+        block: "start",
+        behavior: "smooth"
+      });
+    }
+  }, [joinUs.current]);
 
   const team = photos.map(el => {
     return (
@@ -119,7 +121,7 @@ const About = () => {
   });
   return (
     <Container>
-      <Row ref={project}>
+      <Row forwardref={project}>
         <Col>
           <h2>Acerca del Proyecto</h2>
           <Row>
@@ -163,7 +165,7 @@ const About = () => {
           </Row>
         </Col>
       </Row>
-      <Row ref={leit}>
+      <Row forwardref={leit}>
         <Col>
           <h2>Equipo de Desarrollo</h2>
           <p>
@@ -179,7 +181,7 @@ const About = () => {
         </Col>
       </Row>
 
-      <Row ref={joinUs}>
+      <Row forwardref={joinUs}>
         <Col>
           <h2>Forma parte</h2>
           <p>

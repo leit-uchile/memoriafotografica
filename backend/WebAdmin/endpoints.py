@@ -6,4 +6,5 @@ urlpatterns = [
     re_path('^news/$', NewsListAPI.as_view()),
     re_path('^news/(?P<pk>[0-9]+)/$', NewsDetailAPI.as_view()),
     re_path('^caroussel/$', LandingCarousselAPI.as_view())
+    # TODO: add endpoint and api for ContactRequest
 ]

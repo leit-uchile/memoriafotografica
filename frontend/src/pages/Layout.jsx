@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, lazy, Suspense } from "react";
 import { Route, Switch } from "react-router-dom";
 
 import {
@@ -6,22 +6,25 @@ import {
   Header,
   Footer,
   PrivateComponent,
-  BoundedRoute
+  BoundedRoute,
+  SuspenseFallback
 } from "../components";
+// Main application chunk
 import Home from "./Home";
+import LandingPage from "./LandingPage";
 import Login from "./Login";
 import Register from "./Register";
 import NoMatch from "../components/Routes/NoMatch";
-import UploadPage from "./Upload";
 import PhotoDetails from "./PhotoView";
-import RequestPhoto from "./RequestPhoto";
-import Dashboard from "./Curador";
-import LandingPage from "./LandingPage";
-import UserDashboard from "./UserDashboard";
-import EditProfile from "./UserDashboard/EditProfile";
-import UserPhotos from "./UserDashboard/UserPhotos";
-import UserAlbums from "./UserDashboard/UserAlbums";
 import Index from "./Miscellaneous";
+import RequestPhoto from "./RequestPhoto";
+import UploadPage from "./Upload";
+// Separate chunks for users
+const Dashboard = lazy(() => import("./Curador"));
+const UserDashboard = lazy(() => import("./UserDashboard"));
+const EditProfile = lazy(() => import("./UserDashboard/EditProfile"));
+const UserPhotos = lazy(() => import("./UserDashboard/UserPhotos"));
+const UserAlbums = lazy(() => import("./UserDashboard/UserAlbums"));
 
 const Layout = () => {
   return (
@@ -34,28 +37,33 @@ const Layout = () => {
             <Route exact path={"/"} component={LandingPage} />
             <BoundedRoute path={"/gallery"} component={Home} />
             <BoundedRoute path={"/login"} component={Login} />
-            <BoundedRoute path={"/register"} component={Register} />
-            <BoundedRoute path={"/upload"} component={UploadPage} />
             <BoundedRoute path={"/photo/:id"} component={PhotoDetails} />
             <BoundedRoute path={"/misc"} component={Index} />
-            <PrivateComponent
-              path={"/request-photo"}
-              component={RequestPhoto}
-            />
-            <PrivateComponent
-              path={"/curador/dashboard"}
-              component={Dashboard}
-            />
-            <PrivateComponent
-              path={"/user/dashboard"}
-              component={UserDashboard}
-            />
-            <PrivateComponent
-              path={"/user/editProfile"}
-              component={EditProfile}
-            />
-            <PrivateComponent path={"/user/photos"} component={UserPhotos} />
-            <PrivateComponent path={"/user/albums"} component={UserAlbums} />
+            <BoundedRoute path={"/register"} component={Register} />
+            <BoundedRoute path={"/request-photo"} component={RequestPhoto} />
+            <BoundedRoute path={"/upload"} component={UploadPage} />
+            <Suspense
+              fallback={
+                <SuspenseFallback
+                  message={"Cargando herramientas de usuario..."}
+                />
+              }
+            >
+              <PrivateComponent
+                path={"/user/dashboard"}
+                component={UserDashboard}
+              />
+              <PrivateComponent
+                path={"/user/editProfile"}
+                component={EditProfile}
+              />
+              <PrivateComponent path={"/user/photos"} component={UserPhotos} />
+              <PrivateComponent path={"/user/albums"} component={UserAlbums} />
+              <PrivateComponent
+                path={"/curador/dashboard"}
+                component={Dashboard}
+              />
+            </Suspense>
             <Route component={NoMatch} />
           </Switch>
         </div>

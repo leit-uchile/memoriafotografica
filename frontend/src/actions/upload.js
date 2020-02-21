@@ -26,7 +26,8 @@ export const uploadImages = photos => {
     };
 
     var currentTime = new Date();
-    currentTime = `${currentTime.getDay()}-${currentTime.getMonth()}-${currentTime.getFullYear()}`;
+    // Bug: January is 0
+    currentTime = `${currentTime.getDate()}-${currentTime.getMonth()+1}-${currentTime.getFullYear()}`;
 
     dispatch({ type: UPLOADING, data: photos.length });
 
@@ -48,6 +49,13 @@ export const uploadImages = photos => {
         "permission",
         photo.meta.cc !== null ? photo.meta.cc : photos.cc ? photos.cc : "CC BY"
       );
+      // Date photos were taken
+      formData.append("upload_date", photos.date+"T00:00");
+
+      // Add metadata in format 1,2,4 string
+      if(photo.meta.tags.length !== 0){
+        formData.append("metadata", photo.meta.tags)
+      }
 
       const this_key = key; // avoid binding bellow
 
