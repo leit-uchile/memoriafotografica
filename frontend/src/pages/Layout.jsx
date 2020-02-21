@@ -1,4 +1,4 @@
-import React, { Fragment, lazy, Suspense } from "react";
+import React, { Fragment, lazy } from "react";
 import { Route, Switch } from "react-router-dom";
 
 import {
@@ -7,7 +7,7 @@ import {
   Footer,
   PrivateComponent,
   BoundedRoute,
-  SuspenseFallback
+  LazyRoutedComponent
 } from "../components";
 // Main application chunk
 import Home from "./Home";
@@ -20,11 +20,38 @@ import Index from "./Miscellaneous";
 import RequestPhoto from "./RequestPhoto";
 import UploadPage from "./Upload";
 // Separate chunks for users
-const Dashboard = lazy(() => import("./Curador"));
-const UserDashboard = lazy(() => import("./UserDashboard"));
-const EditProfile = lazy(() => import("./UserDashboard/EditProfile"));
-const UserPhotos = lazy(() => import("./UserDashboard/UserPhotos"));
-const UserAlbums = lazy(() => import("./UserDashboard/UserAlbums"));
+const lazyComponents = [
+  {
+    component: lazy(() => import("./Curador")),
+    path: "/curador/dashboard",
+    route: PrivateComponent,
+    message: "Cargando herramientas de curador..."
+  },
+  {
+    component: lazy(() => import("./UserDashboard")),
+    path: "/user/dashboard",
+    route: PrivateComponent,
+    message: "Cargando herramientas de usuario..."
+  },
+  {
+    component: lazy(() => import("./UserDashboard/EditProfile")),
+    path: "/user/editProfile",
+    route: PrivateComponent,
+    message: "Cargando herramientas de usuario..."
+  },
+  {
+    component: lazy(() => import("./UserDashboard/UserPhotos")),
+    path: "/user/photos",
+    route: PrivateComponent,
+    message: "Cargando herramientas de usuario..."
+  },
+  {
+    component: lazy(() => import("./UserDashboard/UserAlbums")),
+    path: "/user/albums",
+    route: PrivateComponent,
+    message: "Cargando herramientas de usuario..."
+  }
+];
 
 const Layout = () => {
   return (
@@ -42,28 +69,18 @@ const Layout = () => {
             <BoundedRoute path={"/register"} component={Register} />
             <BoundedRoute path={"/request-photo"} component={RequestPhoto} />
             <BoundedRoute path={"/upload"} component={UploadPage} />
-            <Suspense
-              fallback={
-                <SuspenseFallback
-                  message={"Cargando herramientas de usuario..."}
-                />
-              }
-            >
-              <PrivateComponent
-                path={"/user/dashboard"}
-                component={UserDashboard}
+            {lazyComponents.map(el => (
+              <el.route
+                path={el.path}
+                component={props => (
+                  <LazyRoutedComponent
+                    component={el.component}
+                    message={el.message}
+                    {...props}
+                  />
+                )}
               />
-              <PrivateComponent
-                path={"/user/editProfile"}
-                component={EditProfile}
-              />
-              <PrivateComponent path={"/user/photos"} component={UserPhotos} />
-              <PrivateComponent path={"/user/albums"} component={UserAlbums} />
-              <PrivateComponent
-                path={"/curador/dashboard"}
-                component={Dashboard}
-              />
-            </Suspense>
+            ))}
             <Route component={NoMatch} />
           </Switch>
         </div>
