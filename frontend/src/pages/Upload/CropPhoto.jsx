@@ -15,6 +15,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faCropAlt} from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
+import {image64toCanvasRef} from "./ResuableUtils"
 
 const dimensions = { // dimensiones disponibles para el usuario
   aspect4_3: {
@@ -37,10 +38,9 @@ const dimensions = { // dimensiones disponibles para el usuario
 }
 const onLoadValues = { // dimensiones por default al cargar
   crop: {
-    unit: '%',
-    width: 0,
-    height: 0,
-    x: 0,
+    aspect: 16 / 9,
+    width: 200,
+    x : 0,
     y: 0
   },
   rotation: 0
@@ -49,8 +49,10 @@ const onLoadValues = { // dimensiones por default al cargar
 class CropPhoto extends Component {
   constructor(Props) {
     super(Props);
+    this.imagePreviewCanvasRef = React.createRef()
     this.state = {
       modal: this.props.modal, // modal de CropPhoto
+      imgSrc: this.props.src, // imagen perfil,
       crop: onLoadValues.crop, // selector de linea discontinua
       rotation: onLoadValues.rotation // rotacion de la imagen
     };
@@ -66,6 +68,11 @@ class CropPhoto extends Component {
     this.props.handleToggle() // abre y cierra el modal independiente de DropdownButton
   }
 
+  
+  onChange = (crop) => { // actualiza el tamaño y posicion del crop segun el mouse
+    this.setState({crop: crop})
+  }
+  
   rotate(){
     let newRotation = this.state.rotation - 90;
     if(newRotation <= -360){
@@ -75,17 +82,20 @@ class CropPhoto extends Component {
       rotation: newRotation,
     })
   }
+
   setDimension = (dimension) =>{ // cambia el tamaño del crop a una dimension especifica
     this.setState({crop: dimension})
   }
-
-  onChange = (crop) => { // actualiza el tamaño y posicion del crop segun el mouse
-    this.setState({crop: crop})
+  onComplete = (crop, percentCrop) => {
+    const canvasRef = this.imagePreviewCanvasRef.current
+    const {imgSrc} = this.state
+    image64toCanvasRef(canvasRef, imgSrc, crop)
   }
 
   onSave = () => { // guarda el estado del crop y la rotacion de la foto en los valores de carga para una nueva edicion
     onLoadValues.crop = this.state.crop
     onLoadValues.rotation = this.state.rotation
+    this.props.save(this.state.crop)
     this.toggle()
   }
 
@@ -103,13 +113,14 @@ class CropPhoto extends Component {
   }
 
   render() {
-    const { rotation } =  this.state;
+    const { imgSrc, rotation } =  this.state;
     var Crop = (
       <ReactCrop 
-        src={this.props.src} 
+        src={this.state.imgSrc} 
         imageStyle={{transform: `rotate(${rotation}deg)`}}
         crop={this.state.crop} 
         onChange={this.onChange}
+        onComplete={this.onComplete}
         
       />
     )
@@ -134,6 +145,11 @@ class CropPhoto extends Component {
             </Row>
             <Row>
               <Col>
+                <canvas ref={this.imagePreviewCanvasRef}></canvas>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
                 <Button color="primary" onClick={this.rotate}>
                   Rotar
                 </Button>
@@ -150,7 +166,6 @@ class CropPhoto extends Component {
                   Libre
                 </Button>
               </Col>
-              
             </Row>
           </ModalBody>
           <ModalFooter>

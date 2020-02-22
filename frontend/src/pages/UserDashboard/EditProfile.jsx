@@ -37,6 +37,7 @@ class EditProfile extends Component {
       user: { ...props.user },
       modal_pass: false,
       modal_crop: false,
+      newAvatar: null
     };
     this.fr = new FileReader();
     this.fr.onload = (function(theFile) {
@@ -158,6 +159,10 @@ class EditProfile extends Component {
     }
   };
 
+  handleCrop(newAvatar){
+    this.setState({newAvatar: newAvatar})
+  }
+
   render() {
     var { user } = this.state;
 
@@ -196,7 +201,7 @@ class EditProfile extends Component {
                   <DropdownMenu>
                     <DropdownItem onClick={this.toggleModalCrop}>
                       Editar fotografía
-                      <CropPhoto src={user.avatar} modal={this.state.modal_crop} handleToggle={this.toggleModalCrop}/>
+                      <CropPhoto src={user.avatar} modal={this.state.modal_crop} handleToggle={this.toggleModalCrop} save={newAvatar => this.handleCrop(newAvatar)}/>
                     </DropdownItem>
                     <DropdownItem divider />
                     <DropdownItem className="upload-btn-wrapper" name="untoggle">
