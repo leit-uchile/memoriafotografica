@@ -12,10 +12,8 @@ import {
 } from "reactstrap";
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faCropAlt} from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
-import {image64toCanvasRef} from "./ResuableUtils"
+// import {image64toCanvasRef} from "./ResuableUtils"
 
 const dimensions = { // dimensiones disponibles para el usuario
   aspect4_3: {
@@ -38,8 +36,9 @@ const dimensions = { // dimensiones disponibles para el usuario
 }
 const onLoadValues = { // dimensiones por default al cargar
   crop: {
-    aspect: 16 / 9,
-    width: 200,
+    unit: '%',
+    width: 50,
+    height: 50,
     x : 0,
     y: 0
   },
@@ -49,9 +48,10 @@ const onLoadValues = { // dimensiones por default al cargar
 class CropPhoto extends Component {
   constructor(Props) {
     super(Props);
-    this.imagePreviewCanvasRef = React.createRef()
+    this.imageRef = {};
+    // this.imagePreviewCanvasRef = React.createRef()
     this.state = {
-      modal: this.props.modal, // modal de CropPhoto
+      modal: this.props.isOpen, // modal de CropPhoto
       imgSrc: this.props.src, // imagen perfil,
       crop: onLoadValues.crop, // selector de linea discontinua
       rotation: onLoadValues.rotation // rotacion de la imagen
@@ -68,8 +68,11 @@ class CropPhoto extends Component {
     this.props.handleToggle() // abre y cierra el modal independiente de DropdownButton
   }
 
+  onCropLoad = (image,load) =>{
+    this.imageRef = image
+  }
   
-  onChange = (crop) => { // actualiza el tamaño y posicion del crop segun el mouse
+  onCropChange = (crop) => { // actualiza el tamaño y posicion del crop segun el mouse
     this.setState({crop: crop})
   }
   
@@ -86,16 +89,49 @@ class CropPhoto extends Component {
   setDimension = (dimension) =>{ // cambia el tamaño del crop a una dimension especifica
     this.setState({crop: dimension})
   }
-  onComplete = (crop, percentCrop) => {
-    const canvasRef = this.imagePreviewCanvasRef.current
-    const {imgSrc} = this.state
-    image64toCanvasRef(canvasRef, imgSrc, crop)
-  }
 
-  onSave = () => { // guarda el estado del crop y la rotacion de la foto en los valores de carga para una nueva edicion
+  getCroppedImg(crop, fileName) {
+    let image = this.imageRef; //intentar con this.state.imgSrc
+    const canvas = document.createElement('canvas');
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    canvas.width = Math.ceil(crop.width*scaleX);
+    canvas.height = Math.ceil(crop.height*scaleY);
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width*scaleX,
+      crop.height*scaleY,
+    );
+    // As Base64 string
+    //  const base64Image = canvas.toDataURL('image/jpeg');
+    //  console.log(base64Image)
+  
+    // As a blob
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(blob => {
+        blob.name = fileName;
+        resolve(blob);
+      }, 'image/jpeg',1);
+    });
+
+    // As a blob, another solution
+  //   return new Promise((resolve, reject) => {
+  //     resolve(canvas.toDataURL('image/png'));
+  //   });
+ }
+
+  onSave = () => { // guarda el estado del crop y la rotacion de la foto en los valores de carga para una nueva edicion. Permite descartar ultimo cambio
     onLoadValues.crop = this.state.crop
     onLoadValues.rotation = this.state.rotation
-    this.props.save(this.state.crop)
+    this.getCroppedImg(onLoadValues.crop, 'previewNewAvatar')
+    // this.props.save(poner aqui la foto obtenida tras el corte)
     this.toggle()
   }
 
@@ -119,18 +155,11 @@ class CropPhoto extends Component {
         src={this.state.imgSrc} 
         imageStyle={{transform: `rotate(${rotation}deg)`}}
         crop={this.state.crop} 
-        onChange={this.onChange}
-        onComplete={this.onComplete}
-        
+        onImageLoaded={this.onCropLoad}
+        onChange={this.onCropChange}
       />
     )
     return (
-      // <Fragment>
-      //   <Button
-      //   onClick={this.toggle}
-      //   className="dropdown-item">
-      //     Editar foto
-      //   </Button>
         <Modal isOpen={this.state.modal} size={'lg'}>
           <ModalHeader>
             <h4 style={{fontWeight:'bold'}}>
@@ -143,11 +172,11 @@ class CropPhoto extends Component {
                 {Crop}
               </Col>
             </Row>
-            <Row>
+            {/* <Row>
               <Col>
-                <canvas ref={this.imagePreviewCanvasRef}></canvas>
+              <canvas ref={this.imagePreviewCanvasRef}></canvas>
               </Col>
-            </Row>
+            </Row> */}
             <Row>
               <Col>
                 <Button color="primary" onClick={this.rotate}>
@@ -181,7 +210,6 @@ class CropPhoto extends Component {
             </Button>
           </ModalFooter>
         </Modal>
-      
     );
   }
 }

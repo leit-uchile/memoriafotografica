@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserCircle, faUser, faUserTag } from "@fortawesome/free-solid-svg-icons";
+import { faUserCircle, faCropAlt, faUser, faUserTag } from "@fortawesome/free-solid-svg-icons";
 import {
   Form,
   FormGroup,
@@ -16,6 +16,7 @@ import {
   ModalBody,
   Container
 } from "reactstrap";
+import CropPhoto from "../Upload/CropPhoto";
 
 class RegisterLoginInfo extends Component {
   constructor(Props) {
@@ -37,6 +38,7 @@ class RegisterLoginInfo extends Component {
         avatarPreview: "",
         rol: 1,
         difusion: "",
+        cropModal: false,
         termsOfUseModal: false,
         termsOfUseAcepted: false
       };
@@ -52,9 +54,14 @@ class RegisterLoginInfo extends Component {
       };
     })(Props.photo).bind(this);
     this.handleFileSelect = this.handleFileSelect.bind(this);
+    this.toggleCropModal = this.toggleCropModal.bind(this);
     this.toggleTerms = this.toggleTerms.bind(this);
     this.acceptTerms = this.acceptTerms.bind(this);
     this.toggleTermsValue = this.toggleTermsValue.bind(this);
+  }
+
+  toggleCropModal(e) {
+    this.setState({ cropModal: !this.state.cropModal });
   }
 
   toggleTerms(e) {
@@ -160,6 +167,14 @@ class RegisterLoginInfo extends Component {
               </div>
               {errorMessage}
               {avatarPreview}
+              {this.state.avatar !== ''
+                ?(<Button onClick={this.toggleCropModal} style={{margin: "0 auto", display: "block"}}>
+                    <FontAwesomeIcon icon={faCropAlt}/>
+                    {' '}Editar foto
+                  </Button>)
+                :(<span></span>)
+              }
+              <CropPhoto src={this.state.avatar} isOpen={this.state.cropModal} handleToggle={this.toggleCropModal}/>
               <FormGroup>
                 <Input
                   id="avatar"
@@ -287,7 +302,7 @@ class RegisterLoginInfo extends Component {
                 />
                 <Label for="termsOfUse" check onClick={this.toggleTerms}>
                   Acepto los{" "}
-                  <span style={{ color: "blue" }}>terminos de uso</span>
+                  <span style={{ color: "blue", cursor:'pointer' }}>terminos de uso</span>
                 </Label>
               </FormGroup>
               <div style={{marginTop: "2em", marginBottom: "2em"}}>
