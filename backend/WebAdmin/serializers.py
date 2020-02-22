@@ -28,3 +28,11 @@ class PhotoRequestSerializer(serializers.ModelSerializer):
         fields = ('reason','photos','first_name','last_name',
             'identity_document','profession','address','comuna',
             'phone_number','email','institution','resolved','email_sent','created_at','updated_at')
+
+class PhotoRequestNewSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = PhotoRequest
+        fields = ('reason','photos','first_name','last_name',
+            'identity_document','profession','address','comuna',
+            'phone_number','email','institution','resolved','email_sent','created_at','updated_at')

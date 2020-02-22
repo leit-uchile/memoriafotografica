@@ -39,7 +39,7 @@ class PhotoRequest(models.Model):
   address = models.CharField(max_length=50)
   # TODO: fix Spanglish here
   comuna = models.CharField(max_length=40)
-  phone_number = models.IntegerField()
+  phone_number = models.CharField(max_length=12)
   email = models.EmailField(unique=False)
   institution = models.CharField(max_length=40)
 
