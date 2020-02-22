@@ -12,29 +12,25 @@ export const removeRequestPhoto = (value) => {
   };
 };
 
-export const sendRequest = (id,info) => {
+export const sendRequest = (photos,info) => {
   return (dispatch, getState) => {
-    let headers = {
-      Authorization: "Token " + getState().auth.token,
-      "Content-Type": "application/json"
-    };
+    let headers = {"Content-Type" : "aplication/json"};
 
     let jsonthing = JSON.stringify({
-      id: id, 
-      reason: info.formData.reason,
-      photos: info.requestedPhotos,
-      first_name: info.formData.first_name,
-      last_name: info.formData.last_name,
-      identity_document: info.formData.identity_document,
-      profession: info.formData.profession,
-      address: info.formData.address,
-      comuna: info.formData.comuna,
-      phone_number: info.formData.phone_number,
-      email: info.formData.email,
-      institution: info.formData.institution
+      reason: info.reason,
+      photos: photos,
+      first_name: info.first_name,
+      last_name: info.last_name,
+      identity_document: info.identity_document,
+      profession: info.profession,
+      address: info.address,
+      comuna: info.comuna,
+      phone_number: info.phone_number,
+      email: info.email,
+      institution: info.institution
     });
 
-    return fetch(`/api/requests/photos/${id}/`, {
+    return fetch(`/api/requests/photos/`, {
       method: "POST",
       headers: headers,
       body: jsonthing

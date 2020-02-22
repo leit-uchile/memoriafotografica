@@ -30,7 +30,6 @@ class RequestPhoto extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      requestedPhotos: {},
       formData: {
         reason: "",
         first_name: "",
@@ -51,12 +50,13 @@ class RequestPhoto extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    this.sendRequest(this.state); //action
+    const photosId = this.props.requestedPhotos.map( el => el.id)
+    console.log(photosId)
+    this.props.sendRequest(photosId, this.state.formData);
   };
 
   render() {
     const { requestedPhotos, removeRequestPhoto } = this.props;
-
     return (
       <Container>
         <Helmet>
@@ -182,9 +182,7 @@ class RequestPhoto extends Component {
                 </Col>
               </FormGroup>
               <Button
-              onClick={() => {
-                this.props.sendRequest(1, this.state);
-              }}
+              onClick={this.onSubmit}
               >
                 Solicitar
               </Button>
@@ -314,7 +312,7 @@ const mapActionsToProps = dispatch => ({
   onLoad: () => dispatch(home.home()),
   setRoute: route => dispatch(misc.setCurrentRoute(route)),
   removeRequestPhoto: value => dispatch(requestPhoto.removeRequestPhoto(value)),
-  sendRequest: (id,info) => dispatch(requestPhoto.sendRequest(id, info))
+  sendRequest: (photos,info) => dispatch(requestPhoto.sendRequest(photos,info))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(RequestPhoto);
