@@ -23,7 +23,7 @@ import { connect } from "react-redux";
 import {
   userRolTranslation,
   userTypeTranslation
-} from "../UserDashboard/utils";
+} from "../User/utils";
 
 const PhotoCountChart = ({ rawData }) => {
   const mapped = rawData

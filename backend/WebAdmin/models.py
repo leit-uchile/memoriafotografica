@@ -7,9 +7,9 @@ import os
 
 # From Gallery App
 def gen_uuid(instance, filename):
-    ext = filename.split('.')[-1]
-    filename = '{}.{}'.format(uuid4().hex, ext)
-    return os.path.join(filename)
+  ext = filename.split('.')[-1]
+  filename = '{}.{}'.format(uuid4().hex, ext)
+  return os.path.join("webadmin/",filename)
 
 class News(models.Model):
   title = models.TextField()
