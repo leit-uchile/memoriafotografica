@@ -10,7 +10,7 @@ const PrivateComponent = ({ component: Component, ...rest}) => {
   }
 
   return(
-    <Route {...rest} render={props => true ? <Component {...props}/> : <Component />} />
+  <Route {...rest} render={props => <Component {...props}/>} />
     )
 }
 
