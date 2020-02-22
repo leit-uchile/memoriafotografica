@@ -28,27 +28,9 @@ const lazyComponents = [
     message: "Cargando herramientas de curador..."
   },
   {
-    component: lazy(() => import("./UserDashboard")),
-    path: "/user/dashboard",
-    route: PrivateComponent,
-    message: "Cargando herramientas de usuario..."
-  },
-  {
-    component: lazy(() => import("./UserDashboard/EditProfile")),
-    path: "/user/editProfile",
-    route: PrivateComponent,
-    message: "Cargando herramientas de usuario..."
-  },
-  {
-    component: lazy(() => import("./UserDashboard/UserPhotos")),
-    path: "/user/photos",
-    route: PrivateComponent,
-    message: "Cargando herramientas de usuario..."
-  },
-  {
-    component: lazy(() => import("./UserDashboard/UserAlbums")),
-    path: "/user/albums",
-    route: PrivateComponent,
+    component: lazy(() => import("./User")),
+    path: "/user/",
+    route: BoundedRoute,
     message: "Cargando herramientas de usuario..."
   }
 ];
