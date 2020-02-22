@@ -65,7 +65,7 @@ class EditProfile extends Component {
   };
 
   toggleDropdown = e => {
-    console.log(e.target);
+    // console.log(e.target);
     if(e.target.name === "untoggle"){
       return;
     }
@@ -201,7 +201,7 @@ class EditProfile extends Component {
                   <DropdownMenu>
                     <DropdownItem onClick={this.toggleModalCrop}>
                       Editar fotografía
-                      <CropPhoto src={user.avatar} modal={this.state.modal_crop} handleToggle={this.toggleModalCrop} save={newAvatar => this.handleCrop(newAvatar)}/>
+                      <CropPhoto src={user.avatar} isOpen={this.state.modal_crop} handleToggle={this.toggleModalCrop} save={newAvatar => this.handleCrop(newAvatar)}/>
                     </DropdownItem>
                     <DropdownItem divider />
                     <DropdownItem className="upload-btn-wrapper" name="untoggle">

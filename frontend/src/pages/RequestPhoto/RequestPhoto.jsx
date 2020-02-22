@@ -31,23 +31,23 @@ class RequestPhoto extends Component {
     super(props);
     this.state = {
       requestedPhotos: {},
-      subject: "",
-      requester: {
-        firstname: "",
-        lastname: "",
-        idcard: "",
-        ocuppation: "",
-        adress: "",
-        state: "",
-        phone: "",
+      formData: {
+        reason: "",
+        first_name: "",
+        last_name: "",
+        identity_document: "",
+        profession: "",
+        address: "",
+        comuna: "",
+        phone_number: "",
         email: "",
-        corporateName: "",
-        corporateLegalEntity: "",
-        corporateAdress: "",
-        corporatePhone: ""
+        institution: ""
       }
     };
+    this.updateData = this.updateData.bind(this);
   }
+
+  updateData = e => this.setState({ formData: {...this.state.formData, [e.target.name]: e.target.value }});
 
   onSubmit = e => {
     e.preventDefault();
@@ -93,7 +93,7 @@ class RequestPhoto extends Component {
                   />
                   <Label>Finalidad de la reproducción</Label>
                 </div>
-                <Input type="textarea" placeholder="Especificación" required />
+                <Input type="textarea" name="reason" onChange={this.updateData} placeholder="Especificación" required />
               </FormGroup>
 
               <div style={styles.formTitle}>
@@ -107,81 +107,87 @@ class RequestPhoto extends Component {
                 <Col>
                   <Input
                     type="text"
+                    name="first_name" 
+                    onChange={this.updateData}
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Nombre"
                     required
                   />
                   <Input
                     type="text"
+                    name="identity_document" 
+                    onChange={this.updateData}
                     style={{ marginBottom: "0.5em" }}
                     placeholder="CI"
                     required
                   />
                   <Input
                     type="text"
+                    name="address" 
+                    onChange={this.updateData}
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Dirección"
                     required
                   />
                   <Input
                     type="text"
+                    name="phone_number" 
+                    onChange={this.updateData}
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Teléfono"
                     required
                   />
                   <Input
                     type="text"
+                    name="institution" 
+                    onChange={this.updateData}
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Institución"
-                    required
-                  />
-                  <Input
-                    type="text"
-                    style={{ marginBottom: "0.5em" }}
-                    placeholder="Dirección Institución"
                     required
                   />
                 </Col>
                 <Col>
                   <Input
                     type="text"
+                    name="last_name" 
+                    onChange={this.updateData}
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Apellidos"
                     required
                   />
                   <Input
                     type="text"
+                    name="profession" 
+                    onChange={this.updateData}
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Actividad/Profesión"
                     required
                   />
                   <Input
                     type="text"
+                    name="comuna" 
+                    onChange={this.updateData}
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Comuna"
                     required
                   />
                   <Input
                     type="email"
+                    name="email" 
+                    onChange={this.updateData}
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Email"
                     required
                   />
-                  <Input
-                    type="text"
-                    style={{ marginBottom: "0.5em" }}
-                    placeholder="Razón Social"
-                    required
-                  />
-                  <Input
-                    type="text"
-                    style={{ marginBottom: "0.5em" }}
-                    placeholder="Teléfono Institución"
-                    required
-                  />
                 </Col>
               </FormGroup>
-              <Button>Solicitar</Button>
+              <Button
+              onClick={() => {
+                this.props.sendRequest(1, this.state);
+              }}
+              >
+                Solicitar
+              </Button>
             </Form>
           </Col>
           <Col sm={4}>
@@ -308,7 +314,7 @@ const mapActionsToProps = dispatch => ({
   onLoad: () => dispatch(home.home()),
   setRoute: route => dispatch(misc.setCurrentRoute(route)),
   removeRequestPhoto: value => dispatch(requestPhoto.removeRequestPhoto(value)),
-  sendRequest: info => dispatch() //enviar informacion formulario
+  sendRequest: (id,info) => dispatch(requestPhoto.sendRequest(id, info))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(RequestPhoto);
