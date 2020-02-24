@@ -29,7 +29,6 @@ class Login extends Component {
   translateError = error => {
     var errorMessage;
     var firstError = error.length ? error[0] : error;
-    console.log(firstError);
     switch (firstError) {
       case "Unable to log in with provided credentials.":
         errorMessage = "Tus credenciales no son correctas";
@@ -43,7 +42,13 @@ class Login extends Component {
 
   render() {
     if (this.props.isAuthenticated) {
-      return <Redirect to="/" />;
+      if(this.props.loginRoute !== null){
+        const newRoute = this.props.loginRoute;
+        this.props.setLoginSuccessRoute();
+        return <Redirect to={newRoute} />;
+      }else{
+        return <Redirect to="/" />;
+      }
     }
     return (
       <div className="modal-dialog text-center">
@@ -119,13 +124,15 @@ const mapStateToProps = state => {
   }
   return {
     errors,
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    loginRoute: state.misc.loginSuccessRoute,
   };
 };
 
 const mapActionsToProps = dispatch => ({
   login: (email, password) => dispatch(auth.login(email, password)),
-  setRoute: route => dispatch(misc.setCurrentRoute(route))
+  setRoute: route => dispatch(misc.setCurrentRoute(route)),
+  setLoginSuccessRoute: () => dispatch(misc.addLoginRoute(''))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Login);
