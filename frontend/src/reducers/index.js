@@ -8,6 +8,7 @@ import search from './search';
 import upload from './upload';
 import user from './user';
 import metadata from './metadata';
+import landing from './landing';
 import {combineReducers} from 'redux';
 
 const rootReducer = combineReducers({
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   upload: upload,
   user: user,
   metadata: metadata,
+  landing: landing,
 })
 
 export default rootReducer;

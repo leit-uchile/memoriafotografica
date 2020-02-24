@@ -35,7 +35,6 @@ class Home extends Component {
 
     // componentWillLoad
     this.props.setRoute("/gallery/");
-    this.props.onLoadGetPhotos();
   }
 
   handleOnClick = obj => {

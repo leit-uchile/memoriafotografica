@@ -1,47 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Redirect, Link } from "react-router-dom";
-import { misc } from "../actions";
 import { connect } from "react-redux";
-import { home } from "../actions";
+import { home, landing, misc } from "../actions";
 import { Helmet } from "react-helmet";
 import { Container, Row, Col } from "reactstrap";
 import Slider from "react-slick";
 import "../css/landing.css";
 import Gallery from "react-photo-gallery";
 
-const items = [
-  {
-    head: "Proyecto Memoria fotografica",
-    src:
-      "http://postulante.fcfm.uchile.cl/wordpress/wp-content/uploads/2015/12/31.jpg",
-    altText: "Slide 1",
-    caption:
-      "Les susanda ecusdae odit inctia dolore, ea conseque expliti ossuntorem rae peris et volland erferei untur, tem am num quos secatio. Um hit et is si offictemqui rem numqui non prae sim que antemporia pra velent."
-  },
-  {
-    head: "InJeniería desde 1800...",
-    src: "http://fundacionmellado.cl/wp-content/uploads/2014/09/DSC_0001.jpg",
-    altText: "Slide 2",
-    caption:
-      "Apis ad quatum et, odis doluptature, ut aliquamustia dolupta comnis et remquo opta andam fugitati ab ipsanient Les susanda ecusdae odit inctia dolore, ea conseque expliti ossuntorem rae peris et volland erferei untur, tem am num quos secatio. Um hit et is si offictemqui rem numqui non prae sim que antemporia pra velent."
-  },
-  {
-    head: "Innovación",
-    src:
-      "http://postulante.fcfm.uchile.cl/wordpress/wp-content/uploads/2015/12/IMG_3190.jpg",
-    altText: "Slide 3",
-    caption:
-      "Apis ad quatum et, odis doluptature, ut aliquamustia dolupta comnis et remquo opta andam fugitati ab ipsanient."
-  }
-];
-
 const LandingPage = props => {
-  const {setRoute, onLoad} = props;
+  const { setRoute, loadPhotos, loadCaroussel, loadNews } = props;
 
   useEffect(() => {
     setRoute("/Inicio");
-    onLoad();
-  }, [onLoad, setRoute]);
+    loadPhotos();
+    loadCaroussel();
+    loadNews();
+  }, [loadPhotos, setRoute, loadCaroussel, loadNews]);
 
   var settings = {
     dots: true,
@@ -61,10 +36,9 @@ const LandingPage = props => {
     id: el.id
   }));
 
-  var onClickPhoto = (o) => {
-    console.log(o, mapped)
+  var onClickPhoto = o => {
     setRedirect(`/photo/${mapped[o.index].id}`);
-  }
+  };
 
   const [redirect, setRedirect] = useState(false);
 
@@ -85,29 +59,24 @@ const LandingPage = props => {
       <Row style={{ marginTop: "2em" }}>
         <Col>
           <Slider {...settings}>
-            {items.map( (it, key) => (
+            {props.caroussel.map((it, key) => (
               <div key={key}>
                 <Container fluid>
                   <Row>
                     <Col
                       className="LandingPhoto"
                       style={{
-                        background: `url(${it.src}), #e9ecef`,
+                        background: `url(${it.image}), #e9ecef`,
                         backgroundRepeat: " no-repeat ",
                         backgroundSize: "cover",
                         backgroundPositionX: "center",
                         backgroundPositionY: "center",
                         backgroundBlendMode: "multiply",
                         height: "60vh"
-                      }}>
-                      {/* <img
-                        src={it.src}
-                        width="100%"
-                        altText={it.altText}
-                        style={{ maxHeight: "60vh", minHeight: "250px" }}
-                      /> */}
-                      <h3>{it.head}</h3>
-                      <p>{it.caption}</p>
+                      }}
+                    >
+                      <h3>{it.title}</h3>
+                      <p>{it.content}</p>
                     </Col>
                   </Row>
                 </Container>
@@ -124,15 +93,25 @@ const LandingPage = props => {
       <Row style={{ marginTop: "2em" }} className="missionDiv">
         <Col sm={4}>
           <h3>Recuperar</h3>
-          <img src="/assets/photoSave.svg" width="100px" height="100px" alt=""/>
+          <img
+            src="/assets/photoSave.svg"
+            width="100px"
+            height="100px"
+            alt=""
+          />
         </Col>
         <Col sm={4}>
           <h3>Preservar</h3>
-          <img src="/assets/server.svg" width="100px" height="100px" alt=""/>
+          <img src="/assets/server.svg" width="100px" height="100px" alt="" />
         </Col>
         <Col sm={4}>
           <h3>Compartir</h3>
-          <img src="/assets/speech-bubble.svg" width="100px" height="100px" alt=""/>
+          <img
+            src="/assets/speech-bubble.svg"
+            width="100px"
+            height="100px"
+            alt=""
+          />
         </Col>
       </Row>
       <Row>
@@ -153,7 +132,7 @@ const LandingPage = props => {
         <Col>
           <Gallery
             photos={mapped}
-            targetRowHeight={150}
+            targetRowHeight={100}
             onClick={(e, index) => onClickPhoto(index)}
           />
         </Col>
@@ -186,24 +165,17 @@ const LandingPage = props => {
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    photos: state.home.photos
-  };
-};
+const mapStateToProps = state => ({
+  photos: state.home.photos,
+  caroussel: state.landing.caroussel,
+  news: state.landing.news
+});
 
-const mapActionsToProps = dispatch => {
-  return {
-    onLoad: () => {
-      return dispatch(home.home());
-    },
-    setRoute: route => {
-      return dispatch(misc.setCurrentRoute(route));
-    }
-  };
-};
+const mapActionsToProps = dispatch => ({
+  loadPhotos: () => dispatch(home.home()),
+  setRoute: route => dispatch(misc.setCurrentRoute(route)),
+  loadCaroussel: () => dispatch(landing.getCaroussel()),
+  loadNews: () => dispatch(landing.getNews())
+});
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(LandingPage);
+export default connect(mapStateToProps, mapActionsToProps)(LandingPage);

@@ -9,15 +9,19 @@ import * as search from "./search";
 import * as upload from "./upload";
 import * as user from "./user";
 import * as metadata from "./metadata";
+import * as landing from "./landing";
 
-export { alert };
-export { auth };
-export { upload };
-export { home };
-export { photoDetails };
-export { requestPhoto };
-export { misc };
-export { search };
-export { curador };
-export { user };
-export { metadata };
+export {
+  alert,
+  auth,
+  upload,
+  home,
+  photoDetails,
+  requestPhoto,
+  misc,
+  search,
+  curador,
+  user,
+  metadata,
+  landing
+};

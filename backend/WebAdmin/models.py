@@ -49,7 +49,7 @@ class PhotoRequest(models.Model):
   updated_at = models.DateTimeField(default=datetime.now)
 
   def __str__(self):
-    return "Peticion por "+self.first_name+"por"+str(self.photos.all().count())
+    return "Peticion por "+self.first_name+", n fotos: "+str(self.photos.all().count())
 
 class ContactRequest(models.Model):
   first_name = models.CharField(max_length=30)

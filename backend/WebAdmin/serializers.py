@@ -11,7 +11,7 @@ from datetime import datetime
 class NewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
-        fields=('all',)
+        fields='__all__'
 
 class LandingCarousselSerializer(serializers.ModelSerializer):
     news = NewsSerializer(many = True)

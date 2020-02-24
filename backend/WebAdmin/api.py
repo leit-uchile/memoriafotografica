@@ -14,6 +14,7 @@ class ReadOnly(BasePermission):
 class NewsListAPI(generics.GenericAPIView):
 
     permission_classes =  [ReadOnly,]
+    serializer_class =  NewsSerializer
     def get(self, request, *args, **kwargs):
         news = News.objects.all()
         serializer = NewsSerializer(news, many=True)
@@ -41,6 +42,7 @@ class NewsDetailAPI(generics.GenericAPIView):
             news = self.get_object(pk)
             serializer = NewsSerializer(news, data=request.data)
             if serializer.is_valid():
+              serializer.save()
               return Response(serializer.data)
             else:
               return Response(status = status.HTTP_400_BAD_REQUEST)
@@ -60,8 +62,8 @@ class LandingCarousselAPI(generics.GenericAPIView):
 
     permission_classes =  [ReadOnly,]
     def get(self, request, *args, **kwargs):
-        news = LandingCaroussel.objects.all()
-        serializer = LandingCarousselSerializer(news, many=False)
+        caroussel = LandingCaroussel.objects.all()
+        serializer = LandingCarousselSerializer(caroussel, many=True)
         return Response(serializer.data)
 
 
@@ -88,6 +90,7 @@ class PhotoRequestDetailAPI(generics.GenericAPIView):
             photo_request = self.get_object(pk)
             serializer = PhotoRequestSerializer(photo_request, data=request.data)
             if serializer.is_valid():
+              serializer.save()
               return Response(serializer.data)
             else:
               return Response(status = status.HTTP_400_BAD_REQUEST)
@@ -109,6 +112,7 @@ class PhotoRequestAPI(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         if serializer.is_valid():
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
