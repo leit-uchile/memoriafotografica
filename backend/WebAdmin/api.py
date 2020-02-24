@@ -66,7 +66,7 @@ class LandingCarousselAPI(generics.GenericAPIView):
 
 
 
-class PhotoRequestAPI(generics.GenericAPIView):
+class PhotoRequestDetailAPI(generics.GenericAPIView):
     permission_classes = [IsAuthenticated,]
 
     def get_object(self,pk):
@@ -102,7 +102,7 @@ class PhotoRequestAPI(generics.GenericAPIView):
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
 
-class PhotoRequestNewAPI(generics.GenericAPIView):
+class PhotoRequestAPI(generics.GenericAPIView):
 
     serializer_class = PhotoRequestNewSerializer
 
@@ -111,3 +111,19 @@ class PhotoRequestNewAPI(generics.GenericAPIView):
         if serializer.is_valid():
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PhotoRequestListAPI(generics.GenericAPIView):
+    """
+    Give curators the list of requests
+    """
+
+    serializer_class = PhotoRequestSerializer
+    permission_classes = [IsAuthenticated,]
+
+    def get(self, request, *args, **kwargs):
+        if request.user.user_type > 1:
+            photorequests = PhotoRequest.objects.all()
+            serializer = self.serializer_class(photorequests, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)

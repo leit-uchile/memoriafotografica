@@ -14,7 +14,7 @@ export const removeRequestPhoto = (value) => {
 
 export const sendRequest = (photos,info) => {
   return (dispatch, getState) => {
-    let headers = {"Content-Type" : "aplication/json"};
+    let headers = {"Content-Type" : "application/json"};
 
     let jsonthing = JSON.stringify({
       reason: info.reason,
