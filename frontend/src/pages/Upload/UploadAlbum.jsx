@@ -213,9 +213,11 @@ const UploadAlbum = ({
               {!isAuth ? (
                 <Button onClick={previousStep}>
                   <FontAwesomeIcon icon={faChevronCircleLeft} />
+                  {" "} Volver
                 </Button>
               ) : null}
               <Button color="success" type="submit" onClick={onSubmitD}>
+                Continuar {" "}
                 <FontAwesomeIcon icon={faChevronCircleRight} />
               </Button>
             </ButtonGroup>

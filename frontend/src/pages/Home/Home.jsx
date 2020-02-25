@@ -133,7 +133,7 @@ class Home extends Component {
             </Row>
           </Container>
         </div>
-        <Container fluid style={styles.galleryContainer}>
+        <Container style={styles.galleryContainer}>
           <Row>
             <Col>
               {loadingPhotos ? (
@@ -175,11 +175,7 @@ const styles = {
   },
   galleryContainer: {
     width: "100%",
-    minHeight: "100vh",
-    padding: "1.25em 3.1em",
-    backgroundColor: "#f7f8fa",
     textAlign: "center",
-    marginBottom: "-2em"
   },
   filtersContainer: {
     paddingTop: "1em",

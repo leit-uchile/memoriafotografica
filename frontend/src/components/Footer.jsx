@@ -116,7 +116,6 @@ const Footer = () => {
 
 const styles = {
   contenedor: {
-    marginTop: "2em",
     borderTop: "1px solid rgb(210,214,218)",
     background:
       "linear-gradient(top, #fbfcfc 0%, #dee1e2 100%), -moz-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%) -webkit-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)"

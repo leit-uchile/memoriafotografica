@@ -55,3 +55,15 @@ body {
 .curador-donut-chart {
   display: inline-block;
 }
+
+a {
+  color: rgb(255, 90, 96);
+}
+
+.btn-link {
+  color: rgb(255, 90, 96);
+}
+
+footer {
+  background-color: #e9ecef;
+}

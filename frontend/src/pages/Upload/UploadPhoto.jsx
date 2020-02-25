@@ -198,16 +198,16 @@ class UploadPhoto extends Component {
             {this.state.photosList.length !== 0 ? (
               <ButtonGroup style={{ marginTop: "20px", width: "20em" }}>
                 <Button onClick={this.props.previousStep}>
-                  <FontAwesomeIcon icon={faChevronCircleLeft} />
+                  <FontAwesomeIcon icon={faChevronCircleLeft} /> {" "} Volver 
                 </Button>
                 <Button color="success" onClick={this.onSubmit}>
-                  <FontAwesomeIcon icon={faChevronCircleRight} />
+                  Finalizar {" "} <FontAwesomeIcon icon={faChevronCircleRight} />
                 </Button>
               </ButtonGroup>
             ) : (
               <ButtonGroup style={{ marginTop: "20px", width: "10em" }}>
                 <Button onClick={this.props.previousStep}>
-                  <FontAwesomeIcon icon={faChevronCircleLeft} />
+                  <FontAwesomeIcon icon={faChevronCircleLeft} /> {" "} Volver 
                 </Button>
               </ButtonGroup>
             )}

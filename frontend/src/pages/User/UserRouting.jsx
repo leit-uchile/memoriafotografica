@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { PrivateComponent } from "../../components";
 import { Route } from "react-router-dom";
-import UserDashboard from "./UserDashboard";
+import UserDashboard from "./Profile/UserDashboard";
 import EditProfile from "./EditProfile";
 import UserPhotos from "./UserPhotos";
 import UserAlbums from "./UserAlbums";

@@ -23,7 +23,7 @@ import {
 } from "reactstrap";
 import { user, misc } from "../../actions";
 import Gallery from "react-photo-gallery";
-import UserDashboard from "./UserDashboard";
+import UserDashboard from "./Profile/UserDashboard";
 
 class UserAlbums extends Component {
     constructor(props) {

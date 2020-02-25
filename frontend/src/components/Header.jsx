@@ -42,7 +42,7 @@ const Header = ({ isAuth, currentRoute }) => {
     <Fragment>
       <header
         className="jumbotron"
-        style={{ marginBottom: "0", paddingBottom: "2rem" }}
+        style={{ marginBottom: "0", paddingBottom: "1rem" }}
       >
         <Container>
           {redirect ? <Redirect to="/" /> : null}
@@ -59,7 +59,7 @@ const Header = ({ isAuth, currentRoute }) => {
                 >
                   <h1>Memoria fotográfica</h1>
                   <p style={{ fontSize: "0.8em", whiteSpace: "normal" }}>
-                    Facultad de Ciencias Fisicas y Matematicas - Universidad de
+                    Facultad de Ciencias Fisicas y Matematicas <br></br> Universidad de
                     Chile
                   </p>
                 </NavbarBrand>
