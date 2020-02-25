@@ -27,6 +27,8 @@
   position: absolute;
   right: 0;
   font-size: 1.5em;
+  color: rgb(255, 90, 96);
+  cursor: pointer;
 }
 
 .user-dashboard-row {
@@ -45,6 +47,10 @@
   font-weight: bold;
   padding: 0.5em 0;
   display: inline-block;
+}
+
+.user-dashboard-title > svg {
+  color: rgb(255, 90, 96);
 }
 
 .user-dashboard-see-all{

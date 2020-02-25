@@ -28,6 +28,7 @@ import {
 import UserPicture from "../../components/UserPicture";
 import CropPhoto from "../Upload/CropPhoto";
 import "./style.css";
+import "../../css/userDashboard.css";
 
 class EditProfile extends Component {
   constructor(props) {
@@ -42,8 +43,13 @@ class EditProfile extends Component {
     this.fr = new FileReader();
     this.fr.onload = (function(theFile) {
       return function(e) {
-        this.setState({ user: {...this.state.user, avatar: e.target.result }});
-        this.props.update({ id: this.state.user.id, avatar: this.state.avatar }, false);
+        this.setState({
+          user: { ...this.state.user, avatar: e.target.result }
+        });
+        this.props.update(
+          { id: this.state.user.id, avatar: this.state.avatar },
+          false
+        );
       };
     })(props.photo).bind(this);
   }
@@ -66,7 +72,7 @@ class EditProfile extends Component {
 
   toggleDropdown = e => {
     // console.log(e.target);
-    if(e.target.name === "untoggle"){
+    if (e.target.name === "untoggle") {
       return;
     }
     this.setState({
@@ -159,15 +165,15 @@ class EditProfile extends Component {
     }
   };
 
-  handleCrop(newAvatar){
-    this.setState({newAvatar: newAvatar})
+  handleCrop(newAvatar) {
+    this.setState({ newAvatar: newAvatar });
   }
 
   render() {
     var { user } = this.state;
 
     return (
-      <Container>
+      <Container style={{ marginBottom: "2em" }}>
         <Row>
           <Col sm="3" style={{ marginTop: "2em" }}>
             <Button
@@ -176,7 +182,7 @@ class EditProfile extends Component {
               tag={Link}
               to="./dashboard"
             >
-              <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}
+              <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}Volver
             </Button>
           </Col>
           <Col sm="9">
@@ -184,14 +190,14 @@ class EditProfile extends Component {
           </Col>
         </Row>
         <Row>
-          <Col sm="3">
-            <Card>
+          <Col md="3">
+            <Card className="user-dashboard-card">
               <UserPicture
                 user={user}
                 dims={200}
                 render={user => <CardImg top width="100%" src={user.avatar} />}
               />
-              <CardBody style={{ backgroundColor: "#ebeeef" }}>
+              <CardBody>
                 <ButtonDropdown
                   isOpen={this.state.dropdownOpen}
                   toggle={this.toggleDropdown}
@@ -201,15 +207,23 @@ class EditProfile extends Component {
                   <DropdownMenu>
                     <DropdownItem onClick={this.toggleModalCrop}>
                       Editar fotografía
-                      <CropPhoto src={user.avatar} isOpen={this.state.modal_crop} handleToggle={this.toggleModalCrop} save={newAvatar => this.handleCrop(newAvatar)}/>
+                      <CropPhoto
+                        src={user.avatar}
+                        isOpen={this.state.modal_crop}
+                        handleToggle={this.toggleModalCrop}
+                        save={newAvatar => this.handleCrop(newAvatar)}
+                      />
                     </DropdownItem>
                     <DropdownItem divider />
-                    <DropdownItem className="upload-btn-wrapper" name="untoggle">
+                    <DropdownItem
+                      className="upload-btn-wrapper"
+                      name="untoggle"
+                    >
                       Subir fotografia
                       <input
                         id="file-upload-1"
                         type="file"
-                        style={{cursor:'pointer'}}
+                        style={{ cursor: "pointer" }}
                         multiple={false}
                         onChange={this.handleFileSelect}
                         name="untoggle"
@@ -224,98 +238,95 @@ class EditProfile extends Component {
               </CardBody>
             </Card>
           </Col>
-          <Col sm="9" style={{ backgroundColor: "rgb(235, 238, 239)" }}>
+          <Col sm="9">
             <Container fluid>
-              <Row>
-                <Col>
+              <Row className="user-dashboard-row">
+                <Col style={{marginBottom: "1em"}}>
                   <h2 style={{ margin: "0.5em 0" }}> Editar mis datos</h2>
+                  <Form onSubmit={this.onSubmit}>
+                    <FormGroup row>
+                      <Label for="name" sm={3}>
+                        {" "}
+                        Nombre
+                      </Label>
+                      <Col sm={9}>
+                        <Input
+                          id="first_name"
+                          type="text"
+                          onChange={this.genericChangeHandler}
+                          required
+                          value={this.state.user.first_name}
+                        ></Input>
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Label for="lastname" sm={3}>
+                        Apellido{" "}
+                      </Label>
+                      <Col sm={9}>
+                        <Input
+                          id="last_name"
+                          type="text"
+                          onChange={this.genericChangeHandler}
+                          required
+                          value={this.state.user.last_name}
+                        ></Input>
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Label for="date" sm={3}>
+                        Fecha de nacimiento
+                      </Label>
+                      <Col sm={9}>
+                        <Input
+                          id="birth_date"
+                          type="date"
+                          onChange={this.genericChangeHandler}
+                          required
+                          value={this.state.user.birth_date}
+                        ></Input>
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Label for="email" sm={3}>
+                        Correo electronico
+                      </Label>
+                      <Col sm={9}>
+                        <Input
+                          id="email"
+                          type="email"
+                          onChange={this.genericChangeHandler}
+                          value={this.state.user.email}
+                          required
+                        ></Input>
+                      </Col>
+                    </FormGroup>
+
+                    <FormGroup row>
+                      <Label for="rol" sm={3}>
+                        Rol en la facultad
+                      </Label>
+                      <Col sm={9}>
+                        <Input
+                          id="rol_type"
+                          type="select"
+                          onChange={this.genericChangeHandler}
+                          value={`${this.state.user.rol_type}`}
+                          required
+                        >
+                          <option value="1">Alumno</option>
+                          <option value="2">Ex-Alumno</option>
+                          <option value="3">Acad&eacute;mico</option>
+                          <option value="4">Ex-Acad&eacute;mico</option>
+                          <option value="5">Funcionario</option>
+                          <option value="6">Externo</option>
+                        </Input>
+                      </Col>
+                    </FormGroup>
+                    <Button color="success">Guardar Cambios</Button>
+                  </Form>
                 </Col>
               </Row>
-              <Form onSubmit={this.onSubmit}>
-                <FormGroup row>
-                  <Label for="name" sm={3}>
-                    {" "}
-                    Nombre
-                  </Label>
-                  <Col sm={9}>
-                    <Input
-                      id="first_name"
-                      type="text"
-                      onChange={this.genericChangeHandler}
-                      required
-                      value={this.state.user.first_name}
-                    ></Input>
-                  </Col>
-                </FormGroup>
-                <FormGroup row>
-                  <Label for="lastname" sm={3}>
-                    Apellido{" "}
-                  </Label>
-                  <Col sm={9}>
-                    <Input
-                      id="last_name"
-                      type="text"
-                      onChange={this.genericChangeHandler}
-                      required
-                      value={this.state.user.last_name}
-                    ></Input>
-                  </Col>
-                </FormGroup>
-                <FormGroup row>
-                  <Label for="date" sm={3}>
-                    Fecha de nacimiento
-                  </Label>
-                  <Col sm={9}>
-                    <Input
-                      id="birth_date"
-                      type="date"
-                      onChange={this.genericChangeHandler}
-                      required
-                      value={this.state.user.birth_date}
-                    ></Input>
-                  </Col>
-                </FormGroup>
-                <FormGroup row>
-                  <Label for="email" sm={3}>
-                    Correo electronico
-                  </Label>
-                  <Col sm={9}>
-                    <Input
-                      id="email"
-                      type="email"
-                      onChange={this.genericChangeHandler}
-                      value={this.state.user.email}
-                      required
-                    ></Input>
-                  </Col>
-                </FormGroup>
-
-                <FormGroup row>
-                  <Label for="rol" sm={3}>
-                    Rol en la facultad
-                  </Label>
-                  <Col sm={9}>
-                    <Input
-                      id="rol_type"
-                      type="select"
-                      onChange={this.genericChangeHandler}
-                      value={`${this.state.user.rol_type}`}
-                      required
-                    >
-                      <option value="1">Alumno</option>
-                      <option value="2">Ex-Alumno</option>
-                      <option value="3">Acad&eacute;mico</option>
-                      <option value="4">Ex-Acad&eacute;mico</option>
-                      <option value="5">Funcionario</option>
-                      <option value="6">Externo</option>
-                    </Input>
-                  </Col>
-                </FormGroup>
-
-                <Row>
-                  <Button color="success">Guardar Cambios</Button>
-                </Row>
-              </Form>
             </Container>
           </Col>
         </Row>
@@ -383,7 +394,6 @@ class EditProfile extends Component {
 
 const styles = {
   title: {
-    color: "#ff5a60",
     textAlign: "center",
     margin: "1em"
   }
@@ -394,7 +404,8 @@ const mapStateToProps = state => ({
 });
 
 const mapActionsToProps = dispatch => ({
-  update: (userInfo,doJSON=true) => dispatch(user.editProfile(userInfo,doJSON)),
+  update: (userInfo, doJSON = true) =>
+    dispatch(user.editProfile(userInfo, doJSON)),
   updatePassword: (old_p, new_p) => dispatch(user.updatePassword(old_p, new_p)),
   setRoute: route => dispatch(misc.setCurrentRoute(route)),
   sendAlert: text => dispatch(alert.setAlert(text, "warning"))

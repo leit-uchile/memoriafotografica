@@ -64,6 +64,10 @@ a {
   color: rgb(255, 90, 96);
 }
 
+.user-modal .modal-header, .modal-footer{
+  background-color: #efefef;
+}
+
 footer {
   background-color: #e9ecef;
 }

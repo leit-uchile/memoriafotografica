@@ -33,7 +33,7 @@ const UserModal = ({ logout, user }) => {
         last_name ? last_name : "Apellido"
       }`}
       {redirect ? <Redirect to={redirect} /> : null}
-      <Modal isOpen={toggle} toggle={doToggle}>
+      <Modal isOpen={toggle} toggle={doToggle} className="user-modal">
         <ModalHeader toggle={doToggle}>
           {`${first_name ? first_name : "Nombre"} ${
             last_name ? last_name : "Apellido"
@@ -86,7 +86,7 @@ const UserModal = ({ logout, user }) => {
                   </Button>
                 </Col>
               ) : null}
-              <Col>
+              <Col sm={user_type == 1 ? {size: "4", offset: "4"} : undefined}>
                 <Button
                   block
                   color="primary"

@@ -17,7 +17,8 @@ import {
   faSuitcase,
   faCameraRetro,
   faAddressCard,
-  faEdit
+  faEdit,
+  faPlusCircle
 } from "@fortawesome/free-solid-svg-icons";
 import { userRolTranslation, userTypeTranslation } from "../utils";
 import { UserPicture } from "../../../components/";
@@ -42,6 +43,15 @@ class Dashboard extends Component {
     if (this.state.redirect !== "") {
       return <Redirect to={this.state.redirect} />;
     }
+
+    const addMore = (
+      <FontAwesomeIcon
+        icon={faPlusCircle}
+        onClick={() => this.setState({ redirect: "/upload" })}
+        style={{ cursor: "pointer" }}
+        title="Agregar más"
+      />
+    );
 
     return (
       <Container>
@@ -83,12 +93,14 @@ class Dashboard extends Component {
               <Row className="user-dashboard-row">
                 <Col>
                   <h2 className="user-dashboard-title">
-                    &Uacute;ltimas fotograf&iacute;as
+                    &Uacute;ltimas fotograf&iacute;as {addMore}
                   </h2>
-                  <Link to="/user/photos" className="user-dashboard-see-all">
-                    {" "}
-                    Ver Todas
-                  </Link>
+                  {photos.length !== 0 ? (
+                    <Link to="/user/photos" className="user-dashboard-see-all">
+                      {" "}
+                      Ver Todas
+                    </Link>
+                  ) : null}
                 </Col>
                 <Container fluid>
                   <Row style={{ margin: "1em auto" }} xs="9" align="center">
@@ -113,16 +125,20 @@ class Dashboard extends Component {
               </Row>
               <Row className="user-dashboard-row">
                 <Col>
-                  <h2 className="user-dashboard-title">Mis Albumes</h2>
-                  <Link to="/user/albums" className="user-dashboard-see-all">
-                    {" "}
-                    Ver Todas
-                  </Link>
+                  <h2 className="user-dashboard-title">
+                    Mis Albumes {addMore}
+                  </h2>
+                  {albums.length !== 0 ? (
+                    <Link to="/user/albums" className="user-dashboard-see-all">
+                      {" "}
+                      Ver Todos
+                    </Link>
+                  ) : null}
                 </Col>
                 <Container fluid>
                   <Row style={{ margin: "1em auto" }} xs="9" align="center">
                     {albums.length === 0 ? (
-                      <h5> No has subido fotos </h5>
+                      <h5> No has creado un &aacute;lbum </h5>
                     ) : (
                       albums.slice(0, 3).map(el => (
                         <Col sm="3">
