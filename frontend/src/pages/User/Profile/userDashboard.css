@@ -29,6 +29,8 @@
   font-size: 1.5em;
   color: rgb(255, 90, 96);
   cursor: pointer;
+  background-color: transparent;
+  border: none;
 }
 
 .user-dashboard-row {

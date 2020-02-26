@@ -30,7 +30,7 @@ const PublicProfile = ({
         </Col>
       </Row>
     </Container>
-  ) : publicUser === null ? (
+  ) : publicUser === undefined || publicUser === null ? (
     <Container style={{ textAlign: "center", paddingTop: "20vh" }}>
       <Row>
         <Col>
@@ -39,7 +39,7 @@ const PublicProfile = ({
       </Row>
     </Container>
   ) : (
-    <UserDashboard location={location} match={match} publicUser={publicUser} />
+    <UserDashboard location={location} match={match} publicUser={publicUser} {...rest}/>
   );
 };
 

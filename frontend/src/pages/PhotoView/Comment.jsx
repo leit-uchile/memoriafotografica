@@ -1,6 +1,7 @@
 import React from "react";
 import { Container, Row, Col } from "reactstrap";
 import ReportModal from "../../components/ReportModal";
+import { Link } from "react-router-dom";
 
 const Comment = ({ content: { content, censure, usuario, id } }) => {
   var userName =
@@ -16,7 +17,8 @@ const Comment = ({ content: { content, censure, usuario, id } }) => {
         backgroundColor: "#e9ecef",
         borderRadius: "5px",
         padding: "0.5em"
-      }}>
+      }}
+    >
       <Row>
         <Col xs={3} md={2} ld={1}>
           <div
@@ -29,7 +31,8 @@ const Comment = ({ content: { content, censure, usuario, id } }) => {
               backgroundImage: `url(${usuario.avatar})`,
               backgroundColor: "#ff5a60",
               marginRight: "auto"
-            }}></div>
+            }}
+          ></div>
         </Col>
         <Col xs={9} md={10} ld={11}>
           <div
@@ -37,8 +40,11 @@ const Comment = ({ content: { content, censure, usuario, id } }) => {
               display: "inline-block",
               borderRight: "2px solid gray",
               padding: "0 15px 0 0"
-            }}>
-            <b>{userName}</b>
+            }}
+          >
+            <b>
+              <Link to={"/user/public/" + usuario.id + "/"}>{userName}</Link>
+            </b>
           </div>
           <div style={{ display: "inline-block", padding: "0 15px" }}>
             {usuario.rol_type}
@@ -46,7 +52,7 @@ const Comment = ({ content: { content, censure, usuario, id } }) => {
           <ReportModal
             style={{ display: "inline-block" }}
             className="float-right"
-            photoId={id}
+            elementId={id}
             reportTitle={"Reportar Comentario"}
             options={[
               "Contenido inapropiado",

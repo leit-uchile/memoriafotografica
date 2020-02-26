@@ -51,7 +51,7 @@ class Login extends Component {
       }
     }
     return (
-      <div className="login-background">
+      <div className="login-background parallax">
         <div className="modal-dialog text-center">
           <div className="col-sm-9 main-section">
             <div className="modal-content">

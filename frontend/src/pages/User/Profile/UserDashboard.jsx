@@ -18,12 +18,11 @@ import {
   faCameraRetro,
   faAddressCard,
   faEdit,
-  faPlusCircle,
-  faFlag
+  faPlusCircle
 } from "@fortawesome/free-solid-svg-icons";
 import { userRolTranslation, userTypeTranslation } from "../utils";
-import { UserPicture } from "../../../components/";
-import "../../../css/userDashboard.css";
+import { UserPicture, ReportModal } from "../../../components/";
+import "./userDashboard.css";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -75,10 +74,15 @@ class Dashboard extends Component {
                 render={user => <CardImg top width="100%" src={user.avatar} />}
               />
               {this.state.isPublic ? (
-                <FontAwesomeIcon
-                  icon={faFlag}
+                <ReportModal
                   className="editProfile"
-                  title="Editar"
+                  reportType={1}
+                  elementId={user.id}
+                  options={["Fotos inapropiadas", "Comentarios ofensivos"]}
+                  reportTitle={"Denunciar Usuario"}
+                  helpText={
+                    "Si consideras que este usuario tiene una conducta que no sigue nuestras reglas de la comunidad por favor envíanos un reporte."
+                  }
                 />
               ) : (
                 <FontAwesomeIcon
@@ -125,8 +129,8 @@ class Dashboard extends Component {
                     {photos.length === 0 ? (
                       <h5> No hay fotograf&iacute;as </h5>
                     ) : (
-                      photos.slice(0, 3).map(el => (
-                        <Col sm="3">
+                      photos.slice(0, 3).map((el,key) => (
+                        <Col sm="3" key={key}>
                           <Photo
                             name={el.title}
                             url={el.thumbnail}
@@ -158,8 +162,8 @@ class Dashboard extends Component {
                     {albums.length === 0 ? (
                       <h5> No hay &aacute;lbumes </h5>
                     ) : (
-                      albums.slice(0, 3).map(el => (
-                        <Col sm="3">
+                      albums.slice(0, 3).map((el,key) => (
+                        <Col sm="3" key={key}>
                           <Photo
                             name={el.title}
                             url={el.thumbnail}

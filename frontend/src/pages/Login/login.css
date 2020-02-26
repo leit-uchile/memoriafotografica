@@ -23,6 +23,7 @@
     background-size: cover;
     background-color: #ff5a60;
     background-blend-mode: multiply;
+    background-position-y: center;
   }
   
   .login-background > .modal-dialog{

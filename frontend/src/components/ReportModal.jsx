@@ -16,7 +16,19 @@ import { photoDetails } from "../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFlag } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
+import {Link} from "react-router-dom";
 
+/**
+ * Report Modal for all 3 types of report
+ *
+ * If the user is not authenticated the window dialog will be different
+ * @params {Number} reportType
+ * @params {Number} elementId
+ * @params {Boolean} isAuth
+ * @params {Array} options
+ * @params {String} helpText
+ * @params {reportTitle}
+ */
 class ReportModal extends Component {
   constructor(props) {
     super(props);
@@ -24,27 +36,22 @@ class ReportModal extends Component {
       modal: false,
       sent: false,
       formData: {
-        id: props.photoId,
+        id: props.elementId,
         type: String(props.reportType),
         content: []
       }
     };
-    this.toggle = this.toggle.bind(this);
-    this.updateReport = this.updateReport.bind(this);
-    this.sendReport = this.sendReport.bind(this);
   }
 
-  componentWillMount() {}
-
-  toggle() {
+  toggle = () => {
     this.setState({
       modal: !this.state.modal,
       sent: false
     });
     setTimeout(this.props.resetReport, 1000);
-  }
+  };
 
-  updateReport(e) {
+  updateReport = e => {
     var arr;
     if (e.target.checked) {
       arr = this.state.formData.content.slice();
@@ -54,14 +61,14 @@ class ReportModal extends Component {
       arr = this.state.formData.content.filter(el => el !== e.target.value);
       this.setState({ formData: { ...this.state.formData, content: arr } });
     }
-  }
+  };
 
-  sendReport() {
+  sendReport = () => {
     this.setState({ sent: true });
     var form = { ...this.state.formData };
     form.content = form.content.join(", ");
     this.props.reportPhoto(form);
-  }
+  };
 
   render() {
     const {
@@ -111,43 +118,52 @@ class ReportModal extends Component {
             {reportTitle ? reportTitle : "Reportar fotografia"}
           </ModalHeader>
           <ModalBody>
-            {this.state.sent ? (
-              !photoReportSent ? (
-                <div style={{ textAlign: "center" }}>
-                  <h5>Enviando reporte</h5>
-                  <LeitSpinner />
-                </div>
-              ) : reportComplete ? (
-                <div style={{ textAlign: "center" }}>
-                  <h5>¡Reporte enviado!</h5>
-                </div>
+            {this.props.isAuth ? (
+              this.state.sent ? (
+                !photoReportSent ? (
+                  <div style={{ textAlign: "center" }}>
+                    <h5>Enviando reporte</h5>
+                    <LeitSpinner />
+                  </div>
+                ) : reportComplete ? (
+                  <div style={{ textAlign: "center" }}>
+                    <h5>¡Reporte enviado!</h5>
+                  </div>
+                ) : (
+                  <div style={{ textAlign: "center" }}>
+                    <h5>Hubo un problema al hacer el reporte</h5>
+                    <p>Intentalo nuevamente</p>
+                    <Button>Reiniciar</Button>
+                  </div>
+                )
               ) : (
-                <div style={{ textAlign: "center" }}>
-                  <h5>Hubo un problema al hacer el reporte</h5>
-                  <p>Intentalo nuevamente</p>
-                  <Button>Reiniciar</Button>
-                </div>
+                ReportForm
               )
             ) : (
-              ReportForm
+              <div style={{textAlign: "center", padding: "100px 0"}}>
+                <h4>Debes ingresar a la plataforma para poder reportar</h4>
+                <Link to="/login" className="btn bnt-block btn-primary">Ingresar</Link>
+              </div>
             )}
           </ModalBody>
-          <ModalFooter>
-            {!this.state.sent && !photoReportSent ? (
-              <Fragment>
-                <Button color="primary" onClick={this.sendReport}>
-                  Reportar
-                </Button>
+          {this.props.isAuth ? (
+            <ModalFooter>
+              {!this.state.sent && !photoReportSent ? (
+                <Fragment>
+                  <Button color="primary" onClick={this.sendReport}>
+                    Reportar
+                  </Button>
+                  <Button color="secondary" onClick={this.toggle}>
+                    Cancelar
+                  </Button>
+                </Fragment>
+              ) : (
                 <Button color="secondary" onClick={this.toggle}>
-                  Cancelar
+                  Cerrar
                 </Button>
-              </Fragment>
-            ) : (
-              <Button color="secondary" onClick={this.toggle}>
-                Cerrar
-              </Button>
-            )}
-          </ModalFooter>
+              )}
+            </ModalFooter>
+          ) : null}
         </Modal>
       </Fragment>
     );
@@ -165,7 +181,8 @@ ReportModal.propTypes = {
 
 const mapStateToProps = state => ({
   photoReportSent: state.photoDetails.photoReportSent,
-  reportComplete: state.photoDetails.reportComplete
+  reportComplete: state.photoDetails.reportComplete,
+  isAuth: state.auth.isAuthenticated
 });
 
 const mapActionToProps = dispatch => ({

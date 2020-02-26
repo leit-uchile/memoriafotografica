@@ -28,7 +28,7 @@ import {
 import UserPicture from "../../components/UserPicture";
 import CropPhoto from "../Upload/CropPhoto";
 import "./style.css";
-import "../../css/userDashboard.css";
+import "./Profile/userDashboard.css";
 
 class EditProfile extends Component {
   constructor(props) {

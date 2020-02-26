@@ -18,8 +18,8 @@ import {
 import moment from "moment";
 import "./photoInfo.css";
 import { getPermissionLogo } from "../../utils";
-import Tags from './Tags';
-import Categories from './Categories';
+import Tags from "./Tags";
+import Categories from "./Categories";
 
 class PhotoDetails extends Component {
   constructor(props) {
@@ -68,7 +68,7 @@ class PhotoDetails extends Component {
   computeIndexes = () => {
     const { suggestions } = this.props;
     let index;
-    console.log(suggestions)
+    console.log(suggestions);
     suggestions.forEach((el, key) => {
       // eslint-disable-next-line
       if (el.id == this.state.myPhotoID) {
@@ -275,7 +275,15 @@ class PhotoDetails extends Component {
                           }}
                         ></div>
                         <div style={{ marginLeft: "6em" }}>
-                          <b>{`${photoInfo.details.user.first_name} ${photoInfo.details.user.last_name}`}</b>
+                          <b>
+                            <Link
+                              to={
+                                "/user/public/" +
+                                photoInfo.details.user.id +
+                                "/"
+                              }
+                            >{`${photoInfo.details.user.first_name} ${photoInfo.details.user.last_name}`}</Link>
+                          </b>
                           <p>{photoInfo.details.user.rol_type}</p>
                         </div>
                       </Fragment>
@@ -344,7 +352,7 @@ class PhotoDetails extends Component {
                           <ReportModal
                             style={{ display: "inline-block" }}
                             className="float-left"
-                            photoId={this.props.match.params.id}
+                            elementId={this.props.match.params.id}
                             reportTitle={"Reportar fotografia"}
                             options={[
                               "Contenido inapropiado",

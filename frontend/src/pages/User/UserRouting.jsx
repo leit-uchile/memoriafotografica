@@ -9,6 +9,7 @@ import PublicProfile from "./Profile/PublicProfile";
 
 const UserRouting = ({ ...props }) => (
   <Fragment>
+    <Route exact path={"/user/public/:id"} component={PublicProfile} />
     <PrivateComponent
       exact
       path={"/user/dashboard"}
@@ -32,7 +33,6 @@ const UserRouting = ({ ...props }) => (
       component={UserAlbums}
       {...props}
     />
-    <Route exact path={"/user/public/:id"} component={PublicProfile} />
   </Fragment>
 );
 
