@@ -18,7 +18,7 @@
 }
 
 .login-background{
-    min-height: 70vh;
+    min-height: 75vh;
     background-image: url("/assets/frontis_background.jpg");
     background-size: cover;
     background-color: #ff5a60;

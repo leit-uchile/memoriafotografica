@@ -78,7 +78,7 @@ const styles = {
     background: "linear-gradient(to bottom, #dee1e2 0%,#ffffff 25%)"
   },
   body: {
-    minHeight: "70vh"
+    minHeight: "75vh"
   }
 };
 

@@ -176,6 +176,7 @@ const styles = {
   galleryContainer: {
     width: "100%",
     textAlign: "center",
+    marginTop: "2em",
   },
   filtersContainer: {
     paddingTop: "1em",

@@ -42,7 +42,7 @@ const Header = ({ isAuth, currentRoute }) => {
     <Fragment>
       <header
         className="jumbotron"
-        style={{ marginBottom: "0", paddingBottom: "1rem" }}
+        style={{ marginBottom: "0", paddingBottom: "1rem", paddingTop: "1rem" }}
       >
         <Container>
           {redirect ? <Redirect to="/" /> : null}

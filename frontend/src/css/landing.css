@@ -4,7 +4,7 @@
 
 .LandingPhoto p, .LandingPhoto h3{
   color: white;
-  text-shadow: black 1px 1px 1px ;
+  text-shadow: black 3px 2px 5px ;
 }
 
 .LandingPhoto h3{
@@ -16,13 +16,10 @@
   font-size: 2em;
   padding: 2em;
 }
-.colTitle{
-  margin-top: 2em;
-  border-bottom: 1px solid rgb(210,214,218);
-}
 
-.colTitle h2{
+h2.colTitle{
   font-size: 2.5em;
+  font-weight: 700;
 }
 
 .missionDiv div{
@@ -37,6 +34,78 @@
 
 /* Future optimization ? */
 .row div p.detailText{
-  padding: 1.5em 0;
   font-size: 1.3em;
+}
+
+.landing-container .row{
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.landing-background-1 {
+  min-height: 75vh;
+  max-height: 800px;
+  background-image: url("/assets/frontis_background.jpg");
+  background-size: cover;
+  background-color: #ff5a60;
+  background-blend-mode: multiply;
+}
+
+.landing-background-2 {
+  min-height: 60vh;
+  max-height: 800px;
+  background-image: url("/assets/bcentralteam.jpg");
+  background-size: cover;
+  background-color: #ff5a60;
+  background-blend-mode: multiply;
+  background-position-y: bottom;
+}
+
+.landing-background-2 .container{
+  padding-top: 20vh;
+  color: white;
+  text-shadow: black 3px 2px 5px ;
+}
+
+
+.landing-presentation .row{
+  padding-top: 30vh;
+}
+
+.landing-presentation-text{
+  color: white;
+  text-shadow: black 3px 2px 5px;
+  font-size: 2em;
+  display: block;
+  text-align: right;
+}
+
+.parallax {
+  /* The image used */
+  /* Loaded on the other class */
+  
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@media (min-width: 576px){
+
+  .landing-title > div{
+    padding: 1em;
+    background-color: white;
+    max-width: 300px;
+    height: fit-content;
+  }
+  
+  .landing-title h2{
+    background-image: url("/logo01.svg");
+    text-indent: -9999px;
+    background-repeat: no-repeat;
+    /*background-size: 33%;*/
+    height: 13vh;
+    min-width: 100px;
+  }
 }
