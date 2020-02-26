@@ -35,19 +35,19 @@ const FilterPicker = ({
   sortByField,
   recoverByCats,
   // Store
-  cats,
+  cats
 }) => {
   const [toggleCats, setToggleCats] = useState(false);
   const [filterState, setFilterState] = useState({
     selectedCategories: [],
     maxAllowed: defaultMaxAllowed,
-    searchOrder: {field: "created_at", order: "desc"}
+    searchOrder: { field: "created_at", order: "desc" }
   });
 
   // Initial Load
   useEffect(() => {
     onLoadGetCats();
-  }, []);
+  }, [onLoadGetCats]);
 
   const allowMoreCats = () => {
     setFilterState({
@@ -58,15 +58,6 @@ const FilterPicker = ({
 
   const setSortingOrder = order => {
     setFilterState({ ...filterState, searchOrder: order });
-  };
-
-  const reloadOnChange = () => {
-    if (filterState.selectedCategories.length !== 0) {
-      recoverByCats(filterState.selectedCategories, filterState.searchOrder);
-    } else {
-      sortByField(filterState.searchOrder.field, filterState.searchOrder.order);
-    }
-    resetHomePagination();
   };
 
   // Add category's ID
@@ -89,8 +80,20 @@ const FilterPicker = ({
 
   // Reload Search Effect
   useEffect(() => {
-    reloadOnChange();
-  }, [filterState.searchOrder, filterState.selectedCategories, filters]);
+    if (filterState.selectedCategories.length !== 0) {
+      recoverByCats(filterState.selectedCategories, filterState.searchOrder);
+    } else {
+      sortByField(filterState.searchOrder.field, filterState.searchOrder.order);
+    }
+    resetHomePagination();
+  }, [
+    filterState.searchOrder,
+    filterState.selectedCategories,
+    filters,
+    recoverByCats,
+    resetHomePagination,
+    sortByField
+  ]);
 
   // Utility Function
   var isSelected = (id, array) => {
@@ -98,12 +101,10 @@ const FilterPicker = ({
   };
 
   var currentCats = cats
-    ? cats
-        .slice(0, filterState.maxAllowedCategories)
-        .map(el => ({
-          ...el,
-          selected: isSelected(el.id, filterState.selectedCategories)
-        }))
+    ? cats.slice(0, filterState.maxAllowedCategories).map(el => ({
+        ...el,
+        selected: isSelected(el.id, filterState.selectedCategories)
+      }))
     : [];
 
   return (
@@ -146,14 +147,14 @@ const FilterPicker = ({
                   currentCats ? currentCats.filter((e, i) => i % 2 === 0) : []
                 }
                 onClick={pickCategory}
-                size={{md: "6"}}
+                size={{ md: "6" }}
               />
               <Categories
                 categorias={
                   currentCats ? currentCats.filter((e, i) => i % 2 === 1) : []
                 }
                 onClick={pickCategory}
-                size={{md: "6"}}
+                size={{ md: "6" }}
               />
             </Row>
             <Row>
@@ -176,14 +177,34 @@ const FilterPicker = ({
         <DropdownMenu style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}>
           <div style={styles.triangulo}></div>
           <DropdownItem header>Por orden cronológico</DropdownItem>
-          <DropdownItem onClick={() => setSortingOrder({field: "upload_date", order: "asc"})}>Más antiguas primero</DropdownItem>
-          <DropdownItem onClick={() => setSortingOrder({field: "upload_date", order: "desc"})}>Más nuevas primero</DropdownItem>
-          <DropdownItem divider />
-          <DropdownItem header>Por fecha de subida</DropdownItem>
-          <DropdownItem onClick={() => setSortingOrder({field: "created_at", order: "asc"})}>
+          <DropdownItem
+            onClick={() =>
+              setSortingOrder({ field: "upload_date", order: "asc" })
+            }
+          >
             Más antiguas primero
           </DropdownItem>
-          <DropdownItem onClick={() => setSortingOrder({field: "created_at", order: "desc"})}>
+          <DropdownItem
+            onClick={() =>
+              setSortingOrder({ field: "upload_date", order: "desc" })
+            }
+          >
+            Más nuevas primero
+          </DropdownItem>
+          <DropdownItem divider />
+          <DropdownItem header>Por fecha de subida</DropdownItem>
+          <DropdownItem
+            onClick={() =>
+              setSortingOrder({ field: "created_at", order: "asc" })
+            }
+          >
+            Más antiguas primero
+          </DropdownItem>
+          <DropdownItem
+            onClick={() =>
+              setSortingOrder({ field: "created_at", order: "desc" })
+            }
+          >
             Más nuevas primero
           </DropdownItem>
         </DropdownMenu>
@@ -227,7 +248,7 @@ const styles = {
 
 const mapStateToProps = state => ({
   cats: state.home.all_cats,
-  filters: state.search.metaIDs,
+  filters: state.search.metaIDs
 });
 
 const mapActionstoProps = dispatch => ({

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Redirect, Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { home, landing, misc } from "../actions";
+import { home, landing, misc } from "../../actions";
 import { Helmet } from "react-helmet";
 import { Container, Row, Col } from "reactstrap";
 import Slider from "react-slick";
-import "../css/landing.css";
+import "./landing.css";
 import Gallery from "react-photo-gallery";
 
 const LandingPage = props => {

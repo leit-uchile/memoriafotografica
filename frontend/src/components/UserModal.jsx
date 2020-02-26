@@ -86,7 +86,7 @@ const UserModal = ({ logout, user }) => {
                   </Button>
                 </Col>
               ) : null}
-              <Col sm={user_type == 1 ? {size: "4", offset: "4"} : undefined}>
+              <Col sm={user_type === 1 ? {size: "4", offset: "4"} : undefined}>
                 <Button
                   block
                   color="primary"

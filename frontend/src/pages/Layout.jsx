@@ -11,7 +11,7 @@ import {
 } from "../components";
 // Main application chunk
 import Home from "./Home";
-import LandingPage from "./LandingPage";
+import LandingPage from "./Landing";
 import Login from "./Login";
 import Register from "./Register";
 import NoMatch from "../components/Routes/NoMatch";

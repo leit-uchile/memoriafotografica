@@ -71,3 +71,14 @@ a {
 footer {
   background-color: #e9ecef;
 }
+
+.parallax {
+  /* The image used */
+  /* Loaded on the other class */
+  
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}

@@ -11,7 +11,7 @@ import { misc, upload, home, alert, metadata } from "../../actions";
 import { Helmet } from "react-helmet";
 import StepWizard from "react-step-wizard";
 
-import "../../css/uploadPhoto.css";
+import "./uploadPhoto.css";
 
 /**
  * Upload page
@@ -113,7 +113,7 @@ class UploadPage extends Component {
   }
 
   associateMeta = () => {
-    let meta_mapped = new Object();
+    let meta_mapped = {};
     this.state.metadata.forEach(t => {
       meta_mapped[t.value] = t.id;
     });

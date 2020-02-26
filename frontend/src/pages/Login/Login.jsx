@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { auth, misc } from "../actions";
+import { auth, misc } from "../../actions";
 import { connect } from "react-redux";
 import { Alert } from "reactstrap";
-import "../css/login.css";
+import "./login.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUnlock } from "@fortawesome/free-solid-svg-icons";
 

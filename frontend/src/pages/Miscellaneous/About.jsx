@@ -83,7 +83,7 @@ const About = () => {
         behavior: "smooth"
       });
     }
-  }, [joinUs.current]);
+  }, [joinUs]);
 
   const team = photos.map(el => {
     return (

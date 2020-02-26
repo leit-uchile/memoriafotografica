@@ -28,13 +28,13 @@ export default function metadata(state = initialState, action) {
       return {
         ...state,
         newIds: [...state.newIds, data],
-        creating: !(state.nbMetaCreating == total + 1)
+        creating: !(state.nbMetaCreating === total + 1)
       };
     case CREATED_METADATA_ERROR:
       return {
         ...state,
         failedCreations: [...state.failedCreations, data],
-        creating: !(state.nbMetaCreating == total + 1)
+        creating: !(state.nbMetaCreating === total + 1)
       };
     case RESET_METADATA_STORE:
       return { ...initialState };

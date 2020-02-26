@@ -1,0 +1,40 @@
+.home-background .col .react-photo-gallery--gallery{
+  background-color: white;
+}
+
+.home-background{
+  background-image: url("/assets/frontis_background.jpg");
+  background-color: #efefef;
+  background-blend-mode: luminosity;
+}
+
+.home-gallery-menu {
+  margin: 0 auto;
+  border-bottom: 1px solid rgb(210,214,218);
+  background: white;
+  position: sticky;
+  top: 4em;
+  z-index: 2;
+}
+
+.home-gallery-container {
+  width: 100%;
+  text-align: center;
+  padding-top: 2em;
+}
+
+.home-filters-containers {
+  padding-top: 1em;
+  display: flex;
+  align-items: left;
+  vertical-align: middle;
+  flex-direction: row;
+}
+
+.home-tags {
+  color: white;
+  border-radius: 10px;
+  background-color: #9a9e9d;
+  margin: 2px;
+  padding: 4px 12px 4px 12px;
+}

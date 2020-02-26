@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import CropPhoto from "./CropPhoto";
 import ReactTags from "react-tag-autocomplete";
 import {
   Container,
@@ -13,7 +12,6 @@ import {
   Input,
   Collapse
 } from "reactstrap";
-import uuidv1 from "uuid";
 
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },

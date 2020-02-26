@@ -10,6 +10,7 @@ import Gallery from "react-photo-gallery";
 import LeitSpinner from "../../components/LeitSpinner";
 import FilterPicker from "./FilterPicker";
 import HomePagination from "./HomePagination";
+import "./home.css"
 
 /**
  * Home
@@ -102,16 +103,16 @@ class Home extends Component {
           <meta property="og:description" content="Descripcion" />
           <title>Buscar fotografias</title>
         </Helmet>
-        <div style={styles.galleryMenu}>
+        <div className="home-gallery-menu">
           <Container>
             <Row>
               <Col md="7" lg="9">
-                <div style={styles.filtersContainer}>
+                <div className="home-filters-containers">
                   {filters.length !== 0 ? (
                     filters.map(el => (
                       <span
                         key={el.metaID}
-                        style={styles.tags}
+                        className="home-tags"
                         onClick={() =>
                           this.props.removeSearch(el.metaID, el.value)
                         }
@@ -133,66 +134,39 @@ class Home extends Component {
             </Row>
           </Container>
         </div>
-        <Container style={styles.galleryContainer}>
-          <Row>
-            <Col>
-              {loadingPhotos ? (
-                <LeitSpinner />
-              ) : (
-                <Gallery
-                  photos={mapped}
-                  targetRowHeight={200}
-                  onClick={(e, index) => this.handleOnClick(index)}
+        <div className="home-background parallax">
+          <Container className="home-gallery-container">
+            <Row>
+              <Col>
+                {loadingPhotos ? (
+                  <LeitSpinner />
+                ) : (
+                  <Gallery
+                    photos={mapped}
+                    targetRowHeight={200}
+                    onClick={(e, index) => this.handleOnClick(index)}
+                    className="additional"
+                  />
+                )}
+              </Col>
+            </Row>
+            <Row style={{ marginTop: "2em" }}>
+              <Col>
+                <HomePagination
+                  pageLimit={pageLimit}
+                  page={this.state.photoPagination.page}
+                  setStatePage={this.setPage}
+                  nbPhotos={this.props.photos.length}
+                  maxAllowed={this.state.photoPagination.maxAllowed}
                 />
-              )}
-            </Col>
-          </Row>
-          <Row style={{ marginTop: "2em" }}>
-            <Col>
-              <HomePagination
-                pageLimit={pageLimit}
-                page={this.state.photoPagination.page}
-                setStatePage={this.setPage}
-                nbPhotos={this.props.photos.length}
-                maxAllowed={this.state.photoPagination.maxAllowed}
-              />
-            </Col>
-          </Row>
-        </Container>
+              </Col>
+            </Row>
+          </Container>
+        </div>
       </Fragment>
     );
   }
 }
-
-const styles = {
-  galleryMenu: {
-    margin: "0 auto",
-    borderBottom: "1px solid rgb(210,214,218)",
-    background: "white",
-    position: "sticky",
-    top: "4em",
-    zIndex: "2"
-  },
-  galleryContainer: {
-    width: "100%",
-    textAlign: "center",
-    marginTop: "2em",
-  },
-  filtersContainer: {
-    paddingTop: "1em",
-    display: "flex",
-    alignItems: "left",
-    verticalAlign: "middle",
-    flexDirection: "row"
-  },
-  tags: {
-    color: "white",
-    borderRadius: "10px",
-    backgroundColor: "#9a9e9d",
-    margin: "2px",
-    padding: "4px 12px 4px 12px"
-  }
-};
 
 const mapStateToProps = state => ({
   photos: state.home.photos,

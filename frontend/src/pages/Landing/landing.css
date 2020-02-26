@@ -80,17 +80,6 @@ h2.colTitle{
   text-align: right;
 }
 
-.parallax {
-  /* The image used */
-  /* Loaded on the other class */
-  
-  /* Create the parallax scrolling effect */
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
 @media (min-width: 576px){
 
   .landing-title > div{

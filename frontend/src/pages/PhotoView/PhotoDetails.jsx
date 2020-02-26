@@ -16,7 +16,7 @@ import {
   faChevronCircleRight
 } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
-import "../../css/photoInfo.css";
+import "./photoInfo.css";
 import { getPermissionLogo } from "../../utils";
 import Tags from './Tags';
 import Categories from './Categories';
@@ -68,7 +68,8 @@ class PhotoDetails extends Component {
   computeIndexes = () => {
     const { suggestions } = this.props;
     let index;
-    suggestions.map((el, key) => {
+    console.log(suggestions)
+    suggestions.forEach((el, key) => {
       // eslint-disable-next-line
       if (el.id == this.state.myPhotoID) {
         index = key;
