@@ -10,6 +10,7 @@ from rest_framework.documentation import include_docs_urls
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_condition import ConditionalPermission, C, And, Or, Not
+from django.http import Http404
 
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):

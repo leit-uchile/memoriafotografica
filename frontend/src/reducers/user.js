@@ -9,7 +9,10 @@ import {
   USER_UPDATE_FAILED,
   USER_LOADED,
   USER_PASSWORD_UPDATED,
-  USER_PASSWORD_UPDATE_FAILED
+  USER_PASSWORD_UPDATE_FAILED,
+  USER_PUBLIC_LOADING,
+  USER_PUBLIC_LOADED,
+  USER_PUBLIC_ERROR
 } from "../actions/types";
 
 /**
@@ -20,7 +23,8 @@ const baseState = {
   photos: [],
   comments: [],
   albums: [],
-  userData: null
+  userData: null,
+  publicLoading: false
 };
 
 // Compare if the token is valid (12 hours)
@@ -35,7 +39,8 @@ const initialState =
         photos: [],
         comments: [],
         albums: [],
-        userData: JSON.parse(localStorage.getItem("user"))
+        userData: JSON.parse(localStorage.getItem("user")),
+        publicLoading: false
       };
 
 export default function user(state = initialState, action) {
@@ -91,6 +96,12 @@ export default function user(state = initialState, action) {
       return { ...state };
     case USER_PASSWORD_UPDATE_FAILED:
       return { ...state };
+    case USER_PUBLIC_LOADING:
+      return { ...state, publicLoading: true };
+    case USER_PUBLIC_LOADED:
+      return { ...state, publicLoading: false, publicUser: action.data };
+    case USER_PUBLIC_ERROR:
+      return { ...state, publicLoading: false, publicUser: null };
     default:
       return { ...state };
   }

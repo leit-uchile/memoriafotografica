@@ -18,7 +18,8 @@ import {
   faCameraRetro,
   faAddressCard,
   faEdit,
-  faPlusCircle
+  faPlusCircle,
+  faFlag
 } from "@fortawesome/free-solid-svg-icons";
 import { userRolTranslation, userTypeTranslation } from "../utils";
 import { UserPicture } from "../../../components/";
@@ -28,17 +29,22 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      redirect: ""
+      redirect: "",
+      isPublic:
+        props.user === null || props.location.pathname !== "/user/dashboard/"
+          ? true
+          : false,
+      user: props.publicUser ? props.publicUser : props.user
     };
 
     this.props.setRoute("/userDashboard/");
-    this.props.onLoadGetPhotos(props.user.id, 4, 0);
-    this.props.onLoadGetAlbums(props.user.id, 4, 0);
+    this.props.onLoadGetPhotos(this.state.user.id, 4, 0);
+    this.props.onLoadGetAlbums(this.state.user.id, 4, 0);
   }
 
   render() {
     const { albums, photos } = this.props.data;
-    const { user } = this.props;
+    const { user } = this.state;
 
     if (this.state.redirect !== "") {
       return <Redirect to={this.state.redirect} />;
@@ -57,7 +63,7 @@ class Dashboard extends Component {
       <Container>
         <Row style={{ marginTop: "2em" }}>
           <Col style={{ textAlign: "center" }}>
-            <h2>Mi perfil</h2>
+            <h2>{this.state.isPublic ? "Perfil" : "Mi perfil"}</h2>
           </Col>
         </Row>
         <Row style={styles.container}>
@@ -68,12 +74,23 @@ class Dashboard extends Component {
                 dims={200}
                 render={user => <CardImg top width="100%" src={user.avatar} />}
               />
-              <FontAwesomeIcon
-                icon={faEdit}
-                className="editProfile"
-                title="Editar"
-                onClick={() => this.setState({ redirect: "/user/editProfile" })}
-              />
+              {this.state.isPublic ? (
+                <FontAwesomeIcon
+                  icon={faFlag}
+                  className="editProfile"
+                  title="Editar"
+                />
+              ) : (
+                <FontAwesomeIcon
+                  icon={faEdit}
+                  className="editProfile"
+                  title="Editar"
+                  onClick={() =>
+                    this.setState({ redirect: "/user/editProfile" })
+                  }
+                />
+              )}
+
               <CardBody>
                 <CardText className="name">
                   {`${user.first_name} ${user.last_name}`}
@@ -93,7 +110,8 @@ class Dashboard extends Component {
               <Row className="user-dashboard-row">
                 <Col>
                   <h2 className="user-dashboard-title">
-                    &Uacute;ltimas fotograf&iacute;as {addMore}
+                    &Uacute;ltimas fotograf&iacute;as{" "}
+                    {this.state.isPublic ? null : addMore}
                   </h2>
                   {photos.length !== 0 ? (
                     <Link to="/user/photos" className="user-dashboard-see-all">
@@ -105,7 +123,7 @@ class Dashboard extends Component {
                 <Container fluid>
                   <Row style={{ margin: "1em auto" }} xs="9" align="center">
                     {photos.length === 0 ? (
-                      <h5> No has subido fotos </h5>
+                      <h5> No hay fotograf&iacute;as </h5>
                     ) : (
                       photos.slice(0, 3).map(el => (
                         <Col sm="3">
@@ -126,7 +144,7 @@ class Dashboard extends Component {
               <Row className="user-dashboard-row">
                 <Col>
                   <h2 className="user-dashboard-title">
-                    Mis Albumes {addMore}
+                    &Aacute;lbumes {this.state.isPublic ? null : addMore}
                   </h2>
                   {albums.length !== 0 ? (
                     <Link to="/user/albums" className="user-dashboard-see-all">
@@ -138,7 +156,7 @@ class Dashboard extends Component {
                 <Container fluid>
                   <Row style={{ margin: "1em auto" }} xs="9" align="center">
                     {albums.length === 0 ? (
-                      <h5> No has creado un &aacute;lbum </h5>
+                      <h5> No hay &aacute;lbumes </h5>
                     ) : (
                       albums.slice(0, 3).map(el => (
                         <Col sm="3">

@@ -10,7 +10,10 @@ import {
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAILED,
   USER_PASSWORD_UPDATED,
-  USER_PASSWORD_UPDATE_FAILED
+  USER_PASSWORD_UPDATE_FAILED,
+  USER_PUBLIC_LOADING,
+  USER_PUBLIC_LOADED,
+  USER_PUBLIC_ERROR
 } from "./types";
 // TODO: Add real backend routes
 
@@ -88,9 +91,39 @@ export const getUserComments = (user_id, limit, offset) => (
   });
 };
 
-export const loadUser = () => (dispatch, getState) => {
-  dispatch({ type: "USER_LOADING" });
+/**
+ * Load a user by ID if it is public
+ */
+export const loadAUser = id => dispatch => {
+  dispatch({ type: USER_PUBLIC_LOADING });
+  return fetch(`/api/users/${id}/`)
+    .then(res => {
+      const response = res;
+      if (res.status < 500) {
+        return response.json().then(data => {
+          return { status: res.status, data };
+        });
+      } else {
+        console.log("Server Error!");
+        dispatch({ type: USER_PUBLIC_ERROR, data: res.data });
+        throw res;
+      }
+    })
+    .then(res => {
+      if (res.status === 200) {
+        dispatch({ type: USER_PUBLIC_LOADED, data: res.data });
+        return res.data;
+      } else if (res.status >= 400 && res.status < 500) {
+        dispatch({ type: USER_PUBLIC_ERROR, data: res.data });
+        throw res.data;
+      }
+    });
+};
 
+/**
+ * Load current user
+ */
+export const loadUser = () => (dispatch, getState) => {
   const token = getState().auth.token;
 
   let headers = {
@@ -127,24 +160,23 @@ export const loadUser = () => (dispatch, getState) => {
  * @param {*} user
  * @param {bool} doJSON
  */
-export const editProfile = (user, doJSON=true) => (dispatch, getState) => {
-  
+export const editProfile = (user, doJSON = true) => (dispatch, getState) => {
   let headers, body;
 
-  if(doJSON){
+  if (doJSON) {
     headers = {
       "Content-Type": "application/json",
       Authorization: "Token " + getState().auth.token
     };
-    body = JSON.stringify({...user});
-  }else{
+    body = JSON.stringify({ ...user });
+  } else {
     // Assume multipart from backend
     headers = {
       Authorization: "Token " + getState().auth.token
     };
     body = new FormData();
     Object.keys(user).forEach(element => {
-      body.append(element,user[element]);
+      body.append(element, user[element]);
     });
   }
 
@@ -162,7 +194,7 @@ export const editProfile = (user, doJSON=true) => (dispatch, getState) => {
     .then(res => {
       if (res.status === 200) {
         dispatch({ type: USER_UPDATE_SUCCESS, data: res.data });
-        dispatch(setAlert("Perfil actualizado","success"));
+        dispatch(setAlert("Perfil actualizado", "success"));
       } else if (res.status === 403 || res.status === 401) {
         dispatch({ type: AUTH_ERROR, data: res.data });
         throw res.data;
@@ -193,11 +225,11 @@ export const updatePassword = (old_password, new_password) => (
   return fetch("/api/auth/password/", { headers, body, method: "PUT" })
     .then(res => {
       if (res.status < 500) {
-        if(res.status !== 200){
+        if (res.status !== 200) {
           return res.json().then(data => {
             return { status: res.status, data };
           });
-        }else{
+        } else {
           return { status: res.status, data: null };
         }
       } else {
@@ -213,7 +245,12 @@ export const updatePassword = (old_password, new_password) => (
         return res.data;
       } else if (res.status === 403 || res.status === 401) {
         dispatch({ type: AUTH_ERROR, data: res.data });
-        dispatch(setAlert("Sesion invalida, por favor ingrese nuevamente al sistema", "warning"));
+        dispatch(
+          setAlert(
+            "Sesion invalida, por favor ingrese nuevamente al sistema",
+            "warning"
+          )
+        );
         throw res.data;
       } else {
         dispatch({ type: USER_PASSWORD_UPDATE_FAILED, data: res.data });
@@ -223,6 +260,4 @@ export const updatePassword = (old_password, new_password) => (
     });
 };
 
-export const uploadUserPicture = avatar => (dispatch,getState) => {
-
-}
+export const uploadUserPicture = avatar => (dispatch, getState) => {};

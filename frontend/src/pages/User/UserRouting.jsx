@@ -5,7 +5,7 @@ import UserDashboard from "./Profile/UserDashboard";
 import EditProfile from "./EditProfile";
 import UserPhotos from "./UserPhotos";
 import UserAlbums from "./UserAlbums";
-import PublicProfile from "./PublicProfile";
+import PublicProfile from "./Profile/PublicProfile";
 
 const UserRouting = ({ ...props }) => (
   <Fragment>
