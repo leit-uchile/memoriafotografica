@@ -62,7 +62,7 @@ const LandingPage = props => {
         <div className="landing-presentation">
           <Container>
             <Row>
-              <Col md={{ size: "6", offset: "3" }}>
+              <Col md={{ size: "6", offset: "3" }} data-aos="fade-up">
                 <span className="landing-presentation-text">
                   Rescatando nuestra <b>Historia</b>
                 </span>
@@ -188,7 +188,7 @@ const LandingPage = props => {
         <Container>
           <Row>
             <Col sm={{ size: "4", offset: "2" }}>
-              <h2 className="colTitle">¿Quieres participar?</h2>
+              <h2 className="colTitle" data-aos="fade-up">¿Quieres participar?</h2>
             </Col>
             <Col sm={{ size: "4" }}>
               <p className="detailText">

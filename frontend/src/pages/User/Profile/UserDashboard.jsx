@@ -29,10 +29,7 @@ class Dashboard extends Component {
     super(props);
     this.state = {
       redirect: "",
-      isPublic:
-        props.user === null || props.location.pathname !== "/user/dashboard/"
-          ? true
-          : false,
+      isPublic: props.publicUser ? true : false,
       user: props.publicUser ? props.publicUser : props.user
     };
 
@@ -129,7 +126,7 @@ class Dashboard extends Component {
                     {photos.length === 0 ? (
                       <h5> No hay fotograf&iacute;as </h5>
                     ) : (
-                      photos.slice(0, 3).map((el,key) => (
+                      photos.slice(0, 3).map((el, key) => (
                         <Col sm="3" key={key}>
                           <Photo
                             name={el.title}
@@ -162,7 +159,7 @@ class Dashboard extends Component {
                     {albums.length === 0 ? (
                       <h5> No hay &aacute;lbumes </h5>
                     ) : (
-                      albums.slice(0, 3).map((el,key) => (
+                      albums.slice(0, 3).map((el, key) => (
                         <Col sm="3" key={key}>
                           <Photo
                             name={el.title}

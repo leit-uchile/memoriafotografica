@@ -6,6 +6,7 @@
   background-image: url("/assets/frontis_background.jpg");
   background-color: #efefef;
   background-blend-mode: luminosity;
+  min-height: 75vh;
 }
 
 .home-gallery-menu {

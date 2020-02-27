@@ -15,7 +15,7 @@ const PublicProfile = ({
 }) => {
   useEffect(() => {
     loadPublicUser(match.params.id);
-  }, [loadPublicUser]);
+  }, [loadPublicUser, match.params.id]);
 
   return loading ? (
     <Container style={{ textAlign: "center", paddingTop: "20vh" }}>

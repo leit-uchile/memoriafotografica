@@ -10,6 +10,8 @@ import {
   NavLink
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faArrowCircleUp} from '@fortawesome/free-solid-svg-icons'
 
 const Footer = () => {
   const componentDidMount = () =>
@@ -105,7 +107,7 @@ const Footer = () => {
               Ciencias Fisicas y Matematicas - Universidad de Chile
             </p>
             <Button color="link" onClick={componentDidMount}>
-              volver al inicio
+              Volver al Inicio <FontAwesomeIcon icon={faArrowCircleUp} />
             </Button>
           </Col>
         </Row>

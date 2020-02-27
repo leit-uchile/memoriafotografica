@@ -48,6 +48,7 @@ Para correr el proyecto se necesita *docker* y *docker-compose*. Los comandos so
 ```
 user$ sudo docker-compose build
 user$ sudo ./reset_db.sh
+user$ sudo ./load_fixtures.sh
 user$ sudo docker-compose up
 ```
 

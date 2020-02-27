@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 
 const PrivateComponent = ({ component: Component, setLoginSuccessRoute, ...rest }) => {
 
-  if (rest.isAuthenticated === null || rest.isAuthenticated === false && rest.location.pathname.includes(rest.path)) {
+  if ((rest.isAuthenticated === null || rest.isAuthenticated === false) && rest.location.pathname.includes(rest.path)) {
     console.log(rest.location,rest.match,rest.path)
     setLoginSuccessRoute(rest.location.pathname);
     return <Redirect to="/login" />;

@@ -10,7 +10,7 @@ import Gallery from "react-photo-gallery";
 import LeitSpinner from "../../components/LeitSpinner";
 import FilterPicker from "./FilterPicker";
 import HomePagination from "./HomePagination";
-import "./home.css"
+import "./home.css";
 
 /**
  * Home
@@ -152,13 +152,15 @@ class Home extends Component {
             </Row>
             <Row style={{ marginTop: "2em" }}>
               <Col>
-                <HomePagination
-                  pageLimit={pageLimit}
-                  page={this.state.photoPagination.page}
-                  setStatePage={this.setPage}
-                  nbPhotos={this.props.photos.length}
-                  maxAllowed={this.state.photoPagination.maxAllowed}
-                />
+                {loadingPhotos ? null : (
+                  <HomePagination
+                    pageLimit={pageLimit}
+                    page={this.state.photoPagination.page}
+                    setStatePage={this.setPage}
+                    nbPhotos={this.props.photos.length}
+                    maxAllowed={this.state.photoPagination.maxAllowed}
+                  />
+                )}
               </Col>
             </Row>
           </Container>
