@@ -1,5 +1,9 @@
 import { INVISIBLE_ROUTE, SET_ROUTE, ADD_LOGIN_SUCCESS_ROUTE } from "./types";
 
+/**
+ * Set the route for navigation
+ * @param {String} route
+ */
 export const setCurrentRoute = route => {
   if (route === undefined || route === null) {
     return dispatch => {

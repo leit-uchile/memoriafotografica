@@ -1,14 +1,12 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import {
-  Container,
   Row,
   Col,
   Button,
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
-  DropdownItem
+  ModalFooter
 } from "reactstrap";
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -213,19 +211,6 @@ class CropPhoto extends Component {
     );
   }
 }
-
-const styles = {
-  dropzone: {
-    backgroundColor: "#f7f7f7",
-    textAlign: "center",
-    padding: "15px",
-    width: "100%",
-    height: "auto",
-    borderRadius: "10px",
-    border: "1px dashed rgb(156,158,159)",
-    boxShadow: "2px 2px 4px rgb(156,158,159)"
-  }
-};
 
 const mapStateToProps = state => ({
   

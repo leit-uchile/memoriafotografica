@@ -167,7 +167,11 @@ class Dashboard extends Component {
                             height="150px"
                             width="200px"
                             useLink
-                            redirectUrl={`/albums/${el.id}`}
+                            redirectUrl={
+                              this.state.isPublic
+                                ? `/user/public/albums/${el.id}`
+                                : `/user/albums/${el.id}`
+                            }
                           />
                         </Col>
                       ))

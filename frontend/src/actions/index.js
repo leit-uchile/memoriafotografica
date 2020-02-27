@@ -10,6 +10,7 @@ import * as upload from "./upload";
 import * as user from "./user";
 import * as metadata from "./metadata";
 import * as landing from "./landing";
+import * as albumcollection from "./albumcollection";
 
 export {
   alert,
@@ -23,5 +24,6 @@ export {
   curador,
   user,
   metadata,
-  landing
+  landing,
+  albumcollection,
 };

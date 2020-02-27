@@ -575,8 +575,13 @@ class AlbumDetailAPI(generics.GenericAPIView):
 
     def get(self, request, pk, *args, **kwargs):
         album = self.get_object(pk)
-        serializer = AlbumSerializer(album)
-        return Response(serializer.data)
+        try:
+            if request.query_params["detailed"] == "y":
+                serializer = AlbumPhotoSerializer(album)
+                return Response(serializer.data)
+        except KeyError:
+            serializer = AlbumSerializer(album)
+            return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
         album = self.get_object(pk)

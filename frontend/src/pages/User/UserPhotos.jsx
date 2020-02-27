@@ -165,7 +165,6 @@ const styles = {
     width: "100%",
     paddingTop: "1.25em",
     paddingBottom: "1.25em",
-    marginBottom: "-2em",
     backgroundColor: "#f7f8fa",
     textAlign: "center"
   }

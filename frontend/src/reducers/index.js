@@ -1,28 +1,30 @@
+import albumcollection from './albumcollection';
 import alert from './alert';
 import auth from "./auth";
 import curador from "./curador"
 import home from "./home";
-import photoDetails from './photodetails';
+import landing from './landing';
+import metadata from './metadata';
 import misc from './misc';
+import photoDetails from './photodetails';
 import search from './search';
 import upload from './upload';
 import user from './user';
-import metadata from './metadata';
-import landing from './landing';
 import {combineReducers} from 'redux';
 
 const rootReducer = combineReducers({
+  albumcollection: albumcollection,
   alert: alert,
   auth: auth,
   curador: curador,
   home: home,
-  photoDetails: photoDetails,
+  landing: landing,
+  metadata: metadata,
   misc: misc,
+  photoDetails: photoDetails,
   search: search,
   upload: upload,
   user: user,
-  metadata: metadata,
-  landing: landing,
 })
 
 export default rootReducer;

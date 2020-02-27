@@ -220,3 +220,10 @@ class AlbumSerializer(serializers.ModelSerializer):
         instance.updated_at = datetime.now()
         instance.save()
         return instance
+
+class AlbumPhotoSerializer(AlbumSerializer):
+    """
+    Include photo information when serializing
+    """
+    class Meta(AlbumSerializer.Meta):
+        depth = 2
