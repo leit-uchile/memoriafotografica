@@ -44,7 +44,6 @@ class Filter extends Component {
 
   componentWillMount() {
     this.props.getPhotos().then(() => {
-      console.log(this.props);
       let totalDocs = this.props.photos.length;
       let pages = Math.ceil(totalDocs / this.state.pageSize);
       this.setState({
@@ -56,7 +55,6 @@ class Filter extends Component {
   }
 
   getLatestElements() {
-    console.log(this.props);
     let totalDocs = this.props.photos.length;
     let pages = Math.ceil(totalDocs / this.state.pageSize);
     this.setState({
@@ -86,18 +84,15 @@ class Filter extends Component {
 
   listView(e) {
     e.preventDefault();
-    console.log("ahora quiero ver como lista");
     this.setState({ listView: 1 });
   }
 
   cardView(e) {
     e.preventDefault();
-    console.log("ahora quiero ver como cartitas");
     this.setState({ listView: 0 });
   }
 
   setCurrentPage(e, p) {
-    console.log(p);
     this.setState({
       currentPage: p
     });

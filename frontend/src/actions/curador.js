@@ -43,7 +43,6 @@ export const getCategories = () => {
 
     return fetch("/api/categories/", { method: "GET", headers: headers }).then(
       function(response) {
-        console.log(response);
         const r = response;
         if (r.status === 200) {
           return r.json().then(data => {
@@ -64,15 +63,12 @@ export const createCategory = data => (dispatch, getState) => {
     "Content-Type": "application/json"
   };
   let sent_data = JSON.stringify(data);
-  console.log(sent_data);
-  //dispatch({type: 'CREATING', data: "" })
   fetch("/api/categories/", {
     method: "POST",
     headers: headers,
     body: sent_data
   }).then(function(response) {
     const r = response;
-    console.log(r);
     if (r.status === 200) {
       return r.json().then(data => {
         dispatch({ type: CREATED_CATEGORY, data: data });
@@ -88,7 +84,6 @@ export const editCategory = () => {};
 
 export const deleteCategories = (auth, catArray) => {
   return (dispatch, getState) => {
-    console.log(catArray.length);
     const to_send = catArray.length;
     var completed_ok = 0;
     var completed_err = 0;
@@ -108,9 +103,6 @@ export const deleteCategories = (auth, catArray) => {
           ++completed_err;
         }
         if (completed_err + completed_ok === to_send) {
-          console.log("done");
-          console.log("errors: " + completed_err);
-          console.log("ok: " + completed_ok);
           dispatch({ type: "COMPLETED", data: "" });
           dispatch({ type: "REFRESH", data: "" });
           dispatch({ type: "DUMMY", data: "" });
@@ -131,7 +123,6 @@ export const getPhotos = auth => {
 
     return fetch("/api/photos/", { method: "GET", headers: headers }).then(
       function(response) {
-        console.log(response);
         const r = response;
         if (r.status === 200) {
           return r.json().then(data => {

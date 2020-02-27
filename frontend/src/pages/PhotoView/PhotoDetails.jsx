@@ -68,7 +68,6 @@ class PhotoDetails extends Component {
   computeIndexes = () => {
     const { suggestions } = this.props;
     let index;
-    console.log(suggestions);
     suggestions.forEach((el, key) => {
       // eslint-disable-next-line
       if (el.id == this.state.myPhotoID) {

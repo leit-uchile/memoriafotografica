@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col } from "reactstrap";
-import { albumcollection } from "../../../actions";
+import { albumcollection, home } from "../../../actions";
 import { connect } from "react-redux";
 import Gallery from "react-photo-gallery";
 import LeitSpinner from "../../../components/LeitSpinner";
@@ -16,8 +16,10 @@ import { Redirect } from "react-router-dom";
  * @param {Object} albumData
  * @param {Boolean} loading
  * @param {Function} loadInfo
+ * @param {Function} setIndex
+ * @param {Function} pushPhotos
  */
-const AlbumView = ({ match, albumData, loadInfo, loading }) => {
+const AlbumView = ({ match, albumData, loadInfo, loading, setIndex, pushPhotos }) => {
   // Load album info
   useEffect(() => {
     loadInfo(match.params.id);
@@ -46,13 +48,16 @@ const AlbumView = ({ match, albumData, loadInfo, loading }) => {
   }, [albumData]);
 
   const handleOnClick = obj => {
+    setIndex(obj.index)
     setDisplay({ ...display, redirect: obj.index });
   };
 
-  if (display.redirect)
+  if (display.redirect !== false){
+    pushPhotos(albumData.pictures);
     return (
       <Redirect push to={`/photo/${display.photos[display.redirect].id}`} />
     );
+  }
 
   return albumData !== {} ? (
     <Container fluid className="album-container home-background parallax">
@@ -115,7 +120,9 @@ const mapStateToProps = state => ({
 
 const mapActionsToProps = dispatch => ({
   loadInfo: (id, detailed = true) =>
-    dispatch(albumcollection.loadAlbumInfo(id, detailed))
+    dispatch(albumcollection.loadAlbumInfo(id, detailed)),
+  pushPhotos: photos => dispatch(home.pushPhotoArray(photos)),
+  setIndex: num => dispatch(home.setSelectedId(num)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(AlbumView);

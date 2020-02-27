@@ -169,3 +169,10 @@ export const setSelectedId = id => (dispatch, getState) =>
  */
 export const setPhotoPagination = index => dispatch =>
   dispatch({ type: HOME_PHOTO_PAGINATION, data: index})
+
+/**
+ * Push photo array so that we can navigate albums, categories
+ * and collections using the photodetails component
+ * @param {Array} photos
+ */
+export const pushPhotoArray = photos => dispatch => dispatch({type: HOME_RECOVERED_PHOTOS, data: photos})

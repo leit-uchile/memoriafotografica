@@ -113,7 +113,6 @@ const DonutChart = ({ rawData, crossHairTitle, crossHairValue }) => {
           <Hint
             value={value}
             format={el => {
-              console.log(el);
               return [
                 { title: crossHairTitle, value: el.title },
                 { title: crossHairValue, value: el.total }
