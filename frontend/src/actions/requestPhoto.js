@@ -1,4 +1,5 @@
 import { REQUESTPHOTO, REMOVE_REQUESTPHOTO, SEND_REQUEST } from "./types";
+import { setAlert } from "./alert";
 
 export const putRequestPhoto = (value) => {
   return (dispatch, getState) => {
@@ -41,7 +42,7 @@ export const sendRequest = (photos,info) => {
           dispatch({ type: SEND_REQUEST, data: data });
         });
       } else {
-        
+        dispatch(setAlert("Hubo un error al enviar su solicitud", "warning"));
       }
     });
   };

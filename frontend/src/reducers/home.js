@@ -12,6 +12,7 @@ import {
   HOME_PHOTO_PAGINATION,
   REQUESTPHOTO,
   REMOVE_REQUESTPHOTO,
+  SEND_REQUEST,
 } from "../actions/types";
 
 const initialState = {
@@ -20,6 +21,7 @@ const initialState = {
   all_iptcs: [],
   all_cats: [],
   requestedPhotos: [],
+  requested: false,
   loading: false,
   selectedIndex: -1,
   photoPagination: {}
@@ -47,12 +49,14 @@ export default function home(state = initialState, action) {
       let filtered = state.requestedPhotos.filter(
         el => el.id !== action.data.id
       );
-      return { ...state, requestedPhotos: [...filtered, action.data] };
+      return { ...state, requestedPhotos: [...filtered, action.data], requested: false };
     case REMOVE_REQUESTPHOTO:
       let filtered2 = state.requestedPhotos.filter(
         el => el.id !== action.data.id
       );
       return { ...state, requestedPhotos: [...filtered2] };
+    case SEND_REQUEST:
+      return { ...state, requestedPhotos: [], requested: true }
     case HOME_LOADING:
       return { ...state, loading: true };
     case HOME_SET_SELECTED_INDEX:
