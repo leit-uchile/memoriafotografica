@@ -98,10 +98,10 @@ class PhotoDetails extends Component {
       (this.state.firstLoad && this.props.photoInfo.details.id !== undefined) ||
       prevProps.photoInfo.details.id !== this.props.photoInfo.details.id
     ) {
-      this.imageContainer.current.scrollIntoView({
+      /* this.imageContainer.current.scrollIntoView({
         block: "start",
         behavior: "smooth"
-      });
+      }); */
 
       this.setState({ firstLoad: false, redirectWithButton: false }, () =>
         this.getDataFromBack()
@@ -110,10 +110,10 @@ class PhotoDetails extends Component {
 
     // Reload component with new ID
     if (prevProps.match.params.id !== this.props.match.params.id) {
-      this.imageContainer.current.scrollIntoView({
+      /* this.imageContainer.current.scrollIntoView({
         block: "start",
         behavior: "smooth"
-      });
+       });*/
 
       this.setState(
         {
@@ -192,7 +192,7 @@ class PhotoDetails extends Component {
       : null;
 
     return (
-      <div ref={this.imageContainer}>
+      <div ref={this.imageContainer} className="disable-css-transitions">
         <Helmet>
           <meta property="og:title" content={photoInfo.details.title} />
           <meta property="og:type" content="website" />

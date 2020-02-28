@@ -277,35 +277,35 @@ const CC_INFO = [
     text: "Atribución",
     desc:
       "Esta licencia permite a otras distribuir, remezclar, retocar, y crear a partir de su obra, incluso con fines comerciales, siempre y cuando den crédito por la creación original. Esta es la más flexible de las licencias ofrecidas. Se recomienda para la máxima difusión y utilización de los materiales licenciados. ",
-    img: "/assets/CCBY.svg"
+    img: "/assets/CC/CCBY.svg"
   },
   {
     name: "CC BY-SA",
     text: "Atribución, Compartir Igual",
     desc:
       "Esta licencia permite a otras remezclar, retocar, y crear a partir de su obra, incluso con fines comerciales, siempre y cuando den crédito y licencien sus nuevas creaciones bajo los mismos términos. Esta licencia suele ser comparada con las licencias «copyleft» de software libre y de código abierto. Todas las nuevas obras basadas en la suya portarán la misma licencia, así que cualesquiera obras derivadas permitirán también uso comercial. Esta es la licencia que usa Wikipedia, y se recomienda para materiales que se beneficiarían de incorporar contenido de Wikipedia y proyectos con licencias similares. ",
-    img: "/assets/CCBYSA.svg"
+    img: "/assets/CC/CCBYSA.svg"
   },
   {
     name: "CC BY-ND",
     text: "Atribución, Sin Derivadas",
     desc:
       "Esta licencia permite a otras sólo descargar sus obras y compartirlas con otras siempre y cuando den crédito, incluso con fines comerciales, pero no pueden cambiarlas de forma alguna.",
-    img: "/assets/CCBYND.svg"
+    img: "/assets/CC/CCBYND.svg"
   },
   {
     name: "CC BY-NC",
     text: "Atribución, No Comercial",
     desc:
       "Esta licencia permite a otras distribuir, remezclar, retocar, y crear a partir de su obra de forma no comercial y, a pesar de que sus nuevas obras deben siempre mencionarle y ser no comerciales, no están obligadas a licenciar sus obras derivadas bajo los mismos términos.",
-    img: "/assets/CCBYNC.svg"
+    img: "/assets/CC/CCBYNC.svg"
   },
   {
     name: "CC BY-NC-SA",
     text: "Atribución, No Comercial, Compartir Igual",
     desc:
       "Esta licencia permite a otras remezclar, retocar, y crear a partir de su obra de forma no comercial, siempre y cuando den crédito y licencien sus nuevas creaciones bajo los mismos términos. ",
-    img: "/assets/CCBYNCSA.svg"
+    img: "/assets/CC/CCBYNCSA.svg"
   },
   {
     name: "CC BY-NC-ND",

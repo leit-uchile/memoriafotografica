@@ -4,25 +4,25 @@ const getPermissionLogo = (name, w, h) => {
   var url;
   switch (name) {
     case "CC BY":
-      url = "/assets/CCBY.svg";
+      url = "/assets/CC/CCBY.svg";
       break;
     case "CC BY-NC":
-      url = "/assets/CCBYNC.svg";
+      url = "/assets/CC/CCBYNC.svg";
       break;
     case "CC BY-NC-ND":
-      url = "/assets/CCBYNCND.svg";
+      url = "/assets/CC/CCBYNCND.svg";
       break;
     case "CC BY-NC-SA":
-      url = "/assets/CCBYNCSA.svg";
+      url = "/assets/CC/CCBYNCSA.svg";
       break;
     case "CC BY-ND":
-      url = "/assets/CCBYND.svg";
+      url = "/assets/CC/CCBYND.svg";
       break;
     case "CC BY-SA":
-      url = "/assets/CCBYSA.svg";
+      url = "/assets/CC/CCBYSA.svg";
       break;
     default:
-      url = "/assets/CCBYSA.svg";
+      url = "/assets/CC/CCBYSA.svg";
   }
   return <img width={w} height={h} src={url} alt='' key={name}/>;
 };

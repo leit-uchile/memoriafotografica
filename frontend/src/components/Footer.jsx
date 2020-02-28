@@ -26,7 +26,7 @@ const Footer = () => {
       <Container style={styles.contenido}>
         <Row style={{ paddingBottom: "50px" }}>
           <Col>
-            <img src={"/logoExt.svg"} alt={"logo"} height="40px" style={{maxWidth: "100%"}}/>
+            <img src={"/assets/logoExt.svg"} alt={"logo"} height="40px" style={{maxWidth: "100%"}}/>
           </Col>
         </Row>
         <Row>

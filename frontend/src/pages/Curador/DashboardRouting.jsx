@@ -1,8 +1,7 @@
 import React from "react";
-import Filter from "./Filter";
-import Publish_Photos from "./Publish_Photos";
+import Filter from "./Filter/Filter";
 import Categories from "./Category/Categories";
-import Reported_Photos from "./Reported_Photos";
+import Reported_Photos from "./Reports/Reported_Photos";
 import Category_New from "./Category/Category_New";
 import Category_Photos from "./Category/Category_Photos";
 import Landing from "./Landing";
@@ -22,6 +21,7 @@ import {
   faTags,
   faChartBar
 } from "@fortawesome/free-solid-svg-icons";
+import Reported_Users from "./Reports/Reported_Users";
 
 /**
  * TODO:
@@ -113,13 +113,13 @@ const Dashboard = ({ match, location }) => (
           />
           <BoundedRoute
             exact
-            path={match.path + "/flagged"}
-            component={Publish_Photos}
+            path={match.path + "/reported"}
+            component={Reported_Photos}
           />
           <BoundedRoute
             exact
-            path={match.path + "/reported"}
-            component={Reported_Photos}
+            path={match.path + "/flagged"}
+            component={Reported_Users}
           />
           <Route component={NoMatch} />
         </Switch>

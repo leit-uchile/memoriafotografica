@@ -90,7 +90,7 @@ h2.colTitle{
   }
   
   .landing-title h2{
-    background-image: url("/logo01.svg");
+    background-image: url("/assets/logo01.svg");
     text-indent: -9999px;
     background-repeat: no-repeat;
     /*background-size: 33%;*/

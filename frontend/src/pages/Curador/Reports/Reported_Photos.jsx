@@ -9,8 +9,8 @@ import {
   CardFooter
 } from "reactstrap";
 import { connect } from "react-redux";
-import { curador } from "../../actions";
-import LeitSpinner from "../../components/LeitSpinner";
+import { curador } from "../../../actions";
+import LeitSpinner from "../../../components/LeitSpinner";
 
 const Reported_Photos = ({ reports, getReports, loading }) => {
   useEffect(() => {

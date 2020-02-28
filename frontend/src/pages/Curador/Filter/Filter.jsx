@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Photo from "../../components/Photo";
+import Photo from "../../../components/Photo";
 import {
   Row,
   Col,
@@ -15,14 +15,14 @@ import {
   Badge
 } from "reactstrap";
 import { connect } from "react-redux";
-import { curador } from "../../actions";
+import { curador } from "../../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faThLarge,
   faThList,
   faFilter
 } from "@fortawesome/free-solid-svg-icons";
-import LeitSpinner from "../../components/LeitSpinner";
+import LeitSpinner from "../../../components/LeitSpinner";
 
 class Filter extends Component {
   constructor(props) {
