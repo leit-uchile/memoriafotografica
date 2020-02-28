@@ -13,6 +13,7 @@ import {
   GET_GENERAL_STATS,
   GET_GENERAL_STATS_ERROR
 } from "./types";
+import { setAlert } from "./alert";
 
 export const getReportes = () => {
   //GET REPORTES Y DENUNCIAS
@@ -184,7 +185,33 @@ export const getGeneralStats = () => (dispatch, getState) => {
       }
     });
   } catch (err) {
-    dispatch({ type: GET_GENERAL_STATS_ERROR, data: "Error on general stats action" });
+    dispatch({
+      type: GET_GENERAL_STATS_ERROR,
+      data: "Error on general stats action"
+    });
     throw err;
   }
+};
+
+export const updateReport = report => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().auth.token
+  };
+  return fetch(`/api/reports/${report.id}/`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(report)
+  }).then(response => {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then(data => {
+        dispatch({ type: SWICH_PHOTO_APPROVAL, data: data });
+      });
+    } else {
+      dispatch(setAlert("Hubo un error al actualizar el reporte", "warning"))
+      dispatch({ type: SWICH_PHOTO_APPROVAL_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
 };

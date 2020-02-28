@@ -9,7 +9,9 @@ import {
   CREATED_CATEGORY,
   CREATED_CATEGORY_ERROR,
   GET_GENERAL_STATS,
-  GET_GENERAL_STATS_ERROR
+  GET_GENERAL_STATS_ERROR,
+  SWICH_PHOTO_APPROVAL_ERROR,
+  SWICH_PHOTO_APPROVAL
 } from "../actions/types";
 
 const initialState = {
@@ -21,7 +23,8 @@ const initialState = {
   refresh: false,
   stats: {
     general: null
-  }
+  },
+  reportUpdate: {}
 };
 
 export default function curador(state = initialState, action) {
@@ -66,18 +69,13 @@ export default function curador(state = initialState, action) {
           "Se produjo un error, intente nuevamente. Si persiste, contacte gente especializada."
       };
     case GET_GENERAL_STATS:
-      return {
-        ...state,
-        stats: {
-          ...state.stats,
-          general: action.data,
-        },
-      }
+      return { ...state, stats: { ...state.stats, general: action.data } };
     case GET_GENERAL_STATS_ERROR:
-      return {
-        ...state,
-        error: action.data
-      }
+      return { ...state, error: action.data };
+    case SWICH_PHOTO_APPROVAL:
+      return { ...state, reportUpdate: action.data };
+    case SWICH_PHOTO_APPROVAL_ERROR:
+      return { ...state, reportUpdate: {} };
     default:
       return state;
   }

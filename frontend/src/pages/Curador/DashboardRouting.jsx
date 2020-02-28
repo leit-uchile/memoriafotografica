@@ -1,10 +1,4 @@
 import React from "react";
-import Filter from "./Filter/Filter";
-import Categories from "./Category/Categories";
-import Reported_Photos from "./Reports/Reported_Photos";
-import Category_New from "./Category/Category_New";
-import Category_Photos from "./Category/Category_Photos";
-import Landing from "./Landing";
 import { Container, Row, Button, Col } from "reactstrap";
 import { Route, Link, Switch } from "react-router-dom";
 import "./styles.css";
@@ -21,7 +15,12 @@ import {
   faTags,
   faChartBar
 } from "@fortawesome/free-solid-svg-icons";
-import Reported_Users from "./Reports/Reported_Users";
+import Filter from "./Filter/Filter";
+import Categories from "./Category/Categories";
+import Category_New from "./Category/Category_New";
+import Category_Photos from "./Category/Category_Photos";
+import Landing from "./Landing";
+import Reports from "./Reports/Reports";
 
 /**
  * TODO:
@@ -40,11 +39,6 @@ const availableRoutes = [
     to: "filter",
     display: "Curación",
     icon: <FontAwesomeIcon icon={faFilter} />
-  },
-  {
-    to: "flagged",
-    display: "Denuncias",
-    icon: <FontAwesomeIcon icon={faUserTimes} />
   },
   {
     to: "reported",
@@ -115,12 +109,7 @@ const Dashboard = ({ match, location }) => (
           <BoundedRoute
             exact
             path={match.path + "/reported"}
-            component={Reported_Photos}
-          />
-          <BoundedRoute
-            exact
-            path={match.path + "/flagged"}
-            component={Reported_Users}
+            component={Reports}
           />
           <Route component={NoMatch} />
         </Switch>

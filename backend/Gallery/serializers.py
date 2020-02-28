@@ -19,9 +19,11 @@ class ReportSerializer(serializers.ModelSerializer):
             photo = obj.photo_set.all()[0]
             return {"id": photo.id, "thumbnail": photo.thumbnail.url}
         elif len(obj.comment_set.all()) != 0:
-            return obj.comment_set.all()[0].id
+            comment = obj.comment_set.all()[0]
+            return {"id": comment.id, "content": comment.content}
         elif len(obj.user_set.all()) != 0:
-            return obj.user_set.all()[0].id
+            user = obj.user_set.all()[0]
+            return {"id": user.id, "first_name": user.first_name, "last_name": user.last_name}
         else:
             return -1
 
@@ -37,6 +39,7 @@ class ReportSerializer(serializers.ModelSerializer):
         instance.resolved = validated_data.get('resolved', instance.resolved)
         instance.updated_at = datetime.now()
         instance.save()
+        return instance
 
 
 class CommentAdminSerializer(serializers.ModelSerializer):

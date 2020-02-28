@@ -17,7 +17,7 @@ import {
   faThList,
   faFilter
 } from "@fortawesome/free-solid-svg-icons";
-import LeitSpinner from "../../../components/LeitSpinner";
+import { LeitSpinner } from "../../../components";
 import PhotoList from "./PhotoList";
 import PhotoCards from "./PhotoCards";
 
