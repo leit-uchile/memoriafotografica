@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Photo from "../../../components/Photo";
 import {
   Row,
   Col,
@@ -8,11 +7,7 @@ import {
   ButtonGroup,
   Pagination,
   PaginationItem,
-  PaginationLink,
-  Card,
-  CardFooter,
-  CardBody,
-  Badge
+  PaginationLink
 } from "reactstrap";
 import { connect } from "react-redux";
 import { curador } from "../../../actions";
@@ -23,6 +18,8 @@ import {
   faFilter
 } from "@fortawesome/free-solid-svg-icons";
 import LeitSpinner from "../../../components/LeitSpinner";
+import PhotoList from "./PhotoList";
+import PhotoCards from "./PhotoCards";
 
 class Filter extends Component {
   constructor(props) {
@@ -34,7 +31,7 @@ class Filter extends Component {
       pages: 0,
       list: []
     };
-    //Calculate pages:
+    //Computes pages:
     this.props.getPhotos().then(() => {
       let totalDocs = this.props.photos.length;
       let pages = Math.ceil(totalDocs / this.state.pageSize);
@@ -44,15 +41,6 @@ class Filter extends Component {
       });
     });
   }
-
-  getLatestElements = () => {
-    let totalDocs = this.props.photos.length;
-    let pages = Math.ceil(totalDocs / this.state.pageSize);
-    this.setState({
-      list: [...this.props.photos],
-      pages: pages
-    });
-  };
 
   updateElementState = () => {
     // Send update to API
@@ -70,17 +58,14 @@ class Filter extends Component {
     this.setState({
       list: [...list]
     });
-    //this.getLatestElements()
   };
 
-  listView = e => {
-    e.preventDefault();
-    this.setState({ listView: 1 });
-  };
-
-  cardView = e => {
-    e.preventDefault();
-    this.setState({ listView: 0 });
+  /**
+   * 0 for list
+   * 1 for cards
+   */
+  swapView = num => {
+    this.setState({ listView: num });
   };
 
   setCurrentPage = (e, p) => {
@@ -89,157 +74,16 @@ class Filter extends Component {
     });
   };
 
-  approvePhoto = (auth, pid, val) => {
-    this.props.switchPhotoApproval(auth, pid, val).then(() => {
+  approvePhoto = (pid, val) => {
+    this.props.switchPhotoApproval(pid, val).then(() => {
       window.location.reload();
     });
   };
   render() {
-    var latest = [];
-    for (var i = 1; i < 6 && i < this.state.list.length; i++) {
-      latest.push(
-        <Photo
-          key={this.state.list[i].id}
-          name={this.state.list[i].name}
-          url={this.state.list[i].url}
-          tags={this.state.list[i].tags}
-          state={this.state.list[i].state}
-          width="150px"
-          style={styles.latest}
-        />
-      );
-    }
-    latest = latest.slice(0, 3).map(el => el);
-
-    let photolist = this.state.list.map(e => (
-      <Card style={{ width: "100%", margin: "10px 0px" }}>
-        <CardBody>
-          <Row>
-            <Col>
-              <img alt={e.title} src={e.thumbnail} width="200px" />
-            </Col>
-            <Col xs="9">
-              <h5>{e.name}</h5>
-              <h6>
-                Subida por{" "}
-                <b>
-                  {e.usuario
-                    ? `${e.usuario.first_name} ${e.usuario.last_name}`
-                    : "Juanito"}
-                </b>{" "}
-                el {new Date(e.created_at).toLocaleString()}
-              </h6>
-              <h5>
-                Tags:{" "}
-                {e.metadata.map(t => (
-                  <Badge style={{ margin: "0px 2px" }}>#{t}</Badge>
-                ))}
-              </h5>
-            </Col>
-          </Row>
-          {
-            // <CardTitle>Special Title Treatment</CardTitle>
-            // <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-          }
-        </CardBody>
-        <CardFooter>
-          <Col xs="2" style={{ display: "inline" }}>
-            <a href="#">Editar Foto</a>
-          </Col>
-          <Col xs="8" style={{ display: "inline" }}>
-            {e.approved ? (
-              <div style={{ display: "inline" }}>
-                Aprobada{" "}
-                <Button
-                  onClick={() =>
-                    this.approvePhoto(this.props.token, e.id, e.approved)
-                  }
-                  color="danger"
-                >
-                  Quitar Aprobación
-                </Button>
-              </div>
-            ) : (
-              <div style={{ display: "inline" }}>
-                No Aprobada{" "}
-                <Button
-                  onClick={() =>
-                    this.approvePhoto(this.props.token, e.id, e.approved)
-                  }
-                  color="success"
-                >
-                  Aprobar
-                </Button>
-              </div>
-            )}
-          </Col>
-        </CardFooter>
-      </Card>
-    ));
-
-    let photocards = this.state.list.map(e => (
-      <Card style={{ width: "45%", margin: "10px 10px" }}>
-        <CardBody style={{ paddingTop: "0px" }}>
-          <Row>
-            <img
-              alt={e.title}
-              src={e.thumbnail}
-              width="100%"
-              style={{ borderRadius: "2.5px" }}
-            />
-          </Row>
-          <Row>
-            <h5>{e.name}</h5>
-            <h5>
-              Tags:{" "}
-              {e.metadata.map(t => (
-                <Badge style={{ margin: "0px 2px" }}>#{t}</Badge>
-              ))}
-            </h5>
-          </Row>
-        </CardBody>
-        <CardFooter>
-          <Col style={{ display: "inline" }}>
-            <a href="#">Editar Foto</a>
-          </Col>
-          <Col style={{ display: "inline" }}>
-            {e.approved ? (
-              <div style={{ display: "inline" }}>
-                Aprobada{" "}
-                <Button
-                  color="danger"
-                  onClick={() =>
-                    this.approvePhoto(this.props.token, e.id, e.approved)
-                  }
-                >
-                  Quitar Aprobación
-                </Button>
-              </div>
-            ) : (
-              <div style={{ display: "inline" }}>
-                No Aprobada{" "}
-                <Button
-                  color="success"
-                  onClick={() =>
-                    this.approvePhoto(this.props.token, e.id, e.approved)
-                  }
-                >
-                  Aprobar
-                </Button>
-              </div>
-            )}
-          </Col>
-        </CardFooter>
-      </Card>
-    ));
     let pageLowerBound = this.state.currentPage * this.state.pageSize;
     let pageUpperBound = Math.min(
       pageLowerBound + this.state.pageSize,
       this.state.list.length
-    );
-    let renderphotos = (this.state.listView ? photolist : photocards).slice(
-      pageLowerBound,
-      pageUpperBound
     );
 
     let paginators = Array.from(Array(this.state.pages)).map(
@@ -253,7 +97,7 @@ class Filter extends Component {
       </PaginationItem>
     ));
     return (
-      <Container>
+      <Container fluid>
         <h2>Filtrar Fotografías</h2>
         <Row>
           <Col xs="2">
@@ -271,14 +115,14 @@ class Filter extends Component {
               <Button
                 outline={this.state.listView ? true : false}
                 disabled={this.state.listView ? true : false}
-                onClick={this.listView}
+                onClick={() => this.swapView(1)}
               >
                 <FontAwesomeIcon icon={faThList} />
               </Button>
               <Button
                 outline={this.state.listView ? false : true}
                 disabled={this.state.listView ? false : true}
-                onClick={this.cardView}
+                onClick={() => this.swapView(0)}
               >
                 <FontAwesomeIcon icon={faThLarge} />
               </Button>
@@ -291,7 +135,18 @@ class Filter extends Component {
               <LeitSpinner />
             </Col>
           ) : (
-            renderphotos
+            <Col>
+              {this.state.listView ? (
+                <PhotoList
+                  photos={this.state.list.slice(pageLowerBound, pageUpperBound)}
+                />
+              ) : (
+                <PhotoCards
+                  photos={this.state.list.slice(pageLowerBound, pageUpperBound)}
+                  onApprove={this.props.switchPhotoApproval}
+                />
+              )}
+            </Col>
           )}
         </Row>
         <Row>
@@ -315,17 +170,6 @@ class Filter extends Component {
     );
   }
 }
-const styles = {
-  latest: {
-    width: "150px",
-    marginBottom: "20px",
-    boxShadow: "5px 5px 5px #3c4145"
-  },
-  actual: {
-    height: "350px",
-    textAlign: "center"
-  }
-};
 
 const mapStateToProps = state => {
   let errors = [];
@@ -337,7 +181,6 @@ const mapStateToProps = state => {
   return {
     errors,
     isAuthenticated: state.auth.isAuthenticated,
-    token: state.auth.token,
     meta: state.home.all_tags,
     photos: state.curador.photos,
     loading: state.curador.loading,
@@ -346,8 +189,8 @@ const mapStateToProps = state => {
 };
 const mapActionsToProps = dispatch => ({
   getPhotos: () => dispatch(curador.getPhotos()),
-  switchPhotoApproval: (auth, pID, val) =>
-    dispatch(curador.switchPhotoApproval(auth, pID, val))
+  switchPhotoApproval: (pID, val) =>
+    dispatch(curador.switchPhotoApproval(pID, val))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Filter);

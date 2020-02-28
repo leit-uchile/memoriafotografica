@@ -137,7 +137,7 @@ export const getPhotos = auth => {
   };
 };
 
-export const switchPhotoApproval = (auth, photoID, curr_value) => (
+export const switchPhotoApproval = (photoID, curr_value) => (
   dispatch,
   getState
 ) => {

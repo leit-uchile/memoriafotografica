@@ -22,6 +22,7 @@ def get_user(photoPair):
         u_dict = {}
         u_dict['first_name'] = u.first_name
         u_dict['last_name'] = u.last_name
+        u_dict['id'] = u.pk
         photoPair[1]['usuario'] = u_dict
     except AttributeError as e:
         print("error buscando usuario para la foto con id",str(photoPair[0].id))

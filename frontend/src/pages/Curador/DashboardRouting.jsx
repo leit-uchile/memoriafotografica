@@ -71,7 +71,7 @@ const Dashboard = ({ match, location }) => (
         >
           <FontAwesomeIcon icon={faChartBar} /> Dashboard
         </Button>
-        {availableRoutes.map(el => (
+        {availableRoutes.map((el,k) => (
           <Button
             tag={Link}
             to={match.path + "/" + el.to}
@@ -81,6 +81,7 @@ const Dashboard = ({ match, location }) => (
                 ? " active"
                 : "")
             }
+            key={k}
           >
             {el.icon}
             {"  "}
