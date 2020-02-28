@@ -108,8 +108,6 @@ const Layout = () => {
 
 const styles = {
   background: {
-    backgroundColor: "#dee1e2",
-    background: "linear-gradient(to bottom, #dee1e2 0%,#ffffff 25%)"
   },
   body: {
     minHeight: "75vh"
