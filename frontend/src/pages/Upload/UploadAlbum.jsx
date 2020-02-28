@@ -19,7 +19,8 @@ import {
   faPlus,
   faQuestionCircle,
   faChevronCircleLeft,
-  faChevronCircleRight
+  faChevronCircleRight,
+  faPlusCircle
 } from "@fortawesome/free-solid-svg-icons";
 import ReactTags from "react-tag-autocomplete";
 
@@ -114,15 +115,10 @@ const UploadAlbum = ({
         <Col md={{ size: 6, offset: 1 }}>
           <div style={styles.albumBox}>
             <Label style={{ fontSize: "18px" }}>Crear Album</Label>
-            <Button
-              style={styles.plusButton}
-              color="primary"
-              onClick={() => isAlbum()}
-            >
-              <FontAwesomeIcon icon={faPlus} />
-            </Button>
+              <FontAwesomeIcon icon={faPlusCircle}
+              onClick={() => isAlbum()} style={styles.plusButton}/>
           </div>
-          <Form style={styles.generalInformation}>
+          <Form style={styles.generalInformation} className="white-box">
             <FormGroup>
               <Collapse isOpen={formData.onAlbum}>
                 <Fragment>
@@ -223,7 +219,7 @@ const UploadAlbum = ({
             </ButtonGroup>
           </Form>
         </Col>
-        <Col md={4}>
+        <Col md={4} className="white-box upload-rules">
           <h4 style={{ fontWeight: "600" }}>Subida de contenido</h4>
           <ul>
             <li>
@@ -251,7 +247,6 @@ const UploadAlbum = ({
 const styles = {
   albumBox: {
     display: "flex",
-    width: "94%",
     height: "auto",
     padding: "2px 10px 0px 10px",
     marginLeft: "auto",
@@ -259,37 +254,21 @@ const styles = {
     marginBottom: "-5px",
     justifyContent: "space-between",
     backgroundColor: "#f7f7f7",
-    borderRadius: "10px 10px 0px 0px",
-    borderTop: "1px solid rgb(156,158,159)",
-    borderRight: "1px solid rgb(156,158,159)",
-    borderLeft: "1px solid rgb(156,158,159)",
-    boxShadow: "2px 2px 3px rgb(156,158,159)"
+    border: "1px solid rgb(210,214,218)",
+    borderBottom: "none"
   },
   plusButton: {
-    fontSize: "12px",
-    padding: "2px",
-    borderRadius: "50%",
-    height: "25px",
-    width: "25px"
+    fontSize: "2em",
+    color: "#ff5a60",
+    cursor: "pointer"
   },
   generalInformation: {
     backgroundColor: "white",
     border: "1px solid rgb(210,214,218)",
     padding: "15px",
-    borderRadius: "0px 0px 10px 10px"
   },
   hr: {
     borderBottom: "1px solid rgb(156,158,159)"
-  },
-  dropzone: {
-    backgroundColor: "#f7f7f7",
-    textAlign: "center",
-    padding: "15px",
-    width: "100%",
-    height: "auto",
-    borderRadius: "10px",
-    border: "1px dashed rgb(156,158,159)",
-    boxShadow: "2px 2px 4px rgb(156,158,159)"
   }
 };
 

@@ -155,12 +155,12 @@ class RegisterLoginInfo extends Component {
       <Container>
         <Row>
           <Col>
-            <h2 style={styles.title}>Registro</h2>
+            <h2 style={styles.title}>Subir Fotograf&iacute;a / Sesi&oacute;n </h2>
           </Col>
         </Row>
         <Row>
           <Col>
-            <Form onSubmit={this.onSubmit} style={styles.form}>
+            <Form onSubmit={this.onSubmit} style={styles.form} className="white-box">
               <div style={styles.formTitle}>
                 <FontAwesomeIcon icon={faUserCircle} style={{marginRight: '1em'}}/>
                 <Label for='avatar'>Avatar</Label>
@@ -385,7 +385,6 @@ const TermsOfUseModal = ({
 
 const styles = {
   form:{
-    backgroundColor: '#f7f7f7', 
     padding:'2em', 
     marginBottom:'2em',
     border:'1px solid rgb(210,214,218)'

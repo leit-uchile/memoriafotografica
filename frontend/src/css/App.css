@@ -82,3 +82,9 @@ footer {
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+.white-box {
+  background-color: white;
+  box-shadow: #ddd 3px 5px 10px;
+  margin-bottom: 1.5em;
+}

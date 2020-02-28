@@ -11,7 +11,7 @@ const UnregisteredPrompt = ({ nextStep }) => (
         <h2 className="upload-title">Subir Fotograf&iacute;a / Registro</h2>
       </Col>
     </Row>
-    <Container style={styles.container}>
+    <Container className="upload-unregister-container white-box">
       <Row>
         <Col style={{ borderRight: "1px solid rgb(210,214,218)" }}>
           <Row style={styles.item}>
@@ -48,12 +48,6 @@ const UnregisteredPrompt = ({ nextStep }) => (
 );
 
 const styles = {
-  container: {
-    backgroundColor: "#f7f7f7",
-    padding: "2em",
-    marginBottom: "2em",
-    border: "1px solid rgb(210,214,218)"
-  },
   title: {
     color: "#ff5a60",
     textAlign: "center",

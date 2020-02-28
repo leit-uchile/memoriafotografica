@@ -73,7 +73,7 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
           </h2>
         </Col>
       </Row>
-      <Form onSubmit={onSubmit} style={styles.form}>
+      <Form onSubmit={onSubmit} className="upload-unregister-container white-box">
         <div style={styles.formTitle}>
           <FontAwesomeIcon
             icon={faUserFriends}
@@ -189,12 +189,6 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
   );
 };
 const styles = {
-  form: {
-    backgroundColor: "#f7f7f7",
-    padding: "2em",
-    marginBottom: "2em",
-    border: "1px solid rgb(210,214,218)"
-  },
   title: {
     color: "#ff5a60",
     textAlign: "center",

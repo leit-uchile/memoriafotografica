@@ -11,9 +11,3 @@
   top: 0;
   opacity: 0;
 }
-
-.white-box {
-  background-color: white;
-  box-shadow: #ddd 3px 5px 10px;
-  margin-bottom: 1.5em;
-}

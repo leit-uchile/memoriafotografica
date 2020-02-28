@@ -180,7 +180,7 @@ class UploadPhoto extends Component {
           </Col>
         </Row>
         <Row style={{ marginTop: "2em" }}>
-          <Col>
+          <Col md={8}>
             <Dropzone onDrop={this.handleOnDrop}>
               {({ getRootProps, getInputProps }) => (
                 <div style={styles.dropzone} {...getRootProps()}>
@@ -192,22 +192,39 @@ class UploadPhoto extends Component {
             </Dropzone>
             {details}
           </Col>
+          <Col md={4} className="white-box upload-rules">
+            <h4 style={{ fontWeight: "600" }}>Metadatos</h4>
+            <ul>
+              <li>
+                Cada foto <b>requiere</b> una descripci&oacute;n o breve historia asociada.
+              </li>
+            </ul>
+            <h4 style={{ fontWeight: "600" }}>Informaci&oacute;n por fotograf&iacute;a</h4>
+            <ul>
+              <li>
+                Se puede asignar informaci&oacute;n separada como t&iacute;tulo, licencias, etiquetas.
+              </li>
+              <li>
+                En caso de no asignar nada se considera la informaci&oacute;n general ya ingresada.
+              </li>
+            </ul>
+          </Col>
         </Row>
         <Row>
           <Col style={{ textAlign: "center" }}>
             {this.state.photosList.length !== 0 ? (
               <ButtonGroup style={{ marginTop: "20px", width: "20em" }}>
                 <Button onClick={this.props.previousStep}>
-                  <FontAwesomeIcon icon={faChevronCircleLeft} /> {" "} Volver 
+                  <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
                 </Button>
                 <Button color="success" onClick={this.onSubmit}>
-                  Finalizar {" "} <FontAwesomeIcon icon={faChevronCircleRight} />
+                  Finalizar <FontAwesomeIcon icon={faChevronCircleRight} />
                 </Button>
               </ButtonGroup>
             ) : (
               <ButtonGroup style={{ marginTop: "20px", width: "10em" }}>
                 <Button onClick={this.props.previousStep}>
-                  <FontAwesomeIcon icon={faChevronCircleLeft} /> {" "} Volver 
+                  <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
                 </Button>
               </ButtonGroup>
             )}
@@ -225,7 +242,6 @@ const styles = {
     padding: "15px",
     width: "100%",
     height: "auto",
-    borderRadius: "10px",
     border: "1px dashed rgb(156,158,159)",
     boxShadow: "2px 2px 4px rgb(156,158,159)"
   }

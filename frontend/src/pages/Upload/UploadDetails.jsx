@@ -53,6 +53,7 @@ class UploadDetails extends Component {
         this.setState({ src: e.target.result });
       };
     })(Props.photo).bind(this);
+    this.fr.readAsDataURL(this.props.photo);
   }
 
   updateData = e => this.setState({ [e.target.name]: e.target.value });
@@ -94,17 +95,11 @@ class UploadDetails extends Component {
     this.props.delete(this.state);
   };
 
-  componentWillMount() {
-    this.fr.readAsDataURL(this.props.photo);
-  }
-
   render() {
     return (
       <Container
         style={{
           marginTop: "20px",
-          backgroundColor: "#f7f7f7",
-          borderRadius: "10px",
           border: "1px solid rgb(210,214,218)",
           boxShadow: "2px 2px 4px rgb(156,158,159)"
         }}
