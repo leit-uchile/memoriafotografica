@@ -8,7 +8,8 @@ import {
   faImages,
   faBook,
   faAddressCard,
-  faTimes
+  faTimes,
+  faCheckSquare
 } from "@fortawesome/free-solid-svg-icons";
 import {
   Container,
@@ -55,7 +56,7 @@ class RequestPhoto extends Component {
   };
 
   render() {
-    const { requestedPhotos, removeRequestPhoto } = this.props;
+    const { requestedPhotos, removeRequestPhoto, requested } = this.props;
     return (
       <Container>
         <Helmet>
@@ -69,9 +70,9 @@ class RequestPhoto extends Component {
           </Col>
         </Row>
         <Row>
-          <Col sm={8}>
-            <Form style={styles.form}>
-              <FormGroup>
+          <Col sm={8} style={styles.form} className="white-box">
+            {!requested
+              ?(<Form ><FormGroup>
                 <div style={styles.formTitle}>
                   <FontAwesomeIcon
                     icon={faImages}
@@ -92,7 +93,13 @@ class RequestPhoto extends Component {
                   />
                   <Label>Finalidad de la reproducción</Label>
                 </div>
-                <Input type="textarea" name="reason" onChange={this.updateData} placeholder="Especificación" required />
+                <Input 
+                type="textarea"
+                name="reason" 
+                onChange={this.updateData} 
+                placeholder="Especificación" 
+                required 
+                disabled={requested}/>
               </FormGroup>
 
               <div style={styles.formTitle}>
@@ -111,6 +118,7 @@ class RequestPhoto extends Component {
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Nombre"
                     required
+                    disabled={requested}
                   />
                   <Input
                     type="text"
@@ -119,6 +127,7 @@ class RequestPhoto extends Component {
                     style={{ marginBottom: "0.5em" }}
                     placeholder="CI"
                     required
+                    disabled={requested}
                   />
                   <Input
                     type="text"
@@ -127,6 +136,7 @@ class RequestPhoto extends Component {
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Dirección"
                     required
+                    disabled={requested}
                   />
                   <Input
                     type="text"
@@ -135,6 +145,7 @@ class RequestPhoto extends Component {
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Teléfono"
                     required
+                    disabled={requested}
                   />
                   <Input
                     type="text"
@@ -143,6 +154,7 @@ class RequestPhoto extends Component {
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Institución"
                     required
+                    disabled={requested}
                   />
                 </Col>
                 <Col>
@@ -153,6 +165,7 @@ class RequestPhoto extends Component {
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Apellidos"
                     required
+                    disabled={requested}
                   />
                   <Input
                     type="text"
@@ -161,6 +174,7 @@ class RequestPhoto extends Component {
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Actividad/Profesión"
                     required
+                    disabled={requested}
                   />
                   <Input
                     type="text"
@@ -169,6 +183,7 @@ class RequestPhoto extends Component {
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Comuna"
                     required
+                    disabled={requested}
                   />
                   <Input
                     type="email"
@@ -177,6 +192,7 @@ class RequestPhoto extends Component {
                     style={{ marginBottom: "0.5em" }}
                     placeholder="Email"
                     required
+                    disabled={requested}
                   />
                 </Col>
               </FormGroup>
@@ -186,6 +202,15 @@ class RequestPhoto extends Component {
                 Solicitar
               </Button>
             </Form>
+            ):(
+            <div style={{paddingTop:'4vh'}}>
+              <FontAwesomeIcon
+              icon={faCheckSquare}
+              style={{ color:'#ff5a60', fontSize:'40px', display: 'inline-block', width: '100%', textAlign:'center', marginBottom:'2vh'}}
+              />
+              <h4 style={{textAlign:'center'}}> Material solicitado con éxito. Nos contactaremos con usted a la brevedad</h4>
+            </div>
+            )}
           </Col>
           <Col sm={4}>
             <p style={{ textAlign: "justify", textJustify: "inter-word" }}>
@@ -285,9 +310,9 @@ var Requested = ({ list, removeRequestPhoto }) => (
 
 const styles = {
   form: {
-    backgroundColor: "#f7f7f7",
-    padding: "2em",
-    border: "1px solid rgb(210,214,218)"
+    backgroundColor: "white",
+    border: "1px solid rgb(210,214,218)",
+    padding: "15px",
   },
   title: {
     color: "#ff5a60",
@@ -304,7 +329,8 @@ const styles = {
 };
 
 const mapStateToProps = state => ({
-  requestedPhotos: state.home.requestedPhotos
+  requestedPhotos: state.home.requestedPhotos,
+  requested: state.home.requested
 });
 
 const mapActionsToProps = dispatch => ({
