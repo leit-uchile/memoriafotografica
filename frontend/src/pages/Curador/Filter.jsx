@@ -34,15 +34,7 @@ class Filter extends Component {
       pages: 0,
       list: []
     };
-    this.getLatestElements = this.getLatestElements.bind(this);
-    this.removeElement = this.removeElement.bind(this);
-    this.updateElementState = this.updateElementState.bind(this);
-    this.cardView = this.cardView.bind(this);
-    this.listView = this.listView.bind(this);
-    this.approvePhoto = this.approvePhoto.bind(this);
-  }
-
-  componentWillMount() {
+    //Calculate pages:
     this.props.getPhotos().then(() => {
       let totalDocs = this.props.photos.length;
       let pages = Math.ceil(totalDocs / this.state.pageSize);
@@ -51,27 +43,26 @@ class Filter extends Component {
         pages: pages
       });
     });
-    //Calculate pages:
   }
 
-  getLatestElements() {
+  getLatestElements = () => {
     let totalDocs = this.props.photos.length;
     let pages = Math.ceil(totalDocs / this.state.pageSize);
     this.setState({
       list: [...this.props.photos],
       pages: pages
     });
-  }
+  };
 
-  updateElementState() {
+  updateElementState = () => {
     // Send update to API
     // Update
     // remove
     this.removeElement();
     // getLatestElements
-  }
+  };
 
-  removeElement() {
+  removeElement = () => {
     // Fake call to API
     const largo = this.state.list.length;
     var list = [...this.state.list.slice(1, largo)];
@@ -80,29 +71,29 @@ class Filter extends Component {
       list: [...list]
     });
     //this.getLatestElements()
-  }
+  };
 
-  listView(e) {
+  listView = e => {
     e.preventDefault();
     this.setState({ listView: 1 });
-  }
+  };
 
-  cardView(e) {
+  cardView = e => {
     e.preventDefault();
     this.setState({ listView: 0 });
-  }
+  };
 
-  setCurrentPage(e, p) {
+  setCurrentPage = (e, p) => {
     this.setState({
       currentPage: p
     });
-  }
+  };
 
-  approvePhoto(auth, pid, val) {
+  approvePhoto = (auth, pid, val) => {
     this.props.switchPhotoApproval(auth, pid, val).then(() => {
       window.location.reload();
     });
-  }
+  };
   render() {
     var latest = [];
     for (var i = 1; i < 6 && i < this.state.list.length; i++) {

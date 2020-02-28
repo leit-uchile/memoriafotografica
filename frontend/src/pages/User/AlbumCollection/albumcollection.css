@@ -4,7 +4,7 @@
   padding: 2em 1em;
 }
 
-.sticky-element{
+.album-sticky-element{
   position: sticky;
   z-index: 4;
   top: 6.5em;

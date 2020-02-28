@@ -61,13 +61,13 @@ const former_photos = [
   {
     source: "http://www.unfv.edu.pe/facultades/fiei/images/cono_a.png",
     altText: "Foto de perfil -",
-    caption: "",
+    caption: "1",
     employment: "Bibliotecaria de la Biblioteca Central FCFM"
   },
   {
     source: "http://www.unfv.edu.pe/facultades/fiei/images/cono_a.png",
     altText: "Foto de perfil -",
-    caption: "",
+    caption: "2",
     employment: "Bibliotecaria de la Biblioteca Central FCFM"
   }
 ];
@@ -87,7 +87,7 @@ const About = () => {
 
   const team = photos.map(el => {
     return (
-      <Col>
+      <Col key={el.caption}>
         <img
           src={el.source}
           alt={el.altText}
@@ -104,7 +104,7 @@ const About = () => {
   });
   const formerteam = former_photos.map(el => {
     return (
-      <Col>
+      <Col key={el.caption}>
         <img
           src={el.source}
           alt={el.altText}

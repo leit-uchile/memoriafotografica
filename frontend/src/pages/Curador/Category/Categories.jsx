@@ -14,7 +14,7 @@ import {
 } from "reactstrap";
 import { Table } from "reactstrap";
 import { connect } from "react-redux";
-import { curador } from "../../actions";
+import { curador } from "../../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 

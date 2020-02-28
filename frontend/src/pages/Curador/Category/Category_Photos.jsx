@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Photo from '../../components/Photo';
+import Photo from '../../../components/Photo';
 
 
 var biblio = [

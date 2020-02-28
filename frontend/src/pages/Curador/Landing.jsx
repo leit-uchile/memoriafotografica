@@ -13,17 +13,12 @@ import {
   Hint,
   DiscreteColorLegend
 } from "react-vis";
-import {EXTENDED_DISCRETE_COLOR_RANGE} from "react-vis/dist/theme"
+import { EXTENDED_DISCRETE_COLOR_RANGE } from "react-vis/dist/theme";
 import { Statistic } from "semantic-ui-react";
 import { curveCatmullRom } from "d3-shape";
-
 import { curador } from "../../actions";
 import { connect } from "react-redux";
-
-import {
-  userRolTranslation,
-  userTypeTranslation
-} from "../User/utils";
+import { userRolTranslation, userTypeTranslation } from "../User/utils";
 
 const PhotoCountChart = ({ rawData }) => {
   const mapped = rawData
@@ -49,7 +44,8 @@ const PhotoCountChart = ({ rawData }) => {
       xType="time"
       margin={{ bottom: 125 }}
       animation={true}
-      onMouseLeave={onMouseLeave}>
+      onMouseLeave={onMouseLeave}
+    >
       <VerticalGridLines />
       <HorizontalGridLines />
       <XAxis tickLabelAngle={-75} />
@@ -88,12 +84,22 @@ const DonutChart = ({ rawData, crossHairTitle, crossHairValue }) => {
   const [hintValue, setHintValue] = useState({ value: false });
 
   const mapped = rawData
-    ? rawData.map((el,key) => ({ angle: el.total, title: el.name, total: el.total, color: EXTENDED_DISCRETE_COLOR_RANGE[key] }))
+    ? rawData.map((el, key) => ({
+        angle: el.total,
+        title: el.name,
+        total: el.total,
+        color: EXTENDED_DISCRETE_COLOR_RANGE[key]
+      }))
     : [];
 
   const { value } = hintValue;
 
-  const ITEMS = rawData ? rawData.map((el,key) => ({title: el.name, color: EXTENDED_DISCRETE_COLOR_RANGE[key]})) : [];
+  const ITEMS = rawData
+    ? rawData.map((el, key) => ({
+        title: el.name,
+        color: EXTENDED_DISCRETE_COLOR_RANGE[key]
+      }))
+    : [];
 
   return (
     <Fragment>
@@ -108,7 +114,8 @@ const DonutChart = ({ rawData, crossHairTitle, crossHairValue }) => {
         height={200}
         padAngle={0.04}
         colorType={"literal"}
-        animation>
+        animation
+      >
         {value !== false && (
           <Hint
             value={value}
@@ -228,7 +235,4 @@ const mapActionsToProps = dispatch => ({
   loadGeneralStats: () => dispatch(curador.getGeneralStats())
 });
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(Landing);
+export default connect(mapStateToProps, mapActionsToProps)(Landing);

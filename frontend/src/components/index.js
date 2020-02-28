@@ -15,6 +15,7 @@ import ErrorBoundary from './Routes/ErrorBoundary';
 import PrivateComponent from './Routes/PrivateComponent';
 import SuspenseFallback from './SuspenseFallback';
 import LazyRoutedComponent from './Routes/LazyRoutedComponent';
+import NoMatch from './Routes/NoMatch';
 
 export {
   Alert,
@@ -31,5 +32,6 @@ export {
   ErrorBoundary,
   PrivateComponent,
   SuspenseFallback,
-  LazyRoutedComponent
+  LazyRoutedComponent,
+  NoMatch
 };

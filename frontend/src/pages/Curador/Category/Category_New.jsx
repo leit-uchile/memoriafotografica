@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { curador } from "../../actions";
+import { curador } from "../../../actions";
 import {
   Button,
   Form,
@@ -12,8 +12,8 @@ import {
   Container
 } from "reactstrap";
 //import Category_Photos from './Category_Photos'
-import PhotoSelector from "../../components/PhotoSelector";
-import LeitSpinner from "../../components/LeitSpinner";
+import PhotoSelector from "../../../components/PhotoSelector";
+import LeitSpinner from "../../../components/LeitSpinner";
 
 class Category_New extends Component {
   constructor(props) {

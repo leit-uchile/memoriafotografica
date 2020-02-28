@@ -1,18 +1,18 @@
 import React from "react";
 import Filter from "./Filter";
 import Publish_Photos from "./Publish_Photos";
-import Categories from "./Categories";
+import Categories from "./Category/Categories";
 import Reported_Photos from "./Reported_Photos";
-import Category_New from "./Category_New";
-import Category_Photos from "./Category_Photos";
+import Category_New from "./Category/Category_New";
+import Category_Photos from "./Category/Category_Photos";
 import Landing from "./Landing";
 import { Container, Row, Button, Col } from "reactstrap";
-import { Route, Link } from "react-router-dom";
+import { Route, Link, Switch } from "react-router-dom";
 import "./styles.css";
 // Important for ReactVis
 import "../../../node_modules/react-vis/dist/style.css";
 import "../../css/semantic-ui-min-custom.css";
-
+import { NoMatch, BoundedRoute } from "../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArchive,
@@ -57,6 +57,7 @@ const availableRoutes = [
 const Dashboard = ({ match, location }) => (
   <Container
     style={{ marginBottom: "-2em", borderTop: "1px solid rgb(210, 214, 218)" }}
+    className="disable-css-transitions"
   >
     <Row>
       <Col xs="2" className="leftcol">
@@ -92,29 +93,36 @@ const Dashboard = ({ match, location }) => (
         xs="10"
         style={{ marginTop: "2em", marginBottom: "2em", minHeight: "75vh" }}
       >
-        <Route path={match.path + "/filter"} component={Filter} />
-        <Route
-          exact
-          path={match.path + "/categories/new-category"}
-          component={Category_New}
-        />
-        <Route
-          exact
-          path={match.path + "/categories/:id/add-photos"}
-          component={Category_Photos}
-        />
-        <Route exact path={match.path + "/categories"} component={Categories} />
-        <Route
-          exact
-          path={match.path + "/flagged"}
-          component={Publish_Photos}
-        />
-        <Route
-          exact
-          path={match.path + "/reported"}
-          component={Reported_Photos}
-        />
-        <Route exact path={match.path + "/"} component={Landing} />
+        <Switch>
+          <BoundedRoute exact path={match.path + "/"} component={Landing} />
+          <BoundedRoute path={match.path + "/filter"} component={Filter} />
+          <BoundedRoute
+            exact
+            path={match.path + "/categories/new-category"}
+            component={Category_New}
+          />
+          <BoundedRoute
+            exact
+            path={match.path + "/categories/:id/add-photos"}
+            component={Category_Photos}
+          />
+          <BoundedRoute
+            exact
+            path={match.path + "/categories"}
+            component={Categories}
+          />
+          <BoundedRoute
+            exact
+            path={match.path + "/flagged"}
+            component={Publish_Photos}
+          />
+          <BoundedRoute
+            exact
+            path={match.path + "/reported"}
+            component={Reported_Photos}
+          />
+          <Route component={NoMatch} />
+        </Switch>
       </Col>
     </Row>
   </Container>

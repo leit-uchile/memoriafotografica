@@ -23,6 +23,7 @@ import {
 import { userRolTranslation, userTypeTranslation } from "../utils";
 import { UserPicture, ReportModal } from "../../../components/";
 import "./userDashboard.css";
+import {Helmet} from 'react-helmet';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -43,7 +44,7 @@ class Dashboard extends Component {
     const { user } = this.state;
 
     if (this.state.redirect !== "") {
-      return <Redirect to={this.state.redirect} />;
+      return <Redirect push to={this.state.redirect} />;
     }
 
     const addMore = (
@@ -57,6 +58,9 @@ class Dashboard extends Component {
 
     return (
       <Container>
+        <Helmet>
+          <title>{`Perfil de ${user.first_name} ${user.last_name}`}</title>
+        </Helmet>
         <Row style={{ marginTop: "2em" }}>
           <Col style={{ textAlign: "center" }}>
             <h2>{this.state.isPublic ? "Perfil" : "Mi perfil"}</h2>

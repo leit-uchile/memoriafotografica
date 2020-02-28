@@ -78,7 +78,7 @@ const AlbumView = ({ match, albumData, loadInfo, loading, setIndex, pushPhotos }
             {loading ? (
               <LeitSpinner />
             ) : (
-              <div>
+              <div> {/* Do not remove this div, it allows for sticky behavior*/}
                 <Row>
                   <Col sm={9}>
                     <Gallery
@@ -89,7 +89,7 @@ const AlbumView = ({ match, albumData, loadInfo, loading, setIndex, pushPhotos }
                       }}
                     />
                   </Col>
-                  <Col sm={3} className="sticky-element">
+                  <Col sm={3} className="album-sticky-element">
                     <div className="album-white-box">
                       <p className="album-desc">{albumData.description}</p>
                       <span className="album-photo-count">

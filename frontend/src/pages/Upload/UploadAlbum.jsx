@@ -16,7 +16,6 @@ import {
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faPlus,
   faQuestionCircle,
   faChevronCircleLeft,
   faChevronCircleRight,
