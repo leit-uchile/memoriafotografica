@@ -16,6 +16,16 @@ import ReportsTable from "./ReportsTable";
  * @param {Function} getReports
  */
 const Reports = ({ loading, reports, getReports, updatedReports }) => {
+
+  const [state, setState] = useState({
+    currentPage: 0,
+    reportsPerPage: 6,
+    pages: 0,
+    sort: "desc",
+    sortOption: "created_at",
+    filterOption: "all", // one of all resolved not_resolved
+  })
+
   useEffect(() => {
     getReports();
   }, [getReports, updatedReports]);

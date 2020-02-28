@@ -23,7 +23,7 @@ export const getReportes = () => {
       "Content-Type": "application/json"
     };
 
-    return fetch("/api/reports/", { method: "GET", headers: headers }).then(
+    return fetch("/api/reports/?sort=desc-created_at", { method: "GET", headers: headers }).then(
       res => {
         if (res.status === 200) {
           return res.json().then(data => {

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment } from "react";
 import { Table, Button } from "reactstrap";
 import ReportRow from "./ReportRow";
 import { Link } from "react-router-dom";
@@ -58,7 +58,7 @@ const ReportsTable = ({ reports, updateReport }) => {
               report={r}
               render={content => (
                 <Fragment>
-                  <img src={content.thumbnail} height="100px" />
+                  <img src={content.thumbnail} height="100px" alt="content"/>
                   <div>
                     <Link to={`/photo/${content.id}`}>Ver imagen</Link>
                   </div>

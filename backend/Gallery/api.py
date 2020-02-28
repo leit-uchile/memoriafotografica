@@ -39,7 +39,6 @@ def make_tag(metadata_id):
     m = Metadata.objects.get(pk=metadata_id)
     return m.metadata.name + " : " + m.value
 
-
 def filter_photos(photolist, request):
     sort_type = {"asc":"", "desc":"-"}
     try:
@@ -56,16 +55,19 @@ def filter_photos(photolist, request):
             photolist = photolist.filter(metadata__id__in = meta_query)
     except KeyError:
         pass
+    return photolist
 
+def sort_by_field(element_list, request):
+    sort_type = {"asc":"", "desc":"-"}
     try:
-        if(request.query_params["sort"]):
+        if request.query_params["sort"]:
             splitted_param = request.query_params["sort"].split("-")
             query = sort_type[splitted_param[1]]+splitted_param[0]
-            photolist = photolist.order_by(query)
-    except KeyError as e:
-        pass
-
-    return photolist
+            element_list = element_list.order_by(query)
+    except KeyError:
+        # Default to sorting by asc creation
+        element_list = element_list.order_by("created_at")
+    return element_list
 
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
@@ -86,11 +88,13 @@ class PhotoListAPI(generics.GenericAPIView):
 
         if request.user.is_anonymous or request.user.user_type == 1:
             photo = filter_photos(Photo.objects.filter(censure = False, approved = True), request)
+            photo = sort_by_field(photo,request)
             serializer_class = PhotoSerializer
             serializer = PhotoSerializer(photo, many = True)
             serialized_data = serializer.data
         else:
             photo = filter_photos(Photo.objects.all(), request)
+            photo = sort_by_field(photo,request)
             serializer_class = PhotoAdminSerializer
             serializer = PhotoAdminSerializer(photo, many = True)
             serialized_data = serializer.data
@@ -226,7 +230,6 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
 
-
 class CommentListAPI(generics.GenericAPIView):
     """
     get:
@@ -243,7 +246,6 @@ class CommentListAPI(generics.GenericAPIView):
             serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comments, many = True)
         return Response(serializer.data)
-
 
 class CommentDetailAPI(generics.GenericAPIView):
     """
@@ -306,7 +308,6 @@ class CommentDetailAPI(generics.GenericAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status= status.HTTP_401_UNAUTHORIZED)
-
 
 class PhotoCommentListAPI(generics.GenericAPIView):
     """
@@ -384,7 +385,6 @@ class PhotoCommentListAPI(generics.GenericAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class CategoryListAPI(generics.GenericAPIView):
     """
     List all categories, or create a new category.
@@ -394,6 +394,7 @@ class CategoryListAPI(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         category = Category.objects.all()
+        category = sort_by_field(category,request)
         serializer = CategorySerializer(category, many=True)
         photos = Photo.objects.all()
         serialized_data = serializer.data
@@ -423,7 +424,6 @@ class CategoryListAPI(generics.GenericAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
-
 
 class CategoryDetailAPI(generics.GenericAPIView):
     """
@@ -472,6 +472,7 @@ class ReportListAPI(generics.GenericAPIView):
         # TODO: I changed it from == 3 to > 1 ... is it correct?
         if request.user.user_type > 1:
             report = Reporte.objects.all()
+            report = sort_by_field(report,request)
             serializer = ReportSerializer(report, many=True)
             return Response(serializer.data)
         else:
@@ -497,7 +498,6 @@ class ReportListAPI(generics.GenericAPIView):
                 print(e)
                 raise NotFound(detail="ID de "+t_class[t]+" inválido o no existente. Campo 'id' es requerido. ")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class ReportDetailAPI(generics.GenericAPIView):
     """
@@ -538,7 +538,6 @@ class ReportDetailAPI(generics.GenericAPIView):
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
 
-
 class AlbumListAPI(generics.GenericAPIView):
     """
     List all albums, or create a new album.
@@ -547,8 +546,9 @@ class AlbumListAPI(generics.GenericAPIView):
     permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
-        category = Album.objects.all()
-        serializer = AlbumSerializer(category, many=True)
+        album = Album.objects.all()
+        album = sort_by_field(album,request)
+        serializer = AlbumSerializer(album, many=True)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
@@ -559,7 +559,6 @@ class AlbumListAPI(generics.GenericAPIView):
             request.user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class AlbumDetailAPI(generics.GenericAPIView):
     """
@@ -602,7 +601,6 @@ class AlbumDetailAPI(generics.GenericAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
-
 
 class CategoryPhotoListAPI(generics.GenericAPIView):
     """
