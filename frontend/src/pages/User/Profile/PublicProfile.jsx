@@ -34,7 +34,7 @@ const PublicProfile = ({
     <Container style={{ textAlign: "center", paddingTop: "20vh" }}>
       <Row>
         <Col>
-          <h2>El usuario que buscas no esta disponible</h2>
+          <h2>El usuario que buscas no existe o no est&aacute; disponible</h2>
         </Col>
       </Row>
     </Container>

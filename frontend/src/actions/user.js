@@ -99,12 +99,11 @@ export const loadAUser = id => dispatch => {
   return fetch(`/api/users/${id}/`)
     .then(res => {
       const response = res;
-      if (res.status < 500) {
+      if (res.status < 400) {
         return response.json().then(data => {
           return { status: res.status, data };
         });
       } else {
-        console.log("Server Error!");
         dispatch({ type: USER_PUBLIC_ERROR, data: res.data });
         throw res;
       }
@@ -113,7 +112,7 @@ export const loadAUser = id => dispatch => {
       if (res.status === 200) {
         dispatch({ type: USER_PUBLIC_LOADED, data: res.data });
         return res.data;
-      } else if (res.status >= 400 && res.status < 500) {
+      } else {
         dispatch({ type: USER_PUBLIC_ERROR, data: res.data });
         throw res.data;
       }
