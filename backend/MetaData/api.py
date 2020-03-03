@@ -22,6 +22,16 @@ from django.http import Http404, QueryDict
 from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
 from rest_framework.documentation import include_docs_urls
 
+def search_meta(elements, request):
+    try:
+        if request.query_params["search"]:
+            elements = elements.filter(value__icontains=request.query_params["search"])
+        if request.query_params["limit"]:
+            elements = elements[0:int(request.query_params["limit"])]
+    except KeyError:
+        pass
+    return elements
+
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
         return request.method in SAFE_METHODS
@@ -137,10 +147,12 @@ class MetadataListAPI(generics.GenericAPIView):
         try:
             if request.user.user_type != 1:
                 metadata_admin = Metadata.objects.all()
+                metadata_admin = search_meta(metadata_admin, request)
                 serializer_class = MetadataAdminSerializer
                 serializer = MetadataAdminSerializer(metadata_admin, many=True)
             else:
                 metadata = Metadata.objects.filter(approved=True)
+                metadata = search_meta(metadata, request)
                 serializer_class = MetadataSerializer
                 serializer = MetadataSerializer(metadata, many=True)
         except Exception:
@@ -149,8 +161,10 @@ class MetadataListAPI(generics.GenericAPIView):
             if ids != None:
                 ids = ids.split(',')
                 metadata = Metadata.objects.filter(pk__in=ids, approved=True)
+                metadata = search_meta(metadata, request)
             else:
                 metadata = Metadata.objects.filter(approved=True)
+                metadata = search_meta(metadata, request)
             serializer_class = MetadataSerializer
             serializer = MetadataSerializer(metadata, many=True)
         

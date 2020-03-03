@@ -1,146 +1,149 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Container, Button, FormGroup } from "reactstrap";
+import { Container, Button, Row, Col } from "reactstrap";
 import { Redirect } from "react-router-dom";
-import { search, home, misc } from "../actions";
-import Autocomplete from "react-autocomplete";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { search, home, misc, metadata } from "../actions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import Autosuggest from "react-autosuggest";
 
 class SearchBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tags: [],
       swapPage: false,
+      id: "",
       value: "",
-      id: ""
+      suggestions: [],
+      iptc_mapping: {},
+      limit: 10
     };
-    this.swapPage = this.swapPage.bind(this);
-  }
-
-  swapPage(){
-    if(this.props.currentPage !== "/gallery/"){
-        this.setState({swapPage: true})
-    }
-    if(this.state.id !== undefined && this.state.id !== ""){
-        this.props.putSearch(this.state.id, this.state.value)
-    }
-  }
-
-
-  componentWillMount() {
-    if (this.props.tags === undefined || this.props.tags.length === 0) {
-      this.props.onLoadGetTags();
-    }
-    if (this.props.iptc === undefined) {
+    if (props.iptc.length === 0) {
       this.props.onLoadGetIPTC();
     }
   }
 
+  swapPage = () => {
+    if (this.props.currentPage !== "/gallery/") {
+      this.setState({ swapPage: true });
+    }
+    if (this.state.id !== undefined && this.state.id !== "") {
+      this.props.putSearch(this.state.id, this.state.value);
+    }
+  };
+
+  onChange = (e, { newValue }) => {
+    this.setState({
+      value: newValue
+    });
+  };
+
+  onSuggestionsFetchRequested = ({ value }) => {
+    this.props.search(value, this.state.limit);
+  };
+
+  onSuggestionsClearRequested = () => {
+    this.setState({
+      suggestions: []
+    });
+  };
+
+  onSuggestionSelected = (e, { suggestion }) => {
+    this.setState({ id: suggestion.id });
+  };
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.iptc.length === 0 && this.props.iptc.length !== 0) {
+      let mapping = {};
+      this.props.iptc.forEach(el => {
+        mapping[el.id] = el.name;
+      });
+      this.setState({ iptc_mapping: mapping });
+    }
+    // Group results by IPTC if any
+    if (prevProps.tags !== this.props.tags) {
+      // Mapping is ready then group
+      if (Object.keys(this.state.iptc_mapping).length !== 0) {
+        let groups = {};
+        this.props.tags.forEach(t => {
+          if (groups[t.metadata] === undefined) {
+            groups[t.metadata] = [t];
+          } else {
+            groups[t.metadata] = [...groups[t.metadata], t];
+          }
+        });
+        let suggestions = [];
+        Object.keys(groups).forEach(g => {
+          suggestions.push({
+            title: this.state.iptc_mapping[g],
+            suggestions: groups[g]
+          });
+        });
+        this.setState({ suggestions });
+      }
+    }
+  }
+
   render() {
-    // TODO: fix unlimited tags on search
-    const { tags } = this.props;
+    const { value, suggestions } = this.state;
+    const inputProps = {
+      placeholder: "Buscar por metadata",
+      value,
+      onChange: this.onChange
+    };
 
     if (this.state.swapPage) {
       this.setState({ swapPage: false });
-      return <Redirect to="/gallery" />;
+      return <Redirect push to="/gallery" />;
     }
 
     return (
-      <Container>
-        <FormGroup>
-          <Autocomplete
-            items={tags}
-            getItemValue={item => item.value}
-            renderItem={(item, isHighlighted) => (
-              <div
-                style={{
-                  background: isHighlighted ? "lightgray" : "white",
-                  padding: "0 0 0 2px",
-                }}
-              >
-                {item.value}
-              </div>
-            )}
-            shouldItemRender={(item, value) =>
-              item.value.toLowerCase().indexOf(value.toLowerCase()) > -1
-            }
-            menuStyle={
-              { // Styles from developer;
-                borderRadius: '3px',
-                boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
-                background: 'rgba(255, 255, 255, 0.9)',
-                padding: '2px 0',
-                fontSize: '90%',
-                position: 'fixed',
-                overflow: 'auto',
-                maxHeight: '50%',
-                zIndex: "10" // CHANGE: Fix bug 
-              }
-            }
-            renderInput={props => (
-              <input
-                className={"form-control"}
-                name="name"
-                placeholder="Buscar por metadata"
-                {...props}
-              />
-            )}
-            wrapperStyle={{ width: "90%", display: "inline-block" }}
-            value={this.state.value}
-            onChange={e => this.setState({ value: e.target.value })}
-            onSelect={(val, item) => {
-              this.setState({ value: val, id: item.id });
-            }}
-          />
-          <Button
-            type="button"
-            style={{
-              display: "inline-block",
-              width: "10%"
-            }}
-            color="primary"
-            onClick={this.swapPage}
-            block
-          >
-            <FontAwesomeIcon icon={faSearch} />
-          </Button>
-        </FormGroup>
+      <Container className="home-search">
+        <Row>
+          <Col>
+            <Autosuggest
+              multiSection={true}
+              suggestions={suggestions}
+              onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+              onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+              onSuggestionSelected={this.onSuggestionSelected}
+              getSuggestionValue={suggestion => suggestion.value}
+              renderSuggestion={suggestion => <span>{suggestion.value}</span>}
+              renderSectionTitle={section => <strong>{section.title}</strong>}
+              getSectionSuggestions={section => section.suggestions}
+              inputProps={inputProps}
+            />
+            <Button
+              type="button"
+              style={{
+                display: "inline-block",
+                width: "10%"
+              }}
+              color="primary"
+              onClick={this.swapPage}
+              block
+            >
+              <FontAwesomeIcon icon={faSearch} />
+            </Button>
+          </Col>
+        </Row>
       </Container>
     );
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    tags: state.home.all_tags,
-    iptc: state.home.all_iptc,
-    currentPage: state.misc.currentRoute
-  };
-};
+const mapStateToProps = state => ({
+  tags: state.home.all_tags,
+  iptc: state.home.all_iptcs,
+  currentPage: state.misc.currentRoute
+});
 
-const mapActionsToProps = dispatch => {
-    return {
-        onLoadGetPhotos: () => {
-            return dispatch(home.home());
-        },
-        onLoadGetTags: () => {
-            return dispatch(home.tags());
-        },
-        onLoadGetIPTC: () => {
-            return dispatch(home.iptcs());
-        },
-        setRoute: (route) => {
-            return dispatch(misc.setCurrentRoute(route));
-        },
-        putSearch: (id,value) => {
-            return dispatch(search.putSearchItem(id,value));
-        }
-    }
-  };
+const mapActionsToProps = dispatch => ({
+  onLoadGetIPTC: () => dispatch(home.iptcs()),
+  setRoute: route => dispatch(misc.setCurrentRoute(route)),
+  putSearch: (id, value) => dispatch(search.putSearchItem(id, value)),
+  search: (query, limit) =>
+    dispatch(metadata.searchMetadataByValue(query, limit))
+});
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(SearchBar);
+export default connect(mapStateToProps, mapActionsToProps)(SearchBar);
