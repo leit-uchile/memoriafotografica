@@ -12,8 +12,7 @@ import {
   Container
 } from "reactstrap";
 //import Category_Photos from './Category_Photos'
-import PhotoSelector from "../../../components/PhotoSelector";
-import LeitSpinner from "../../../components/LeitSpinner";
+import {PhotoSelector, LeitSpinner} from "../../../components";
 
 class Category_New extends Component {
   constructor(props) {

@@ -1,11 +1,11 @@
-import Alert from './Alert';
-import Footer from './Footer';
-import Header from './Header';
-import LeitSpinner from './LeitSpinner';
+import Alert from './Layout/Alert';
+import Footer from './Layout/Footer';
+import Header from './Layout/Header';
+import LeitSpinner from './Layout/LeitSpinner';
 import Photo from './Photo';
 import PhotoSelector from './PhotoSelector';
 import ReportModal from './ReportModal';
-import SearchBar from './SearchBar';
+import SearchBar from './Layout/SearchBar';
 import UserModal from './UserModal';
 import UserPicture from './UserPicture';
 

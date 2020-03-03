@@ -1,8 +1,8 @@
 import React, { useState, Fragment } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import UserModal from "./UserModal";
-import "../css/header.css";
+import UserModal from "../UserModal";
+import "../../css/header.css";
 import SearchBar from "./SearchBar";
 import {
   Navbar,

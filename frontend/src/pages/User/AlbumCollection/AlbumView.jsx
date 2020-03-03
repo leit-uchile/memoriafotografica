@@ -3,7 +3,7 @@ import { Container, Row, Col } from "reactstrap";
 import { albumcollection, home } from "../../../actions";
 import { connect } from "react-redux";
 import Gallery from "react-photo-gallery";
-import LeitSpinner from "../../../components/LeitSpinner";
+import {LeitSpinner} from "../../../components";
 import "./albumcollection.css";
 import { Redirect } from "react-router-dom";
 

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container, Button, Row, Col } from "reactstrap";
 import { Redirect } from "react-router-dom";
-import { search, home, misc, metadata } from "../actions";
+import { search, home, misc, metadata } from "../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import Autosuggest from "react-autosuggest";
