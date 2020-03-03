@@ -1,4 +1,8 @@
-import { ALBUM_LOADED, ALBUM_LOADING_ERROR, ALBUM_LOADING } from "./types";
+import {
+  ALBUM_LOADED,
+  ALBUM_LOADING_ERROR,
+  ALBUM_LOADING,
+} from "./types";
 import { setAlert } from "./alert";
 
 /**
@@ -16,9 +20,7 @@ export const loadAlbumInfo = (id, detailed) => dispatch => {
       if (res.status === 200) {
         return response
           .json()
-          .then(parsed =>
-            dispatch({ type: ALBUM_LOADED, data: parsed })
-          );
+          .then(parsed => dispatch({ type: ALBUM_LOADED, data: parsed }));
       } else {
         dispatch(setAlert("Hubo un error al cargar la colección", "warning"));
         dispatch({ type: ALBUM_LOADING_ERROR, data: response.data });
