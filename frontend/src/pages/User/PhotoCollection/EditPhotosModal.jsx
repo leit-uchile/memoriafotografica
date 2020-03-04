@@ -12,11 +12,14 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Label,
   FormGroup,
   Input,
-  Form
+  Form,
+  FormText
 } from "reactstrap";
-import { photoDetails } from "../../actions";
+import { photoDetails, home } from "../../../actions";
+import ReactTags from "react-tag-autocomplete";
 
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },
@@ -30,47 +33,62 @@ const CC_INFO = [
 const EditPhotosModal = props => {
   const [toggle, setToggle] = useState(false);
   const [sent, setSent] = useState(false);
-  const [formData, setData] = useState({
-    name: "",
-    description: "",
-    created_date: "",
-    tags: "",
-    permission: ""
-  });
+  const [formData, setData] = useState(
+    {
+      title: "",
+      description: "",
+      created_at: "",
+      tags: [],
+      permission: ""
+    });
 
   useEffect(() => {
-    props.onLoad(props.photos);
+    props.onLoad(props.photos); //photoDetails
+    props.getTags(); //suggestions
   }, [props.photos]);
 
   const updateData = e =>
     setData({ ...formData, [e.target.name]: e.target.value });
 
-  const { photoInfo } = props;
+  const deleteTag = i => {
+    const tags = formData.tags.slice(0);
+    tags.splice(i, 1);
+    setData({ ...formData, tags });
+  };
+
+  const additionTag = tag => {
+    const tags = [].concat(formData.tags, tag);
+    setData({ ...formData, tags: tags });
+  };
+
+  const { photoInfo, tags } = props; 
+  const metadata = photoInfo.metadata!==undefined ? photoInfo.metadata.map(e => ({ id: e.id, name: e.value, })) : [];
+  const suggestions = tags ? tags.map(e => ({ id: e.id, name: e.value, })) : [];
   const PhotosForm = (
     <Fragment>
       <Form>
         <FormGroup>
           <Row style={{ marginBottom: "0.5em" }}>
             <Col>
-              <p>Título</p>
+              <Label>Título</Label>
             </Col>
             <Col>
               <Input
                 type="text"
-                placeholder={photoInfo.title}
-                name="name"
+                defaultValue={photoInfo.title}
+                name="title"
                 onChange={updateData}
               />
             </Col>
           </Row>
           <Row style={{ marginBottom: "0.5em" }}>
             <Col>
-              <p>Descripción</p>
+              <Label>Descripción</Label>
             </Col>
             <Col>
               <Input
                 type="textarea"
-                placeholder={photoInfo.description}
+                defaultValue={photoInfo.description}
                 name="description"
                 onChange={updateData}
               />
@@ -78,20 +96,45 @@ const EditPhotosModal = props => {
           </Row>
           <Row style={{ marginBottom: "0.5em" }}>
             <Col>
-              <p>Fecha de captura</p>
+              <Label>Fecha de captura</Label>
             </Col>
             <Col>
-              <Input type="date" name="created_date" onChange={updateData} />
+              <Input 
+              type="date"
+              defaultValue={`${photoInfo.upload_date}`.slice(0,10)} 
+              name="created_at" 
+              onChange={updateData} 
+              />
             </Col>
           </Row>
           <Row style={{ marginBottom: "0.5em" }}>
             <Col>
-              <p>Permisos de acceso e intercambio</p>
+              <Label>Etiquetas</Label>
+            </Col>
+            <Col>
+              <ReactTags
+                  style={{ width: "auto" }}
+                  placeholder={"Añadir etiquetas"}
+                  autoresize={false}
+                  allowNew={true}
+                  tags={metadata}
+                  suggestions={suggestions}
+                  handleDelete={deleteTag}
+                  handleAddition={additionTag}
+              />
+              <FormText color="muted">
+                Para ingresar una nueva etiqueta debe presionar la tecla "Entrar" o "Tabulación" 
+              </FormText>
+            </Col>
+          </Row>
+          <Row style={{ marginBottom: "0.5em" }}>
+            <Col>
+              <Label>Permisos de acceso e intercambio</Label>
             </Col>
             <Col>
               <UncontrolledButtonDropdown>
-                <DropdownToggle caret color="link" name="permission">
-                  {formData.permission === ""
+                <DropdownToggle caret color="link">
+                {formData.permission === ""
                     ? "Seleccionar"
                     : formData.permission}
                 </DropdownToggle>
@@ -101,12 +144,18 @@ const EditPhotosModal = props => {
                       name="permission"
                       value={el.name}
                       onClick={updateData}
+                      active={`${photoInfo.permission}`===el.name}
+                      style={{display:'block',width:'100%'}}
                     >
                       {el.name}
                     </DropdownItem>
                   ))}
                 </DropdownMenu>
+                
               </UncontrolledButtonDropdown>
+              <FormText color="muted">
+                El elemento coloreado es el permiso actual
+              </FormText>
             </Col>
           </Row>
         </FormGroup>
@@ -143,7 +192,9 @@ const EditPhotosModal = props => {
         <ModalFooter>
           {!sent ? (
             <Fragment>
-              <Button color="success">Guardar cambios</Button>
+              <Button color="success">
+                Guardar cambios
+              </Button>
               <Button color="secondary" onClick={() => setToggle(!toggle)}>
                 Cancelar
               </Button>
@@ -164,12 +215,14 @@ const EditPhotosModal = props => {
 
 const mapStateToProps = state => {
   return {
-    photoInfo: state.photoDetails.details
+    photoInfo: state.photoDetails.details,
+    tags: state.home.all_tags
   };
 };
 
 const mapActionsToProps = dispatch => ({
-  onLoad: id => dispatch(photoDetails.getPhoto(id))
+  onLoad: id => dispatch(photoDetails.getPhoto(id)),
+  getTags: () => dispatch(home.tags())
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(EditPhotosModal);

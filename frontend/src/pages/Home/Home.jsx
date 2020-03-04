@@ -117,7 +117,7 @@ class Home extends Component {
                           this.props.removeSearch(el.metaID, el.value)
                         }
                       >
-                        #{el.value} <FontAwesomeIcon icon={faTimesCircle} />
+                        #{el.value} <FontAwesomeIcon icon={faTimesCircle} style={{cursor: 'pointer'}} />
                       </span>
                     ))
                   ) : (
