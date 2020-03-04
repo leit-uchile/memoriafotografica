@@ -5,7 +5,7 @@ import { auth } from "../../actions";
 import { Button, Container, Row, Col } from "reactstrap";
 import { Redirect } from "react-router-dom";
 import StepWizard from "react-step-wizard";
-import LeitSpinner from "../../components/LeitSpinner";
+import {LeitSpinner} from "../../components";
 
 const FailedRegistration = props => (
   <Container style={{ textAlign: "center", marginTop: "2em" }}>

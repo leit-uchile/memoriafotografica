@@ -7,7 +7,7 @@ import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
-import LeitSpinner from "../../components/LeitSpinner";
+import {LeitSpinner} from "../../components";
 import FilterPicker from "./FilterPicker";
 import HomePagination from "./HomePagination";
 import "./home.css";

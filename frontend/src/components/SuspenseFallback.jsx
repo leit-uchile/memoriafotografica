@@ -1,5 +1,5 @@
 import React from "react";
-import LeitSpinner from "./LeitSpinner";
+import {LeitSpinner} from "./index";
 import { Container, Row, Col } from "reactstrap";
 
 const SuspenseFallback = ({ message }) => (

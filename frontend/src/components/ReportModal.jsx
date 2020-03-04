@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import LeitSpinner from "./LeitSpinner";
+import { LeitSpinner } from "./index";
 import {
   Button,
   Modal,
@@ -16,7 +16,7 @@ import { photoDetails } from "../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFlag } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 /**
  * Report Modal for all 3 types of report
@@ -140,9 +140,11 @@ class ReportModal extends Component {
                 ReportForm
               )
             ) : (
-              <div style={{textAlign: "center", padding: "100px 0"}}>
+              <div style={{ textAlign: "center", padding: "100px 0" }}>
                 <h4>Debes ingresar a la plataforma para poder reportar</h4>
-                <Link to="/login" className="btn bnt-block btn-primary">Ingresar</Link>
+                <Link to="/login" className="btn bnt-block btn-primary">
+                  Ingresar
+                </Link>
               </div>
             )}
           </ModalBody>

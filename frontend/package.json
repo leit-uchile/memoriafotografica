@@ -36,10 +36,12 @@
     "redux-thunk": "^2.3.0",
     "semantic-ui-react": "^0.88.1",
     "slick-carousel": "^1.8.1",
+    "source-map-explorer": "^2.3.1",
     "style-loader": "0.22.1",
     "uuid": "^3.3.2"
   },
   "scripts": {
+    "analyze": "source-map-explorer build/static/js/*.js --html analysis.html",
     "start": "env-cmd -e development react-scripts start",
     "build": "env-cmd -e production react-scripts build",
     "test": "env-cmd -e development react-scripts test --env=jsdom",
