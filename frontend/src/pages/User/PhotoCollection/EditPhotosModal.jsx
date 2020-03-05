@@ -18,7 +18,7 @@ import {
   Form,
   FormText
 } from "reactstrap";
-import { photoDetails, home } from "../../../actions";
+import { photoDetails, home, upload } from "../../../actions";
 import ReactTags from "react-tag-autocomplete";
 
 const CC_INFO = [
@@ -32,12 +32,13 @@ const CC_INFO = [
 
 const EditPhotosModal = props => {
   const [toggle, setToggle] = useState(false);
+  const [toggleDelete, setToggleDelete] = useState(false);
   const [sent, setSent] = useState(false);
   const [formData, setData] = useState(
     {
       title: "",
       description: "",
-      created_at: "",
+      upload_date: "",
       tags: [],
       permission: ""
     });
@@ -60,6 +61,56 @@ const EditPhotosModal = props => {
     const tags = [].concat(formData.tags, tag);
     setData({ ...formData, tags: tags });
   };
+
+  const onSend = () => {
+    //setSent(!sent);
+    const date=
+      formData.upload_date !== ""
+      ? formData.upload_date
+      : `${photoInfo.upload_date}`.slice(0,10)
+    var title=
+      formData.title !== ""
+      ? formData.title
+      : photoInfo.title
+    var description = 
+      formData.description !== ""
+      ? formData.description
+      : photoInfo.description
+
+    var aspect_h = photoInfo.aspect_h
+    var aspect_w = photoInfo.aspect_w
+    var image = photoInfo.image // debiera ser tipo file
+    var permission =
+      formData.permission !== ""
+      ? formData.permission
+      : photoInfo.permission
+    if(formData.tags.length !== 0){
+      var metadata = formData.tags
+    }else{
+      metadata = []
+    }
+    let meta = {
+      title: title,
+      description: description,
+      aspect_h: aspect_h,
+      aspect_w: aspect_w,
+      cc: permission,
+      tags: metadata,
+      //collapse: false,
+      //height: ,
+      //width:,
+      //previewCalled: false,
+      //src: blob,
+      //tags:""
+    }
+    let photo = {meta: meta, photo: image}
+    let photos = {
+      photosList: [photo],
+      tags: metadata
+    }
+    console.log(photos)
+    props.uploadPhotos(photos)
+  }
 
   const { photoInfo, tags } = props; 
   const metadata = photoInfo.metadata!==undefined ? photoInfo.metadata.map(e => ({ id: e.id, name: e.value, })) : [];
@@ -102,7 +153,7 @@ const EditPhotosModal = props => {
               <Input 
               type="date"
               defaultValue={`${photoInfo.upload_date}`.slice(0,10)} 
-              name="created_at" 
+              name="upload_date" 
               onChange={updateData} 
               />
             </Col>
@@ -187,18 +238,27 @@ const EditPhotosModal = props => {
         <ModalBody>
           {!sent
             ? PhotosForm
-            : "Estado de la solicitud (Cambios guardados, Error, etc)"}
+            : "Estado de la solicitud (Cambios guardados, Error, etc)"
+          }
+          <Modal isOpen={toggleDelete} toggle={()=>setToggleDelete(!toggleDelete)}>
+            <ModalHeader>¿Está seguro de eliminar la fotografía?</ModalHeader>
+            <ModalBody>Esta acción no se puede deshacer. Confirme su acción</ModalBody>
+            <ModalFooter>
+              <Button color="danger" onClick={()=>setToggleDelete(!toggleDelete)}>Eliminar</Button>{' '}
+              <Button color="secondary" onClick={()=>setToggleDelete(!toggleDelete)}>Cancelar</Button>
+            </ModalFooter>
+          </Modal>
         </ModalBody>
         <ModalFooter>
           {!sent ? (
             <Fragment>
-              <Button color="success">
+              <Button color="success" onClick={()=>onSend()}>
                 Guardar cambios
               </Button>
               <Button color="secondary" onClick={() => setToggle(!toggle)}>
                 Cancelar
               </Button>
-              <Button color="danger" onClick={() => setToggle(!toggle)}>
+              <Button color="danger" onClick={() => setToggleDelete(!toggleDelete)}>
                 Eliminar
               </Button>
             </Fragment>
@@ -216,13 +276,15 @@ const EditPhotosModal = props => {
 const mapStateToProps = state => {
   return {
     photoInfo: state.photoDetails.details,
-    tags: state.home.all_tags
+    tags: state.home.all_tags,
+    upload: state.upload,
   };
 };
 
 const mapActionsToProps = dispatch => ({
   onLoad: id => dispatch(photoDetails.getPhoto(id)),
-  getTags: () => dispatch(home.tags())
+  getTags: () => dispatch(home.tags()),
+  uploadPhotos: info => dispatch(upload.uploadImages(info)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(EditPhotosModal);

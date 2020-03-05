@@ -113,11 +113,13 @@ class Home extends Component {
                       <span
                         key={el.metaID}
                         className="home-tags"
-                        onClick={() =>
-                          this.props.removeSearch(el.metaID, el.value)
-                        }
                       >
-                        #{el.value} <FontAwesomeIcon icon={faTimesCircle} style={{cursor: 'pointer'}} />
+                        #{el.value} 
+                        <FontAwesomeIcon 
+                        icon={faTimesCircle} 
+                        style={{cursor: 'pointer'}} 
+                        onClick={() => this.props.removeSearch(el.metaID, el.value)}
+                        />
                       </span>
                     ))
                   ) : (

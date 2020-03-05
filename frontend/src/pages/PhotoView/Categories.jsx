@@ -5,10 +5,10 @@ import { Link } from "react-router-dom";
 const Categories = ({ cats, onRedirect, style }) => (
   <Container fluid style={style}>
     <Row>
-      <Col style={{ fontSize: "1.2em" }}>
+      <Col style={{ fontSize: "12px" }}>
         <p>
           {cats.length === 0
-            ? "No se encuentra en una categoría"
+            ? <span>No se encuentra en una categoría</span>
             : cats.map((el, index) => (
                 <span style={{ marginRight: "0.2em" }} key={index}>
                   {el.title}

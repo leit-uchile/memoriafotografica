@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Redirect, Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { home, landing, misc } from "../../actions";
+import { home, misc } from "../../actions";
 import { Helmet } from "react-helmet";
 import { Container, Row, Col } from "reactstrap";
-import Slider from "react-slick";
+import NewsSlider from "../News/NewsSlider"
 import "./landing.css";
 import Gallery from "react-photo-gallery";
 
@@ -14,21 +14,7 @@ const LandingPage = props => {
   useEffect(() => {
     setRoute("/Inicio");
     loadPhotos();
-    loadCaroussel();
-    loadNews();
-  }, [loadPhotos, setRoute, loadCaroussel, loadNews]);
-
-  var settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    className: "inner",
-    autoplay: true,
-    pauseOnFocus: true,
-    arrows: false
-  };
+  }, [loadPhotos, setRoute]);
 
   var mapped = props.photos.slice(0, 10).map(el => ({
     src: el.thumbnail,
@@ -133,34 +119,7 @@ const LandingPage = props => {
           </Row>
         </Container>
       </div>
-      <div style={{ marginBottom: "2em" }}>
-        <Slider {...settings}>
-          {props.caroussel.map((it, key) => {
-            return (
-              <div key={key}>
-                <div
-                  className="LandingPhoto parallax"
-                  style={{
-                    backgroundImage: `url(${it.image})`,
-                    backgroundPositionY: "top",
-                    backgroundAttachment: "local",
-                    height: "80vh"
-                  }}
-                >
-                  <Container>
-                    <Row>
-                      <Col>
-                        <h3>{it.title}</h3>
-                        <p>{it.content}</p>
-                      </Col>
-                    </Row>
-                  </Container>
-                </div>
-              </div>
-            );
-          })}
-        </Slider>
-      </div>
+      <NewsSlider />
       <Container className="landing-container">
         <Row>
           <Col>
@@ -207,15 +166,15 @@ const LandingPage = props => {
 
 const mapStateToProps = state => ({
   photos: state.home.photos,
-  caroussel: state.landing.caroussel,
-  news: state.landing.news
+  // caroussel: state.landing.caroussel,
+  // news: state.landing.news
 });
 
 const mapActionsToProps = dispatch => ({
   loadPhotos: () => dispatch(home.home()),
   setRoute: route => dispatch(misc.setCurrentRoute(route)),
-  loadCaroussel: () => dispatch(landing.getCaroussel()),
-  loadNews: () => dispatch(landing.getNews())
+  // loadCaroussel: () => dispatch(landing.getCaroussel()),
+  // loadNews: () => dispatch(landing.getNews())
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(LandingPage);
