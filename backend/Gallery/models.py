@@ -125,7 +125,11 @@ class Album(models.Model):
     description = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)
-    thumbnail = models.CharField(max_length=60, blank = True)
     collection = models.BooleanField(default=False)
+
+    thumbnail = models.CharField(max_length=60, blank = True)
+    aspect_h = models.IntegerField(blank=True, default=1)
+    aspect_w = models.IntegerField(blank=True, default=1)
+
     def __str__(self):
         return "Album " + self.name

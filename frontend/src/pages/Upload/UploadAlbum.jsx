@@ -12,15 +12,20 @@ import {
   PopoverBody,
   PopoverHeader,
   Button,
-  ButtonGroup
+  ButtonGroup,
+  FormText
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faQuestionCircle,
   faChevronCircleLeft,
   faChevronCircleRight,
-  faPlusCircle
+  faPlusCircle,
+  faBook
 } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCreativeCommons
+} from "@fortawesome/free-brands-svg-icons";
 import ReactTags from "react-tag-autocomplete";
 
 /**
@@ -137,9 +142,13 @@ const UploadAlbum = ({
                 </Fragment>
               </Collapse>
             </FormGroup>
-            <FormGroup>
-              <Label style={styles.hr}>Informacion general</Label>
-            </FormGroup>
+            <div className="upload-form-title">
+              <FontAwesomeIcon
+                icon={faBook}
+                style={{ marginRight: "1em" }}
+              />
+              <Label>Información general</Label>
+            </div>
             <FormGroup>
               <Label style={{ color: "#848687" }}>Fecha de las fotos:</Label>
               <Input type="date" onChange={updateDate} required />
@@ -156,11 +165,18 @@ const UploadAlbum = ({
                 handleDelete={deleteTag}
                 handleAddition={additionTag}
               />
+              <FormText color="muted">
+                Para ingresar una nueva etiqueta debe presionar la tecla "Entrar" o "Tabulación" 
+              </FormText>
             </FormGroup>
             <FormGroup>
-              <Label style={styles.hr}>
-                Licencias: permisos de acceso e intercambio
-              </Label>
+              <div className="upload-form-title">
+                <FontAwesomeIcon
+                  icon={faCreativeCommons}
+                  style={{ marginRight: "1em" }}
+                />
+                <Label>Licencias: Permisos de acceso e intercambio</Label>
+              </div>
               <div style={{ marginTop: "10px" }}>
                 <FormGroup tag="fieldset">
                   {CC_INFO.map((el, k) => (
@@ -265,9 +281,6 @@ const styles = {
     backgroundColor: "white",
     border: "1px solid rgb(210,214,218)",
     padding: "15px",
-  },
-  hr: {
-    borderBottom: "1px solid rgb(156,158,159)"
   }
 };
 

@@ -7,7 +7,7 @@ import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
-import LeitSpinner from "../../components/LeitSpinner";
+import {LeitSpinner} from "../../components";
 import FilterPicker from "./FilterPicker";
 import HomePagination from "./HomePagination";
 import "./home.css";
@@ -113,11 +113,13 @@ class Home extends Component {
                       <span
                         key={el.metaID}
                         className="home-tags"
-                        onClick={() =>
-                          this.props.removeSearch(el.metaID, el.value)
-                        }
                       >
-                        #{el.value} <FontAwesomeIcon icon={faTimesCircle} />
+                        #{el.value} 
+                        <FontAwesomeIcon 
+                        icon={faTimesCircle} 
+                        style={{cursor: 'pointer'}} 
+                        onClick={() => this.props.removeSearch(el.metaID, el.value)}
+                        />
                       </span>
                     ))
                   ) : (

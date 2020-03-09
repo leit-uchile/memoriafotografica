@@ -42,7 +42,7 @@ def make_tag(metadata_id):
 def filter_photos(photolist, request):
     sort_type = {"asc":"", "desc":"-"}
     try:
-        if(request.query_params["category"]):
+        if request.query_params["category"]:
             q = list(filter(('').__ne__, request.query_params["category"].split(',')))
             photolist = photolist.filter(category__id__in = q).distinct()
             photolist = photolist.order_by("-created_at")
@@ -50,11 +50,18 @@ def filter_photos(photolist, request):
         pass
 
     try:
-        if(request.query_params["metadata"]):
+        if request.query_params["metadata"]:
             meta_query = list(filter(('').__ne__, request.query_params["metadata"].split(',')))
             photolist = photolist.filter(metadata__id__in = meta_query)
     except KeyError:
         pass
+
+    try:
+        if request.query_params["user"]:
+            photolist = photolist.filter(user=request.query_params["user"])
+    except KeyError:
+        pass
+
     return photolist
 
 def sort_by_field(element_list, request):
@@ -554,7 +561,12 @@ class AlbumListAPI(generics.GenericAPIView):
     permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
-        album = Album.objects.all()
+        
+        try:
+            if request.query_params["user"]:
+                album = Album.objects.filter(user=request.query_params["user"])
+        except KeyError:
+            album = Album.objects.all()
         album = sort_by_field(album,request)
         serializer = AlbumSerializer(album, many=True)
         

@@ -3,10 +3,12 @@ import { PrivateComponent } from "../../components";
 import { Switch, Route } from "react-router-dom";
 import UserDashboard from "./Profile/UserDashboard";
 import EditProfile from "./EditProfile";
-import UserPhotos from "./UserPhotos";
+import UserPhotos from "./PhotoCollection/UserPhotos";
 import PublicProfile from "./Profile/PublicProfile";
 import NoMatch from "../../components/Routes/NoMatch";
 import AlbumView from "./AlbumCollection/AlbumView";
+import UserAlbums from "./AlbumCollection/UserAlbums";
+import PublicAlbums from "./AlbumCollection/PublicAlbums";
 
 const UserRouting = ({ ...props }) => (
   <Switch>
@@ -14,6 +16,12 @@ const UserRouting = ({ ...props }) => (
       exact
       path={"/user/public/:id"}
       component={PublicProfile}
+      {...props}
+    />
+    <Route
+      exact
+      path={"/user/:id/public/albums"}
+      component={PublicAlbums}
       {...props}
     />
     <Route
@@ -42,7 +50,13 @@ const UserRouting = ({ ...props }) => (
     <PrivateComponent
       exact
       path={"/user/albums"}
-      component={NoMatch}
+      component={UserAlbums}
+      {...props}
+    />
+    <PrivateComponent
+      exact
+      path={"/user/albums/:id"}
+      component={AlbumView}
       {...props}
     />
     <Route component={NoMatch} />

@@ -23,10 +23,11 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter
+  ModalFooter,
+  FormText
 } from "reactstrap";
 import UserPicture from "../../components/UserPicture";
-import CropPhoto from "../Upload/CropPhoto";
+import CropPhoto from "../../components/CropPhoto";
 import "./style.css";
 import "./Profile/userDashboard.css";
 
@@ -38,7 +39,8 @@ class EditProfile extends Component {
       user: { ...props.user },
       modal_pass: false,
       modal_crop: false,
-      newAvatar: null
+      newAvatar: null,
+      avatarEdited: false,
     };
     this.fr = new FileReader();
     this.fr.onload = (function(theFile) {
@@ -88,7 +90,8 @@ class EditProfile extends Component {
 
   toggleModalCrop = () => {
     this.setState(prevState => ({
-      modal_crop: !prevState.modal_crop
+      modal_crop: !prevState.modal_crop,
+      avatarEdited: true
     }));
   };
 
@@ -324,6 +327,9 @@ class EditProfile extends Component {
                       </Col>
                     </FormGroup>
                     <Button color="success">Guardar Cambios</Button>
+                    <FormText color="muted" style={{display: this.state.avatarEdited ?'inline':'none'}}>
+                      {'     '}Deberá guardar los cambios para que su foto se actualice
+                    </FormText>
                   </Form>
                 </Col>
               </Row>

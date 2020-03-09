@@ -1,19 +1,18 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import {
   Button,
   Row,
   Col,
-  Container,
   UncontrolledButtonDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem
 } from "reactstrap";
-import { user } from "../../actions";
+import { user, home, misc } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
-import PhotoEditor from "../../components/PhotoEditor";
+import PhotoEditor from "../../../components/PhotoEditor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
 
@@ -29,11 +28,16 @@ class UserPhotos extends Component {
     this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
   }
 
-  handleOnRedirect(obj) {
-    //no funcionando
+  handleOnClick = (index,type) => {
+    type==='redirect'
+    ? this.handleOnRedirect(index)
+    : this.handleOnSelect(index)
+  }
+  
+  handleOnRedirect = obj =>{
     this.setState({
       redirect: true,
-      chosenPhotoIndex: obj.photo.id
+      chosenPhotoIndex: obj.index
     });
   }
 
@@ -57,7 +61,12 @@ class UserPhotos extends Component {
           picturesToEdit: mapped.map(el => el.id),
           selectedAll: state
         })
-      : this.setState({ picturesToEdit: [], selectedAll: state });
+      : 
+      this.setState({
+        picturesToEdit: [],
+        selectedAll: state
+      })
+        
   }
 
   render() {
@@ -67,8 +76,19 @@ class UserPhotos extends Component {
       width: el.aspect_w,
       id: el.id
     }));
+    
+    if (this.state.redirect) {
+      this.props.setRoute("/photo/"); // For NavLink in Navbar
+      this.props.setSelectedId(this.state.chosenPhotoIndex); // For in photo navigation
+      return (
+        <Redirect
+          push
+          to={`/photo/${mapped[this.state.chosenPhotoIndex].id}`}
+        />
+      );
+    }
     return (
-      <Container fluid>
+      <div>
         <Row style={styles.titleContainer}>
           <Col style={styles.title}>
             <Button color="secondary" tag={Link} to="./dashboard">
@@ -82,11 +102,11 @@ class UserPhotos extends Component {
             <Col md={10}>
               <PhotoEditor
                 photos={mapped}
-                targetRowHeight={132}
-                onClick={(e, index) => this.handleOnSelect(index)}
-                //putAll={(state) => this.putAllToEdit(mapped,state)}
+                targetRowHeight={250}
+                onClick={(e,index,type) => this.handleOnSelect(index)}
+                // putAll={(state) => this.putAllToEdit(mapped,state)}
                 selectAll={this.state.selectedAll}
-                redirectFunction={(e, obj) => this.handleOnRedirect(obj)}
+                //onClick={(e, index,type) => this.handleOnClick(index,type)}
               />
             </Col>
             <Col md={2} style={styles.filterMenu}>
@@ -119,7 +139,7 @@ class UserPhotos extends Component {
             </Col>
           </Row>
         </div>
-      </Container>
+      </div>
     );
   }
 }
@@ -163,6 +183,7 @@ const styles = {
   },
   photosContainer: {
     width: "100%",
+    minHeight: "70vh",
     paddingTop: "1.25em",
     paddingBottom: "1.25em",
     backgroundColor: "#f7f8fa",
@@ -174,6 +195,8 @@ const mapStateToProps = state => ({
   user: state.user.userData
 });
 const mapActionsToProps = dispatch => ({
+  setSelectedId: id => dispatch(home.setSelectedId(id)),
+  setRoute: route => dispatch(misc.setCurrentRoute(route)),
   onLoadGetPhotos: (user_id, limit, offset) =>
     dispatch(user.getUserPhotos(user_id, limit, offset))
 });

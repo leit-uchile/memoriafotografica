@@ -16,7 +16,7 @@ import {
   ModalBody,
   Container
 } from "reactstrap";
-import CropPhoto from "../Upload/CropPhoto";
+import CropPhoto from "../../components/CropPhoto";
 
 class RegisterLoginInfo extends Component {
   constructor(Props) {

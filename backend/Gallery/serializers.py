@@ -186,11 +186,15 @@ class AlbumSerializer(serializers.ModelSerializer):
             a.pictures.add(*validated_data['pictures'])            
             # Save thumbnail
             a.thumbnail = validated_data['pictures'][0].thumbnail.url
-        else:    
+            a.aspect_h = validated_data['pictures'][0].aspect_h
+            a.aspect_w = validated_data['pictures'][0].aspect_w
+        else:
             valid_pics = list(filter(lambda x: x in my_user.photos.all() ,validated_data['pictures']))
             a.pictures.add(*valid_pics)
             # Save thumbnail
-            a.thumbnail = valid_pics[0].thumbnail.url        
+            a.thumbnail = valid_pics[0].thumbnail.url
+            a.aspect_h = valid_pics[0].aspect_h
+            a.aspect_w = valid_pics[0].aspect_w
         a.save()
         return a
 

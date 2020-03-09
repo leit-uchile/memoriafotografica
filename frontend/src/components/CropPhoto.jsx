@@ -196,7 +196,6 @@ class CropPhoto extends Component {
             </Row>
           </ModalBody>
           <ModalFooter>
-            <p>Deberás guardar los cambios para que la foto se actualice</p>
             <Button color="success" onClick={this.onSave}>
               Seleccionar
             </Button>

@@ -11,3 +11,48 @@
   top: 0;
   opacity: 0;
 }
+
+/* User albums background*/
+
+.user-albums-background{
+  height: 200px;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+}
+
+.user-albums-background h4{
+  text-align: center;
+  background-color: rgba(233, 236, 239, 0.8);
+  position: absolute;
+  width: 100%;
+  top: calc(40% - 1em);
+  padding: 1em 0;
+  vertical-align: middle;
+}
+
+/* User not available */
+
+.userNotAvailable {
+  min-height: 75vh;
+  text-align: center;
+}
+
+.userNotAvailable.container{
+  padding-top: 25vh;
+}
+
+.userNotAvailable h2 {
+  color: #ff5a60;
+  font-size: 3em;
+}
+
+.userNotAvailable p{
+  font-size: 1.5em;
+}
+
+@media(min-width: 576px){
+  .userNotAvailable .row .col-sm-6:last-child {
+    text-align: left;
+  }
+}

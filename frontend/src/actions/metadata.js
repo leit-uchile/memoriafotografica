@@ -2,7 +2,9 @@ import {
   CREATED_METADATA,
   CREATED_METADATA_ERROR,
   CREATING_METADATA,
-  RESET_METADATA_STORE
+  RESET_METADATA_STORE,
+  HOME_RECOVERED_TAGS,
+  HOME_EMPTY_TAGS
 } from "./types";
 
 /**
@@ -96,3 +98,27 @@ export const createMetadata = (name, iptcId) => (dispatch, getState) => {
  */
 export const resetNewMetadataIds = () => (dispatch, getState) =>
   dispatch({ type: RESET_METADATA_STORE, data: null });
+
+/**
+ * Search metadata by name using a token if available
+ * @param {String} query
+ */
+export const searchMetadataByValue = (query, limit=10) => (dispatch, getState) => {
+  const success_func = response => {
+    const r = response;
+    if (r.status === 200) {
+      r.json().then(data =>
+        dispatch({ type: HOME_RECOVERED_TAGS, data: data })
+      );
+    } else {
+      dispatch({ type: HOME_EMPTY_TAGS });
+    }
+  };
+
+  if (getState().auth.isAuthenticated) {
+    let headers = { Authorization: "Token " + getState().auth.token };
+    fetch(`/api/metadata/?search=${query}&limit=${limit}`, { headers }).then(success_func);
+  } else {
+    fetch(`/api/metadata/?search=${query}&limit=${limit}`).then(success_func);
+  }
+};

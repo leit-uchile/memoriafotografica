@@ -23,7 +23,7 @@ import {
 import { userRolTranslation, userTypeTranslation } from "../utils";
 import { UserPicture, ReportModal } from "../../../components/";
 import "./userDashboard.css";
-import {Helmet} from 'react-helmet';
+import { Helmet } from "react-helmet";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -34,9 +34,14 @@ class Dashboard extends Component {
       user: props.publicUser ? props.publicUser : props.user
     };
 
-    this.props.setRoute("/userDashboard/");
-    this.props.onLoadGetPhotos(this.state.user.id, 4, 0);
-    this.props.onLoadGetAlbums(this.state.user.id, 4, 0);
+    if (this.state.isPublic) {
+      this.props.onLoadGetPublicPhotos(this.state.user.id);
+      this.props.onLoadGetPublicAlbums(this.state.user.id);
+    } else {
+      this.props.setRoute("/userDashboard/");
+      this.props.onLoadGetPhotos(this.state.user.id, 4, 0);
+      this.props.onLoadGetAlbums(this.state.user.id, 4, 0);
+    }
   }
 
   render() {
@@ -152,7 +157,7 @@ class Dashboard extends Component {
                     &Aacute;lbumes {this.state.isPublic ? null : addMore}
                   </h2>
                   {albums.length !== 0 ? (
-                    <Link to="/user/albums" className="user-dashboard-see-all">
+                    <Link to={this.state.isPublic ? `/user/${this.state.user.id}/public/albums` : "/user/albums"} className="user-dashboard-see-all">
                       {" "}
                       Ver Todos
                     </Link>
@@ -223,7 +228,10 @@ const mapActionsToProps = dispatch => ({
     dispatch(user.getUserPhotos(user_id, limit, offset)),
   onLoadGetAlbums: (user_id, limit, offset) =>
     dispatch(user.getUserAlbums(user_id, limit, offset)),
-  setRoute: route => dispatch(misc.setCurrentRoute(route))
+  setRoute: route => dispatch(misc.setCurrentRoute(route)),
+  onLoadGetPublicAlbums: user_id =>
+    dispatch(user.loadPublicUserAlbums(user_id)),
+  onLoadGetPublicPhotos: user_id => dispatch(user.loadPublicUserPhotos(user_id))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Dashboard);

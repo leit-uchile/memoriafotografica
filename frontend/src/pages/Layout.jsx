@@ -14,6 +14,7 @@ import {
 // Main application chunk
 import Home from "./Home";
 import LandingPage from "./Landing";
+import NewsPage from "./News/NewsPage";
 import Login from "./Login";
 import Register from "./Register";
 import NoMatch from "../components/Routes/NoMatch";
@@ -68,6 +69,7 @@ const Layout = () => {
                 >
                   <Switch location={location}>
                     <BoundedRoute exact path={"/"} component={LandingPage} />
+                    <BoundedRoute path={"/news"} component={NewsPage} />
                     <BoundedRoute path={"/gallery"} component={Home} />
                     <BoundedRoute path={"/login"} component={Login} />
                     <BoundedRoute
