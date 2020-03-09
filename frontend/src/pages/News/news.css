@@ -1,0 +1,9 @@
+.color-box{
+    box-shadow: #ddd 3px 5px 10px;
+    padding: 20px;
+    margin: 1.5em 0 1.5em 0;
+    text-align: center;
+}
+.color-box:nth-child(2n+1){
+    background-color: #ff5a60;
+}

@@ -58,8 +58,7 @@ const SelectedImage = ({
   top,
   left,
   selected,
-  onClick,
-  onRedirect
+  onClick
 }) => {
   const [isSelected, setIsSelected] = useState(selected);
   //calculate x,y scale
@@ -74,12 +73,16 @@ const SelectedImage = ({
   }
 
   const handleOnRedirect = e => {
-    onRedirect(e, {photo}.photo.id);
+    const type = 'redirect'
+    //onClick(e, {index}, type);
+    console.log(type)
   };
 
   const handleOnSelect = e => {
+    const type = 'edit'
     setIsSelected(!isSelected);
-    onClick(e, {index});
+    onClick(e, {index}, type);
+    console.log(type)
   };
 
   useEffect(() => {
@@ -104,8 +107,8 @@ const SelectedImage = ({
         }        
       />
       {!isSelected
-      ? <div class="middle">
-          <div class="icons">
+      ? <div className="middle">
+          <div className="icons">
             <FontAwesomeIcon icon={faEye} style={{marginRight: '0.35em'}} onClick={handleOnRedirect}/>
             <FontAwesomeIcon icon={faPencilAlt} onClick={handleOnSelect} />
           </div>
@@ -118,18 +121,19 @@ const SelectedImage = ({
   );
 };
 
-const PhotoEditor = ({photos, putAll=e => {},selectAll,redirectFunction,...props}) => {
-  // const [setSelectAll] = useState(false);
+const PhotoEditor = ({photos, selectAll,...props}) => {
+  // const [selectAll, setSelectAll] = useState(false);
 
   // const toggleSelectAll = () => {
-  //    setSelectAll(!selectAll);
-  //    putAll(!selectAll)
-  //  };
+  //   setSelectAll(!selectAll);
+  //   putAll(!selectAll)
+  // };
+  
 
   const imageRenderer = useCallback(
-    ({ index, left, top, key, photo, onClick, redirectFunction }) => (
+    ({ index, left, top, key, photo, onClick }) => (
       <SelectedImage
-        selected={selectAll ? true : false}
+        selected={selectAll}
         key={key}
         margin={"2px"}
         index={index}
@@ -137,7 +141,6 @@ const PhotoEditor = ({photos, putAll=e => {},selectAll,redirectFunction,...props
         left={left}
         top={top}
         onClick={onClick}
-        onRedirect={redirectFunction}
       />
     ),
     [selectAll]
@@ -145,14 +148,14 @@ const PhotoEditor = ({photos, putAll=e => {},selectAll,redirectFunction,...props
 
   return (
     <Container fluid>
-      <Row>
+      {/* <Row>
         <Col>
-        {/*{!selectAll
+        {!selectAll
         ?(<Button onClick={toggleSelectAll}>Seleccionar todas</Button>)
         :(<Button onClick={toggleSelectAll}>Borrar selección</Button>)
-        } */}
+        }
         </Col>
-      </Row>
+      </Row> */}
       <Row>
         <Col>
           <Gallery photos={photos} renderImage={imageRenderer} {...props} />

@@ -312,7 +312,7 @@ class PhotoDetails extends Component {
                               style={{ marginRight: "1em" }}
                             />
                             Tomada el{" "}
-                            {moment(photoInfo.details.created_at).format(
+                            {moment(photoInfo.details.upload_date).format(
                               "DD/MM/YYYY"
                             )}
                           </h5>
@@ -325,7 +325,7 @@ class PhotoDetails extends Component {
                               style={{ marginRight: "1em" }}
                             />
                             Subida el{" "}
-                            {moment(photoInfo.details.upload_date).format(
+                            {moment(photoInfo.details.created_at).format(
                               "DD/MM/YYYY"
                             )}
                           </h5>

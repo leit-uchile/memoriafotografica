@@ -3,7 +3,7 @@ import { PrivateComponent } from "../../components";
 import { Switch, Route } from "react-router-dom";
 import UserDashboard from "./Profile/UserDashboard";
 import EditProfile from "./EditProfile";
-import UserPhotos from "./UserPhotos";
+import UserPhotos from "./PhotoCollection/UserPhotos";
 import PublicProfile from "./Profile/PublicProfile";
 import NoMatch from "../../components/Routes/NoMatch";
 import AlbumView from "./AlbumCollection/AlbumView";
