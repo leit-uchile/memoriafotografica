@@ -28,13 +28,14 @@ class UserPhotos extends Component {
     this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
   }
 
-  handleOnClick = (index,type) => {
-    type==='redirect'
-    ? this.handleOnRedirect(index)
-    : this.handleOnSelect(index)
-  }
+  // handleOnClick = (index,type) => {
+  //   type==='redirect'
+  //   ? this.handleOnRedirect(index)
+  //   : this.handleOnSelect(index)
+  // }
   
   handleOnRedirect = obj =>{
+    console.log(obj)
     this.setState({
       redirect: true,
       chosenPhotoIndex: obj.index
@@ -103,10 +104,10 @@ class UserPhotos extends Component {
               <PhotoEditor
                 photos={mapped}
                 targetRowHeight={250}
-                onClick={(e,index,type) => this.handleOnSelect(index)}
+                onClick={(e,index) => this.handleOnSelect(index)}
                 // putAll={(state) => this.putAllToEdit(mapped,state)}
                 selectAll={this.state.selectedAll}
-                //onClick={(e, index,type) => this.handleOnClick(index,type)}
+                onRedirect={(e, index) => this.handleOnRedirect(index)}
               />
             </Col>
             <Col md={2} style={styles.filterMenu}>

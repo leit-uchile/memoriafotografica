@@ -240,7 +240,7 @@ const EditPhotosModal = props => {
             ? PhotosForm
             : "Estado de la solicitud (Cambios guardados, Error, etc)"
           }
-          <Modal isOpen={toggleDelete} toggle={()=>setToggleDelete(!toggleDelete)}>
+          <Modal isOpen={toggleDelete} toggle={()=>setToggleDelete(!toggleDelete)} centered>
             <ModalHeader>¿Está seguro de eliminar la fotografía?</ModalHeader>
             <ModalBody>Esta acción no se puede deshacer. Confirme su acción</ModalBody>
             <ModalFooter>
