@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Container, Button, Row, Col } from "reactstrap";
+import { Container, Button, Row, Col, Input } from "reactstrap";
 import { Redirect } from "react-router-dom";
 import { search, home, misc, metadata } from "../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -101,6 +101,17 @@ class SearchBar extends Component {
       <Container className="home-search">
         <Row>
           <Col>
+            <Input
+              type="select"
+              name="selectMulti"
+              id="exampleSelectMulti"
+              className="search-iptc-selector"
+            >
+              <option value="0">Todas las etiquetas</option>
+              {
+                this.props.iptc.map(iptc => <option value={iptc.id}>{iptc.name}</option>)
+              }
+            </Input>
             <Autosuggest
               multiSection={true}
               suggestions={suggestions}
@@ -115,13 +126,10 @@ class SearchBar extends Component {
             />
             <Button
               type="button"
-              style={{
-                display: "inline-block",
-                width: "10%"
-              }}
               color="primary"
               onClick={this.swapPage}
               block
+              className="search-button"
             >
               <FontAwesomeIcon icon={faSearch} />
             </Button>

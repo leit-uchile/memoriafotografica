@@ -213,18 +213,41 @@
 
 .home-search .react-autosuggest__container {
   display: inline-block;
-  width: 90%;
-}
-
-.home-search .react-autosuggest__input {
-  width: 100%;
-}
-
-.home-search .react-autosuggest__container {
-  display: inline-block;
-  width: 90%;
+  width: 65%;
 }
 
 .home-search .react-autosuggest__suggestions-container--open{
   width: 100%;
+}
+
+.home-search .react-autosuggest__container{
+  display: inline-block;
+  width: 65%;
+}
+
+
+.home-search .react-autosuggest__input {
+  width: 100%;
+  border-radius: 0;
+}
+
+
+.home-search .search-iptc-selector{
+  width: 25%;
+  font-size: 1.1em;
+  display: inline-block;
+  background-color: #ff5a60;
+  color: wheat;
+  font-weight: 700;
+  border-color: #ff5a60;
+  border-radius: 4px 0 0 4px;
+}
+
+.home-search .search-button{
+  width: 10%;
+  display: inline-block;
+  font-size: 1.1em;
+  vertical-align: initial;
+  border-color: #ff5a60;
+  border-radius: 0 4px 4px 0;
 }

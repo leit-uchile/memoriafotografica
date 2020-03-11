@@ -135,9 +135,9 @@ const FilterPicker = ({
         </DropdownToggle>
         <DropdownMenu
           style={{
-            width: "38em",
             boxShadow: "0 0 15px 0 rgba(0,0,0,.20)"
           }}
+          className="home-category-filter"
         >
           <div style={styles.triangulo}></div>
           <Container fluid>
