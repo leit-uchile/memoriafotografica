@@ -139,7 +139,7 @@ class Home extends Component {
         <div className="home-background parallax">
           <Container className="home-gallery-container">
             <Row>
-              <Col>
+              <Col sm={mapped.length == 1 ? {size: 4, offset: 4} : {size: 12}}>
                 {loadingPhotos ? (
                   <LeitSpinner />
                 ) : (
