@@ -58,7 +58,7 @@ export const uploadImages = photos => {
       }
 
       const this_key = key; // avoid binding bellow
-
+      console.log(photos)
       fetch("/api/photos/", {
         method: "POST",
         headers: header,
