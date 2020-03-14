@@ -18,6 +18,7 @@ import {
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faHome, faSmileWink } from "@fortawesome/free-solid-svg-icons";
 
 const Header = ({ isAuth, currentRoute }) => {
   const [toggle, setToggle] = useState(false);
@@ -30,11 +31,11 @@ const Header = ({ isAuth, currentRoute }) => {
       {" "}Ingresar
     </NavLink>
   ) : (
-    <NavLink tag={Link} to="/login">
-      <FontAwesomeIcon icon={faUser} />
-      {" "}Ingresar
+        <NavLink tag={Link} to="/login">
+          <FontAwesomeIcon icon={faUser} />
+          {" "}Ingresar
     </NavLink>
-  );
+      );
 
   const [redirect, setRedirect] = useState(false);
 
@@ -74,13 +75,17 @@ const Header = ({ isAuth, currentRoute }) => {
                           active
                           style={styles.activeLink}
                         >
+                          <FontAwesomeIcon icon={faHome} />
+                          {" "}
                           Inicio
                         </NavLink>
                       ) : (
-                        <NavLink tag={Link} to={"/"}>
-                          Inicio
+                          <NavLink tag={Link} to={"/"}>
+                            <FontAwesomeIcon icon={faHome} />
+                            {" "}
+                            Inicio
                         </NavLink>
-                      )}
+                        )}
                     </NavItem>
                     <NavItem>
                       {currentRoute === "/gallery/" ? (
@@ -90,13 +95,17 @@ const Header = ({ isAuth, currentRoute }) => {
                           active
                           style={styles.activeLink}
                         >
+                          <FontAwesomeIcon icon={faImage} />
+                          {" "}
                           Galer&iacute;a
                         </NavLink>
                       ) : (
-                        <NavLink tag={Link} to={"/gallery"}>
-                          Galer&iacute;a
+                          <NavLink tag={Link} to={"/gallery"}>
+                            <FontAwesomeIcon icon={faImage} />
+                            {" "}
+                            Galer&iacute;a
                         </NavLink>
-                      )}
+                        )}
                     </NavItem>
                     <NavItem>
                       {currentRoute === "/upload" ? (
@@ -106,13 +115,17 @@ const Header = ({ isAuth, currentRoute }) => {
                           active
                           style={styles.activeLink}
                         >
+                          <FontAwesomeIcon icon={faSmileWink} />
+                          {" "}Ingresar
                           Participa
                         </NavLink>
                       ) : (
-                        <NavLink tag={Link} to={"/upload"}>
-                          Participa
+                          <NavLink tag={Link} to={"/upload"}>
+                            <FontAwesomeIcon icon={faSmileWink} />
+                            {" "}
+                            Participa
                         </NavLink>
-                      )}{" "}
+                        )}{" "}
                     </NavItem>
                     <NavItem>{doLoginNav}</NavItem>
                   </Nav>
@@ -126,20 +139,20 @@ const Header = ({ isAuth, currentRoute }) => {
         style={
           currentRoute === "/gallery/"
             ? {
-                position: "sticky",
-                top: "0",
-                backgroundColor: "#e9ecef",
-                height: "4em",
-                padding: "1em 0",
-                borderBottom: "1px solid rgb(210,214,218)",
-                zIndex: "4"
-              }
+              position: "sticky",
+              top: "0",
+              backgroundColor: "#e9ecef",
+              height: "4em",
+              padding: "1em 0",
+              borderBottom: "1px solid rgb(210,214,218)",
+              zIndex: "4"
+            }
             : {
-                backgroundColor: "#e9ecef",
-                borderBottom: "1px solid rgb(210,214,218)",
-                height: "4em",
-                padding: "1em 0"
-              }
+              backgroundColor: "#e9ecef",
+              borderBottom: "1px solid rgb(210,214,218)",
+              height: "4em",
+              padding: "1em 0"
+            }
         }
       >
         <SearchBar />

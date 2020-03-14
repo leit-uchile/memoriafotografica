@@ -2,8 +2,9 @@ import React from "react";
 import { Container, Row, Col } from "reactstrap";
 import ReportModal from "../../components/ReportModal";
 import { Link } from "react-router-dom";
+import moment from "moment";
 
-const Comment = ({ content: { content, censure, usuario, id, created_at} }) => {
+const Comment = ({ content: { content, censure, usuario, id, created_at } }) => {
   var userName =
     usuario.first_name !== "" && usuario.first_name !== null
       ? `${usuario.first_name} ${usuario.last_name}`
@@ -46,9 +47,9 @@ const Comment = ({ content: { content, censure, usuario, id, created_at} }) => {
               <Link to={"/user/public/" + usuario.id + "/"}>{userName}</Link>
             </b>
           </div>
-          <div style={{ display: "inline-block", padding: "0 15px" }}>
-            {created_at.format("DD/MM/YYYY")}
-          </div>
+
+          {created_at ? <div style={{ display: "inline-block", padding: "0 15px", color: "#999" }}> Publicado el{" "}{moment(created_at).format("DD/MM/YYYY")}{" "}
+            a las {" "}{moment(created_at).format("hh:mm")} </div> : <div style={{ display: "inline-block", padding: "0 15px", color: "#999" }}>Cargando...</div>}
           <ReportModal
             style={{ display: "inline-block" }}
             className="float-right"

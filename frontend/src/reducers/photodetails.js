@@ -9,7 +9,8 @@ import {
   CUSTOM_METADATA_ERROR,
   REPORTED_PHOTO,
   PHOTO_REPORT_FAILED,
-  REPORTING_PHOTO
+  REPORTING_PHOTO,
+  LOADING_COMMENT
 } from "../actions/types";
 
 const initialState = {
@@ -39,6 +40,8 @@ export default function photoDetails(state = initialState, action) {
       return { ...state, new_comment: action.data, commentsLoaded: false };
     case NEW_COMMENT_ERROR:
       return { ...state, new_comment_errors: action.data };
+    case LOADING_COMMENT:
+      return { ...state, comments: [...state.comments, { ...action.data }], commentsLoaded: true };
     case RECOVERED_PHOTO_COMMENTS:
       return { ...state, comments: action.data, commentsLoaded: true };
     case PHOTO_COMMENTS_ERROR:
@@ -48,11 +51,11 @@ export default function photoDetails(state = initialState, action) {
     case CUSTOM_METADATA_ERROR:
       return { ...state, metadataNames: [] };
     case REPORTING_PHOTO:
-      return { ...state, photoReportSent: false};
+      return { ...state, photoReportSent: false };
     case REPORTED_PHOTO:
-      return {...state, photoReportSent: true, reportComplete: true}
+      return { ...state, photoReportSent: true, reportComplete: true }
     case PHOTO_REPORT_FAILED:
-        return {...state, photoReportSent: true, reportComplete: false}
+      return { ...state, photoReportSent: true, reportComplete: false }
     default:
       return state;
   }

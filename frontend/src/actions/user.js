@@ -129,7 +129,7 @@ export const loadPublicUserAlbums = user_id => dispatch =>
     if (response.status === 200) {
       return response
         .json()
-        .then(parsed => dispatch({ type: USER_RECOVERED_ALBUM, data: parsed }));
+        .then(parsed => dispatch({ type: USER_RECOVERED_ALBUM, data: parsed.results }));
     } else {
       dispatch(
         setAlert("Hubo un error al cargar los albumes del usuario", "warning")
@@ -147,7 +147,7 @@ export const loadPublicUserPhotos = user_id => dispatch =>
     const r = response;
     if (r.status === 200) {
       return r.json().then(data => {
-        dispatch({ type: USER_RECOVERED_PHOTO, data: data });
+        dispatch({ type: USER_RECOVERED_PHOTO, data: data.results });
       });
     } else {
       dispatch({ type: USER_RECOVERED_PHOTO_ERROR, data: r.data });
