@@ -97,7 +97,13 @@ const UploadAlbum = ({
     } else {
       // Map to value: el.name
       let mapped_tags = formData.tags.map(tag => ({
-        value: tag.name,
+        // We need to trim the values so that the mapping
+        // done by value after metadata creation doesnt fails.
+        // Ex: value saved without trim -> "Hola   "
+        //  value returned after creation onback -> "Hola"
+        //  Mapping by name using old name -> "Hola   " over backendInfo={"Hola": {...tag1}, "Chao": {...tag2}}
+        // The mapping backendInfo["Hola    "] results in undefined
+        value: tag.name.trim(),
         id: tag.id
       }));
       saveAll({ ...formData, tags: mapped_tags });

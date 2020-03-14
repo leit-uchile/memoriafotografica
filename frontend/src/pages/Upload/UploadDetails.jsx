@@ -85,7 +85,7 @@ class UploadDetails extends Component {
       this.toggle();
     }
     let mapped_tags = this.state.tags.map(tag => ({
-      value: tag.name,
+      value: tag.name.trim(),
       id: tag.id
     }));
     this.props.save({ ...this.state, tags: mapped_tags });

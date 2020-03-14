@@ -49,7 +49,7 @@ export const getCategories = () => {
         const r = response;
         if (r.status === 200) {
           return r.json().then(data => {
-            dispatch({ type: RECOVERED_CATEGORIES, data: data });
+            dispatch({ type: RECOVERED_CATEGORIES, data: data.results });
           });
         } else {
           dispatch({ type: EMPTY_CATEGORIES, data: r.data });
@@ -129,7 +129,7 @@ export const getPhotos = auth => {
         const r = response;
         if (r.status === 200) {
           return r.json().then(data => {
-            dispatch({ type: RECOVERED_PHOTOS, data: data });
+            dispatch({ type: RECOVERED_PHOTOS, data: data.results });
           });
         } else {
           dispatch({ type: EMPTY_PHOTOS, data: r.data });
@@ -161,6 +161,7 @@ export const editPhoto = (photoID, newData) => (
       });
     } else {
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
+      return r.json()
       throw r.data;
     }
   });
@@ -187,6 +188,7 @@ export const switchPhotoApproval = (photoID, curr_value) => (
       });
     } else {
       dispatch({ type: SWICH_PHOTO_APPROVAL_ERROR, data: r.data });
+      return r.data;
       throw r.data;
     }
   });
