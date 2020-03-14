@@ -3,7 +3,7 @@ import { Container, Row, Col } from "reactstrap";
 import ReportModal from "../../components/ReportModal";
 import { Link } from "react-router-dom";
 
-const Comment = ({ content: { content, censure, usuario, id } }) => {
+const Comment = ({ content: { content, censure, usuario, id, created_at} }) => {
   var userName =
     usuario.first_name !== "" && usuario.first_name !== null
       ? `${usuario.first_name} ${usuario.last_name}`
@@ -47,7 +47,7 @@ const Comment = ({ content: { content, censure, usuario, id } }) => {
             </b>
           </div>
           <div style={{ display: "inline-block", padding: "0 15px" }}>
-            {usuario.rol_type}
+            {created_at.format("DD/MM/YYYY")}
           </div>
           <ReportModal
             style={{ display: "inline-block" }}

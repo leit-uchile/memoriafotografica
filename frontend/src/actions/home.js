@@ -25,7 +25,7 @@ export const home = () => (dispatch, getState) => {
       const r = response;
       if (r.status === 200) {
         return r.json().then(data => {
-          dispatch({ type: HOME_RECOVERED_PHOTOS, data: data });
+          dispatch({ type: HOME_RECOVERED_PHOTOS, data: data.results });
         });
       } else {
         dispatch({ type: HOME_EMPTY_PHOTOS, data: r.data });
@@ -67,7 +67,7 @@ export const categories = () => (dispatch, getState) => {
       const r = response;
       if (r.status === 200) {
         return r.json().then(data => {
-          dispatch({ type: HOME_RECOVERED_CATEGORIES, data: data });
+          dispatch({ type: HOME_RECOVERED_CATEGORIES, data: data.results });
         });
       } else {
         dispatch({ type: HOME_EMPTY_CATEGORIES, data: r.data });
@@ -119,7 +119,7 @@ export const sortByField = (field, order) => (dispatch, getState) => {
       const r = response;
       if (r.status === 200) {
         return r.json().then(data => {
-          dispatch({ type: HOME_RECOVERED_PHOTOS, data: data });
+          dispatch({ type: HOME_RECOVERED_PHOTOS, data: data.results });
         });
       } else {
         dispatch({ type: HOME_EMPTY_PHOTOS, data: r.data });
@@ -147,7 +147,7 @@ export const recoverByCats = (catIds, pair) => (dispatch, getState) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then(data => {
-        dispatch({ type: HOME_RECOVERED_PHOTOS, data: data });
+        dispatch({ type: HOME_RECOVERED_PHOTOS, data: data.results });
       });
     } else {
       dispatch({ type: HOME_EMPTY_PHOTOS, data: r.data });

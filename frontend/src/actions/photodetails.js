@@ -43,7 +43,7 @@ export const getComments = id => (dispatch, getState) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then(data => {
-        dispatch({ type: RECOVERED_PHOTO_COMMENTS, data: data });
+        dispatch({ type: RECOVERED_PHOTO_COMMENTS, data: data.results });
       });
     } else {
       dispatch({ type: PHOTO_COMMENTS_ERROR, data: r.data });
