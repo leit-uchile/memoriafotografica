@@ -58,7 +58,8 @@ const SelectedImage = ({
   top,
   left,
   selected,
-  onClick
+  onClick,
+  onRedirect
 }) => {
   const [isSelected, setIsSelected] = useState(selected);
   //calculate x,y scale
@@ -73,16 +74,12 @@ const SelectedImage = ({
   }
 
   const handleOnRedirect = e => {
-    const type = 'redirect'
-    //onClick(e, {index}, type);
-    console.log(type)
+    onRedirect(e, {index});
   };
 
   const handleOnSelect = e => {
-    const type = 'edit'
     setIsSelected(!isSelected);
-    onClick(e, {index}, type);
-    console.log(type)
+    onClick(e,{index});
   };
 
   useEffect(() => {
@@ -109,8 +106,8 @@ const SelectedImage = ({
       {!isSelected
       ? <div className="middle">
           <div className="icons">
-            <FontAwesomeIcon icon={faEye} style={{marginRight: '0.35em'}} onClick={handleOnRedirect}/>
-            <FontAwesomeIcon icon={faPencilAlt} onClick={handleOnSelect} />
+            <FontAwesomeIcon id="eye" icon={faEye} style={{marginRight: '0.35em'}} onClick={handleOnRedirect}/>
+            <FontAwesomeIcon id="pencil" icon={faPencilAlt} onClick={handleOnSelect} />
           </div>
         </div>
       : <span></span>
@@ -141,6 +138,7 @@ const PhotoEditor = ({photos, selectAll,...props}) => {
         left={left}
         top={top}
         onClick={onClick}
+        onRedirect={props.onRedirect}
       />
     ),
     [selectAll]
