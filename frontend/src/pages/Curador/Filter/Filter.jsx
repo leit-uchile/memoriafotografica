@@ -27,16 +27,17 @@ class Filter extends Component {
     this.state = {
       listView: 1,
       currentPage: 0,
-      pageSize: 6,
+      pageSize: 25,
       pages: 0,
       list: []
     };
     //Computes pages:
     this.props.getPhotos().then(() => {
-      let totalDocs = this.props.photos.length;
+      let totalDocs = this.props.photos.count;
+      console.log(this.props)
       let pages = Math.ceil(totalDocs / this.state.pageSize);
       this.setState({
-        list: [...this.props.photos],
+        list: [...this.props.photos.results],
         pages: pages
       });
     });
@@ -99,14 +100,14 @@ class Filter extends Component {
     return (
       <Container fluid>
         <h2>Filtrar Fotografías</h2>
-        <Row>
+        <Row style={{marginBottom:"10px"}}>
           <Col xs="2">
-            <ButtonGroup>
+            {/* <ButtonGroup>
               <Button disabled>Filtrar</Button>
               <Button>
                 <FontAwesomeIcon icon={faFilter} />
               </Button>
-            </ButtonGroup>
+            </ButtonGroup> */}
           </Col>
           <Col xs="7"></Col>
           <Col xs="3">
@@ -139,11 +140,12 @@ class Filter extends Component {
               {this.state.listView ? (
                 <PhotoList
                   photos={this.state.list.slice(pageLowerBound, pageUpperBound)}
+                  editPhoto={this.props.editPhoto}
                 />
               ) : (
                 <PhotoCards
                   photos={this.state.list.slice(pageLowerBound, pageUpperBound)}
-                  onApprove={this.props.switchPhotoApproval}
+                  editPhoto={this.props.switchPhotoApproval}
                 />
               )}
             </Col>
@@ -189,8 +191,7 @@ const mapStateToProps = state => {
 };
 const mapActionsToProps = dispatch => ({
   getPhotos: () => dispatch(curador.getPhotos()),
-  switchPhotoApproval: (pID, val) =>
-    dispatch(curador.switchPhotoApproval(pID, val))
+  editPhoto: (photoID, data) => dispatch(curador.editPhoto(photoID, data)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Filter);
