@@ -3,17 +3,17 @@ import { Table } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-
+import FilterModal from './FilterModal'
 const check = <FontAwesomeIcon icon={faCheckCircle} />;
 
-const PhotoList = ({ photos, onApprove }) => {
+const PhotoList = ({ photos, editPhoto}) => {
   return (
     <Table responsive striped>
       <thead>
         <tr>
-          <th>
+          {/* <th>
             <input type="checkbox"></input>
-          </th>
+          </th> */}
           <th>Estado</th>
           <th>Titulo</th>
           <th>Imagen</th>
@@ -21,14 +21,15 @@ const PhotoList = ({ photos, onApprove }) => {
           <th>Autor</th>
           <th>Metadata</th>
           <th>Fecha de subida</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         {photos.map((el, key) => (
           <tr key={el.id}>
-            <td>
+            {/* <td>
               <input type="checkbox"></input>
-            </td>
+            </td> */}
             <td>
               {el.approved ? (
                 <span style={{ color: "green" }}>Aprobada{check}</span>
@@ -54,6 +55,9 @@ const PhotoList = ({ photos, onApprove }) => {
               ))}
             </td>
             <td>{new Date(el.created_at).toLocaleDateString("es")}</td>
+            <td>
+              <FilterModal editPhoto={editPhoto} buttonLabel="Gestionar" photo={el}/>
+            </td>
           </tr>
         ))}
       </tbody>

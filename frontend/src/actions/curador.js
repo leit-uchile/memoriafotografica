@@ -161,6 +161,7 @@ export const editPhoto = (photoID, newData) => (
       });
     } else {
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
+      return r.json()
       throw r.data;
     }
   });
@@ -187,6 +188,7 @@ export const switchPhotoApproval = (photoID, curr_value) => (
       });
     } else {
       dispatch({ type: SWICH_PHOTO_APPROVAL_ERROR, data: r.data });
+      return r.data;
       throw r.data;
     }
   });
