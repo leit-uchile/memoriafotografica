@@ -18,3 +18,6 @@ div.not-selected:hover img{
     font-size: 36px;
     color: #ff5a60;
 }
+#eye:hover, #pencil:hover{
+    transform: scale(1.5);
+}

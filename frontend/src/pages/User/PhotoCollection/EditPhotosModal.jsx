@@ -18,7 +18,7 @@ import {
   Form,
   FormText
 } from "reactstrap";
-import { photoDetails, home, upload } from "../../../actions";
+import { photoDetails, home, curador } from "../../../actions";
 import ReactTags from "react-tag-autocomplete";
 
 const CC_INFO = [
@@ -34,82 +34,43 @@ const EditPhotosModal = props => {
   const [toggle, setToggle] = useState(false);
   const [toggleDelete, setToggleDelete] = useState(false);
   const [sent, setSent] = useState(false);
-  const [formData, setData] = useState(
-    {
-      title: "",
-      description: "",
-      upload_date: "",
-      tags: [],
-      permission: ""
-    });
+  const [formData, setData] = useState({}); //nuevos datos
 
   useEffect(() => {
-    props.onLoad(props.photos); //photoDetails
+    props.onLoad(props.photos); //info de la fotografia
     props.getTags(); //suggestions
   }, [props.photos]);
 
+  useEffect(() => {
+    props.onLoad(props.photos); //se actualiza info tras guardarla
+  }, [sent]);
+
   const updateData = e =>
     setData({ ...formData, [e.target.name]: e.target.value });
+  
+  const updateDate = e =>
+    setData({ ...formData, [e.target.name]: e.target.value+'T00:00:00-03:00' });
+
+  const additionTag = tag => {
+    const tags = [].concat(formData.metadata, tag);
+    setData({ ...formData, metadata: tags });
+  };
 
   const deleteTag = i => {
-    const tags = formData.tags.slice(0);
+    const tags = formData.metadata.slice(0);
     tags.splice(i, 1);
     setData({ ...formData, tags });
   };
 
-  const additionTag = tag => {
-    const tags = [].concat(formData.tags, tag);
-    setData({ ...formData, tags: tags });
-  };
+  const handleOnClose = () => {
+    setData({});
+    setToggle(!toggle);
+    setSent(false)
+  }
 
   const onSend = () => {
-    //setSent(!sent);
-    const date=
-      formData.upload_date !== ""
-      ? formData.upload_date
-      : `${photoInfo.upload_date}`.slice(0,10)
-    var title=
-      formData.title !== ""
-      ? formData.title
-      : photoInfo.title
-    var description = 
-      formData.description !== ""
-      ? formData.description
-      : photoInfo.description
-
-    var aspect_h = photoInfo.aspect_h
-    var aspect_w = photoInfo.aspect_w
-    var image = photoInfo.image // debiera ser tipo file
-    var permission =
-      formData.permission !== ""
-      ? formData.permission
-      : photoInfo.permission
-    if(formData.tags.length !== 0){
-      var metadata = formData.tags
-    }else{
-      metadata = []
-    }
-    let meta = {
-      title: title,
-      description: description,
-      aspect_h: aspect_h,
-      aspect_w: aspect_w,
-      cc: permission,
-      tags: metadata,
-      //collapse: false,
-      //height: ,
-      //width:,
-      //previewCalled: false,
-      //src: blob,
-      //tags:""
-    }
-    let photo = {meta: meta, photo: image}
-    let photos = {
-      photosList: [photo],
-      tags: metadata
-    }
-    console.log(photos)
-    props.uploadPhotos(photos)
+    props.editPhoto(props.photos, formData)
+    setSent(true)
   }
 
   const { photoInfo, tags } = props; 
@@ -154,7 +115,7 @@ const EditPhotosModal = props => {
               type="date"
               defaultValue={`${photoInfo.upload_date}`.slice(0,10)} 
               name="upload_date" 
-              onChange={updateData} 
+              onChange={updateDate} 
               />
             </Col>
           </Row>
@@ -184,10 +145,10 @@ const EditPhotosModal = props => {
             </Col>
             <Col>
               <UncontrolledButtonDropdown>
-                <DropdownToggle caret color="link">
-                {formData.permission === ""
-                    ? "Seleccionar"
-                    : formData.permission}
+                <DropdownToggle caret color="link" style={{padding:'0'}}>
+                {formData.permission
+                    ? formData.permission
+                    : "Seleccionar"}
                 </DropdownToggle>
                 <DropdownMenu>
                   {CC_INFO.map((el, k) => (
@@ -195,7 +156,7 @@ const EditPhotosModal = props => {
                       name="permission"
                       value={el.name}
                       onClick={updateData}
-                      active={`${photoInfo.permission}`===el.name}
+                      active={`${formData.permission}`===el.name}
                       style={{display:'block',width:'100%'}}
                     >
                       {el.name}
@@ -205,7 +166,7 @@ const EditPhotosModal = props => {
                 
               </UncontrolledButtonDropdown>
               <FormText color="muted">
-                El elemento coloreado es el permiso actual
+                El permiso actual es {photoInfo.permission}
               </FormText>
             </Col>
           </Row>
@@ -255,7 +216,7 @@ const EditPhotosModal = props => {
               <Button color="success" onClick={()=>onSend()}>
                 Guardar cambios
               </Button>
-              <Button color="secondary" onClick={() => setToggle(!toggle)}>
+              <Button color="secondary" onClick={() => handleOnClose()}>
                 Cancelar
               </Button>
               <Button color="danger" onClick={() => setToggleDelete(!toggleDelete)}>
@@ -263,7 +224,7 @@ const EditPhotosModal = props => {
               </Button>
             </Fragment>
           ) : (
-            <Button color="secondary" onClick={() => setToggle(!toggle)}>
+            <Button color="secondary" onClick={() => handleOnClose()}>
               Cerrar
             </Button>
           )}
@@ -277,14 +238,14 @@ const mapStateToProps = state => {
   return {
     photoInfo: state.photoDetails.details,
     tags: state.home.all_tags,
-    upload: state.upload,
   };
 };
 
 const mapActionsToProps = dispatch => ({
   onLoad: id => dispatch(photoDetails.getPhoto(id)),
   getTags: () => dispatch(home.tags()),
-  uploadPhotos: info => dispatch(upload.uploadImages(info)),
+  editPhoto: (pID, val) =>
+    dispatch(curador.editPhoto(pID, val))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(EditPhotosModal);

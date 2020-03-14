@@ -23,16 +23,16 @@ class UserPhotos extends Component {
       redirect: false,
       chosenPhotoIndex: 0,
       picturesToEdit: [],
-      selectedAll: false
+      selectedAll: false,
+      searchOrder: { field: "created_at", order: "desc" }
     };
     this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
   }
 
-  // handleOnClick = (index,type) => {
-  //   type==='redirect'
-  //   ? this.handleOnRedirect(index)
-  //   : this.handleOnSelect(index)
-  // }
+  setSortingOrder(order) {
+    this.setState({...this.state, searchOrder: order})
+    this.props.sortByField(this.state.searchOrder.field, this.state.searchOrder.order)
+  }
   
   handleOnRedirect = obj =>{
     console.log(obj)
@@ -111,21 +111,45 @@ class UserPhotos extends Component {
               />
             </Col>
             <Col md={2} style={styles.filterMenu}>
-              <UncontrolledButtonDropdown className="home-button">
-                <DropdownToggle caret>Ordenar</DropdownToggle>
-                <DropdownMenu
-                  style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}
+            <UncontrolledButtonDropdown className="home-button">
+              <DropdownToggle caret style={styles.dropdownButton}>
+                Ordenar
+              </DropdownToggle>
+              <DropdownMenu style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}>
+                <div style={styles.triangulo}></div>
+                <DropdownItem header>Por orden cronológico</DropdownItem>
+                <DropdownItem
+                  onClick={() =>
+                    this.setSortingOrder({ field: "upload_date", order: "asc" })
+                  }
                 >
-                  <div style={styles.triangulo}></div>
-                  <DropdownItem header>Por orden cronológico</DropdownItem>
-                  <DropdownItem>Más antiguas primero</DropdownItem>
-                  <DropdownItem>Más nuevas primero</DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem header>Por fecha de subida</DropdownItem>
-                  <DropdownItem>Más antiguas primero</DropdownItem>
-                  <DropdownItem>Más nuevas primero</DropdownItem>
-                </DropdownMenu>
-              </UncontrolledButtonDropdown>
+                  Más antiguas primero
+                </DropdownItem>
+                <DropdownItem
+                  onClick={() =>
+                    this.setSortingOrder({ field: "upload_date", order: "desc" })
+                  }
+                >
+                  Más nuevas primero
+                </DropdownItem>
+                <DropdownItem divider />
+                <DropdownItem header>Por fecha de subida</DropdownItem>
+                <DropdownItem
+                  onClick={() =>
+                    this.setSortingOrder({ field: "created_at", order: "asc" })
+                  }
+                >
+                  Más antiguas primero
+                </DropdownItem>
+                <DropdownItem
+                  onClick={() =>
+                    this.setSortingOrder({ field: "created_at", order: "desc" })
+                  }
+                >
+                  Más nuevas primero
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledButtonDropdown>
               <Button onClick={() => this.putAllToEdit(mapped, true)}>
                 Seleccionar todas
               </Button>
@@ -198,6 +222,7 @@ const mapStateToProps = state => ({
 const mapActionsToProps = dispatch => ({
   setSelectedId: id => dispatch(home.setSelectedId(id)),
   setRoute: route => dispatch(misc.setCurrentRoute(route)),
+  sortByField: (tag, order) => dispatch(home.sortByField(tag, order)),
   onLoadGetPhotos: (user_id, limit, offset) =>
     dispatch(user.getUserPhotos(user_id, limit, offset))
 });

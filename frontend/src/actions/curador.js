@@ -7,6 +7,8 @@ import {
   CREATED_CATEGORY_ERROR,
   RECOVERED_PHOTOS,
   EMPTY_PHOTOS,
+  EDIT_PHOTO,
+  EDIT_PHOTO_ERROR,
   SWICH_PHOTO_APPROVAL,
   SWICH_PHOTO_APPROVAL_ERROR,
   CURADOR_LOADING,
@@ -136,6 +138,32 @@ export const getPhotos = auth => {
       }
     );
   };
+};
+
+export const editPhoto = (photoID, newData) => (
+  dispatch,
+  getState
+) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().auth.token
+  };
+  let sent_data = JSON.stringify({...newData});
+  return fetch("/api/photos/" + photoID + "/", {
+    method: "PUT",
+    headers: headers,
+    body: sent_data
+  }).then(function(response) {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then(data => {
+        dispatch({ type: EDIT_PHOTO, data: data });
+      });
+    } else {
+      dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
 };
 
 export const switchPhotoApproval = (photoID, curr_value) => (

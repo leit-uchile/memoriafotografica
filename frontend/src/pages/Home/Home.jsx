@@ -27,7 +27,7 @@ class Home extends Component {
         page: 0,
         maxAllowed: 10
       },
-      maxAllowedCategories: 8,
+      maxAllowedCategories: 4,
       sortOpen: false,
       chosenPhotoIndex: 0, // For redirect
       redirect: false,

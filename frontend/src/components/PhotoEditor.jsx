@@ -74,16 +74,12 @@ const SelectedImage = ({
   }
 
   const handleOnRedirect = e => {
-    
     onRedirect(e, {index});
-    
   };
 
   const handleOnSelect = e => {
-    
     setIsSelected(!isSelected);
     onClick(e,{index});
-   
   };
 
   useEffect(() => {
@@ -110,8 +106,8 @@ const SelectedImage = ({
       {!isSelected
       ? <div className="middle">
           <div className="icons">
-            <FontAwesomeIcon icon={faEye} style={{marginRight: '0.35em'}} onClick={handleOnRedirect}/>
-            <FontAwesomeIcon icon={faPencilAlt} onClick={handleOnSelect} />
+            <FontAwesomeIcon id="eye" icon={faEye} style={{marginRight: '0.35em'}} onClick={handleOnRedirect}/>
+            <FontAwesomeIcon id="pencil" icon={faPencilAlt} onClick={handleOnSelect} />
           </div>
         </div>
       : <span></span>
