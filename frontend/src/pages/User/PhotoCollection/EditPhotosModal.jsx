@@ -40,8 +40,13 @@ const EditPhotosModal = props => {
   const [formData, setData] = useState({}); //nuevos datos
 
   useEffect(() => {
-    props.onLoad(props.photos) //photoInfo
-    props.getTags(); //suggestions
+    props.getTags(); //suggestions, TODO: llamar cuando el usuario ingresa nuevo tag
+  }, [])
+
+  useEffect(() => {
+    props.photos.length===1
+    ? props.onLoad(props.photos) //photoInfo
+    : console.log('evitando llamada de photoInfo para un array')
   }, [props.photos]);
 
   useEffect(()=> {
@@ -74,12 +79,10 @@ const EditPhotosModal = props => {
 
   const handleOnClose = () => {
     setToggle(!toggle);
-    setLoading(false)
   }
 
   const onSend = () => {
     let to_send = {...formData}
-
     if (props.photos.length>1 && to_send.metadata.length===0){ //si hay más de una foto y no quiere cambiarle los tags
       delete to_send.metadata
     }else{ 
@@ -91,7 +94,7 @@ const EditPhotosModal = props => {
       // }else{
 
       // }
-      to_send.metadata = to_send.metadata.map(el => el.id)
+      to_send.metadata = to_send.metadata.map(el => el.id) // problema con nuevosTags (el.id undefined)
     }
     delete to_send.image
     delete to_send.thumbnail
@@ -211,7 +214,7 @@ const EditPhotosModal = props => {
       >
         Editar selección ({props.photos.length})
       </Button>
-      <Modal isOpen={toggle} toggle={() => setToggle(!toggle)}>
+      <Modal isOpen={toggle} toggle={() => setToggle(!toggle)} size={'lg'} className='user-modal'>
         <ModalHeader close={closeBtn}>
           {props.photos.length === 1 ? (
           <h4 

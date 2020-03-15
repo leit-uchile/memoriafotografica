@@ -39,8 +39,7 @@ class EditProfile extends Component {
       user: { ...props.user },
       modal_pass: false,
       modal_crop: false,
-      newAvatar: null,
-      avatarEdited: false,
+      newAvatar: null
     };
     this.fr = new FileReader();
     this.fr.onload = (function(theFile) {
@@ -73,7 +72,6 @@ class EditProfile extends Component {
   };
 
   toggleDropdown = e => {
-    // console.log(e.target);
     if (e.target.name === "untoggle") {
       return;
     }
@@ -90,8 +88,7 @@ class EditProfile extends Component {
 
   toggleModalCrop = () => {
     this.setState(prevState => ({
-      modal_crop: !prevState.modal_crop,
-      avatarEdited: true
+      modal_crop: !prevState.modal_crop
     }));
   };
 
@@ -168,8 +165,12 @@ class EditProfile extends Component {
     }
   };
 
-  handleCrop(newAvatar) {
-    this.setState({ newAvatar: newAvatar });
+  handleCrop(newPhoto) {
+    this.setState({ newAvatar: newPhoto });
+    this.props.update(
+      { id: this.state.user.id, avatar: this.state.newAvatar },
+      false
+    );
   }
 
   render() {
@@ -327,9 +328,6 @@ class EditProfile extends Component {
                       </Col>
                     </FormGroup>
                     <Button color="success">Guardar Cambios</Button>
-                    <FormText color="muted" style={{display: this.state.avatarEdited ?'inline':'none'}}>
-                      {'     '}Deberá guardar los cambios para que su foto se actualice
-                    </FormText>
                   </Form>
                 </Col>
               </Row>

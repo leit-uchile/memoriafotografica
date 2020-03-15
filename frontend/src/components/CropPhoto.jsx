@@ -6,57 +6,42 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter
+  ModalFooter,
+  ButtonGroup,
+  FormText
 } from "reactstrap";
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-import { connect } from "react-redux";
-// import {image64toCanvasRef} from "./ResuableUtils"
+import { base64StringtoFile, extractImageFileExtensionFromBase64 } from './ResuableUtils'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVectorSquare } from "@fortawesome/free-solid-svg-icons";
 
-const dimensions = { // dimensiones disponibles para el usuario
+const dimensions = {
   aspect4_3: {
-    unit: '%',
-    aspect: 4 / 3,
-    width: 100
+    aspect: 4 / 3
   },
   aspect16_9: {
-    unit: '%',
-    aspect: 16 / 9,
-    width: 100
+    aspect: 16 / 9
   },
-  standard:{
-    unit: '%',
-    x: 25,
-    y: 25,
-    width: 50,
-    height: 50    
+  default:{
+    crop: {
+      aspect: 1/1
+    },
+    rotation: 0
   }
-}
-const onLoadValues = { // dimensiones por default al cargar
-  crop: {
-    unit: '%',
-    width: 50,
-    height: 50,
-    x : 0,
-    y: 0
-  },
-  rotation: 0
 }
 
 class CropPhoto extends Component {
   constructor(Props) {
     super(Props);
-    this.imageRef = {};
-    // this.imagePreviewCanvasRef = React.createRef()
     this.state = {
       modal: this.props.isOpen, // modal de CropPhoto
-      imgSrc: this.props.src, // imagen perfil,
-      crop: onLoadValues.crop, // selector de linea discontinua
-      rotation: onLoadValues.rotation // rotacion de la imagen
+      imgSrc: this.props.src, // imagen perfil, objeto
+      crop: dimensions.default.crop, // selector de linea discontinua
+      rotation: dimensions.default.rotation // rotacion de la imagen
     };
     this.toggle = this.toggle.bind(this);
     this.rotate = this.rotate.bind(this);
-    this.setDimension = this.setDimension.bind(this);
   }
 
   toggle(){
@@ -66,14 +51,6 @@ class CropPhoto extends Component {
     this.props.handleToggle() // abre y cierra el modal independiente de DropdownButton
   }
 
-  onCropLoad = (image,load) =>{
-    this.imageRef = image
-  }
-  
-  onCropChange = (crop) => { // actualiza el tamaño y posicion del crop segun el mouse
-    this.setState({crop: crop})
-  }
-  
   rotate(){
     let newRotation = this.state.rotation - 90;
     if(newRotation <= -360){
@@ -84,17 +61,22 @@ class CropPhoto extends Component {
     })
   }
 
-  setDimension = (dimension) =>{ // cambia el tamaño del crop a una dimension especifica
-    this.setState({crop: dimension})
+  handleOnCropChange = (crop) => {
+    this.setState({crop: crop})
   }
 
-  getCroppedImg(crop, fileName) {
-    let image = this.imageRef; //intentar con this.state.imgSrc
+  /**
+ * @param {HTMLImageElement} image - Image File Object
+ * @param {Object} crop - crop Object
+ * @param {String} fileName - Name of the returned file in Promise
+ */
+
+  getCroppedImg(image, crop, fileName) {
     const canvas = document.createElement('canvas');
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
-    canvas.width = Math.ceil(crop.width*scaleX);
-    canvas.height = Math.ceil(crop.height*scaleY);
+    canvas.width = crop.width;
+    canvas.height = crop.height;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(
       image,
@@ -104,61 +86,35 @@ class CropPhoto extends Component {
       crop.height * scaleY,
       0,
       0,
-      crop.width*scaleX,
-      crop.height*scaleY,
-    );
+      crop.width,
+      crop.height,
+    );  
     // As Base64 string
-    //  const base64Image = canvas.toDataURL('image/jpeg');
-    //  console.log(base64Image)
-  
-    // As a blob
-    return new Promise((resolve, reject) => {
-      canvas.toBlob(blob => {
-        blob.name = fileName;
-        resolve(blob);
-      }, 'image/jpeg',1);
-    });
-
-    // As a blob, another solution
-  //   return new Promise((resolve, reject) => {
-  //     resolve(canvas.toDataURL('image/png'));
-  //   });
- }
-
-  onSave = () => { // guarda el estado del crop y la rotacion de la foto en los valores de carga para una nueva edicion. Permite descartar ultimo cambio
-    onLoadValues.crop = this.state.crop
-    onLoadValues.rotation = this.state.rotation
-    this.getCroppedImg(onLoadValues.crop, 'previewNewAvatar')
-    // this.props.save(poner aqui la foto obtenida tras el corte)
-    this.toggle()
+    const base64Image = canvas.toDataURL();
+    let finalName = fileName + '.' + extractImageFileExtensionFromBase64(base64Image)
+    return base64StringtoFile(base64Image, finalName)
   }
 
-  onDefault = () => {
-    this.setState({
-      crop: {
-        unit:'%',
-        x:0,
-        y:0,
-        width:0,
-        height:0
-      },
-      rotation: 0
-    })
+  onSave = () => {
+    let image = new Image()
+    image.src = this.state.imgSrc
+    let newAvatar = this.getCroppedImg(image, this.state.crop, 'avatarCropped')
+    this.props.save(newAvatar)
+    this.toggle()
   }
 
   render() {
     const { imgSrc, rotation } =  this.state;
     var Crop = (
       <ReactCrop 
-        src={this.state.imgSrc} 
+        src={imgSrc} 
         imageStyle={{transform: `rotate(${rotation}deg)`}}
         crop={this.state.crop} 
-        onImageLoaded={this.onCropLoad}
-        onChange={this.onCropChange}
+        onChange={this.handleOnCropChange}
       />
     )
     return (
-        <Modal isOpen={this.state.modal} size={'lg'}>
+        <Modal isOpen={this.state.modal} size={'lg'} className='user-modal'>
           <ModalHeader>
             <h4 style={{fontWeight:'bold'}}>
               Recortando foto
@@ -170,11 +126,6 @@ class CropPhoto extends Component {
                 {Crop}
               </Col>
             </Row>
-            {/* <Row>
-              <Col>
-              <canvas ref={this.imagePreviewCanvasRef}></canvas>
-              </Col>
-            </Row> */}
             <Row>
               <Col>
                 <Button color="primary" onClick={this.rotate}>
@@ -182,44 +133,46 @@ class CropPhoto extends Component {
                 </Button>
               </Col>
               <Col>
-                <h3>Dimensiones</h3>
-                <Button color="primary" onClick={()=>this.setDimension(dimensions.aspect4_3)}>
-                  4:3
-                </Button>
-                <Button color="primary" onClick={()=>this.setDimension(dimensions.aspect16_9)}>
-                  16:9
-                </Button>
-                <Button color="primary" onClick={()=>this.setDimension(dimensions.standard)}>
-                  Libre
-                </Button>
+                <h4> <FontAwesomeIcon icon={faVectorSquare}/> {" "} Dimensiones</h4>
+                  <ButtonGroup>
+                  <Button 
+                  color={this.state.crop.aspect===dimensions.default.crop.aspect ?"primary" :"secondary"}  
+                  onClick={()=>this.handleOnCropChange(dimensions.default.crop)}
+                  >
+                    Default
+                  </Button>
+                  <Button 
+                  color={this.state.crop.aspect===dimensions.aspect4_3.aspect ?"primary" :"secondary"} 
+                  onClick={()=>this.handleOnCropChange(dimensions.aspect4_3)}
+                  >
+                    4:3
+                  </Button>
+                  <Button 
+                  color={this.state.crop.aspect===dimensions.aspect16_9.aspect ?"primary" :"secondary"} 
+                  onClick={()=>this.handleOnCropChange(dimensions.aspect16_9)}
+                  >
+                    16:9
+                  </Button>
+                </ButtonGroup>
               </Col>
             </Row>
           </ModalBody>
           <ModalFooter>
-            <Button color="success" onClick={this.onSave}>
-              Seleccionar
-            </Button>
-            <Button color="secondary" onClick={this.toggle}>
-              Descartar
-            </Button>
-            <Button color="secondary" onClick={this.onDefault}>
-              Original
-            </Button>
+            <FormText color="muted">
+              Este cambio es irreversible
+            </FormText>
+            <ButtonGroup>
+              <Button color="success" onClick={this.onSave}>
+                Cortar
+              </Button>
+              <Button color="secondary" onClick={this.toggle}>
+                Descartar
+              </Button>
+            </ButtonGroup>
           </ModalFooter>
         </Modal>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  
-});
-
-const mapActionsToProps = dispatch => ({
-  
-});
-
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(CropPhoto);
+export default CropPhoto;
