@@ -12,7 +12,8 @@ import {
 import { connect } from "react-redux";
 import { photoDetails } from "../../actions";
 import Comment from "./Comment";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faComment, faComments } from "@fortawesome/free-solid-svg-icons";
 const CommentHandler = ({
   id,
   comments,
@@ -31,7 +32,7 @@ const CommentHandler = ({
 
   // If is auth then allow reports
   var commentRows = comments.map((el, key) => (
-    <Row key={"Comment"+key}>
+    <Row key={"Comment" + key}>
       <Col
         style={styles.commentContainerStyle}>
         <Comment content={el} modal={auth} />
@@ -43,7 +44,11 @@ const CommentHandler = ({
     <Container style={style} fluid={fluid}>
       <Row>
         <Col>
-          <h3>Comentarios</h3>
+          <h3> 
+          Comentarios {" "}
+          <FontAwesomeIcon icon={faComments} />
+         
+          </h3>
         </Col>
       </Row>
       {comments.length !== 0 ? commentRows : null}
@@ -56,7 +61,11 @@ const CommentHandler = ({
               setComment("");
             }}>
             <FormGroup>
-              <Label>Comentar</Label>
+              <Label>
+                Comentar 
+                {" "}
+                <FontAwesomeIcon icon={faComment} />
+              </Label>
               <Input
                 type="text"
                 placeholder="Comentario ..."

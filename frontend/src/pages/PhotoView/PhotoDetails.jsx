@@ -54,10 +54,10 @@ class PhotoDetails extends Component {
   };
 
   componentDidMount() {
-    this.imageContainer.current.scrollIntoView({
+    /* this.imageContainer.current.scrollIntoView({
       block: "start",
       behavior: "smooth"
-    });
+    }); */
 
     // Load info the first time
     this.setState({ loadingPhoto: true }, () =>

@@ -9,7 +9,8 @@ import {
   LOADED_CUSTOM_METADATA,
   REPORTED_PHOTO,
   PHOTO_REPORT_FAILED,
-  REPORTING_PHOTO
+  REPORTING_PHOTO,
+  LOADING_COMMENT
 } from "./types";
 
 export const getPhoto = id => dispatch => {
@@ -58,6 +59,9 @@ export const putComment = (id, comment) => (dispatch, getState) => {
     "Content-Type": "application/json"
   };
 
+  const user = getState().user.userData
+
+  dispatch({type: LOADING_COMMENT, data: {content: comment, usuario: {...user}} })
   let jsonthing = JSON.stringify({ id: id, content: comment });
 
   return fetch(`/api/photos/${id}/comments/`, {

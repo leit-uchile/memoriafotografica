@@ -1,4 +1,4 @@
-.home-background .col .react-photo-gallery--gallery{
+.home-background .react-photo-gallery--gallery{
   background-color: white;
 }
 
@@ -32,10 +32,20 @@
   flex-direction: row;
 }
 
+.home-category-filter{
+  width: 38em;
+}
+
 .home-tags {
   color: white;
   border-radius: 10px;
   background-color: #9a9e9d;
   margin: 2px;
   padding: 4px 12px 4px 12px;
+}
+
+@media (min-width: 768px){
+  .home-category-filter{
+    width: 30em;
+  } 
 }
