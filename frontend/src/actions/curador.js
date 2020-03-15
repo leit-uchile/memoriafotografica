@@ -29,7 +29,7 @@ export const getReportes = () => {
       res => {
         if (res.status === 200) {
           return res.json().then(data => {
-            dispatch({ type: RECOVERED_REPORT, data: data });
+            dispatch({ type: RECOVERED_REPORT, data: data.results });
           });
         } else {
           dispatch({ type: EMPTY_REPORTS, data: res.data });
@@ -49,7 +49,7 @@ export const getCategories = () => {
         const r = response;
         if (r.status === 200) {
           return r.json().then(data => {
-            dispatch({ type: RECOVERED_CATEGORIES, data: data });
+            dispatch({ type: RECOVERED_CATEGORIES, data: data.results });
           });
         } else {
           dispatch({ type: EMPTY_CATEGORIES, data: r.data });
@@ -148,7 +148,7 @@ export const editPhoto = (photoID, newData) => (
     "Content-Type": "application/json",
     Authorization: "Token " + getState().auth.token
   };
-  let sent_data = JSON.stringify({...newData});
+  let sent_data = JSON.stringify(newData);
   return fetch("/api/photos/" + photoID + "/", {
     method: "PUT",
     headers: headers,
@@ -160,6 +160,7 @@ export const editPhoto = (photoID, newData) => (
         dispatch({ type: EDIT_PHOTO, data: data });
       });
     } else {
+      dispatch(setAlert("No se ha podido actualizar la información. Inténtelo nuevamente", "warning"))
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
       return r.json()
       throw r.data;

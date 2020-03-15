@@ -116,7 +116,13 @@ class PhotoSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.permission = validated_data.get('permission', instance.permission)
         instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get('description', instance.description)
         instance.updated_at = datetime.now()
+        instance.upload_date = validated_data.get('upload_date', instance.upload_date)
+        try:
+            instance.metadata.set(validated_data['metadata'])
+        except KeyError:
+            pass
         instance.save()
         return instance
 
@@ -134,7 +140,7 @@ class PhotoAdminSerializer(serializers.ModelSerializer):
         instance.censure = validated_data.get('censure', instance.censure)
         instance.permission = validated_data.get('permission', instance.permission)
         instance.description = validated_data.get('description', instance.description)
-        
+        instance.upload_date = validated_data.get('upload_date', instance.upload_date)
         try:
             instance.metadata.set(validated_data['metadata'])
         except KeyError:

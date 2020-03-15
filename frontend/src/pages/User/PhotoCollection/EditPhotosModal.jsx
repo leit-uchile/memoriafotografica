@@ -16,10 +16,13 @@ import {
   FormGroup,
   Input,
   Form,
-  FormText
+  FormText,
+  ButtonGroup
 } from "reactstrap";
-import { photoDetails, home, curador } from "../../../actions";
+import { photoDetails, home, curador, metadata } from "../../../actions";
 import ReactTags from "react-tag-autocomplete";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },
@@ -33,23 +36,30 @@ const CC_INFO = [
 const EditPhotosModal = props => {
   const [toggle, setToggle] = useState(false);
   const [toggleDelete, setToggleDelete] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setData] = useState({}); //nuevos datos
 
   useEffect(() => {
-    props.onLoad(props.photos); //info de la fotografia
+    props.onLoad(props.photos) //photoInfo
     props.getTags(); //suggestions
   }, [props.photos]);
 
-  useEffect(() => {
-    props.onLoad(props.photos); //se actualiza info tras guardarla
-  }, [sent]);
+  useEffect(()=> {
+    if (props.photos.length===1){
+      let info = {...props.photoInfo}
+      info.metadata =  (props.photoInfo.metadata !== undefined) ? props.photoInfo.metadata.map(e => ({ id: e.id, name: e.value })) : []
+      info.permission = (props.photoInfo.permission !== undefined) ? info.permission.toString() : null
+      setData(info)
+    }else{
+      setData({metadata:[]})
+  }
+  }, [props.photoInfo, props.photos])
 
   const updateData = e =>
     setData({ ...formData, [e.target.name]: e.target.value });
   
   const updateDate = e =>
-    setData({ ...formData, [e.target.name]: e.target.value+'T00:00:00-03:00' });
+    setData({ ...formData, [e.target.name]: e.target.value+'T00:00' });
 
   const additionTag = tag => {
     const tags = [].concat(formData.metadata, tag);
@@ -59,22 +69,41 @@ const EditPhotosModal = props => {
   const deleteTag = i => {
     const tags = formData.metadata.slice(0);
     tags.splice(i, 1);
-    setData({ ...formData, tags });
+    setData({ ...formData, metadata: tags });
   };
 
   const handleOnClose = () => {
-    setData({});
     setToggle(!toggle);
-    setSent(false)
+    setLoading(false)
   }
 
   const onSend = () => {
-    props.editPhoto(props.photos, formData)
-    setSent(true)
+    let to_send = {...formData}
+
+    if (props.photos.length>1 && to_send.metadata.length===0){ //si hay más de una foto y no quiere cambiarle los tags
+      delete to_send.metadata
+    }else{ 
+      // let newTags = formData.metadata.filter(el => el.id === undefined).map(el => el.name);
+      // if (newTags.length>0){
+      //   props.createMultipleMetas(Object.values(newTags)).then(response => {
+      //     console.log(response)
+      //   })
+      // }else{
+
+      // }
+      to_send.metadata = to_send.metadata.map(el => el.id)
+    }
+    delete to_send.image
+    delete to_send.thumbnail
+    props.photos.forEach((el,index) => {
+      (props.photos.length>1 && to_send.title!==undefined) //si está editando el título de varias
+      ? props.editPhoto(el, {...to_send, title: to_send.title + ' (' + `${index+1}`+')'} )
+      : props.editPhoto(el, to_send)
+    });
+    setLoading(true)
   }
 
-  const { photoInfo, tags } = props; 
-  const metadata = photoInfo.metadata!==undefined ? photoInfo.metadata.map(e => ({ id: e.id, name: e.value, })) : [];
+  const { tags } = props; 
   const suggestions = tags ? tags.map(e => ({ id: e.id, name: e.value, })) : [];
   const PhotosForm = (
     <Fragment>
@@ -87,7 +116,8 @@ const EditPhotosModal = props => {
             <Col>
               <Input
                 type="text"
-                defaultValue={photoInfo.title}
+                value={formData.title}
+                placeholder="Nuevo título de las fotografías"
                 name="title"
                 onChange={updateData}
               />
@@ -100,7 +130,8 @@ const EditPhotosModal = props => {
             <Col>
               <Input
                 type="textarea"
-                defaultValue={photoInfo.description}
+                value={formData.description}
+                placeholder="Nueva descripción de las fotografías"
                 name="description"
                 onChange={updateData}
               />
@@ -113,7 +144,7 @@ const EditPhotosModal = props => {
             <Col>
               <Input 
               type="date"
-              defaultValue={`${photoInfo.upload_date}`.slice(0,10)} 
+              value={`${formData.upload_date}`.slice(0,10)} 
               name="upload_date" 
               onChange={updateDate} 
               />
@@ -125,14 +156,14 @@ const EditPhotosModal = props => {
             </Col>
             <Col>
               <ReactTags
-                  style={{ width: "auto" }}
-                  placeholder={"Añadir etiquetas"}
-                  autoresize={false}
-                  allowNew={true}
-                  tags={metadata}
-                  suggestions={suggestions}
-                  handleDelete={deleteTag}
-                  handleAddition={additionTag}
+                style={{ width: "auto" }}
+                placeholder={"Añadir etiquetas"}
+                autoresize={false}
+                allowNew={true}
+                tags={formData.metadata}
+                suggestions={suggestions}
+                handleDelete={deleteTag}
+                handleAddition={additionTag}
               />
               <FormText color="muted">
                 Para ingresar una nueva etiqueta debe presionar la tecla "Entrar" o "Tabulación" 
@@ -163,18 +194,14 @@ const EditPhotosModal = props => {
                     </DropdownItem>
                   ))}
                 </DropdownMenu>
-                
               </UncontrolledButtonDropdown>
-              <FormText color="muted">
-                El permiso actual es {photoInfo.permission}
-              </FormText>
             </Col>
           </Row>
         </FormGroup>
       </Form>
     </Fragment>
   );
-
+ const closeBtn = <FontAwesomeIcon icon={faTrashAlt} onClick={()=>setToggleDelete(!toggleDelete)} style={{color:'#ff5a60', cursor:'pointer', fontSize:'16px'}}/>
   return (
     <div>
       <Button
@@ -185,43 +212,48 @@ const EditPhotosModal = props => {
         Editar selección ({props.photos.length})
       </Button>
       <Modal isOpen={toggle} toggle={() => setToggle(!toggle)}>
-        {props.photos.length === 1 ? (
-          <ModalHeader>
-            <h4 style={{ fontWeight: "bold" }}>Editando 1 foto</h4>
-          </ModalHeader>
-        ) : (
-          <ModalHeader>
-            <h4 style={{ fontWeight: "bold" }}>
-              Editando {props.photos.length} fotos
-            </h4>
-          </ModalHeader>
-        )}
+        <ModalHeader close={closeBtn}>
+          {props.photos.length === 1 ? (
+          <h4 
+          style={{ fontWeight: "bold" }}
+          >
+            Editando 1 foto 
+          </h4>):(
+          <h4 
+          style={{ fontWeight: "bold" }}
+          >
+            Editando {props.photos.length} fotos
+          </h4>
+          )}
+        </ModalHeader>
         <ModalBody>
-          {!sent
+          {!loading
             ? PhotosForm
             : "Estado de la solicitud (Cambios guardados, Error, etc)"
           }
           <Modal isOpen={toggleDelete} toggle={()=>setToggleDelete(!toggleDelete)} centered>
-            <ModalHeader>¿Está seguro de eliminar la fotografía?</ModalHeader>
-            <ModalBody>Esta acción no se puede deshacer. Confirme su acción</ModalBody>
+            <ModalHeader>Eliminar fotografía(s)</ModalHeader>
+            <ModalBody>Esta acción no se puede deshacer. ¿Está seguro?</ModalBody>
             <ModalFooter>
-              <Button color="danger" onClick={()=>setToggleDelete(!toggleDelete)}>Eliminar</Button>{' '}
+              <Button color="danger" onClick={()=>{setToggleDelete(!toggleDelete); setToggle(!toggle)}}>Sí, eliminar</Button>{' '}
               <Button color="secondary" onClick={()=>setToggleDelete(!toggleDelete)}>Cancelar</Button>
             </ModalFooter>
           </Modal>
         </ModalBody>
         <ModalFooter>
-          {!sent ? (
+          {!loading ? (
             <Fragment>
-              <Button color="success" onClick={()=>onSend()}>
-                Guardar cambios
-              </Button>
+              <FormText color="muted">
+                Los cambios estarán sujetos a aprobación
+              </FormText>
+              <ButtonGroup>
               <Button color="secondary" onClick={() => handleOnClose()}>
-                Cancelar
-              </Button>
-              <Button color="danger" onClick={() => setToggleDelete(!toggleDelete)}>
-                Eliminar
-              </Button>
+                  Cancelar
+                </Button>
+                <Button color="success" onClick={()=>onSend()}>
+                  Guardar cambios
+                </Button>
+              </ButtonGroup>
             </Fragment>
           ) : (
             <Button color="secondary" onClick={() => handleOnClose()}>
@@ -244,8 +276,8 @@ const mapStateToProps = state => {
 const mapActionsToProps = dispatch => ({
   onLoad: id => dispatch(photoDetails.getPhoto(id)),
   getTags: () => dispatch(home.tags()),
-  editPhoto: (pID, val) =>
-    dispatch(curador.editPhoto(pID, val))
+  editPhoto: (pID, val) => dispatch(curador.editPhoto(pID, val)),
+  createMultipleMetas: name => dispatch(metadata.createMultipleMetas(name))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(EditPhotosModal);

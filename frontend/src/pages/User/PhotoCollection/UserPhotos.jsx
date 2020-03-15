@@ -111,7 +111,7 @@ class UserPhotos extends Component {
               />
             </Col>
             <Col md={2} style={styles.filterMenu}>
-            <UncontrolledButtonDropdown className="home-button">
+            {/* <UncontrolledButtonDropdown className="home-button">
               <DropdownToggle caret style={styles.dropdownButton}>
                 Ordenar
               </DropdownToggle>
@@ -149,7 +149,7 @@ class UserPhotos extends Component {
                   Más nuevas primero
                 </DropdownItem>
               </DropdownMenu>
-            </UncontrolledButtonDropdown>
+            </UncontrolledButtonDropdown> */}
               <Button onClick={() => this.putAllToEdit(mapped, true)}>
                 Seleccionar todas
               </Button>
