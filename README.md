@@ -54,5 +54,5 @@ user$ sudo docker-compose up
 
 En caso de no poder utilizar el script *.sh* basta cambiar los permisos del archivo con
 ```
-user$ sudo chmod 777 ./reset_db.sh
+user$ sudo chmod -x ./reset_db.sh
 ```
