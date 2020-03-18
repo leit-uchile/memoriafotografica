@@ -1,0 +1,43 @@
+[
+  {
+    "model": "WebAdmin.news",
+    "pk": 1,
+    "fields": {
+      "title": "Proyecto Memoria fotografica",
+      "subtitle": "Gran lanzamiento",
+      "content": "Les susanda ecusdae odit inctia dolore, ea conseque expliti ossuntorem rae peris et volland erferei untur, tem am num quos secatio. Um hit et is si offictemqui rem numqui non prae sim que antemporia pra velent.",
+      "image": "webadmin/5f245e6bc86e47439ca4b4bf71434f62.jpg",
+      "created_at": "2020-02-24T19:00:12Z",
+      "updated_at": "2020-02-24T19:00:12Z"
+    }
+  },
+  {
+    "model": "WebAdmin.news",
+    "pk": 2,
+    "fields": {
+      "title": "Injenieria desde 1860",
+      "subtitle": "Larga tradici\u00f3n beauchefiana",
+      "content": "Apis ad quatum et, odis doluptature, ut aliquamustia dolupta comnis et remquo opta andam fugitati ab ipsanient Les susanda ecusdae odit inctia dolore, ea conseque expliti ossuntorem rae peris et volland erferei untur, tem am num quos secatio. Um hit et is si offictemqui rem numqui non prae sim que antemporia pra velent.",
+      "image": "webadmin/4f898c8275454d628951e70f7130a8cf.jpg",
+      "created_at": "2020-02-24T19:03:12Z",
+      "updated_at": "2020-02-24T19:03:12Z"
+    }
+  },
+  {
+    "model": "WebAdmin.news",
+    "pk": 3,
+    "fields": {
+      "title": "Premiaci\u00f3n a nuestros profesores",
+      "subtitle": "por sus m\u00e1s de 20 a\u00f1os de servicio docente.",
+      "content": "Apis ad quatum et, odis doluptature, ut aliquamustia dolupta comnis et remquo opta andam fugitati ab ipsanient.",
+      "image": "webadmin/ea96c7413c5c4eec8d44ecb0485f66b6.jpg",
+      "created_at": "2020-02-24T19:04:02Z",
+      "updated_at": "2020-02-24T19:04:02Z"
+    }
+  },
+  {
+    "model": "WebAdmin.landingcaroussel",
+    "pk": 1,
+    "fields": { "news": [1, 2, 3] }
+  }
+]

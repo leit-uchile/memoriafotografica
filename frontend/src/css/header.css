@@ -1,0 +1,33 @@
+.left {
+  float: left;
+}
+
+ul.barra li {
+  padding: 5px 10px;
+}
+
+h1 {
+  background-image: url("/assets/logo01.svg");
+  text-indent: -9999px;
+  background-repeat: no-repeat;
+  /*background-size: 33%;*/
+  height: 55px;
+  min-width: 200px;
+}
+.navbar-brand p {
+  margin-bottom: -.3125rem;
+}
+
+@media screen and (max-width: 768px) {
+    .navbar-brand p{
+        display: none;
+    }
+}
+
+@media (min-width: 576px){
+  .collapse.navbar-collapse{
+    position: absolute;
+    bottom: 0;
+    right: 0
+  }
+}

@@ -1,0 +1,38 @@
+.main-section {
+    margin: 0 auto;
+    padding: 0;
+}
+.modal-content {
+    background-color: white;
+    /*opacity: .8;*/
+    border-radius: 10px;
+}
+.modal-content h2 {
+    padding: 20px;
+}
+.form-group button {
+    width: 30%;
+}
+.forgot {
+    padding: 5px 0 5px;
+}
+
+.login-background{
+    min-height: 75vh;
+    background-image: url("/assets/frontis_background.jpg");
+    background-size: cover;
+    background-color: #ff5a60;
+    background-blend-mode: multiply;
+    background-position-y: center;
+  }
+  
+  .login-background > .modal-dialog{
+    margin-top: 0;
+    padding-top: 15vh;
+    margin-bottom: 0;
+    padding-bottom: 15vh;
+  }
+  
+  .login-background > .modal-dialog > .main-section{
+    margin-top: 0;
+  }

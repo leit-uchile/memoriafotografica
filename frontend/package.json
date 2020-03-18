@@ -1,0 +1,66 @@
+{
+  "name": "static",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.21",
+    "@fortawesome/free-regular-svg-icons": "^5.12.0",
+    "@fortawesome/free-brands-svg-icons": "^5.12.0",
+    "@fortawesome/free-solid-svg-icons": "^5.10.1",
+    "@fortawesome/react-fontawesome": "^0.1.4",
+    "aos": "^2.3.4",
+    "bootstrap": "^4.3.1",
+    "env-cmd": "^10.1.0",
+    "eslint": "^6.6.0",
+    "history": "^4.7.2",
+    "moment": "^2.24.0",
+    "prop-types": "^15.7.2",
+    "react": "16.8",
+    "react-autosuggest": "^9.4.3",
+    "react-dom": "16.8",
+    "react-dropzone": "^10.1.5",
+    "react-helmet": "^5.2.1",
+    "react-image-crop": "^8.3.1",
+    "react-photo-gallery": "^8.0.0",
+    "react-redux": "^7.1.0",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "^3.3.0",
+    "react-slick": "^0.25.2",
+    "react-step-wizard": "^5.3.0",
+    "react-tag-autocomplete": "^5.10.0",
+    "react-transition-group": "^4.3.0",
+    "react-vis": "^1.11.7",
+    "reactstrap": "^8.0.0",
+    "redux": "^4.0.0",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0",
+    "semantic-ui-react": "^0.88.1",
+    "slick-carousel": "^1.8.1",
+    "source-map-explorer": "^2.3.1",
+    "style-loader": "0.22.1",
+    "uuid": "^3.3.2"
+  },
+  "scripts": {
+    "analyze": "source-map-explorer build/static/js/*.js --html analysis.html",
+    "start": "env-cmd -e development react-scripts start",
+    "build": "env-cmd -e production react-scripts build",
+    "test": "env-cmd -e development react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "autor": "LEIT",
+  "license": "",
+  "proxy": "http://backend:8000",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

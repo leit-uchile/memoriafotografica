@@ -1,0 +1,12 @@
+Django==2.2.10
+djangorestframework==3.9.0
+django-rest-knox==3.1.4
+django-multiselectfield==0.1.8
+django-rest-swagger==2.2.0
+coreapi==2.3.3
+markdown==3.0.1 
+pygments==2.3.0
+rest_condition==1.0.3
+Pillow==6.2.0
+sorl-thumbnail==12.5.0
+psycopg2

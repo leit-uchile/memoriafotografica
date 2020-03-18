@@ -1,0 +1,53 @@
+.leftcol{
+  padding-left: 0;
+  padding-right: 0;
+  border-right: 1px solid rgb(210, 214, 218);
+}
+
+
+.navButton{
+  color: #000000;
+  padding: 1rem .75rem ;
+  width: 100%;
+  text-align: left;
+  font-size:14px;
+  margin:0px;
+  background-color: white;
+  border-radius:0;
+  display: inline-block;
+  border:0px;
+  border-bottom:1px solid rgba(0,0,0,0.05);
+}
+
+.leftcol .navButton:hover{
+  border-color: none;
+}
+
+.navButton:hover{
+  border: none;
+  border-right: #ff5a60 solid 3px;
+  background-color: white;
+  color: #000;
+}
+
+.navSpacer{
+  padding: .375rem .75rem ;
+  background-color:#cad8e6;
+  border-bottom:1px solid rgba(0,0,0,0.05);
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.curador-filter-card.card{
+  height: 450px;
+  overflow-y: auto;
+}
+
+.curador-filter-card-img {
+  background-repeat: no-repeat;
+  background-size: contain;
+  min-height: 150px;
+  max-height: 300px;
+  background-color: black;
+  background-position: center;
+}
