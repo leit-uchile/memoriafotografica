@@ -11,7 +11,6 @@ import {
   faArchive,
   faFilter,
   faFlag,
-  faUserTimes,
   faTags,
   faChartBar
 } from "@fortawesome/free-solid-svg-icons";

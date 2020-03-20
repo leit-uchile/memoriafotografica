@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter,
             Form, FormGroup, Label, Input, Row, FormText} from "reactstrap";
-import Filter from "./Filter";
 
 const FilterModal = (props) => {
     const {

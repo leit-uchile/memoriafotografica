@@ -23,8 +23,7 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
-  FormText
+  ModalFooter
 } from "reactstrap";
 import UserPicture from "../../components/UserPicture";
 import CropPhoto from "../../components/CropPhoto";

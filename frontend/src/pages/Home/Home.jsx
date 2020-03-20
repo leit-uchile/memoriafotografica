@@ -7,9 +7,8 @@ import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
-import {LeitSpinner} from "../../components";
+import { LeitSpinner, Pagination } from "../../components";
 import FilterPicker from "./FilterPicker";
-import HomePagination from "./HomePagination";
 import "./home.css";
 
 /**
@@ -25,7 +24,7 @@ class Home extends Component {
     this.state = {
       photoPagination: {
         page: 0,
-        maxAllowed: 10
+        maxAllowed: 20
       },
       maxAllowedCategories: 4,
       sortOpen: false,
@@ -110,15 +109,14 @@ class Home extends Component {
                 <div className="home-filters-containers">
                   {filters.length !== 0 ? (
                     filters.map(el => (
-                      <span
-                        key={el.metaID}
-                        className="home-tags"
-                      >
-                        #{el.value} 
-                        <FontAwesomeIcon 
-                        icon={faTimesCircle} 
-                        style={{cursor: 'pointer'}} 
-                        onClick={() => this.props.removeSearch(el.metaID, el.value)}
+                      <span key={el.metaID} className="home-tags">
+                        #{el.value}
+                        <FontAwesomeIcon
+                          icon={faTimesCircle}
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            this.props.removeSearch(el.metaID, el.value)
+                          }
                         />
                       </span>
                     ))
@@ -139,7 +137,9 @@ class Home extends Component {
         <div className="home-background parallax">
           <Container className="home-gallery-container">
             <Row>
-              <Col sm={mapped.length == 1 ? {size: 4, offset: 4} : {size: 12}}>
+              <Col
+                sm={mapped.length === 1 ? { size: 4, offset: 4 } : { size: 12 }}
+              >
                 {loadingPhotos ? (
                   <LeitSpinner />
                 ) : (
@@ -155,12 +155,11 @@ class Home extends Component {
             <Row style={{ marginTop: "2em" }}>
               <Col>
                 {loadingPhotos ? null : (
-                  <HomePagination
-                    pageLimit={pageLimit}
+                  <Pagination
+                    maxPage={pageLimit}
                     page={this.state.photoPagination.page}
                     setStatePage={this.setPage}
-                    nbPhotos={this.props.photos.length}
-                    maxAllowed={this.state.photoPagination.maxAllowed}
+                    size="lg"
                   />
                 )}
               </Col>

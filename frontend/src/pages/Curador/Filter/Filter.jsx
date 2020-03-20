@@ -4,10 +4,7 @@ import {
   Col,
   Button,
   Container,
-  ButtonGroup,
-  Pagination,
-  PaginationItem,
-  PaginationLink
+  ButtonGroup
 } from "reactstrap";
 import { connect } from "react-redux";
 import { curador } from "../../../actions";
@@ -17,7 +14,7 @@ import {
   faThList,
   faFilter
 } from "@fortawesome/free-solid-svg-icons";
-import { LeitSpinner } from "../../../components";
+import { LeitSpinner, Pagination } from "../../../components";
 import PhotoList from "./PhotoList";
 import PhotoCards from "./PhotoCards";
 
@@ -26,39 +23,10 @@ class Filter extends Component {
     super(props);
     this.state = {
       listView: 1,
-      currentPage: 0,
-      pageSize: 25,
-      pages: 0,
-      list: []
+      page: 0,
+      pageSize: 18
     };
-    //Computes pages:
-    this.props.getPhotos().then(() => {
-      let totalDocs = this.props.photos.count;
-      console.log(this.props)
-      let pages = Math.ceil(totalDocs / this.state.pageSize);
-      this.setState({
-        list: [...this.props.photos.results],
-        pages: pages
-      });
-    });
-  }
-
-  updateElementState = () => {
-    // Send update to API
-    // Update
-    // remove
-    this.removeElement();
-    // getLatestElements
-  };
-
-  removeElement = () => {
-    // Fake call to API
-    const largo = this.state.list.length;
-    var list = [...this.state.list.slice(1, largo)];
-    console.log(list);
-    this.setState({
-      list: [...list]
-    });
+    this.props.getPhotos();
   };
 
   /**
@@ -69,9 +37,9 @@ class Filter extends Component {
     this.setState({ listView: num });
   };
 
-  setCurrentPage = (e, p) => {
+  setCurrentPage = number => {
     this.setState({
-      currentPage: p
+      page: number
     });
   };
 
@@ -81,26 +49,14 @@ class Filter extends Component {
     });
   };
   render() {
-    let pageLowerBound = this.state.currentPage * this.state.pageSize;
-    let pageUpperBound = Math.min(
-      pageLowerBound + this.state.pageSize,
-      this.state.list.length
-    );
+    const { photos } = this.props;
+    const { pageSize, page } = this.state;
+    const pageLimit = Math.floor(photos.length / pageSize);
 
-    let paginators = Array.from(Array(this.state.pages)).map(
-      (arg, index) => index
-    );
-    paginators = paginators.map(ind => (
-      <PaginationItem active={ind === this.state.currentPage ? true : false}>
-        <PaginationLink onClick={e => this.setCurrentPage(e, ind)}>
-          {ind + 1}
-        </PaginationLink>
-      </PaginationItem>
-    ));
     return (
       <Container fluid>
         <h2>Filtrar Fotografías</h2>
-        <Row style={{marginBottom:"10px"}}>
+        <Row style={{ marginBottom: "10px" }}>
           <Col xs="2">
             {/* <ButtonGroup>
               <Button disabled>Filtrar</Button>
@@ -139,34 +95,27 @@ class Filter extends Component {
             <Col>
               {this.state.listView ? (
                 <PhotoList
-                  photos={this.state.list.slice(pageLowerBound, pageUpperBound)}
+                  photos={photos.slice(page * pageSize, (page + 1) * pageSize)}
                   editPhoto={this.props.editPhoto}
                 />
               ) : (
                 <PhotoCards
-                  photos={this.state.list.slice(pageLowerBound, pageUpperBound)}
+                  photos={photos.slice(page * pageSize, (page + 1) * pageSize)}
                   editPhoto={this.props.switchPhotoApproval}
                 />
               )}
             </Col>
           )}
         </Row>
-        <Row>
-          <Pagination aria-label="Page navigation example">
-            <PaginationItem disabled>
-              <PaginationLink first href="#" />
-            </PaginationItem>
-            <PaginationItem disabled>
-              <PaginationLink previous href="#" />
-            </PaginationItem>
-            {paginators}
-            <PaginationItem>
-              <PaginationLink next href="#" />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink last href="#" />
-            </PaginationItem>
-          </Pagination>
+        <Row style={{marginTop: "2em"}}>
+          <Col>
+            <Pagination
+              maxPage={pageLimit}
+              page={this.state.page}
+              setStatePage={this.setCurrentPage}
+              size="lg"
+            />
+          </Col>
         </Row>
       </Container>
     );
@@ -191,7 +140,7 @@ const mapStateToProps = state => {
 };
 const mapActionsToProps = dispatch => ({
   getPhotos: () => dispatch(curador.getPhotos()),
-  editPhoto: (photoID, data) => dispatch(curador.editPhoto(photoID, data)),
+  editPhoto: (photoID, data) => dispatch(curador.editPhoto(photoID, data))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Filter);

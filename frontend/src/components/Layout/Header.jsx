@@ -116,7 +116,7 @@ const Header = ({ isAuth, currentRoute }) => {
                           style={styles.activeLink}
                         >
                           <FontAwesomeIcon icon={faSmileWink} />
-                          {" "}Ingresar
+                          {" "}
                           Participa
                         </NavLink>
                       ) : (

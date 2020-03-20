@@ -9,7 +9,7 @@ import "./landing.css";
 import Gallery from "react-photo-gallery";
 
 const LandingPage = props => {
-  const { setRoute, loadPhotos, loadCaroussel, loadNews } = props;
+  const { setRoute, loadPhotos} = props;
 
   useEffect(() => {
     setRoute("/Inicio");
@@ -165,16 +165,12 @@ const LandingPage = props => {
 };
 
 const mapStateToProps = state => ({
-  photos: state.home.photos,
-  // caroussel: state.landing.caroussel,
-  // news: state.landing.news
+  photos: state.home.photos
 });
 
 const mapActionsToProps = dispatch => ({
   loadPhotos: () => dispatch(home.home()),
-  setRoute: route => dispatch(misc.setCurrentRoute(route)),
-  // loadCaroussel: () => dispatch(landing.getCaroussel()),
-  // loadNews: () => dispatch(landing.getNews())
+  setRoute: route => dispatch(misc.setCurrentRoute(route))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(LandingPage);

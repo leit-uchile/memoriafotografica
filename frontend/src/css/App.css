@@ -88,3 +88,8 @@ footer {
   box-shadow: #ddd 3px 5px 10px;
   margin-bottom: 1.5em;
 }
+
+.page-item.active .page-link{
+  background-color: rgb(255, 90, 96);
+  border-color: rgb(255, 90, 96);
+}
