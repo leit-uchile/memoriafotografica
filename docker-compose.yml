@@ -3,7 +3,7 @@ version: '3'
 services:
   db:
     image: postgres
-    restart: always
+    restart: unless-stopped
     environment:
       - POSTGRES_PASSWORD=postgres
     volumes: 
@@ -11,7 +11,7 @@ services:
   backend:
     build: ./backend
     command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./backend:/app
     ports:
