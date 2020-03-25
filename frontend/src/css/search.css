@@ -236,10 +236,10 @@
   width: 25%;
   font-size: 1.1em;
   display: inline-block;
-  background-color: #ff5a60;
+  background-color: var(--leit-pink);
   color: wheat;
   font-weight: 700;
-  border-color: #ff5a60;
+  border-color: var(--leit-pink);
   border-radius: 4px 0 0 4px;
 }
 
@@ -248,6 +248,6 @@
   display: inline-block;
   font-size: 1.1em;
   vertical-align: initial;
-  border-color: #ff5a60;
+  border-color: var(--leit-pink);
   border-radius: 0 4px 4px 0;
 }

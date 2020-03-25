@@ -280,7 +280,7 @@ const styles = {
   },
   plusButton: {
     fontSize: "2em",
-    color: "#ff5a60",
+    color: "var(--leit-pink)",
     cursor: "pointer"
   },
   generalInformation: {

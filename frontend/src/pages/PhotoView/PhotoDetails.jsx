@@ -178,7 +178,7 @@ class PhotoDetails extends Component {
                   marginLeft: "2px",
                   display: "inline-block",
                   backgroundBlendMode: "lighten",
-                  backgroundColor: "#ff5a60"
+                  backgroundColor: "var(--leit-pink)"
                 }}
                 key={k}
                 url={im.thumbnail}

@@ -4,7 +4,7 @@
 
 .home-background{
   background-image: url("/assets/frontis_background.jpg");
-  background-color: #efefef;
+  background-color: var(--leit-modal-bg);
   background-blend-mode: luminosity;
   min-height: 75vh;
 }

@@ -204,7 +204,7 @@ const EditPhotosModal = props => {
       </Form>
     </Fragment>
   );
- const closeBtn = <FontAwesomeIcon icon={faTrashAlt} onClick={()=>setToggleDelete(!toggleDelete)} style={{color:'#ff5a60', cursor:'pointer', fontSize:'16px'}}/>
+ const closeBtn = <FontAwesomeIcon icon={faTrashAlt} onClick={()=>setToggleDelete(!toggleDelete)} style={{color:'var(--leit-pink)', cursor:'pointer', fontSize:'16px'}}/>
   return (
     <div>
       <Button

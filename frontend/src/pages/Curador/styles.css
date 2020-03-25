@@ -25,7 +25,7 @@
 
 .navButton:hover{
   border: none;
-  border-right: #ff5a60 solid 3px;
+  border-right: var(--leit-pink) solid 3px;
   background-color: white;
   color: #000;
 }

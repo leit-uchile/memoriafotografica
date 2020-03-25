@@ -66,7 +66,7 @@ const styles = {
     marginTop: "2em"
   },
   dropdownButton: {
-    color: "#ff5a60",
+    color: "var(--leit-pink)",
     backgroundColor: "white",
     margin: "1em 1em 0.5em 1em",
     borderRadius: "0",

@@ -190,7 +190,7 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
 };
 const styles = {
   title: {
-    color: "#ff5a60",
+    color: "var(--leit-pink)",
     textAlign: "center",
     marginBottom: "2em"
   },

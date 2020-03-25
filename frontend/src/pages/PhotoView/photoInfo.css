@@ -10,7 +10,7 @@
 }
 
 .photoDetailNavigation:after{
-    background: #ff5a60;
+    background: var(--leit-pink);
     content: "";
     display: block;
     position: absolute;

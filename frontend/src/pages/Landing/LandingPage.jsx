@@ -99,7 +99,7 @@ const LandingPage = props => {
       </Container>
       <div
         style={{
-          backgroundColor: "#e9ecef",
+          backgroundColor: "var(--leit-bg-gray)",
           paddingTop: "2em",
           paddingBottom: "2em"
         }}

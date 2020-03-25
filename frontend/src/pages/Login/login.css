@@ -21,7 +21,7 @@
     min-height: 75vh;
     background-image: url("/assets/frontis_background.jpg");
     background-size: cover;
-    background-color: #ff5a60;
+    background-color: var(--leit-pink);
     background-blend-mode: multiply;
     background-position-y: center;
   }

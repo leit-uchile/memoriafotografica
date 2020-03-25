@@ -15,7 +15,7 @@ const Comment = ({ content: { content, censure, usuario, id, created_at } }) => 
       fluid
       className="commentDiv"
       style={{
-        backgroundColor: "#e9ecef",
+        backgroundColor: "var(--leit-bg-gray)",
         borderRadius: "5px",
         padding: "0.5em"
       }}
@@ -30,7 +30,7 @@ const Comment = ({ content: { content, censure, usuario, id, created_at } }) => 
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
               backgroundImage: `url(${usuario.avatar})`,
-              backgroundColor: "#ff5a60",
+              backgroundColor: "var(--leit-pink)",
               marginRight: "auto"
             }}
           ></div>

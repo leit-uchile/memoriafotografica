@@ -5,7 +5,7 @@
 }
 
 .upload-title{
-    /* color: #ff5a60; */
+    /* color: var(--leit-pink); */
     text-align: center;
     margin-bottom: 2em;
 }

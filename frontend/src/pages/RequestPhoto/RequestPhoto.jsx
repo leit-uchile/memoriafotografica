@@ -206,7 +206,7 @@ class RequestPhoto extends Component {
             <div style={{paddingTop:'4vh'}}>
               <FontAwesomeIcon
               icon={faCheckSquare}
-              style={{ color:'#ff5a60', fontSize:'40px', display: 'inline-block', width: '100%', textAlign:'center', marginBottom:'2vh'}}
+              style={{ color:'var(--leit-pink)', fontSize:'40px', display: 'inline-block', width: '100%', textAlign:'center', marginBottom:'2vh'}}
               />
               <h4 style={{textAlign:'center'}}> Material solicitado con éxito. Nos contactaremos con usted a la brevedad</h4>
             </div>
@@ -315,7 +315,7 @@ const styles = {
     padding: "15px",
   },
   title: {
-    color: "#ff5a60",
+    color: "var(--leit-pink)",
     textAlign: "center",
     margin: "1em"
   },

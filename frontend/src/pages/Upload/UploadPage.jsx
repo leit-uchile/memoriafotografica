@@ -296,7 +296,7 @@ const styles = {
     willChange: "opacity, text-shadow"
   },
   active: {
-    color: "#ff5a60",
+    color: "var(--leit-pink)",
     opacity: "1",
     textShadow: "0 0px 8px"
   }

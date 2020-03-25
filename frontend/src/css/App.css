@@ -1,3 +1,11 @@
+/* CSS Variable declaration */
+:root{
+  --leit-pink: #ff5a60;
+  --leit-pink-hover: #e15454f0;
+  --leit-bg-gray: #e9ecef;
+  --leit-modal-bg: #efefef;
+}
+
 html{
     font-family: 'Lato', sans-serif;
     font-weight: 400;
@@ -30,21 +38,21 @@ body {
 }
 
 .progress-bar.progress-bar-animated.progress-bar-striped {
-  background-color: #ff5a60;
+  background-color: var(--leit-pink);
 }
 
 .btn-primary {
-  background-color: #ff5a60;
-  border-color: #ff5a60;
+  background-color: var(--leit-pink);
+  border-color: var(--leit-pink);
 }
 
 .btn-primary:hover {
-  background-color: #e15454f0;
-  border-color: #e15454f0;
+  background-color: var(--leit-pink-hover);
+  border-color: var(--leit-pink-hover);
 }
 
 .page-item .page-link{
-  color: #ff5a60;
+  color: var(--leit-pink);
   font-weight: 600;
 }
 
@@ -57,19 +65,19 @@ body {
 }
 
 a {
-  color: rgb(255, 90, 96);
+  color: var(--leit-pink);
 }
 
 .btn-link {
-  color: rgb(255, 90, 96);
+  color: var(--leit-pink);
 }
 
-.user-modal .modal-header, .modal-footer{
-  background-color: #efefef;
+.modal-header, .modal-footer{
+  background-color: var(--leit-modal-bg);
 }
 
 footer {
-  background-color: #e9ecef;
+  background-color: var(--leit-bg-gray);
 }
 
 .parallax {
@@ -90,6 +98,14 @@ footer {
 }
 
 .page-item.active .page-link{
-  background-color: rgb(255, 90, 96);
-  border-color: rgb(255, 90, 96);
+  background-color: var(--leit-pink);
+  border-color: var(--leit-pink);
+}
+
+.leit-spinner{
+  color: var(--leit-pink)
+}
+
+a.nav-link.active {
+  color: var(--leit-pink) !important;
 }

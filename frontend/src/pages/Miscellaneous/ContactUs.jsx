@@ -87,7 +87,7 @@ const styles = {
     border:'1px solid rgb(210,214,218)'
   },
   title:{
-    color:'#ff5a60',
+    color:'var(--leit-pink)',
     margin:'1em 28% 1em'
   },
   formTitle: {

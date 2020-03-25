@@ -3,7 +3,7 @@
 }
 
 .page404 h2{
-  color: #ff5a60;
+  color: var(--leit-pink);
   font-family: monospace;
   font-weight: 800;
   font-size: 20vh;

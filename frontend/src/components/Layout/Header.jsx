@@ -18,7 +18,11 @@ import {
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { faImage, faHome, faSmileWink } from "@fortawesome/free-solid-svg-icons";
+import {
+  faImage,
+  faHome,
+  faSmileWink
+} from "@fortawesome/free-solid-svg-icons";
 
 const Header = ({ isAuth, currentRoute }) => {
   const [toggle, setToggle] = useState(false);
@@ -26,16 +30,14 @@ const Header = ({ isAuth, currentRoute }) => {
   var doLoginNav = isAuth ? (
     <NavLink tag={UserModal}></NavLink>
   ) : currentRoute === "/login" ? (
-    <NavLink tag={Link} to="/login" active style={styles.activeLink}>
-      <FontAwesomeIcon icon={faUser} />
-      {" "}Ingresar
+    <NavLink tag={Link} to="/login" active>
+      <FontAwesomeIcon icon={faUser} /> Ingresar
     </NavLink>
   ) : (
-        <NavLink tag={Link} to="/login">
-          <FontAwesomeIcon icon={faUser} />
-          {" "}Ingresar
+    <NavLink tag={Link} to="/login">
+      <FontAwesomeIcon icon={faUser} /> Ingresar
     </NavLink>
-      );
+  );
 
   const [redirect, setRedirect] = useState(false);
 
@@ -60,8 +62,8 @@ const Header = ({ isAuth, currentRoute }) => {
                 >
                   <h1>Memoria fotográfica</h1>
                   <p style={{ fontSize: "0.8em", whiteSpace: "normal" }}>
-                    Facultad de Ciencias Fisicas y Matematicas <br></br> Universidad de
-                    Chile
+                    Facultad de Ciencias Fisicas y Matematicas <br></br>{" "}
+                    Universidad de Chile
                   </p>
                 </NavbarBrand>
                 <NavbarToggler onClick={() => setToggle(!toggle)} />
@@ -69,63 +71,36 @@ const Header = ({ isAuth, currentRoute }) => {
                   <Nav className="ml-auto" navbar>
                     <NavItem>
                       {currentRoute === "/Inicio" ? (
-                        <NavLink
-                          tag={Link}
-                          to={"/"}
-                          active
-                          style={styles.activeLink}
-                        >
-                          <FontAwesomeIcon icon={faHome} />
-                          {" "}
-                          Inicio
+                        <NavLink tag={Link} to={"/"} active>
+                          <FontAwesomeIcon icon={faHome} /> Inicio
                         </NavLink>
                       ) : (
-                          <NavLink tag={Link} to={"/"}>
-                            <FontAwesomeIcon icon={faHome} />
-                            {" "}
-                            Inicio
+                        <NavLink tag={Link} to={"/"}>
+                          <FontAwesomeIcon icon={faHome} /> Inicio
                         </NavLink>
-                        )}
+                      )}
                     </NavItem>
                     <NavItem>
                       {currentRoute === "/gallery/" ? (
-                        <NavLink
-                          tag={Link}
-                          to={"/gallery"}
-                          active
-                          style={styles.activeLink}
-                        >
-                          <FontAwesomeIcon icon={faImage} />
-                          {" "}
-                          Galer&iacute;a
+                        <NavLink tag={Link} to={"/gallery"} active>
+                          <FontAwesomeIcon icon={faImage} /> Galer&iacute;a
                         </NavLink>
                       ) : (
-                          <NavLink tag={Link} to={"/gallery"}>
-                            <FontAwesomeIcon icon={faImage} />
-                            {" "}
-                            Galer&iacute;a
+                        <NavLink tag={Link} to={"/gallery"}>
+                          <FontAwesomeIcon icon={faImage} /> Galer&iacute;a
                         </NavLink>
-                        )}
+                      )}
                     </NavItem>
                     <NavItem>
                       {currentRoute === "/upload" ? (
-                        <NavLink
-                          tag={Link}
-                          to={"/upload"}
-                          active
-                          style={styles.activeLink}
-                        >
-                          <FontAwesomeIcon icon={faSmileWink} />
-                          {" "}
-                          Participa
+                        <NavLink tag={Link} to={"/upload"} active>
+                          <FontAwesomeIcon icon={faSmileWink} /> Participa
                         </NavLink>
                       ) : (
-                          <NavLink tag={Link} to={"/upload"}>
-                            <FontAwesomeIcon icon={faSmileWink} />
-                            {" "}
-                            Participa
+                        <NavLink tag={Link} to={"/upload"}>
+                          <FontAwesomeIcon icon={faSmileWink} /> Participa
                         </NavLink>
-                        )}{" "}
+                      )}{" "}
                     </NavItem>
                     <NavItem>{doLoginNav}</NavItem>
                   </Nav>
@@ -139,32 +114,26 @@ const Header = ({ isAuth, currentRoute }) => {
         style={
           currentRoute === "/gallery/"
             ? {
-              position: "sticky",
-              top: "0",
-              backgroundColor: "#e9ecef",
-              height: "4em",
-              padding: "1em 0",
-              borderBottom: "1px solid rgb(210,214,218)",
-              zIndex: "4"
-            }
+                position: "sticky",
+                top: "0",
+                backgroundColor: "var(--leit-bg-gray)",
+                height: "4em",
+                padding: "1em 0",
+                borderBottom: "1px solid rgb(210,214,218)",
+                zIndex: "4"
+              }
             : {
-              backgroundColor: "#e9ecef",
-              borderBottom: "1px solid rgb(210,214,218)",
-              height: "4em",
-              padding: "1em 0"
-            }
+                backgroundColor: "var(--leit-bg-gray)",
+                borderBottom: "1px solid rgb(210,214,218)",
+                height: "4em",
+                padding: "1em 0"
+              }
         }
       >
         <SearchBar />
       </div>
     </Fragment>
   );
-};
-
-const styles = {
-  activeLink: {
-    color: "#FF5A60"
-  }
 };
 
 const mapStateToProps = state => {
