@@ -110,7 +110,7 @@ class ReportModal extends Component {
 
     return (
       <Fragment>
-        <Button className={className} onClick={this.toggle} style={style}>
+        <Button className={className} onClick={this.toggle} style={style} color="danger">
           <FontAwesomeIcon icon={faFlag} />
         </Button>
         <Modal isOpen={this.state.modal} toggle={this.toggle}>

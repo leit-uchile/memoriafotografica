@@ -194,14 +194,14 @@ class PhotoDetails extends Component {
     return (
       <div ref={this.imageContainer} className="disable-css-transitions">
         <Helmet>
-          <meta property="og:title" content={photoInfo.details.title} />
-          <meta property="og:type" content="website" />
           <meta
             property="og:url"
-            content=" http://memoriafotografica.ing.fcfm.cl/"
+            content="http://memoriafotografica.ing.fcfm.cl/"
           />
+          <meta property="og:title" content={photoInfo.details.title} />
+          <meta property="og:type" content="website" />
+          <meta property="og:description" content={photoInfo.details.description} />
           <meta property="og:image" content={photoInfo.details.thumbnail} />
-          <meta property="og:description" content="Descripcion" />
           <title>{photoInfo.details.title}</title>
         </Helmet>
         <Container fluid>
@@ -346,10 +346,10 @@ class PhotoDetails extends Component {
                               this.props.putRequestPhoto(photoInfo.details);
                             }}
                           >
-                            ¿Quieres usar la foto?
+                            Solicitar foto
                           </Button>
                           <ReportModal
-                            style={{ display: "inline-block" }}
+                            style={{ display: "inline-block", width: "30px", height: "30px", margin: "auto 2px auto 2px"}}
                             className="float-left"
                             elementId={this.props.match.params.id}
                             reportTitle={"Reportar fotografia"}
@@ -363,6 +363,14 @@ class PhotoDetails extends Component {
                             }
                             reportType={2}
                           />
+                          <div
+                            style={{display:'inline-block'}} 
+                            class="addthis_inline_share_toolbox"
+                            data-url="http://memoriafotografica.ing.fcfm.cl/"
+                            data-title={photoInfo.details.title}
+                            data-description={photoInfo.details.description}
+                            data-media={photoInfo.details.thumbnail}
+                          ></div>
                         </Col>
                       </Row>
                     </Container>
