@@ -285,13 +285,35 @@ class CommentDetailAPI(generics.GenericAPIView):
             comment = self.get_object(pk, False)
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comment)
+
+            serialized_data = serializer.data
+            u = comment.get(pk=serializer_data['id']).user_set.first()
+            u_dict = {}
+            u_dict['first_name'] = u.first_name
+            u_dict['last_name'] = u.last_name
+            u_dict['generation'] = u.generation
+            u_dict['avatar'] = u.avatar.url if u.avatar else None
+            u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
+            serializer_data['usuario'] = u_dict
         else:
             comment = self.get_object(pk, True)
             serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comment)
-        return Response(serializer.data)
+
+            serialized_data = serializer.data
+            u = comment.get(pk=serializer_data['id']).user_set.first()
+            u_dict = {}
+            u_dict['first_name'] = u.first_name
+            u_dict['last_name'] = u.last_name
+            u_dict['generation'] = u.generation
+            u_dict['avatar'] = u.avatar.url if u.avatar else None
+            u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
+            serializer_data['usuario'] = u_dict
+
+        return Response(serializer_data)
 
     def put(self, request, pk, *args, **kwargs):
+        comment = self.get_object(pk, True)
         if request.user.user_type == 1 and comment in request.user.comments.all():
             comment = self.get_object(pk, False)
             serializer_class = CommentSerializer

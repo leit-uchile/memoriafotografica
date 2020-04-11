@@ -1,15 +1,18 @@
-import React from "react";
-import { Container, Row, Col } from "reactstrap";
+import React, {useState} from "react";
+import { Container, Row, Col, Button, Input } from "reactstrap";
+import { connect } from "react-redux";
+import { photoDetails } from "../../actions";
 import ReportModal from "../../components/ReportModal";
 import { Link } from "react-router-dom";
 import moment from "moment";
 
-const Comment = ({ content: { content, censure, usuario, id, created_at } }) => {
+const Comment = ({ content: { content, censure, usuario, id, created_at }, viewerId, updateComment}) => {
   var userName =
     usuario.first_name !== "" && usuario.first_name !== null
       ? `${usuario.first_name} ${usuario.last_name}`
       : "[nombre de usuario]";
-
+  const [editing, setEditing] = useState(false);
+  const [newComment, setNewComment] = useState(content);
   return (
     <Container
       fluid
@@ -31,7 +34,7 @@ const Comment = ({ content: { content, censure, usuario, id, created_at } }) => 
               backgroundRepeat: "no-repeat",
               backgroundImage: `url(${usuario.avatar})`,
               backgroundColor: "var(--leit-pink)",
-              marginRight: "auto"
+              marginLeft: "auto"
             }}
           ></div>
         </Col>
@@ -50,6 +53,15 @@ const Comment = ({ content: { content, censure, usuario, id, created_at } }) => 
 
           {created_at ? <div style={{ display: "inline-block", padding: "0 15px", color: "#999" }}> Publicado el{" "}{moment(created_at).format("DD/MM/YYYY")}{" "}
             a las {" "}{moment(created_at).format("hh:mm")} </div> : <div style={{ display: "inline-block", padding: "0 15px", color: "#999" }}>Cargando...</div>}
+          {usuario.id == viewerId
+          ? !editing
+            ?
+            <div style={{display:"inline-block", padding:"0"}}>
+              <Button color="link" style={{display:"inline-block", padding:"0"}} onClick={()=>setEditing(true)}>Editar</Button>
+              <Button color="link" style={{display:"inline-block", padding:"0"}} >Eliminar</Button>
+            </div>
+            :<Button color="link" style={{display:"inline-block", padding:"0"}} onClick={()=>{updateComment(id, newComment); setEditing(false)}}>Guardar</Button>
+          : null}
           <ReportModal
             style={{ display: "inline-block" }}
             className="float-right"
@@ -66,11 +78,26 @@ const Comment = ({ content: { content, censure, usuario, id, created_at } }) => 
             reportType={3}
             buttonTitle={"Comentario inapropiado"}
           />
-          <p style={{ display: "block" }}>{content}</p>
+          {editing
+          ?<Input
+          type="text"
+          onChange={e => setNewComment(e.target.value)}
+          value={newComment}
+          />
+          :<p style={{ display: "block" }}>{content}</p>}
+          
         </Col>
       </Row>
     </Container>
   );
 };
 
-export default Comment;
+const mapActionsToProps = dispatch => ({
+  updateComment: (id, comment) => dispatch(photoDetails.editComment(id, comment))
+});
+export default connect(
+  null,
+  mapActionsToProps
+)(Comment);
+
+//export default Comment;

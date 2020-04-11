@@ -10,7 +10,8 @@ import {
   REPORTED_PHOTO,
   PHOTO_REPORT_FAILED,
   REPORTING_PHOTO,
-  LOADING_COMMENT
+  LOADING_COMMENT,
+  UPDATED_COMMENT
 } from "../actions/types";
 
 const initialState = {
@@ -38,6 +39,16 @@ export default function photoDetails(state = initialState, action) {
       return { ...state, errors: action.data };
     case CREATED_COMMENT:
       return { ...state, new_comment: action.data, commentsLoaded: false };
+    case UPDATED_COMMENT:
+      let prevComments = [];
+      state.comments.forEach( comment =>{
+        if(comment.id !== action.data.id){
+          prevComments.push(comment)
+        } else {
+          prevComments.push({...comment, content: action.data})
+        }
+      })
+      return { ...state, comments: [prevComments]};
     case NEW_COMMENT_ERROR:
       return { ...state, new_comment_errors: action.data };
     case LOADING_COMMENT:

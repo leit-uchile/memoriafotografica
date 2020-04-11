@@ -4,6 +4,7 @@ import {
   RECOVERED_PHOTO_COMMENTS,
   PHOTO_COMMENTS_ERROR,
   CREATED_COMMENT,
+  UPDATED_COMMENT,
   NEW_COMMENT_ERROR,
   CUSTOM_METADATA_ERROR,
   LOADED_CUSTOM_METADATA,
@@ -73,6 +74,33 @@ export const putComment = (id, comment) => (dispatch, getState) => {
     if (r.status === 201) {
       return r.json().then(data => {
         dispatch({ type: CREATED_COMMENT, data: data });
+      });
+    } else {
+      dispatch({ type: NEW_COMMENT_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
+export const editComment = (id, newContent) => (dispatch, getState) => {
+  let headers = {
+    Authorization: "Token " + getState().auth.token,
+    "Content-Type": "application/json"
+  };
+
+  //const user = getState().user.userData
+
+  let jsonthing = JSON.stringify({ content: newContent });
+
+  return fetch(`/api/comments/${id}/`, {
+    method: "PUT",
+    headers: headers,
+    body: jsonthing
+  }).then(function(response) {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then(data => {
+        dispatch({ type: UPDATED_COMMENT, data: data });
       });
     } else {
       dispatch({ type: NEW_COMMENT_ERROR, data: r.data });
