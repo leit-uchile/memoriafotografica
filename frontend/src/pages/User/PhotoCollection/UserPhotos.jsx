@@ -1,15 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
-import {
-  Button,
-  Row,
-  Col,
-  UncontrolledButtonDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
-} from "reactstrap";
+import { Button, Row, Col } from "reactstrap";
 import { user, home, misc } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
 import PhotoEditor from "../../../components/PhotoEditor";
@@ -24,27 +16,30 @@ class UserPhotos extends Component {
       chosenPhotoIndex: 0,
       picturesToEdit: [],
       selectedAll: false,
-      searchOrder: { field: "created_at", order: "desc" }
+      searchOrder: { field: "created_at", order: "desc" },
     };
     this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
   }
 
   setSortingOrder(order) {
-    this.setState({...this.state, searchOrder: order})
-    this.props.sortByField(this.state.searchOrder.field, this.state.searchOrder.order)
-  }
-  
-  handleOnRedirect = obj =>{
-    console.log(obj)
-    this.setState({
-      redirect: true,
-      chosenPhotoIndex: obj.index
-    });
+    this.setState({ ...this.state, searchOrder: order });
+    this.props.sortByField(
+      this.state.searchOrder.field,
+      this.state.searchOrder.order
+    );
   }
 
-  handleOnSelect = obj => {
+  handleOnRedirect = (obj) => {
+    console.log(obj);
+    this.setState({
+      redirect: true,
+      chosenPhotoIndex: obj.index,
+    });
+  };
+
+  handleOnSelect = (obj) => {
     const id = obj.photo.id;
-    const newList = this.state.picturesToEdit.filter(el => el !== id);
+    const newList = this.state.picturesToEdit.filter((el) => el !== id);
     if (newList.length === this.state.picturesToEdit.length) {
       // si el objeto no estaba
       this.setState({ picturesToEdit: [...newList, id] }); //lo agregamos
@@ -59,25 +54,23 @@ class UserPhotos extends Component {
   putAllToEdit(mapped, state) {
     state
       ? this.setState({
-          picturesToEdit: mapped.map(el => el.id),
-          selectedAll: state
+          picturesToEdit: mapped.map((el) => el.id),
+          selectedAll: state,
         })
-      : 
-      this.setState({
-        picturesToEdit: [],
-        selectedAll: state
-      })
-        
+      : this.setState({
+          picturesToEdit: [],
+          selectedAll: state,
+        });
   }
 
   render() {
-    var mapped = this.props.photos.map(el => ({
+    var mapped = this.props.photos.map((el) => ({
       src: el.thumbnail,
       height: el.aspect_h,
       width: el.aspect_w,
-      id: el.id
+      id: el.id,
     }));
-    
+
     if (this.state.redirect) {
       this.props.setRoute("/photo/"); // For NavLink in Navbar
       this.props.setSelectedId(this.state.chosenPhotoIndex); // For in photo navigation
@@ -104,52 +97,13 @@ class UserPhotos extends Component {
               <PhotoEditor
                 photos={mapped}
                 targetRowHeight={250}
-                onClick={(e,index) => this.handleOnSelect(index)}
+                onClick={(e, index) => this.handleOnSelect(index)}
                 // putAll={(state) => this.putAllToEdit(mapped,state)}
                 selectAll={this.state.selectedAll}
                 onRedirect={(e, index) => this.handleOnRedirect(index)}
               />
             </Col>
             <Col md={2} style={styles.filterMenu}>
-            {/* <UncontrolledButtonDropdown className="home-button">
-              <DropdownToggle caret style={styles.dropdownButton}>
-                Ordenar
-              </DropdownToggle>
-              <DropdownMenu style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}>
-                <div style={styles.triangulo}></div>
-                <DropdownItem header>Por orden cronológico</DropdownItem>
-                <DropdownItem
-                  onClick={() =>
-                    this.setSortingOrder({ field: "upload_date", order: "asc" })
-                  }
-                >
-                  Más antiguas primero
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() =>
-                    this.setSortingOrder({ field: "upload_date", order: "desc" })
-                  }
-                >
-                  Más nuevas primero
-                </DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem header>Por fecha de subida</DropdownItem>
-                <DropdownItem
-                  onClick={() =>
-                    this.setSortingOrder({ field: "created_at", order: "asc" })
-                  }
-                >
-                  Más antiguas primero
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() =>
-                    this.setSortingOrder({ field: "created_at", order: "desc" })
-                  }
-                >
-                  Más nuevas primero
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledButtonDropdown> */}
               <Button onClick={() => this.putAllToEdit(mapped, true)}>
                 Seleccionar todas
               </Button>
@@ -175,11 +129,11 @@ const styles = {
     paddingLeft: "6em",
     paddingBottom: "1em",
     borderBottom: "1px solid rgb(210,214,218)",
-    background: "white"
+    background: "white",
   },
   title: {
     textAlign: "left",
-    display: "flex"
+    display: "flex",
     //verticalAlign: "middle",
     //flexDirection: "row",
   },
@@ -188,7 +142,7 @@ const styles = {
     top: "0",
     height: "4em",
     padding: "1em 0",
-    zIndex: "4"
+    zIndex: "4",
   },
   triangulo: {
     position: "absolute",
@@ -204,7 +158,7 @@ const styles = {
     content: "",
     transform: "rotate(45deg)",
     marginTop: "-10px",
-    background: "#ffff"
+    background: "#ffff",
   },
   photosContainer: {
     width: "100%",
@@ -212,19 +166,19 @@ const styles = {
     paddingTop: "1.25em",
     paddingBottom: "1.25em",
     backgroundColor: "#f7f8fa",
-    textAlign: "center"
-  }
+    textAlign: "center",
+  },
 };
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   photos: state.user.photos,
-  user: state.user.userData
+  user: state.user.userData,
 });
-const mapActionsToProps = dispatch => ({
-  setSelectedId: id => dispatch(home.setSelectedId(id)),
-  setRoute: route => dispatch(misc.setCurrentRoute(route)),
+const mapActionsToProps = (dispatch) => ({
+  setSelectedId: (id) => dispatch(home.setSelectedId(id)),
+  setRoute: (route) => dispatch(misc.setCurrentRoute(route)),
   sortByField: (tag, order) => dispatch(home.sortByField(tag, order)),
   onLoadGetPhotos: (user_id, limit, offset) =>
-    dispatch(user.getUserPhotos(user_id, limit, offset))
+    dispatch(user.getUserPhotos(user_id, limit, offset)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(UserPhotos);
