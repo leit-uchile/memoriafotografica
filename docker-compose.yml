@@ -22,5 +22,6 @@ services:
     build: ./frontend
     volumes:
       - ./frontend:/app/frontend:rw
+    stdin_open: true
     ports:
       - '3000:3000'

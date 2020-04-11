@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import LoadScript from "react-load-script";
 
 const Addthis = ({ title, description, thumbnail }) => {
@@ -21,7 +21,7 @@ const Addthis = ({ title, description, thumbnail }) => {
           console.log("AddThis Failed")
         }
       }
-    }, [title, description, thumbnail])
+    }, [title, description, thumbnail, loaded])
 
   return (
     <div>
