@@ -20,6 +20,7 @@ import "./photoInfo.css";
 import { getPermissionLogo } from "../../utils";
 import Tags from "./Tags";
 import Categories from "./Categories";
+import Addthis from "./Addthis";
 
 class PhotoDetails extends Component {
   constructor(props) {
@@ -363,14 +364,7 @@ class PhotoDetails extends Component {
                             }
                             reportType={2}
                           />
-                          <div
-                            style={{display:'inline-block'}} 
-                            class="addthis_inline_share_toolbox"
-                            data-url="http://memoriafotografica.ing.fcfm.cl/"
-                            data-title={photoInfo.details.title}
-                            data-description={photoInfo.details.description}
-                            data-media={photoInfo.details.thumbnail}
-                          ></div>
+                          <Addthis title={photoInfo.details.title} description={photoInfo.details.description} thumbnail={photoInfo.details.thumbnail}/>
                         </Col>
                       </Row>
                     </Container>
