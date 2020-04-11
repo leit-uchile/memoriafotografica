@@ -109,9 +109,10 @@ class PhotoListAPI(generics.GenericAPIView):
             aPhoto['metadata'] = list(map(lambda x: make_tag(x), aPhoto['metadata']))
         photos_to_map = list(map(get_user,zip(photo, serialized_data)))
         # serialized_data = list(map(get_user, serialized_data))
-        # print(serialized_data)
-        self.paginate_queryset(serialized_data)
-        return self.get_paginated_response(serialized_data)
+        # print(serialized_data)        
+        #print(self.paginate_queryset(serialized_data))
+        
+        return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
     def post(self, request, *args, **kwargs):
         serializer = CreatePhotoSerializer(data=request.data)
@@ -254,8 +255,7 @@ class CommentListAPI(generics.GenericAPIView):
             serializer = CommentAdminSerializer(comments, many = True)
         
         serialized_data = serializer.data
-        self.paginate_queryset(serialized_data)
-        return self.get_paginated_response(serialized_data)
+        return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
 class CommentDetailAPI(generics.GenericAPIView):
     """
@@ -382,8 +382,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
                 except:
                     pass
                     
-        self.paginate_queryset(serialized_data)
-        return self.get_paginated_response(serialized_data)
+        return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
     def post(self, request, pk, *args, **kwargs):
         photo = self.get_object(pk, False)
@@ -417,8 +416,7 @@ class CategoryListAPI(generics.GenericAPIView):
                 for c in serialized_data:
                     if(c['id']==photocat.id):
                         c['count'] += 1
-        self.paginate_queryset(serialized_data)
-        return self.get_paginated_response(serialized_data)
+        return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
     # TODO: test it out!
     def post(self, request, *args, **kwargs):
@@ -488,8 +486,7 @@ class ReportListAPI(generics.GenericAPIView):
             report = sort_by_field(report,request)
             serializer = ReportSerializer(report, many=True)
             serialized_data = serializer.data
-            self.paginate_queryset(serialized_data)
-            return self.get_paginated_response(serialized_data)
+            return self.get_paginated_response(self.paginate_queryset(serialized_data))
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
 
@@ -571,8 +568,7 @@ class AlbumListAPI(generics.GenericAPIView):
         serializer = AlbumSerializer(album, many=True)
         
         serialized_data = serializer.data
-        self.paginate_queryset(serialized_data)
-        return self.get_paginated_response(serialized_data)
+        return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
     def post(self, request, *args, **kwargs):
         serializer = AlbumSerializer(data=request.data, context={'request': request})
@@ -648,8 +644,7 @@ class CategoryPhotoListAPI(generics.GenericAPIView):
             serializer = PhotoAdminSerializer(pictures, many=True)
 
         serialized_data = serializer.data
-        self.paginate_queryset(serialized_data)
-        return self.get_paginated_response(serialized_data)        
+        return self.get_paginated_response(self.paginate_queryset(serialized_data))     
 
     def put(self, request, pk, *args, **kwargs):
         category = self.get_object(pk)
