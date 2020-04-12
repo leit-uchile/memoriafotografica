@@ -29,7 +29,9 @@ class GeneralKPIs(generics.GenericAPIView):
         kpilist.append(("count_user_role",User.objects.values('rol_type').annotate(total=Count('rol_type')).order_by()))
         kpilist.append(("count_reports_resolved", Reporte.objects.values('resolved').annotate(total=Count('resolved')).order_by()))
         kpilist.append(("count_photos_by_date", Photo.objects.extra({'date_created' : "date(created_at)"}).values('date_created').annotate(created_count=Count('id')).order_by("date_created")))
-
+        kpilist.append(("count_comments_by_date", Comment.objects.extra({'date_created' : "date(created_at)"}).values('date_created').annotate(created_count=Count('id')).order_by("date_created")))
+        kpilist.append(("count_total_reports", Reporte.objects.all.count()))
+       
         for pair in kpilist:
             output[pair[0]] = pair[1]
         return Response(output)

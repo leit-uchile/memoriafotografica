@@ -176,21 +176,28 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
                 </Statistic.Value>
                 <Statistic.Label>Fotos p&uacute;blicas</Statistic.Label>
               </Statistic>
+              <Statistic>
+                <Statistic.Value>
+                  {general ? general.count_total_reports : 0}
+                </Statistic.Value>
+                <Statistic.Label>Número de Reportes</Statistic.Label>
+              </Statistic>
             </Statistic.Group>
           </div>
         </Col>
       </Row>
       <Row>
         <Col>
-          <h3>Fotos subidas por dia</h3>
+          <h2>Fotos y Comentarios subidos por día</h2>
           <PhotoCountChart
-            rawData={general ? general.count_photos_by_date : []}
+            rawData={general ? general.count_photos_by_date : [], 
+              general ? general.count_comments_by_data : []}
           />
         </Col>
       </Row>
       <Row>
         <Col>
-          <h3>Tipos de usuarios</h3>
+          <h2>Tipos de usuarios</h2>
         </Col>
       </Row>
       <Row>
@@ -223,6 +230,15 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
           />
         </Col>
       </Row>
+      <Row>
+        <Col>
+          <h2>Categorías con más fotos</h2>
+        </Col>
+        <Col>
+          <h2>Metadata con más fotos</h2>
+        </Col>
+      </Row>
+     
     </Container>
   );
 };
