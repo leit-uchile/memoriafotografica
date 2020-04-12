@@ -20,6 +20,7 @@ const CommentHandler = ({
   commentsLoaded,
   newComment,
   fetchComments,
+  userId,
   auth,
   style,
   fluid
@@ -35,7 +36,7 @@ const CommentHandler = ({
     <Row key={"Comment" + key}>
       <Col
         style={styles.commentContainerStyle}>
-        <Comment content={el} modal={auth} />
+        <Comment content={el} modal={auth} currentUserId={userId}/>
       </Col>
     </Row>
   ));
@@ -45,9 +46,8 @@ const CommentHandler = ({
       <Row>
         <Col>
           <h3> 
-          Comentarios {" "}
           <FontAwesomeIcon icon={faComments} />
-         
+          {" "} Comentarios
           </h3>
         </Col>
       </Row>
@@ -62,9 +62,8 @@ const CommentHandler = ({
             }}>
             <FormGroup>
               <Label>
-                Comentar 
-                {" "}
-                <FontAwesomeIcon icon={faComment} />
+              <FontAwesomeIcon icon={faComment} />
+              {" "} Comentar 
               </Label>
               <Input
                 type="text"
@@ -92,7 +91,8 @@ const styles = {
 const mapStateToProps = state => ({
   comments: state.photoDetails.comments,
   commentsLoaded: state.photoDetails.commentsLoaded,
-  auth: state.auth.isAuthenticated
+  auth: state.auth.isAuthenticated,
+  userId: state.user.userData.id
 });
 
 const mapActionsToProps = dispatch => ({
