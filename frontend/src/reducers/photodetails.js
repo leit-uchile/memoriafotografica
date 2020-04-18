@@ -11,7 +11,9 @@ import {
   PHOTO_REPORT_FAILED,
   REPORTING_PHOTO,
   LOADING_COMMENT,
-  UPDATED_COMMENT
+  UPDATED_COMMENT,
+  DELETED_COMMENT,
+  DELETE_COMMENT_ERROR
 } from "../actions/types";
 
 const initialState = {
@@ -51,6 +53,16 @@ export default function photoDetails(state = initialState, action) {
       return { ...state, comments: [prevComments]};
     case NEW_COMMENT_ERROR:
       return { ...state, new_comment_errors: action.data };
+    case DELETED_COMMENT:
+      let newComments = [];
+      state.comments.forEach( comment =>{
+        if(comment.id !== action.data.id){
+          newComments.push(comment)
+        }
+      })
+      return { ...state, comments: [prevComments]};
+    case DELETE_COMMENT_ERROR:
+      return { ...state, delete_comment_errors: action.data };
     case LOADING_COMMENT:
       return { ...state, comments: [...state.comments, { ...action.data }], commentsLoaded: true };
     case RECOVERED_PHOTO_COMMENTS:

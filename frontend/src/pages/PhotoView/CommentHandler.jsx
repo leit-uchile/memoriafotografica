@@ -20,7 +20,7 @@ const CommentHandler = ({
   commentsLoaded,
   newComment,
   fetchComments,
-  userId,
+  userData,
   auth,
   style,
   fluid
@@ -36,7 +36,7 @@ const CommentHandler = ({
     <Row key={"Comment" + key}>
       <Col
         style={styles.commentContainerStyle}>
-        <Comment content={el} modal={auth} currentUserId={userId}/>
+        <Comment content={el} modal={auth} currentUserId={userData == null ? -1 : userData.id}/>
       </Col>
     </Row>
   ));
@@ -92,7 +92,7 @@ const mapStateToProps = state => ({
   comments: state.photoDetails.comments,
   commentsLoaded: state.photoDetails.commentsLoaded,
   auth: state.auth.isAuthenticated,
-  userId: state.user.userData.id
+  userData: state.user.userData
 });
 
 const mapActionsToProps = dispatch => ({

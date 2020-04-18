@@ -6,6 +6,8 @@ import {
   CREATED_COMMENT,
   UPDATED_COMMENT,
   NEW_COMMENT_ERROR,
+  DELETED_COMMENT,
+  DELETE_COMMENT_ERROR,
   CUSTOM_METADATA_ERROR,
   LOADED_CUSTOM_METADATA,
   REPORTED_PHOTO,
@@ -104,6 +106,28 @@ export const editComment = (id, newContent) => (dispatch, getState) => {
       });
     } else {
       dispatch({ type: NEW_COMMENT_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
+export const deleteComment = id => (dispatch, getState) => {
+  let headers = {
+    Authorization: "Token " + getState().auth.token,
+    "Content-Type": "application/json"
+  };
+
+  return fetch(`/api/comments/${id}/`, {
+    method: "DELETE",
+    headers: headers
+  }).then(function(response) {
+    const r = response;
+    if (r.status === 204) {
+      return r.json().then(data => {
+        dispatch({ type: DELETED_COMMENT, data: data });
+      });
+    } else {
+      dispatch({ type: DELETE_COMMENT_ERROR, data: r.data });
       throw r.data;
     }
   });

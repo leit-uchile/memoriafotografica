@@ -5,8 +5,9 @@ import { photoDetails } from "../../actions";
 import ReportModal from "../../components/ReportModal";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import { deleteComment } from "../../actions/photodetails";
 
-const Comment = ({ content: { content, censure, usuario, id, created_at }, viewerId, updateComment}) => {
+const Comment = ({ content: { content, censure, usuario, id, created_at }, viewerId, updateComment, deleteComment}) => {
   var userName =
     usuario.first_name !== "" && usuario.first_name !== null
       ? `${usuario.first_name} ${usuario.last_name}`
@@ -58,7 +59,7 @@ const Comment = ({ content: { content, censure, usuario, id, created_at }, viewe
             ?
             <div style={{display:"inline-block", padding:"0"}}>
               <Button color="link" style={{display:"inline-block", padding:"0"}} onClick={()=>setEditing(true)}>Editar</Button>
-              <Button color="link" style={{display:"inline-block", padding:"0"}} >Eliminar</Button>
+              <Button color="link" style={{display:"inline-block", padding:"0"}} onClick={()=>deleteComment(id)}>Eliminar</Button>
             </div>
             :<Button color="link" style={{display:"inline-block", padding:"0"}} onClick={()=>{updateComment(id, newComment); setEditing(false)}}>Guardar</Button>
           : null}
@@ -93,7 +94,8 @@ const Comment = ({ content: { content, censure, usuario, id, created_at }, viewe
 };
 
 const mapActionsToProps = dispatch => ({
-  updateComment: (id, comment) => dispatch(photoDetails.editComment(id, comment))
+  updateComment: (id, comment) => dispatch(photoDetails.editComment(id, comment)),
+  deleteComment: id => dispatch(photoDetails.deleteComment(id))
 });
 export default connect(
   null,
