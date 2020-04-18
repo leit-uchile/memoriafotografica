@@ -330,13 +330,12 @@ class CommentDetailAPI(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, *args, **kwargs):
-        if comment in request.user.comments.all():
-            c = self.get_object(pk, False)
-            c.delete()
+        comment = self.get_object(pk, True)
+        if comment in request.user.comments.all():            
+            comment.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        elif request.user.user_type == 3:
-            c = self.get_object(pk, True)
-            c.detele()
+        elif request.user.user_type == 3:            
+            comment.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status= status.HTTP_401_UNAUTHORIZED)
