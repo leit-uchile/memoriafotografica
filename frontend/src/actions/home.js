@@ -103,9 +103,10 @@ export const iptcs = () => (dispatch, getState) => {
  * Recover photos using only field sorting
  * 
  * @param {String} field 
- * @param {String} order 
+ * @param {String} order
+ * @param {Number} page
  */
-export const sortByField = (field, order) => (dispatch, getState) => {
+export const sortByField = (field, order, page) => (dispatch, getState) => {
   if (order !== "asc" && order !== "desc") {
     return dispatch({ type: "EMPTY", data: "wrong order parameter" });
   }
@@ -114,7 +115,7 @@ export const sortByField = (field, order) => (dispatch, getState) => {
   let selected_meta = getState().search.metaIDs;
   let meta_text = selected_meta.length === 0 ? "" : `metadata=${selected_meta.map(m => m.metaID ).join()}&`
 
-  fetch(`/api/photos/?${meta_text}sort=${field}-${order}`, { method: "GET" }).then(
+  fetch(`/api/photos/?${meta_text}sort=${field}-${order}&page=${page+1}`, { method: "GET" }).then(
     response => {
       const r = response;
       if (r.status === 200) {
@@ -134,14 +135,15 @@ export const sortByField = (field, order) => (dispatch, getState) => {
  * 
  * @param {Array} catIds 
  * @param {Object} pair like {field, order}
+ * @param {Number} page
  */
-export const recoverByCats = (catIds, pair) => (dispatch, getState) => {
+export const recoverByCats = (catIds, pair, page) => (dispatch, getState) => {
   dispatch({ type: HOME_LOADING, data: null });
 
   let selected_meta = getState().search.metaIDs;
   let meta_text = selected_meta.length === 0 ? "" : `metadata=${selected_meta.map(m => m.metaID ).join()}&`
 
-  fetch(`/api/photos/?${meta_text}category=${catIds.join(",")}&sort=${pair.field}-${pair.order}`, {
+  fetch(`/api/photos/?${meta_text}category=${catIds.join(",")}&sort=${pair.field}-${pair.order}&page=${page+1}`, {
     method: "GET"
   }).then(response => {
     const r = response;

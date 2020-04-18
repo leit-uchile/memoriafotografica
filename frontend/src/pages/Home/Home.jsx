@@ -24,7 +24,7 @@ class Home extends Component {
     this.state = {
       photoPagination: {
         page: 0,
-        maxAllowed: 20
+        maxAllowed: 25
       },
       maxAllowedCategories: 4,
       sortOpen: false,
@@ -64,12 +64,11 @@ class Home extends Component {
 
   render() {
     const { photos, filters, loadingPhotos } = this.props;
-    const { maxAllowed, page } = this.state.photoPagination;
+    const { maxAllowed } = this.state.photoPagination;
     const pageLimit = Math.floor(photos.length / maxAllowed);
 
     // For gallery
     var mapped = photos
-      .slice(page * maxAllowed, (page + 1) * maxAllowed)
       .map(el => ({
         src: el.thumbnail,
         height: el.aspect_h,
@@ -129,6 +128,7 @@ class Home extends Component {
                 <FilterPicker
                   resetHomePagination={this.resetHomePagination}
                   defaultMaxAllowed={this.state.maxAllowedCategories}
+                  page={this.state.photoPagination.page}
                 />
               </Col>
             </Row>

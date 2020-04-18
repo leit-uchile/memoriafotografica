@@ -20,6 +20,7 @@ import { home } from "../../actions";
  *
  * Displays two large dropdown menus
  * @param {Number} defaultMaxAllowed
+ * @param {Number} page to send to the backend
  * @param {Function} resetHomePagination after a search reset page
  * @param {Function} onLoadGetCats action
  * @param {Function} sortByUpload action
@@ -30,6 +31,7 @@ const FilterPicker = ({
   defaultMaxAllowed,
   resetHomePagination,
   filters,
+  page,
   // Actions
   onLoadGetCats,
   sortByField,
@@ -58,6 +60,7 @@ const FilterPicker = ({
 
   const setSortingOrder = order => {
     setFilterState({ ...filterState, searchOrder: order });
+    resetHomePagination();
   };
 
   // Add category's ID
@@ -76,24 +79,31 @@ const FilterPicker = ({
         selectedCategories: [...filterState.selectedCategories, id]
       });
     }
+    resetHomePagination();
   };
 
   // Reload Search Effect
   useEffect(() => {
     if (filterState.selectedCategories.length !== 0) {
-      recoverByCats(filterState.selectedCategories, filterState.searchOrder);
+      recoverByCats(filterState.selectedCategories, filterState.searchOrder, page);
     } else {
-      sortByField(filterState.searchOrder.field, filterState.searchOrder.order);
+      sortByField(filterState.searchOrder.field, filterState.searchOrder.order, page);
     }
-    resetHomePagination();
   }, [
     filterState.searchOrder,
     filterState.selectedCategories,
     filters,
+    page,
     recoverByCats,
     resetHomePagination,
     sortByField
   ]);
+
+  // If filters change reset pagination
+  useEffect(() => {
+    resetHomePagination();
+  }, [filters,
+    resetHomePagination])
 
   // Utility Function
   var isSelected = (id, array) => {
@@ -253,8 +263,8 @@ const mapStateToProps = state => ({
 
 const mapActionstoProps = dispatch => ({
   onLoadGetCats: () => dispatch(home.categories()),
-  sortByField: (tag, order) => dispatch(home.sortByField(tag, order)),
-  recoverByCats: (catIds, order) => dispatch(home.recoverByCats(catIds, order))
+  sortByField: (tag, order, page) => dispatch(home.sortByField(tag, order, page)),
+  recoverByCats: (catIds, order, page) => dispatch(home.recoverByCats(catIds, order, page))
 });
 
 export default connect(mapStateToProps, mapActionstoProps)(FilterPicker);
