@@ -123,9 +123,7 @@ export const deleteComment = id => (dispatch, getState) => {
   }).then(function(response) {
     const r = response;
     if (r.status === 204) {
-      return r.json().then(data => {
-        dispatch({ type: DELETED_COMMENT, data: data });
-      });
+      dispatch({ type: DELETED_COMMENT, data: id});
     } else {
       dispatch({ type: DELETE_COMMENT_ERROR, data: r.data });
       throw r.data;

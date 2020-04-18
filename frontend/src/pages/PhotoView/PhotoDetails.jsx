@@ -342,6 +342,7 @@ class PhotoDetails extends Component {
                           <Button
                             tag={Link}
                             to="/request-photo"
+                            style={{ display: "inline-block", height: "30px", margin: "auto 2px auto 2px" }}
                             className="float-left"
                             onClick={() => {
                               this.props.putRequestPhoto(photoInfo.details);
@@ -350,7 +351,7 @@ class PhotoDetails extends Component {
                             Solicitar foto
                           </Button>
                           <ReportModal
-                            style={{ display: "inline-block", width: "30px", height: "30px", margin: "auto 2px auto 2px"}}
+                            style={{ display: "inline-block", width: "30px", height: "30px", margin: "auto 2px auto 2px" }}
                             className="float-left"
                             elementId={this.props.match.params.id}
                             reportTitle={"Reportar fotografia"}

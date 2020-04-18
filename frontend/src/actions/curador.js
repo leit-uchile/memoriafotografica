@@ -8,6 +8,7 @@ import {
   RECOVERED_PHOTOS,
   EMPTY_PHOTOS,
   EDIT_PHOTO,
+  DELETED_PHOTO,
   EDIT_PHOTO_ERROR,
   SWICH_PHOTO_APPROVAL,
   SWICH_PHOTO_APPROVAL_ERROR,
@@ -161,6 +162,26 @@ export const editPhoto = (photoID, newData) => (
       });
     } else {
       dispatch(setAlert("No se ha podido actualizar la información. Inténtelo nuevamente", "warning"))
+      dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
+export const deletePhoto = photoID => (dispatch, getState) => {
+  let headers = {
+    Authorization: "Token " + getState().auth.token,
+    "Content-Type": "application/json"
+  };
+
+  return fetch("/api/photos/" + photoID + "/", {
+    method: "DELETE",
+    headers: headers
+  }).then(function(response) {
+    const r = response;
+    if (r.status === 204) {
+      dispatch({ type: DELETED_PHOTO, data: photoID});
+    } else {
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
       throw r.data;
     }

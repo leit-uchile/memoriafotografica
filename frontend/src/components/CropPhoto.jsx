@@ -162,11 +162,11 @@ class CropPhoto extends Component {
               Este cambio es irreversible
             </FormText>
             <ButtonGroup>
-              <Button color="success" onClick={this.onSave}>
-                Cortar
-              </Button>
               <Button color="secondary" onClick={this.toggle}>
                 Descartar
+              </Button>
+              <Button color="success" onClick={this.onSave}>
+                Cortar
               </Button>
             </ButtonGroup>
           </ModalFooter>

@@ -13,7 +13,9 @@ import {
   LOADING_COMMENT,
   UPDATED_COMMENT,
   DELETED_COMMENT,
-  DELETE_COMMENT_ERROR
+  DELETE_COMMENT_ERROR,
+  EDIT_PHOTO,
+  EDIT_PHOTO_ERROR
 } from "../actions/types";
 
 const initialState = {
@@ -35,6 +37,10 @@ const initialState = {
 
 export default function photoDetails(state = initialState, action) {
   switch (action.type) {
+    case EDIT_PHOTO:
+      return { ...state, details: {...state.details, ...action.data}}
+    case EDIT_PHOTO_ERROR:
+      return { ...state, edit_photo_errors: action.data}
     case RECOVERED_PHOTO_DETAILS:
       return { ...state, details: action.data };
     case PHOTO_DETAILS_ERROR:
@@ -42,25 +48,25 @@ export default function photoDetails(state = initialState, action) {
     case CREATED_COMMENT:
       return { ...state, new_comment: action.data, commentsLoaded: false };
     case UPDATED_COMMENT:
-      let prevComments = [];
-      state.comments.forEach( comment =>{
-        if(comment.id !== action.data.id){
-          prevComments.push(comment)
-        } else {
-          prevComments.push({...comment, content: action.data})
-        }
-      })
-      return { ...state, comments: [prevComments]};
-    case NEW_COMMENT_ERROR:
-      return { ...state, new_comment_errors: action.data };
-    case DELETED_COMMENT:
       let newComments = [];
       state.comments.forEach( comment =>{
         if(comment.id !== action.data.id){
           newComments.push(comment)
+        } else {
+          newComments.push({...comment, content: action.data})
         }
       })
-      return { ...state, comments: [prevComments]};
+      return { ...state, comments: [newComments], commentsLoaded: false };
+    case NEW_COMMENT_ERROR:
+      return { ...state, new_comment_errors: action.data };
+    case DELETED_COMMENT:
+      let prevComments = [];
+      state.comments.forEach( comment =>{
+        if(comment.id !== action.data.id){
+          prevComments.push(comment)
+        }
+      })
+      return { ...state, comments: [prevComments], commentsLoaded: false };
     case DELETE_COMMENT_ERROR:
       return { ...state, delete_comment_errors: action.data };
     case LOADING_COMMENT:

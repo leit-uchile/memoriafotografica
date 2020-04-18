@@ -5,7 +5,6 @@ import { photoDetails } from "../../actions";
 import ReportModal from "../../components/ReportModal";
 import { Link } from "react-router-dom";
 import moment from "moment";
-import { deleteComment } from "../../actions/photodetails";
 
 const Comment = ({ content: { content, censure, usuario, id, created_at }, viewerId, updateComment, deleteComment}) => {
   var userName =
@@ -54,7 +53,7 @@ const Comment = ({ content: { content, censure, usuario, id, created_at }, viewe
 
           {created_at ? <div style={{ display: "inline-block", padding: "0 15px", color: "#999" }}> Publicado el{" "}{moment(created_at).format("DD/MM/YYYY")}{" "}
             a las {" "}{moment(created_at).format("hh:mm")} </div> : <div style={{ display: "inline-block", padding: "0 15px", color: "#999" }}>Cargando...</div>}
-          {usuario.id == viewerId
+          {usuario.id === viewerId
           ? !editing
             ?
             <div style={{display:"inline-block", padding:"0"}}>
