@@ -44,13 +44,13 @@ const EditPhotosModal = (props) => {
   }, []);
 
   useEffect(() => {
-    props.photos.length === 1
-      ? props.onLoad(props.photos) //photoInfo
-      : console.log("evitando llamada de photoInfo para un array");
-  }, [props.photos]);
+    if (props.photosID.length === 1) {
+      props.onLoad(props.photosID); //photoInfo
+    }
+  }, [props.photosID]);
 
   useEffect(() => {
-    if (props.photos.length === 1) {
+    if (props.photosID.length === 1) {
       let info = { ...props.photoInfo };
       info.metadata =
         props.photoInfo.metadata !== undefined
@@ -64,7 +64,7 @@ const EditPhotosModal = (props) => {
     } else {
       setData({ metadata: [] });
     }
-  }, [props.photoInfo, props.photos]);
+  }, [props.photoInfo, props.photosID]);
 
   const updateData = (e) =>
     setData({ ...formData, [e.target.name]: e.target.value });
@@ -85,13 +85,14 @@ const EditPhotosModal = (props) => {
 
   const handleOnClose = () => {
     setToggle(!toggle);
+    setLoading(false);
   };
 
   const onSend = () => {
     let to_send = { ...formData };
-    if (props.photos.length > 1 && to_send.metadata.length === 0) {
+    if (props.photosID.length > 1 && to_send.metadata.length === 0) {
       //si hay más de una foto y no quiere cambiarle los tags
-      delete to_send.metadata;
+      delete to_send.metadata; //mantenemos los tags individuales
     } else {
       // let newTags = formData.metadata.filter(el => el.id === undefined).map(el => el.name);
       // if (newTags.length>0){
@@ -105,14 +106,19 @@ const EditPhotosModal = (props) => {
     }
     delete to_send.image;
     delete to_send.thumbnail;
-    props.photos.forEach((el, index) => {
-      props.photos.length > 1 && to_send.title !== undefined //si está editando el título de varias
+    props.photosID.forEach((el, index) => {
+      props.photosID.length > 1 && to_send.title !== undefined //si está editando el título de varias
         ? props.editPhoto(el, {
             ...to_send,
             title: `${to_send.title} (${index + 1})`,
           })
         : props.editPhoto(el, to_send);
     });
+    setLoading(true);
+  };
+
+  const onDelete = (ids) => {
+    ids.forEach((id) => props.deletePhoto(id));
     setLoading(true);
   };
 
@@ -211,38 +217,48 @@ const EditPhotosModal = (props) => {
               </UncontrolledButtonDropdown>
             </Col>
           </Row>
+          <Row>
+            <Col>
+              <Label>Eliminar</Label>
+            </Col>
+            <Col>
+              <FontAwesomeIcon
+                icon={faTrashAlt}
+                onClick={() => setToggleDelete(!toggleDelete)}
+                style={{
+                  color: "var(--leit-pink)",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                }}
+              />
+            </Col>
+          </Row>
         </FormGroup>
       </Form>
     </Fragment>
   );
-  const closeBtn = (
-    <FontAwesomeIcon
-      icon={faTrashAlt}
-      onClick={() => setToggleDelete(!toggleDelete)}
-      style={{ color: "var(--leit-pink)", cursor: "pointer", fontSize: "16px" }}
-    />
-  );
   return (
     <div>
       <Button
-        disabled={props.photos.length === 0}
+        disabled={props.photosID.length === 0}
         color="success"
         onClick={() => setToggle(!toggle)}
       >
-        Editar selección ({props.photos.length})
+        Editar selección ({props.photosID.length})
       </Button>
       <Modal
         isOpen={toggle}
         toggle={() => setToggle(!toggle)}
         size={"lg"}
         className="user-modal"
+        centered
       >
-        <ModalHeader close={closeBtn}>
-          {props.photos.length === 1 ? (
+        <ModalHeader>
+          {props.photosID.length === 1 ? (
             <h4 style={{ fontWeight: "bold" }}>Editando 1 foto</h4>
           ) : (
             <h4 style={{ fontWeight: "bold" }}>
-              Editando {props.photos.length} fotos
+              Editando {props.photosID.length} fotos
             </h4>
           )}
         </ModalHeader>
@@ -263,12 +279,12 @@ const EditPhotosModal = (props) => {
               <Button
                 color="danger"
                 onClick={() => {
+                  onDelete(props.photosID);
                   setToggleDelete(!toggleDelete);
-                  setToggle(!toggle);
                 }}
               >
                 Sí, eliminar
-              </Button>{" "}
+              </Button>
               <Button
                 color="secondary"
                 onClick={() => setToggleDelete(!toggleDelete)}
@@ -315,6 +331,7 @@ const mapActionsToProps = (dispatch) => ({
   onLoad: (id) => dispatch(photoDetails.getPhoto(id)),
   getTags: () => dispatch(home.tags()),
   editPhoto: (pID, val) => dispatch(curador.editPhoto(pID, val)),
+  deletePhoto: (pID) => dispatch(curador.deletePhoto(pID)),
   createMultipleMetas: (name) => dispatch(metadata.createMultipleMetas(name)),
 });
 

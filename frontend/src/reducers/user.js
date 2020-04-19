@@ -12,7 +12,8 @@ import {
   USER_PASSWORD_UPDATE_FAILED,
   USER_PUBLIC_LOADING,
   USER_PUBLIC_LOADED,
-  USER_PUBLIC_ERROR
+  USER_PUBLIC_ERROR,
+  DELETED_PHOTO
 } from "../actions/types";
 
 /**
@@ -102,6 +103,14 @@ export default function user(state = initialState, action) {
       return { ...state, publicLoading: false, publicUser: action.data };
     case USER_PUBLIC_ERROR:
       return { ...state, publicLoading: false, publicUser: null };
+    case DELETED_PHOTO:
+      let newList = []
+      state.photos.forEach( photo =>{
+        if(photo.id !== action.data.id){
+          newList.push(photo)
+        }
+      })
+      return { ...state, photos: [newList]};
     default:
       return { ...state };
   }

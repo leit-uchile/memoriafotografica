@@ -1,12 +1,13 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
-import { Button, Row, Col } from "reactstrap";
+import { Button, Row, Col, Container } from "reactstrap";
 import { user, home, misc } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
 import PhotoEditor from "../../../components/PhotoEditor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import "./userphotos.css"
 
 class UserPhotos extends Component {
   constructor(props) {
@@ -16,21 +17,11 @@ class UserPhotos extends Component {
       chosenPhotoIndex: 0,
       picturesToEdit: [],
       selectedAll: false,
-      searchOrder: { field: "created_at", order: "desc" },
     };
-    this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
-  }
-
-  setSortingOrder(order) {
-    this.setState({ ...this.state, searchOrder: order });
-    this.props.sortByField(
-      this.state.searchOrder.field,
-      this.state.searchOrder.order
-    );
+    this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite, actualizar tras borrar foto
   }
 
   handleOnRedirect = (obj) => {
-    console.log(obj);
     this.setState({
       redirect: true,
       chosenPhotoIndex: obj.index,
@@ -82,18 +73,25 @@ class UserPhotos extends Component {
       );
     }
     return (
-      <div>
-        <Row style={styles.titleContainer}>
-          <Col style={styles.title}>
-            <Button color="secondary" tag={Link} to="./dashboard">
-              <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}
-            </Button>
-            <h2 style={{ marginLeft: "10px" }}>Mis fotos</h2>
-          </Col>
-        </Row>
-        <div style={styles.photosContainer}>
+      <Fragment>
+      <div className="userphotos-gallery-menu">
+        <Container>
           <Row>
-            <Col md={10}>
+            <Col md="7" lg="9">
+              <div className="userphotos-title-container">
+                <Button color="secondary" tag={Link} to="./dashboard" style={{height:"30px"}}>
+                  <FontAwesomeIcon icon={faArrowAltCircleLeft} />
+                </Button>
+                <h2 style={{ marginLeft: "10px" }}>Mis fotos</h2>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+      <div className="userphotos-background">
+        <Container className="userphotos-gallery-container">
+          <Row>
+            <Col sm={mapped.length === 1 ? { size: 4, offset: 4 } : { size: 9 }}>
               <PhotoEditor
                 photos={mapped}
                 targetRowHeight={250}
@@ -103,72 +101,30 @@ class UserPhotos extends Component {
                 onRedirect={(e, index) => this.handleOnRedirect(index)}
               />
             </Col>
-            <Col md={2} style={styles.filterMenu}>
+            <Col className="userphotos-filters-container">
               <Button onClick={() => this.putAllToEdit(mapped, true)}>
                 Seleccionar todas
               </Button>
-              <EditPhotosModal photos={this.state.picturesToEdit} />
               <Button
                 disabled={this.state.picturesToEdit.length === 0}
                 color="danger"
+                style={{backgroundColor: "var(--leit-pink)"}}
                 onClick={() => this.putAllToEdit(mapped, false)}
               >
                 Deseleccionar
               </Button>
+              <EditPhotosModal photosID={this.state.picturesToEdit} />
+              
             </Col>
           </Row>
-        </div>
+        </Container>
       </div>
+      </Fragment>
     );
   }
 }
 
-const styles = {
-  titleContainer: {
-    paddingTop: "1em",
-    paddingLeft: "6em",
-    paddingBottom: "1em",
-    borderBottom: "1px solid rgb(210,214,218)",
-    background: "white",
-  },
-  title: {
-    textAlign: "left",
-    display: "flex",
-    //verticalAlign: "middle",
-    //flexDirection: "row",
-  },
-  filterMenu: {
-    position: "sticky",
-    top: "0",
-    height: "4em",
-    padding: "1em 0",
-    zIndex: "4",
-  },
-  triangulo: {
-    position: "absolute",
-    width: "20px",
-    height: "20px",
-    borderTop: "1px solid rgb(210,214,218)",
-    borderRight: "0px solid rgb(210,214,218)",
-    borderBottom: "0px solid rgb(210,214,218)",
-    borderLeft: "1px solid rgb(210,214,218)",
-    top: "0",
-    left: "8em",
-    marginLeft: "-45px",
-    content: "",
-    transform: "rotate(45deg)",
-    marginTop: "-10px",
-    background: "#ffff",
-  },
-  photosContainer: {
-    width: "100%",
-    minHeight: "70vh",
-    paddingTop: "1.25em",
-    paddingBottom: "1.25em",
-    backgroundColor: "#f7f8fa",
-    textAlign: "center",
-  },
-};
+
 const mapStateToProps = (state) => ({
   photos: state.user.photos,
   user: state.user.userData,
@@ -176,7 +132,6 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = (dispatch) => ({
   setSelectedId: (id) => dispatch(home.setSelectedId(id)),
   setRoute: (route) => dispatch(misc.setCurrentRoute(route)),
-  sortByField: (tag, order) => dispatch(home.sortByField(tag, order)),
   onLoadGetPhotos: (user_id, limit, offset) =>
     dispatch(user.getUserPhotos(user_id, limit, offset)),
 });
