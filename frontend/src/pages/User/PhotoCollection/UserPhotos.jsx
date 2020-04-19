@@ -7,7 +7,7 @@ import EditPhotosModal from "./EditPhotosModal";
 import PhotoEditor from "../../../components/PhotoEditor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
-import "./userphotos.css"
+//import "./userphotos.css"
 
 class UserPhotos extends Component {
   constructor(props) {
