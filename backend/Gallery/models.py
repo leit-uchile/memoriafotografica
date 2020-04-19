@@ -59,6 +59,8 @@ class Category(models.Model):
     updated_at = models.DateTimeField(default=datetime.now)
     def __str__(self):
         return self.title
+    def as_dict(self):
+        return {"id": self.id, "title": self.title, "created_at": self.created_at, "updated_at": self.updated_at}
 
 def gen_uuid(instance, filename):
     ext = filename.split('.')[-1]
