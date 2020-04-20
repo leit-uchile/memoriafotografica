@@ -11,7 +11,7 @@ import {
 } from "reactstrap";
 import Categories from "./Categories";
 import { connect } from "react-redux";
-import { home } from "../../actions";
+import { gallery } from "../../actions";
 
 /**
  * FilterPicker
@@ -25,15 +25,18 @@ import { home } from "../../actions";
  * @param {Function} onLoadGetCats action
  * @param {Function} sortByUpload action
  * @param {Function} recoverByCats action
- * @param {Array} cats categories from store
+ * @param {Object} cats count and categories
+ * TODO: find a better way to fix the photo url
+ * @param {Function} putInfo put the categories IDs on parent component
  */
 const FilterPicker = ({
   defaultMaxAllowed,
   resetHomePagination,
   filters,
   page,
+  putInfo,
   // Actions
-  onLoadGetCats,
+  getCats,
   sortByField,
   recoverByCats,
   // Store
@@ -48,14 +51,16 @@ const FilterPicker = ({
 
   // Initial Load
   useEffect(() => {
-    onLoadGetCats();
-  }, [onLoadGetCats]);
+    getCats(0,filterState.maxAllowed);
+  }, [getCats, filterState.maxAllowed]);
 
-  const allowMoreCats = () => {
-    setFilterState({
-      ...filterState,
-      maxAllowed: filterState.maxAllowed + 4
-    });
+  var allowMoreCats = () => {
+    if(filterState.maxAllowed < cats.total){
+      setFilterState({
+        ...filterState,
+        maxAllowed: filterState.maxAllowed + 4
+      });
+    }
   };
 
   const setSortingOrder = order => {
@@ -89,6 +94,9 @@ const FilterPicker = ({
     } else {
       sortByField(filterState.searchOrder.field, filterState.searchOrder.order, page);
     }
+    // Pass this to our parent so that after clicking a Photo our preferences
+    // are saved on the URL query params
+    putInfo({cats: filterState.selectedCategories, sorting: `${filterState.searchOrder.field}-${filterState.searchOrder.order}`})
   }, [
     filterState.searchOrder,
     filterState.selectedCategories,
@@ -111,7 +119,7 @@ const FilterPicker = ({
   };
 
   var currentCats = cats
-    ? cats.slice(0, filterState.maxAllowedCategories).map(el => ({
+    ? cats.categories.map(el => ({
         ...el,
         selected: isSelected(el.id, filterState.selectedCategories)
       }))
@@ -257,14 +265,14 @@ const styles = {
 };
 
 const mapStateToProps = state => ({
-  cats: state.home.all_cats,
-  filters: state.search.metaIDs
+  cats: state.categories,
+  filters: state.site_misc.searchMetaIDs
 });
 
 const mapActionstoProps = dispatch => ({
-  onLoadGetCats: () => dispatch(home.categories()),
-  sortByField: (tag, order, page) => dispatch(home.sortByField(tag, order, page)),
-  recoverByCats: (catIds, order, page) => dispatch(home.recoverByCats(catIds, order, page))
+  getCats: (page, pageSize) => dispatch(gallery.category.getCategories(page, pageSize)),
+  sortByField: (tag, order, page) => dispatch(gallery.photos.sortByField(tag, order, page)),
+  recoverByCats: (catIds, order, page) => dispatch(gallery.photos.recoverByCats(catIds, order, page))
 });
 
 export default connect(mapStateToProps, mapActionstoProps)(FilterPicker);

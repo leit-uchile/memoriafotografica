@@ -138,8 +138,8 @@ const Header = ({ isAuth, currentRoute }) => {
 
 const mapStateToProps = state => {
   return {
-    isAuth: state.auth.isAuthenticated,
-    currentRoute: state.misc.currentRoute
+    isAuth: state.user.isAuthenticated,
+    currentRoute: state.site_misc.currentRoute
   };
 };
 

@@ -73,7 +73,7 @@ const Layout = () => {
                     <BoundedRoute path={"/gallery"} component={Home} />
                     <BoundedRoute path={"/login"} component={Login} />
                     <BoundedRoute
-                      path={"/photo/:id"}
+                      path={"/photo/:id/"}
                       component={PhotoDetails}
                     />
                     <BoundedRoute path={"/misc"} component={Index} />

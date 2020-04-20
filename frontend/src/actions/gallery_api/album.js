@@ -1,0 +1,72 @@
+import {
+  ALBUM_LOADED,
+  ALBUM_LOADING_ERROR,
+  ALBUM_LOADING,
+  CREATE_ALBUM_SENT,
+  CREATED_ALBUM,
+  CREATED_ALBUM_ERROR,
+} from '../types'
+import {setAlert} from "../site_misc"
+
+/**
+ * Load information from an album by id
+ * including the data from its pictures or not
+ *
+ * @param {Number} id
+ * @param {Boolean} detailed
+ */
+export const loadAlbumInfo = (id, detailed) => (dispatch) => {
+  dispatch({ type: ALBUM_LOADING });
+  return fetch(`/api/albums/${id}/?detailed=${detailed ? "y" : "n"}`).then(
+    (res) => {
+      const response = res;
+      if (res.status === 200) {
+        return response
+          .json()
+          .then((parsed) => dispatch({ type: ALBUM_LOADED, data: parsed }));
+      } else {
+        dispatch(setAlert("Hubo un error al cargar la colección", "warning"));
+        dispatch({ type: ALBUM_LOADING_ERROR, data: response.data });
+      }
+    }
+  );
+};
+
+
+export const createAlbum = formData => (dispatch, getState) => {
+  dispatch({ type: CREATE_ALBUM_SENT, data: null });
+
+  let header = {
+    Authorization: "Token " + getState().user.token,
+    "Content-Type": "application/json"
+  };
+
+  fetch("/api/albums/", {
+    method: "POST",
+    headers: header,
+    body: JSON.stringify(formData)
+  })
+    .then(res => {
+      if (res.status === 201) {
+        dispatch({
+          type: CREATED_ALBUM,
+          data: null
+        });
+      } else {
+        dispatch(setAlert("Error al crear album", "warning"));
+        res.json().then(payload => {
+          dispatch({
+            type: CREATED_ALBUM_ERROR,
+            error: payload
+          });
+        });
+      }
+    })
+    .catch(error => {
+      dispatch(setAlert("Error al subir fotografia", "warning"));
+      dispatch({
+        type: CREATED_ALBUM_ERROR,
+        error: error
+      });
+    });
+};

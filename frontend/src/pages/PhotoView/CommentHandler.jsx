@@ -10,7 +10,7 @@ import {
   Button
 } from "reactstrap";
 import { connect } from "react-redux";
-import { photoDetails } from "../../actions";
+import { gallery } from "../../actions";
 import Comment from "./Comment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faComments } from "@fortawesome/free-solid-svg-icons";
@@ -89,15 +89,15 @@ const styles = {
 };
 
 const mapStateToProps = state => ({
-  comments: state.photoDetails.comments,
-  commentsLoaded: state.photoDetails.commentsLoaded,
-  auth: state.auth.isAuthenticated,
+  comments: state.comments.comments,
+  commentsLoaded: state.comments.commentsLoaded,
+  auth: state.user.isAuthenticated,
   userData: state.user.userData
 });
 
 const mapActionsToProps = dispatch => ({
-  newComment: (id, comment) => dispatch(photoDetails.putComment(id, comment)),
-  fetchComments: (id, auth) => dispatch(photoDetails.getComments(id))
+  newComment: (id, comment) => dispatch(gallery.comments.putComment(id, comment)),
+  fetchComments: (id, auth) => dispatch(gallery.comments.getComments(id))
 });
 export default connect(
   mapStateToProps,

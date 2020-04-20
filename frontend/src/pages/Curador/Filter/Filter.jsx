@@ -7,12 +7,11 @@ import {
   ButtonGroup
 } from "reactstrap";
 import { connect } from "react-redux";
-import { curador } from "../../../actions";
+import { gallery } from "../../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faThLarge,
-  faThList,
-  faFilter
+  faThList
 } from "@fortawesome/free-solid-svg-icons";
 import { LeitSpinner, Pagination } from "../../../components";
 import PhotoList from "./PhotoList";
@@ -26,7 +25,7 @@ class Filter extends Component {
       page: 0,
       pageSize: 18
     };
-    this.props.getPhotos();
+    this.props.getPhotosAuth();
   };
 
   /**
@@ -43,11 +42,6 @@ class Filter extends Component {
     });
   };
 
-  approvePhoto = (pid, val) => {
-    this.props.switchPhotoApproval(pid, val).then(() => {
-      window.location.reload();
-    });
-  };
   render() {
     const { photos } = this.props;
     const { pageSize, page } = this.state;
@@ -101,7 +95,7 @@ class Filter extends Component {
               ) : (
                 <PhotoCards
                   photos={photos.slice(page * pageSize, (page + 1) * pageSize)}
-                  editPhoto={this.props.switchPhotoApproval}
+                  editPhoto={this.props.editPhoto}
                 />
               )}
             </Col>
@@ -124,23 +118,23 @@ class Filter extends Component {
 
 const mapStateToProps = state => {
   let errors = [];
-  if (state.auth.errors) {
-    errors = Object.keys(state.auth.errors).map(field => {
-      return { field, message: state.auth.errors[field] };
+  if (state.user.errors) {
+    errors = Object.keys(state.user.errors).map(field => {
+      return { field, message: state.user.errors[field] };
     });
   }
   return {
     errors,
-    isAuthenticated: state.auth.isAuthenticated,
-    meta: state.home.all_tags,
-    photos: state.curador.photos,
-    loading: state.curador.loading,
-    refresh: state.curador.refresh
+    isAuthenticated: state.user.isAuthenticated,
+    meta: state.webadmin.all_tags,
+    photos: state.photos.photos,
+    loading: state.site_misc.curador.loading,
+    refresh: state.site_misc.curador.refresh
   };
 };
 const mapActionsToProps = dispatch => ({
-  getPhotos: () => dispatch(curador.getPhotos()),
-  editPhoto: (photoID, data) => dispatch(curador.editPhoto(photoID, data))
+  getPhotosAuth: () => dispatch(gallery.photos.getPhotosAuth()),
+  editPhoto: (photoID, data) => dispatch(gallery.photos.editPhoto(photoID, data))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Filter);

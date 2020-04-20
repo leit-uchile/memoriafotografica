@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
 import { Button, Row, Col, Container } from "reactstrap";
-import { user, home, misc } from "../../../actions";
+import { user, site_misc } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
 import PhotoEditor from "../../../components/PhotoEditor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -130,8 +130,8 @@ const mapStateToProps = (state) => ({
   user: state.user.userData,
 });
 const mapActionsToProps = (dispatch) => ({
-  setSelectedId: (id) => dispatch(home.setSelectedId(id)),
-  setRoute: (route) => dispatch(misc.setCurrentRoute(route)),
+  setSelectedId: (id) => dispatch(site_misc.setSelectedId(id)),
+  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
   onLoadGetPhotos: (user_id, limit, offset) =>
     dispatch(user.getUserPhotos(user_id, limit, offset)),
 });

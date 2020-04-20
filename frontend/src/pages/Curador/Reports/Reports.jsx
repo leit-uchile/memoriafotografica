@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, ButtonGroup } from "reactstrap";
 import { connect } from "react-redux";
-import { curador } from "../../../actions";
+import { gallery } from "../../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { LeitSpinner } from "../../../components";
@@ -53,13 +53,13 @@ const Reports = ({ loading, reports, getReports, updatedReports }) => {
 };
 
 const mapStateToProps = state => ({
-  loading: state.curador.loading,
-  reports: state.curador.reports,
-  updatedReports: state.curador.reportUpdate,
+  loading: state.site_misc.curador.loading,
+  reports: state.reports.reports,
+  updatedReports: state.reports.reportUpdate,
 });
 
 const mapActionsToProps = dispatch => ({
-  getReports: () => dispatch(curador.getReportes())
+  getReports: () => dispatch(gallery.reports.getReportes())
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Reports);

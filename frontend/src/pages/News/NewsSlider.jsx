@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { landing } from "../../actions";
+import { webadmin } from "../../actions";
 import { Container, Row, Col } from "reactstrap";
 import Slider from "react-slick";
 import "../Landing/landing.css";
@@ -57,13 +57,13 @@ const NewsSlider = props => {
 };
 
 const mapStateToProps = state => ({
-    caroussel: state.landing.caroussel,
-    news: state.landing.news
+    caroussel: state.webadmin.caroussel,
+    news: state.webadmin.news
 });
   
   const mapActionsToProps = dispatch => ({
-    loadCaroussel: () => dispatch(landing.getCaroussel()),
-    loadNews: () => dispatch(landing.getNews())
+    loadCaroussel: () => dispatch(webadmin.getCaroussel()),
+    loadNews: () => dispatch(webadmin.getNews())
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(NewsSlider);

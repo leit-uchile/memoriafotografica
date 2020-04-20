@@ -10,7 +10,7 @@ import {
 } from "reactstrap";
 import Photo from "../../../components/Photo";
 import { connect } from "react-redux";
-import { user, misc } from "../../../actions";
+import { user, site_misc } from "../../../actions";
 import { Link, Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -228,7 +228,7 @@ const mapActionsToProps = dispatch => ({
     dispatch(user.getUserPhotos(user_id, limit, offset)),
   onLoadGetAlbums: (user_id, limit, offset) =>
     dispatch(user.getUserAlbums(user_id, limit, offset)),
-  setRoute: route => dispatch(misc.setCurrentRoute(route)),
+  setRoute: route => dispatch(site_misc.setCurrentRoute(route)),
   onLoadGetPublicAlbums: user_id =>
     dispatch(user.loadPublicUserAlbums(user_id)),
   onLoadGetPublicPhotos: user_id => dispatch(user.loadPublicUserPhotos(user_id))

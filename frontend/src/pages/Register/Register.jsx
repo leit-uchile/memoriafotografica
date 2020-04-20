@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import RegisterLoginInfo from "./RegisterLoginInfo";
 import { connect } from "react-redux";
-import { auth } from "../../actions";
+import { user } from "../../actions";
 import { Button, Container, Row, Col } from "reactstrap";
 import { Redirect } from "react-router-dom";
 import StepWizard from "react-step-wizard";
-import {LeitSpinner} from "../../components";
+import { LeitSpinner } from "../../components";
 
-const FailedRegistration = props => (
+const FailedRegistration = (props) => (
   <Container style={{ textAlign: "center", marginTop: "2em" }}>
     <Row>
       <Col>
@@ -22,10 +22,13 @@ const FailedRegistration = props => (
             soporte&#64;leit.cl
           </a>
         </p>
-        <Button color="warning" onClick={() => {
-          props.back()
-          props.goToStep(1)
-          }}>
+        <Button
+          color="warning"
+          onClick={() => {
+            props.back();
+            props.goToStep(1);
+          }}
+        >
           Volver
         </Button>
       </Col>
@@ -56,7 +59,7 @@ const RegisterSent = ({ isAuthenticated, goToStep, errors }) => {
   );
 };
 
-const SuccessfulRegistration = props => (
+const SuccessfulRegistration = (props) => (
   <Container style={{ textAlign: "center", marginTop: "2em" }}>
     <Row>
       <Col>
@@ -90,7 +93,7 @@ class Register extends Component {
     // Clear errors
     this.props.cleanErrors();
     this.setState({
-      calledResgister: false
+      calledResgister: false,
     });
   }
 
@@ -131,7 +134,8 @@ class Register extends Component {
         onStepChange={() => {
           window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
         }}
-        initialStep={1}>
+        initialStep={1}
+      >
         <RegisterLoginInfo
           saveInfo={this.saveUserLogin}
           cache={this.state.loginInfo}
@@ -147,33 +151,25 @@ class Register extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   let errors = [];
-  if (state.auth.errors) {
-    errors = Object.keys(state.auth.errors).map(field => {
-      return { field, message: state.auth.errors[field] };
+  if (state.user.errors) {
+    errors = Object.keys(state.user.errors).map((field) => {
+      return { field, message: state.user.errors[field] };
     });
   }
   return {
     errors,
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.user.isAuthenticated,
   };
 };
 
-const mapActionsToProps = dispatch => {
-  return {
-    register: (username, password, name, lastname, date, rol, avatar) => {
-      return dispatch(
-        auth.register(username, password, name, lastname, date, rol, avatar)
-      );
-    },
-    cleanErrors: () => {
-      return dispatch(auth.cleanErrors());
-    }
-  };
-};
+const mapActionsToProps = (dispatch) => ({
+  register: (username, password, name, lastname, date, rol, avatar) =>
+    dispatch(
+      user.register(username, password, name, lastname, date, rol, avatar)
+    ),
+  cleanErrors: () => dispatch(user.cleanErrors()),
+});
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(Register);
+export default connect(mapStateToProps, mapActionsToProps)(Register);

@@ -1,12 +1,18 @@
 import {
+  AUTH_ERROR,
+  LOGIN_FAILED,
+  LOGIN_SUCCESS,
+  REGISTRATION_FAILED,
+  REGISTRATION_SUCCESS,
+  AUTH_CLEAR_ERRORS,
+  LOGOUT_SUCCESS,
+  USER_LOADED,
   USER_RECOVERED_PHOTO,
   USER_RECOVERED_PHOTO_ERROR,
   USER_RECOVERED_ALBUM,
   USER_RECOVERED_ALBUM_ERROR,
   USER_RECOVERED_COMMENTS,
   USER_RECOVERED_COMMENTS_ERROR,
-  USER_LOADED,
-  AUTH_ERROR,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAILED,
   USER_PASSWORD_UPDATED,
@@ -15,9 +21,98 @@ import {
   USER_PUBLIC_LOADED,
   USER_PUBLIC_ERROR
 } from "./types";
-// TODO: Add real backend routes
+import { setAlert } from "./site_misc";
 
-import { setAlert } from "./alert";
+export const login = (email, password) => {
+  return (dispatch, getState) => {
+    let headers = { "Content-Type": "application/json" };
+    let body = JSON.stringify({ email, password });
+
+    return fetch("/api/auth/login/", { headers, body, method: "POST" })
+      .then(res => {
+        if (res.status < 500) {
+          return res.json().then(data => {
+            return { status: res.status, data };
+          });
+        } else {
+          console.log("Server Error!");
+          throw res;
+        }
+      })
+      .then(res => {
+        if (res.status === 200) {
+          dispatch({ type: USER_LOADED, data: res.data.user });
+          dispatch({ type: LOGIN_SUCCESS, data: res.data.token });
+          return res.data;
+        } else if (res.status === 403 || res.status === 401) {
+          dispatch({ type: AUTH_ERROR, data: res.data });
+          throw res.data;
+        } else {
+          dispatch({ type: LOGIN_FAILED, data: res.data });
+          throw res.data;
+        }
+      });
+  };
+};
+
+export const register = (
+  email,
+  password,
+  first_name,
+  last_name,
+  birth_date,
+  rol_type,
+  avatar
+) => {
+  return (dispatch, getState) => {
+    var formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("first_name", first_name);
+    formData.append("last_name", last_name);
+    formData.append("birth_date", birth_date);
+    formData.append("rol_type", parseInt(rol_type));
+    formData.append("avatar", avatar);
+
+    return fetch("/api/auth/register/", { body: formData, method: "POST" })
+      .then(res => {
+        if (res.status < 500) {
+          return res.json().then(data => {
+            return { status: res.status, data };
+          });
+        } else {
+          console.log("Server Error!");
+          dispatch({ type: REGISTRATION_FAILED, data: res.data });
+          throw res;
+        }
+      })
+      .then(res => {
+        if (res.status === 200) {
+          dispatch({ type: USER_LOADED, data: res.data.user });
+          dispatch({ type: REGISTRATION_SUCCESS, data: res.data });
+          return res.data;
+        } else if (res.status === 403 || res.status === 401) {
+          dispatch({ type: AUTH_ERROR, data: res.data });
+          throw res.data;
+        } else {
+          dispatch({ type: REGISTRATION_FAILED, data: res.data });
+          throw res.data;
+        }
+      });
+  };
+};
+
+export const cleanErrors = () => {
+  return (dispatch, getState) => {
+    dispatch({ type: AUTH_CLEAR_ERRORS, data: null });
+  };
+};
+
+export const logout = () => {
+  return (dispatch, getState) => {
+    dispatch({ type: LOGOUT_SUCCESS, data: null });
+  };
+};
 
 export const getUserPhotos = (user_id, limit, offset) => (
   dispatch,
@@ -25,7 +120,7 @@ export const getUserPhotos = (user_id, limit, offset) => (
 ) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().auth.token
+    Authorization: "Token " + getState().user.token
   };
   return fetch(
     `/api/users/photos/${user_id}/?limit=${limit}&offset=${offset}`,
@@ -49,7 +144,7 @@ export const getUserAlbums = (user_id, limit, offset) => (
 ) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().auth.token
+    Authorization: "Token " + getState().user.token
   };
   return fetch(
     `/api/users/albums/${user_id}/?limit=${limit}&offset=${offset}`,
@@ -73,7 +168,7 @@ export const getUserComments = (user_id, limit, offset) => (
 ) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().auth.token
+    Authorization: "Token " + getState().user.token
   };
   return fetch(
     `/api/users/comments/${user_id}/?limit=${limit}&offset=${offset}`,
@@ -159,7 +254,7 @@ export const loadPublicUserPhotos = user_id => dispatch =>
  * Load current user
  */
 export const loadUser = () => (dispatch, getState) => {
-  const token = getState().auth.token;
+  const token = getState().user.token;
 
   let headers = {
     "Content-Type": "application/json"
@@ -201,13 +296,13 @@ export const editProfile = (user, doJSON = true) => (dispatch, getState) => {
   if (doJSON) {
     headers = {
       "Content-Type": "application/json",
-      Authorization: "Token " + getState().auth.token
+      Authorization: "Token " + getState().user.token
     };
     body = JSON.stringify({ ...user });
   } else {
     // Assume multipart from backend
     headers = {
-      Authorization: "Token " + getState().auth.token
+      Authorization: "Token " + getState().user.token
     };
     body = new FormData();
     Object.keys(user).forEach(element => {
@@ -252,7 +347,7 @@ export const updatePassword = (old_password, new_password) => (
 ) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().auth.token
+    Authorization: "Token " + getState().user.token
   };
 
   let body = JSON.stringify({ old_password, new_password });

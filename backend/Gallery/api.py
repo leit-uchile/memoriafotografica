@@ -11,7 +11,7 @@ from rest_framework.exceptions import NotFound
 from MetaData.models import *
 from Users.permissions import *
 from .permissions import *
-from django.http import Http404, QueryDict
+from django.http import Http404, QueryDict, JsonResponse
 from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
 from rest_condition import ConditionalPermission, C, And, Or, Not
 from rest_framework.documentation import include_docs_urls
@@ -90,6 +90,8 @@ class PhotoListAPI(generics.GenericAPIView):
     """
     permission_classes = [IsAuthenticated|ReadOnly,]
 
+    # General purpose list query
+    # We can return also the page number of a specific photo based on the query
     def get(self, request, *args, **kwargs):
         photo = ""
         if request.user.is_anonymous or request.user.user_type == 1:
@@ -104,14 +106,25 @@ class PhotoListAPI(generics.GenericAPIView):
             serializer_class = PhotoAdminSerializer
             serializer = PhotoAdminSerializer(photo, many = True)
             serialized_data = serializer.data
+        
+        # If we just need the page number
+        if "get_page" in request.query_params:
+            photo_id = int(request.query_params["get_page"])
+            size = int(request.query_params["page_size"])
+            results = len(serialized_data)
+            # Get the position
+            position = -1
+            for i in range(results):
+                if serialized_data[i]['id'] == photo_id:
+                    position = i
+                    break
+            page = (position + 1)//size
+            return JsonResponse({"position": str(position), "page": str(page)})
+
         for aPhoto in serialized_data:
             aPhoto['metadata'] = list(filter(lambda x: check_approval(x), aPhoto['metadata']))
             aPhoto['metadata'] = list(map(lambda x: make_tag(x), aPhoto['metadata']))
         photos_to_map = list(map(get_user,zip(photo, serialized_data)))
-        # serialized_data = list(map(get_user, serialized_data))
-        # print(serialized_data)        
-        #print(self.paginate_queryset(serialized_data))
-        
         return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
     def post(self, request, *args, **kwargs):

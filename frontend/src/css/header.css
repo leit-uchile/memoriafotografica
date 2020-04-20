@@ -18,6 +18,10 @@ h1 {
   margin-bottom: -.3125rem;
 }
 
+.navbar-nav li.nav-item {
+  font-size: 1.1em;
+}
+
 @media screen and (max-width: 768px) {
     .navbar-brand p{
         display: none;

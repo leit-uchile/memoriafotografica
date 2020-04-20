@@ -3,7 +3,7 @@ import { Table, Button } from "reactstrap";
 import ReportRow from "./ReportRow";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { curador } from "../../../actions";
+import { gallery } from "../../../actions";
 
 /**
  * Define different Renders and updates for
@@ -91,7 +91,7 @@ const ReportsTable = ({ reports, updateReport }) => {
 const mapStateToProps = state => ({});
 
 const mapActionsToProps = dispatch => ({
-  updateReport: rep => dispatch(curador.updateReport(rep))
+  updateReport: rep => dispatch(gallery.reports.updateReport(rep))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(ReportsTable);

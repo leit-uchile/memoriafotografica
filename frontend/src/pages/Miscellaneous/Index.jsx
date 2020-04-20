@@ -1,11 +1,20 @@
-import React from "react";
+import React, {useEffect} from "react";
 import About from "./About";
 import FAQ from "./FAQ";
 import ContactUs from "./ContactUs";
 import { Container, Row, Button, Col } from "reactstrap";
 import { Route, Link, Switch } from "react-router-dom";
 
-const Index = ({ match }) => (
+const Index = ({ match, location }) => {
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth"})
+  },[location.pathname])
+
+  return (
   <Container style={styles.container} className="disable-css-transitions">
     <div> {/* Do not remove this div, it allows for sticky behavior*/}
       <Row>
@@ -57,7 +66,7 @@ const Index = ({ match }) => (
       </Row>
     </div>
   </Container>
-);
+)}
 
 const styles = {
   container: {

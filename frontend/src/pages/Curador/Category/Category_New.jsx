@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { curador } from "../../../actions";
+import { gallery } from "../../../actions";
 import {
   Button,
   Form,
@@ -22,7 +22,7 @@ class Category_New extends Component {
       title: ""
     };
     if (this.props.photos.length === 0) {
-      this.props.getPhotos();
+      this.props.getPhotosAuth();
     }
   }
 
@@ -100,24 +100,24 @@ class Category_New extends Component {
 
 const mapStateToProps = state => {
   let errors = [];
-  if (state.auth.errors) {
-    errors = Object.keys(state.auth.errors).map(field => {
-      return { field, message: state.auth.errors[field] };
+  if (state.user.errors) {
+    errors = Object.keys(state.user.errors).map(field => {
+      return { field, message: state.user.errors[field] };
     });
   }
   return {
     errors,
-    isAuthenticated: state.auth.isAuthenticated,
-    token: state.auth.token,
-    meta: state.home.all_tags,
-    cats: state.curador.categories,
-    photos: state.curador.photos,
-    loading: state.curador.loading
+    isAuthenticated: state.user.isAuthenticated,
+    token: state.user.token,
+    meta: state.webadmin.all_tags,
+    cats: state.categories.categories,
+    photos: state.photos.photos,
+    loading: state.site_misc.curador.loading
   };
 };
 const mapActionsToProps = dispatch => ({
-  createCategory: data => dispatch(curador.createCategory(data)),
-  getPhotos: () => dispatch(curador.getPhotos())
+  createCategory: data => dispatch(gallery.category.createCategory(data)),
+  getPhotosAuth: () => dispatch(gallery.photos.getPhotosAuth())
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Category_New);

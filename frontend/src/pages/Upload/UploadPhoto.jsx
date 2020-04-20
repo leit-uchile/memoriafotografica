@@ -20,7 +20,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "../../css/search.css";
 import { connect } from "react-redux";
-import { upload, alert } from "../../actions";
+import { site_misc } from "../../actions";
 
 const imageMaxSize = 8000000; // Bytes ~ 8MB
 
@@ -248,12 +248,12 @@ const styles = {
 };
 
 const mapStateToProps = state => ({
-  disclosed: state.upload.disclosureSet
+  disclosed: state.site_misc.uploadDisclosureSet
 });
 
 const mapActionsToProps = dispatch => ({
-  readDisclosure: () => dispatch(upload.readDisclosure()),
-  sendAlert: (message, color) => dispatch(alert.setAlert(message, color))
+  readDisclosure: () => dispatch(site_misc.readDisclosure()),
+  sendAlert: (message, color) => dispatch(site_misc.setAlert(message, color))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(UploadPhoto);

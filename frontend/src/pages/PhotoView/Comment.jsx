@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { Container, Row, Col, Button, Input } from "reactstrap";
 import { connect } from "react-redux";
-import { photoDetails } from "../../actions";
+import { gallery } from "../../actions";
 import ReportModal from "../../components/ReportModal";
 import { Link } from "react-router-dom";
 import moment from "moment";
@@ -93,8 +93,8 @@ const Comment = ({ content: { content, censure, usuario, id, created_at }, viewe
 };
 
 const mapActionsToProps = dispatch => ({
-  updateComment: (id, comment) => dispatch(photoDetails.editComment(id, comment)),
-  deleteComment: id => dispatch(photoDetails.deleteComment(id))
+  updateComment: (id, comment) => dispatch(gallery.comments.editComment(id, comment)),
+  deleteComment: id => dispatch(gallery.comments.deleteComment(id))
 });
 export default connect(
   null,

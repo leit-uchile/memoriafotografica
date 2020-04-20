@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col } from "reactstrap";
-import { albumcollection, home } from "../../../actions";
+import { gallery, site_misc } from "../../../actions";
 import { connect } from "react-redux";
 import Gallery from "react-photo-gallery";
 import {LeitSpinner} from "../../../components";
@@ -53,9 +53,10 @@ const AlbumView = ({ match, albumData, loadInfo, loading, setIndex, pushPhotos }
   };
 
   if (display.redirect !== false){
+    // TODO: change this push photos to url use
     pushPhotos(albumData.pictures);
     return (
-      <Redirect push to={`/photo/${display.photos[display.redirect].id}`} />
+      <Redirect push to={`/photo/${display.photos[display.redirect].id}/?album=${albumData.id}`} />
     );
   }
 
@@ -120,9 +121,9 @@ const mapStateToProps = state => ({
 
 const mapActionsToProps = dispatch => ({
   loadInfo: (id, detailed = true) =>
-    dispatch(albumcollection.loadAlbumInfo(id, detailed)),
-  pushPhotos: photos => dispatch(home.pushPhotoArray(photos)),
-  setIndex: num => dispatch(home.setSelectedId(num)),
+    dispatch(gallery.album.loadAlbumInfo(id, detailed)),
+  pushPhotos: photos => dispatch(site_misc.pushPhotoArray(photos)),
+  setIndex: num => dispatch(site_misc.setSelectedId(num)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(AlbumView);

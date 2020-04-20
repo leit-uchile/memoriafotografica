@@ -155,7 +155,7 @@ class RegisterLoginInfo extends Component {
       <Container>
         <Row>
           <Col>
-            <h2 style={styles.title}>Subir Fotograf&iacute;a / Sesi&oacute;n </h2>
+            <h2 style={styles.title}>Subir Fotograf&iacute;a / Datos del usuario </h2>
           </Col>
         </Row>
         <Row>
@@ -195,11 +195,10 @@ class RegisterLoginInfo extends Component {
               <Row form>
                 <Col sm={6}>
                   <FormGroup>
-                    <Label for="name">Nombre: </Label>
                     <Input
                       id="name"
                       type="text"
-                      placeholder="Jose"
+                      placeholder="Nombre"
                       onChange={this.genericChangeHandler}
                       required
                       value={this.state.name}></Input>
@@ -207,11 +206,10 @@ class RegisterLoginInfo extends Component {
                 </Col>
                 <Col sm={6}>
                   <FormGroup>
-                    <Label for="lastname">Apellido: </Label>
                     <Input
                       id="lastname"
                       type="text"
-                      placeholder="Aguirre"
+                      placeholder="Apellido"
                       onChange={this.genericChangeHandler}
                       required
                       value={this.state.lastname}></Input>
@@ -240,7 +238,7 @@ class RegisterLoginInfo extends Component {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="jose.medina@memoria-uchile.cl"
+                  placeholder="ejemplo@leit.cl"
                   onChange={this.genericChangeHandler}
                   value={this.state.email}
                   required></Input>

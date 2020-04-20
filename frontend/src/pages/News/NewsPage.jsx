@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { landing, misc } from "../../actions";
+import { site_misc, webadmin } from "../../actions";
 import {
   Container,
   Row,
@@ -92,12 +92,12 @@ const styles = {
 };
 
 const mapStateToProps = state => ({
-  news: state.landing.news
+  news: state.webadmin.news
 });
 
 const mapActionsToProps = dispatch => ({
-  loadNews: () => dispatch(landing.getNews()),
-  setRoute: route => dispatch(misc.setCurrentRoute(route))
+  loadNews: () => dispatch(webadmin.getNews()),
+  setRoute: route => dispatch(site_misc.setCurrentRoute(route))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(NewsPage);

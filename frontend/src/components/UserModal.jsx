@@ -8,10 +8,10 @@ import {
   Container,
   Row,
   Col,
-  ModalFooter
+  ModalFooter,
 } from "reactstrap";
 import { connect } from "react-redux";
-import { auth } from "../actions";
+import { user } from "../actions";
 import { Redirect } from "react-router-dom";
 
 const UserModal = ({ logout, user }) => {
@@ -57,7 +57,7 @@ const UserModal = ({ logout, user }) => {
                 <h4 style={styles.headers}>Gestionar perfil</h4>
               </Col>
             </Row>
-            <Row style={{marginTop: "0.5em"}}>
+            <Row style={{ marginTop: "0.5em" }}>
               {user_type > 2 ? (
                 <Col>
                   <Button
@@ -67,7 +67,8 @@ const UserModal = ({ logout, user }) => {
                       doToggle();
                       window.location.assign("http://localhost:8000/admin");
                       setTimeout(() => setRedirect(false), 1000);
-                    }}>
+                    }}
+                  >
                     Administrar Sitio
                   </Button>
                 </Col>
@@ -81,12 +82,15 @@ const UserModal = ({ logout, user }) => {
                       doToggle();
                       setRedirect("/curador/dashboard/");
                       setTimeout(() => setRedirect(false), 1000);
-                    }}>
+                    }}
+                  >
                     Dashboard
                   </Button>
                 </Col>
               ) : null}
-              <Col sm={user_type === 1 ? {size: "4", offset: "4"} : undefined}>
+              <Col
+                sm={user_type === 1 ? { size: "4", offset: "4" } : undefined}
+              >
                 <Button
                   block
                   color="primary"
@@ -94,7 +98,8 @@ const UserModal = ({ logout, user }) => {
                     doToggle();
                     setRedirect("/user/dashboard/");
                     setTimeout(() => setRedirect(false), 1000);
-                  }}>
+                  }}
+                >
                   Ir a Perfil
                 </Button>
               </Col>
@@ -111,28 +116,19 @@ const UserModal = ({ logout, user }) => {
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    user: state.user.userData
-  };
-};
+const mapStateToProps = (state) => ({
+  user: state.user.userData,
+});
 
-const mapActionsToProps = dispatch => {
-  return {
-    logout: () => {
-      return dispatch(auth.logout());
-    }
-  };
-};
+const mapActionsToProps = (dispatch) => ({
+  logout: () => dispatch(user.logout()),
+});
 
 const styles = {
   headers: {
     fontSize: "1.2em",
     textAlign: "center",
-  }
+  },
 };
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(UserModal);
+export default connect(mapStateToProps, mapActionsToProps)(UserModal);

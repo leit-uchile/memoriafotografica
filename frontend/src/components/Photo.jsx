@@ -28,7 +28,7 @@ const Photo = ({
             ...style
           }}>
           <div
-            className={"doHoverPhoto"}
+            className={"doHoverPhoto "+className}
             style={{
               ...styles.photoHoverDefault,
               lineHeight: height,
@@ -51,6 +51,7 @@ const Photo = ({
   ) : (
     <a onClick={onClick}>
       <div
+        className={className}
         style={{
           ...style,
           ...styles.containerDivIm,

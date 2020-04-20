@@ -12,7 +12,7 @@ import {
   Label
 } from "reactstrap";
 import { connect } from "react-redux";
-import { photoDetails } from "../actions";
+import { gallery } from "../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFlag } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
@@ -65,7 +65,7 @@ class ReportModal extends Component {
 
   sendReport = () => {
     this.setState({ sent: true });
-    var form = { ...this.state.formData };
+    var form = { ...this.state.formData, id: this.props.elementId };
     form.content = form.content.join(", ");
     this.props.reportPhoto(form);
   };
@@ -182,14 +182,14 @@ ReportModal.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  photoReportSent: state.photoDetails.photoReportSent,
-  reportComplete: state.photoDetails.reportComplete,
-  isAuth: state.auth.isAuthenticated
+  photoReportSent: state.reports.photoReportSent,
+  reportComplete: state.reports.reportComplete,
+  isAuth: state.user.isAuthenticated
 });
 
 const mapActionToProps = dispatch => ({
-  reportPhoto: data => dispatch(photoDetails.reportPhoto(data)),
-  resetReport: () => dispatch(photoDetails.reportPhotoReset())
+  reportPhoto: data => dispatch(gallery.reports.reportPhoto(data)),
+  resetReport: () => dispatch(gallery.reports.reportPhotoReset())
 });
 
 export default connect(mapStateToProps, mapActionToProps)(ReportModal);

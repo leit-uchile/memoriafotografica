@@ -1,4 +1,11 @@
 import {
+  LOGIN_SUCCESS,
+  REGISTRATION_SUCCESS,
+  REGISTRATION_FAILED,
+  AUTH_ERROR,
+  LOGIN_FAILED,
+  LOGOUT_SUCCESS,
+  AUTH_CLEAR_ERRORS,
   USER_RECOVERED_PHOTO_ERROR,
   USER_RECOVERED_PHOTO,
   USER_RECOVERED_ALBUM,
@@ -13,7 +20,7 @@ import {
   USER_PUBLIC_LOADING,
   USER_PUBLIC_LOADED,
   USER_PUBLIC_ERROR,
-  DELETED_PHOTO
+  DELETED_PHOTO,
 } from "../actions/types";
 
 /**
@@ -25,7 +32,12 @@ const baseState = {
   comments: [],
   albums: [],
   userData: null,
-  publicLoading: false
+  publicLoading: false,
+  // auth
+  token: null,
+  isAuthenticated: false,
+  isLoading: true,
+  errors: {},
 };
 
 // Compare if the token is valid (12 hours)
@@ -41,55 +53,111 @@ const initialState =
         comments: [],
         albums: [],
         userData: JSON.parse(localStorage.getItem("user")),
-        publicLoading: false
+        publicLoading: false,
+        token: localStorage.getItem("token"),
+        isAuthenticated: true,
+        isLoading: true,
+        errors: {},
       };
 
+var logginDate;
 export default function user(state = initialState, action) {
   switch (action.type) {
+    case LOGIN_SUCCESS:
+      logginDate = new Date();
+      localStorage.setItem("token", action.data);
+      localStorage.setItem(
+        "isAuth",
+        JSON.stringify({ loggedIn: true, timeSet: logginDate.getTime() })
+      );
+      return {
+        ...state,
+        token: action.data,
+        isAuthenticated: true,
+        isLoading: false,
+        errors: null,
+      };
+
+    case REGISTRATION_SUCCESS:
+      logginDate = new Date();
+      localStorage.setItem("token", action.data.token);
+      localStorage.setItem(
+        "isAuth",
+        JSON.stringify({ loggedIn: true, timeSet: logginDate.getTime() })
+      );
+      return {
+        ...state,
+        ...action.data,
+        isAuthenticated: true,
+        isLoading: false,
+        errors: null,
+      };
+
+    case REGISTRATION_FAILED:
+      return { ...state, errors: { register: "REGISTRATION_FAILED" } };
+
+    case AUTH_ERROR:
+      return { ...state };
+    case LOGIN_FAILED:
+      return { ...state, errors: action.data };
+    case LOGOUT_SUCCESS:
+      localStorage.removeItem("token");
+      localStorage.removeItem("isAuth");
+      localStorage.removeItem("user");
+      return {
+        ...state,
+        errors: action.data,
+        token: null,
+        isAuthenticated: false,
+        isLoading: false,
+      };
+    case AUTH_CLEAR_ERRORS:
+      return { ...state, errors: {} };
+
     case USER_LOADED:
       localStorage.setItem("user", JSON.stringify(action.data));
       return {
         ...state,
-        userData: { ...action.data } // user
+        userData: { ...action.data }, // user
       };
     case USER_RECOVERED_PHOTO:
       return {
         ...state,
-        photos: action.data
+        photos: action.data,
       };
     case USER_RECOVERED_ALBUM:
       return {
         ...state,
-        albums: action.data
+        albums: action.data,
       };
     case USER_RECOVERED_COMMENTS:
       return {
         ...state,
-        comments: action.data
+        comments: action.data,
       };
     case USER_RECOVERED_PHOTO_ERROR:
       return {
         ...state,
         photos: [],
-        error: action.data
+        error: action.data,
       };
     case USER_RECOVERED_ALBUM_ERROR:
       return {
         ...state,
         albmus: [],
-        error: action.data
+        error: action.data,
       };
     case USER_RECOVERED_COMMENTS_ERROR:
       return {
         ...state,
         comments: [],
-        error: action.data
+        error: action.data,
       };
     case USER_UPDATE_SUCCESS:
       localStorage.setItem("user", JSON.stringify(action.data));
       return {
         ...state,
-        userData: { ...action.data }
+        userData: { ...action.data },
       };
     case USER_UPDATE_FAILED:
       return { ...state, errors: action.data };
@@ -104,13 +172,13 @@ export default function user(state = initialState, action) {
     case USER_PUBLIC_ERROR:
       return { ...state, publicLoading: false, publicUser: null };
     case DELETED_PHOTO:
-      let newList = []
-      state.photos.forEach( photo =>{
-        if(photo.id !== action.data.id){
-          newList.push(photo)
+      let newList = [];
+      state.photos.forEach((photo) => {
+        if (photo.id !== action.data.id) {
+          newList.push(photo);
         }
-      })
-      return { ...state, photos: [newList]};
+      });
+      return { ...state, photos: [newList] };
     default:
       return { ...state };
   }

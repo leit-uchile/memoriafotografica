@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { user, misc, alert } from "../../actions";
+import { user, site_misc } from "../../actions";
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
@@ -410,8 +410,8 @@ const mapActionsToProps = dispatch => ({
   update: (userInfo, doJSON = true) =>
     dispatch(user.editProfile(userInfo, doJSON)),
   updatePassword: (old_p, new_p) => dispatch(user.updatePassword(old_p, new_p)),
-  setRoute: route => dispatch(misc.setCurrentRoute(route)),
-  sendAlert: text => dispatch(alert.setAlert(text, "warning"))
+  setRoute: route => dispatch(site_misc.setCurrentRoute(route)),
+  sendAlert: text => dispatch(site_misc.setAlert(text, "warning"))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(EditProfile);

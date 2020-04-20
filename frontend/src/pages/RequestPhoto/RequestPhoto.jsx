@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { home, misc, requestPhoto } from "../../actions";
+import { gallery, webadmin, site_misc } from "../../actions";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -329,15 +329,14 @@ const styles = {
 };
 
 const mapStateToProps = state => ({
-  requestedPhotos: state.home.requestedPhotos,
-  requested: state.home.requested
+  requestedPhotos: state.webadmin.requestedPhotos,
+  requested: state.webadmin.requested
 });
 
 const mapActionsToProps = dispatch => ({
-  onLoad: () => dispatch(home.home()),
-  setRoute: route => dispatch(misc.setCurrentRoute(route)),
-  removeRequestPhoto: value => dispatch(requestPhoto.removeRequestPhoto(value)),
-  sendRequest: (photos,info) => dispatch(requestPhoto.sendRequest(photos,info))
+  setRoute: route => dispatch(site_misc.setCurrentRoute(route)),
+  removeRequestPhoto: value => dispatch(webadmin.removeRequestPhoto(value)),
+  sendRequest: (photos,info) => dispatch(webadmin.sendRequest(photos,info))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(RequestPhoto);

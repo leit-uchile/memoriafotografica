@@ -435,16 +435,12 @@ const mapStateToProps = state => ({
   auth: state.auth,
   photoInfo: state.photoDetails,
   suggestions: state.home.photos,
-  photoIndex: state.home.selectedIndex
+  photoIndex: state.site_misc.home.selectedIndex
 });
 
 const mapActionsToProps = dispatch => ({
   onLoad: id => dispatch(photoDetails.getPhoto(id)),
-  fetchComments: (id, auth) => dispatch(photoDetails.getComments(id, auth)),
   loadSuggestions: () => dispatch(home.home()),
-  newComment: (id, comment, auth) =>
-    dispatch(photoDetails.putComment(id, comment, auth)),
-  loadMetadata: ids => dispatch(photoDetails.getMetadataNames(ids)),
   putSearch: (id, value) => dispatch(search.putSearchItem(id, value)),
   putRequestPhoto: value => dispatch(requestPhoto.putRequestPhoto(value)),
   setSelectedId: id => dispatch(home.setSelectedId(id))

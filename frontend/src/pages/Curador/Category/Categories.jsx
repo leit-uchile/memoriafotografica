@@ -10,11 +10,11 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-  Spinner
+  Spinner,
 } from "reactstrap";
 import { Table } from "reactstrap";
 import { connect } from "react-redux";
-import { curador } from "../../../actions";
+import { gallery } from "../../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 
@@ -23,7 +23,7 @@ class Categories extends Component {
     super(props);
     this.state = {
       toDelete: [],
-      deleteModal: false
+      deleteModal: false,
     };
     this.props.getCategories();
   }
@@ -40,7 +40,7 @@ class Categories extends Component {
     if (isCheck) {
       this.setState({ toDelete: [...this.state.toDelete, i] });
     } else {
-      this.setState({ toDelete: this.state.toDelete.filter(el => el != i) });
+      this.setState({ toDelete: this.state.toDelete.filter((el) => el != i) });
     }
     // Update
   };
@@ -57,13 +57,13 @@ class Categories extends Component {
     const { match, cats } = this.props;
 
     // Put 3 per row
-    var latest = cats.map(el => (
+    var latest = cats.map((el) => (
       <tr>
         <th>
           <input
             type="checkbox"
             aria-label="Checkbox for delete Categories"
-            onClick={e => this.updateToDelete(el.id, e.target.checked)}
+            onClick={(e) => this.updateToDelete(el.id, e.target.checked)}
             checked={this.state.toDelete.includes(el.id)}
           ></input>
         </th>
@@ -118,7 +118,7 @@ class Categories extends Component {
                       size="sm"
                       color="light"
                       style={{
-                        display: this.props.loading ? "inline-block" : "none"
+                        display: this.props.loading ? "inline-block" : "none",
                       }}
                     />{" "}
                   </Button>
@@ -147,27 +147,27 @@ class Categories extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   let errors = [];
-  if (state.auth.errors) {
-    errors = Object.keys(state.auth.errors).map(field => {
-      return { field, message: state.auth.errors[field] };
+  if (state.user.errors) {
+    errors = Object.keys(state.user.errors).map((field) => {
+      return { field, message: state.user.errors[field] };
     });
   }
   return {
     errors,
-    isAuthenticated: state.auth.isAuthenticated,
-    token: state.auth.token,
-    meta: state.home.all_tags,
-    cats: state.curador.categories,
-    loading: state.curador.loading,
-    refresh: state.curador.refresh
+    isAuthenticated: state.user.isAuthenticated,
+    token: state.user.token,
+    meta: state.webadmin.all_tags,
+    cats: state.categories.categories,
+    loading: state.site_misc.curador.loading,
+    refresh: state.site_misc.curador.refresh,
   };
 };
-const mapActionsToProps = dispatch => ({
-  getCategories: route => dispatch(curador.getCategories(route)),
-  deleteCategories: (auth, catArray) =>
-    dispatch(curador.deleteCategories(auth, catArray))
+const mapActionsToProps = (dispatch) => ({
+  getCategories: (page,pageSize) => dispatch(gallery.category.getCategories(page,pageSize)),
+  deleteCategories: (catArray) =>
+    dispatch(gallery.category.deleteCategories(catArray)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Categories);

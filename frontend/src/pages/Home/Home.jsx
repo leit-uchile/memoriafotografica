@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import { home, misc, search } from "../../actions";
+import { gallery, site_misc } from "../../actions";
 import { Container, Row, Col } from "reactstrap";
 import { Redirect } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -30,11 +30,17 @@ class Home extends Component {
       sortOpen: false,
       chosenPhotoIndex: 0, // For redirect
       redirect: false,
-      link: ""
+      link: "",
+      catIds: [],
+      sorting: ""
     };
 
     // componentWillLoad
     this.props.setRoute("/gallery/");
+  }
+
+  putFilterInfo = o => {
+    this.setState({catIds: o.cats, sorting: o.sorting})
   }
 
   handleOnClick = obj => {
@@ -80,10 +86,15 @@ class Home extends Component {
       this.props.setRoute("/photo/"); // For NavLink in Navbar
       this.props.setSelectedId(this.state.chosenPhotoIndex); // For in photo navigation
       this.props.setPhotoPagination(this.state.photoPagination);
+
+      var url = "?"
+      url = url + "sort="+this.state.sorting
+      url = this.state.catIds.length === 0 ? url : url + "&cats=" + this.state.catIds.join(',')
+      url = this.props.filters.length === 0 ? url : url + "&meta=" + this.props.filters.map(el => el.metaID).join(',')
       return (
         <Redirect
           push
-          to={`/photo/${mapped[this.state.chosenPhotoIndex].id}`}
+          to={`/photo/${mapped[this.state.chosenPhotoIndex].id}/${url}`}
         />
       );
     }
@@ -129,6 +140,7 @@ class Home extends Component {
                   resetHomePagination={this.resetHomePagination}
                   defaultMaxAllowed={this.state.maxAllowedCategories}
                   page={this.state.photoPagination.page}
+                  putInfo={this.putFilterInfo}
                 />
               </Col>
             </Row>
@@ -172,20 +184,19 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => ({
-  photos: state.home.photos,
-  filters: state.search.metaIDs,
-  auth: state.auth.token,
-  loadingPhotos: state.home.loading
+  photos: state.photos.photos,
+  filters: state.site_misc.searchMetaIDs,
+  auth: state.user.token,
+  loadingPhotos: state.site_misc.home.loading
 });
 
 const mapActionsToProps = dispatch => ({
-  onLoadGetPhotos: () => dispatch(home.home()),
-  setRoute: route => dispatch(misc.setCurrentRoute(route)),
-  removeSearch: (id, value) => dispatch(search.removeSearchItem(id, value)),
+  setRoute: route => dispatch(site_misc.setCurrentRoute(route)),
+  removeSearch: (id, value) => dispatch(site_misc.removeSearchItem(id, value)),
   // TODO: use it!
   // eslint-disable-next-line
-  setSelectedId: id => dispatch(home.setSelectedId(id)),
-  setPhotoPagination: obj => dispatch(home.setPhotoPagination(obj))
+  setSelectedId: id => dispatch(site_misc.setSelectedId(id)),
+  setPhotoPagination: obj => dispatch(site_misc.setPhotoPagination(obj))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Home);

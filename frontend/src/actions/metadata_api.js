@@ -3,8 +3,12 @@ import {
   CREATED_METADATA_ERROR,
   CREATING_METADATA,
   RESET_METADATA_STORE,
-  HOME_RECOVERED_TAGS,
-  HOME_EMPTY_TAGS
+  RECOVERED_TAGS,
+  EMPTY_TAGS,
+  RECOVERED_IPTCS,
+  EMPTY_IPTCS,
+  CUSTOM_METADATA_ERROR,
+  LOADED_CUSTOM_METADATA,
 } from "./types";
 
 /**
@@ -19,7 +23,7 @@ import {
 export const createMetadataByName = name => (dispatch, getState) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().auth.token
+    Authorization: "Token " + getState().user.token
   };
 
   // NOTE: metadata defaults to 1
@@ -74,7 +78,7 @@ export const createMultipleMetas = nameList => (dispatch, getState) => {
 export const createMetadata = (name, iptcId) => (dispatch, getState) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().auth.token
+    Authorization: "Token " + getState().user.token
   };
 
   fetch("/api/metadata/", {
@@ -108,17 +112,75 @@ export const searchMetadataByValue = (query, limit=10) => (dispatch, getState) =
     const r = response;
     if (r.status === 200) {
       r.json().then(data =>
-        dispatch({ type: HOME_RECOVERED_TAGS, data: data })
+        dispatch({ type: RECOVERED_TAGS, data: data })
       );
     } else {
-      dispatch({ type: HOME_EMPTY_TAGS });
+      dispatch({ type: EMPTY_TAGS });
     }
   };
 
-  if (getState().auth.isAuthenticated) {
-    let headers = { Authorization: "Token " + getState().auth.token };
+  if (getState().user.isAuthenticated) {
+    let headers = { Authorization: "Token " + getState().user.token };
     fetch(`/api/metadata/?search=${query}&limit=${limit}`, { headers }).then(success_func);
   } else {
     fetch(`/api/metadata/?search=${query}&limit=${limit}`).then(success_func);
   }
+};
+
+
+/**
+ * Recover all tags
+ */
+export const tags = () => (dispatch, getState) => {
+  let headers = { "Content-Type": "application/json" };
+
+  return fetch("/api/metadata/", { method: "GET", headers: headers }).then(
+    function(response) {
+      const r = response;
+      if (r.status === 200) {
+        return r.json().then(data => {
+          dispatch({ type: RECOVERED_TAGS, data: data });
+        });
+      } else {
+        dispatch({ type: EMPTY_TAGS, data: r.data });
+        throw r.data;
+      }
+    }
+  );
+};
+
+
+/**
+ * Recover all IPTC Tags
+ */
+export const iptcs = () => (dispatch, getState) => {
+  let headers = { "Content-Type": "application/json" };
+
+  return fetch("/api/iptc-keyword/", {
+    method: "GET",
+    headers: headers
+  }).then(function(response) {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then(data => {
+        dispatch({ type: RECOVERED_IPTCS, data: data });
+      });
+    } else {
+      dispatch({ type: EMPTY_IPTCS, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
+export const getMetadataNames = ids => dispatch => {
+  return fetch(`/api/metadata/?ids=${ids.toString()}`).then(function(response) {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then(data => {
+        dispatch({ type: LOADED_CUSTOM_METADATA, data: data });
+      });
+    } else {
+      dispatch({ type: CUSTOM_METADATA_ERROR, data: r.data });
+    }
+  });
 };

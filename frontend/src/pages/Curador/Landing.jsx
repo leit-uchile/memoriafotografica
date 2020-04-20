@@ -16,7 +16,7 @@ import {
 import { EXTENDED_DISCRETE_COLOR_RANGE } from "react-vis/dist/theme";
 import { Statistic } from "semantic-ui-react";
 import { curveCatmullRom } from "d3-shape";
-import { curador } from "../../actions";
+import { metrics } from "../../actions";
 import { connect } from "react-redux";
 import { userRolTranslation, userTypeTranslation } from "../User/utils";
 
@@ -244,11 +244,11 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
 };
 
 const mapStateToProps = state => ({
-  stats: state.curador.stats
+  stats: state.metrics
 });
 
 const mapActionsToProps = dispatch => ({
-  loadGeneralStats: () => dispatch(curador.getGeneralStats())
+  loadGeneralStats: () => dispatch(metrics.getGeneralStats())
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Landing);

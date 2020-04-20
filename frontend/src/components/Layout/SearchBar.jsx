@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container, Button, Row, Col, Input } from "reactstrap";
 import { Redirect } from "react-router-dom";
-import { search, home, misc, metadata } from "../../actions";
+import { site_misc, metadata } from "../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import Autosuggest from "react-autosuggest";
@@ -141,15 +141,15 @@ class SearchBar extends Component {
 }
 
 const mapStateToProps = state => ({
-  tags: state.home.all_tags,
-  iptc: state.home.all_iptcs,
-  currentPage: state.misc.currentRoute
+  tags: state.metadata.all_tags,
+  iptc: state.metadata.all_iptcs,
+  currentPage: state.site_misc.currentRoute
 });
 
 const mapActionsToProps = dispatch => ({
-  onLoadGetIPTC: () => dispatch(home.iptcs()),
-  setRoute: route => dispatch(misc.setCurrentRoute(route)),
-  putSearch: (id, value) => dispatch(search.putSearchItem(id, value)),
+  onLoadGetIPTC: () => dispatch(metadata.iptcs()),
+  setRoute: route => dispatch(site_misc.setCurrentRoute(route)),
+  putSearch: (id, value) => dispatch(site_misc.putSearchItem(id, value)),
   search: (query, limit) =>
     dispatch(metadata.searchMetadataByValue(query, limit))
 });

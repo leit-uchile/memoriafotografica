@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import { misc } from "../../actions";
+import { site_misc } from "../../actions";
 import { connect } from "react-redux";
 
 const PrivateComponent = ({ component: Component, setLoginSuccessRoute, ...rest }) => {
@@ -15,11 +15,11 @@ const PrivateComponent = ({ component: Component, setLoginSuccessRoute, ...rest 
 };
 
 const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
+  isAuthenticated: state.user.isAuthenticated
 });
 
 const mapActionToProps = dispatch => ({
-  setLoginSuccessRoute: route => dispatch(misc.addLoginRoute(route))
+  setLoginSuccessRoute: route => dispatch(site_misc.addLoginRoute(route))
 });
 
 export default connect(mapStateToProps, mapActionToProps)(PrivateComponent);

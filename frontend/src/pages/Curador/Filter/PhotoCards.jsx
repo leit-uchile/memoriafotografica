@@ -8,17 +8,17 @@ import {
   CardFooter,
   CardSubtitle,
   CardText,
-  CardHeader,
-  Button
+  CardHeader
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import uuid4 from "uuid";
+import FilterModal from './FilterModal'
 
 const check = <FontAwesomeIcon icon={faCheckCircle} />;
 
-const PhotoCards = ({ photos, onApprove }) => {
+const PhotoCards = ({ photos, editPhoto }) => {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
@@ -79,9 +79,7 @@ const PhotoCards = ({ photos, onApprove }) => {
                   {c.censured ? (
                     <span style={{ color: "red" }}>Censurada</span>
                   ) : null}
-                  <Button onClick={() => onApprove(c.id, c.approved)}>
-                    Cambiar Aprobaci&oacute;n
-                  </Button>
+                <FilterModal editPhoto={editPhoto} buttonLabel="Gestionar" photo={c}/>
                 </CardFooter>
               </Card>
             </Col>

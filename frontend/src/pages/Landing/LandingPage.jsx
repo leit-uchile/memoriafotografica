@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Redirect, Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { home, misc } from "../../actions";
+import { gallery, site_misc } from "../../actions";
 import { Helmet } from "react-helmet";
 import { Container, Row, Col } from "reactstrap";
 import NewsSlider from "../News/NewsSlider"
@@ -16,7 +16,7 @@ const LandingPage = props => {
     loadPhotos();
   }, [loadPhotos, setRoute]);
 
-  var mapped = props.photos.slice(0, 10).map(el => ({
+  var mapped = props.photos.map(el => ({
     src: el.thumbnail,
     height: el.aspect_h,
     width: el.aspect_w,
@@ -165,12 +165,12 @@ const LandingPage = props => {
 };
 
 const mapStateToProps = state => ({
-  photos: state.home.photos
+  photos: state.photos.photos
 });
 
 const mapActionsToProps = dispatch => ({
-  loadPhotos: () => dispatch(home.home()),
-  setRoute: route => dispatch(misc.setCurrentRoute(route))
+  loadPhotos: () => dispatch(gallery.photos.home(0,10)),
+  setRoute: route => dispatch(site_misc.setCurrentRoute(route))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(LandingPage);

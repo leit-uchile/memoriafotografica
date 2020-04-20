@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { auth, misc } from "../../actions";
+import { user, site_misc } from "../../actions";
 import { connect } from "react-redux";
 import { Alert } from "reactstrap";
 import "./login.css";
@@ -119,22 +119,22 @@ class Login extends Component {
 
 const mapStateToProps = state => {
   let errors = [];
-  if (state.auth.errors) {
-    errors = Object.keys(state.auth.errors).map(field => {
-      return { field, message: state.auth.errors[field] };
+  if (state.user.errors) {
+    errors = Object.keys(state.user.errors).map(field => {
+      return { field, message: state.user.errors[field] };
     });
   }
   return {
     errors,
-    isAuthenticated: state.auth.isAuthenticated,
-    loginRoute: state.misc.loginSuccessRoute
+    isAuthenticated: state.user.isAuthenticated,
+    loginRoute: state.site_misc.loginSuccessRoute
   };
 };
 
 const mapActionsToProps = dispatch => ({
-  login: (email, password) => dispatch(auth.login(email, password)),
-  setRoute: route => dispatch(misc.setCurrentRoute(route)),
-  setLoginSuccessRoute: () => dispatch(misc.addLoginRoute(""))
+  login: (email, password) => dispatch(user.login(email, password)),
+  setRoute: route => dispatch(site_misc.setCurrentRoute(route)),
+  setLoginSuccessRoute: () => dispatch(site_misc.addLoginRoute(""))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Login);

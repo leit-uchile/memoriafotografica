@@ -1,3 +1,12 @@
+
+.photoPanelView{
+  background-color: #212124;
+  color: white;
+  padding: 3em 0;
+  position: relative;
+  min-height: 40vh;
+}
+
 .photoDetailNavigation{
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
@@ -27,3 +36,22 @@
     opacity: 1;
     transition: 0s
   }
+
+.suggestionPhoto{
+  margin-left: 2px;
+  display: inline-block;
+}
+
+.thisPhoto{
+  background-blend-mode: lighten;
+  background-color: var(--leit-pink);
+}
+
+.photoDetailAvatar{
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  float: left;
+}

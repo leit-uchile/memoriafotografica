@@ -7,7 +7,7 @@ import UploadPhoto from "./UploadPhoto";
 import UploadProgress from "./UploadProgress";
 
 import { connect } from "react-redux";
-import { misc, upload, home, alert, metadata } from "../../actions";
+import { metadata, gallery, site_misc } from "../../actions";
 import { Helmet } from "react-helmet";
 import StepWizard from "react-step-wizard";
 
@@ -241,7 +241,7 @@ class UploadPage extends Component {
               completed={this.props.upload.photosUploaded.length}
               doAlbum={this.state.photos.onAlbum}
               albumInfo={this.state.photos} // TODO: remove data redundancy
-              albumState={this.props.upload.createAlbum}
+              albumState={this.props.album.createAlbum}
               retry={this.retryFailed}
               saveAlbum={this.saveAlbum}
             />
@@ -268,7 +268,7 @@ class UploadPage extends Component {
               completed={this.props.upload.photosUploaded.length}
               doAlbum={this.state.photos.onAlbum}
               albumInfo={this.state.photos}
-              albumState={this.props.upload.createAlbum}
+              albumState={this.props.album.createAlbum}
               retry={this.retryFailed}
               saveAlbum={this.saveAlbum}
             />
@@ -303,18 +303,19 @@ const styles = {
 };
 
 const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated,
+  isAuthenticated: state.user.isAuthenticated,
   upload: state.upload,
-  meta: state.home.all_tags,
+  album: state.albumcollection,
+  meta: state.metadata.all_tags,
   metadataCreation: state.metadata
 });
 
 const mapActionsToProps = dispatch => ({
-  setRoute: route => dispatch(misc.setCurrentRoute(route)),
-  uploadPhotos: info => dispatch(upload.uploadImages(info)),
-  recoverMetadata: () => dispatch(home.tags()),
-  sendAlert: (message, color) => dispatch(alert.setAlert(message, color)),
-  createAlbum: formData => dispatch(upload.createAlbum(formData)),
+  setRoute: route => dispatch(site_misc.setCurrentRoute(route)),
+  uploadPhotos: info => dispatch(gallery.photos.uploadImages(info)),
+  recoverMetadata: () => dispatch(metadata.tags()),
+  sendAlert: (message, color) => dispatch(site_misc.setAlert(message, color)),
+  createAlbum: formData => dispatch(gallery.album.createAlbum(formData)),
   createMultipleMetas: name => dispatch(metadata.createMultipleMetas(name))
 });
 

@@ -19,7 +19,7 @@ import {
   FormText,
   ButtonGroup,
 } from "reactstrap";
-import { photoDetails, home, curador, metadata } from "../../../actions";
+import { metadata, gallery } from "../../../actions";
 import ReactTags from "react-tag-autocomplete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
@@ -323,15 +323,15 @@ const EditPhotosModal = (props) => {
 const mapStateToProps = (state) => {
   return {
     photoInfo: state.photoDetails.details,
-    tags: state.home.all_tags,
+    tags: state.webadmin.all_tags,
   };
 };
 
 const mapActionsToProps = (dispatch) => ({
-  onLoad: (id) => dispatch(photoDetails.getPhoto(id)),
-  getTags: () => dispatch(home.tags()),
-  editPhoto: (pID, val) => dispatch(curador.editPhoto(pID, val)),
-  deletePhoto: (pID) => dispatch(curador.deletePhoto(pID)),
+  onLoad: (id) => dispatch(gallery.photos.getPhoto(id)),
+  getTags: () => dispatch(metadata.tags()),
+  editPhoto: (pID, val) => dispatch(gallery.photos.editPhoto(pID, val)),
+  deletePhoto: (pID) => dispatch(gallery.photos.deletePhoto(pID)),
   createMultipleMetas: (name) => dispatch(metadata.createMultipleMetas(name)),
 });
 
