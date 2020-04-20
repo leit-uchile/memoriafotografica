@@ -13,6 +13,7 @@ import {
   CURADOR_COMPLETED,
   HOME_LOADING,
   HOME_LOADED,
+  HOME_PHOTO_PAGINATION,
 } from "../types";
 import { setAlert } from "../site_misc";
 
@@ -32,7 +33,7 @@ export const home = (page = 0, pageSize = 25) => (dispatch, getState) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: RECOVERED_PHOTOS, data: data.results });
+        dispatch({ type: RECOVERED_PHOTOS, data: data });
         dispatch({ type: HOME_LOADED });
       });
     } else {
@@ -48,7 +49,10 @@ export const home = (page = 0, pageSize = 25) => (dispatch, getState) => {
  * @param {Number} page
  * @param {Number} pageSize
  */
-export const getPhotosAuth = (page = 0, pageSize = 25) => (dispatch, getState) => {
+export const getPhotosAuth = (page = 0, pageSize = 25) => (
+  dispatch,
+  getState
+) => {
   let headers = {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
@@ -63,7 +67,7 @@ export const getPhotosAuth = (page = 0, pageSize = 25) => (dispatch, getState) =
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: RECOVERED_PHOTOS, data: data.results });
+        dispatch({ type: RECOVERED_PHOTOS, data: data });
         dispatch({ type: CURADOR_COMPLETED });
       });
     } else {
@@ -129,8 +133,9 @@ export const deletePhoto = (photoID) => (dispatch, getState) => {
  * @param {String} field
  * @param {String} order
  * @param {Number} page
+ * @param {Number} pageSize
  */
-export const sortByField = (field, order, page) => (dispatch, getState) => {
+export const sortByField = (field, order, page, pageSize=25) => (dispatch, getState) => {
   if (order !== "asc" && order !== "desc") {
     return dispatch({ type: "EMPTY", data: "wrong order parameter" });
   }
@@ -142,13 +147,13 @@ export const sortByField = (field, order, page) => (dispatch, getState) => {
       ? ""
       : `metadata=${selected_meta.map((m) => m.metaID).join()}&`;
 
-  fetch(`/api/photos/?${meta_text}sort=${field}-${order}&page=${page + 1}`, {
+  fetch(`/api/photos/?${meta_text}sort=${field}-${order}&page=${page + 1}&page_size=${pageSize}`, {
     method: "GET",
   }).then((response) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: RECOVERED_PHOTOS, data: data.results });
+        dispatch({ type: RECOVERED_PHOTOS, data: data });
         dispatch({ type: HOME_LOADED });
       });
     } else {
@@ -165,8 +170,9 @@ export const sortByField = (field, order, page) => (dispatch, getState) => {
  * @param {Array} catIds
  * @param {Object} pair like {field, order}
  * @param {Number} page
+ * @param {Number} pageSize
  */
-export const recoverByCats = (catIds, pair, page) => (dispatch, getState) => {
+export const recoverByCats = (catIds, pair, page, pageSize=25) => (dispatch, getState) => {
   dispatch({ type: HOME_LOADING, data: null });
 
   let selected_meta = getState().site_misc.searchMetaIDs;
@@ -178,7 +184,7 @@ export const recoverByCats = (catIds, pair, page) => (dispatch, getState) => {
   fetch(
     `/api/photos/?${meta_text}category=${catIds.join(",")}&sort=${pair.field}-${
       pair.order
-    }&page=${page + 1}`,
+    }&page=${page + 1}&page_size=${pageSize}`,
     {
       method: "GET",
     }
@@ -186,7 +192,7 @@ export const recoverByCats = (catIds, pair, page) => (dispatch, getState) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: RECOVERED_PHOTOS, data: data.results });
+        dispatch({ type: RECOVERED_PHOTOS, data: data });
         dispatch({ type: HOME_LOADED });
       });
     } else {
@@ -315,4 +321,51 @@ export const uploadImages = (photos) => {
 
     callWithTimeout(0, funcs);
   };
+};
+
+/**
+ * Do a query with params and recover the position of our photo id within
+ * the results
+ * @param {Number} id
+ * @param {Number} pageSize
+ * @param {String} params
+ */
+export const findPhotoQueryPage = (id, pageSize, params) => (dispatch) => {
+  let headers = { "Content-Type": "application/json" };
+  fetch(`/api/photos/${params}&page_size=${pageSize}&get_page=${id}`, {
+    method: "GET",
+    headers,
+  }).then((response) => {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch({ type: HOME_PHOTO_PAGINATION, data: data });
+      });
+    } else {
+      throw r.data;
+    }
+  });
+};
+
+/**
+ * 
+ * @param {Number} pageSize
+ * @param {String} params
+ */
+export const photoQuerySuggestions = (page=0,pageSize=10, params) => (dispatch) => {
+  let headers = { "Content-Type": "application/json" };
+  fetch(`/api/photos/${params}&page_size=${pageSize}&page=${page+1}`, {
+    method: "GET",
+    headers,
+  }).then((response) => {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch({ type: RECOVERED_PHOTOS, data: data });
+      });
+    } else {
+      dispatch({ type: EMPTY_PHOTOS });
+      throw r.data;
+    }
+  });
 };

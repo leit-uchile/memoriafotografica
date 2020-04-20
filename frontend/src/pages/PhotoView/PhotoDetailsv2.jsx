@@ -27,19 +27,23 @@ const PhotoDetails = ({
   suggestions,
   photoIndex,
   onLoad,
+  findPhotoQueryPage,
   loadSuggestions,
   putSearch,
   putRequestPhoto,
   match,
+  location,
 }) => {
   const [state, setState] = useState({
     loadingPhoto: true,
     redirectToGallery: false,
     currentIndex: -1,
-    leftIndex: 2,
+    // Page navigation
+    leftIndex: -1,
     rightIndex: -1,
-    pageSize: -1,
-    currentPage: -1,
+    pageSize: 10,
+    page: 0,
+    currentPage: 0,
   });
 
   const imageContainer = React.createRef();
@@ -58,9 +62,10 @@ const PhotoDetails = ({
     // Reset page counter
     setState({ ...state, currentPage: -1 });
     // Ask for our page number based on query
+    findPhotoQueryPage(match.params.id,location.search)
     // METHOD
-    loadSuggestions();
-  }, [onLoad, match.params.id]);
+    loadSuggestions(state.page, location.search);
+  }, [onLoad, match.params.id, location.search]);
 
   if (state.redirectToGallery) {
     return <Redirect push to="/gallery" />;
@@ -126,8 +131,8 @@ const PhotoDetails = ({
           </Col>
         </Row>
         <Row
+          className="photoPanelView"
           style={{
-            ...styles.imageContainer,
             padding: "1em",
             minHeight: "auto",
             marginBottom: "2em",
@@ -135,7 +140,7 @@ const PhotoDetails = ({
         >
           <Col>
             <div style={{ textAlign: "center" }}>
-              {state.currentPage !== -1 && suggestions
+              {suggestions
                 ? suggestions.map((im, k) => (
                     <Photo
                       className={
@@ -322,7 +327,8 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = (dispatch) => ({
   onLoad: (id) => dispatch(gallery.photos.getPhoto(id)),
-  loadSuggestions: (page) => dispatch(gallery.photos.home(page, 10)),
+  findPhotoQueryPage: (id,params) => dispatch(gallery.photos.findPhotoQueryPage(id,10,params)),
+  loadSuggestions: (page,params) => dispatch(gallery.photos.photoQuerySuggestions(page,10,params)),
   putSearch: (id, value) => dispatch(site_misc.putSearchItem(id, value)),
   putRequestPhoto: (value) => dispatch(webadmin.putRequestPhoto(value)),
   setSelectedId: (id) => dispatch(site_misc.setSelectedId(id)),

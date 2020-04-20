@@ -20,6 +20,7 @@ const Photo = ({
     <Link to={redirectUrl}>
       {hover && hoverText ? (
         <div
+          className={className}
           style={{
             ...styles.containerDivIm,
             backgroundImage: "url('" + url + "')",
@@ -28,7 +29,7 @@ const Photo = ({
             ...style
           }}>
           <div
-            className={"doHoverPhoto "+className}
+            className={"doHoverPhoto"}
             style={{
               ...styles.photoHoverDefault,
               lineHeight: height,
@@ -39,6 +40,7 @@ const Photo = ({
         </div>
       ) : (
         <div
+          className={className}
           style={{
             ...style,
             ...styles.containerDivIm,

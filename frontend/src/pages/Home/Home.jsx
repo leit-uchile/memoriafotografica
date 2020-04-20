@@ -24,7 +24,7 @@ class Home extends Component {
     this.state = {
       photoPagination: {
         page: 0,
-        maxAllowed: 25
+        maxAllowed: 25 // MASTER CONFIG
       },
       maxAllowedCategories: 4,
       sortOpen: false,
@@ -69,9 +69,9 @@ class Home extends Component {
   };
 
   render() {
-    const { photos, filters, loadingPhotos } = this.props;
+    const { photos, filters, loadingPhotos, count } = this.props;
     const { maxAllowed } = this.state.photoPagination;
-    const pageLimit = Math.floor(photos.length / maxAllowed);
+    const pageLimit = Math.floor(count / maxAllowed);
 
     // For gallery
     var mapped = photos
@@ -89,8 +89,8 @@ class Home extends Component {
 
       var url = "?"
       url = url + "sort="+this.state.sorting
-      url = this.state.catIds.length === 0 ? url : url + "&cats=" + this.state.catIds.join(',')
-      url = this.props.filters.length === 0 ? url : url + "&meta=" + this.props.filters.map(el => el.metaID).join(',')
+      url = this.state.catIds.length === 0 ? url : url + "&category=" + this.state.catIds.join(',')
+      url = this.props.filters.length === 0 ? url : url + "&metadata=" + this.props.filters.map(el => el.metaID).join(',')
       return (
         <Redirect
           push
@@ -140,6 +140,7 @@ class Home extends Component {
                   resetHomePagination={this.resetHomePagination}
                   defaultMaxAllowed={this.state.maxAllowedCategories}
                   page={this.state.photoPagination.page}
+                  maxPerPage={this.state.photoPagination.maxAllowed}
                   putInfo={this.putFilterInfo}
                 />
               </Col>
@@ -185,6 +186,7 @@ class Home extends Component {
 
 const mapStateToProps = state => ({
   photos: state.photos.photos,
+  count: state.photos.count,
   filters: state.site_misc.searchMetaIDs,
   auth: state.user.token,
   loadingPhotos: state.site_misc.home.loading

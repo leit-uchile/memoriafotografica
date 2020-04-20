@@ -109,7 +109,7 @@ class SearchBar extends Component {
             >
               <option value="0">Todas las etiquetas</option>
               {
-                this.props.iptc.map(iptc => <option value={iptc.id}>{iptc.name}</option>)
+                this.props.iptc.map((iptc,k) => <option key={k} value={iptc.id}>{iptc.name}</option>)
               }
             </Input>
             <Autosuggest

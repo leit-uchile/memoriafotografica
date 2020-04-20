@@ -21,6 +21,7 @@ import { gallery } from "../../actions";
  * Displays two large dropdown menus
  * @param {Number} defaultMaxAllowed
  * @param {Number} page to send to the backend
+ * @param {Number} maxPerPage photos per page
  * @param {Function} resetHomePagination after a search reset page
  * @param {Function} onLoadGetCats action
  * @param {Function} sortByUpload action
@@ -34,6 +35,7 @@ const FilterPicker = ({
   resetHomePagination,
   filters,
   page,
+  maxPerPage,
   putInfo,
   // Actions
   getCats,
@@ -90,9 +92,9 @@ const FilterPicker = ({
   // Reload Search Effect
   useEffect(() => {
     if (filterState.selectedCategories.length !== 0) {
-      recoverByCats(filterState.selectedCategories, filterState.searchOrder, page);
+      recoverByCats(filterState.selectedCategories, filterState.searchOrder, page, maxPerPage);
     } else {
-      sortByField(filterState.searchOrder.field, filterState.searchOrder.order, page);
+      sortByField(filterState.searchOrder.field, filterState.searchOrder.order, page, maxPerPage);
     }
     // Pass this to our parent so that after clicking a Photo our preferences
     // are saved on the URL query params
@@ -271,8 +273,8 @@ const mapStateToProps = state => ({
 
 const mapActionstoProps = dispatch => ({
   getCats: (page, pageSize) => dispatch(gallery.category.getCategories(page, pageSize)),
-  sortByField: (tag, order, page) => dispatch(gallery.photos.sortByField(tag, order, page)),
-  recoverByCats: (catIds, order, page) => dispatch(gallery.photos.recoverByCats(catIds, order, page))
+  sortByField: (tag, order, page, size) => dispatch(gallery.photos.sortByField(tag, order, page, size)),
+  recoverByCats: (catIds, order, page, size) => dispatch(gallery.photos.recoverByCats(catIds, order, page, size))
 });
 
 export default connect(mapStateToProps, mapActionstoProps)(FilterPicker);

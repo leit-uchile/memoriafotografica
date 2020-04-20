@@ -25,7 +25,7 @@ const initialState = {
 export default function photos(state = initialState, action) {
   switch (action.type) {
     case RECOVERED_PHOTOS:
-      return { ...state, photos: action.data };
+      return { ...state, photos: action.data.results, count: action.data.count };
     case EMPTY_PHOTOS:
       return { ...state, photos: [] };
     case EDIT_PHOTO:

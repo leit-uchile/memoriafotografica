@@ -33,7 +33,7 @@ const Addthis = ({ title, description, thumbnail }) => {
       )}
       <div
         style={{ display: "inline-block" }}
-        class="addthis_inline_share_toolbox"
+        className="addthis_inline_share_toolbox"
         data-url="http://memoriafotografica.ing.fcfm.cl/"
         data-title={title}
         data-description={description}
