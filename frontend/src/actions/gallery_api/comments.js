@@ -10,10 +10,18 @@ import {
 } from "../types";
 
 export const getComments = (id) => (dispatch, getState) => {
-  let headers = {
-    Authorization: "Token " + getState().user.token,
-    "Content-Type": "application/json",
-  };
+  let token = getState().user.token
+  let headers;
+  if(token !== null){
+    headers = {
+      Authorization: "Token " + token,
+      "Content-Type": "application/json",
+    };  
+  }else{
+    headers = {
+      "Content-Type": "application/json",
+    };
+  }
 
   return fetch(`/api/photos/${id}/comments/`, {
     method: "GET",
