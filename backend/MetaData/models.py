@@ -33,3 +33,6 @@ class Metadata(models.Model):
 
     def __str__(self):
         return "Metadata ["+self.metadata.name+":"+self.value+"]"
+    def as_dict(self):
+        return {"id": self.id, "value": self.value, "approved": self.approved}
+
