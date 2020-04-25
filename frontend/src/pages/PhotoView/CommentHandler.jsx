@@ -12,6 +12,7 @@ import {
 import { connect } from "react-redux";
 import { gallery } from "../../actions";
 import Comment from "./Comment";
+import { LeitSpinner } from "../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faComments } from "@fortawesome/free-solid-svg-icons";
 const CommentHandler = ({
@@ -36,7 +37,7 @@ const CommentHandler = ({
     <Row key={"Comment" + key}>
       <Col
         style={styles.commentContainerStyle}>
-        <Comment content={el} modal={auth} currentUserId={userData == null ? -1 : userData.id}/>
+        <Comment element={el} modal={auth} currentUserId={userData == null ? -1 : userData.id}/>
       </Col>
     </Row>
   ));
@@ -51,7 +52,11 @@ const CommentHandler = ({
           </h3>
         </Col>
       </Row>
-      {comments.length !== 0 ? commentRows : null}
+      {comments.length !== 0 
+      ? commentsLoaded
+        ? commentRows 
+        : <div style={{textAlign: 'center'}}><LeitSpinner/></div>
+      : null}
       <Row style={{ marginTop: "2em" }}>
         <Col>
           <Form

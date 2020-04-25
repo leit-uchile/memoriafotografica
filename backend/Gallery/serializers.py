@@ -61,7 +61,7 @@ class CommentAdminSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('id', 'content', 'created_at')
+        fields = ('id', 'content', 'created_at', 'updated_at')
         read_only_fields = ('id',)
     def create(self, validated_data):
         return Comment.objects.create(**validated_data)

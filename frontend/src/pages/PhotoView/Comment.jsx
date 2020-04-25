@@ -6,7 +6,7 @@ import ReportModal from "../../components/ReportModal";
 import { Link } from "react-router-dom";
 import moment from "moment";
 
-const Comment = ({ content: { content, censure, usuario, id, created_at }, viewerId, updateComment, deleteComment}) => {
+const Comment = ({ element: { content, censure, usuario, id, created_at, updated_at }, viewerId, updateComment, deleteComment}) => {
   var userName =
     usuario.first_name !== "" && usuario.first_name !== null
       ? `${usuario.first_name} ${usuario.last_name}`
@@ -50,9 +50,11 @@ const Comment = ({ content: { content, censure, usuario, id, created_at }, viewe
               <Link to={"/user/public/" + usuario.id + "/"}>{userName}</Link>
             </b>
           </div>
-
-          {created_at ? <div style={{ display: "inline-block", padding: "0 15px", color: "#999" }}> Publicado el{" "}{moment(created_at).format("DD/MM/YYYY")}{" "}
-            a las {" "}{moment(created_at).format("hh:mm")} </div> : <div style={{ display: "inline-block", padding: "0 15px", color: "#999" }}>Cargando...</div>}
+          {created_at 
+            ? moment(created_at).format("hh:mm") === moment(updated_at).format("hh:mm")
+              ? <div style={{ display: "inline-block", padding: "0 15px", color: "#999" }}> Publicado el{" "}{moment(created_at).format("DD/MM/YYYY")}{" "} a las {" "}{moment(created_at).format("hh:mm")} </div> 
+              : <div style={{ display: "inline-block", padding: "0 15px", color: "#999" }}> Editado el{" "}{moment(updated_at).format("DD/MM/YYYY")}{" "} a las {" "}{moment(updated_at).format("hh:mm")} </div> 
+            : <div style={{ display: "inline-block", padding: "0 15px", color: "#999" }}>Cargando...</div>}
           {usuario.id === viewerId
           ? !editing
             ?
@@ -60,7 +62,18 @@ const Comment = ({ content: { content, censure, usuario, id, created_at }, viewe
               <Button color="link" style={{display:"inline-block", padding:"0"}} onClick={()=>setEditing(true)}>Editar</Button>
               <Button color="link" style={{display:"inline-block", padding:"0"}} onClick={()=>deleteComment(id)}>Eliminar</Button>
             </div>
-            :<Button color="link" style={{display:"inline-block", padding:"0"}} onClick={()=>{updateComment(id, newComment); setEditing(false)}}>Guardar</Button>
+            :
+            <div style={{display:"inline-block", padding:"0"}}>
+              <Button 
+              color="link" 
+              style={{display:"inline-block", padding:"0"}} 
+              onClick={()=>{
+                content!==newComment 
+                ?updateComment(id, newComment, moment( Date(Date.now()) ) )
+                :setEditing(false)
+                setEditing(false)}}>Guardar</Button>
+              <Button color="link" style={{display:"inline-block", padding:"0"}} onClick={()=>{setNewComment(content);setEditing(false)}}>Descartar</Button>
+            </div>
           : null}
           <ReportModal
             style={{ display: "inline-block" }}
@@ -93,7 +106,7 @@ const Comment = ({ content: { content, censure, usuario, id, created_at }, viewe
 };
 
 const mapActionsToProps = dispatch => ({
-  updateComment: (id, comment) => dispatch(gallery.comments.editComment(id, comment)),
+  updateComment: (id, comment, date) => dispatch(gallery.comments.editComment(id, comment, date)),
   deleteComment: id => dispatch(gallery.comments.deleteComment(id))
 });
 export default connect(
