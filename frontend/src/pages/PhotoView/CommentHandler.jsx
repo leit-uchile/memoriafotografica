@@ -37,7 +37,7 @@ const CommentHandler = ({
     <Row key={"Comment" + key}>
       <Col
         style={styles.commentContainerStyle}>
-        <Comment element={el} modal={auth} currentUserId={userData == null ? -1 : userData.id}/>
+        <Comment element={el} modal={auth} viewerId={userData == null ? -1 : userData.id}/>
       </Col>
     </Row>
   ));
