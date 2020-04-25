@@ -60,7 +60,7 @@ class Category(models.Model):
     def __str__(self):
         return self.title
     def as_dict(self):
-        return {"id": self.id, "title": self.title, "created_at": self.created_at, "updated_at": self.updated_at}
+        return {"id": self.id, "title": self.title}
 
 def gen_uuid(instance, filename):
     ext = filename.split('.')[-1]
