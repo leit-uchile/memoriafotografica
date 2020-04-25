@@ -20,25 +20,11 @@ export default function photoDetails(state = initialState, action) {
     case CREATED_COMMENT:
       return { ...state, new_comment: action.data, commentsLoaded: false };
     case UPDATED_COMMENT:
-      let newComments = [];
-      state.comments.forEach( comment =>{
-        if(comment.id !== action.data.id){
-          newComments.push(comment)
-        } else {
-          newComments.push({...comment, content: action.data})
-        }
-      })
-      return { ...state, comments: [newComments], commentsLoaded: false };
+      return { ...state, edit_comment: action.data, commentsLoaded: false };
     case NEW_COMMENT_ERROR:
-      return { ...state, new_comment_errors: action.data };
+      return { ...state, new_comment_errors: action.data, commentsLoaded: false };
     case DELETED_COMMENT:
-      let prevComments = [];
-      state.comments.forEach( comment =>{
-        if(comment.id !== action.data.id){
-          prevComments.push(comment)
-        }
-      })
-      return { ...state, comments: [prevComments], commentsLoaded: false };
+      return { ...state, delete_comment: action.data, commentsLoaded: false };
     case DELETE_COMMENT_ERROR:
       return { ...state, delete_comment_errors: action.data };
     case LOADING_COMMENT:

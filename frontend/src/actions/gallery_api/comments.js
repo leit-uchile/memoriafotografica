@@ -70,7 +70,7 @@ export const putComment = (id, comment) => (dispatch, getState) => {
   });
 };
 
-export const editComment = (id, newContent) => (dispatch, getState) => {
+export const editComment = (id, newContent, newDate) => (dispatch, getState) => {
   let headers = {
     Authorization: "Token " + getState().user.token,
     "Content-Type": "application/json",
@@ -78,7 +78,7 @@ export const editComment = (id, newContent) => (dispatch, getState) => {
 
   //const user = getState().user.userData
 
-  let jsonthing = JSON.stringify({ content: newContent });
+  let jsonthing = JSON.stringify({ content: newContent, updated_at: newDate});
 
   return fetch(`/api/comments/${id}/`, {
     method: "PUT",
