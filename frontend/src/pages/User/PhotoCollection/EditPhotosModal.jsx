@@ -322,7 +322,7 @@ const EditPhotosModal = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    photoInfo: state.photoDetails.details,
+    photoInfo: state.photos.details,
     tags: state.webadmin.all_tags,
   };
 };
