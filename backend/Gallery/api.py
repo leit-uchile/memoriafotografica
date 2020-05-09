@@ -302,6 +302,7 @@ class CommentDetailAPI(generics.GenericAPIView):
             serialized_data = serializer.data
             u = comment.get(pk=serializer_data['id']).user_set.first()
             u_dict = {}
+            u_dict['id'] = u.id
             u_dict['first_name'] = u.first_name
             u_dict['last_name'] = u.last_name
             u_dict['generation'] = u.generation
@@ -316,6 +317,7 @@ class CommentDetailAPI(generics.GenericAPIView):
             serialized_data = serializer.data
             u = comment.get(pk=serializer_data['id']).user_set.first()
             u_dict = {}
+            u_dict['id'] = u.id
             u_dict['first_name'] = u.first_name
             u_dict['last_name'] = u.last_name
             u_dict['generation'] = u.generation
@@ -388,6 +390,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
                 try:
                     u = comments.get(pk=c['id']).user_set.first()
                     u_dict = {}
+                    u_dict['id'] = u.id
                     u_dict['first_name'] = u.first_name
                     u_dict['last_name'] = u.last_name
                     u_dict['generation'] = u.generation
@@ -406,6 +409,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
                 try:
                     u = comments.get(pk=c['id']).user_set.first()
                     u_dict = {}
+                    u_dict['id'] = u.id
                     u_dict['first_name'] = u.first_name
                     u_dict['last_name'] = u.last_name
                     u_dict['generation'] = u.generation

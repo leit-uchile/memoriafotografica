@@ -19,10 +19,17 @@ import { curveCatmullRom } from "d3-shape";
 import { metrics } from "../../actions";
 import { connect } from "react-redux";
 import { userRolTranslation, userTypeTranslation } from "../User/utils";
+import { category } from "../../actions/gallery_api";
 
-const PhotoCountChart = ({ rawData }) => {
+const PhotoCountChart = ({ rawData, data2 }) => {
   const mapped = rawData
     ? rawData.map(cnt => ({
+        x: new Date(cnt.date_created).getTime(),
+        y: cnt.created_count
+      }))
+    : [];
+  const mapped2 = data2
+    ? data2.map(cnt => ({
         x: new Date(cnt.date_created).getTime(),
         y: cnt.created_count
       }))
@@ -35,7 +42,7 @@ const PhotoCountChart = ({ rawData }) => {
   };
 
   const onNearestX = (value, { index }) => {
-    setCrosshair({ crosshairValues: [mapped[index]] });
+    setCrosshair({ crosshairValues: [mapped[index], mapped2[index]] });
   };
 
   return (
@@ -50,11 +57,28 @@ const PhotoCountChart = ({ rawData }) => {
       <HorizontalGridLines />
       <XAxis tickLabelAngle={-75} />
       <YAxis />
-      <VerticalBarSeries data={mapped} />
+      <VerticalBarSeries
+      barWidth={0.5} 
+      opacity={0.5}
+      color={'blue'}
+      data={mapped} />
       <LineSeries
+        color={'blue'}
         curve={curveCatmullRom.alpha(0.5)}
         data={mapped}
         onNearestX={onNearestX}
+      />
+      <VerticalBarSeries 
+      color={'green'}
+      barWidth={0.5}
+      opacity={0.5}
+      data={mapped2} />
+      <LineSeries
+        color={'green'}
+        curve={curveCatmullRom.alpha(0.5)}
+        data={mapped2}
+        onNearestX={onNearestX}
+
       />
       <Crosshair
         values={crossHair.crosshairValues}
@@ -64,6 +88,7 @@ const PhotoCountChart = ({ rawData }) => {
             return {
               title: "Fecha",
               value: new Date(value.x).toLocaleDateString()
+            
             };
           }
         }}
@@ -77,10 +102,11 @@ const PhotoCountChart = ({ rawData }) => {
         }}
       />
     </FlexibleWidthXYPlot>
+    
   );
 };
 
-const DonutChart = ({ rawData, crossHairTitle, crossHairValue }) => {
+const DonutChart = ({ data2, rawData, crossHairTitle, crossHairValue }) => {
   const [hintValue, setHintValue] = useState({ value: false });
 
   const mapped = rawData
@@ -91,6 +117,14 @@ const DonutChart = ({ rawData, crossHairTitle, crossHairValue }) => {
         color: EXTENDED_DISCRETE_COLOR_RANGE[key]
       }))
     : [];
+  const mapped2 = data2
+    ? data2.map((el, key) => ({
+        angle: el.total,
+        title: el.name,
+        total: el.total,
+        color: EXTENDED_DISCRETE_COLOR_RANGE[key]
+      }))
+    : [];  
 
   const { value } = hintValue;
 
@@ -190,8 +224,8 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
         <Col>
           <h2>Fotos y Comentarios subidos por día</h2>
           <PhotoCountChart
-            rawData={general ? general.count_photos_by_date : [], 
-              general ? general.count_comments_by_data : []}
+            rawData={general ? general.count_photos_by_date : []}
+            data2 = {general ? general.count_comments_by_date : []}
           />
         </Col>
       </Row>
@@ -233,9 +267,34 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
       <Row>
         <Col>
           <h2>Categorías con más fotos</h2>
+          <DonutChart
+            rawData={
+              general
+                ? general.count_popular_categories.map(cnt => ({
+                    total: cnt.num_photos,
+                    name: cnt.title
+                  }))
+                : []
+            }
+            crossHairTitle={"Categorías"}
+            crossHairValue="Total"
+          />
         </Col>
         <Col>
           <h2>Metadata con más fotos</h2>
+          <DonutChart
+            rawData={
+              general
+                ? general.count_popular_metadata.map(cnt => ({
+                    total: cnt.num_photos,
+                    name: cnt.value
+
+                  }))
+                : []
+            }
+            crossHairTitle={"Metadata"}
+            crossHairValue="Total"
+          />
         </Col>
       </Row>
      

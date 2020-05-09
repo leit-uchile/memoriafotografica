@@ -1,0 +1,37 @@
+.userphotos-gallery-menu {
+  margin: 0 auto;
+  border-bottom: 1px solid rgb(210, 214, 218);
+  background: white;
+}
+
+.userphotos-title-container {
+  padding-top: 1em;
+  display: flex;
+  align-items: left;
+  vertical-align: middle;
+  flex-direction: row;
+}
+
+.userphotos-background .react-photo-gallery--gallery {
+  background-color: white;
+}
+
+.userphotos-gallery-container {
+  width: 100%;
+  text-align: center;
+  padding-top: 2em;
+}
+
+.userphotos-filters-container {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  height: 4em;
+  padding: 1em 0;
+}
+
+.userphotos-filters-container button{
+    width: 80%;
+    height: 30px;
+    margin: 1px
+}

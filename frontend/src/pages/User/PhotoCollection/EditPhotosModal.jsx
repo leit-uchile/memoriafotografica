@@ -23,6 +23,7 @@ import { metadata, gallery } from "../../../actions";
 import ReactTags from "react-tag-autocomplete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import "./userphotos.css"
 
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },

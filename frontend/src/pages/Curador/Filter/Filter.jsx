@@ -23,7 +23,7 @@ class Filter extends Component {
     this.state = {
       listView: 1,
       page: 0,
-      pageSize: 18
+      pageSize: 25
     };
     this.props.getPhotosAuth();
   };
@@ -37,16 +37,18 @@ class Filter extends Component {
   };
 
   setCurrentPage = number => {
+    console.log("Page set:", number)
     this.setState({
       page: number
-    });
+    }, 
+    () => this.props.getPhotosAuth(number, this.state.pageSize));
   };
 
   render() {
-    const { photos } = this.props;
+    console.log(this.props.photos)
+    const { photos, photoCount } = this.props;
     const { pageSize, page } = this.state;
-    const pageLimit = Math.floor(photos.length / pageSize);
-
+    const pageLimit = Math.floor(photoCount / pageSize);
     return (
       <Container fluid>
         <h2>Filtrar Fotografías</h2>
@@ -89,12 +91,12 @@ class Filter extends Component {
             <Col>
               {this.state.listView ? (
                 <PhotoList
-                  photos={photos.slice(page * pageSize, (page + 1) * pageSize)}
+                  photos={photos}
                   editPhoto={this.props.editPhoto}
                 />
               ) : (
                 <PhotoCards
-                  photos={photos.slice(page * pageSize, (page + 1) * pageSize)}
+                  photos={photos}
                   editPhoto={this.props.editPhoto}
                 />
               )}
@@ -128,12 +130,13 @@ const mapStateToProps = state => {
     isAuthenticated: state.user.isAuthenticated,
     meta: state.webadmin.all_tags,
     photos: state.photos.photos,
+    photoCount: state.photos.count,
     loading: state.site_misc.curador.loading,
     refresh: state.site_misc.curador.refresh
   };
 };
 const mapActionsToProps = dispatch => ({
-  getPhotosAuth: () => dispatch(gallery.photos.getPhotosAuth()),
+  getPhotosAuth: (pageNum, pageSize) => dispatch(gallery.photos.getPhotosAuth(pageNum, pageSize)),
   editPhoto: (photoID, data) => dispatch(gallery.photos.editPhoto(photoID, data))
 });
 

@@ -37,8 +37,11 @@ class GeneralKPIs(generics.GenericAPIView):
         kpilist.append(("count_comments_by_date", Comment.objects.extra({'date_created' : "date(created_at)"}).values('date_created').annotate(created_count=Count('id')).order_by("date_created")))
         kpilist.append(("count_total_reports", Reporte.objects.all().count()))
         # NOTE: We had to add manually as_dict as method for categories
-        kpilist.append(("count_popular_categories", [ add_field(obj.as_dict(),"num_photos",obj.num_photos) for obj in  Category.objects.annotate(num_photos=Count('photo')).order_by()] ))
-        
+        kpilist.append(("count_popular_categories", [ add_field(obj.as_dict(),"num_photos",obj.num_photos) for obj in  Category.objects.annotate(num_photos=Count('photo')).order_by()][:10] ))
+        kpilist.append(('count_popular_metadata', [ add_field(obj.as_dict(), "num_photos", obj.num_photos) for obj in Metadata.objects.annotate(num_photos=Count('photo')).order_by()][:10] ))
+        #kpilist.append(("count_popular_categories", Category.objects.annotate(num_photos=Count('photo')).order_by('num_photos')[:5]))
+        #kpilist.append(("count_popular_metadata", Metadata.objects.annotate(num_photos=Count('photo')).order_by('num_photos')[:5]))
+
         for pair in kpilist:
             output[pair[0]] = pair[1]
         return Response(output)
