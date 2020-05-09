@@ -7,7 +7,7 @@ import { Helmet } from "react-helmet";
 import ReportModal from "../../components/ReportModal";
 import CommentHandler from "./CommentHandler";
 import Photo from "../../components/Photo";
-import { photoDetails, home, search, requestPhoto } from "../../actions";
+import { site_misc, gallery } from "../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendarPlus,
@@ -71,11 +71,12 @@ class PhotoDetails extends Component {
     let index;
     suggestions.forEach((el, key) => {
       // eslint-disable-next-line
-      if (el.id == this.state.myPhotoID) {
+      if (el.id == Number(this.state.myPhotoID)) {
         index = key;
       }
     });
-
+    
+    console.log(suggestions,index, this.state.myPhotoID)
     var leftPage =
       this.state.pageViewLimit * Math.floor(index / this.state.pageViewLimit);
     let leftPhotoId = index > 0 ? suggestions[index - 1].id : suggestions[0].id;
@@ -96,8 +97,8 @@ class PhotoDetails extends Component {
   componentDidUpdate(prevProps) {
     // Load info when new props arrive or it is the first load
     if (
-      (this.state.firstLoad && this.props.photoInfo.details.id !== undefined) ||
-      prevProps.photoInfo.details.id !== this.props.photoInfo.details.id
+      (this.state.firstLoad && this.props.photoInfo.id !== undefined) ||
+      prevProps.photoInfo.id !== this.props.photoInfo.id
     ) {
       /* this.imageContainer.current.scrollIntoView({
         block: "start",
@@ -162,7 +163,7 @@ class PhotoDetails extends Component {
             this.state.leftPage + this.state.pageViewLimit
           )
           .map((im, k) =>
-            im.id !== photoInfo.details.id ? (
+            im.id !== photoInfo.id ? (
               <Photo
                 style={{ marginLeft: "2px", display: "inline-block" }}
                 key={k}
@@ -199,16 +200,16 @@ class PhotoDetails extends Component {
             property="og:url"
             content="http://memoriafotografica.ing.fcfm.cl/"
           />
-          <meta property="og:title" content={photoInfo.details.title} />
+          <meta property="og:title" content={photoInfo.title} />
           <meta property="og:type" content="website" />
-          <meta property="og:description" content={photoInfo.details.description} />
-          <meta property="og:image" content={photoInfo.details.thumbnail} />
-          <title>{photoInfo.details.title}</title>
+          <meta property="og:description" content={photoInfo.description} />
+          <meta property="og:image" content={photoInfo.thumbnail} />
+          <title>{photoInfo.title}</title>
         </Helmet>
         <Container fluid>
           <Row style={styles.imageContainer}>
             <Col md={{ offset: 3, size: 6 }}>
-              <h2 style={styles.center}>{photoInfo.details.title}</h2>
+              <h2 style={styles.center}>{photoInfo.title}</h2>
               <div style={{ textAlign: "center" }}>
                 <Link
                   className="photoDetailNavigation"
@@ -224,8 +225,8 @@ class PhotoDetails extends Component {
                   />
                 </Link>
                 <img
-                  alt={photoInfo.details.title}
-                  src={photoInfo.details.thumbnail}
+                  alt={photoInfo.title}
+                  src={photoInfo.thumbnail}
                   style={{
                     display: "inline-block",
                     margin: "0 auto",
@@ -266,12 +267,12 @@ class PhotoDetails extends Component {
               <Container>
                 <Row>
                   <Col md={3}>
-                    {photoInfo.details.user ? (
+                    {photoInfo.user ? (
                       <Fragment>
                         <div
                           style={{
                             ...styles.avatarStyle.avatarImg,
-                            backgroundImage: `url(${photoInfo.details.user.avatar})`
+                            backgroundImage: `url(${photoInfo.user.avatar})`
                           }}
                         ></div>
                         <div style={{ marginLeft: "6em" }}>
@@ -279,22 +280,22 @@ class PhotoDetails extends Component {
                             <Link
                               to={
                                 "/user/public/" +
-                                photoInfo.details.user.id +
+                                photoInfo.user.id +
                                 "/"
                               }
-                            >{`${photoInfo.details.user.first_name} ${photoInfo.details.user.last_name}`}</Link>
+                            >{`${photoInfo.user.first_name} ${photoInfo.user.last_name}`}</Link>
                           </b>
-                          <p>{photoInfo.details.user.rol_type}</p>
+                          <p>{photoInfo.user.rol_type}</p>
                         </div>
                       </Fragment>
                     ) : null}
                     <Tags
-                      tags={photoInfo.details.metadata}
+                      tags={photoInfo.metadata}
                       onRedirect={this.redirectToSearch}
                       style={{ clear: "both" }}
                     />
                     <Categories
-                      cats={photoInfo.details.category}
+                      cats={photoInfo.category}
                       onRedirect={this.redirectToSearch}
                     />
                   </Col>
@@ -313,7 +314,7 @@ class PhotoDetails extends Component {
                               style={{ marginRight: "1em" }}
                             />
                             Tomada el{" "}
-                            {moment(photoInfo.details.upload_date).format(
+                            {moment(photoInfo.upload_date).format(
                               "DD/MM/YYYY"
                             )}
                           </h5>
@@ -326,7 +327,7 @@ class PhotoDetails extends Component {
                               style={{ marginRight: "1em" }}
                             />
                             Subida el{" "}
-                            {moment(photoInfo.details.created_at).format(
+                            {moment(photoInfo.created_at).format(
                               "DD/MM/YYYY"
                             )}
                           </h5>
@@ -334,7 +335,7 @@ class PhotoDetails extends Component {
                       </Row>
                       <Row>
                         <Col>
-                          <p>{photoInfo.details.description}</p>
+                          <p>{photoInfo.description}</p>
                         </Col>
                       </Row>
                       <Row>
@@ -345,7 +346,7 @@ class PhotoDetails extends Component {
                             style={{ display: "inline-block", height: "30px", margin: "auto 2px auto 2px" }}
                             className="float-left"
                             onClick={() => {
-                              this.props.putRequestPhoto(photoInfo.details);
+                              this.props.putRequestPhoto(photoInfo);
                             }}
                           >
                             Solicitar foto
@@ -365,7 +366,7 @@ class PhotoDetails extends Component {
                             }
                             reportType={2}
                           />
-                          <Addthis title={photoInfo.details.title} description={photoInfo.details.description} thumbnail={photoInfo.details.thumbnail}/>
+                          <Addthis title={photoInfo.title} description={photoInfo.description} thumbnail={photoInfo.thumbnail}/>
                         </Col>
                       </Row>
                     </Container>
@@ -386,7 +387,7 @@ class PhotoDetails extends Component {
                 <Row>
                   <Col md={3}>
                     <h3>Licencia</h3>
-                    {photoInfo.details.permission.map(el =>
+                    {photoInfo.permission.map(el =>
                       getPermissionLogo(el, 90, 32)
                     )}
                   </Col>
@@ -433,17 +434,17 @@ const styles = {
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  photoInfo: state.photoDetails,
-  suggestions: state.home.photos,
+  photoInfo: state.photos.details,
+  suggestions: state.photos.photos,
   photoIndex: state.site_misc.home.selectedIndex
 });
 
 const mapActionsToProps = dispatch => ({
-  onLoad: id => dispatch(photoDetails.getPhoto(id)),
-  loadSuggestions: () => dispatch(home.home()),
-  putSearch: (id, value) => dispatch(search.putSearchItem(id, value)),
-  putRequestPhoto: value => dispatch(requestPhoto.putRequestPhoto(value)),
-  setSelectedId: id => dispatch(home.setSelectedId(id))
+  onLoad: id => dispatch(gallery.photos.getPhoto(id)),
+  loadSuggestions: () => dispatch(gallery.photos.home()),
+  putSearch: (id, value) => dispatch(site_misc.putSearchItem(id, value)),
+  putRequestPhoto: value => dispatch(site_misc.putRequestPhoto(value)),
+  setSelectedId: id => dispatch(site_misc.setSelectedId(id))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(PhotoDetails);

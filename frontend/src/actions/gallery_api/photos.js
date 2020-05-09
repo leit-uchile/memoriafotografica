@@ -22,7 +22,7 @@ import { setAlert } from "../site_misc";
  * @param {Number} page
  * @param {Number} pageSize
  */
-export const home = (page = 0, pageSize = 25) => (dispatch, getState) => {
+export const home = (page = 0, pageSize = 200) => (dispatch, getState) => {
   let headers = { "Content-Type": "application/json" };
 
   dispatch({ type: HOME_LOADING, data: null });
