@@ -76,6 +76,25 @@ def sort_by_field(element_list, request):
         element_list = element_list.order_by("created_at")
     return element_list
 
+def get_user_from_userset(element):
+    ROL_TYPE_CHOICES = (
+        (1, 'Alumno'),
+        (2, 'Ex-Alumno'),
+        (3, 'Académico'),
+        (4, 'Ex-Académico'),
+        (5, 'Funcionario'),
+        (6, 'Externo')
+    )
+    u = element.user_set.first()
+    u_dict = {}
+    u_dict['id'] = u.pk
+    u_dict['first_name'] = u.first_name
+    u_dict['last_name'] = u.last_name
+    u_dict['generation'] = u.generation
+    u_dict['avatar'] = u.avatar.url if u.avatar else None
+    u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
+    return u_dict
+
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
         return request.method in SAFE_METHODS
@@ -184,14 +203,6 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
 
     def get(self, request, pk, *args, **kwargs):
 
-        ROL_TYPE_CHOICES = (
-            (1, 'Alumno'),
-            (2, 'Ex-Alumno'),
-            (3, 'Académico'),
-            (4, 'Ex-Académico'),
-            (5, 'Funcionario'),
-            (6, 'Externo')
-        )
         if request.user.is_anonymous or request.user.user_type == 1:
             photo = self.get_object(pk,False)
             serializer_class = PhotoDetailSerializer
@@ -205,14 +216,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
         serialized_data['metadata'] = list(filter(lambda x: x['approved'], serialized_data['metadata']))
         #serialized_data['metadata'] = list(map(lambda x: x['metadata']['name'] + " : " + x['value'], serialized_data['metadata']))
         try:
-            u = photo.user_set.first()
-            u_dict = {}
-            u_dict['first_name'] = u.first_name
-            u_dict['last_name'] = u.last_name
-            u_dict['generation'] = u.generation
-            u_dict['avatar'] = u.avatar.url if u.avatar else None
-            u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
-            u_dict['id'] = u.pk
+            u_dict = get_user_from_userset(photo)
             serialized_data['user'] = u_dict
         except:
             pass
@@ -300,32 +304,18 @@ class CommentDetailAPI(generics.GenericAPIView):
             serializer = CommentSerializer(comment)
 
             serialized_data = serializer.data
-            u = comment.get(pk=serializer_data['id']).user_set.first()
-            u_dict = {}
-            u_dict['id'] = u.id
-            u_dict['first_name'] = u.first_name
-            u_dict['last_name'] = u.last_name
-            u_dict['generation'] = u.generation
-            u_dict['avatar'] = u.avatar.url if u.avatar else None
-            u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
-            serializer_data['usuario'] = u_dict
+            u_dict = get_user_from_userset(comment.get(pk=serialized_data['id']))
+            serialized_data['usuario'] = u_dict
         else:
             comment = self.get_object(pk, True)
             serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comment)
 
             serialized_data = serializer.data
-            u = comment.get(pk=serializer_data['id']).user_set.first()
-            u_dict = {}
-            u_dict['id'] = u.id
-            u_dict['first_name'] = u.first_name
-            u_dict['last_name'] = u.last_name
-            u_dict['generation'] = u.generation
-            u_dict['avatar'] = u.avatar.url if u.avatar else None
-            u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
-            serializer_data['usuario'] = u_dict
+            u_dict = get_user_from_userset(comment.get(pk=serialized_data['id']))
+            serialized_data['usuario'] = u_dict
 
-        return Response(serializer_data)
+        return Response(serialized_data)
 
     def put(self, request, pk, *args, **kwargs):
         comment = self.get_object(pk, True)
@@ -372,14 +362,6 @@ class PhotoCommentListAPI(generics.GenericAPIView):
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
-        ROL_TYPE_CHOICES = (
-            (1, 'Alumno'),
-            (2, 'Ex-Alumno'),
-            (3, 'Académico'),
-            (4, 'Ex-Académico'),
-            (5, 'Funcionario'),
-            (6, 'Externo')
-        )
         if request.user.is_anonymous or request.user.user_type == 1:
             p = self.get_object(pk, False)
             comments = p.comments.filter(censure=False)
@@ -388,17 +370,10 @@ class PhotoCommentListAPI(generics.GenericAPIView):
             serialized_data = serializer.data
             for c in serialized_data:
                 try:
-                    u = comments.get(pk=c['id']).user_set.first()
-                    u_dict = {}
-                    u_dict['id'] = u.id
-                    u_dict['first_name'] = u.first_name
-                    u_dict['last_name'] = u.last_name
-                    u_dict['generation'] = u.generation
-                    u_dict['avatar'] = u.avatar.url if u.avatar else None
-                    u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
+                    u_dict = get_user_from_userset(comments.get(pk=c['id']))
                     c['usuario'] = u_dict
-                except:
-                    pass
+                except Exception as e:
+                    print(e)
         else:
             p = self.get_object(pk, True)
             comments = p.comments.all()
@@ -407,18 +382,10 @@ class PhotoCommentListAPI(generics.GenericAPIView):
             serialized_data = serializer.data
             for c in serialized_data:
                 try:
-                    u = comments.get(pk=c['id']).user_set.first()
-                    u_dict = {}
-                    u_dict['id'] = u.id
-                    u_dict['first_name'] = u.first_name
-                    u_dict['last_name'] = u.last_name
-                    u_dict['generation'] = u.generation
-                    u_dict['avatar'] = u.avatar.url if u.avatar else None
-                    u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
-                    u_dict['id'] = u.pk
+                    u_dict = get_user_from_userset(comments.get(pk=c['id']))
                     c['usuario'] = u_dict
-                except:
-                    pass
+                except Exception as e:
+                    print(e)
                     
         return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
