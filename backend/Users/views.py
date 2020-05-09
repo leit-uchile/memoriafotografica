@@ -5,10 +5,15 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from .models import User
 #from .serializers import UserSerializer
+import hashlib
 
 # Create your views here.
 def index(request):
     return HttpResponse("Hello, world. You're at the users index.")
+
+def createHash(id):
+    integer = str(id).encode("UTF-8")
+    return str(hashlib.sha256(integer).hexdigest())
 
 # def user_list(request):
 #

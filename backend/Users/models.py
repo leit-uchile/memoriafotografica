@@ -30,7 +30,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_('last name'), max_length=30)
     birth_date = models.DateField(_('birth date'))
     date_joined = models.DateTimeField(_('date joined'),auto_now_add=True)
-    is_active = models.BooleanField(_('active'), default=True)      #Habilitado
+    is_active = models.BooleanField(_('active'), default=False)      #Habilitado
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     deleted = models.BooleanField(_('deleted'), default = False)    #Eliminado
     generation = models.CharField(_('generation'), max_length = 5, blank = True)
@@ -78,3 +78,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         '''
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+class RegisterLink(models.Model):
+  LINK_STATES = (
+        (0, 'activated'),
+        (1, 'available')
+    )
+  code = models.CharField(max_length=256)
+  state = models.PositiveSmallIntegerField(choices=LINK_STATES, default = 1)

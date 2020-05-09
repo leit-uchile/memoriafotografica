@@ -4,8 +4,10 @@ from rest_framework import status
 from knox.models import AuthToken
 from django.conf import settings
 from .serializers import (CreateUserSerializer,UserSerializer, LoginUserSerializer, UserAlbumSerializer, UserCommentSerializer, UserPhotoSerializer, ChangePasswordSerializer)
-from .models import User
+from .models import User, RegisterLink
 from .permissions import *
+from .views import createHash 
+from WebAdmin.views import sendEmail
 from rest_framework.documentation import include_docs_urls
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import BasePermission, SAFE_METHODS
@@ -27,6 +29,9 @@ class RegistrationAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        activation_link = RegisterLink(code=createHash(user.id), state=1)
+        activation_link.save()
+        sendEmail(user.email, activation_link.code)
         return Response({
             # "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "user": UserSerializer(user).data,

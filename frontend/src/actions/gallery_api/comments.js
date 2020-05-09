@@ -8,6 +8,7 @@ import {
   DELETE_COMMENT_ERROR,
   LOADING_COMMENT,
 } from "../types";
+import { setAlert } from "../site_misc";
 
 export const getComments = (id) => (dispatch, getState) => {
   let token = getState().user.token
@@ -88,9 +89,15 @@ export const editComment = (id, newContent, newDate) => (dispatch, getState) => 
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
+        dispatch(
+          setAlert("Se ha editado tu comentario", "success")
+        );
         dispatch({ type: UPDATED_COMMENT, data: data });
       });
     } else {
+      dispatch(
+        setAlert("Hubo un error al editar tu comentario", "warning")
+      );
       dispatch({ type: NEW_COMMENT_ERROR, data: r.data });
       throw r.data;
     }
@@ -109,8 +116,14 @@ export const deleteComment = (id) => (dispatch, getState) => {
   }).then(function (response) {
     const r = response;
     if (r.status === 204) {
+      dispatch(
+        setAlert("Se ha eliminado tu comentario", "success")
+      );
       dispatch({ type: DELETED_COMMENT, data: id });
     } else {
+      dispatch(
+        setAlert("Hubo un error al eliminar tu comentario", "warning")
+      );
       dispatch({ type: DELETE_COMMENT_ERROR, data: r.data });
       throw r.data;
     }

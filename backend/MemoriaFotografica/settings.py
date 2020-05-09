@@ -173,7 +173,7 @@ REST_KNOX = {
   'TOKEN_TTL': timedelta(hours=12),
 }
 
-# Email config
+# Email configuration
 EMAIL_HOST = 'smtp.gmail.com'
 
 EMAIL_PORT = 587

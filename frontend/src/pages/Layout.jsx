@@ -17,6 +17,7 @@ import LandingPage from "./Landing";
 import NewsPage from "./News/NewsPage";
 import Login from "./Login";
 import Register from "./Register";
+import EmailConfirmation from "./Register/EmailConfirmation";
 import NoMatch from "../components/Routes/NoMatch";
 import PhotoDetails from "./PhotoView";
 import Index from "./Miscellaneous";
@@ -78,6 +79,9 @@ const Layout = () => {
                     />
                     <BoundedRoute path={"/misc"} component={Index} />
                     <BoundedRoute path={"/register"} component={Register} />
+                    <BoundedRoute 
+                      path={"/confirm"} 
+                      component={EmailConfirmation} />
                     <BoundedRoute
                       path={"/request-photo"}
                       component={RequestPhoto}
