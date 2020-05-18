@@ -5,6 +5,8 @@ import {
   REGISTRATION_FAILED,
   REGISTRATION_SUCCESS,
   AUTH_CLEAR_ERRORS,
+  REGISTRATION_LINK_SUCCESS,
+  REGISTRATION_LINK_FAILED,
   LOGOUT_SUCCESS,
   USER_LOADED,
   USER_RECOVERED_PHOTO,
@@ -112,6 +114,30 @@ export const logout = () => {
   return (dispatch, getState) => {
     dispatch({ type: LOGOUT_SUCCESS, data: null });
   };
+};
+
+export const getRegisterLink = (code) => (
+  dispatch,
+  getState
+) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token
+  };
+  return fetch(
+    `/confirm/?code=${code}/`,
+    { method: "GET", headers: headers }
+  ).then(function(response) {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then(data => {
+        dispatch({ type: REGISTRATION_LINK_SUCCESS, data: data });
+      });
+    } else {
+      dispatch({ type: REGISTRATION_LINK_FAILED, data: r.data });
+      throw r.data;
+    }
+  });
 };
 
 export const getUserPhotos = (user_id, limit, offset) => (

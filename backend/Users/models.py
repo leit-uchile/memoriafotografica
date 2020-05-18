@@ -78,11 +78,17 @@ class User(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         '''
         send_mail(subject, message, from_email, [self.email], **kwargs)
-
+        
 class RegisterLink(models.Model):
-  LINK_STATES = (
+    LINK_STATES = (
         (0, 'activated'),
         (1, 'available')
     )
-  code = models.CharField(max_length=256)
-  state = models.PositiveSmallIntegerField(choices=LINK_STATES, default = 1)
+    code = models.CharField(max_length=256)
+    state = models.PositiveSmallIntegerField(choices=LINK_STATES, default = 1)
+    user= models.OneToOneField(
+        User,
+        on_delete=models.SET_NULL,
+        null=True, 
+        blank=True
+    )

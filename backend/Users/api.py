@@ -29,7 +29,7 @@ class RegistrationAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        activation_link = RegisterLink(code=createHash(user.id), state=1)
+        activation_link = RegisterLink(code=createHash(user.pk), state=1, user=user, null=True, blank=True)
         activation_link.save()
         sendEmail(user.email, activation_link.code)
         return Response({
@@ -38,6 +38,9 @@ class RegistrationAPI(generics.GenericAPIView):
             "token": AuthToken.objects.create(user)
         })
 
+class RegisterLinkAPI(generics.GenericAPIView):
+    def get_object(self, code):
+        return RegisterLink.objects.filter(code=code)
 
 class LoginAPI(generics.GenericAPIView):
     """
