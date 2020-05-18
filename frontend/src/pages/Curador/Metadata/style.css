@@ -41,3 +41,13 @@
   font-size: 0.8em;
   color: darkslategray;
 }
+
+.metadata-classifier .drag-item .drag-icon{
+  color: red;
+  margin: 0 2em;
+}
+
+.metadata-classifier .drag-item .drag-approved{
+  color: green;
+  margin: 0 2em;
+}

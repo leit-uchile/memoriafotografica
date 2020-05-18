@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import Item from "./Item";
 import DropWrapper from "./DropWrapper";
-import { tags, iptcs } from "./testdata";
 import {
   Container,
   Row,
@@ -10,20 +9,23 @@ import {
   PopoverBody,
   PopoverHeader,
   Button,
+  ButtonGroup,
 } from "reactstrap";
 import HighLight from "./HighlightWrapper";
+import { tags, iptcs } from "./testdata";
 
-const Categorize = () => {
-  const [items, setItems] = useState(tags);
+const Categorize = ({ meta, iptcs }) => {
+  const [items, setItems] = useState(meta);
 
   const onDrop = (item, monitor, name) => {
     const mapping = iptcs.find((si) => si.name === name);
 
-    console.log("OnDrop");
+    console.log("OnDrop", item);
+    const itemCopy = { ...item, approved: true };
     setItems((prevState) => {
       const newItems = prevState
         .filter((i) => i.id !== item.id)
-        .concat({ ...item, name, icon: mapping.icon });
+        .concat({ ...itemCopy, name, icon: mapping.icon });
       return [...newItems];
     });
   };
@@ -42,17 +44,23 @@ const Categorize = () => {
   const toggle = () => setPopoverOpen(!popoverOpen);
 
   return (
-    <Container fluid className="metadata-classifier">
+    <Fragment>
       <Row>
         <Col>
           <h2>Clasificador de metadata</h2>
           <p>
             Para refinar el sistema de b&uacute;squeda es necesario clasificar
             las palabras clave en sus categorias, si es claro que pertenecen a
-            una categoria particular como por ejemplo persona.{" "}
-            <Button id="ClasifierHelp" type="button">
-              ¿Ayuda?
-            </Button>
+            una categoria particular como por ejemplo persona. <br></br>
+            <ButtonGroup>
+              <Button id="ClasifierHelp" type="button">
+                ¿Ayuda?
+              </Button>
+              <Button color="success">Cargar m&aacute;s</Button>
+            </ButtonGroup>
+            <br></br>
+            Al cargar mas se cargar&aacute; nueva informaci&oacute;n que
+            necesite clasificaci&oacute;n.
           </p>
           <Popover
             placement="auto-end"
@@ -63,7 +71,9 @@ const Categorize = () => {
             <PopoverHeader>Instrucciones</PopoverHeader>
             <PopoverBody>
               Arrastra una etiqueta a su categoria y sueltala. Los resultados se
-              guardaran automaticamente.
+              guardaran automaticamente. Por defecto se cargar&aacute;n hasta 10
+              tags sin aprobar. Para cargar mas tags que no esten aprobados
+              puede apretar sobre "cargar m&aacute;s" y continuar clasificando.
             </PopoverBody>
           </Popover>
         </Col>
@@ -120,8 +130,13 @@ const Categorize = () => {
           );
         })}
       </Row>
-    </Container>
+    </Fragment>
   );
+};
+
+Categorize.defaultProps = {
+  meta: tags,
+  iptcs: iptcs,
 };
 
 export default Categorize;

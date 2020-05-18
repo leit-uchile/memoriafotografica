@@ -2,6 +2,8 @@ import React, { Fragment, useState, useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import METADATA_TYPE from "./types";
 import moment from "moment";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 const Item = ({ item, index, moveItem, name }) => {
   const ref = useRef(null);
@@ -15,7 +17,6 @@ const Item = ({ item, index, moveItem, name }) => {
       const dragIndex = item.index;
       const hoverIndex = index;
 
-      console.log(dragIndex, hoverIndex);
       if (dragIndex === hoverIndex) {
         return;
       }
@@ -61,6 +62,10 @@ const Item = ({ item, index, moveItem, name }) => {
         onClick={onOpen}
       >
         <span className={"item-title"}>{item.value}</span>
+        <FontAwesomeIcon
+          icon={item.approved ? faCheckCircle : faInfoCircle}
+          className={item.approved ? "drag-icon drag-approved" : "drag-icon"}
+        />
         <br></br>
         <span className={"item-date"}>
           Creado el {moment(item.created_at).format("DD/MM/YYYY")}

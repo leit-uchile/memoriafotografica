@@ -5,7 +5,8 @@ export const tags = [
     created_at: "2020-02-12T17:27:29-03:00",
     updated_at: "2020-02-12T17:27:29-03:00",
     metadata: 1,
-    name: "Palabras Clave"
+    name: "Palabras Clave",
+    approved: false,
   },
   {
     id: 9,
@@ -13,7 +14,8 @@ export const tags = [
     created_at: "2020-02-20T16:46:11.502298-03:00",
     updated_at: "2020-02-20T16:46:11.502304-03:00",
     metadata: 1,
-    name: "Ciudad"
+    name: "Ciudad",
+    approved: true,
   },
   {
     id: 10,
@@ -21,7 +23,8 @@ export const tags = [
     created_at: "2020-02-20T16:50:40.016320-03:00",
     updated_at: "2020-02-20T16:50:40.016324-03:00",
     metadata: 1,
-    name: "Palabras Clave"
+    name: "Palabras Clave",
+    approved: false,
   },
   {
     id: 11,
@@ -29,7 +32,8 @@ export const tags = [
     created_at: "2020-02-20T16:54:24.590939-03:00",
     updated_at: "2020-02-20T16:54:24.590943-03:00",
     metadata: 1,
-    name: "Palabras Clave"
+    name: "Palabras Clave",
+    approved: false,
   },
   {
     id: 12,
@@ -37,7 +41,8 @@ export const tags = [
     created_at: "2020-02-20T16:54:24.815981-03:00",
     updated_at: "2020-02-20T16:54:24.815990-03:00",
     metadata: 1,
-    name: "Palabras Clave"
+    name: "Palabras Clave",
+    approved: false,
   },
   {
     id: 13,
@@ -45,8 +50,8 @@ export const tags = [
     created_at: "2020-02-20T16:56:56.285885-03:00",
     updated_at: "2020-02-20T16:56:56.285890-03:00",
     metadata: 1,
-
-    name: "Palabras Clave"
+    name: "Palabras Clave",
+    approved: false,
   },
   {
     id: 14,
@@ -54,8 +59,8 @@ export const tags = [
     created_at: "2020-02-20T16:57:54.012859-03:00",
     updated_at: "2020-02-20T16:57:54.012867-03:00",
     metadata: 1,
-
-    name: "Palabras Clave"
+    name: "Palabras Clave",
+    approved: false,
   },
   {
     id: 15,
@@ -63,8 +68,8 @@ export const tags = [
     created_at: "2020-02-20T17:16:04.329212-03:00",
     updated_at: "2020-02-20T17:16:04.329217-03:00",
     metadata: 1,
-
-    name: "Palabras Clave"
+    name: "Palabras Clave",
+    approved: false,
   },
   {
     id: 16,
@@ -72,8 +77,8 @@ export const tags = [
     created_at: "2020-02-20T17:36:19.496346-03:00",
     updated_at: "2020-02-20T17:36:19.496351-03:00",
     metadata: 1,
-
-    name: "Palabras Clave"
+    name: "Palabras Clave",
+    approved: false,
   },
   {
     id: 17,
@@ -81,8 +86,8 @@ export const tags = [
     created_at: "2020-02-20T17:41:09.415937-03:00",
     updated_at: "2020-02-20T17:41:09.415942-03:00",
     metadata: 1,
-
-    name: "Palabras Clave"
+    name: "Palabras Clave",
+    approved: false,
   },
   {
     id: 18,
@@ -90,8 +95,8 @@ export const tags = [
     created_at: "2020-02-20T17:42:49.567804-03:00",
     updated_at: "2020-02-20T17:42:49.567807-03:00",
     metadata: 1,
-
-    name: "Palabras Clave"
+    name: "Palabras Clave",
+    approved: false,
   },
 ];
 

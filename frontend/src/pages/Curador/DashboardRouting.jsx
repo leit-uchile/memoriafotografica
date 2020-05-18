@@ -20,7 +20,7 @@ import Category_New from "./Category/Category_New";
 import Category_Photos from "./Category/Category_Photos";
 import Landing from "./Landing";
 import Reports from "./Reports/Reports";
-import CategorizeMeta from "./Metadata";
+import Metadata from "./Metadata";
 
 /**
  * TODO:
@@ -113,7 +113,7 @@ const Dashboard = ({ match, location }) => (
           <BoundedRoute
             exact
             path={match.path + "/tags"}
-            component={CategorizeMeta}
+            component={Metadata}
           />
           <Route component={NoMatch} />
         </Switch>
