@@ -12,7 +12,7 @@ import {
   faFilter,
   faFlag,
   faTags,
-  faChartBar
+  faChartBar,
 } from "@fortawesome/free-solid-svg-icons";
 import Filter from "./Filter/Filter";
 import Categories from "./Category/Categories";
@@ -20,37 +20,37 @@ import Category_New from "./Category/Category_New";
 import Category_Photos from "./Category/Category_Photos";
 import Landing from "./Landing";
 import Reports from "./Reports/Reports";
+import CategorizeMeta from "./Metadata";
 
 /**
  * TODO:
  * arreglar estilo de nav
- * Agregar pega sin terminar con pelotita roja
- * Agregar estilo active a boton
- * Breadcrumbs a interfaces (no hay nada que indique donde estas parado)
+ * Agregar pega sin terminar con pelotita roja (notificaciones)
  */
 const availableRoutes = [
   {
     to: "categories",
     display: "Categorías",
-    icon: <FontAwesomeIcon icon={faArchive} />
+    icon: <FontAwesomeIcon icon={faArchive} />,
   },
   {
     to: "filter",
     display: "Curación",
-    icon: <FontAwesomeIcon icon={faFilter} />
+    icon: <FontAwesomeIcon icon={faFilter} />,
   },
   {
     to: "reported",
     display: "Reportes",
-    icon: <FontAwesomeIcon icon={faFlag} />
+    icon: <FontAwesomeIcon icon={faFlag} />,
   },
-  { to: "tags", display: "Etiquetas", icon: <FontAwesomeIcon icon={faTags} /> }
+  { to: "tags", display: "Etiquetas", icon: <FontAwesomeIcon icon={faTags} /> },
 ];
 
 const Dashboard = ({ match, location }) => (
   <Container
     style={{ marginBottom: "-2em", borderTop: "1px solid rgb(210, 214, 218)" }}
     className="disable-css-transitions"
+    fluid
   >
     <Row>
       <Col xs="2" className="leftcol">
@@ -64,7 +64,7 @@ const Dashboard = ({ match, location }) => (
         >
           <FontAwesomeIcon icon={faChartBar} /> Dashboard
         </Button>
-        {availableRoutes.map((el,k) => (
+        {availableRoutes.map((el, k) => (
           <Button
             tag={Link}
             to={match.path + "/" + el.to}
@@ -109,6 +109,11 @@ const Dashboard = ({ match, location }) => (
             exact
             path={match.path + "/reported"}
             component={Reports}
+          />
+          <BoundedRoute
+            exact
+            path={match.path + "/tags"}
+            component={CategorizeMeta}
           />
           <Route component={NoMatch} />
         </Switch>

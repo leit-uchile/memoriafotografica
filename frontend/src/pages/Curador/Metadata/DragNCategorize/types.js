@@ -1,0 +1,3 @@
+const METADATA_TYPE = "METADATA_TYPE";
+
+export default METADATA_TYPE;

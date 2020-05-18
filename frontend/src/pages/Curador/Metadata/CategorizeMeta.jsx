@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from "react";
+import Categorize from "./DragNCategorize/Categorize";
+import "./style.css";
 
 const CategorizeMeta = () => {
-  return <div>
-  </div>
-}
+  return <Categorize />;
+};
 
-export default CategorizeMeta
+export default CategorizeMeta;
