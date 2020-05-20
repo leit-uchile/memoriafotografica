@@ -9,17 +9,21 @@ import Layout from "./pages/Layout";
 import store from "./store";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { DndProvider } from "react-dnd";
+import Backend from "react-dnd-html5-backend";
 
 const App = () => {
   useEffect(() => {
-    AOS.init({duration: 2000});
+    AOS.init({ duration: 2000 });
   }, []);
 
   return (
     <Provider store={store}>
-      <Router>
-        <Layout />
-      </Router>
+      <DndProvider backend={Backend}>
+        <Router>
+          <Layout />
+        </Router>
+      </DndProvider>
     </Provider>
   );
 };

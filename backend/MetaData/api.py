@@ -220,15 +220,6 @@ class MetadataDetailAPI(generics.GenericAPIView):
         return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
-        """
-        if request.user.user_type == 1:
-            metadata = self.get_object(pk, False)
-            if metadata in request.user.metadata.all():
-                serializer_class = MetadataSerializer
-                serializer = MetadataSerializer(metadata, data=request.data, partial = True)
-            else:
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-                """
         if request.user.user_type != 1:
             metadata = self.get_object(pk,True)
             serializer_class = MetadataAdminSerializer
@@ -278,3 +269,22 @@ class MetadataPhotoListAPI(generics.GenericAPIView):
             pictures = md.photo_set.all()
             serializer = PhotoAdminSerializer(pictures, many=True)
         return Response(serializer.data)
+
+class MetadataBatchAPI(generics.GenericAPIView):
+    """
+    get:
+    Get a batch of a given size of metadata. i.e. 10 metadata
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            if request.user.user_type > 1:
+                metadata_admin = Metadata.objects.filter(approved=False)
+                serializer_class = MetadataAdminSerializer
+                serializer = MetadataAdminSerializer(metadata_admin, many=True)
+                return self.get_paginated_response(self.paginate_queryset(serializer.data))
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        except Exception:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)

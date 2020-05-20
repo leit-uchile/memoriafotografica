@@ -1,0 +1,66 @@
+
+.metadata-classifier {
+  --max-column-size: 250px
+}
+
+.metadata-classifier .drop-wrapper{
+  height: 300px;
+  background-color: var(--leit-bg-gray);
+  border-radius: 5px;
+  max-height: var(--max-column-size);
+  overflow-y: auto;
+}
+
+.metadata-classifier .drag-highlight-region{
+  background-color: lightgreen;
+  min-height: 100%;
+}
+
+.metadata-classifier .col-wrapper{
+  padding: 1em 0.5em;
+  background-color: var(--leit-bg-gray);
+  border: 1px solid rgb(210, 214, 218);
+  border-radius: 5px;
+  margin-bottom: 1em;
+}
+
+.metadata-classifier .col-wrapper > h2{
+  padding: 0 0.3em;
+  font-size: 1.3em;
+}
+
+.metadata-classifier .drag-item{
+  border: 1px solid rgb(210, 214, 218);
+  background-color: white;
+  margin: 0.3em 0;
+  padding: 0.5em 0.2em;
+  border-radius: 5px;
+}
+
+.metadata-classifier .drag-item .item-date{
+  font-size: 0.8em;
+  color: darkslategray;
+}
+
+.metadata-classifier .drag-item .drag-icon{
+  color: red;
+  margin: 0 2em;
+}
+
+.metadata-classifier .drag-item .drag-approved{
+  color: green;
+  margin: 0 2em;
+}
+
+.metadata-classifier .col-wrapper > h2 span{
+  font-size: 1em;
+  color: white;
+}
+
+.metadata-classifier .col-wrapper.no-category{
+  background-color: indianred;
+}
+
+.metadata-classifier .col-wrapper.no-category .drop-wrapper{
+  background-color: indianred;
+}

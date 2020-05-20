@@ -7,6 +7,10 @@ import {
   EMPTY_TAGS,
   RECOVERED_IPTCS,
   EMPTY_IPTCS,
+  RECOVERED_METADATA_BATCH,
+  EMPTY_METADATA_BATCH,
+  UPDATED_METADATA,
+  UPDATED_METADATA_ERROR,
 } from "../actions/types";
 
 const initialState = {
@@ -16,6 +20,8 @@ const initialState = {
   nbMetaCreating: 0,
   all_tags: [],
   all_iptcs: [],
+  batch: {count: 0, results: []},
+  update_status: "",
 };
 
 export default function metadata(state = initialState, action) {
@@ -52,6 +58,14 @@ export default function metadata(state = initialState, action) {
       return { ...state, all_iptcs: action.data };
     case EMPTY_IPTCS:
       return { ...state, all_iptcs: [] };
+    case RECOVERED_METADATA_BATCH:
+      return { ...state, batch: action.data };
+    case EMPTY_METADATA_BATCH:
+      return { ...state, batch: {count: 0, results: []} };
+    case UPDATED_METADATA:
+      return {...state, update_status: "success "+action.data}
+    case UPDATED_METADATA_ERROR:
+      return {...state, update_status: "failed "+action.data}
     default:
       return state;
   }
