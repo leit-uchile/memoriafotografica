@@ -51,3 +51,16 @@
   color: green;
   margin: 0 2em;
 }
+
+.metadata-classifier .col-wrapper > h2 span{
+  font-size: 1em;
+  color: white;
+}
+
+.metadata-classifier .col-wrapper.no-category{
+  background-color: indianred;
+}
+
+.metadata-classifier .col-wrapper.no-category .drop-wrapper{
+  background-color: indianred;
+}

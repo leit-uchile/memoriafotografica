@@ -38,7 +38,7 @@ const Metadata = () => {
               toggle("2");
             }}
           >
-            Buscar
+            Buscar y Modificar
           </NavLink>
         </NavItem>
       </Nav>

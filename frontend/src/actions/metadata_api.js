@@ -9,6 +9,10 @@ import {
   EMPTY_IPTCS,
   CUSTOM_METADATA_ERROR,
   LOADED_CUSTOM_METADATA,
+  RECOVERED_METADATA_BATCH,
+  EMPTY_METADATA_BATCH,
+  UPDATED_METADATA,
+  UPDATED_METADATA_ERROR,
 } from "./types";
 
 /**
@@ -184,3 +188,46 @@ export const getMetadataNames = ids => dispatch => {
     }
   });
 };
+
+/**
+ * Get one page with unapproved metadata
+ * @param {Number} size of batch
+ */
+export const getUnapprovedMetadataBatch = size => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token
+  };
+
+  fetch(`/api/metadata/batch/?page=1&page_size=${size}`, {
+    method: "GET",
+    headers: headers,
+  }).then(function(response) {
+    const r = response;
+    if (r.status === 200) {
+      r.json().then(data => dispatch({ type: RECOVERED_METADATA_BATCH, data: data }));
+    } else {
+      dispatch({ type: EMPTY_METADATA_BATCH})
+    }
+  });
+}
+
+export const putMetadata = metadata => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token
+  };
+
+  fetch(`/api/metadata/${metadata.id}/`, {
+    method: "PUT",
+    headers: headers,
+    body: JSON.stringify(metadata)
+  }).then(function(response) {
+    const r = response;
+    if (r.status === 206) {
+      r.json().then(data => dispatch({ type: UPDATED_METADATA, data: metadata.id}));
+    } else {
+      dispatch({ type: UPDATED_METADATA_ERROR, data: metadata.id})
+    }
+  });
+}
