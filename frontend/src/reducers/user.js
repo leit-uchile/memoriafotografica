@@ -2,6 +2,8 @@ import {
   LOGIN_SUCCESS,
   REGISTRATION_SUCCESS,
   REGISTRATION_FAILED,
+  REGISTRATION_LINK_SUCCESS,
+  REGISTRATION_LINK_FAILED,
   AUTH_ERROR,
   LOGIN_FAILED,
   LOGOUT_SUCCESS,
@@ -20,7 +22,7 @@ import {
   USER_PUBLIC_LOADING,
   USER_PUBLIC_LOADED,
   USER_PUBLIC_ERROR,
-  DELETED_PHOTO,
+  DELETED_PHOTO
 } from "../actions/types";
 
 /**
@@ -38,6 +40,8 @@ const baseState = {
   isAuthenticated: false,
   isLoading: true,
   errors: {},
+  // account activation
+  activated: false
 };
 
 // Compare if the token is valid (12 hours)
@@ -58,6 +62,7 @@ const initialState =
         isAuthenticated: true,
         isLoading: true,
         errors: {},
+        activated: false
       };
 
 var logginDate;
@@ -95,6 +100,11 @@ export default function user(state = initialState, action) {
 
     case REGISTRATION_FAILED:
       return { ...state, errors: { register: "REGISTRATION_FAILED" } };
+
+    case REGISTRATION_LINK_SUCCESS:
+      return { ...state, activated: true}
+    case REGISTRATION_LINK_FAILED:
+      return {...state, activated: false}
 
     case AUTH_ERROR:
       return { ...state };

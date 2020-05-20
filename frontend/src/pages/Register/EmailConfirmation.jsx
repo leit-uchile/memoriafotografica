@@ -3,15 +3,12 @@ import { connect } from "react-redux";
 import { user } from "../../actions";
 import { Container, Row, Col } from "reactstrap";
 
-const EmailConfirmation = ({ location, getActivationCode, activateUser }) => {
-  const [state, setState] = useState({
-    status: 0, // State obtenido del backend
-    userID: -1
-  });
+const EmailConfirmation = ({ location, activateCode, status }) => {
 
   useEffect(() => {
-    let obj = getActivationCode(location.search)
-    setState( {status: obj.state, userID: obj.user})
+    let code = location.search;
+    code = code.slice(code.indexOf("code=")+5);
+    activateCode(code);
   }, [])
 
   const SuccefulConfirmation = (props) => (
@@ -41,7 +38,7 @@ const EmailConfirmation = ({ location, getActivationCode, activateUser }) => {
       <Row>
         <Col>
           <p style={{ marginTop: "2em" }}>
-            Si esto persiste por favor informanos a{" "}
+            El código ya fue usado o ha expirado. Si esto persiste por favor informanos a{" "}
             <a href="mailto:soporte@leit.cl?Subject=Error%20en%20el%20sitio">
               soporte&#64;leit.cl
             </a>
@@ -51,21 +48,18 @@ const EmailConfirmation = ({ location, getActivationCode, activateUser }) => {
     </Container>
   );
 
-  if (state.status===1) {
-    // Actualizar state = 0 para RegisterLink en backend
-    //
-    // Actualizar is_active = True para User en backend
-    // activateUser({ id: state.userID, is_active: true });
+  if (status===true) {
     return <SuccefulConfirmation />;
   }
   return <FailedConfirmation />;
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  status: state.user.activated
+});
 
 const mapActionsToProps = (dispatch) => ({
-  getActivationCode: (code) => dispatch(user.getRegisterLink(code)),
-  activateUser: (userInfo, doJSON = true) => dispatch(user.editProfile(userInfo, doJSON)),
+  activateCode: (code) => dispatch(user.getRegisterLink(code))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(EmailConfirmation);

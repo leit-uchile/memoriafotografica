@@ -85,7 +85,7 @@ class RegisterLink(models.Model):
         (1, 'available')
     )
     code = models.CharField(max_length=256)
-    state = models.PositiveSmallIntegerField(choices=LINK_STATES, default = 1)
+    status = models.PositiveSmallIntegerField(choices=LINK_STATES, default = 1)
     user= models.OneToOneField(
         User,
         on_delete=models.SET_NULL,

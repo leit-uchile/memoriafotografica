@@ -12,7 +12,7 @@ def sendEmail(emailto, link):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [emailto,]
     subject = 'Active su cuenta'
-    html_message = render_to_string('sendEmail/sign_up_email.html', {'link': 'http://memoriafotografica.cl/confirm/?' + link })
+    html_message = render_to_string('sendEmail/sign_up_email.html', {'link': 'http://memoriafotografica.cl/confirm/?code=' + link })
     plain_message = strip_tags(html_message)
     res = send_mail( subject, plain_message, email_from, recipient_list, html_message=html_message )
     return
