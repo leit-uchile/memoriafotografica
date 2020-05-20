@@ -124,8 +124,11 @@ export const getRegisterLink = (code) => (
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token
   };
+
+  var daCode = code.slice(code.indexOf("=")+1)
+
   return fetch(
-    `/confirm/?code=${code}/`,
+    `/api/confirm/?code=${daCode}`,
     { method: "GET", headers: headers }
   ).then(function(response) {
     const r = response;
@@ -398,19 +401,25 @@ export const updatePassword = (old_password, new_password) => (
       // Response is NO CONTENT
       if (res.status === 200) {
         dispatch({ type: USER_PASSWORD_UPDATED, data: res.data });
+        dispatch(
+          setAlert(
+            "Contraseña cambiada.",
+            "success"
+          )
+        );
         return res.data;
       } else if (res.status === 403 || res.status === 401) {
         dispatch({ type: AUTH_ERROR, data: res.data });
         dispatch(
           setAlert(
-            "Sesion invalida, por favor ingrese nuevamente al sistema",
+            "Sesion invalida, por favor ingrese nuevamente al sistema.",
             "warning"
           )
         );
         throw res.data;
       } else {
         dispatch({ type: USER_PASSWORD_UPDATE_FAILED, data: res.data });
-        dispatch(setAlert(`Error: ${res.data}`, "warning"));
+        dispatch(setAlert(`Error: ${JSON.stringify(res.data)}`, "warning"));
         throw res.data;
       }
     });
