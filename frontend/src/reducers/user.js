@@ -22,7 +22,7 @@ import {
   USER_PUBLIC_LOADING,
   USER_PUBLIC_LOADED,
   USER_PUBLIC_ERROR,
-  DELETED_PHOTO
+  DELETED_PHOTO,
 } from "../actions/types";
 
 /**
@@ -41,7 +41,8 @@ const baseState = {
   isLoading: true,
   errors: {},
   // account activation
-  activated: false
+  activated: false,
+  registerSuccess: false,
 };
 
 // Compare if the token is valid (12 hours)
@@ -62,7 +63,8 @@ const initialState =
         isAuthenticated: true,
         isLoading: true,
         errors: {},
-        activated: false
+        activated: false,
+        registerSuccess: false,
       };
 
 var logginDate;
@@ -84,27 +86,27 @@ export default function user(state = initialState, action) {
       };
 
     case REGISTRATION_SUCCESS:
-      logginDate = new Date();
-      localStorage.setItem("token", action.data.token);
-      localStorage.setItem(
-        "isAuth",
-        JSON.stringify({ loggedIn: true, timeSet: logginDate.getTime() })
-      );
       return {
         ...state,
-        ...action.data,
-        isAuthenticated: true,
+        registerSuccess: true,
         isLoading: false,
         errors: null,
       };
 
     case REGISTRATION_FAILED:
-      return { ...state, errors: { register: "REGISTRATION_FAILED" } };
+      return {
+        ...state,
+        registerSuccess: false,
+        errors: { register: "REGISTRATION_FAILED" },
+      };
 
     case REGISTRATION_LINK_SUCCESS:
-      return { ...state, activated: true}
+      return {
+        ...state,
+        activated: true
+      };
     case REGISTRATION_LINK_FAILED:
-      return {...state, activated: false}
+      return { ...state, activated: false };
 
     case AUTH_ERROR:
       return { ...state };

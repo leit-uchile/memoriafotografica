@@ -9,7 +9,7 @@ import {
   Footer,
   PrivateComponent,
   BoundedRoute,
-  LazyRoutedComponent
+  LazyRoutedComponent,
 } from "../components";
 // Main application chunk
 import Home from "./Home";
@@ -29,22 +29,22 @@ const lazyComponents = [
     component: lazy(() => import("./Curador")),
     path: "/curador/dashboard",
     route: PrivateComponent,
-    message: "Cargando herramientas de curador..."
+    message: "Cargando herramientas de curador...",
   },
   {
     component: lazy(() => import("./User")),
     path: "/user/",
     route: BoundedRoute,
-    message: "Cargando herramientas de usuario..."
-  }
+    message: "Cargando herramientas de usuario...",
+  },
 ];
 
 /**
  * Layout
- * 
+ *
  * Composes the components together to display a page.
  * Contains all the major routes available
- * 
+ *
  * Addons:
  * - React Transition Group: animate route changes using CSS3
  * - React ErrorBoundaries: display an error page instead of crashing
@@ -79,18 +79,20 @@ const Layout = () => {
                     />
                     <BoundedRoute path={"/misc"} component={Index} />
                     <BoundedRoute path={"/register"} component={Register} />
-                    <BoundedRoute 
-                      path={"/confirm"} 
-                      component={EmailConfirmation} />
+                    <BoundedRoute
+                      path={"/confirm"}
+                      component={EmailConfirmation}
+                    />
                     <BoundedRoute
                       path={"/request-photo"}
                       component={RequestPhoto}
                     />
                     <BoundedRoute path={"/upload"} component={UploadPage} />
-                    {lazyComponents.map(el => (
+                    {lazyComponents.map((el) => (
                       <el.route
+                        key={"lazy" + el.path}
                         path={el.path}
-                        component={props => (
+                        component={(props) => (
                           <LazyRoutedComponent
                             component={el.component}
                             message={el.message}
@@ -113,11 +115,10 @@ const Layout = () => {
 };
 
 const styles = {
-  background: {
-  },
+  background: {},
   body: {
-    minHeight: "75vh"
-  }
+    minHeight: "75vh",
+  },
 };
 
 export default Layout;

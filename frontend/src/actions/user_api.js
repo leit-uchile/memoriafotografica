@@ -79,9 +79,14 @@ export const register = (
     return fetch("/api/auth/register/", { body: formData, method: "POST" })
       .then(res => {
         if (res.status < 500) {
-          return res.json().then(data => {
-            return { status: res.status, data };
-          });
+          if (res.status === 200) {
+            dispatch({ type: REGISTRATION_SUCCESS });
+            return res.data;
+          } else{
+            return res.json().then(data => {
+              return { status: res.status, data };
+            });
+          } 
         } else {
           console.log("Server Error!");
           dispatch({ type: REGISTRATION_FAILED, data: res.data });
@@ -89,11 +94,7 @@ export const register = (
         }
       })
       .then(res => {
-        if (res.status === 200) {
-          dispatch({ type: USER_LOADED, data: res.data.user });
-          dispatch({ type: REGISTRATION_SUCCESS, data: res.data });
-          return res.data;
-        } else if (res.status === 403 || res.status === 401) {
+        if (res.status === 403 || res.status === 401) {
           dispatch({ type: AUTH_ERROR, data: res.data });
           throw res.data;
         } else {
@@ -121,8 +122,7 @@ export const getRegisterLink = (code) => (
   getState
 ) => {
   let headers = {
-    "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token
+    "Content-Type": "application/json"
   };
 
   var daCode = code.slice(code.indexOf("=")+1)
@@ -135,6 +135,8 @@ export const getRegisterLink = (code) => (
     if (r.status === 200) {
       return r.json().then(data => {
         dispatch({ type: REGISTRATION_LINK_SUCCESS, data: data });
+        dispatch({ type: USER_LOADED, data: data.user });
+        dispatch({ type: LOGIN_SUCCESS, data: data.token });
       });
     } else {
       dispatch({ type: REGISTRATION_LINK_FAILED, data: r.data });

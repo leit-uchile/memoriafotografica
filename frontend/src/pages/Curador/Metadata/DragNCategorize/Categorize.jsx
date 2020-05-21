@@ -4,9 +4,9 @@ import DropWrapper from "./DropWrapper";
 import {
   Row,
   Col,
-  Popover,
-  PopoverBody,
-  PopoverHeader,
+  Card,
+  CardText,
+  CardTitle,
   Button,
   ButtonGroup,
   Alert,
@@ -31,7 +31,7 @@ const Categorize = ({ iptcs, batch, loadIptcs, loadBatch, putMeta }) => {
 
   useEffect(() => {
     loadBatch(10);
-  }, []);
+  }, [loadBatch]);
 
   useEffect(() => {
     setItems(batch.results);
@@ -40,10 +40,10 @@ const Categorize = ({ iptcs, batch, loadIptcs, loadBatch, putMeta }) => {
 
   // Load if none
   useEffect(() => {
-    if (iptcs.length == 0) {
+    if (iptcs.length === 0) {
       loadIptcs();
     }
-  }, [iptcs]);
+  }, [iptcs, loadIptcs]);
 
   const [popoverOpen, setPopoverOpen] = useState(false);
 
@@ -94,7 +94,7 @@ const Categorize = ({ iptcs, batch, loadIptcs, loadBatch, putMeta }) => {
             una categoria particular como por ejemplo persona.
           </p>
           <ButtonGroup>
-            <Button id="ClasifierHelp" type="button">
+            <Button type="button" onClick={toggle}>
               ¿Ayuda?
             </Button>
             <Button
@@ -114,29 +114,27 @@ const Categorize = ({ iptcs, batch, loadIptcs, loadBatch, putMeta }) => {
             Al cargar mas se cargar&aacute; nueva informaci&oacute;n que
             necesite clasificaci&oacute;n.
           </p>
-          <Popover
-            placement="auto-end"
-            isOpen={popoverOpen}
-            target="ClasifierHelp"
-            toggle={toggle}
-          >
-            <PopoverHeader>Instrucciones</PopoverHeader>
-            <PopoverBody>
-              Arrastra una etiqueta a su categoria y sueltala. Los resultados se
-              guardaran automaticamente. Por defecto se cargar&aacute;n hasta 10
-              tags sin aprobar. Para cargar mas tags que no esten aprobados
-              puede apretar sobre "cargar m&aacute;s" y continuar clasificando.
-            </PopoverBody>
-          </Popover>
+          {popoverOpen ? (
+            <Card body>
+              <CardTitle>Instrucciones</CardTitle>
+              <CardText>
+                Arrastra una etiqueta a su categoria y sueltala. Los resultados
+                se guardaran automaticamente. Por defecto se cargar&aacute;n
+                hasta 10 tags sin aprobar. Para cargar mas tags que no esten
+                aprobados puede apretar sobre "cargar m&aacute;s" y continuar
+                clasificando.
+              </CardText>
+            </Card>
+          ) : null}
         </Col>
       </Row>
-      {iptcs.length == 0 ? (
+      {iptcs.length === 0 ? (
         <Row>
           <Col>
             <LeitSpinner />
           </Col>
         </Row>
-      ) : batch.count != 0 ? (
+      ) : batch.count !== 0 ? (
         <Fragment>
           <Row>
             <div key={"nochanges"} className="col-md-3">

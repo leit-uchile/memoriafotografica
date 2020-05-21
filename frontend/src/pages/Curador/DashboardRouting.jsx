@@ -48,7 +48,7 @@ const availableRoutes = [
 
 const Dashboard = ({ match, location }) => (
   <Container
-    style={{ marginBottom: "-2em", borderTop: "1px solid rgb(210, 214, 218)" }}
+    style={{ borderTop: "1px solid rgb(210, 214, 218)" }}
     className="disable-css-transitions"
     fluid
   >

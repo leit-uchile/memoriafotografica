@@ -16,7 +16,7 @@ class SearchBar extends Component {
       value: "",
       suggestions: [],
       iptc_mapping: {},
-      limit: 10
+      limit: 10,
     };
     if (props.iptc.length === 0) {
       this.props.onLoadGetIPTC();
@@ -34,7 +34,7 @@ class SearchBar extends Component {
 
   onChange = (e, { newValue }) => {
     this.setState({
-      value: newValue
+      value: newValue,
     });
   };
 
@@ -44,7 +44,7 @@ class SearchBar extends Component {
 
   onSuggestionsClearRequested = () => {
     this.setState({
-      suggestions: []
+      suggestions: [],
     });
   };
 
@@ -55,7 +55,7 @@ class SearchBar extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.iptc.length === 0 && this.props.iptc.length !== 0) {
       let mapping = {};
-      this.props.iptc.forEach(el => {
+      this.props.iptc.forEach((el) => {
         mapping[el.id] = el.name;
       });
       this.setState({ iptc_mapping: mapping });
@@ -65,7 +65,7 @@ class SearchBar extends Component {
       // Mapping is ready then group
       if (Object.keys(this.state.iptc_mapping).length !== 0) {
         let groups = {};
-        this.props.tags.forEach(t => {
+        this.props.tags.forEach((t) => {
           if (groups[t.metadata] === undefined) {
             groups[t.metadata] = [t];
           } else {
@@ -73,10 +73,10 @@ class SearchBar extends Component {
           }
         });
         let suggestions = [];
-        Object.keys(groups).forEach(g => {
+        Object.keys(groups).forEach((g) => {
           suggestions.push({
             title: this.state.iptc_mapping[g],
-            suggestions: groups[g]
+            suggestions: groups[g],
           });
         });
         this.setState({ suggestions });
@@ -89,7 +89,7 @@ class SearchBar extends Component {
     const inputProps = {
       placeholder: "Buscar por metadata",
       value,
-      onChange: this.onChange
+      onChange: this.onChange,
     };
 
     if (this.state.swapPage) {
@@ -108,9 +108,11 @@ class SearchBar extends Component {
               className="search-iptc-selector"
             >
               <option value="0">Todas las etiquetas</option>
-              {
-                this.props.iptc.map((iptc,k) => <option key={k} value={iptc.id}>{iptc.name}</option>)
-              }
+              {this.props.iptc.map((iptc, k) => (
+                <option key={k} value={iptc.id}>
+                  {iptc.name}
+                </option>
+              ))}
             </Input>
             <Autosuggest
               multiSection={true}
@@ -118,10 +120,10 @@ class SearchBar extends Component {
               onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
               onSuggestionsClearRequested={this.onSuggestionsClearRequested}
               onSuggestionSelected={this.onSuggestionSelected}
-              getSuggestionValue={suggestion => suggestion.value}
-              renderSuggestion={suggestion => <span>{suggestion.value}</span>}
-              renderSectionTitle={section => <strong>{section.title}</strong>}
-              getSectionSuggestions={section => section.suggestions}
+              getSuggestionValue={(suggestion) => suggestion.value}
+              renderSuggestion={(suggestion) => <span>{suggestion.value}</span>}
+              renderSectionTitle={(section) => <strong>{section.title}</strong>}
+              getSectionSuggestions={(section) => section.suggestions}
               inputProps={inputProps}
             />
             <Button
@@ -140,18 +142,18 @@ class SearchBar extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   tags: state.metadata.all_tags,
   iptc: state.metadata.all_iptcs,
-  currentPage: state.site_misc.currentRoute
+  currentPage: state.site_misc.currentRoute,
 });
 
-const mapActionsToProps = dispatch => ({
+const mapActionsToProps = (dispatch) => ({
   onLoadGetIPTC: () => dispatch(metadata.iptcs()),
-  setRoute: route => dispatch(site_misc.setCurrentRoute(route)),
+  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
   putSearch: (id, value) => dispatch(site_misc.putSearchItem(id, value)),
   search: (query, limit) =>
-    dispatch(metadata.searchMetadataByValue(query, limit))
+    dispatch(metadata.searchMetadataByValueSB(query, limit)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(SearchBar);

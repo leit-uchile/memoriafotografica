@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef } from "react";
+import React, { Fragment, useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import METADATA_TYPE from "./types";
 import moment from "moment";
@@ -45,12 +45,6 @@ const Item = ({ item, index, moveItem, name }) => {
     }),
   });
 
-  const [show, setShow] = useState(false);
-
-  const onOpen = () => setShow(true);
-
-  const onClose = () => setShow(false);
-
   drag(drop(ref));
 
   return (
@@ -59,7 +53,6 @@ const Item = ({ item, index, moveItem, name }) => {
         ref={ref}
         style={{ opacity: isDragging ? 0 : 1 }}
         className={"drag-item"}
-        onClick={onOpen}
       >
         <span className={"item-title"}>{item.value}</span>
         <FontAwesomeIcon

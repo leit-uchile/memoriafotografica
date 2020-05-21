@@ -1,6 +1,6 @@
 {
   "name": "static",
-  "version": "0.1.0",
+  "version": "0.6.0",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.21",
@@ -52,7 +52,7 @@
     "eject": "react-scripts eject"
   },
   "autor": "LEIT",
-  "license": "",
+  "license": "MIT",
   "proxy": "http://backend:8000",
   "browserslist": {
     "production": [

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import { gallery, site_misc } from "../../actions";
+import { site_misc } from "../../actions";
 import { Container, Row, Col } from "reactstrap";
 import { Redirect } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -24,7 +24,7 @@ class Home extends Component {
     this.state = {
       photoPagination: {
         page: 0,
-        maxAllowed: 25 // MASTER CONFIG
+        maxAllowed: 25, // MASTER CONFIG
       },
       maxAllowedCategories: 4,
       sortOpen: false,
@@ -32,18 +32,18 @@ class Home extends Component {
       redirect: false,
       link: "",
       catIds: [],
-      sorting: ""
+      sorting: "",
     };
 
     // componentWillLoad
     this.props.setRoute("/gallery/");
   }
 
-  putFilterInfo = o => {
-    this.setState({catIds: o.cats, sorting: o.sorting})
-  }
+  putFilterInfo = (o) => {
+    this.setState({ catIds: o.cats, sorting: o.sorting });
+  };
 
-  handleOnClick = obj => {
+  handleOnClick = (obj) => {
     this.setState({ redirect: true, chosenPhotoIndex: obj.index });
   };
 
@@ -51,20 +51,20 @@ class Home extends Component {
     this.setState({
       photoPagination: {
         maxAllowed: this.state.photoPagination.maxAllowed,
-        page: 0
-      }
+        page: 0,
+      },
     });
   };
 
   /**
    * Method for HomePagination
    */
-  setPage = number => {
+  setPage = (number) => {
     this.setState({
       photoPagination: {
         maxAllowed: this.state.photoPagination.maxAllowed,
-        page: number
-      }
+        page: number,
+      },
     });
   };
 
@@ -74,23 +74,30 @@ class Home extends Component {
     const pageLimit = Math.floor(count / maxAllowed);
 
     // For gallery
-    var mapped = photos
-      .map(el => ({
-        src: el.thumbnail,
-        height: el.aspect_h,
-        width: el.aspect_w,
-        id: el.id
-      }));
+    var mapped = photos.map((el) => ({
+      src: el.thumbnail,
+      height: el.aspect_h,
+      width: el.aspect_w,
+      id: el.id,
+    }));
 
     if (this.state.redirect) {
       this.props.setRoute("/photo/"); // For NavLink in Navbar
       this.props.setSelectedId(this.state.chosenPhotoIndex); // For in photo navigation
       this.props.setPhotoPagination(this.state.photoPagination);
 
-      var url = "?"
-      url = url + "sort="+this.state.sorting
-      url = this.state.catIds.length === 0 ? url : url + "&category=" + this.state.catIds.join(',')
-      url = this.props.filters.length === 0 ? url : url + "&metadata=" + this.props.filters.map(el => el.metaID).join(',')
+      var url = "?";
+      url = url + "sort=" + this.state.sorting;
+      url =
+        this.state.catIds.length === 0
+          ? url
+          : url + "&category=" + this.state.catIds.join(",");
+      url =
+        this.props.filters.length === 0
+          ? url
+          : url +
+            "&metadata=" +
+            this.props.filters.map((el) => el.metaID).join(",");
       return (
         <Redirect
           push
@@ -118,7 +125,7 @@ class Home extends Component {
               <Col md="7" lg="9">
                 <div className="home-filters-containers">
                   {filters.length !== 0 ? (
-                    filters.map(el => (
+                    filters.map((el) => (
                       <span key={el.metaID} className="home-tags">
                         #{el.value}
                         <FontAwesomeIcon
@@ -184,21 +191,21 @@ class Home extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   photos: state.photos.photos,
   count: state.photos.count,
   filters: state.site_misc.searchMetaIDs,
   auth: state.user.token,
-  loadingPhotos: state.site_misc.home.loading
+  loadingPhotos: state.site_misc.home.loading,
 });
 
-const mapActionsToProps = dispatch => ({
-  setRoute: route => dispatch(site_misc.setCurrentRoute(route)),
+const mapActionsToProps = (dispatch) => ({
+  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
   removeSearch: (id, value) => dispatch(site_misc.removeSearchItem(id, value)),
   // TODO: use it!
   // eslint-disable-next-line
-  setSelectedId: id => dispatch(site_misc.setSelectedId(id)),
-  setPhotoPagination: obj => dispatch(site_misc.setPhotoPagination(obj))
+  setSelectedId: (id) => dispatch(site_misc.setSelectedId(id)),
+  setPhotoPagination: (obj) => dispatch(site_misc.setPhotoPagination(obj)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Home);

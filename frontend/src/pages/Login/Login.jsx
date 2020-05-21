@@ -10,14 +10,14 @@ import { faUser, faUnlock } from "@fortawesome/free-solid-svg-icons";
 class Login extends Component {
   state = {
     email: "",
-    password: ""
+    password: "",
   };
 
-  genericChangeHandler = event => {
+  genericChangeHandler = (event) => {
     this.setState({ [event.target.id]: event.target.value });
   };
 
-  onSubmit = e => {
+  onSubmit = (e) => {
     e.preventDefault();
     this.props.login(this.state.email, this.state.password);
   };
@@ -26,7 +26,7 @@ class Login extends Component {
     this.props.setRoute("/login");
   }
 
-  translateError = error => {
+  translateError = (error) => {
     var errorMessage;
     var firstError = error.length ? error[0] : error;
     switch (firstError) {
@@ -59,7 +59,7 @@ class Login extends Component {
               <form onSubmit={this.onSubmit}>
                 <fieldset>
                   {this.props.errors.length > 0 &&
-                    this.props.errors.map(error => (
+                    this.props.errors.map((error) => (
                       <Alert key={error.field} color="warning">
                         {this.translateError(error.message)}
                       </Alert>
@@ -76,6 +76,7 @@ class Login extends Component {
                           id="email"
                           type="text"
                           className="form-control"
+                          style={{ paddingLeft: "1em" }}
                           onChange={this.genericChangeHandler}
                           placeholder="Correo Electronico"
                         />
@@ -92,6 +93,7 @@ class Login extends Component {
                           id="password"
                           type="password"
                           className="form-control"
+                          style={{ paddingLeft: "1em" }}
                           onChange={this.genericChangeHandler}
                           placeholder="Contraseña"
                         />
@@ -117,24 +119,24 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   let errors = [];
   if (state.user.errors) {
-    errors = Object.keys(state.user.errors).map(field => {
+    errors = Object.keys(state.user.errors).map((field) => {
       return { field, message: state.user.errors[field] };
     });
   }
   return {
     errors,
     isAuthenticated: state.user.isAuthenticated,
-    loginRoute: state.site_misc.loginSuccessRoute
+    loginRoute: state.site_misc.loginSuccessRoute,
   };
 };
 
-const mapActionsToProps = dispatch => ({
+const mapActionsToProps = (dispatch) => ({
   login: (email, password) => dispatch(user.login(email, password)),
-  setRoute: route => dispatch(site_misc.setCurrentRoute(route)),
-  setLoginSuccessRoute: () => dispatch(site_misc.addLoginRoute(""))
+  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
+  setLoginSuccessRoute: () => dispatch(site_misc.addLoginRoute("")),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Login);

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { gallery, webadmin, site_misc } from "../../actions";
+import { webadmin, site_misc } from "../../actions";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,7 +9,7 @@ import {
   faBook,
   faAddressCard,
   faTimes,
-  faCheckSquare
+  faCheckSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   Container,
@@ -23,7 +23,7 @@ import {
   ListGroup,
   ListGroupItem,
   ListGroupItemHeading,
-  ListGroupItemText
+  ListGroupItemText,
 } from "reactstrap";
 import { getPermissionLogo } from "../../utils";
 
@@ -41,17 +41,20 @@ class RequestPhoto extends Component {
         comuna: "",
         phone_number: "",
         email: "",
-        institution: ""
-      }
+        institution: "",
+      },
     };
     this.updateData = this.updateData.bind(this);
   }
 
-  updateData = e => this.setState({ formData: {...this.state.formData, [e.target.name]: e.target.value }});
+  updateData = (e) =>
+    this.setState({
+      formData: { ...this.state.formData, [e.target.name]: e.target.value },
+    });
 
-  onSubmit = e => {
+  onSubmit = (e) => {
     e.preventDefault();
-    const photosId = this.props.requestedPhotos.map( el => el.id)
+    const photosId = this.props.requestedPhotos.map((el) => el.id);
     this.props.sendRequest(photosId, this.state.formData);
   };
 
@@ -71,145 +74,154 @@ class RequestPhoto extends Component {
         </Row>
         <Row>
           <Col sm={8} style={styles.form} className="white-box">
-            {!requested
-              ?(<Form ><FormGroup>
-                <div style={styles.formTitle}>
-                  <FontAwesomeIcon
-                    icon={faImages}
-                    style={{ marginRight: "1em" }}
+            {!requested ? (
+              <Form>
+                <FormGroup>
+                  <div style={styles.formTitle}>
+                    <FontAwesomeIcon
+                      icon={faImages}
+                      style={{ marginRight: "1em" }}
+                    />
+                    <Label>Material solicitado</Label>
+                  </div>
+                  <Requested
+                    list={requestedPhotos}
+                    removeRequestPhoto={removeRequestPhoto}
                   />
-                  <Label>Material solicitado</Label>
-                </div>
-                <Requested
-                  list={requestedPhotos}
-                  removeRequestPhoto={removeRequestPhoto}
-                />
-              </FormGroup>
-              <FormGroup>
-                <div style={styles.formTitle}>
-                  <FontAwesomeIcon
-                    icon={faBook}
-                    style={{ marginRight: "1em" }}
+                </FormGroup>
+                <FormGroup>
+                  <div style={styles.formTitle}>
+                    <FontAwesomeIcon
+                      icon={faBook}
+                      style={{ marginRight: "1em" }}
+                    />
+                    <Label>Finalidad de la reproducción</Label>
+                  </div>
+                  <Input
+                    type="textarea"
+                    name="reason"
+                    onChange={this.updateData}
+                    placeholder="Especificación"
+                    required
+                    disabled={requested}
                   />
-                  <Label>Finalidad de la reproducción</Label>
-                </div>
-                <Input 
-                type="textarea"
-                name="reason" 
-                onChange={this.updateData} 
-                placeholder="Especificación" 
-                required 
-                disabled={requested}/>
-              </FormGroup>
+                </FormGroup>
 
-              <div style={styles.formTitle}>
+                <div style={styles.formTitle}>
+                  <FontAwesomeIcon
+                    icon={faAddressCard}
+                    style={{ marginRight: "1em" }}
+                  />
+                  <Label>Identificación del solicitante</Label>
+                </div>
+                <FormGroup row>
+                  <Col>
+                    <Input
+                      type="text"
+                      name="first_name"
+                      onChange={this.updateData}
+                      style={{ marginBottom: "0.5em" }}
+                      placeholder="Nombre"
+                      required
+                      disabled={requested}
+                    />
+                    <Input
+                      type="text"
+                      name="identity_document"
+                      onChange={this.updateData}
+                      style={{ marginBottom: "0.5em" }}
+                      placeholder="CI"
+                      required
+                      disabled={requested}
+                    />
+                    <Input
+                      type="text"
+                      name="address"
+                      onChange={this.updateData}
+                      style={{ marginBottom: "0.5em" }}
+                      placeholder="Dirección"
+                      required
+                      disabled={requested}
+                    />
+                    <Input
+                      type="text"
+                      name="phone_number"
+                      onChange={this.updateData}
+                      style={{ marginBottom: "0.5em" }}
+                      placeholder="Teléfono"
+                      required
+                      disabled={requested}
+                    />
+                    <Input
+                      type="text"
+                      name="institution"
+                      onChange={this.updateData}
+                      style={{ marginBottom: "0.5em" }}
+                      placeholder="Institución"
+                      required
+                      disabled={requested}
+                    />
+                  </Col>
+                  <Col>
+                    <Input
+                      type="text"
+                      name="last_name"
+                      onChange={this.updateData}
+                      style={{ marginBottom: "0.5em" }}
+                      placeholder="Apellidos"
+                      required
+                      disabled={requested}
+                    />
+                    <Input
+                      type="text"
+                      name="profession"
+                      onChange={this.updateData}
+                      style={{ marginBottom: "0.5em" }}
+                      placeholder="Actividad/Profesión"
+                      required
+                      disabled={requested}
+                    />
+                    <Input
+                      type="text"
+                      name="comuna"
+                      onChange={this.updateData}
+                      style={{ marginBottom: "0.5em" }}
+                      placeholder="Comuna"
+                      required
+                      disabled={requested}
+                    />
+                    <Input
+                      type="email"
+                      name="email"
+                      onChange={this.updateData}
+                      style={{ marginBottom: "0.5em" }}
+                      placeholder="Email"
+                      required
+                      disabled={requested}
+                    />
+                  </Col>
+                </FormGroup>
+                <Button onClick={this.onSubmit}>Solicitar</Button>
+              </Form>
+            ) : (
+              <div style={{ paddingTop: "4vh" }}>
                 <FontAwesomeIcon
-                  icon={faAddressCard}
-                  style={{ marginRight: "1em" }}
+                  icon={faCheckSquare}
+                  style={{
+                    color: "var(--leit-pink)",
+                    fontSize: "40px",
+                    display: "inline-block",
+                    width: "100%",
+                    textAlign: "center",
+                    marginBottom: "2vh",
+                  }}
                 />
-                <Label>Identificación del solicitante</Label>
+                <h4 style={{ textAlign: "center" }}>
+                  {" "}
+                  Material solicitado con éxito. Nos contactaremos con usted a
+                  la brevedad
+                </h4>
               </div>
-              <FormGroup row>
-                <Col>
-                  <Input
-                    type="text"
-                    name="first_name" 
-                    onChange={this.updateData}
-                    style={{ marginBottom: "0.5em" }}
-                    placeholder="Nombre"
-                    required
-                    disabled={requested}
-                  />
-                  <Input
-                    type="text"
-                    name="identity_document" 
-                    onChange={this.updateData}
-                    style={{ marginBottom: "0.5em" }}
-                    placeholder="CI"
-                    required
-                    disabled={requested}
-                  />
-                  <Input
-                    type="text"
-                    name="address" 
-                    onChange={this.updateData}
-                    style={{ marginBottom: "0.5em" }}
-                    placeholder="Dirección"
-                    required
-                    disabled={requested}
-                  />
-                  <Input
-                    type="text"
-                    name="phone_number" 
-                    onChange={this.updateData}
-                    style={{ marginBottom: "0.5em" }}
-                    placeholder="Teléfono"
-                    required
-                    disabled={requested}
-                  />
-                  <Input
-                    type="text"
-                    name="institution" 
-                    onChange={this.updateData}
-                    style={{ marginBottom: "0.5em" }}
-                    placeholder="Institución"
-                    required
-                    disabled={requested}
-                  />
-                </Col>
-                <Col>
-                  <Input
-                    type="text"
-                    name="last_name" 
-                    onChange={this.updateData}
-                    style={{ marginBottom: "0.5em" }}
-                    placeholder="Apellidos"
-                    required
-                    disabled={requested}
-                  />
-                  <Input
-                    type="text"
-                    name="profession" 
-                    onChange={this.updateData}
-                    style={{ marginBottom: "0.5em" }}
-                    placeholder="Actividad/Profesión"
-                    required
-                    disabled={requested}
-                  />
-                  <Input
-                    type="text"
-                    name="comuna" 
-                    onChange={this.updateData}
-                    style={{ marginBottom: "0.5em" }}
-                    placeholder="Comuna"
-                    required
-                    disabled={requested}
-                  />
-                  <Input
-                    type="email"
-                    name="email" 
-                    onChange={this.updateData}
-                    style={{ marginBottom: "0.5em" }}
-                    placeholder="Email"
-                    required
-                    disabled={requested}
-                  />
-                </Col>
-              </FormGroup>
-              <Button
-              onClick={this.onSubmit}
-              >
-                Solicitar
-              </Button>
-            </Form>
-            ):(
-            <div style={{paddingTop:'4vh'}}>
-              <FontAwesomeIcon
-              icon={faCheckSquare}
-              style={{ color:'var(--leit-pink)', fontSize:'40px', display: 'inline-block', width: '100%', textAlign:'center', marginBottom:'2vh'}}
-              />
-              <h4 style={{textAlign:'center'}}> Material solicitado con éxito. Nos contactaremos con usted a la brevedad</h4>
-            </div>
             )}
           </Col>
           <Col sm={4}>
@@ -262,7 +274,7 @@ var Requested = ({ list, removeRequestPhoto }) => (
     {list.length === 0 ? (
       <ListGroupItem disabled>No hay fotos solicitadas</ListGroupItem>
     ) : (
-      list.map( (el, i) => (
+      list.map((el, i) => (
         <ListGroupItem key={i}>
           <Row>
             <Col style={{ textAlign: "center" }}>
@@ -317,26 +329,26 @@ const styles = {
   title: {
     color: "var(--leit-pink)",
     textAlign: "center",
-    margin: "1em"
+    margin: "1em",
   },
   formTitle: {
     fontSize: "14px",
     fontWeight: "bold",
     padding: "0.5em",
     borderBottom: "1px solid rgb(210,214,218)",
-    marginBottom: "10px"
-  }
+    marginBottom: "10px",
+  },
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   requestedPhotos: state.webadmin.requestedPhotos,
-  requested: state.webadmin.requested
+  requested: state.webadmin.requested,
 });
 
-const mapActionsToProps = dispatch => ({
-  setRoute: route => dispatch(site_misc.setCurrentRoute(route)),
-  removeRequestPhoto: value => dispatch(webadmin.removeRequestPhoto(value)),
-  sendRequest: (photos,info) => dispatch(webadmin.sendRequest(photos,info))
+const mapActionsToProps = (dispatch) => ({
+  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
+  removeRequestPhoto: (value) => dispatch(webadmin.removeRequestPhoto(value)),
+  sendRequest: (photos, info) => dispatch(webadmin.sendRequest(photos, info)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(RequestPhoto);

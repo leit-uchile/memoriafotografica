@@ -29,24 +29,22 @@ class RegistrationAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        activation_link = RegisterLink(code=createHash(user.pk), state=1, user=user)
+        activation_link = RegisterLink(code=createHash(user.pk), status=1, user=user)
         activation_link.save()
         sendEmail(user.email, activation_link.code)
-        return Response({
-            # "user": UserSerializer(user, context=self.get_serializer_context()).data,
-            "user": UserSerializer(user).data,
-            "token": AuthToken.objects.create(user)
-        })
+        return Response(status=status.HTTP_200_OK)
 
 class RegisterLinkAPI(generics.GenericAPIView):
     """
     get:
     Get code status and user to activate
     """
+    permission_classes = [IsAuthenticated|ReadOnly,]
+
     def get_object(self, code):
         return RegisterLink.objects.filter(code=code)
+
     def get(self, request, *args, **kwargs):
-        print(request.query_params)
         try:
             if "code" in request.query_params:
                 register_link = self.get_object(request.query_params["code"])[0]
@@ -54,15 +52,21 @@ class RegisterLinkAPI(generics.GenericAPIView):
                 if code_status == 1:
                     user = User.objects.get(pk=register_link.user.id) 
                     user.is_active = 1
+                    user.public_profile = True
                     user.save()
                     register_link.status = 0
                     register_link.save()
-                    return Response(status=status.HTTP_200_OK)
+                    return Response({
+                        "user": UserSerializer(user).data,
+                        "token": AuthToken.objects.create(user)
+                        },
+                        status=status.HTTP_200_OK
+                    )
                 return Response(status=status.HTTP_304_NOT_MODIFIED)
             else:
                 raise Exception
         except Exception as e:
-            print(e)
+            print("Exception at RegisterLink",e)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 

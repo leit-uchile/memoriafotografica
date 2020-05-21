@@ -11,7 +11,7 @@ import {
   Crosshair,
   RadialChart,
   Hint,
-  DiscreteColorLegend
+  DiscreteColorLegend,
 } from "react-vis";
 import { EXTENDED_DISCRETE_COLOR_RANGE } from "react-vis/dist/theme";
 import { Statistic } from "semantic-ui-react";
@@ -19,19 +19,18 @@ import { curveCatmullRom } from "d3-shape";
 import { metrics } from "../../actions";
 import { connect } from "react-redux";
 import { userRolTranslation, userTypeTranslation } from "../User/utils";
-import { category } from "../../actions/gallery_api";
 
 const PhotoCountChart = ({ rawData, data2 }) => {
   const mapped = rawData
-    ? rawData.map(cnt => ({
+    ? rawData.map((cnt) => ({
         x: new Date(cnt.date_created).getTime(),
-        y: cnt.created_count
+        y: cnt.created_count,
       }))
     : [];
   const mapped2 = data2
-    ? data2.map(cnt => ({
+    ? data2.map((cnt) => ({
         x: new Date(cnt.date_created).getTime(),
-        y: cnt.created_count
+        y: cnt.created_count,
       }))
     : [];
 
@@ -58,27 +57,28 @@ const PhotoCountChart = ({ rawData, data2 }) => {
       <XAxis tickLabelAngle={-75} />
       <YAxis />
       <VerticalBarSeries
-      barWidth={0.5} 
-      opacity={0.5}
-      color={'blue'}
-      data={mapped} />
+        barWidth={0.5}
+        opacity={0.5}
+        color={"blue"}
+        data={mapped}
+      />
       <LineSeries
-        color={'blue'}
+        color={"blue"}
         curve={curveCatmullRom.alpha(0.5)}
         data={mapped}
         onNearestX={onNearestX}
       />
-      <VerticalBarSeries 
-      color={'green'}
-      barWidth={0.5}
-      opacity={0.5}
-      data={mapped2} />
+      <VerticalBarSeries
+        color={"green"}
+        barWidth={0.5}
+        opacity={0.5}
+        data={mapped2}
+      />
       <LineSeries
-        color={'green'}
+        color={"green"}
         curve={curveCatmullRom.alpha(0.5)}
         data={mapped2}
         onNearestX={onNearestX}
-
       />
       <Crosshair
         values={crossHair.crosshairValues}
@@ -87,8 +87,7 @@ const PhotoCountChart = ({ rawData, data2 }) => {
           if (value) {
             return {
               title: "Fecha",
-              value: new Date(value.x).toLocaleDateString()
-            
+              value: new Date(value.x).toLocaleDateString(),
             };
           }
         }}
@@ -102,11 +101,10 @@ const PhotoCountChart = ({ rawData, data2 }) => {
         }}
       />
     </FlexibleWidthXYPlot>
-    
   );
 };
 
-const DonutChart = ({ data2, rawData, crossHairTitle, crossHairValue }) => {
+const DonutChart = ({ rawData, crossHairTitle, crossHairValue }) => {
   const [hintValue, setHintValue] = useState({ value: false });
 
   const mapped = rawData
@@ -114,24 +112,16 @@ const DonutChart = ({ data2, rawData, crossHairTitle, crossHairValue }) => {
         angle: el.total,
         title: el.name,
         total: el.total,
-        color: EXTENDED_DISCRETE_COLOR_RANGE[key]
+        color: EXTENDED_DISCRETE_COLOR_RANGE[key],
       }))
     : [];
-  const mapped2 = data2
-    ? data2.map((el, key) => ({
-        angle: el.total,
-        title: el.name,
-        total: el.total,
-        color: EXTENDED_DISCRETE_COLOR_RANGE[key]
-      }))
-    : [];  
 
   const { value } = hintValue;
 
   const ITEMS = rawData
     ? rawData.map((el, key) => ({
         title: el.name,
-        color: EXTENDED_DISCRETE_COLOR_RANGE[key]
+        color: EXTENDED_DISCRETE_COLOR_RANGE[key],
       }))
     : [];
 
@@ -142,8 +132,8 @@ const DonutChart = ({ data2, rawData, crossHairTitle, crossHairValue }) => {
         innerRadius={80}
         radius={100}
         data={mapped}
-        onValueMouseOver={v => setHintValue({ value: v })}
-        onSeriesMouseOut={v => setHintValue({ value: false })}
+        onValueMouseOver={(v) => setHintValue({ value: v })}
+        onSeriesMouseOut={(v) => setHintValue({ value: false })}
         width={200}
         height={200}
         padAngle={0.04}
@@ -153,10 +143,10 @@ const DonutChart = ({ data2, rawData, crossHairTitle, crossHairValue }) => {
         {value !== false && (
           <Hint
             value={value}
-            format={el => {
+            format={(el) => {
               return [
                 { title: crossHairTitle, value: el.title },
-                { title: crossHairValue, value: el.total }
+                { title: crossHairValue, value: el.total },
               ];
             }}
           />
@@ -225,7 +215,7 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
           <h2>Fotos y Comentarios subidos por día</h2>
           <PhotoCountChart
             rawData={general ? general.count_photos_by_date : []}
-            data2 = {general ? general.count_comments_by_date : []}
+            data2={general ? general.count_comments_by_date : []}
           />
         </Col>
       </Row>
@@ -239,9 +229,9 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
           <DonutChart
             rawData={
               general
-                ? general.count_user_role.map(cnt => ({
+                ? general.count_user_role.map((cnt) => ({
                     total: cnt.total,
-                    name: userRolTranslation(cnt.rol_type)
+                    name: userRolTranslation(cnt.rol_type),
                   }))
                 : []
             }
@@ -253,9 +243,9 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
           <DonutChart
             rawData={
               general
-                ? general.count_user_type.map(cnt => ({
+                ? general.count_user_type.map((cnt) => ({
                     total: cnt.total,
-                    name: userTypeTranslation(cnt.user_type)
+                    name: userTypeTranslation(cnt.user_type),
                   }))
                 : []
             }
@@ -270,9 +260,9 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
           <DonutChart
             rawData={
               general
-                ? general.count_popular_categories.map(cnt => ({
+                ? general.count_popular_categories.map((cnt) => ({
                     total: cnt.num_photos,
-                    name: cnt.title
+                    name: cnt.title,
                   }))
                 : []
             }
@@ -285,10 +275,9 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
           <DonutChart
             rawData={
               general
-                ? general.count_popular_metadata.map(cnt => ({
+                ? general.count_popular_metadata.map((cnt) => ({
                     total: cnt.num_photos,
-                    name: cnt.value
-
+                    name: cnt.value,
                   }))
                 : []
             }
@@ -297,17 +286,16 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
           />
         </Col>
       </Row>
-     
     </Container>
   );
 };
 
-const mapStateToProps = state => ({
-  stats: state.metrics
+const mapStateToProps = (state) => ({
+  stats: state.metrics,
 });
 
-const mapActionsToProps = dispatch => ({
-  loadGeneralStats: () => dispatch(metrics.getGeneralStats())
+const mapActionsToProps = (dispatch) => ({
+  loadGeneralStats: () => dispatch(metrics.getGeneralStats()),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Landing);

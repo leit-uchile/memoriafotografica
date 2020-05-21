@@ -3,7 +3,7 @@ import RegisterLoginInfo from "./RegisterLoginInfo";
 import { connect } from "react-redux";
 import { user } from "../../actions";
 import { Button, Container, Row, Col } from "reactstrap";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import StepWizard from "react-step-wizard";
 import { LeitSpinner } from "../../components";
 
@@ -36,8 +36,8 @@ const FailedRegistration = (props) => (
   </Container>
 );
 
-const RegisterSent = ({ isAuthenticated, goToStep, errors }) => {
-  if (isAuthenticated) {
+const RegisterSent = ({ registerSuccess, goToStep, errors }) => {
+  if (registerSuccess) {
     goToStep(4);
   }
   if (errors.length !== 0) {
@@ -59,7 +59,7 @@ const RegisterSent = ({ isAuthenticated, goToStep, errors }) => {
   );
 };
 
-const SuccessfulRegistration = (props) => (
+const SuccessfulRegistration = () => (
   <Container style={{ textAlign: "center", marginTop: "2em" }}>
     <Row>
       <Col>
@@ -71,6 +71,9 @@ const SuccessfulRegistration = (props) => (
         <p style={{ marginTop: "2em" }}>
           Por favor confirma tu correo electronico
         </p>
+        <Button tag={Link} to="/" color="primary">
+          Volver a inicio
+        </Button>
       </Col>
     </Row>
   </Container>
@@ -141,7 +144,7 @@ class Register extends Component {
           cache={this.state.loginInfo}
         />
         <RegisterSent
-          isAuthenticated={this.props.isAuthenticated}
+          registerSuccess={this.props.registerSuccess}
           errors={this.props.errors}
         />
         <FailedRegistration back={this.volver} />
@@ -161,6 +164,7 @@ const mapStateToProps = (state) => {
   return {
     errors,
     isAuthenticated: state.user.isAuthenticated,
+    registerSuccess: state.user.registerSuccess,
   };
 };
 
