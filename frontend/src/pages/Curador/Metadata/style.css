@@ -64,3 +64,9 @@
 .metadata-classifier .col-wrapper.no-category .drop-wrapper{
   background-color: indianred;
 }
+
+.curador-metadata-search .btn-group > button, .curador-metadata-search .btn-group:last-child, .curador-metadata-search .btn-group > div, .curador-metadata-search .btn-group > select {
+  display: inline-block;
+  width: auto;
+  font-size: 1em;
+}

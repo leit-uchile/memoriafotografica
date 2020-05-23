@@ -11,6 +11,8 @@ import {
   EMPTY_METADATA_BATCH,
   UPDATED_METADATA,
   UPDATED_METADATA_ERROR,
+  RECOVERED_CURADOR_TAGS,
+  EMPTY_CURADOR_TAGS,
 } from "../actions/types";
 
 const initialState = {
@@ -22,6 +24,8 @@ const initialState = {
   all_iptcs: [],
   batch: {count: 0, results: []},
   update_status: "",
+  // Used in curador
+  general_tags: []
 };
 
 export default function metadata(state = initialState, action) {
@@ -66,6 +70,10 @@ export default function metadata(state = initialState, action) {
       return {...state, update_status: "success "+action.data}
     case UPDATED_METADATA_ERROR:
       return {...state, update_status: "failed "+action.data}
+    case RECOVERED_CURADOR_TAGS:
+      return {...state, general_tags: action.data}
+    case EMPTY_CURADOR_TAGS:
+      return {...state, general_tags: []}
     default:
       return state;
   }

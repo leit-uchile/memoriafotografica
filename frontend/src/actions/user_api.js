@@ -81,7 +81,7 @@ export const register = (
         if (res.status < 500) {
           if (res.status === 200) {
             dispatch({ type: REGISTRATION_SUCCESS });
-            return res.data;
+            return { status: res.status};
           } else{
             return res.json().then(data => {
               return { status: res.status, data };
@@ -94,7 +94,9 @@ export const register = (
         }
       })
       .then(res => {
-        if (res.status === 403 || res.status === 401) {
+        if (res.status === 200){
+          return
+        }else if (res.status === 403 || res.status === 401) {
           dispatch({ type: AUTH_ERROR, data: res.data });
           throw res.data;
         } else {

@@ -13,6 +13,8 @@ import {
   EMPTY_METADATA_BATCH,
   UPDATED_METADATA,
   UPDATED_METADATA_ERROR,
+  RECOVERED_CURADOR_TAGS,
+  EMPTY_CURADOR_TAGS,
 } from "./types";
 
 /**
@@ -108,10 +110,10 @@ export const resetNewMetadataIds = () => (dispatch, getState) =>
   dispatch({ type: RESET_METADATA_STORE, data: null });
 
 /**
- * Search metadata by name using a token if available
+ * Search metadata by name using a token if available for header searchbar
  * @param {String} query
  */
-export const searchMetadataByValue = (query, limit=10) => (dispatch, getState) => {
+export const searchMetadataByValueSB = (query, limit=10) => (dispatch, getState) => {
   const success_func = response => {
     const r = response;
     if (r.status === 200) {
@@ -130,7 +132,6 @@ export const searchMetadataByValue = (query, limit=10) => (dispatch, getState) =
     fetch(`/api/metadata/?search=${query}&limit=${limit}`).then(success_func);
   }
 };
-
 
 /**
  * Recover all tags
@@ -212,6 +213,10 @@ export const getUnapprovedMetadataBatch = size => (dispatch, getState) => {
   });
 }
 
+/**
+ * Update metadata
+ * @param {Object} metadata 
+ */
 export const putMetadata = metadata => (dispatch, getState) => {
   let headers = {
     "Content-Type": "application/json",
@@ -231,3 +236,30 @@ export const putMetadata = metadata => (dispatch, getState) => {
     }
   });
 }
+
+/**
+ * Search metadata by name using a token if available for general purpose
+ * 
+ * (Yes this is a copy of the other search method; TODO: find a better solution)
+ * @param {String} query
+ */
+export const searchMetadataByValueGeneral = (query, limit=10) => (dispatch, getState) => {
+  const success_func = response => {
+    const r = response;
+    if (r.status === 200) {
+      r.json().then(data =>
+        dispatch({ type: RECOVERED_CURADOR_TAGS, data: data })
+      );
+    } else {
+      dispatch({ type: EMPTY_CURADOR_TAGS });
+    }
+  };
+
+  if (getState().user.isAuthenticated) {
+    let headers = { Authorization: "Token " + getState().user.token };
+    fetch(`/api/metadata/?search=${query}&limit=${limit}`, { headers }).then(success_func);
+  } else {
+    fetch(`/api/metadata/?search=${query}&limit=${limit}`).then(success_func);
+  }
+};
+
