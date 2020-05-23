@@ -7,6 +7,10 @@ import {
   REQUESTPHOTO,
   REMOVE_REQUESTPHOTO,
   SEND_REQUESTPHOTO,
+  CONTACT_SUCCESS,
+  CONTACT_ERROR,
+  PHOTOREQUESTS_RECOVERED,
+  PHOTOREQUESTS_ERROR
 } from "./types";
 import { setAlert } from "./site_misc";
 
@@ -89,3 +93,56 @@ export const sendRequest = (photos, info) => {
     });
   };
 };
+
+/**
+ * Recover all Photo Request
+ */
+export const getRequests = () => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token
+  };
+  return fetch("/api/requests/photos/all/", {
+    method: "GET",
+    headers: headers
+  }).then(function(response) {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then(data => {
+        dispatch({ type: PHOTOREQUESTS_RECOVERED, data: data });
+      });
+    } else {
+      dispatch({ type: PHOTOREQUESTS_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
+export const contactUs = (formData) => {
+  return (dispatch, getState) => {
+    let headers = { "Content-Type": "application/json" };
+    let jsonthing = JSON.stringify({
+      first_name: formData.name,
+      last_name: formData.lastname,
+      phone_number: formData.phone,
+      email: formData.email,
+      message: formData.message,
+    });
+    return fetch(`/api//`, {
+      method: "POST",
+      headers: headers,
+      body: jsonthing,
+    }).then(function (response) {
+      const r = response;
+      if (r.status === 201) {
+        return r.json().then((data) => {
+            dispatch({ type: CONTACT_SUCCESS, data: data })
+        });
+      } else {
+        dispatch(setAlert("Hubo un error al enviar su consulta", "warning"));
+        dispatch({ type: CONTACT_ERROR, data: r.data });
+        throw r.data;
+      }
+    });
+  };
+}
