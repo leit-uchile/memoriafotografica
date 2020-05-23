@@ -136,6 +136,8 @@ class MetadataListAPI(generics.GenericAPIView):
     """
     get:
     Get a list of ALL metadata.
+    Permits search queries using the search and limit parameter
+    Permits pagination if page_size and page are on the query parameters
 
     post:
     Create a new metadata.
@@ -168,6 +170,8 @@ class MetadataListAPI(generics.GenericAPIView):
             serializer_class = MetadataSerializer
             serializer = MetadataSerializer(metadata, many=True)
         
+        if "page" in request.query_params and "page_size" in request.query_params:
+            return self.get_paginated_response(self.paginate_queryset(serializer.data))
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):

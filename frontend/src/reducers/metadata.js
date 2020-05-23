@@ -25,7 +25,7 @@ const initialState = {
   batch: {count: 0, results: []},
   update_status: "",
   // Used in curador
-  general_tags: []
+  general_tags: {count: 0, results: []}
 };
 
 export default function metadata(state = initialState, action) {
@@ -73,7 +73,7 @@ export default function metadata(state = initialState, action) {
     case RECOVERED_CURADOR_TAGS:
       return {...state, general_tags: action.data}
     case EMPTY_CURADOR_TAGS:
-      return {...state, general_tags: []}
+      return {...state, general_tags: {count: 0, results: []}}
     default:
       return state;
   }

@@ -2,15 +2,15 @@ import React, { useState, useEffect } from "react";
 import {
   Pagination as BTPagination,
   PaginationItem,
-  PaginationLink
+  PaginationLink,
 } from "reactstrap";
 
 /**
  * Generic pagination
- * 
+ *
  * Manage the display and transition between pages
  * using a Function that sets an specific page
- * 
+ *
  * @param {Number} maxPage lastPage
  * @param {Number} page current page
  * @param {Function} setStatePage parent function that calls the API
@@ -28,9 +28,9 @@ const Pagination = ({
   label = "generic",
   displayFirst = true,
   displayLast = true,
-  displayRange = 5
+  displayRange = 5,
 }) => {
-  let changePage = direction => {
+  let changePage = (direction) => {
     if (direction < 0) {
       if (page > 0) {
         setTimeout(() => setStatePage(page - 1), 300);
@@ -43,7 +43,8 @@ const Pagination = ({
     goTop();
   };
 
-  let setPage = number => {
+  let setPage = (number) => {
+    console.log("setPage", number);
     setTimeout(() => setStatePage(number), 300);
     goTop();
   };
@@ -51,7 +52,7 @@ const Pagination = ({
   const [range, setRange] = useState({
     leftPage: [],
     rightPage: [],
-    max: (displayRange - 1) / 2
+    max: (displayRange - 1) / 2,
   });
 
   useEffect(() => {
@@ -84,7 +85,7 @@ const Pagination = ({
       rightPages.push(i);
     }
 
-    setRange(r => ({ ...r, leftPage: leftPages, rightPage: rightPages }));
+    setRange((r) => ({ ...r, leftPage: leftPages, rightPage: rightPages }));
   }, [page, maxPage, range.max]);
 
   return (
@@ -130,7 +131,7 @@ const goTop = () =>
   window.scrollTo({
     top: 0,
     left: 0,
-    behavior: "smooth"
+    behavior: "smooth",
   });
 
 export default Pagination;
