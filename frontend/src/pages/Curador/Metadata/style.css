@@ -65,8 +65,20 @@
   background-color: indianred;
 }
 
-.curador-metadata-search .btn-group > button, .curador-metadata-search .btn-group:last-child, .curador-metadata-search .btn-group > div, .curador-metadata-search .btn-group > select {
+.curador-metadata-search .btn-group > button, .curador-metadata-search .btn-group:last-child, .curador-metadata-search .btn-group input, .curador-metadata-search .btn-group > select {
   display: inline-block;
   width: auto;
   font-size: 1em;
+}
+
+.curador-metadata-search .btn-group button{
+  vertical-align: baseline;
+}
+
+.curador-metadata-search .btn-group select, .curador-metadata-search .btn-group input {
+  border-radius: 0;
+}
+
+.curador-metadata-search .btn-group .leftSelect {
+  border-radius: 4px 0 0 4px;
 }

@@ -13,7 +13,7 @@ import {
 } from "reactstrap";
 
 const Metadata = () => {
-  const [activeTab, setActiveTab] = useState("1");
+  const [activeTab, setActiveTab] = useState("2");
 
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -51,9 +51,7 @@ const Metadata = () => {
           </Row>
         </TabPane>
         <TabPane tabId="2">
-          <Row>
-            <Modify />
-          </Row>
+          <Modify />
         </TabPane>
       </TabContent>
     </div>

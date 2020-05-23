@@ -26,23 +26,23 @@ import {
  * On success saves the metadata on store.metadata.newIDs
  * On failure saves reason and name on store.metadata.failedCreations
  */
-export const createMetadataByName = name => (dispatch, getState) => {
+export const createMetadataByName = (name) => (dispatch, getState) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token
+    Authorization: "Token " + getState().user.token,
   };
 
   // NOTE: metadata defaults to 1
   fetch("/api/metadata/", {
     method: "POST",
     headers: headers,
-    body: JSON.stringify({ value: name, metadata: 1 })
-  }).then(function(response) {
+    body: JSON.stringify({ value: name, metadata: 1 }),
+  }).then(function (response) {
     const r = response;
     if (r.status === 201) {
-      r.json().then(data => dispatch({ type: CREATED_METADATA, data: data }));
+      r.json().then((data) => dispatch({ type: CREATED_METADATA, data: data }));
     } else {
-      r.json().then(data =>
+      r.json().then((data) =>
         dispatch({ type: CREATED_METADATA_ERROR, data: { data, name: name } })
       );
     }
@@ -54,7 +54,7 @@ export const createMetadataByName = name => (dispatch, getState) => {
  * doing multiple calls to the API
  * @param {Array} nameList
  */
-export const createMultipleMetas = nameList => (dispatch, getState) => {
+export const createMultipleMetas = (nameList) => (dispatch, getState) => {
   // Failsafe
   if (nameList.length === 0) {
     return;
@@ -62,7 +62,7 @@ export const createMultipleMetas = nameList => (dispatch, getState) => {
   // Set process in motion
   dispatch({ type: CREATING_METADATA, data: nameList.length });
 
-  const funcs = nameList.map(name => () =>
+  const funcs = nameList.map((name) => () =>
     createMetadataByName(name)(dispatch, getState)
   );
 
@@ -84,19 +84,19 @@ export const createMultipleMetas = nameList => (dispatch, getState) => {
 export const createMetadata = (name, iptcId) => (dispatch, getState) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token
+    Authorization: "Token " + getState().user.token,
   };
 
   fetch("/api/metadata/", {
     method: "POST",
     headers: headers,
-    body: JSON.stringify({ value: name, metadata: iptcId })
-  }).then(function(response) {
+    body: JSON.stringify({ value: name, metadata: iptcId }),
+  }).then(function (response) {
     const r = response;
     if (r.status === 200) {
-      r.json().then(data => dispatch({ type: CREATED_METADATA, data: data }));
+      r.json().then((data) => dispatch({ type: CREATED_METADATA, data: data }));
     } else {
-      r.json().then(data =>
+      r.json().then((data) =>
         dispatch({ type: CREATED_METADATA_ERROR, data: { data, name: name } })
       );
     }
@@ -113,13 +113,14 @@ export const resetNewMetadataIds = () => (dispatch, getState) =>
  * Search metadata by name using a token if available for header searchbar
  * @param {String} query
  */
-export const searchMetadataByValueSB = (query, limit=10) => (dispatch, getState) => {
-  const success_func = response => {
+export const searchMetadataByValueSB = (query, limit = 10) => (
+  dispatch,
+  getState
+) => {
+  const success_func = (response) => {
     const r = response;
     if (r.status === 200) {
-      r.json().then(data =>
-        dispatch({ type: RECOVERED_TAGS, data: data })
-      );
+      r.json().then((data) => dispatch({ type: RECOVERED_TAGS, data: data }));
     } else {
       dispatch({ type: EMPTY_TAGS });
     }
@@ -127,7 +128,9 @@ export const searchMetadataByValueSB = (query, limit=10) => (dispatch, getState)
 
   if (getState().user.isAuthenticated) {
     let headers = { Authorization: "Token " + getState().user.token };
-    fetch(`/api/metadata/?search=${query}&limit=${limit}`, { headers }).then(success_func);
+    fetch(`/api/metadata/?search=${query}&limit=${limit}`, { headers }).then(
+      success_func
+    );
   } else {
     fetch(`/api/metadata/?search=${query}&limit=${limit}`).then(success_func);
   }
@@ -140,10 +143,10 @@ export const tags = () => (dispatch, getState) => {
   let headers = { "Content-Type": "application/json" };
 
   return fetch("/api/metadata/", { method: "GET", headers: headers }).then(
-    function(response) {
+    function (response) {
       const r = response;
       if (r.status === 200) {
-        return r.json().then(data => {
+        return r.json().then((data) => {
           dispatch({ type: RECOVERED_TAGS, data: data });
         });
       } else {
@@ -154,7 +157,6 @@ export const tags = () => (dispatch, getState) => {
   );
 };
 
-
 /**
  * Recover all IPTC Tags
  */
@@ -163,11 +165,11 @@ export const iptcs = () => (dispatch, getState) => {
 
   return fetch("/api/iptc-keyword/", {
     method: "GET",
-    headers: headers
-  }).then(function(response) {
+    headers: headers,
+  }).then(function (response) {
     const r = response;
     if (r.status === 200) {
-      return r.json().then(data => {
+      return r.json().then((data) => {
         dispatch({ type: RECOVERED_IPTCS, data: data });
       });
     } else {
@@ -177,11 +179,13 @@ export const iptcs = () => (dispatch, getState) => {
   });
 };
 
-export const getMetadataNames = ids => dispatch => {
-  return fetch(`/api/metadata/?ids=${ids.toString()}`).then(function(response) {
+export const getMetadataNames = (ids) => (dispatch) => {
+  return fetch(`/api/metadata/?ids=${ids.toString()}`).then(function (
+    response
+  ) {
     const r = response;
     if (r.status === 200) {
-      return r.json().then(data => {
+      return r.json().then((data) => {
         dispatch({ type: LOADED_CUSTOM_METADATA, data: data });
       });
     } else {
@@ -194,60 +198,67 @@ export const getMetadataNames = ids => dispatch => {
  * Get one page with unapproved metadata
  * @param {Number} size of batch
  */
-export const getUnapprovedMetadataBatch = size => (dispatch, getState) => {
+export const getUnapprovedMetadataBatch = (size) => (dispatch, getState) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token
+    Authorization: "Token " + getState().user.token,
   };
 
   fetch(`/api/metadata/batch/?page=1&page_size=${size}`, {
     method: "GET",
     headers: headers,
-  }).then(function(response) {
+  }).then(function (response) {
     const r = response;
     if (r.status === 200) {
-      r.json().then(data => dispatch({ type: RECOVERED_METADATA_BATCH, data: data }));
+      r.json().then((data) =>
+        dispatch({ type: RECOVERED_METADATA_BATCH, data: data })
+      );
     } else {
-      dispatch({ type: EMPTY_METADATA_BATCH})
+      dispatch({ type: EMPTY_METADATA_BATCH });
     }
   });
-}
+};
 
 /**
  * Update metadata
- * @param {Object} metadata 
+ * @param {Object} metadata
  */
-export const putMetadata = metadata => (dispatch, getState) => {
+export const putMetadata = (metadata) => (dispatch, getState) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token
+    Authorization: "Token " + getState().user.token,
   };
 
   fetch(`/api/metadata/${metadata.id}/`, {
     method: "PUT",
     headers: headers,
-    body: JSON.stringify(metadata)
-  }).then(function(response) {
+    body: JSON.stringify(metadata),
+  }).then(function (response) {
     const r = response;
     if (r.status === 206) {
-      r.json().then(data => dispatch({ type: UPDATED_METADATA, data: metadata.id}));
+      r.json().then((data) =>
+        dispatch({ type: UPDATED_METADATA, data: metadata.id })
+      );
     } else {
-      dispatch({ type: UPDATED_METADATA_ERROR, data: metadata.id})
+      dispatch({ type: UPDATED_METADATA_ERROR, data: metadata.id });
     }
   });
-}
+};
 
 /**
  * Search metadata by name using a token if available for general purpose
- * 
+ *
  * (Yes this is a copy of the other search method; TODO: find a better solution)
  * @param {String} query
  */
-export const searchMetadataByValueGeneral = (query, limit=10) => (dispatch, getState) => {
-  const success_func = response => {
+export const searchMetadataByValueGeneral = (query, page, page_size) => (
+  dispatch,
+  getState
+) => {
+  const success_func = (response) => {
     const r = response;
     if (r.status === 200) {
-      r.json().then(data =>
+      r.json().then((data) =>
         dispatch({ type: RECOVERED_CURADOR_TAGS, data: data })
       );
     } else {
@@ -255,11 +266,8 @@ export const searchMetadataByValueGeneral = (query, limit=10) => (dispatch, getS
     }
   };
 
-  if (getState().user.isAuthenticated) {
-    let headers = { Authorization: "Token " + getState().user.token };
-    fetch(`/api/metadata/?search=${query}&limit=${limit}`, { headers }).then(success_func);
-  } else {
-    fetch(`/api/metadata/?search=${query}&limit=${limit}`).then(success_func);
-  }
+  let headers = { Authorization: "Token " + getState().user.token };
+  fetch(`/api/metadata/?search=${query}&page=${page}&page_size=${page_size}`, { headers }).then(
+    success_func
+  );
 };
-

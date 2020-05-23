@@ -15,27 +15,20 @@ import { metadata } from "../../../../actions";
 import { Pagination } from "../../../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import Autosuggest from "react-autosuggest";
 
-const Modify = ({ metadata, loadMeta, iptcs }) => {
-  const [searchState, setSearchState] = useState({
-    value: "",
-    suggestions: [],
-  });
-
-  const inputProps = {
-    placeholder: "Buscar metadata por nombre",
-    value: searchState.value,
-    onChange: (e, { newValue }) => setSearchState((s) => ({ value: newValue })),
-  };
-
-  const [pagination, setPagination] = useState({ page: 0, page_size: 20 });
+const Modify = ({ metadata, iptcs, searchMeta }) => {
+  const [searchState, setSearchState] = useState("");
+  const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
+  const [dismiss, setDismiss] = useState(false);
 
   useEffect(() => {
-    loadMeta();
-  }, []);
+    searchMeta(searchState, pagination.page + 1, pagination.page_size);
+  }, [pagination, searchState]);
 
-  const [dismiss, setDismiss] = useState(false);
+  const maxPage = Math.floor(metadata.count / pagination.page_size);
+  const setPage = (p) => {
+    setPagination((pag) => ({ ...pag, page: p }));
+  };
 
   return (
     <Fragment>
@@ -50,26 +43,35 @@ const Modify = ({ metadata, loadMeta, iptcs }) => {
             <Button onClick={() => setDismiss(false)}>¿Ayuda?</Button>
             <Input type="select" name="selectSingle" id="selectOperation">
               <option value="0">Seleccionar operacion</option>
-              <option value="Eliminar">Eliminar</option>
-              <option value="Modificar">Modificar</option>
-              <option value="Unir">Unir</option>
+              <option value="Del">Eliminar</option>
+              <option value="Mod">Modificar</option>
+              <option value="Join">Unir/Consolidar</option>
             </Input>
             <Button>Ir</Button>
           </ButtonGroup>
         </Col>
         <Col className="curador-metadata-search">
           <ButtonGroup className="mr-auto">
-            <Autosuggest
-              multiSection={false}
-              suggestions={searchState.suggestions}
-              onSuggestionsFetchRequested={() => {}} //this.onSuggestionsFetchRequested}
-              onSuggestionsClearRequested={() => {}} //this.onSuggestionsClearRequested}
-              onSuggestionSelected={() => {}} //this.onSuggestionSelected}
-              getSuggestionValue={(suggestion) => suggestion.value}
-              renderSuggestion={(suggestion) => <span>{suggestion.value}</span>}
-              renderSectionTitle={(section) => <strong>{section.title}</strong>}
-              getSectionSuggestions={(section) => section.suggestions}
-              inputProps={inputProps}
+            <Input
+              type="select"
+              className="leftSelect"
+              onChange={(e) =>
+                setPagination({ page: 0, page_size: Number(e.target.value) })
+              }
+            >
+              <option value="12">12 por p&aacute;gina</option>
+              <option value="25">25 por p&aacute;gina</option>
+              <option value="50">50 por p&aacute;gina</option>
+            </Input>
+            <Input
+              type="text"
+              name="search-curador"
+              placeholder="Filtrar por nombre"
+              value={searchState}
+              onChange={(e) => {
+                setPagination((p) => ({ ...p, page: 0 }));
+                setSearchState(e.target.value);
+              }}
             />
             <Button
               type="button"
@@ -118,16 +120,26 @@ const Modify = ({ metadata, loadMeta, iptcs }) => {
       ) : null}
       <Row style={{ marginTop: "1em" }}>
         <Col>
-          <MetadataList metadata={metadata} iptcs={iptcs ? iptcs : []} />
-          <Pagination
-            maxPage={4}
-            page={pagination.page}
-            setStatePage={setPagination}
-            size="md"
-            label="metadata-pagination"
-            displayFirst
-            displayLast
+          <MetadataList
+            metadata={metadata.results}
+            iptcs={iptcs ? iptcs : []}
+            getSelection={(v) => {
+              console.log(Object.keys(v).filter((el) => el.includes("nb-")));
+            }}
           />
+          {metadata.count === 0 ? (
+            "No hay resultados disponibles"
+          ) : (
+            <Pagination
+              maxPage={maxPage}
+              page={pagination.page}
+              setStatePage={setPage}
+              size="md"
+              label="metadata-pagination"
+              displayFirst
+              displayLast
+            />
+          )}
         </Col>
       </Row>
     </Fragment>
@@ -135,12 +147,14 @@ const Modify = ({ metadata, loadMeta, iptcs }) => {
 };
 
 const mapStateToProps = (state) => ({
-  metadata: state.metadata.all_tags,
+  metadata: state.metadata.general_tags,
   iptcs: state.metadata.all_iptcs,
 });
 
 const mapActionsToProps = (dispatch) => ({
   loadMeta: () => dispatch(metadata.tags()),
+  searchMeta: (search, page, page_size) =>
+    dispatch(metadata.searchMetadataByValueGeneral(search, page, page_size)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Modify);
