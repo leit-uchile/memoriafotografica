@@ -243,7 +243,7 @@ const styles = {
     width: "100%",
     height: "auto",
     border: "1px dashed rgb(156,158,159)",
-    boxShadow: "2px 2px 4px rgb(156,158,159)"
+    boxShadow: "#ddd 3px 5px 10px"
   }
 };
 
