@@ -3,10 +3,23 @@
 }
 
 .home-background{
-  background-image: url("/assets/frontis_background.jpg");
+  position: relative;
+  min-height: 75vh;
+}
+
+.home-background::before {
+  position: absolute;
+  background-image: url(/assets/frontis_background.jpg);
   background-color: var(--leit-modal-bg);
   background-blend-mode: luminosity;
-  min-height: 75vh;
+  height: 100%;
+  width: 100%;
+  content: "";
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: blur(2px);
 }
 
 .home-gallery-menu {

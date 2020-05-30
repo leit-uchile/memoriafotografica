@@ -211,9 +211,11 @@
   color: #777;
 }
 
+/* General size distribution */
+
 .home-search .react-autosuggest__container {
   display: inline-block;
-  width: 65%;
+  width: 75%;
 }
 
 .home-search .react-autosuggest__suggestions-container--open{
@@ -222,7 +224,7 @@
 
 .home-search .react-autosuggest__container{
   display: inline-block;
-  width: 65%;
+  width: 75%;
 }
 
 
@@ -233,7 +235,7 @@
 
 
 .home-search .search-iptc-selector{
-  width: 25%;
+  width: fit-content;
   font-size: 1.1em;
   display: inline-block;
   background-color: var(--leit-pink);
@@ -244,7 +246,7 @@
 }
 
 .home-search .search-button{
-  width: 10%;
+  width: fit-content;
   display: inline-block;
   font-size: 1.1em;
   vertical-align: initial;
