@@ -21,8 +21,6 @@ const Modify = ({
   searchMeta,
   metadataHelp,
   setHelpDisclosure,
-  deleteMeta,
-  putMeta,
 }) => {
   const [searchState, setSearchState] = useState("");
   const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
@@ -45,6 +43,11 @@ const Modify = ({
     }
   };
 
+  // Force effect reload by updating the pagination state
+  const doReload = (randomValue) => {
+    setPagination((p) => ({ ...p, r: randomValue }));
+  };
+
   return (
     <Fragment>
       <Row>
@@ -53,7 +56,7 @@ const Modify = ({
         </Col>
       </Row>
       <Row>
-        <Col className="curador-metadata-search">
+        <Col sm={6} className="curador-metadata-search">
           <ButtonGroup>
             <Button onClick={() => setDismiss(false)}>¿Ayuda?</Button>
             <Input
@@ -79,14 +82,13 @@ const Modify = ({
               op={operation.op}
               selected={selected}
               iptcs={iptcs}
-              del={deleteMeta}
-              mod={putMeta}
               open={operation.open}
               toggle={toggleModal}
+              doReload={doReload}
             />
           </ButtonGroup>
         </Col>
-        <Col className="curador-metadata-search">
+        <Col sm={6} className="curador-metadata-search">
           <ButtonGroup className="mr-auto">
             <Input
               type="select"
@@ -177,12 +179,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapActionsToProps = (dispatch) => ({
-  loadMeta: () => dispatch(metadata.tags()),
   searchMeta: (search, page, page_size) =>
     dispatch(metadata.searchMetadataByValueGeneral(search, page, page_size)),
   setHelpDisclosure: (val) => dispatch(site_misc.setMetadataHelp(val)),
-  putMeta: (meta) => dispatch(metadata.putMetadata(meta)),
-  deleteMeta: (id) => dispatch(metadata.deleteMetadata(id)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Modify);
