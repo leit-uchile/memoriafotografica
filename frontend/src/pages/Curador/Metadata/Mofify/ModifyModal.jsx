@@ -24,6 +24,7 @@ const ModifyModal = ({
   errors,
   deleteMeta,
   putMeta,
+  mergeMeta,
   doReload,
   setOps,
   toggle,
@@ -57,6 +58,11 @@ const ModifyModal = ({
         });
         break;
       case "Unir/Consolidar":
+        let ids = [];
+        selected.forEach((element) => {
+          ids.push(element.id);
+        });
+        mergeMeta(ids);
         break;
       default:
         console.error("Something went wrong, I'm not supposed to be here :c");
@@ -157,7 +163,11 @@ const ModifyModal = ({
                 </FormGroup>
               </Form>
             ) : (
-              "not implemented"
+              <div style={{ textAlign: "center" }}>
+                Las etiquetas seran ahora y sus fotograf&iacute;as tendran
+                s&oacute;lo esta etiqueta.
+                <b>{selected[0].value}</b>
+              </div>
             )}
           </ModalBody>
           <ModalFooter>
@@ -195,7 +205,6 @@ const ModifyModal = ({
 };
 
 const mapStateToProps = (state) => ({
-  hola: state.metadata,
   completed: state.metadata.opsCompleted,
   errors: state.metadata.opsErrors,
 });
@@ -203,6 +212,7 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = (dispatch) => ({
   putMeta: (meta) => dispatch(metadata.putMetadata(meta)),
   deleteMeta: (id) => dispatch(metadata.deleteMetadata(id)),
+  mergeMeta: (ids) => dispatch(metadata.mergeMetadata(ids)),
   setOps: (ops) => dispatch(metadata.setNBOps(ops)),
 });
 

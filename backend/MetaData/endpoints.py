@@ -10,4 +10,5 @@ urlpatterns = [
     re_path('^metadata/(?P<pk>[0-9]+)/photos/$', MetadataPhotoListAPI.as_view()),
     re_path('^metadata/$', MetadataListAPI.as_view()),
     re_path('^metadata/batch/$', MetadataBatchAPI.as_view()),
+    re_path('^metadata/merge/$', MetadataMergeAPI.as_view()),
 ]
