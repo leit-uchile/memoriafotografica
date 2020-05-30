@@ -41,3 +41,5 @@ static.yarn-error.log*
 
 static.package-lock.json
 static.yarn.lock
+
+db

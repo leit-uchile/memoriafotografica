@@ -9,7 +9,8 @@ import {
   HOME_SET_SELECTED_INDEX,
   READ_UPLOAD_DISCLOSURE,
   HOME_PHOTO_PAGINATION,
-  RECOVERED_PHOTOS
+  RECOVERED_PHOTOS,
+  SET_METADATA_HELP_DISCLOSURE,
 } from "./types";
 import uuid from "uuid";
 
@@ -61,33 +62,35 @@ export const putSearchItem = (metaID, value) => {
 };
 
 export const removeSearchItem = (metaID, value) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     return dispatch({ type: SEARCH_REMOVE_META, data: { metaID, value } });
   };
 };
 
-
 /**
  * Set Photo to visualize over the search result by ID
- * @param {*} id 
+ * @param {*} id
  */
-export const setSelectedId = id => (dispatch, getState) =>
+export const setSelectedId = (id) => (dispatch) =>
   dispatch({ type: HOME_SET_SELECTED_INDEX, data: id });
 
 /**
  * Set Number of page on PhotoDetails (persistent data)
- * @param {*} index 
+ * @param {*} index
  */
-export const setPhotoPagination = index => dispatch =>
-  dispatch({ type: HOME_PHOTO_PAGINATION, data: index})
+export const setPhotoPagination = (index) => (dispatch) =>
+  dispatch({ type: HOME_PHOTO_PAGINATION, data: index });
 
 /**
  * Push photo array so that we can navigate albums, categories
  * and collections using the photodetails component
  * @param {Array} photos
  */
-export const pushPhotoArray = photos => dispatch => dispatch({type: RECOVERED_PHOTOS, data: photos})
+export const pushPhotoArray = (photos) => (dispatch) =>
+  dispatch({ type: RECOVERED_PHOTOS, data: photos });
 
-export const readDisclosure = () => (dispatch, getState) =>
+export const readDisclosure = () => (dispatch) =>
   dispatch({ type: READ_UPLOAD_DISCLOSURE, data: null });
 
+export const setMetadataHelp = (value) => (dispatch) =>
+  dispatch({ type: SET_METADATA_HELP_DISCLOSURE, data: value });

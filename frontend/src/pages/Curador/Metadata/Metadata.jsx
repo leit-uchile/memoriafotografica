@@ -20,7 +20,7 @@ const Metadata = () => {
   };
   return (
     <div>
-      <Nav tabs>
+      <Nav tabs style={{ marginBottom: "1em" }}>
         <NavItem>
           <NavLink
             className={activeTab === "1" ? "active" : ""}

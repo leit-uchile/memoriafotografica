@@ -248,7 +248,6 @@ export const putMetadata = (metadata) => (dispatch, getState) => {
 /**
  * Search metadata by name using a token if available for general purpose
  *
- * (Yes this is a copy of the other search method; TODO: find a better solution)
  * @param {String} query
  */
 export const searchMetadataByValueGeneral = (query, page, page_size) => (
@@ -267,7 +266,26 @@ export const searchMetadataByValueGeneral = (query, page, page_size) => (
   };
 
   let headers = { Authorization: "Token " + getState().user.token };
-  fetch(`/api/metadata/?search=${query}&page=${page}&page_size=${page_size}`, { headers }).then(
-    success_func
-  );
+  fetch(`/api/metadata/?search=${query}&page=${page}&page_size=${page_size}`, {
+    headers,
+  }).then(success_func);
+};
+
+/**
+ * Delete metadata by id
+ *
+ * @param {*} id
+ */
+export const deleteMetadata = (id) => (dispatch, getState) => {
+  let headers = { Authorization: "Token " + getState().user.token };
+  fetch(`/api/metadata/${id}/`, { headers, method: "DEL" }).then((response) => {
+    const r = response;
+    if (r.status === 204) {
+      r.json().then((data) =>
+        dispatch({ type: RECOVERED_CURADOR_TAGS, data: data })
+      );
+    } else {
+      dispatch({ type: EMPTY_CURADOR_TAGS });
+    }
+  });
 };
