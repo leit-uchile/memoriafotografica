@@ -123,12 +123,12 @@ const UploadAlbum = ({
       </Row>
       <Row style={{ marginTop: "2em" }}>
         <Col md={{ size: 6, offset: 1 }}>
-          <div style={styles.albumBox}>
+          <div style={styles.titleBox}>
             <Label style={{ fontSize: "18px" }}>Crear Album</Label>
               <FontAwesomeIcon icon={faPlusCircle}
               onClick={() => isAlbum()} style={styles.plusButton}/>
           </div>
-          <Form style={styles.generalInformation} className="white-box">
+          <Form style={formData.onAlbum ?styles.content :styles.noContent}>
             <FormGroup>
               <Collapse isOpen={formData.onAlbum}>
                 <Fragment>
@@ -148,12 +148,17 @@ const UploadAlbum = ({
                 </Fragment>
               </Collapse>
             </FormGroup>
+            </Form>
+            <div style={styles.titleBox}>
+              <Label style={{ fontSize: "18px" }}>Información General</Label>
+            </div>
+            <Form style={styles.content} className="white-box">
             <div className="upload-form-title">
               <FontAwesomeIcon
                 icon={faBook}
                 style={{ marginRight: "1em" }}
               />
-              <Label>Información general</Label>
+              <Label>Metadatos</Label>
             </div>
             <FormGroup>
               <Label style={{ color: "#848687" }}>Fecha de las fotos:</Label>
@@ -266,7 +271,7 @@ const UploadAlbum = ({
 };
 
 const styles = {
-  albumBox: {
+  titleBox: {
     display: "flex",
     height: "auto",
     padding: "2px 10px 0px 10px",
@@ -283,10 +288,13 @@ const styles = {
     color: "var(--leit-pink)",
     cursor: "pointer"
   },
-  generalInformation: {
+  content: {
     backgroundColor: "white",
     border: "1px solid rgb(210,214,218)",
     padding: "15px",
+  },
+  noContent: {
+    marginBottom:'-12px'
   }
 };
 

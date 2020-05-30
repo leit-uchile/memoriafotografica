@@ -13,6 +13,7 @@ import {
   faFlag,
   faTags,
   faChartBar,
+  faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 import Filter from "./Filter/Filter";
 import Categories from "./Category/Categories";
@@ -21,6 +22,7 @@ import Category_Photos from "./Category/Category_Photos";
 import Landing from "./Landing";
 import Reports from "./Reports/Reports";
 import Metadata from "./Metadata";
+import EmailRequest from "./EmailRequests/EmailRequests"
 
 /**
  * TODO:
@@ -43,7 +45,16 @@ const availableRoutes = [
     display: "Reportes",
     icon: <FontAwesomeIcon icon={faFlag} />,
   },
-  { to: "tags", display: "Etiquetas", icon: <FontAwesomeIcon icon={faTags} /> },
+  { 
+    to: "tags", 
+    display: "Etiquetas", 
+    icon: <FontAwesomeIcon icon={faTags} /> 
+  },
+  {
+    to: "email",
+    display: "Bandeja de Correo",
+    icon: <FontAwesomeIcon icon={faEnvelope} />
+  }
 ];
 
 const Dashboard = ({ match, location }) => (
@@ -114,6 +125,11 @@ const Dashboard = ({ match, location }) => (
             exact
             path={match.path + "/tags"}
             component={Metadata}
+          />
+          <BoundedRoute
+            exact
+            path={match.path + "/email"}
+            component={EmailRequest}
           />
           <Route component={NoMatch} />
         </Switch>

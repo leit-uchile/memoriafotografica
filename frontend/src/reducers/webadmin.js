@@ -7,6 +7,10 @@ import {
   REQUESTPHOTO,
   REMOVE_REQUESTPHOTO,
   SEND_REQUESTPHOTO,
+  CONTACT_SUCCESS,
+  CONTACT_ERROR,
+  PHOTOREQUESTS_RECOVERED,
+  PHOTOREQUESTS_ERROR,
 } from "../actions/types";
 
 const initialState = {
@@ -16,6 +20,8 @@ const initialState = {
   errors: [],
   requestedPhotos: [],
   requested: false,
+  requests: [],
+  contacted: false
 };
 
 export default function webadmin(state = initialState, action) {
@@ -43,6 +49,17 @@ export default function webadmin(state = initialState, action) {
       return { ...state, requestedPhotos: [...filtered2] };
     case SEND_REQUESTPHOTO:
       return { ...state, requestedPhotos: [], requested: true }
+
+    case PHOTOREQUESTS_RECOVERED:
+      return { ...state, requests: action.data}
+    case PHOTOREQUESTS_ERROR:
+      return { ...state, errors: data}
+
+    
+    case CONTACT_SUCCESS:
+      return { ...state, contacted: true }
+    case CONTACT_ERROR:
+      return { ...state, contacted: false }
     default:
       return state;
   }

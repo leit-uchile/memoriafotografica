@@ -100,10 +100,10 @@ class UploadDetails extends Component {
       <Container
         style={{
           marginTop: "20px",
-          border: "1px solid rgb(210,214,218)",
-          boxShadow: "2px 2px 4px rgb(156,158,159)"
+          border: "1px solid rgb(210,214,218)"
         }}
         fluid
+        className="white-box"
       >
         <Row>
           <Col md="3" style={{textAlign:'center'}}>
