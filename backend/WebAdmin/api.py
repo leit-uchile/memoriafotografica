@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_MET
 from .models import *
 from .serializers import *
 from django.http import Http404
+from WebAdmin.views import sendEmail
 
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
@@ -173,6 +174,7 @@ class ContactRequestDetailAPI(generics.GenericAPIView):
         serializer = ContactRequestSerializer(contactrequest, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            # sendEmail(contactrequest.email, "contact_us", formData.subject, formData.content);
             return Response(serializer.data)
         return Response(status = status.HTTP_400_BAD_REQUEST)
 

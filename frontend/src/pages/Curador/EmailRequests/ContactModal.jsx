@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 
-const ContactModal = ({email}) => {
+const ContactModal = (props) => {
+  const { buttonLabel, className, message, send } = props;
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
   const [formData, setData] = useState({
-      emailTo: email,
       subject: "Hemos respondido su consulta",
       content: ''
   });
@@ -13,14 +13,14 @@ const ContactModal = ({email}) => {
   const updateData = (e) =>
     setData({ ...formData, [e.target.name]: e.target.value });
 
-  const send = () =>{
-      setModal(!modal);
-      
+  const onSend = () =>{
+      send(message, formData);
+      setModal(!modal);  
   }
   return (
     <div>
-      <Button color="danger" onClick={toggle}>Responder</Button>
-      <Modal isOpen={modal} toggle={toggle}>
+      <Button color="danger" onClick={toggle}>{buttonLabel}</Button>
+      <Modal isOpen={modal} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>Contacto</ModalHeader>
         <ModalBody>
             <Form>
@@ -29,7 +29,7 @@ const ContactModal = ({email}) => {
                     <Input 
                         type="email" 
                         name="emailTo" 
-                        value={formData.emailTo}
+                        value={message.email}
                         disabled
                     />
                 </FormGroup>
@@ -44,12 +44,16 @@ const ContactModal = ({email}) => {
                 </FormGroup>
                 <FormGroup>
                     <Label>Respuesta</Label>
-                    <Input type="textarea" name="content"/>
+                    <Input 
+                    type="textarea" 
+                    name="content"
+                    value={formData.content}
+                    onChange={updateData}/>
                 </FormGroup>
             </Form>  
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={()=>send()}>Enviar</Button>{' '}
+          <Button color="primary" onClick={()=>onSend()}>Enviar</Button>{' '}
           <Button color="secondary" onClick={toggle}>Cancelar</Button>
         </ModalFooter>
       </Modal>

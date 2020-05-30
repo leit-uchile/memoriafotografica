@@ -1,11 +1,9 @@
 import React, { Fragment } from "react";
 import { Table, Button } from "reactstrap";
-import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { gallery } from "../../../actions";
+import { webadmin } from "../../../actions";
 import ContactRow from "./ContactRow";
 import ContactModal from "./ContactModal";
-import webadmin from "../../../reducers/webadmin";
 
 /**
  * Define different Renders and updates for.
@@ -13,23 +11,22 @@ import webadmin from "../../../reducers/webadmin";
  * @param {Array} messages
  * @param {Function} updateMessage
  */
-const ContactTable = ({ messages }) => {
-  const resolve = (mss) => {
+const ContactTable = ({ messages, updateMessage }) => {
+  const resolve = (mss, formData) => {
     let mssCopy = { ...mss };
-    delete mssCopy.content_id;
-    mssCopy.resolved = !mss.resolved;
-    // contact(mssCopy);
+    mssCopy.resolved = true;
+    updateMessage(mssCopy, formData);
   };
 
-  const resolveButton = (mss) => (
-    <ContactModal email={mss.email} /> //corregir
+  const resolveButton = mss => (
+    <ContactModal buttonLabel="Correo" message={mss} send={resolve} />
   );
 
   return (
     <Table responsive striped>
       <thead>
         <tr>
-          <th>Acciones</th>
+          <th>Responder por</th>
           <th>Estado</th>
           <th>Fecha</th>
           <th>Nombre completo</th>
@@ -41,7 +38,7 @@ const ContactTable = ({ messages }) => {
       <tbody>
         {messages.map((e) => (
           <ContactRow
-            email={e}
+            message={e}
             actions={resolveButton}
           />
         ))}
@@ -51,7 +48,7 @@ const ContactTable = ({ messages }) => {
 };
 
 const mapActionsToProps = dispatch => ({
-  updateMessage: mss => dispatch(webadmin.updateMessage(mss)) 
+  updateMessage: (mss,formData) => dispatch(webadmin.updateMessage(mss,formData)) 
 });
 
 export default connect(null, mapActionsToProps)(ContactTable);

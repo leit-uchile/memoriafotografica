@@ -80,7 +80,7 @@ const PhotoModal = (props) => {
           </Row>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={toggle}>
+          <Button color="secondary" onClick={toggle}>
             Cerrar
           </Button>
         </ModalFooter>

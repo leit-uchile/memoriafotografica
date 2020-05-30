@@ -52,15 +52,9 @@ const availableRoutes = [
   },
   {
     to: "email",
-<<<<<<< HEAD
     display: "Bandeja de Mensajes",
     icon: <FontAwesomeIcon icon={faEnvelope} />
   }
-=======
-    display: "Bandeja de Correo",
-    icon: <FontAwesomeIcon icon={faEnvelope} />,
-  },
->>>>>>> bafc526f00c9e0c298c452e0c917287240cd4658
 ];
 
 const Dashboard = ({ match, location }) => (

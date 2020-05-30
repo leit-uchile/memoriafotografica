@@ -157,7 +157,7 @@ export const contactUs = (formData) => {
       email: formData.email,
       message: formData.message,
     });
-    return fetch(`/api//`, {
+    return fetch(`/api/requests/contacts/`, {
       method: "POST",
       headers: headers,
       body: jsonthing,
@@ -184,7 +184,7 @@ export const getMessages = () => (dispatch, getState) => {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token
   };
-  return fetch("/api//", {
+  return fetch('/api/requests/contacts/all/', {
     method: "GET",
     headers: headers
   }).then(function(response) {
@@ -200,12 +200,12 @@ export const getMessages = () => (dispatch, getState) => {
   });
 };
 
-export const updateMessage = (message) => (dispatch, getState) => {
+export const updateMessage = (message, formData) => (dispatch, getState) => {
   let headers = {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
-  return fetch(`/api//${message.id}/`, {
+  return fetch(`/api/requests/contacts/${message.id}/`, {
     method: "PUT",
     headers,
     body: JSON.stringify(message),
