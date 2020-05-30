@@ -205,10 +205,15 @@ export const updateMessage = (message, formData) => (dispatch, getState) => {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
+  let jsonthing = JSON.stringify({
+    newMsg: message,
+    subject: formData.subject,
+    response: formData.content
+  });
   return fetch(`/api/requests/contacts/${message.id}/`, {
     method: "PUT",
     headers,
-    body: JSON.stringify(message),
+    body: jsonthing,
   }).then((response) => {
     const r = response;
     if (r.status === 200) {

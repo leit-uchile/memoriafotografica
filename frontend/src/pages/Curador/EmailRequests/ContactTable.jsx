@@ -12,14 +12,15 @@ import ContactModal from "./ContactModal";
  * @param {Function} updateMessage
  */
 const ContactTable = ({ messages, updateMessage }) => {
-  const resolve = (mss, formData) => {
-    let mssCopy = { ...mss };
-    mssCopy.resolved = true;
-    updateMessage(mssCopy, formData);
+  const resolve = (msg, formData) => {
+    let msgCopy = { ...msg };
+    msgCopy.resolved = true;
+    msgCopy.email_sent = true;
+    updateMessage(msgCopy, formData);
   };
 
-  const resolveButton = mss => (
-    <ContactModal buttonLabel="Correo" message={mss} send={resolve} />
+  const resolveButton = msg => (
+    <ContactModal buttonLabel="Correo" message={msg} send={resolve}/>
   );
 
   return (
@@ -48,7 +49,7 @@ const ContactTable = ({ messages, updateMessage }) => {
 };
 
 const mapActionsToProps = dispatch => ({
-  updateMessage: (mss,formData) => dispatch(webadmin.updateMessage(mss,formData)) 
+  updateMessage: (msg,formData) => dispatch(webadmin.updateMessage(msg,formData)) 
 });
 
 export default connect(null, mapActionsToProps)(ContactTable);

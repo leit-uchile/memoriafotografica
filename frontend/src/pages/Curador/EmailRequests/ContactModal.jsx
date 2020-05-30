@@ -19,7 +19,7 @@ const ContactModal = (props) => {
   }
   return (
     <div>
-      <Button color="danger" onClick={toggle}>{buttonLabel}</Button>
+      <Button color="danger" onClick={toggle} disabled={message.resolved}>{buttonLabel}</Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>Contacto</ModalHeader>
         <ModalBody>

@@ -171,24 +171,15 @@ class ContactRequestDetailAPI(generics.GenericAPIView):
         return Response(serializer.data)
     
     def put(self,request,pk, *args, **kwargs):
-<<<<<<< HEAD
-        contactrequest = self.get_object(pk)
-        serializer = ContactRequestSerializer(contactrequest, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            # sendEmail(contactrequest.email, "contact_us", formData.subject, formData.content);
-            return Response(serializer.data)
-        return Response(status = status.HTTP_400_BAD_REQUEST)
-=======
         if request.user.user_type > 1:
             contactrequest = self.get_object(pk)
-            serializer = ContactRequestSerializer(contactrequest, data=request.data, partial=True)
+            serializer = ContactRequestSerializer(contactrequest, data=request.data['newMsg'], partial=True)
             if serializer.is_valid():
                 serializer.save()
+                sendEmail(contactrequest.email, "contact_us", request.data['subject'], request.data['response'])
                 return Response(serializer.data)
             return Response(status = status.HTTP_400_BAD_REQUEST)
         return Response(status = status.HTTP_401_UNAUTHORIZED)
->>>>>>> c1b82e510d79f4302e9b6335a1d8d83b02ec874a
 
     def delete(self,request,pk, *args, **kwargs):    
         if request.user.user_type > 1:
