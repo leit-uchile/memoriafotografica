@@ -14,6 +14,7 @@ import {
   CURADOR_COMPLETED,
   CURADOR_REFRESH,
   READ_UPLOAD_DISCLOSURE,
+  SET_METADATA_HELP_DISCLOSURE,
 } from "../actions/types";
 
 const initialState = {
@@ -30,7 +31,8 @@ const initialState = {
     loading: false,
     refresh: false,
   },
-  uploadDisclosureSet: localStorage.getItem("disclosed") === "true" ? true : false,
+  uploadDisclosureSet: localStorage.getItem("upload_disclosed") === "true" ? true : false,
+  metadataHelpDisclosure: localStorage.getItem("metadata_help_disclosed") === "true" ? true : false,
 };
 
 export default function site_misc(state = initialState, action) {
@@ -75,8 +77,11 @@ export default function site_misc(state = initialState, action) {
     case CURADOR_REFRESH:
       return { ...state, curador: { ...state.curador, refresh: true } };
     case READ_UPLOAD_DISCLOSURE:
-      localStorage.setItem("disclosed", true);
+      localStorage.setItem("upload_disclosed", true);
       return { ...state, uploadDisclosureSet: true };
+    case SET_METADATA_HELP_DISCLOSURE:
+      localStorage.setItem("metadata_help_disclosed", action.data);
+      return { ...state, metadataHelpDisclosure: action.data };
     default:
       return { ...state };
   }

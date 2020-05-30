@@ -13,6 +13,11 @@ import {
   UPDATED_METADATA_ERROR,
   RECOVERED_CURADOR_TAGS,
   EMPTY_CURADOR_TAGS,
+  DELETED_METADATA_ERROR,
+  DELETED_METADATA,
+  METADATA_RESET_NB_OPS,
+  METADATA_MERGE,
+  METADATA_MERGE_ERROR,
 } from "../actions/types";
 
 const initialState = {
@@ -22,10 +27,13 @@ const initialState = {
   nbMetaCreating: 0,
   all_tags: [],
   all_iptcs: [],
-  batch: {count: 0, results: []},
+  batch: { count: 0, results: [] },
   update_status: "",
   // Used in curador
-  general_tags: {count: 0, results: []}
+  general_tags: { count: 0, results: [] },
+  opsCompleted: 0,
+  nbOperations: 0,
+  opsErrors: [],
 };
 
 export default function metadata(state = initialState, action) {
@@ -65,15 +73,38 @@ export default function metadata(state = initialState, action) {
     case RECOVERED_METADATA_BATCH:
       return { ...state, batch: action.data };
     case EMPTY_METADATA_BATCH:
-      return { ...state, batch: {count: 0, results: []} };
+      return { ...state, batch: { count: 0, results: [] } };
     case UPDATED_METADATA:
-      return {...state, update_status: "success "+action.data}
+      return {
+        ...state,
+        update_status: "success " + action.data,
+        opsCompleted: state.opsCompleted + 1,
+      };
     case UPDATED_METADATA_ERROR:
-      return {...state, update_status: "failed "+action.data}
+      return {
+        ...state,
+        update_status: "failed " + action.data,
+        opsErrors: [...state.opsErrors, action.data],
+      };
     case RECOVERED_CURADOR_TAGS:
-      return {...state, general_tags: action.data}
+      return { ...state, general_tags: action.data };
     case EMPTY_CURADOR_TAGS:
-      return {...state, general_tags: {count: 0, results: []}}
+      return { ...state, general_tags: { count: 0, results: [] } };
+    case METADATA_RESET_NB_OPS:
+      return {
+        ...state,
+        nbOperations: action.data,
+        opsCompleted: 0,
+        opsErrors: [],
+      };
+    case DELETED_METADATA:
+      return { ...state, opsCompleted: state.opsCompleted + 1 };
+    case DELETED_METADATA_ERROR:
+      return { ...state, opsErrors: [...state.opsErrors, action.data] };
+    case METADATA_MERGE:
+      return {...state, opsCompleted: state.opsCompleted + 1};
+    case METADATA_MERGE_ERROR:
+      return { ...state, opsErrors: [...state.opsErrors, action.data] };
     default:
       return state;
   }

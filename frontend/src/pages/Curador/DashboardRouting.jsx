@@ -22,7 +22,7 @@ import Category_Photos from "./Category/Category_Photos";
 import Landing from "./Landing";
 import Reports from "./Reports/Reports";
 import Metadata from "./Metadata";
-import EmailRequest from "./EmailRequests/EmailRequests"
+import EmailRequest from "./EmailRequests/EmailRequests";
 
 /**
  * TODO:
@@ -45,16 +45,22 @@ const availableRoutes = [
     display: "Reportes",
     icon: <FontAwesomeIcon icon={faFlag} />,
   },
-  { 
-    to: "tags", 
-    display: "Etiquetas", 
-    icon: <FontAwesomeIcon icon={faTags} /> 
+  {
+    to: "tags",
+    display: "Etiquetas",
+    icon: <FontAwesomeIcon icon={faTags} />,
   },
   {
     to: "email",
+<<<<<<< HEAD
     display: "Bandeja de Mensajes",
     icon: <FontAwesomeIcon icon={faEnvelope} />
   }
+=======
+    display: "Bandeja de Correo",
+    icon: <FontAwesomeIcon icon={faEnvelope} />,
+  },
+>>>>>>> bafc526f00c9e0c298c452e0c917287240cd4658
 ];
 
 const Dashboard = ({ match, location }) => (
@@ -64,7 +70,7 @@ const Dashboard = ({ match, location }) => (
     fluid
   >
     <Row>
-      <Col xs="2" className="leftcol">
+      <Col sm="2" className="leftcol">
         <Button
           tag={Link}
           to={match.path + "/"}
@@ -95,7 +101,7 @@ const Dashboard = ({ match, location }) => (
         <div className="navEnding"></div>
       </Col>
       <Col
-        xs="10"
+        sm="10"
         style={{ marginTop: "2em", marginBottom: "2em", minHeight: "75vh" }}
       >
         <Switch>

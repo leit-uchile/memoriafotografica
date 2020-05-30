@@ -15,6 +15,11 @@ import {
   UPDATED_METADATA_ERROR,
   RECOVERED_CURADOR_TAGS,
   EMPTY_CURADOR_TAGS,
+  DELETED_METADATA,
+  DELETED_METADATA_ERROR,
+  METADATA_RESET_NB_OPS,
+  METADATA_MERGE,
+  METADATA_MERGE_ERROR,
 } from "./types";
 
 /**
@@ -235,7 +240,7 @@ export const putMetadata = (metadata) => (dispatch, getState) => {
     body: JSON.stringify(metadata),
   }).then(function (response) {
     const r = response;
-    if (r.status === 206) {
+    if (r.status === 206 || r.status === 200) {
       r.json().then((data) =>
         dispatch({ type: UPDATED_METADATA, data: metadata.id })
       );
@@ -248,8 +253,9 @@ export const putMetadata = (metadata) => (dispatch, getState) => {
 /**
  * Search metadata by name using a token if available for general purpose
  *
- * (Yes this is a copy of the other search method; TODO: find a better solution)
  * @param {String} query
+ * @param {*} page
+ * @param {*} page_size
  */
 export const searchMetadataByValueGeneral = (query, page, page_size) => (
   dispatch,
@@ -267,7 +273,61 @@ export const searchMetadataByValueGeneral = (query, page, page_size) => (
   };
 
   let headers = { Authorization: "Token " + getState().user.token };
-  fetch(`/api/metadata/?search=${query}&page=${page}&page_size=${page_size}`, { headers }).then(
-    success_func
+  fetch(`/api/metadata/?search=${query}&page=${page}&page_size=${page_size}`, {
+    headers,
+  }).then(success_func);
+};
+
+/**
+ * Delete metadata by id
+ *
+ * @param {*} id
+ */
+export const deleteMetadata = (id) => (dispatch, getState) => {
+  let headers = { Authorization: "Token " + getState().user.token };
+  fetch(`/api/metadata/${id}/`, { headers, method: "DELETE" }).then(
+    (response) => {
+      const r = response;
+      if (r.status === 204) {
+        dispatch({ type: DELETED_METADATA, data: id });
+      } else {
+        dispatch({ type: DELETED_METADATA_ERROR, data: id });
+      }
+    }
   );
+};
+
+/**
+ * When doing multiple operations set number of ops
+ * for completion checking and error catching
+ */
+export const setNBOps = (num) => (dispatch) =>
+  dispatch({ type: METADATA_RESET_NB_OPS, data: num });
+
+/**
+ * mergeMetadata by setting all references to the first
+ * metadata using the ids
+ *
+ * @param {Array} ids of ints
+ */
+export const mergeMetadata = (ids) => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+
+  fetch("/api/metadata/merge/", {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify({ ids: ids }),
+  }).then(function (response) {
+    const r = response;
+    if (r.status === 200) {
+      r.json().then((data) =>
+        dispatch({ type: METADATA_MERGE, data: data })
+      );
+    } else {
+      dispatch({ type: METADATA_MERGE_ERROR, data: ids.join(",") });
+    }
+  });
 };

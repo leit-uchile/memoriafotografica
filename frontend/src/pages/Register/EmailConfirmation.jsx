@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { user } from "../../actions";
 import { Container, Row, Col } from "reactstrap";
 
 const EmailConfirmation = ({ location, activateCode, status }) => {
-
   useEffect(() => {
     let code = location.search;
-    code = code.slice(code.indexOf("code=")+5);
+    code = code.slice(code.indexOf("code=") + 5);
     activateCode(code);
-  }, [])
+  }, []);
 
   const SuccefulConfirmation = (props) => (
     <Container style={{ textAlign: "center", marginTop: "2em" }}>
@@ -38,7 +37,8 @@ const EmailConfirmation = ({ location, activateCode, status }) => {
       <Row>
         <Col>
           <p style={{ marginTop: "2em" }}>
-            El código ya fue usado o ha expirado. Si esto persiste por favor informanos a{" "}
+            El código ya fue usado o ha expirado. Si esto persiste por favor
+            informanos a{" "}
             <a href="mailto:soporte@leit.cl?Subject=Error%20en%20el%20sitio">
               soporte&#64;leit.cl
             </a>
@@ -48,18 +48,18 @@ const EmailConfirmation = ({ location, activateCode, status }) => {
     </Container>
   );
 
-  if (status===true) {
+  if (status === true) {
     return <SuccefulConfirmation />;
   }
   return <FailedConfirmation />;
 };
 
 const mapStateToProps = (state) => ({
-  status: state.user.activated
+  status: state.user.activated,
 });
 
 const mapActionsToProps = (dispatch) => ({
-  activateCode: (code) => dispatch(user.getRegisterLink(code))
+  activateCode: (code) => dispatch(user.getRegisterLink(code)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(EmailConfirmation);

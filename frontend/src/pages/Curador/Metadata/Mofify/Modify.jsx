@@ -1,25 +1,32 @@
 import React, { Fragment, useEffect, useState } from "react";
-import {
-  Card,
-  Col,
-  CardText,
-  CardTitle,
-  Button,
-  Row,
-  Input,
-  ButtonGroup,
-} from "reactstrap";
+import { Col, Button, Row, Input, ButtonGroup } from "reactstrap";
 import MetadataList from "./MetadataList";
+import HelpMessages from "./HelpMessages";
+import ModifyModal from "./ModifyModal";
 import { connect } from "react-redux";
-import { metadata } from "../../../../actions";
+import { metadata, site_misc } from "../../../../actions";
 import { Pagination } from "../../../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-const Modify = ({ metadata, iptcs, searchMeta }) => {
+/**
+ * Modify metadata
+ *
+ * Search metadata and narrow the list
+ * Select elements and make modifications
+ */
+const Modify = ({
+  metadata,
+  iptcs,
+  searchMeta,
+  metadataHelp,
+  setHelpDisclosure,
+}) => {
   const [searchState, setSearchState] = useState("");
   const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
-  const [dismiss, setDismiss] = useState(false);
+  const [dismiss, setDismiss] = useState(metadataHelp);
+  const [operation, setOperation] = useState({ op: "0", open: false });
+  const [selected, setSelected] = useState([]);
 
   useEffect(() => {
     searchMeta(searchState, pagination.page + 1, pagination.page_size);
@@ -30,6 +37,17 @@ const Modify = ({ metadata, iptcs, searchMeta }) => {
     setPagination((pag) => ({ ...pag, page: p }));
   };
 
+  const toggleModal = () => {
+    if (operation.op !== "0") {
+      setOperation((o) => ({ ...o, open: !o.open }));
+    }
+  };
+
+  // Force effect reload by updating the pagination state
+  const doReload = (randomValue) => {
+    setPagination((p) => ({ ...p, r: randomValue }));
+  };
+
   return (
     <Fragment>
       <Row>
@@ -38,23 +56,43 @@ const Modify = ({ metadata, iptcs, searchMeta }) => {
         </Col>
       </Row>
       <Row>
-        <Col className="curador-metadata-search">
+        <Col sm={6} className="curador-metadata-search">
           <ButtonGroup>
             <Button onClick={() => setDismiss(false)}>¿Ayuda?</Button>
-            <Input type="select" name="selectSingle" id="selectOperation">
+            <Input
+              type="select"
+              name="selectOp"
+              id="selectOperation"
+              onChange={(e) => {
+                // TODO: it crashes unexpectedly
+                // when target or currentTarget is null (for some reason)
+                let copy = e.currentTarget.value;
+                setOperation((o) => ({ ...o, op: copy }));
+              }}
+            >
               <option value="0">Seleccionar operacion</option>
-              <option value="Del">Eliminar</option>
-              <option value="Mod">Modificar</option>
-              <option value="Join">Unir/Consolidar</option>
+              <option value="Eliminar">Eliminar</option>
+              <option value="Modificar Selección">Modificar</option>
+              <option value="Unir/Consolidar">Unir/Consolidar</option>
             </Input>
-            <Button>Ir</Button>
+            <Button onClick={toggleModal} disabled={operation.op === "0"}>
+              Ir
+            </Button>
+            <ModifyModal
+              op={operation.op}
+              selected={selected}
+              iptcs={iptcs}
+              open={operation.open}
+              toggle={toggleModal}
+              doReload={doReload}
+            />
           </ButtonGroup>
         </Col>
-        <Col className="curador-metadata-search">
+        <Col sm={6} className="curador-metadata-search">
           <ButtonGroup className="mr-auto">
             <Input
               type="select"
-              className="leftSelect"
+              className="btn-secondary leftSelect"
               onChange={(e) =>
                 setPagination({ page: 0, page_size: Number(e.target.value) })
               }
@@ -86,32 +124,17 @@ const Modify = ({ metadata, iptcs, searchMeta }) => {
       {!dismiss ? (
         <Fragment>
           <Row style={{ marginTop: "1em" }}>
-            <Col sm="6">
-              <Card body>
-                <CardTitle>Modificar contenido</CardTitle>
-                <CardText>
-                  Para modificar individualmente seleccione un tag. Para cambiar
-                  la aprobaci&oacute;n de varios tag seleccione mas de uno y
-                  aprete en modificar. Para eliminar uno o varios seleccione y
-                  luego elimine.
-                </CardText>
-              </Card>
-            </Col>
-            <Col sm="6">
-              <Card body>
-                <CardTitle>Consolidar tags</CardTitle>
-                <CardText>
-                  Seleccione dos o mas tags y aprete consolidar para que se unan
-                  en uno solo. Por ejemplo: consolidar "fcfm" de 3 fotos y
-                  "facultad de ingenieria" de 100 fotos resulta en "fcfm" con
-                  103 fotos.
-                </CardText>
-              </Card>
-            </Col>
+            <HelpMessages />
           </Row>
           <Row style={{ marginTop: "1em" }}>
             <Col sm={{ offset: 3, size: 6 }}>
-              <Button onClick={() => setDismiss(true)} block>
+              <Button
+                onClick={() => {
+                  setHelpDisclosure(true);
+                  setDismiss(true);
+                }}
+                block
+              >
                 Ya entend&iacute;
               </Button>
             </Col>
@@ -124,7 +147,10 @@ const Modify = ({ metadata, iptcs, searchMeta }) => {
             metadata={metadata.results}
             iptcs={iptcs ? iptcs : []}
             getSelection={(v) => {
-              console.log(Object.keys(v).filter((el) => el.includes("nb-")));
+              var keys = Object.keys(v)
+                .filter((el) => el.includes("nb-"))
+                .map((el) => el.substr(3));
+              setSelected(keys.map((el) => metadata.results[Number(el)]));
             }}
           />
           {metadata.count === 0 ? (
@@ -149,12 +175,13 @@ const Modify = ({ metadata, iptcs, searchMeta }) => {
 const mapStateToProps = (state) => ({
   metadata: state.metadata.general_tags,
   iptcs: state.metadata.all_iptcs,
+  metadataHelp: state.site_misc.metadataHelpDisclosure,
 });
 
 const mapActionsToProps = (dispatch) => ({
-  loadMeta: () => dispatch(metadata.tags()),
   searchMeta: (search, page, page_size) =>
     dispatch(metadata.searchMetadataByValueGeneral(search, page, page_size)),
+  setHelpDisclosure: (val) => dispatch(site_misc.setMetadataHelp(val)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Modify);

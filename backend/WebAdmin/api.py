@@ -131,3 +131,27 @@ class PhotoRequestListAPI(generics.GenericAPIView):
             return Response(serializer.data)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class ContactRequestListAPI(generics.GenericAPIView):
+    
+    serializer_class = ContactRequestSerializer
+    permission_classes = [IsAuthenticated,]
+
+    def get(self, request, *args, **kwargs):
+        if request.user.user_type > 1:
+            contactrequests = ContactRequest.objects.all()
+            serializer = self.serializer_class(contactrequests, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class ContactRequestDetailAPI(generics.GenericAPIView):
+    pass

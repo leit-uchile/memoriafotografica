@@ -1,5 +1,5 @@
 # Import models here
-from .models import News, LandingCaroussel, PhotoRequest
+from .models import News, LandingCaroussel, PhotoRequest, ContactRequest
 
 from rest_framework import serializers
 from Gallery.serializers import PhotoSerializer
@@ -36,3 +36,9 @@ class PhotoRequestNewSerializer(serializers.ModelSerializer):
         fields = ('reason','photos','first_name','last_name',
             'identity_document','profession','address','comuna',
             'phone_number','email','institution','resolved','email_sent','created_at','updated_at')
+
+
+class ContactRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactRequest
+        fields = '__all__'

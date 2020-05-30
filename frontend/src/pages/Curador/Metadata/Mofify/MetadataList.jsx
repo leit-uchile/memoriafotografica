@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Table } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
 const check = <FontAwesomeIcon icon={faCheckCircle} />;
 
 /**
@@ -28,6 +27,7 @@ const MetadataList = ({ metadata, iptcs, getSelection }) => {
       selected.checked = false;
       setState(selected);
     }
+    //eslint-disable-next-line
   }, [metadata]);
 
   const [state, setState] = useState({ checked: false });
