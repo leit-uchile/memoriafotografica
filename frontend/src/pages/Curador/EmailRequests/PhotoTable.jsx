@@ -1,25 +1,37 @@
 import React, { Fragment } from "react";
+import { connect } from "react-redux";
 import { Table, Button } from "reactstrap";
 import { Link } from "react-router-dom";
 import PhotoRow from "./PhotoRow";
+import { webadmin } from "../../../actions";
+import PhotoModal from "./PhotoModal";
 
 /**
  * Define different Renders and updates for
- * each report.
+ * each request.
  *
  * @param {Array} requests
- * @param {Function} updateReport
+ * @param {Function} updateRequest
  */
-const PhotoTable = ({ requests, updateReport }) => {
-  const resolve = (rep) => {
-    let repCopy = { ...rep };
-    delete repCopy.content_id;
-    repCopy.resolved = !rep.resolved;
-    // updateReport(repCopy);
+const PhotoTable = ({ requests, updateRequest }) => {
+  const onlyInfo = (req) => {
+    let reqCopy = { ...req };
+    delete reqCopy.photos
+    delete reqCopy.resolved
+    delete reqCopy.email_sent
+    delete reqCopy.created_at
+    delete reqCopy.updated_at
+    return reqCopy
+  }
+  const resolve = (req, bool) => {
+    let reqCopy = { ...req };
+    reqCopy.resolved = !req.resolved;
+    reqCopy.approved = bool;
+    updateRequest(reqCopy);
   };
 
-  const resolveButton = (rep) => (
-    <Button onClick={() => resolve(rep)}>Resolver</Button>
+  const resolveButton = (req, bool) => (
+    <Button color={bool ?"success" :"danger"} onClick={() => resolve(req, bool)} disabled={req.resolved}>{bool ?"Aprobar" :"Rechazar"}</Button>
   );
 
   return (
@@ -39,12 +51,16 @@ const PhotoTable = ({ requests, updateReport }) => {
           <PhotoRow
             request={r}
             key={r.id}
+            actions={resolveButton}
             render={(photos) => (
               <Fragment>
                 <Link to={`/photo/${photos}`}>Ver fotos</Link>
+                <PhotoModal
+                buttonLabel="Ver datos solicitante"
+                request={onlyInfo(r)}
+                />
               </Fragment>
             )}
-            actions={resolveButton}
           />
         ))}
       </tbody>
@@ -52,4 +68,8 @@ const PhotoTable = ({ requests, updateReport }) => {
   );
 };
 
-export default PhotoTable;
+const mapActionsToProps = dispatch => ({
+  updateRequest: req => dispatch(webadmin.updateRequest(req))
+});
+
+export default connect(null, mapActionsToProps)(PhotoTable);

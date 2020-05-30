@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { site_misc } from "../../../actions";
 import { connect } from "react-redux";
+import { ButtonGroup } from "reactstrap";
 
 /**
  * Render design pattern
@@ -8,19 +9,22 @@ import { connect } from "react-redux";
  * @param {Function} render how to render details
  * @param {Function} actions how to render actions
  */
-const PhotoRow = ({ request, actions, render, photoSet, getPhotoSet }) => {
-
+const PhotoRow = ({ request, key, actions, render, photoSet, getPhotoSet }) => {
   useEffect(()=>{
+    console.log(key) // supuesto id de la request no incluido en {request}
     getPhotoSet(request.photos)
   })
 
   return (
     <tr>
       <td>
-        {actions(request)}
+        <ButtonGroup>
+          {actions(request, true)}
+          {actions(request, false)}
+        </ButtonGroup>
       </td>
-      <td style={request.resolved ? {color: "green"} : {color: "red"}}>
-        {request.resolved ? "Resuelta" : "Sin resolver"}
+      <td style={request.resolved ? request.email_sent ?{color: "green"} : {color: "red"}: {color: "red"}}>
+        {request.resolved ? request.email_sent ?"Aprobada" :"Rechazada" : "Sin resolver"}
       </td>
       <td>
         {new Date(request.created_at).toLocaleDateString("es")}

@@ -10,7 +10,13 @@ import {
   CONTACT_SUCCESS,
   CONTACT_ERROR,
   PHOTOREQUESTS_RECOVERED,
-  PHOTOREQUESTS_ERROR
+  PHOTOREQUESTS_ERROR,
+  PHOTOREQUEST_SWITCH_STATE,
+  PHOTOREQUEST_SWITCH_STATE_ERROR,
+  CONTACTMESSAGES_RECOVERED,
+  CONTACTMESSAGES_ERROR,
+  CONTACTMESSAGE_SWITCH_STATE,
+  CONTACTMESSAGE_SWITCH_STATE_ERROR
 } from "./types";
 import { setAlert } from "./site_misc";
 
@@ -118,6 +124,29 @@ export const getRequests = () => (dispatch, getState) => {
   });
 };
 
+export const updateRequest = (request) => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+  return fetch(`/api/requests/photos/${request.id}/`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(request),
+  }).then((response) => {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch({ type: PHOTOREQUEST_SWITCH_STATE, data: data });
+      });
+    } else {
+      dispatch(setAlert("Hubo un error al actualizar la solicitud", "warning"));
+      dispatch({ type: PHOTOREQUEST_SWITCH_STATE_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
 export const contactUs = (formData) => {
   return (dispatch, getState) => {
     let headers = { "Content-Type": "application/json" };
@@ -139,10 +168,57 @@ export const contactUs = (formData) => {
             dispatch({ type: CONTACT_SUCCESS, data: data })
         });
       } else {
-        dispatch(setAlert("Hubo un error al enviar su consulta", "warning"));
+        dispatch(setAlert("Hubo un error al enviar su mensaje", "warning"));
         dispatch({ type: CONTACT_ERROR, data: r.data });
         throw r.data;
       }
     });
   };
 }
+
+/**
+ * Recover all Messages from Contact Us
+ */
+export const getMessages = () => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token
+  };
+  return fetch("/api//", {
+    method: "GET",
+    headers: headers
+  }).then(function(response) {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then(data => {
+        dispatch({ type: CONTACTMESSAGES_RECOVERED, data: data });
+      });
+    } else {
+      dispatch({ type: CONTACTMESSAGES_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
+export const updateMessage = (message) => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+  return fetch(`/api//${message.id}/`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(message),
+  }).then((response) => {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch({ type: CONTACTMESSAGE_SWITCH_STATE, data: data });
+      });
+    } else {
+      dispatch(setAlert("Hubo un error al actualizar la solicitud", "warning"));
+      dispatch({ type: CONTACTMESSAGE_SWITCH_STATE_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};

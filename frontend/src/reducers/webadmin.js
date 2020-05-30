@@ -11,6 +11,12 @@ import {
   CONTACT_ERROR,
   PHOTOREQUESTS_RECOVERED,
   PHOTOREQUESTS_ERROR,
+  PHOTOREQUEST_SWITCH_STATE,
+  PHOTOREQUEST_SWITCH_STATE_ERROR,
+  CONTACTMESSAGES_RECOVERED,
+  CONTACTMESSAGES_ERROR,
+  CONTACTMESSAGE_SWITCH_STATE,
+  CONTACTMESSAGE_SWITCH_STATE_ERROR,
 } from "../actions/types";
 
 const initialState = {
@@ -20,8 +26,12 @@ const initialState = {
   errors: [],
   requestedPhotos: [],
   requested: false,
+  contacted: false,
+  //Used in curador
+  messages:[],
+  messageUpdate: {},
   requests: [],
-  contacted: false
+  requestUpdate: {}
 };
 
 export default function webadmin(state = initialState, action) {
@@ -49,17 +59,26 @@ export default function webadmin(state = initialState, action) {
       return { ...state, requestedPhotos: [...filtered2] };
     case SEND_REQUESTPHOTO:
       return { ...state, requestedPhotos: [], requested: true }
-
     case PHOTOREQUESTS_RECOVERED:
       return { ...state, requests: action.data}
     case PHOTOREQUESTS_ERROR:
       return { ...state, errors: data}
-
-    
+    case PHOTOREQUEST_SWITCH_STATE:
+      return { ...state, requestUpdate: action.data };
+    case PHOTOREQUEST_SWITCH_STATE_ERROR:
+      return { ...state, requestUpdate: {} };
     case CONTACT_SUCCESS:
       return { ...state, contacted: true }
     case CONTACT_ERROR:
       return { ...state, contacted: false }
+    case CONTACTMESSAGES_RECOVERED:
+      return { ...state, messages: action.data} 
+    case CONTACTMESSAGES_ERROR:
+      return { ...state, errors: data}
+    case CONTACTMESSAGE_SWITCH_STATE:
+      return { ...state, messageUpdate: action.data };
+    case CONTACTMESSAGE_SWITCH_STATE_ERROR:
+      return { ...state, messageUpdate: {} };
     default:
       return state;
   }

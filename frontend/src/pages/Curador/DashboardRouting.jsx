@@ -52,7 +52,7 @@ const availableRoutes = [
   },
   {
     to: "email",
-    display: "Bandeja de Correo",
+    display: "Bandeja de Mensajes",
     icon: <FontAwesomeIcon icon={faEnvelope} />
   }
 ];

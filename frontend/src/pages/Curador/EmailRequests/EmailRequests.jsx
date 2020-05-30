@@ -12,12 +12,14 @@ import {
 } from "reactstrap";
 import { connect } from "react-redux";
 import { webadmin } from "../../../actions";
+import { getMessages } from "../../../actions/webadmin_api";
 
-const EmailRequests = ({requestsPhoto, getRequests}) => {
+const EmailRequests = ({messages, getMessages, requestsPhoto, getRequests}) => {
   const [activeTab, setActiveTab] = useState("1");
 
   useEffect(() => {
     getRequests();
+    getMessages();
   }, [activeTab]);
 
   const toggle = (tab) => {
@@ -25,7 +27,7 @@ const EmailRequests = ({requestsPhoto, getRequests}) => {
   };
   return (
     <div>
-      <h2>Correo recibido</h2>
+      <h2>Mensajes recibidos</h2>
       <Nav tabs>
         <NavItem>
           <NavLink
@@ -52,7 +54,7 @@ const EmailRequests = ({requestsPhoto, getRequests}) => {
         <TabPane tabId="1">
           <Row>
             <Col sm="12">
-              {/* <ContactTable /> */}
+              <ContactTable messages={[]}/>
             </Col>
           </Row>
         </TabPane>
@@ -70,11 +72,13 @@ const EmailRequests = ({requestsPhoto, getRequests}) => {
 
 const mapStateToProps = state => ({
   loading: state.site_misc.curador.loading,
-  requestsPhoto: state.webadmin.requests
+  requestsPhoto: state.webadmin.requests,
+  messages: state.webadmin.messages
 });
 
 const mapActionsToProps = dispatch => ({
-  getRequests: () => dispatch(webadmin.getRequests())
+  getRequests: () => dispatch(webadmin.getRequests()),
+  getMessages: () => dispatch(webadmin.getMessages())
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(EmailRequests);

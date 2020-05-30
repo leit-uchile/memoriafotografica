@@ -31,7 +31,7 @@ class RegistrationAPI(generics.GenericAPIView):
         user = serializer.save()
         activation_link = RegisterLink(code=createHash(user.pk), status=1, user=user)
         activation_link.save()
-        sendEmail(user.email, activation_link.code)
+        sendEmail(user.email, "sign_up", "Active su cuenta", activation_link.code)
         return Response(status=status.HTTP_200_OK)
 
 class RegisterLinkAPI(generics.GenericAPIView):

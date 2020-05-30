@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 
-const ContactModal = ({ el}) => {
+const ContactModal = ({email}) => {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
   const [formData, setData] = useState({
-      emailTo: el.email,
+      emailTo: email,
       subject: "Hemos respondido su consulta",
       content: ''
   });
