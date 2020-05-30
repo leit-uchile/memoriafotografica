@@ -15,6 +15,9 @@ import {
   UPDATED_METADATA_ERROR,
   RECOVERED_CURADOR_TAGS,
   EMPTY_CURADOR_TAGS,
+  DELETED_METADATA,
+  DELETED_METADATA_ERROR,
+  METADATA_RESET_NB_OPS,
 } from "./types";
 
 /**
@@ -235,7 +238,7 @@ export const putMetadata = (metadata) => (dispatch, getState) => {
     body: JSON.stringify(metadata),
   }).then(function (response) {
     const r = response;
-    if (r.status === 206) {
+    if (r.status === 206 || r.status === 200) {
       r.json().then((data) =>
         dispatch({ type: UPDATED_METADATA, data: metadata.id })
       );
@@ -249,6 +252,8 @@ export const putMetadata = (metadata) => (dispatch, getState) => {
  * Search metadata by name using a token if available for general purpose
  *
  * @param {String} query
+ * @param {*} page
+ * @param {*} page_size
  */
 export const searchMetadataByValueGeneral = (query, page, page_size) => (
   dispatch,
@@ -278,14 +283,19 @@ export const searchMetadataByValueGeneral = (query, page, page_size) => (
  */
 export const deleteMetadata = (id) => (dispatch, getState) => {
   let headers = { Authorization: "Token " + getState().user.token };
-  fetch(`/api/metadata/${id}/`, { headers, method: "DEL" }).then((response) => {
+  fetch(`/api/metadata/${id}/`, { headers, method: "DELETE" }).then((response) => {
     const r = response;
     if (r.status === 204) {
-      r.json().then((data) =>
-        dispatch({ type: RECOVERED_CURADOR_TAGS, data: data })
-      );
+      dispatch({ type: DELETED_METADATA, data: id });
     } else {
-      dispatch({ type: EMPTY_CURADOR_TAGS });
+      dispatch({ type: DELETED_METADATA_ERROR, data: id });
     }
   });
 };
+
+/**
+ * When doing multiple operations set number of ops
+ * for completion checking and error catching
+ */
+export const setNBOps = (num) => (dispatch) =>
+  dispatch({ type: METADATA_RESET_NB_OPS, data: num });

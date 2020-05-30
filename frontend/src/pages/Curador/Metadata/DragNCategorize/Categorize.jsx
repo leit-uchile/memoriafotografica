@@ -137,7 +137,7 @@ const Categorize = ({ iptcs, batch, loadIptcs, loadBatch, putMeta }) => {
       ) : batch.count !== 0 ? (
         <Fragment>
           <Row>
-            <div key={"nochanges"} className="col-md-3">
+            <div key={"nochanges"} className="col-sm-6 col-md-3">
               <div className="col-wrapper no-category">
                 <h2 className={"col-header"}>
                   {"Sin Categoria".toUpperCase()} <span>(Vaciar)</span>
@@ -161,7 +161,7 @@ const Categorize = ({ iptcs, batch, loadIptcs, loadBatch, putMeta }) => {
             </div>
             {iptcs.slice(0, 3).map((s) => {
               return (
-                <div key={s.name} className="col-md-3">
+                <div key={s.name} className="col-sm-6 col-md-3">
                   <div className="col-wrapper">
                     <h2 className={"col-header"}>{s.name.toUpperCase()}</h2>
                     <DropWrapper onDrop={onDrop} name={s.name} iptc_id={s.id}>
@@ -188,7 +188,7 @@ const Categorize = ({ iptcs, batch, loadIptcs, loadBatch, putMeta }) => {
           <Row>
             {iptcs.slice(4).map((s) => {
               return (
-                <div key={s.name} className="col-md-3">
+                <div key={s.name} className="col-sm-6 col-md-3">
                   <div className="col-wrapper">
                     <h2 className={"col-header"}>{s.name.toUpperCase()}</h2>
                     <DropWrapper onDrop={onDrop} name={s.name} iptc_id={s.id}>
