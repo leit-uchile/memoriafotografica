@@ -61,6 +61,5 @@ class ContactRequest(models.Model):
   resolved = models.BooleanField(default=False)
   email_sent = models.BooleanField(default=False)
   created_at = models.DateTimeField(default=datetime.now)
-  
   def __str__(self):
     return "Mensaje de "+self.first_name+" sobre: "+self.message[:10]+"..."
