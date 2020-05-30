@@ -7,26 +7,47 @@ import {
   Button,
   Nav,
   NavItem,
-  NavLink
+  NavLink,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faArrowCircleUp} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowCircleUp } from "@fortawesome/free-solid-svg-icons";
 
 const Footer = () => {
   const componentDidMount = () =>
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: "smooth"
+      behavior: "smooth",
     });
 
   return (
     <footer style={styles.contenedor}>
       <Container style={styles.contenido}>
         <Row style={{ paddingBottom: "50px" }}>
-          <Col>
-            <img src={"/assets/logoExt.svg"} alt={"logo"} height="40px" style={{maxWidth: "100%"}}/>
+          <Col sm={4}>
+            <img
+              src={"/assets/logo01.svg"}
+              alt={"logo"}
+              height="90px"
+              style={{ maxWidth: "100%" }}
+            />
+          </Col>
+          <Col sm={4}>
+            <img
+              src={"/assets/bcentral.svg"}
+              alt={"logobcentral"}
+              height="100px"
+              style={{ maxWidth: "100%" }}
+            />
+          </Col>
+          <Col sm={4}>
+            <img
+              src={"/fcfm_header.png"}
+              alt={"logofcfm"}
+              height="100px"
+              style={{ maxWidth: "100%" }}
+            />
           </Col>
         </Row>
         <Row>
@@ -100,8 +121,9 @@ const Footer = () => {
             style={{
               display: "flex",
               justifyContent: "space-between",
-              color: "#9fa4a5"
-            }}>
+              color: "#9fa4a5",
+            }}
+          >
             <p style={{ marginLeft: "auto", marginRight: "auto" }}>
               Todos los derechos reservados. Biblioteca Central - Facultad de
               Ciencias Fisicas y Matematicas - Universidad de Chile
@@ -120,11 +142,11 @@ const styles = {
   contenedor: {
     borderTop: "1px solid rgb(210,214,218)",
     background:
-      "linear-gradient(top, #fbfcfc 0%, #dee1e2 100%), -moz-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%) -webkit-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)"
+      "linear-gradient(top, #fbfcfc 0%, #dee1e2 100%), -moz-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%) -webkit-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)",
   },
   contenido: {
     fontSize: "12px",
-    paddingTop: "50px"
-  }
+    paddingTop: "50px",
+  },
 };
 export default Footer;

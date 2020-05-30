@@ -32,6 +32,10 @@ h2.colTitle{
   margin: 1em 0;
 }
 
+.missionDiv .detailText, .missionDiv h2{
+  text-align: left;
+}
+
 /* Future optimization ? */
 .row div p.detailText{
   font-size: 1.3em;

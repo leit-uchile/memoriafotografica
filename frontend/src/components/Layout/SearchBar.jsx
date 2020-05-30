@@ -87,7 +87,7 @@ class SearchBar extends Component {
   render() {
     const { value, suggestions } = this.state;
     const inputProps = {
-      placeholder: "Buscar por metadata",
+      placeholder: "Buscar ...",
       value,
       onChange: this.onChange,
     };
@@ -100,41 +100,47 @@ class SearchBar extends Component {
     return (
       <Container className="home-search">
         <Row>
-          <Col>
-            <Input
-              type="select"
-              name="selectMulti"
-              id="exampleSelectMulti"
-              className="search-iptc-selector"
-            >
-              <option value="0">Todas las etiquetas</option>
-              {this.props.iptc.map((iptc, k) => (
-                <option key={k} value={iptc.id}>
-                  {iptc.name}
-                </option>
-              ))}
-            </Input>
-            <Autosuggest
-              multiSection={true}
-              suggestions={suggestions}
-              onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-              onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-              onSuggestionSelected={this.onSuggestionSelected}
-              getSuggestionValue={(suggestion) => suggestion.value}
-              renderSuggestion={(suggestion) => <span>{suggestion.value}</span>}
-              renderSectionTitle={(section) => <strong>{section.title}</strong>}
-              getSectionSuggestions={(section) => section.suggestions}
-              inputProps={inputProps}
-            />
-            <Button
-              type="button"
-              color="primary"
-              onClick={this.swapPage}
-              block
-              className="search-button"
-            >
-              <FontAwesomeIcon icon={faSearch} />
-            </Button>
+          <Col md={{ size: 10, offset: 1 }}>
+            <div style={{ margin: "0 auto" }} className="searchFitter">
+              <Input
+                type="select"
+                name="selectMulti"
+                id="exampleSelectMulti"
+                className="search-iptc-selector"
+              >
+                <option value="0">Todo el sitio</option>
+                {this.props.iptc.map((iptc, k) => (
+                  <option key={k} value={iptc.id}>
+                    {iptc.name}
+                  </option>
+                ))}
+              </Input>
+              <Autosuggest
+                multiSection={true}
+                suggestions={suggestions}
+                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                onSuggestionSelected={this.onSuggestionSelected}
+                getSuggestionValue={(suggestion) => suggestion.value}
+                renderSuggestion={(suggestion) => (
+                  <span>{suggestion.value}</span>
+                )}
+                renderSectionTitle={(section) => (
+                  <strong>{section.title}</strong>
+                )}
+                getSectionSuggestions={(section) => section.suggestions}
+                inputProps={inputProps}
+              />
+              <Button
+                type="button"
+                color="primary"
+                onClick={this.swapPage}
+                block
+                className="search-button"
+              >
+                <FontAwesomeIcon icon={faSearch} />
+              </Button>
+            </div>
           </Col>
         </Row>
       </Container>

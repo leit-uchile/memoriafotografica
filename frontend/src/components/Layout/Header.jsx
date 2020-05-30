@@ -14,14 +14,14 @@ import {
   NavItem,
   NavLink,
   Row,
-  NavbarBrand
+  NavbarBrand,
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import {
   faImage,
   faHome,
-  faSmileWink
+  faSmileWink,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Header = ({ isAuth, currentRoute }) => {
@@ -62,8 +62,8 @@ const Header = ({ isAuth, currentRoute }) => {
                 >
                   <h1>Memoria fotográfica</h1>
                   <p style={{ fontSize: "0.8em", whiteSpace: "normal" }}>
-                    Facultad de Ciencias Fisicas y Matematicas <br></br>{" "}
-                    Universidad de Chile
+                    Facultad de Ciencias Fisicas y Matematicas - Universidad de
+                    Chile
                   </p>
                 </NavbarBrand>
                 <NavbarToggler onClick={() => setToggle(!toggle)} />
@@ -120,13 +120,13 @@ const Header = ({ isAuth, currentRoute }) => {
                 height: "4em",
                 padding: "1em 0",
                 borderBottom: "1px solid rgb(210,214,218)",
-                zIndex: "4"
+                zIndex: "4",
               }
             : {
                 backgroundColor: "var(--leit-bg-gray)",
                 borderBottom: "1px solid rgb(210,214,218)",
                 height: "4em",
-                padding: "1em 0"
+                padding: "1em 0",
               }
         }
       >
@@ -136,10 +136,10 @@ const Header = ({ isAuth, currentRoute }) => {
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     isAuth: state.user.isAuthenticated,
-    currentRoute: state.site_misc.currentRoute
+    currentRoute: state.site_misc.currentRoute,
   };
 };
 

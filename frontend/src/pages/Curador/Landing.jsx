@@ -176,7 +176,10 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
       </Row>
       <Row>
         <Col>
-          <div style={{ width: "max-content", margin: "0 auto" }}>
+          <div
+            style={{ width: "max-content", margin: "0 auto" }}
+            className="statBox"
+          >
             <Statistic.Group>
               <Statistic>
                 <Statistic.Value>
@@ -212,78 +215,85 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
       </Row>
       <Row>
         <Col>
-          <h2>Fotos y Comentarios subidos por día</h2>
-          <PhotoCountChart
-            rawData={general ? general.count_photos_by_date : []}
-            data2={general ? general.count_comments_by_date : []}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <h2>Tipos de usuarios</h2>
+          <div className="statBox" style={{ paddingBottom: "1em" }}>
+            <h2>Fotos y Comentarios subidos por día</h2>
+            <PhotoCountChart
+              rawData={general ? general.count_photos_by_date : []}
+              data2={general ? general.count_comments_by_date : []}
+            />
+          </div>
         </Col>
       </Row>
       <Row>
         <Col md={6}>
-          <DonutChart
-            rawData={
-              general
-                ? general.count_user_role.map((cnt) => ({
-                    total: cnt.total,
-                    name: userRolTranslation(cnt.rol_type),
-                  }))
-                : []
-            }
-            crossHairTitle={"Rol de usuario"}
-            crossHairValue="Total"
-          />
+          <div className="statBox">
+            <h2>Caracter&iacute;sticas de usuarios</h2>
+            <DonutChart
+              rawData={
+                general
+                  ? general.count_user_role.map((cnt) => ({
+                      total: cnt.total,
+                      name: userRolTranslation(cnt.rol_type),
+                    }))
+                  : []
+              }
+              crossHairTitle={"Rol de usuario"}
+              crossHairValue="Total"
+            />
+          </div>
         </Col>
         <Col md={6}>
-          <DonutChart
-            rawData={
-              general
-                ? general.count_user_type.map((cnt) => ({
-                    total: cnt.total,
-                    name: userTypeTranslation(cnt.user_type),
-                  }))
-                : []
-            }
-            crossHairTitle={"Tipo de usuario"}
-            crossHairValue="Total"
-          />
+          <div className="statBox">
+            <h2>Tipos de usuarios</h2>
+            <DonutChart
+              rawData={
+                general
+                  ? general.count_user_type.map((cnt) => ({
+                      total: cnt.total,
+                      name: userTypeTranslation(cnt.user_type),
+                    }))
+                  : []
+              }
+              crossHairTitle={"Tipo de usuario"}
+              crossHairValue="Total"
+            />
+          </div>
         </Col>
       </Row>
       <Row>
-        <Col>
-          <h2>Categorías con más fotos</h2>
-          <DonutChart
-            rawData={
-              general
-                ? general.count_popular_categories.map((cnt) => ({
-                    total: cnt.num_photos,
-                    name: cnt.title,
-                  }))
-                : []
-            }
-            crossHairTitle={"Categorías"}
-            crossHairValue="Total"
-          />
+        <Col md={6}>
+          <div className="statBox">
+            <h2>Categorías con más fotos</h2>
+            <DonutChart
+              rawData={
+                general
+                  ? general.count_popular_categories.map((cnt) => ({
+                      total: cnt.num_photos,
+                      name: cnt.title,
+                    }))
+                  : []
+              }
+              crossHairTitle={"Categorías"}
+              crossHairValue="Total"
+            />
+          </div>
         </Col>
-        <Col>
-          <h2>Metadata con más fotos</h2>
-          <DonutChart
-            rawData={
-              general
-                ? general.count_popular_metadata.map((cnt) => ({
-                    total: cnt.num_photos,
-                    name: cnt.value,
-                  }))
-                : []
-            }
-            crossHairTitle={"Metadata"}
-            crossHairValue="Total"
-          />
+        <Col md={6}>
+          <div className="statBox">
+            <h2>Metadata con más fotos</h2>
+            <DonutChart
+              rawData={
+                general
+                  ? general.count_popular_metadata.map((cnt) => ({
+                      total: cnt.num_photos,
+                      name: cnt.value,
+                    }))
+                  : []
+              }
+              crossHairTitle={"Metadata"}
+              crossHairValue="Total"
+            />
+          </div>
         </Col>
       </Row>
     </Container>

@@ -7,13 +7,15 @@ ul.barra li {
 }
 
 h1 {
-  background-image: url("/assets/logo01.svg");
+  background-image: url("/assets/logoExt.svg");
   text-indent: -9999px;
   background-repeat: no-repeat;
   /*background-size: 33%;*/
-  height: 55px;
-  min-width: 200px;
+  height: 40px;
+  min-width: 400px;
+  margin-left: -9px;
 }
+
 .navbar-brand p {
   margin-bottom: -.3125rem;
 }
@@ -25,6 +27,15 @@ h1 {
 @media screen and (max-width: 768px) {
     .navbar-brand p{
         display: none;
+    }
+
+    h1 {
+      background-image: url("/assets/logo01.svg");
+      text-indent: -9999px;
+      background-repeat: no-repeat;
+      /*background-size: 33%;*/
+      height: 55px;
+      min-width: 200px;
     }
 }
 

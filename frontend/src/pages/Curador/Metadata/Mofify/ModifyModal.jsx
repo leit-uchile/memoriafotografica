@@ -13,7 +13,7 @@ import {
   Button,
 } from "reactstrap";
 import { connect } from "react-redux";
-import { site_misc, metadata } from "../../../../actions";
+import { metadata } from "../../../../actions";
 import { LeitSpinner } from "../../../../components";
 
 const ModifyModal = ({
