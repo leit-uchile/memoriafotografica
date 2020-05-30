@@ -16,6 +16,8 @@ import {
   DELETED_METADATA_ERROR,
   DELETED_METADATA,
   METADATA_RESET_NB_OPS,
+  METADATA_MERGE,
+  METADATA_MERGE_ERROR,
 } from "../actions/types";
 
 const initialState = {
@@ -98,6 +100,10 @@ export default function metadata(state = initialState, action) {
     case DELETED_METADATA:
       return { ...state, opsCompleted: state.opsCompleted + 1 };
     case DELETED_METADATA_ERROR:
+      return { ...state, opsErrors: [...state.opsErrors, action.data] };
+    case METADATA_MERGE:
+      return {...state, opsCompleted: state.opsCompleted + 1};
+    case METADATA_MERGE_ERROR:
       return { ...state, opsErrors: [...state.opsErrors, action.data] };
     default:
       return state;

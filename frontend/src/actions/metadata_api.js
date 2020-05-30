@@ -18,6 +18,8 @@ import {
   DELETED_METADATA,
   DELETED_METADATA_ERROR,
   METADATA_RESET_NB_OPS,
+  METADATA_MERGE,
+  METADATA_MERGE_ERROR,
 } from "./types";
 
 /**
@@ -283,14 +285,16 @@ export const searchMetadataByValueGeneral = (query, page, page_size) => (
  */
 export const deleteMetadata = (id) => (dispatch, getState) => {
   let headers = { Authorization: "Token " + getState().user.token };
-  fetch(`/api/metadata/${id}/`, { headers, method: "DELETE" }).then((response) => {
-    const r = response;
-    if (r.status === 204) {
-      dispatch({ type: DELETED_METADATA, data: id });
-    } else {
-      dispatch({ type: DELETED_METADATA_ERROR, data: id });
+  fetch(`/api/metadata/${id}/`, { headers, method: "DELETE" }).then(
+    (response) => {
+      const r = response;
+      if (r.status === 204) {
+        dispatch({ type: DELETED_METADATA, data: id });
+      } else {
+        dispatch({ type: DELETED_METADATA_ERROR, data: id });
+      }
     }
-  });
+  );
 };
 
 /**
@@ -299,3 +303,31 @@ export const deleteMetadata = (id) => (dispatch, getState) => {
  */
 export const setNBOps = (num) => (dispatch) =>
   dispatch({ type: METADATA_RESET_NB_OPS, data: num });
+
+/**
+ * mergeMetadata by setting all references to the first
+ * metadata using the ids
+ *
+ * @param {Array} ids of ints
+ */
+export const mergeMetadata = (ids) => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+
+  fetch("/api/metadata/merge/", {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify({ ids: ids }),
+  }).then(function (response) {
+    const r = response;
+    if (r.status === 200) {
+      r.json().then((data) =>
+        dispatch({ type: METADATA_MERGE, data: data })
+      );
+    } else {
+      dispatch({ type: METADATA_MERGE_ERROR, data: ids.join(",") });
+    }
+  });
+};

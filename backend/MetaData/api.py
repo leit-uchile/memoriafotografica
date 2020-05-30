@@ -292,3 +292,43 @@ class MetadataBatchAPI(generics.GenericAPIView):
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
         except Exception:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class MetadataMergeAPI(generics.GenericAPIView):
+    """
+    post:
+    Get a batch of a given size of metadata. i.e. 10 metadata
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        try:
+            if request.user.user_type > 1:
+                metadata_admin = Metadata.objects.filter(pk__in=request.data["ids"])
+                # Get recipient
+                recipient = metadata_admin[0]
+                # For each get the photo pk set
+                photo_pks = set()
+                for metadata in metadata_admin:
+                    photos = metadata.photo_set.all()
+                    for photo in photos:
+                        photo_pks.add(photo.pk)
+                    
+                # Update photos adding the recipient
+                for pk in photo_pks:
+                    photo = Photo.objects.get(pk=pk)
+                    photo.metadata.add(recipient)
+                    photo.save()
+                
+                # Delete other metadata
+                for m in metadata_admin:
+                    if m.pk != recipient.pk:
+                        m.delete()
+
+                serializer_class = MetadataAdminSerializer
+                serializer = MetadataAdminSerializer(recipient)
+                return Response(serializer.data)
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            print(e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
