@@ -108,6 +108,7 @@ class PhotoRequestDetailAPI(generics.GenericAPIView):
 class PhotoRequestAPI(generics.GenericAPIView):
 
     serializer_class = PhotoRequestNewSerializer
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
@@ -169,14 +170,18 @@ class ContactRequestDetailAPI(generics.GenericAPIView):
         return Response(serializer.data)
     
     def put(self,request,pk, *args, **kwargs):
-        contactrequest = self.get_object(pk)
-        serializer = ContactRequestSerializer(contactrequest, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(status = status.HTTP_400_BAD_REQUEST)
+        if request.user.user_type > 1:
+            contactrequest = self.get_object(pk)
+            serializer = ContactRequestSerializer(contactrequest, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+        return Response(status = status.HTTP_401_UNAUTHORIZED)
 
     def delete(self,request,pk, *args, **kwargs):    
-        contactrequest = self.get_object(pk)
-        contactrequest.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if request.user.user_type > 1:
+            contactrequest = self.get_object(pk)
+            contactrequest.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status = status.HTTP_401_UNAUTHORIZED)
