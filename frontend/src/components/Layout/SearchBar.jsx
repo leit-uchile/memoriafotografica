@@ -17,6 +17,7 @@ class SearchBar extends Component {
       suggestions: [],
       iptc_mapping: {},
       limit: 10,
+      redirectLanding: false,
     };
     if (props.iptc.length === 0) {
       this.props.onLoadGetIPTC();
@@ -97,10 +98,30 @@ class SearchBar extends Component {
       return <Redirect push to="/gallery" />;
     }
 
+    if (this.state.redirectLanding) {
+      this.setState({ redirectLanding: false });
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+      return <Redirect push to="/" />;
+    }
+
     return (
-      <Container className="home-search">
+      <Container className={"home-search sticky-search"} fluid>
         <Row>
-          <Col md={{ size: 10, offset: 1 }}>
+          <Col
+            md={2}
+            className={this.props.stickyClass ? "logo-fadein" : "logo-fadeout"}
+            onClick={() => this.setState({ redirectLanding: true })}
+          ></Col>
+          <Col
+            md={{ size: 10 }}
+            className={
+              this.props.stickyClass ? "col-fadein stretch" : "col-fadein"
+            }
+          >
             <div style={{ margin: "0 auto" }} className="searchFitter">
               <Input
                 type="select"

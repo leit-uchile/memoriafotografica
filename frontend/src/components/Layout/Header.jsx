@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import UserModal from "../UserModal";
@@ -39,11 +39,23 @@ const Header = ({ isAuth, currentRoute }) => {
     </NavLink>
   );
 
-  const [redirect, setRedirect] = useState(false);
+  // Change the style of the search bar as we scroll
+  const [display, setDisplay] = useState(true);
+  const yourElement = React.useRef();
+  const isInViewport = (offset = 0) => {
+    if (!yourElement) return false;
+    const bottom = yourElement.current.getBoundingClientRect().bottom;
+    setDisplay(bottom + offset >= 0 && bottom - offset <= window.innerHeight);
+  };
+  useEffect(() => {
+    window.addEventListener("scroll", () => isInViewport());
+  }, []);
 
+  const [redirect, setRedirect] = useState(false);
   return (
     <Fragment>
       <header
+        ref={yourElement}
         className="jumbotron"
         style={{ marginBottom: "0", paddingBottom: "1rem", paddingTop: "1rem" }}
       >
@@ -110,28 +122,7 @@ const Header = ({ isAuth, currentRoute }) => {
           </Row>
         </Container>
       </header>
-      <div
-        style={
-          currentRoute === "/gallery/"
-            ? {
-                position: "sticky",
-                top: "0",
-                backgroundColor: "var(--leit-bg-gray)",
-                height: "4em",
-                padding: "1em 0",
-                borderBottom: "1px solid rgb(210,214,218)",
-                zIndex: "4",
-              }
-            : {
-                backgroundColor: "var(--leit-bg-gray)",
-                borderBottom: "1px solid rgb(210,214,218)",
-                height: "4em",
-                padding: "1em 0",
-              }
-        }
-      >
-        <SearchBar />
-      </div>
+      <SearchBar stickyClass={!display} />
     </Fragment>
   );
 };
