@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { Table, Button } from "reactstrap";
 import ReportRow from "./ReportRow";
+import ResolveModal from "./ResolveModal";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { gallery } from "../../../actions";
@@ -21,7 +22,7 @@ const ReportsTable = ({ reports, updateReport }) => {
   };
 
   const resolveButton = rep => (
-    <Button onClick={() => resolve(rep)}>Resolver</Button>
+    <ResolveModal buttonLabel="Resolver" report={rep}/>
   );
 
   return (
@@ -91,7 +92,8 @@ const ReportsTable = ({ reports, updateReport }) => {
 const mapStateToProps = state => ({});
 
 const mapActionsToProps = dispatch => ({
-  updateReport: rep => dispatch(gallery.reports.updateReport(rep))
+  updateReport: rep => dispatch(gallery.reports.updateReport(rep)),
+  censureContent: rep => dispatch(gallery.reports.censureContent(rep))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(ReportsTable);

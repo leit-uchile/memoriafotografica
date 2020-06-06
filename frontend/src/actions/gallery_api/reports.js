@@ -56,6 +56,29 @@ export const updateReport = (report) => (dispatch, getState) => {
   });
 };
 
+export const censureContent = (report) => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+  return fetch(`/api/actions/censure`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(report),
+  }).then((response) => {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch({ type: REPORT_SWITCH_STATE, data: data });
+      });
+    } else {
+      dispatch(setAlert("Hubo un error al censurar el contenido solicitado.", "warning"));
+      dispatch({ type: REPORT_SWITCH_STATE_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
 export const reportPhoto = (data) => (dispatch, getState) => {
   let headers = {
     Authorization: "Token " + getState().user.token,
