@@ -13,16 +13,15 @@ import { gallery } from "../../../actions";
  * @param {Array} reports
  * @param {Function} updateReport
  */
-const ReportsTable = ({ reports, updateReport }) => {
+const ReportsTable = ({ reports, updateReport, censureContent}) => {
   const resolve = rep => {
     let repCopy = {...rep};
     delete repCopy.content_id
     repCopy.resolved = !rep.resolved
     updateReport(repCopy);
-  };
-
+  };  
   const resolveButton = rep => (
-    <ResolveModal buttonLabel="Resolver" report={rep}/>
+    <ResolveModal buttonLabel="Resolver" report={rep} censureContent={censureContent}/>
   );
 
   return (

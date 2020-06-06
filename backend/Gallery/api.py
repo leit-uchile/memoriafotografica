@@ -525,21 +525,21 @@ class ReportDetailAPI(generics.GenericAPIView):
     def get_object(self, pk):
         try:
             return Reporte.objects.get(pk=pk)
-        except User.DoesNotExist:
+        except Reporte.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
         if request.user.user_type == 3:
-            user = self.get_object(pk)
-            serializer = ReportSerializer(user)
+            report = self.get_object(pk)
+            serializer = ReportSerializer(report)
             return Response(serializer.data)
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
 
     def put(self, request, pk, *args, **kwargs):
         if request.user.user_type == 3:
-            user = self.get_object(pk)
-            serializer = ReportSerializer(user, data=request.data)
+            report = self.get_object(pk)
+            serializer = ReportSerializer(report, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)

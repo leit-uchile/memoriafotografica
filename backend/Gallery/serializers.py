@@ -36,6 +36,7 @@ class ReportSerializer(serializers.ModelSerializer):
         return reporte
 
     def update(self, instance, validated_data):
+        print(instance)
         instance.resolved = validated_data.get('resolved', instance.resolved)
         instance.updated_at = datetime.now()
         instance.save()
