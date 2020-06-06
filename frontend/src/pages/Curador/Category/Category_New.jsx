@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { gallery } from "../../../actions";
 import {
@@ -9,45 +9,92 @@ import {
   Col,
   Input,
   Label,
-  Container
+  Container,
 } from "reactstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCheckCircle,
+  faChevronCircleLeft,
+} from "@fortawesome/free-solid-svg-icons";
 //import Category_Photos from './Category_Photos'
-import {PhotoSelector, LeitSpinner} from "../../../components";
+import { PhotoSelector, LeitSpinner, Pagination } from "../../../components";
+import { Link } from "react-router-dom";
 
 class Category_New extends Component {
   constructor(props) {
     super(props);
     this.state = {
       pictures: [],
-      title: ""
+      title: "",
+      page: 0,
+      page_size: 10,
     };
-    if (this.props.photos.length === 0) {
-      this.props.getPhotosAuth();
-    }
+    this.props.getPhotosAuth(this.state.page, this.state.page_size);
   }
 
-  handleChange = event => {
+  handleChange = (event) => {
     this.setState({ title: event.target.value });
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     this.props.createCategory(this.state);
   };
 
-  handleOnClick = obj => {
+  handleOnClick = (obj) => {
     const { id } = obj.photo;
-    const newList = this.state.pictures.filter(el => el !== id);
-    this.setState({ pictures: [...newList, id] });
+    // If its there remove it
+    const newList = this.state.pictures.filter((el) => el !== id);
+    if (this.state.pictures.filter((el) => el === id).length != 0) {
+      this.setState({ pictures: [...newList] });
+    } else {
+      this.setState({ pictures: [...newList, id] });
+    }
+  };
+
+  selectAll = (add) => {
+    if (add) {
+      let filter = this.state.pictures.filter((el) => {
+        for (let index = 0; index < this.props.photos.length; index++) {
+          if (this.props.photos[index].id === el) {
+            return false;
+          }
+        }
+        return true;
+      });
+      let mappedIds = this.props.photos.map((el) => el.id);
+      this.setState({ pictures: [...filter, ...mappedIds] });
+    } else {
+      let filter = this.state.pictures.filter((el) => {
+        for (let index = 0; index < this.props.photos.length; index++) {
+          if (this.props.photos[index].id === el) {
+            return false;
+          }
+        }
+        return true;
+      });
+      this.setState({ pictures: [...filter] });
+    }
+  };
+
+  setPage = (p) => {
+    this.setState({ page: p });
+    this.props.getPhotosAuth(p, this.state.page_size);
+  };
+
+  filterPhotos = (e) => {
+    console.log(e.currentTarget.value);
   };
 
   render() {
-    var mapped = this.props.photos.map(el => ({
+    var mapped = this.props.photos.map((el) => ({
       src: el.thumbnail,
       height: el.aspect_h,
       width: el.aspect_w,
-      id: el.id
+      id: el.id,
     }));
+
+    const maxPage = Math.floor(this.props.photo_count / this.state.page_size);
 
     return (
       <Container>
@@ -58,26 +105,56 @@ class Category_New extends Component {
         </Row>
         <Row>
           <Col>
-            <Form onSubmit={this.handleSubmit}>
-              <FormGroup>
-                <Label for="catName">Nombre</Label>
+            <Link
+              push
+              to="/curador/dashboard/categories"
+              className="btn btn-secondary"
+            >
+              <FontAwesomeIcon icon={faChevronCircleLeft} /> Atras
+            </Link>
+          </Col>
+        </Row>
+        <Row style={{ marginTop: "1em" }}>
+          <Col>
+            <h3>Datos</h3>
+            <Form onSubmit={this.handleSubmit} inline>
+              <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                <Label for="catName" className="mr-sm-2">
+                  Nombre
+                </Label>
                 <Input
                   onChange={this.handleChange}
                   id="catName"
                   type="text"
                   placeholder="Categoria Nueva"
                   name="categoryName"
-                ></Input>
+                />
               </FormGroup>
               <Button color="success" type="submit">
-                Crear
+                Crear <FontAwesomeIcon icon={faCheckCircle} />
               </Button>
             </Form>
           </Col>
         </Row>
-        <Row>
-          <Col style={{ marginTop: "2em" }}>
-            <h3>Seleccionar fotografias</h3>
+        <Row style={{ marginTop: "2em" }}>
+          <Col sm={6}>
+            <h3>
+              {this.state.pictures.length == 0 ? (
+                "Seleccionar fotografías"
+              ) : (
+                <Fragment>
+                  <b>{this.state.pictures.length}</b> Fotograf&iacute;as
+                  seleccionadas
+                </Fragment>
+              )}
+            </h3>
+          </Col>
+          <Col sm={6}>
+            <Input
+              type="text"
+              placeholder="Buscar fotos por etiquetas"
+              onChange={(e) => this.filterPhotos(e)}
+            />
           </Col>
         </Row>
         <Row>
@@ -89,8 +166,22 @@ class Category_New extends Component {
                 photos={mapped}
                 targetRowHeight={200}
                 onClick={(e, index) => this.handleOnClick(index)}
+                putAll={(add) => this.selectAll(add)}
               />
             )}
+          </Col>
+        </Row>
+        <Row style={{ marginTop: "1em" }}>
+          <Col>
+            <Pagination
+              maxPage={maxPage}
+              page={this.state.page}
+              setStatePage={this.setPage}
+              size="lg"
+              label="metadata-pagination"
+              displayFirst
+              displayLast
+            />
           </Col>
         </Row>
       </Container>
@@ -98,26 +189,25 @@ class Category_New extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   let errors = [];
   if (state.user.errors) {
-    errors = Object.keys(state.user.errors).map(field => {
+    errors = Object.keys(state.user.errors).map((field) => {
       return { field, message: state.user.errors[field] };
     });
   }
   return {
     errors,
-    isAuthenticated: state.user.isAuthenticated,
-    token: state.user.token,
     meta: state.webadmin.all_tags,
-    cats: state.categories.categories,
     photos: state.photos.photos,
-    loading: state.site_misc.curador.loading
+    photo_count: state.photos.count,
+    loading: state.site_misc.curador.loading,
   };
 };
-const mapActionsToProps = dispatch => ({
-  createCategory: data => dispatch(gallery.category.createCategory(data)),
-  getPhotosAuth: () => dispatch(gallery.photos.getPhotosAuth())
+const mapActionsToProps = (dispatch) => ({
+  createCategory: (data) => dispatch(gallery.category.createCategory(data)),
+  getPhotosAuth: (page, page_size) =>
+    dispatch(gallery.photos.getPhotosAuth(page, page_size)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Category_New);

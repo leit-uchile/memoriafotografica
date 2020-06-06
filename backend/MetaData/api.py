@@ -28,10 +28,9 @@ def search_meta(elements, request):
             elements = elements.filter(metadata__pk=int(request.query_params["iptc"]))
         if "search" in request.query_params:
             elements = elements.filter(value__icontains=request.query_params["search"])
-        if "limi" in request.query_params:
+        if "limit" in request.query_params:
             elements = elements[0:int(request.query_params["limit"])]
     except KeyError:
-
         pass
     return elements
 
