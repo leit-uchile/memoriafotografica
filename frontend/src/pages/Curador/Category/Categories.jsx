@@ -1,31 +1,21 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import {
-  Col,
-  Row,
-  Container,
-  Button,
-  ButtonGroup,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Spinner,
-} from "reactstrap";
-import { Table } from "reactstrap";
+import { Col, Row, Container, Button, ButtonGroup, Input } from "reactstrap";
 import { connect } from "react-redux";
 import { gallery } from "../../../actions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { Pagination } from "../../../components";
+import { CategoryTable } from "./CategoryTable";
+import { ModifyModal } from "./ModifyModal";
 
 class Categories extends Component {
   constructor(props) {
     super(props);
     this.state = {
       toDelete: [],
-      deleteModal: false,
+      page: 0,
+      page_size: 12,
     };
-    this.props.getCategories();
+    this.props.getCategories(this.state.page, this.state.page_size);
   }
 
   componentWillUpdate() {
@@ -49,99 +39,67 @@ class Categories extends Component {
     this.props.deleteCategories(this.props.token, this.state.toDelete);
   };
 
-  toggleRemoveConfirmation = () => {
-    this.setState({ deleteModal: !this.state.deleteModal });
+  setPage = (p) => {
+    this.setState({ page: p });
+    this.props.getCategories(p, this.state.page_size);
   };
 
   render() {
     const { match, cats } = this.props;
 
-    // Put 3 per row
-    var latest = cats.map((el) => (
-      <tr>
-        <th>
-          <input
-            type="checkbox"
-            aria-label="Checkbox for delete Categories"
-            onClick={(e) => this.updateToDelete(el.id, e.target.checked)}
-            checked={this.state.toDelete.includes(el.id)}
-          ></input>
-        </th>
-        <th>{el.title}</th>
-        <td>{new Date(el.created_at).toLocaleString()}</td>
-        <td>{new Date(el.updated_at).toLocaleString()}</td>
-        <td>{el.count}</td>
-        <td>
-          <Button>
-            <FontAwesomeIcon icon={faEdit} />
-          </Button>
-        </td>
-      </tr>
-    ));
+    const maxPage = Math.floor(cats.length / this.state.page_size);
 
-    if (latest.length < 1) {
-      latest = <span>No existen categorias</span>;
-    }
     return (
       <Container>
         <h2>Administrar Categorías</h2>
         <Row>
-          <Col xs="12">
+          <Col xs="8">
             <ButtonGroup>
               <Button tag={Link} to={match.url + "/new-category"}>
                 Crear categorias
               </Button>
-              <Button
-                onClick={this.toggleRemoveConfirmation}
-                color={this.state.toDelete.length ? "danger" : "secondary"}
-                disabled={!this.state.toDelete.length}
+              <ModifyModal
+                toDelete={this.state.toDelete}
+                loading={this.props.loading}
+                removeCategories={this.removeCategories}
+              />
+              <select
+                className="btn-secondary btn"
+                onChange={(e) => {
+                  this.setState({ page: 0, page_size: Number(e.target.value) });
+                  this.props.getCategories(0, Number(e.target.value));
+                }}
               >
-                Eliminar ({this.state.toDelete.length}) Categorías
-              </Button>
-              <Modal
-                isOpen={this.state.deleteModal}
-                toggle={this.toggleRemoveConfirmation}
-              >
-                <ModalHeader>
-                  ¿Est&aacute;s seguro(a) que quieres eliminar la(s)
-                  categoría(s)?
-                </ModalHeader>
-                <ModalBody>
-                  No se eliminar&aacute;n las fotos asociadas, sólo la
-                  categoría. Esta acción no se puede deshacer.
-                </ModalBody>
-                <ModalFooter>
-                  <Button color="danger" onClick={this.removeCategories}>
-                    {" "}
-                    Eliminar{" "}
-                    <Spinner
-                      size="sm"
-                      color="light"
-                      style={{
-                        display: this.props.loading ? "inline-block" : "none",
-                      }}
-                    />{" "}
-                  </Button>
-                  <Button onClick={this.toggleRemoveConfirmation}>
-                    Volver
-                  </Button>
-                </ModalFooter>
-              </Modal>
+                <option value="10">10 por p&aacute;gina</option>
+                <option value="20">20 por p&aacute;gina</option>
+                <option value="40">40 por p&aacute;gina</option>
+              </select>
             </ButtonGroup>
           </Col>
         </Row>
         <br />
-        <Table>
-          <thead>
-            <th></th>
-            <th>Nombre</th>
-            <th>Fecha Creación</th>
-            <th>Fecha Actualización</th>
-            <th># Fotos</th>
-            <th>Editar</th>
-          </thead>
-          <tbody>{latest}</tbody>
-        </Table>
+        <Row>
+          <Col>
+            <CategoryTable
+              cats={cats}
+              updateToDelete={this.updateToDelete}
+              toDelete={this.state.toDelete}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Pagination
+              maxPage={maxPage}
+              page={this.state.page}
+              setStatePage={this.setPage}
+              size="md"
+              label="metadata-pagination"
+              displayFirst
+              displayLast
+            />
+          </Col>
+        </Row>
       </Container>
     );
   }
@@ -156,8 +114,6 @@ const mapStateToProps = (state) => {
   }
   return {
     errors,
-    isAuthenticated: state.user.isAuthenticated,
-    token: state.user.token,
     meta: state.webadmin.all_tags,
     cats: state.categories.categories,
     loading: state.site_misc.curador.loading,
@@ -165,7 +121,8 @@ const mapStateToProps = (state) => {
   };
 };
 const mapActionsToProps = (dispatch) => ({
-  getCategories: (page,pageSize) => dispatch(gallery.category.getCategories(page,pageSize)),
+  getCategories: (page, pageSize) =>
+    dispatch(gallery.category.getCategories(page, pageSize)),
   deleteCategories: (catArray) =>
     dispatch(gallery.category.deleteCategories(catArray)),
 });
