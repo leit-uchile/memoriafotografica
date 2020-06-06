@@ -4,7 +4,11 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
 from .models import *
+from Gallery.models import Photo, Comment
+from Users.models import User
 from .serializers import *
+from Gallery.serializers import PhotoAdminSerializer, CommentAdminSerializer
+from Users.serializers import UserSerializer
 from django.http import Http404
 from WebAdmin.views import sendEmail
 
@@ -187,3 +191,41 @@ class ContactRequestDetailAPI(generics.GenericAPIView):
             contactrequest.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+
+
+
+class CensureAPI(generics.GenericAPIView):
+    model_dict = {
+        1 : Photo,
+        2 : User,
+        3 : Comment
+    }
+
+    serializer_dict = {
+        1 : PhotoAdminSerializer,
+        2 : UserSerializer,
+        3 : CommentAdminSerializer
+    }
+
+    permission_classes = [IsAuthenticated,]
+
+    def get_content(id, content_type):
+        try:
+            return model_dict[content_type].objects.get(pk=id)
+        except model_dict[content_type].DoesNotExist:
+            return Http404
+
+    def post(self,request, *args, **kwargs):
+        content_type = request.data.type
+        to_censure = get_content(request.data.content_id.id, content_type)
+        serializer = serializer_dict(content_type)(to_censure, data={censure : True, is_active : False})
+        report_serializer = ReportSerializer(request.data, data={resolved : True})
+        if serializer.is_valid() and report_serializer.is_valid():
+            serializer.save()
+            report_serializer.save()
+            return Response(report_serializer.data)
+        return Response(status=HTTP_400_BAD_REQUEST)
+
+
+
