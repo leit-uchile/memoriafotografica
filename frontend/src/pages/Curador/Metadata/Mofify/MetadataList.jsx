@@ -60,7 +60,7 @@ const MetadataList = ({ metadata, iptcs, getSelection }) => {
   };
 
   return (
-    <Table responsive striped>
+    <Table responsive striped className="statBox">
       <thead>
         <tr>
           <th>

@@ -4,7 +4,7 @@
 
 Actualmente la FCFM carece de una base de datos que contenga su memoria fotográfica. Se trata de una institución de relevancia nacional que, no obstante haber influido significativamente en la historia del país y en su desarrollo, no es capaz hoy día de acceder a la documentación visual emanada de sus anteriores procesos, los que se encuentran disgregados y en manos de quienes vivenciaron cada una de aquellas experiencias, mas no en en los anales de la propia facultad. Esta carencia dificulta significativamente el conocimiento y acceso a la documentación que contiene la historia de nuestra casa de estudios, por lo que resulta necesario rescatar y sistematizar dicha información para permitir a la comunidad toda imbuirse de la trayectoria que ha construido el carácter e identidad de la Escuela de InJeniería de la Universidad de Chile.
 
-<img width="300px" src="frontend/public/logo01.svg" />
+<img width="500px" src="frontend/public/assets/logoExt.svg" />
 
 ## Objetivos
 

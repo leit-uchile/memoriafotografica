@@ -27,10 +27,12 @@ body {
 
 .doHoverPhoto{
   opacity: 0;
+  transition-duration: 300ms;
 }
 
 .doHoverPhoto:hover{
   opacity: 0.7;
+  transition-duration: 300ms;
 }
 
 .CCName {
