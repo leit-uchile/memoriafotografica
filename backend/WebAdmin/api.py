@@ -4,10 +4,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
 from .models import *
-from Gallery.models import Photo, Comment
+from Gallery.models import Photo, Comment, Reporte
 from Users.models import User
 from .serializers import *
-from Gallery.serializers import PhotoAdminSerializer, CommentAdminSerializer
+from Gallery.serializers import PhotoAdminSerializer, CommentAdminSerializer, ReportSerializer
 from Users.serializers import UserSerializer
 from django.http import Http404
 from WebAdmin.views import sendEmail
@@ -196,36 +196,44 @@ class ContactRequestDetailAPI(generics.GenericAPIView):
 
 
 class CensureAPI(generics.GenericAPIView):
+
     model_dict = {
-        1 : Photo,
-        2 : User,
+        1 : User,
+        2 : Photo,
         3 : Comment
     }
 
     serializer_dict = {
-        1 : PhotoAdminSerializer,
-        2 : UserSerializer,
+        1 : UserSerializer,
+        2 : PhotoAdminSerializer,
         3 : CommentAdminSerializer
     }
 
     permission_classes = [IsAuthenticated,]
 
-    def get_content(id, content_type):
+    def get_content(self, id, content_type):
         try:
-            return model_dict[content_type].objects.get(pk=id)
-        except model_dict[content_type].DoesNotExist:
+            return self.model_dict[content_type].objects.get(pk=id)
+        except self.model_dict[content_type].DoesNotExist:
             return Http404
 
+    def get_report(self,id):
+        try:
+            return Reporte.objects.get(pk=id)
+        except Reporte.DoesNotExist:
+            raise Http404
+
     def post(self,request, *args, **kwargs):
-        content_type = request.data.type
-        to_censure = get_content(request.data.content_id.id, content_type)
-        serializer = serializer_dict(content_type)(to_censure, data={censure : True, is_active : False})
-        report_serializer = ReportSerializer(request.data, data={resolved : True})
+        print(request.data)
+        content_type = request.data['type']
+        to_censure = self.get_content(request.data['content_id']['id'], content_type)
+        serializer = self.serializer_dict[content_type](to_censure, data={'censure' : True, 'is_active' : False}, partial=True)
+        report_serializer = ReportSerializer(self.get_report(request.data['id']),data={'resolved' : True}, partial=True)        
         if serializer.is_valid() and report_serializer.is_valid():
             serializer.save()
             report_serializer.save()
             return Response(report_serializer.data)
-        return Response(status=HTTP_400_BAD_REQUEST)
+        return Response(status = status.HTTP_400_BAD_REQUEST)
 
 
 

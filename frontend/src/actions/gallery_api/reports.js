@@ -61,7 +61,7 @@ export const censureContent = (report) => (dispatch, getState) => {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
-  return fetch(`/api/actions/censure`, {
+  return fetch(`/api/actions/censure/`, {
     method: "POST",
     headers,
     body: JSON.stringify(report),

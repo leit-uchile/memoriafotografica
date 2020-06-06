@@ -2,17 +2,35 @@ import React, {useState} from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter,
             Form, FormGroup, Label, Input, Row, Col} from "reactstrap";
 
+
+
+
+
 const ResolveModal = (props) => {
     const {
       buttonLabel,
       className,
-      report,      
+      report,     
+      censureContent 
     } = props;
   
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false)
+    const [shouldMail, setShouldMail] = useState(true)
     const [newreport, setNewreport] = useState({...report});
     const toggle = () => {setNewreport(report); setLoading(false); setModal(!modal)};
+
+    const censure = () => {
+      setLoading(!loading);
+      console.log(newreport)
+      censureContent(newreport).then(response => {
+        setLoading(!loading)
+        window.location.reload()
+      })
+      
+
+    }
+
     console.log(newreport)
     return (
         <div>
@@ -22,7 +40,7 @@ const ResolveModal = (props) => {
             <ModalBody>    
               <Row>
                 <Col xs-12 md-6>
-                  <Button color="danger">Censurar Contenido</Button>
+                  <Button color="danger" onClick={censure} >Censurar Contenido</Button>
                 </Col>
                 <Col xs-12 md-6>
                   <Button color="success">Descartar Reporte</Button>

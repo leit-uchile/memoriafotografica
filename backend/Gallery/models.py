@@ -51,7 +51,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)
     def __str__(self):
-        return "Comentario"
+        return 'Comentario: "'+self.content[:50]+'..."'
 
 class Category(models.Model):
     title = models.CharField(max_length= 30)
