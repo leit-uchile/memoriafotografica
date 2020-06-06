@@ -4,26 +4,26 @@ import { connect } from "react-redux";
 import { gallery, site_misc } from "../../actions";
 import { Helmet } from "react-helmet";
 import { Container, Row, Col } from "reactstrap";
-import NewsSlider from "../News/NewsSlider"
+import NewsSlider from "../News/NewsSlider";
 import "./landing.css";
 import Gallery from "react-photo-gallery";
 
-const LandingPage = props => {
-  const { setRoute, loadPhotos} = props;
+const LandingPage = (props) => {
+  const { setRoute, loadPhotos } = props;
 
   useEffect(() => {
     setRoute("/Inicio");
     loadPhotos();
   }, [loadPhotos, setRoute]);
 
-  var mapped = props.photos.map(el => ({
+  var mapped = props.photos.map((el) => ({
     src: el.thumbnail,
     height: el.aspect_h,
     width: el.aspect_w,
-    id: el.id
+    id: el.id,
   }));
 
-  var onClickPhoto = o => {
+  var onClickPhoto = (o) => {
     setRedirect(`/photo/${mapped[o.index].id}`);
   };
 
@@ -101,7 +101,7 @@ const LandingPage = props => {
         style={{
           backgroundColor: "var(--leit-bg-gray)",
           paddingTop: "2em",
-          paddingBottom: "2em"
+          paddingBottom: "2em",
         }}
       >
         <Container>
@@ -147,14 +147,19 @@ const LandingPage = props => {
         <Container>
           <Row>
             <Col sm={{ size: "4", offset: "2" }}>
-              <h2 className="colTitle" data-aos="fade-up">¿Quieres participar?</h2>
+              <h2 className="colTitle" data-aos="fade-up">
+                ¿Quieres participar?
+              </h2>
             </Col>
             <Col sm={{ size: "4" }}>
               <p className="detailText">
                 Estamos en b&uacute;squeda de contenido hist&oacute;rico tales
                 como fotograf&iacute;as de eventos, lugares, personajes,
                 actividades, entre otros. Si tienes material puedes subirlo{" "}
-                <Link to="/upload" className="btn btn-primary btn-lg">aqu&iacute;</Link>.
+                <Link to="/upload" className="btn btn-primary btn-lg">
+                  aqu&iacute;
+                </Link>
+                .
               </p>
             </Col>
           </Row>
@@ -164,13 +169,13 @@ const LandingPage = props => {
   );
 };
 
-const mapStateToProps = state => ({
-  photos: state.photos.photos
+const mapStateToProps = (state) => ({
+  photos: state.photos.photos,
 });
 
-const mapActionsToProps = dispatch => ({
-  loadPhotos: () => dispatch(gallery.photos.home(0,10)),
-  setRoute: route => dispatch(site_misc.setCurrentRoute(route))
+const mapActionsToProps = (dispatch) => ({
+  loadPhotos: () => dispatch(gallery.photos.home(0, 10)),
+  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(LandingPage);

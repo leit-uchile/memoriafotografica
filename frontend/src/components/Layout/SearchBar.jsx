@@ -16,6 +16,7 @@ class SearchBar extends Component {
       value: "",
       suggestions: [],
       iptc_mapping: {},
+      iptc_filter: 0,
       limit: 10,
       redirectLanding: false,
     };
@@ -40,7 +41,7 @@ class SearchBar extends Component {
   };
 
   onSuggestionsFetchRequested = ({ value }) => {
-    this.props.search(value, this.state.limit);
+    this.props.search(value, this.state.limit, this.state.iptc_filter);
   };
 
   onSuggestionsClearRequested = () => {
@@ -51,6 +52,15 @@ class SearchBar extends Component {
 
   onSuggestionSelected = (e, { suggestion }) => {
     this.setState({ id: suggestion.id });
+  };
+
+  onChangeIPTCFilter = (e) => {
+    this.setState({ iptc_filter: Number(e.currentTarget.value) });
+    this.props.search(
+      this.state.value,
+      this.state.limit,
+      Number(e.currentTarget.value)
+    );
   };
 
   componentDidUpdate(prevProps) {
@@ -66,11 +76,22 @@ class SearchBar extends Component {
       // Mapping is ready then group
       if (Object.keys(this.state.iptc_mapping).length !== 0) {
         let groups = {};
+        // Group by IPTC
         this.props.tags.forEach((t) => {
-          if (groups[t.metadata] === undefined) {
-            groups[t.metadata] = [t];
-          } else {
-            groups[t.metadata] = [...groups[t.metadata], t];
+          // Accept All
+          if (this.state.iptc_filter === 0) {
+            if (groups[t.metadata] === undefined) {
+              groups[t.metadata] = [t];
+            } else {
+              groups[t.metadata] = [...groups[t.metadata], t];
+            }
+            // Only look at one specific
+          } else if (this.state.iptc_filter === t.metadata) {
+            if (groups[t.metadata] === undefined) {
+              groups[t.metadata] = [t];
+            } else {
+              groups[t.metadata] = [...groups[t.metadata], t];
+            }
           }
         });
         let suggestions = [];
@@ -99,7 +120,7 @@ class SearchBar extends Component {
     }
 
     if (this.state.redirectLanding) {
-      this.setState({ redirectLanding: false });
+      this.setState({ redirectLanding: false, iptc_filter: 0 });
       window.scrollTo({
         top: 0,
         left: 0,
@@ -128,6 +149,7 @@ class SearchBar extends Component {
                 name="selectMulti"
                 id="exampleSelectMulti"
                 className="search-iptc-selector"
+                onChange={this.onChangeIPTCFilter}
               >
                 <option value="0">Todo el sitio</option>
                 {this.props.iptc.map((iptc, k) => (
@@ -151,6 +173,7 @@ class SearchBar extends Component {
                 )}
                 getSectionSuggestions={(section) => section.suggestions}
                 inputProps={inputProps}
+                alwaysRenderSuggestions
               />
               <Button
                 type="button"
@@ -179,8 +202,8 @@ const mapActionsToProps = (dispatch) => ({
   onLoadGetIPTC: () => dispatch(metadata.iptcs()),
   setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
   putSearch: (id, value) => dispatch(site_misc.putSearchItem(id, value)),
-  search: (query, limit) =>
-    dispatch(metadata.searchMetadataByValueSB(query, limit)),
+  search: (query, limit, iptc) =>
+    dispatch(metadata.searchMetadataByValueSB(query, limit, iptc)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(SearchBar);
