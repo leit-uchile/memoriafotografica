@@ -15,6 +15,7 @@ from django.http import Http404, QueryDict, JsonResponse
 from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
 from rest_condition import ConditionalPermission, C, And, Or, Not
 from rest_framework.documentation import include_docs_urls
+from datetime import date
 
 def get_user(photoPair):
     try:
@@ -40,28 +41,27 @@ def make_tag(metadata_id):
     return m.metadata.name + " : " + m.value
 
 def filter_photos(photolist, request):
-    sort_type = {"asc":"", "desc":"-"}
     try:
-        if request.query_params["category"]:
+        if "category" in request.query_params:
             q = list(filter(('').__ne__, request.query_params["category"].split(',')))
             photolist = photolist.filter(category__id__in = q).distinct()
             photolist = photolist.order_by("-created_at")
-    except KeyError:
-        pass
-
-    try:
-        if request.query_params["metadata"]:
+        if "metadata" in request.query_params:
             meta_query = list(filter(('').__ne__, request.query_params["metadata"].split(',')))
             photolist = photolist.filter(metadata__id__in = meta_query)
-    except KeyError:
-        pass
-
-    try:
-        if request.query_params["user"]:
+        if "title" in request.query_params:
+            photolist = photolist.filter(title__icontains = request.query_params["title"])
+        if "desc" in request.query_params:
+            photolist = photolist.filter(description__icontains = request.query_params["desc"])
+        if "uploaded" in request.query_params:
+            photolist = photolist.filter(created_at__gte = date.fromisoformat(request.query_params["uploaded"]))
+        if "taken" in request.query_params:
+            photolist = photolist.filter(upload_date__gte = date.fromisoformat(request.query_params["taken"]))
+        if "user" in request.query_params:
             photolist = photolist.filter(user=request.query_params["user"])
-    except KeyError:
+    except Exception as e:
+        print("Error filtering photos",e)
         pass
-
     return photolist
 
 def sort_by_field(element_list, request):

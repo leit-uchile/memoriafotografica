@@ -26,15 +26,17 @@ const Photo = ({
             backgroundImage: "url('" + url + "')",
             height: height,
             width: width,
-            ...style
-          }}>
+            ...style,
+          }}
+        >
           <div
             className={"doHoverPhoto"}
             style={{
               ...styles.photoHoverDefault,
               lineHeight: height,
-              ...hoverStyle
-            }}>
+              ...hoverStyle,
+            }}
+          >
             {hoverText}
           </div>
         </div>
@@ -46,22 +48,23 @@ const Photo = ({
             ...styles.containerDivIm,
             backgroundImage: "url('" + url + "')",
             height: height,
-            width: width
-          }}></div>
+            width: width,
+          }}
+        ></div>
       )}
     </Link>
   ) : (
-    <a onClick={onClick}>
-      <div
-        className={className}
-        style={{
-          ...style,
-          ...styles.containerDivIm,
-          backgroundImage: "url('" + url + "')",
-          height: height,
-          width: width
-        }}></div>
-    </a>
+    <div
+      className={className}
+      onClick={onClick}
+      style={{
+        ...style,
+        ...styles.containerDivIm,
+        backgroundImage: "url('" + url + "')",
+        height: height,
+        width: width,
+      }}
+    ></div>
   );
 
 const styles = {
@@ -69,7 +72,7 @@ const styles = {
     position: "relative",
     backgroundSize: "cover",
     backgroundPositionY: "center",
-    backgroundPositionX: "center"
+    backgroundPositionX: "center",
   },
   photoHoverDefault: {
     position: "absolute",
@@ -80,8 +83,8 @@ const styles = {
     textAlign: "center",
     verticalAlign: "middle",
     color: "white",
-    fontWeight: "700"
-  }
+    fontWeight: "700",
+  },
 };
 
 export default Photo;

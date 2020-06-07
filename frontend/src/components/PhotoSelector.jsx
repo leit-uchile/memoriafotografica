@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, Fragment } from "react";
 import Gallery from "react-photo-gallery";
 import { Button, Container, Row, Col } from "reactstrap";
 
@@ -96,7 +96,12 @@ const SelectedImage = ({
   );
 };
 
-const PhotoSelector = ({ photos, putAll = (e) => {}, ...props }) => {
+const PhotoSelector = ({
+  useContainer = true,
+  photos,
+  putAll = (e) => {},
+  ...props
+}) => {
   const [selectAll, setSelectAll] = useState(false);
 
   const toggleSelectAll = () => {
@@ -120,21 +125,29 @@ const PhotoSelector = ({ photos, putAll = (e) => {}, ...props }) => {
     [selectAll]
   );
 
+  if (useContainer) {
+    return (
+      <Container fluid>
+        <Row>
+          <Col>
+            <Button onClick={toggleSelectAll}>Seleccionar todas</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Gallery photos={photos} renderImage={imageRenderer} {...props} />
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
   return (
-    <Container fluid>
-      <Row>
-        <Col>
-          <Button className="float-left" onClick={toggleSelectAll}>
-            Seleccionar todas
-          </Button>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Gallery photos={photos} renderImage={imageRenderer} {...props} />
-        </Col>
-      </Row>
-    </Container>
+    <Fragment>
+      <Button onClick={toggleSelectAll}>Seleccionar todas</Button>
+      <br />
+      <br />
+      <Gallery photos={photos} renderImage={imageRenderer} {...props} />
+    </Fragment>
   );
 };
 

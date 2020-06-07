@@ -6,12 +6,14 @@ import { faEdit } from "@fortawesome/free-solid-svg-icons";
 export const CategoryTable = ({ cats, updateToDelete, toDelete }) => (
   <Table responsive striped className="statBox">
     <thead>
-      <th></th>
-      <th>Nombre</th>
-      <th>Fecha Creación</th>
-      <th>Fecha Actualización</th>
-      <th># Fotos</th>
-      <th>Editar</th>
+      <tr>
+        <th></th>
+        <th>Nombre</th>
+        <th>Fecha Creación</th>
+        <th>Fecha Actualización</th>
+        <th># Fotos</th>
+        <th>Editar</th>
+      </tr>
     </thead>
     <tbody>
       {cats.length > 0 ? (
@@ -22,7 +24,7 @@ export const CategoryTable = ({ cats, updateToDelete, toDelete }) => (
                 type="checkbox"
                 aria-label="Checkbox for delete Categories"
                 onClick={(e) => updateToDelete(el.id, e.target.checked)}
-                checked={toDelete.includes(el.id)}
+                defaultChecked={toDelete.includes(el.id)}
               ></input>
             </th>
             <th>{el.title}</th>
@@ -37,7 +39,9 @@ export const CategoryTable = ({ cats, updateToDelete, toDelete }) => (
           </tr>
         ))
       ) : (
-        <span>No existen categorias</span>
+        <tr>
+          <td>No existen categorias</td>
+        </tr>
       )}
     </tbody>
   </Table>

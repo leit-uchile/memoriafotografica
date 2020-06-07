@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Col, Row, Container, Button, ButtonGroup, Input } from "reactstrap";
+import { Col, Row, Container, Button, ButtonGroup } from "reactstrap";
 import { connect } from "react-redux";
 import { gallery } from "../../../actions";
 import { Pagination } from "../../../components";
@@ -13,7 +13,7 @@ class Categories extends Component {
     this.state = {
       toDelete: [],
       page: 0,
-      page_size: 12,
+      page_size: 10,
     };
     this.props.getCategories(this.state.page, this.state.page_size);
   }
@@ -30,7 +30,7 @@ class Categories extends Component {
     if (isCheck) {
       this.setState({ toDelete: [...this.state.toDelete, i] });
     } else {
-      this.setState({ toDelete: this.state.toDelete.filter((el) => el != i) });
+      this.setState({ toDelete: this.state.toDelete.filter((el) => el !== i) });
     }
     // Update
   };

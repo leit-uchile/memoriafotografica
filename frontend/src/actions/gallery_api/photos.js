@@ -48,8 +48,9 @@ export const home = (page = 0, pageSize = 200) => (dispatch, getState) => {
  * Recover photos for the curador view
  * @param {Number} page
  * @param {Number} pageSize
+ * @param {String} search query text
  */
-export const getPhotosAuth = (page = 0, pageSize = 25) => (
+export const getPhotosAuth = (page = 0, pageSize = 25, search = "") => (
   dispatch,
   getState
 ) => {
@@ -60,7 +61,12 @@ export const getPhotosAuth = (page = 0, pageSize = 25) => (
 
   dispatch({ type: CURADOR_LOADING });
 
-  return fetch(`/api/photos/?page=${page + 1}&page_size=${pageSize}`, {
+  let url = `/api/photos/?page=${page + 1}&page_size=${pageSize}`
+  if(search !== ""){
+    url = url+search
+  }
+
+  return fetch(url, {
     method: "GET",
     headers: headers,
   }).then(function (response) {

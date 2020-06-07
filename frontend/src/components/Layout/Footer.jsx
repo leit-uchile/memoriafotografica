@@ -12,6 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowCircleUp } from "@fortawesome/free-solid-svg-icons";
+import "../../css/footer.css";
 
 const Footer = () => {
   const componentDidMount = () =>
@@ -29,8 +30,9 @@ const Footer = () => {
             <img
               src={"/assets/logo01.svg"}
               alt={"logo"}
-              height="90px"
+              height="60px"
               style={{ maxWidth: "100%" }}
+              id="logo-footer"
             />
           </Col>
           <Col sm={4}>

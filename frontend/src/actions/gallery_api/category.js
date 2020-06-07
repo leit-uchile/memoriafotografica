@@ -6,7 +6,9 @@ import {
   CURADOR_LOADING,
   CURADOR_REFRESH,
   CURADOR_COMPLETED,
+  CATEGORY_RESET_ERRORS,
 } from "../types";
+import { setAlert } from "../site_misc";
 
 /**
  * Recover categories using pagination
@@ -44,16 +46,21 @@ export const createCategory = (data) => (dispatch, getState) => {
     body: sent_data,
   }).then(function (response) {
     const r = response;
-    if (r.status === 200) {
+    if (r.status === 201) {
+      dispatch(setAlert("Categoria creada", "success"));
       return r.json().then((data) => {
         dispatch({ type: CREATED_CATEGORY, data: data });
       });
     } else {
+      dispatch(setAlert("Error al crear categoria", "danger"));
       dispatch({ type: CREATED_CATEGORY_ERROR, data: r.data });
       throw r.data;
     }
   });
 };
+
+export const resetErrors = () => (dispatch) =>
+  dispatch({ type: CATEGORY_RESET_ERRORS });
 
 export const editCategory = () => {};
 

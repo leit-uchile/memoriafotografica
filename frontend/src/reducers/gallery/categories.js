@@ -3,12 +3,14 @@ import {
   EMPTY_CATEGORIES,
   CREATED_CATEGORY,
   CREATED_CATEGORY_ERROR,
+  CATEGORY_RESET_ERRORS
 } from "../../actions/types";
 
 const initialState = {
   categories: [],
   error: "",
   total: -1,
+  newCat: {}
 };
 
 export default function categories(state = initialState, action) {
@@ -22,9 +24,12 @@ export default function categories(state = initialState, action) {
         ...state,
         loading: false,
         error: "Hubo un error creando la categoría.",
+        newCat: {}
       };
     case CREATED_CATEGORY:
-      return { ...state, loading: false };
+      return { ...state, loading: false, newCat: action.data };
+    case CATEGORY_RESET_ERRORS:
+      return {...state, error: ""}
     default:
       return state;
   }

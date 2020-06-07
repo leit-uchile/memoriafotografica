@@ -1,6 +1,11 @@
-import React from 'react';
-import {Spinner} from 'reactstrap';
+import React from "react";
+import { Spinner } from "reactstrap";
 
-const LeitSpinner = () => <Spinner style={{ width: "6rem", height: "6rem"}} className="leit-spinner" />
+const LeitSpinner = ({ remSize = "6rem" }) => (
+  <Spinner
+    style={{ width: remSize, height: remSize }}
+    className="leit-spinner"
+  />
+);
 
 export default LeitSpinner;

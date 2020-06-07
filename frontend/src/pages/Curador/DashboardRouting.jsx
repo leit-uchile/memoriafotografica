@@ -53,8 +53,8 @@ const availableRoutes = [
   {
     to: "email",
     display: "Bandeja de Mensajes",
-    icon: <FontAwesomeIcon icon={faEnvelope} />
-  }
+    icon: <FontAwesomeIcon icon={faEnvelope} />,
+  },
 ];
 
 const Dashboard = ({ match, location }) => (

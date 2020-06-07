@@ -80,13 +80,15 @@ const ModifyModal = ({
     } else {
       setOps(selected.length);
     }
+    // eslint-disable-next-line
   }, [open]);
 
   useEffect(() => {
     if (completed + errors.length >= selected.length) {
       setState((s) => ({ ...s, done: true }));
     }
-  }, [completed, errors]);
+    // eslint-disable-next-line
+  }, [completed, errors, selected]);
 
   // Set default IPTC id
   useEffect(() => {
@@ -185,7 +187,7 @@ const ModifyModal = ({
           </ModalFooter>
         </Fragment>
       ) : state.done ? (
-        errors.length == 0 ? (
+        errors.length === 0 ? (
           <ModalBody style={{ textAlign: "center" }}>
             Operaci&oacute;n completada
           </ModalBody>
