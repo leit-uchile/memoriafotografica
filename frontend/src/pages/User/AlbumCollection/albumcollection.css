@@ -6,7 +6,7 @@
 
 .album-sticky-element{
   position: sticky;
-  z-index: 4;
+  z-index: 2;
   top: 6.5em;
   height: fit-content;
 }
@@ -23,8 +23,8 @@
   border-bottom: 1px solid rgb(210,214,218);
   margin-bottom: 2em;
   position: sticky;
-  z-index: 5;
-  top: 0;
+  z-index: 3;
+  top: calc(1em + 65px);
 }
 
 .album-container .album-white-box .album-desc{

@@ -30,7 +30,7 @@ const Modify = ({
 
   useEffect(() => {
     searchMeta(searchState, pagination.page + 1, pagination.page_size);
-  }, [pagination, searchState]);
+  }, [pagination, searchState, searchMeta]);
 
   const maxPage = Math.floor(metadata.count / pagination.page_size);
   const setPage = (p) => {

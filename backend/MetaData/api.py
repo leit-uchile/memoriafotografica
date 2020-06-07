@@ -24,9 +24,11 @@ from rest_framework.documentation import include_docs_urls
 
 def search_meta(elements, request):
     try:
-        if request.query_params["search"]:
+        if "iptc" in request.query_params and  request.query_params["iptc"] != "0":
+            elements = elements.filter(metadata__pk=int(request.query_params["iptc"]))
+        if "search" in request.query_params:
             elements = elements.filter(value__icontains=request.query_params["search"])
-        if request.query_params["limit"]:
+        if "limit" in request.query_params:
             elements = elements[0:int(request.query_params["limit"])]
     except KeyError:
         pass

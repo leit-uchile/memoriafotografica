@@ -111,14 +111,14 @@ export const createMetadata = (name, iptcId) => (dispatch, getState) => {
 /**
  * Reset the array containing the ids from new created metadata
  */
-export const resetNewMetadataIds = () => (dispatch, getState) =>
+export const resetNewMetadataIds = () => (dispatch) =>
   dispatch({ type: RESET_METADATA_STORE, data: null });
 
 /**
  * Search metadata by name using a token if available for header searchbar
  * @param {String} query
  */
-export const searchMetadataByValueSB = (query, limit = 10) => (
+export const searchMetadataByValueSB = (query, limit = 10, iptc= 0) => (
   dispatch,
   getState
 ) => {
@@ -133,11 +133,11 @@ export const searchMetadataByValueSB = (query, limit = 10) => (
 
   if (getState().user.isAuthenticated) {
     let headers = { Authorization: "Token " + getState().user.token };
-    fetch(`/api/metadata/?search=${query}&limit=${limit}`, { headers }).then(
+    fetch(`/api/metadata/?search=${query}&limit=${limit}&iptc=${iptc}`, { headers }).then(
       success_func
     );
   } else {
-    fetch(`/api/metadata/?search=${query}&limit=${limit}`).then(success_func);
+    fetch(`/api/metadata/?search=${query}&limit=${limit}&iptc=${iptc}`).then(success_func);
   }
 };
 

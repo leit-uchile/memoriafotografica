@@ -26,3 +26,6 @@ body {
   margin-bottom: 100px;
 }
 
+footer .col-sm-4 img#logo-footer {
+  margin-top: 2em;
+}
