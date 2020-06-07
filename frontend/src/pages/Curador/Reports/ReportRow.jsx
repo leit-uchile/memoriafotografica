@@ -25,7 +25,7 @@ const ReportRow = ({ report, render, actions }) => {
         {actions(report)}
       </td>
       <td style={report.resolved ? {color: "green"} : {color: "red"}}>
-        {report.resolved ? "Resuelta" : "Sin resolver"}
+        {report.resolved ? "Resuelto" : "Pendiente"}
       </td>
       <td>
         {new Date(report.created_at).toLocaleDateString("es")}

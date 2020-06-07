@@ -1,9 +1,50 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter,
             Form, FormGroup, Label, Input, Row, Col} from "reactstrap";
+import { connect } from "react-redux";
+import { gallery, user} from "../../../actions";
+import LeitSpinner from "../../../components/Layout/LeitSpinner"
 
+const EditUserForm = () => {
+  return (
+    <div>
+      Edit User
+    </div>
+  )
+}
 
+const EditPhotoForm = ({photo}) => {
+  
+  const handleChange = (event) => {
+    const target = event.target;
+    const value = target.value;
+    let editedPhoto = {...newphoto}
+    editedPhoto[target.name] = value;
+    setNewphoto(editedPhoto);
+  }
 
+  useEffect(()=>{
+    if(photo != originalphoto){
+      setOriginalphoto(photo)
+      setNewphoto(photo)
+    }
+  })
+
+  const [newphoto, setNewphoto] = useState(photo)
+  const [originalphoto, setOriginalphoto] = useState(photo)
+  return (
+    <Row>
+      <FormGroup>
+                  <Label>Editar Título</Label>
+                  <Input type="text" name="title" value={newphoto.title} onChange={handleChange}/>
+      </FormGroup>
+      <FormGroup>
+                  <Label>Editar Descripción</Label>
+                  <Input type="textarea" name="description" value={newphoto.description} onChange={handleChange}/>
+      </FormGroup> 
+    </Row>
+  )
+}
 
 
 const ResolveModal = (props) => {
@@ -11,11 +52,16 @@ const ResolveModal = (props) => {
       buttonLabel,
       className,
       report,     
-      censureContent 
+      censureContent,
+      photo,
+      getPhoto,
+      user,
+      getUser,
     } = props;
   
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false)
+    const [spinner, setSpinner] = useState(true)
     const [shouldMail, setShouldMail] = useState(true)
     const [newreport, setNewreport] = useState({...report});
     const toggle = () => {setNewreport(report); setLoading(false); setModal(!modal)};
@@ -30,8 +76,21 @@ const ResolveModal = (props) => {
       
 
     }
-
-    console.log(newreport)
+    
+    useEffect(() => {
+      console.log(!photo.image)
+      console.log(photo.image)
+      if (modal) switch(newreport.type){
+        case 1:
+          if(true) getUser(report.content_id.id).then(
+            setSpinner(false)
+          )
+        case 2:
+          if(!photo.image) getPhoto(newreport.content_id.id).then(
+            setSpinner(false)
+          )      
+      }
+    })
     return (
         <div>
           <Button color="danger" onClick={toggle}>{buttonLabel}</Button>
@@ -55,6 +114,7 @@ const ResolveModal = (props) => {
                   <Row>
                       Formulario de edición
                   </Row>
+                  {spinner ? (<LeitSpinner/>) : (newreport.type == 2 ? (<EditPhotoForm photo={photo}/>) : (<EditUserForm />))}
                 </Col>
               ) : "" }
             </ModalBody>
@@ -67,5 +127,13 @@ const ResolveModal = (props) => {
       );
     }
 
+const mapStateToProps = state => ({
+  photo : state.photos.details
+});
 
-    export default ResolveModal;
+const mapActionsToProps = dispatch => ({
+  getPhoto: pk => dispatch(gallery.photos.getPhoto(pk)),
+  getUser: pk => dispatch(user.loadAUser(pk))
+});
+
+export default connect(mapStateToProps, mapActionsToProps)(ResolveModal);

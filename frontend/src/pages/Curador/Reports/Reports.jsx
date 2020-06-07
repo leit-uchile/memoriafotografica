@@ -33,7 +33,7 @@ const Reports = ({ loading, reports, getReports, updatedReports }) => {
   return (
     <Container fluid>
       <h2>Reportes de contenido</h2>
-      <Row>
+      {/* <Row>
         <Col md="2">
           <ButtonGroup>
             <Button disabled>Filtrar</Button>
@@ -42,7 +42,7 @@ const Reports = ({ loading, reports, getReports, updatedReports }) => {
             </Button>
           </ButtonGroup>
         </Col>
-      </Row>
+      </Row> */}
       <Row>
         <Col>
           {loading ? <LeitSpinner /> : <ReportsTable reports={reports} />}

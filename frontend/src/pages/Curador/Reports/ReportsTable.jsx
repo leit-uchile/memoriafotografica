@@ -21,7 +21,7 @@ const ReportsTable = ({ reports, updateReport, censureContent}) => {
     updateReport(repCopy);
   };  
   const resolveButton = rep => (
-    <ResolveModal buttonLabel="Resolver" report={rep} censureContent={censureContent}/>
+    (rep.resolved) ? "-" : (<ResolveModal buttonLabel="Acciones" report={rep} censureContent={censureContent}/>)
   );
 
   return (
