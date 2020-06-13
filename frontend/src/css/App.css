@@ -111,3 +111,7 @@ footer {
 a.nav-link.active {
   color: var(--leit-pink) !important;
 }
+
+.add-rows-mtop .row{
+  margin-top: 1em;
+}

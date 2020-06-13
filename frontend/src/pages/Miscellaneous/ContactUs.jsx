@@ -5,7 +5,7 @@ import {
   faAddressCard,
   faPhoneAlt,
   faEnvelope,
-  faCheckSquare
+  faCheckSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   Container,
