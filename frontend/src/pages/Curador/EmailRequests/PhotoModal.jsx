@@ -18,7 +18,7 @@ const PhotoModal = (props) => {
 
   return (
     <div>
-      <Button color="link" onClick={toggle}>
+      <Button color="link" onClick={toggle} style={{margin:'0', padding:'0'}}>
         {buttonLabel}
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>

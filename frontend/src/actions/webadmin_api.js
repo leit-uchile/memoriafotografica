@@ -67,7 +67,8 @@ export const removeRequestPhoto = (value) => {
 
 export const sendRequest = (photos, info) => {
   return (dispatch, getState) => {
-    let headers = { "Content-Type": "application/json" };
+    let headers = { "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token};
 
     let jsonthing = JSON.stringify({
       reason: info.reason,
@@ -129,10 +130,16 @@ export const updateRequest = (request) => (dispatch, getState) => {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
+  let jsonthing = JSON.stringify({
+    attached: request.originalPhotos,
+    resolved: request.resolved,
+    email_sent: request.email_sent //Approved or Denied
+  });
+  
   return fetch(`/api/requests/photos/${request.id}/`, {
     method: "PUT",
     headers,
-    body: JSON.stringify(request),
+    body: jsonthing,
   }).then((response) => {
     const r = response;
     if (r.status === 200) {
@@ -157,7 +164,7 @@ export const contactUs = (formData) => {
       email: formData.email,
       message: formData.message,
     });
-    return fetch(`/api/requests/contacts/`, {
+    return fetch(`/api/requests/contacts/all/`, {
       method: "POST",
       headers: headers,
       body: jsonthing,
