@@ -1,10 +1,10 @@
 import React from "react";
 import { Table, Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faImage } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
-export const CategoryTable = ({ cats, updateToDelete, toDelete }) => (
+export const CategoryTable = ({ cats, updateToDelete, toDelete, onAdd }) => (
   <Table responsive striped className="statBox">
     <thead>
       <tr>
@@ -13,7 +13,7 @@ export const CategoryTable = ({ cats, updateToDelete, toDelete }) => (
         <th>Fecha Creación</th>
         <th>Fecha Actualización</th>
         <th># Fotos</th>
-        <th>Editar</th>
+        <th>Acci&oacute;n</th>
       </tr>
     </thead>
     <tbody>
@@ -30,15 +30,15 @@ export const CategoryTable = ({ cats, updateToDelete, toDelete }) => (
             </th>
             <th>
               <Link to={`/curador/dashboard/categories/${el.id}/`}>
-                {el.title}
+                <FontAwesomeIcon icon={faEdit} /> {el.title}
               </Link>
             </th>
             <td>{new Date(el.created_at).toLocaleString()}</td>
             <td>{new Date(el.updated_at).toLocaleString()}</td>
             <td>{el.count}</td>
             <td>
-              <Button>
-                <FontAwesomeIcon icon={faEdit} />
+              <Button onClick={() => onAdd(el.id)}>
+                Agregar <FontAwesomeIcon icon={faImage} />
               </Button>
             </td>
           </tr>

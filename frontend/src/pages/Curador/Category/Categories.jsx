@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { Col, Row, Container, Button, ButtonGroup } from "reactstrap";
 import { connect } from "react-redux";
 import { gallery } from "../../../actions";
@@ -43,6 +43,10 @@ class Categories extends Component {
     this.props.getCategories(p, this.state.page_size);
   };
 
+  doRedirect = (id) => {
+    this.setState({ redirect: id });
+  };
+
   render() {
     const { match, cats, total } = this.props;
 
@@ -53,6 +57,15 @@ class Categories extends Component {
       Math.floor(total / this.state.page_size) === total / this.state.page_size
         ? Math.floor(total / this.state.page_size) - 1
         : Math.floor(total / this.state.page_size);
+
+    if (this.state.redirect) {
+      return (
+        <Redirect
+          push
+          to={`/curador/dashboard/categories/${this.state.redirect}/add`}
+        />
+      );
+    }
 
     return (
       <Container>
@@ -89,6 +102,7 @@ class Categories extends Component {
               cats={cats}
               updateToDelete={this.updateToDelete}
               toDelete={this.state.toDelete}
+              onAdd={this.doRedirect}
             />
           </Col>
         </Row>

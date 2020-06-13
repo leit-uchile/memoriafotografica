@@ -19,6 +19,7 @@ import Filter from "./Filter/Filter";
 import Categories from "./Category/Categories";
 import Category_New from "./Category/Category_New";
 import Category_Photos from "./Category/Category_Photos";
+import Category_Add from "./Category/Category_Add";
 import Landing from "./Landing";
 import Reports from "./Reports/Reports";
 import Metadata from "./Metadata";
@@ -110,6 +111,11 @@ const Dashboard = ({ match, location }) => (
             exact
             path={match.path + "/categories/:id/"}
             component={Category_Photos}
+          />
+          <BoundedRoute
+            exact
+            path={match.path + "/categories/:id/add"}
+            component={Category_Add}
           />
           <BoundedRoute
             exact

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import {
   Container,
   Row,
@@ -7,38 +7,91 @@ import {
   Button,
   InputGroup,
   InputGroupAddon,
-  Form,
-  FormGroup,
   Label,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronCircleLeft,
   faExternalLinkAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
-import { gallery, metadata } from "../../../actions";
-import { useEffect } from "react";
+import { gallery } from "../../../actions";
 import { PhotoSelector, LeitSpinner, Pagination } from "../../../components";
-import { useState } from "react";
+
+const RemovePhotos = ({ action }) => {
+  const [modal, setModal] = useState(false);
+
+  const toggle = () => {
+    setModal(!modal);
+  };
+
+  return (
+    <Fragment>
+      <Button color="warning" onClick={toggle}>
+        Remover Fotos
+      </Button>
+      <Modal
+        isOpen={modal}
+        toggle={toggle}
+        scrollable
+        unmountOnClose={false}
+        role="confirm"
+      >
+        <ModalHeader toggle={toggle}>Remover Fotos</ModalHeader>
+        <ModalBody>
+          Las fotos seran removidas de la categoria, esta acci&oacute;n puede
+          deshacerse manualmente.
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="primary"
+            onClick={() => {
+              toggle();
+              action();
+            }}
+          >
+            Continuar
+          </Button>{" "}
+          <Button color="secondary" onClick={toggle}>
+            Cancelar
+          </Button>
+        </ModalFooter>
+      </Modal>
+    </Fragment>
+  );
+};
+
 const Category_Photos = ({
   photos,
   photo_count,
   loading,
   catDetails,
+  updatedPhotos,
   getPhotosAuth,
   getCategory,
+  updateCategory,
+  resetErrors,
+  associate,
   match,
 }) => {
   const [page, setPage] = useState({ page: 0, page_size: 10 });
-  const [data, setData] = useState({ title: "" });
+  const [data, setData] = useState({ title: "", pictures: [] });
 
+  // Initial load and on photos update
   useEffect(() => {
     let params = "&category=" + match.params.id;
     getCategory(match.params.id);
     getPhotosAuth(page.page, page.page_size, params);
-  }, []);
+    if (updatedPhotos) {
+      resetErrors();
+    }
+    // eslint-disable-next-line
+  }, [updatedPhotos, getCategory, getPhotosAuth, resetErrors]);
 
   useEffect(() => {
     setData((d) => ({ ...d, title: catDetails.title }));
@@ -57,8 +110,58 @@ const Category_Photos = ({
     getPhotosAuth(p, page.page_size, params);
   };
 
-  const handleOnClick = () => {};
-  const selectAll = () => {};
+  const addTitle = (e) => {
+    let target = e.target; // REACT BUG: e.target is not persistent over state update
+    setData((d) => ({ ...d, title: target.value }));
+  };
+
+  const update = () => {
+    updateCategory({ ...catDetails, title: data.title });
+  };
+
+  const handleOnClick = (obj) => {
+    const { id } = obj.photo;
+    // If its there remove it
+    const newList = data.pictures.filter((el) => el !== id);
+    if (data.pictures.filter((el) => el === id).length !== 0) {
+      setData((d) => ({ ...d, pictures: [...newList] }));
+    } else {
+      setData((d) => ({ ...d, pictures: [...newList, id] }));
+    }
+  };
+
+  const selectAll = (add) => {
+    if (add) {
+      let filter = data.pictures.filter((el) => {
+        for (let index = 0; index < photos.length; index++) {
+          if (photos[index].id === el) {
+            return false;
+          }
+        }
+        return true;
+      });
+      let mappedIds = photos.map((el) => el.id);
+      setData((d) => ({ ...d, pictures: [...filter, ...mappedIds] }));
+    } else {
+      let filter = data.pictures.filter((el) => {
+        for (let index = 0; index < photos.length; index++) {
+          if (photos[index].id === el) {
+            return false;
+          }
+        }
+        return true;
+      });
+      setData((d) => ({ ...d, pictures: [...filter] }));
+    }
+  };
+
+  const removePhotos = () => {
+    associate(data.pictures, catDetails.id);
+  };
+
+  const doRedirect = () => {
+    setData((d) => ({ ...d, redirect: catDetails.id }));
+  };
 
   // BUGFIX: there's a border case like
   // pageLimit = floor(50/25) = 2 and gives pages (0,1,2)
@@ -67,6 +170,15 @@ const Category_Photos = ({
     Math.floor(photo_count / page.page_size) === photo_count / page.page_size
       ? Math.floor(photo_count / page.page_size) - 1
       : Math.floor(photo_count / page.page_size);
+
+  if (data.redirect) {
+    return (
+      <Redirect
+        push
+        to={`/curador/dashboard/categories/${data.redirect}/add`}
+      />
+    );
+  }
 
   return (
     <Container fluid>
@@ -91,28 +203,28 @@ const Category_Photos = ({
           <InputGroup>
             <Input
               placeholder={"Nombre"}
-              value={data.title}
-              onChange={(e) =>
-                setData((d) => ({ ...d, title: e.currentTarget.value }))
-              }
+              defaultValue={data.title}
+              onChange={addTitle}
+              maxLength="30"
             />
             <InputGroupAddon addonType="append">
-              <Button color="success">Modificar Nombre</Button>
+              <Button color="success" onClick={update}>
+                Modificar Nombre
+              </Button>
             </InputGroupAddon>
           </InputGroup>
         </Col>
       </Row>
       <Row style={{ marginTop: "1em" }}>
         <Col style={{ textAlign: "center" }}>
+          <Button color="primary" onClick={doRedirect}>
+            Agregar fotos nuevas <FontAwesomeIcon icon={faExternalLinkAlt} />
+          </Button>{" "}
+          <RemovePhotos action={removePhotos} />{" "}
           {loading ? (
             <LeitSpinner />
           ) : (
             <Fragment>
-              <Button color="primary">
-                Agregar fotos nuevas{" "}
-                <FontAwesomeIcon icon={faExternalLinkAlt} />
-              </Button>{" "}
-              <Button color="warning">Remover Fotos</Button>{" "}
               <PhotoSelector
                 useContainer={false}
                 photos={mapped}
@@ -145,19 +257,18 @@ const mapStateToProps = (state) => ({
   photos: state.photos.photos,
   photo_count: state.photos.count,
   loading: state.site_misc.curador.loading,
-  newCat: state.categories.newCat,
   catError: state.categories.error,
   catDetails: state.categories.categoryDetail,
-  tags: state.metadata.general_tags,
+  updatedPhotos: state.categories.updatedPhotos,
 });
 const mapActionsToProps = (dispatch) => ({
   getCategory: (id) => dispatch(gallery.category.getCategory(id)),
   updateCategory: (data) => dispatch(gallery.category.updateCategory(data)),
+  associate: (pIds, catId, action = "remove") =>
+    dispatch(gallery.photos.associateCategory(pIds, catId, action)),
   resetErrors: () => dispatch(gallery.category.resetErrors()),
   getPhotosAuth: (page, page_size, search = "") =>
     dispatch(gallery.photos.getPhotosAuth(page, page_size, search)),
-  recoverTags: (query, page, pageSize) =>
-    dispatch(metadata.searchMetadataByValueGeneral(query, page, pageSize)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Category_Photos);

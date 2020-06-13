@@ -45,9 +45,7 @@ class Category_New extends Component {
     });
   };
 
-  // This is awfull
-  handleSearch = (e) => {
-    e.preventDefault();
+  recoverUrl = () => {
     const {
       photo_title,
       description,
@@ -71,7 +69,13 @@ class Category_New extends Component {
     if (tags.length !== 0) {
       url = url + `&metadata=${tags.map((el) => el.id).join(",")}`;
     }
-    this.props.getPhotosAuth(this.state.page, this.state.page_size, url);
+    return url;
+  };
+
+  // This is awfull
+  handleSearch = (e) => {
+    e.preventDefault();
+    this.setPage(0);
   };
 
   handleOnClick = (obj) => {
@@ -112,7 +116,8 @@ class Category_New extends Component {
 
   setPage = (p) => {
     this.setState({ page: p });
-    this.props.getPhotosAuth(p, this.state.page_size);
+    let url = this.recoverUrl();
+    this.props.getPhotosAuth(p, this.state.page_size, url);
   };
 
   deleteTag = (i) => {
@@ -189,6 +194,7 @@ class Category_New extends Component {
                   type="text"
                   placeholder="Categoria Nueva"
                   name="title"
+                  maxLength="30"
                 />
               </FormGroup>
               {this.state.creating ? (

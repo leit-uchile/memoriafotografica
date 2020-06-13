@@ -1,11 +1,16 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Alert as BTAlert, Container, Row, Col } from "reactstrap";
+import { UncontrolledAlert as BTAlert, Container, Row, Col } from "reactstrap";
 import PropTypes from "prop-types";
 const Alert = ({ alerts }) =>
   alerts !== null && alerts.length > 0 ? (
     <Container
-      style={{ top: "calc(1em + 65px)", zIndex: "9999", position: "sticky" }}
+      style={{
+        top: "calc(1em + 65px)",
+        zIndex: "999",
+        position: "sticky",
+        height: "0",
+      }}
     >
       {alerts.map((alert) => (
         <Row key={alert.id}>

@@ -14,6 +14,8 @@ import {
   HOME_LOADING,
   HOME_LOADED,
   HOME_PHOTO_PAGINATION,
+  UPDATED_CATEGORY_PHOTOS,
+  UPDATED_CATEGORY_PHOTOS_ERROR,
 } from "../types";
 import { setAlert } from "../site_misc";
 
@@ -45,7 +47,9 @@ export const home = (page = 0, pageSize = 200) => (dispatch, getState) => {
 };
 
 /**
- * Recover photos for the curador view
+ * Recover photos for the curador view.
+ *
+ * Find Photos using query params for tags, title, desc, upload_date, created_on
  * @param {Number} page
  * @param {Number} pageSize
  * @param {String} search query text
@@ -61,9 +65,9 @@ export const getPhotosAuth = (page = 0, pageSize = 25, search = "") => (
 
   dispatch({ type: CURADOR_LOADING });
 
-  let url = `/api/photos/?page=${page + 1}&page_size=${pageSize}`
-  if(search !== ""){
-    url = url+search
+  let url = `/api/photos/?page=${page + 1}&page_size=${pageSize}`;
+  if (search !== "") {
+    url = url + search;
   }
 
   return fetch(url, {
@@ -79,6 +83,43 @@ export const getPhotosAuth = (page = 0, pageSize = 25, search = "") => (
     } else {
       dispatch({ type: EMPTY_PHOTOS, data: r.data });
       dispatch({ type: CURADOR_COMPLETED });
+      throw r.data;
+    }
+  });
+};
+
+/**
+ * Add/Remove Category to photos
+ * @param {*} photoIds 
+ * @param {*} catId 
+ * @param {*} action like add or remove
+ */
+export const associateCategory = (photoIds, catId, action = "add") => (
+  dispatch,
+  getState
+) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+  let sent_data = JSON.stringify({ ids: photoIds, action });
+  fetch(`/api/photos/category/${catId}/`, {
+    method: "POST",
+    headers: headers,
+    body: sent_data,
+  }).then(function (response) {
+    const r = response;
+    if (r.status === 200) {
+        dispatch(setAlert(`Fotos ${action == "add" ? "agregadas a" : "eliminadas de la "} categoria`, "success"));
+        dispatch({ type: UPDATED_CATEGORY_PHOTOS });
+    } else {
+      dispatch(
+        setAlert(
+          "No se ha podido actualizar la información. Inténtelo nuevamente",
+          "warning"
+        )
+      );
+      dispatch({ type: UPDATED_CATEGORY_PHOTOS_ERROR, data: photoIds });
       throw r.data;
     }
   });
@@ -141,7 +182,10 @@ export const deletePhoto = (photoID) => (dispatch, getState) => {
  * @param {Number} page
  * @param {Number} pageSize
  */
-export const sortByField = (field, order, page, pageSize=25) => (dispatch, getState) => {
+export const sortByField = (field, order, page, pageSize = 25) => (
+  dispatch,
+  getState
+) => {
   if (order !== "asc" && order !== "desc") {
     return dispatch({ type: "EMPTY", data: "wrong order parameter" });
   }
@@ -153,9 +197,14 @@ export const sortByField = (field, order, page, pageSize=25) => (dispatch, getSt
       ? ""
       : `metadata=${selected_meta.map((m) => m.metaID).join()}&`;
 
-  fetch(`/api/photos/?${meta_text}sort=${field}-${order}&page=${page + 1}&page_size=${pageSize}`, {
-    method: "GET",
-  }).then((response) => {
+  fetch(
+    `/api/photos/?${meta_text}sort=${field}-${order}&page=${
+      page + 1
+    }&page_size=${pageSize}`,
+    {
+      method: "GET",
+    }
+  ).then((response) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
@@ -178,7 +227,10 @@ export const sortByField = (field, order, page, pageSize=25) => (dispatch, getSt
  * @param {Number} page
  * @param {Number} pageSize
  */
-export const recoverByCats = (catIds, pair, page, pageSize=25) => (dispatch, getState) => {
+export const recoverByCats = (catIds, pair, page, pageSize = 25) => (
+  dispatch,
+  getState
+) => {
   dispatch({ type: HOME_LOADING, data: null });
 
   let selected_meta = getState().site_misc.searchMetaIDs;
@@ -354,13 +406,15 @@ export const findPhotoQueryPage = (id, pageSize, params) => (dispatch) => {
 };
 
 /**
- * 
+ *
  * @param {Number} pageSize
  * @param {String} params
  */
-export const photoQuerySuggestions = (page=0,pageSize=10, params) => (dispatch) => {
+export const photoQuerySuggestions = (page = 0, pageSize = 10, params) => (
+  dispatch
+) => {
   let headers = { "Content-Type": "application/json" };
-  fetch(`/api/photos/${params}&page_size=${pageSize}&page=${page+1}`, {
+  fetch(`/api/photos/${params}&page_size=${pageSize}&page=${page + 1}`, {
     method: "GET",
     headers,
   }).then((response) => {

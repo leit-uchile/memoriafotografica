@@ -8,6 +8,8 @@ import {
   UPDATED_CATEGORY,
   RECOVERED_CATEGORY,
   RECOVERED_CATEGORY_ERROR,
+  UPDATED_CATEGORY_PHOTOS,
+  UPDATED_CATEGORY_PHOTOS_ERROR,
 } from "../../actions/types";
 
 const initialState = {
@@ -16,6 +18,7 @@ const initialState = {
   total: -1,
   newCat: {},
   categoryDetail: {},
+  updatedPhotos: false,
 };
 
 export default function categories(state = initialState, action) {
@@ -38,7 +41,7 @@ export default function categories(state = initialState, action) {
     case CREATED_CATEGORY:
       return { ...state, loading: false, newCat: action.data };
     case CATEGORY_RESET_ERRORS:
-      return { ...state, error: "" };
+      return { ...state, error: "", updatedPhotos: false};
     case UPDATED_CATEGORY:
       return { ...state, error: "", categoryDetail: action.data };
     case UPDATED_CATEGORY_ERROR:
@@ -47,6 +50,10 @@ export default function categories(state = initialState, action) {
       return { ...state, categoryDetail: action.data };
     case RECOVERED_CATEGORY_ERROR:
       return { ...state, categoryDetail: {}, error: action.data };
+    case UPDATED_CATEGORY_PHOTOS:
+      return {...state, updatedPhotos: true}
+    case UPDATED_CATEGORY_PHOTOS_ERROR:
+      return {...state, updatedPhotos: true, error: action.data}
     default:
       return state;
   }

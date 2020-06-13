@@ -63,6 +63,10 @@ export const createCategory = (data) => (dispatch, getState) => {
   });
 };
 
+/**
+ * Get Category Details
+ * @param {*} id 
+ */
 export const getCategory = (id) => (dispatch, getState) => {
   let headers = {
     Authorization: "Token " + getState().user.token,
@@ -101,7 +105,7 @@ export const updateCategory = (data) => (dispatch, getState) => {
     body: sent_data,
   }).then(function (response) {
     const r = response;
-    if (r.status === 201) {
+    if (r.status === 200) {
       dispatch(setAlert("Categoria modificada", "success"));
       return r.json().then((data) => {
         dispatch({ type: UPDATED_CATEGORY, data: data });

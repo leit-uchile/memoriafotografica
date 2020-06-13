@@ -46,6 +46,9 @@ def filter_photos(photolist, request):
             q = list(filter(('').__ne__, request.query_params["category"].split(',')))
             photolist = photolist.filter(category__id__in = q).distinct()
             photolist = photolist.order_by("-created_at")
+        if "ncategory" in request.query_params:
+            q = list(filter(('').__ne__, request.query_params["ncategory"].split(',')))
+            photolist = photolist.exclude(category__id__in = q)
         if "metadata" in request.query_params:
             meta_query = list(filter(('').__ne__, request.query_params["metadata"].split(',')))
             photolist = photolist.filter(metadata__id__in = meta_query)
@@ -255,6 +258,31 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
 
+class PhotoCategoryActions(generics.GenericAPIView):
+    """
+    Add or remove a category from the selected photos
+    """
+    permission_classes = [IsAuthenticated,]
+    def get_object(self, pk):
+        return Category.objects.get(pk=pk)
+
+    def post(self, request, pk, *args, **wargs):
+        if request.user.is_anonymous or request.user.user_type == 1:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        cat = self.get_object(pk)
+        photos = Photo.objects.filter(pk__in=request.data["ids"])
+        action = request.data["action"]
+        if action == "add":
+            for p in photos:
+                p.category.add(cat)
+                p.save()
+        elif action == "remove":
+            for p in photos:
+                p.category.remove(cat)
+                p.save()
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_200_OK)
 class CommentListAPI(generics.GenericAPIView):
     """
     get:
