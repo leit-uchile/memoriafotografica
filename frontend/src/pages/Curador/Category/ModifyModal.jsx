@@ -29,7 +29,13 @@ export const ModifyModal = ({ toDelete, loading, removeCategories }) => {
           acción no se puede deshacer.
         </ModalBody>
         <ModalFooter>
-          <Button color="danger" onClick={removeCategories}>
+          <Button
+            color="danger"
+            onClick={() => {
+              setToggle(false);
+              removeCategories();
+            }}
+          >
             {" "}
             Eliminar{" "}
             <Spinner

@@ -7,6 +7,10 @@ import {
   CURADOR_REFRESH,
   CURADOR_COMPLETED,
   CATEGORY_RESET_ERRORS,
+  UPDATED_CATEGORY,
+  UPDATED_CATEGORY_ERROR,
+  RECOVERED_CATEGORY,
+  RECOVERED_CATEGORY_ERROR,
 } from "../types";
 import { setAlert } from "../site_misc";
 
@@ -59,10 +63,56 @@ export const createCategory = (data) => (dispatch, getState) => {
   });
 };
 
+export const getCategory = (id) => (dispatch, getState) => {
+  let headers = {
+    Authorization: "Token " + getState().user.token,
+  };
+  fetch(`/api/categories/${id}/`, {
+    headers: headers,
+  }).then(function (response) {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch({ type: RECOVERED_CATEGORY, data: data });
+      });
+    } else {
+      dispatch({ type: RECOVERED_CATEGORY_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
 export const resetErrors = () => (dispatch) =>
   dispatch({ type: CATEGORY_RESET_ERRORS });
 
-export const editCategory = () => {};
+/**
+ * Update name, photos of a category
+ * @param {Object} data
+ */
+export const updateCategory = (data) => (dispatch, getState) => {
+  let headers = {
+    Authorization: "Token " + getState().user.token,
+    "Content-Type": "application/json",
+  };
+  let sent_data = JSON.stringify(data);
+  fetch(`/api/categories/${data.id}/`, {
+    method: "PUT",
+    headers: headers,
+    body: sent_data,
+  }).then(function (response) {
+    const r = response;
+    if (r.status === 201) {
+      dispatch(setAlert("Categoria modificada", "success"));
+      return r.json().then((data) => {
+        dispatch({ type: UPDATED_CATEGORY, data: data });
+      });
+    } else {
+      dispatch(setAlert("Error al modificar la categoria", "warning"));
+      dispatch({ type: UPDATED_CATEGORY_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
 
 export const deleteCategories = (catArray) => (dispatch, getState) => {
   const to_send = catArray.length;
@@ -74,7 +124,7 @@ export const deleteCategories = (catArray) => (dispatch, getState) => {
       Authorization: "Token " + getState().user.token,
       "Content-Type": "application/json",
     };
-    fetch("/api/categories/" + e, {
+    fetch(`/api/categories/${e}`, {
       method: "DELETE",
       headers: headers,
     }).then((response) => {
@@ -84,6 +134,7 @@ export const deleteCategories = (catArray) => (dispatch, getState) => {
         ++completed_err;
       }
       if (completed_err + completed_ok === to_send) {
+        dispatch(setAlert("Categoria(s) eliminada(s)", "success"));
         dispatch({ type: CURADOR_COMPLETED, data: "" });
         dispatch({ type: CURADOR_REFRESH, data: "" });
       }

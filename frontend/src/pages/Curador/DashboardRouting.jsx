@@ -108,7 +108,7 @@ const Dashboard = ({ match, location }) => (
           />
           <BoundedRoute
             exact
-            path={match.path + "/categories/:id/add-photos"}
+            path={match.path + "/categories/:id/"}
             component={Category_Photos}
           />
           <BoundedRoute

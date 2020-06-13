@@ -151,7 +151,14 @@ class Category_New extends Component {
       id: el.id,
     }));
 
-    const maxPage = Math.floor(this.props.photo_count / this.state.page_size);
+    // BUGFIX: there's a border case like
+    // pageLimit = floor(50/25) = 2 and gives pages (0,1,2)
+    // but pageLimit should be 1 so we can have the pages (0,1)
+    const maxPage =
+      Math.floor(this.props.photo_count / this.state.page_size) ===
+      this.props.photo_count / this.state.page_size
+        ? Math.floor(this.props.photo_count / this.state.page_size) - 1
+        : Math.floor(this.props.photo_count / this.state.page_size);
 
     return (
       <Container>
