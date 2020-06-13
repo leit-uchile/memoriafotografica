@@ -44,7 +44,6 @@ const Pagination = ({
   };
 
   let setPage = (number) => {
-    console.log("setPage", number);
     setTimeout(() => setStatePage(number), 300);
     goTop();
   };

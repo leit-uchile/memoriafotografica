@@ -13,21 +13,21 @@ const UserAlbums = ({
   albums,
   publicUser,
   loadPublicAlbums,
-  loadAlbums
+  loadAlbums,
 }) => {
   const [display, setDisplay] = useState({
     user: { first_name: "usuario" },
-    redirectUrl: false
+    redirectUrl: false,
   });
 
   // Set user info and load the albums accordingly
   useEffect(() => {
     if (isPublic && publicUser !== undefined) {
-      setDisplay(d => ({ ...d, user: publicUser }));
+      setDisplay((d) => ({ ...d, user: publicUser }));
       loadPublicAlbums(publicUser.id);
     } else if (!isPublic) {
       loadAlbums(user.id);
-      setDisplay(d => ({ ...d, user: user }));
+      setDisplay((d) => ({ ...d, user: user }));
     }
   }, [isPublic, publicUser, loadPublicAlbums, loadAlbums, user]);
 
@@ -46,17 +46,19 @@ const UserAlbums = ({
     setRows(list);
   }, [albums]);
 
-  const setRedirect = id => {
+  const setRedirect = (id) => {
     setDisplay({
       ...display,
-      redirectUrl: isPublic ? `/user/public/albums/${id}` : `/user/albums/${id}`
+      redirectUrl: isPublic
+        ? `/user/public/albums/${id}`
+        : `/user/albums/${id}`,
     });
   };
 
   return display.redirectUrl ? (
     <Redirect push to={display.redirectUrl} />
   ) : (
-    <Container fluid>
+    <Container fluid style={{ marginBottom: "1em" }}>
       <Helmet>
         <title>Albums de {display.user.first_name}</title>
       </Helmet>
@@ -69,12 +71,15 @@ const UserAlbums = ({
       <Row>
         <Col>
           <Container>
-            {rows.map(r => (
-              <Row key={r.key}>
-                {r.map(c => (
+            {rows.map((r) => (
+              <Row key={r.key} style={{ marginTop: "1em" }}>
+                {r.map((c) => (
                   <Col key={c.name}>
                     <div
-                      style={{ backgroundImage: `url("${c.thumbnail}")`, cursor: "pointer" }}
+                      style={{
+                        backgroundImage: `url("${c.thumbnail}")`,
+                        cursor: "pointer",
+                      }}
                       className="user-albums-background"
                       onClick={() => {
                         setRedirect(c.id);
@@ -93,14 +98,14 @@ const UserAlbums = ({
   );
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   user: state.user.userData,
-  albums: state.user.albums
+  albums: state.user.albums,
 });
 
-const mapActionsToProps = dispatch => ({
-  loadPublicAlbums: user_id => dispatch(user.loadPublicUserAlbums(user_id)),
-  loadAlbums: user_id => dispatch(user.getUserAlbums(user_id, -1, -1))
+const mapActionsToProps = (dispatch) => ({
+  loadPublicAlbums: (user_id) => dispatch(user.loadPublicUserAlbums(user_id)),
+  loadAlbums: (user_id) => dispatch(user.getUserAlbums(user_id, -1, -1)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(UserAlbums);

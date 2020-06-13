@@ -18,15 +18,14 @@ class Categories extends Component {
     this.props.getCategories(this.state.page, this.state.page_size);
   }
 
-  componentWillUpdate() {
+  componentDidUpdate() {
     if (this.props.refresh) {
-      window.location.reload();
+      setTimeout(() => window.location.reload(), 1000);
     }
   }
 
   updateToDelete = (i, isCheck) => {
     // Send update to API
-    console.log("updated checkbox " + i);
     if (isCheck) {
       this.setState({ toDelete: [...this.state.toDelete, i] });
     } else {
@@ -36,7 +35,7 @@ class Categories extends Component {
   };
 
   removeCategories = () => {
-    this.props.deleteCategories(this.props.token, this.state.toDelete);
+    this.props.deleteCategories(this.state.toDelete);
   };
 
   setPage = (p) => {
@@ -45,9 +44,15 @@ class Categories extends Component {
   };
 
   render() {
-    const { match, cats } = this.props;
+    const { match, cats, total } = this.props;
 
-    const maxPage = Math.floor(cats.length / this.state.page_size);
+    // BUGFIX: there's a border case like
+    // pageLimit = floor(50/25) = 2 and gives pages (0,1,2)
+    // but pageLimit should be 1 so we can have the pages (0,1)
+    const maxPage =
+      Math.floor(total / this.state.page_size) === total / this.state.page_size
+        ? Math.floor(total / this.state.page_size) - 1
+        : Math.floor(total / this.state.page_size);
 
     return (
       <Container>
@@ -105,21 +110,12 @@ class Categories extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  let errors = [];
-  if (state.user.errors) {
-    errors = Object.keys(state.user.errors).map((field) => {
-      return { field, message: state.user.errors[field] };
-    });
-  }
-  return {
-    errors,
-    meta: state.webadmin.all_tags,
-    cats: state.categories.categories,
-    loading: state.site_misc.curador.loading,
-    refresh: state.site_misc.curador.refresh,
-  };
-};
+const mapStateToProps = (state) => ({
+  cats: state.categories.categories,
+  total: state.categories.total,
+  loading: state.site_misc.curador.loading,
+  refresh: state.site_misc.curador.refresh,
+});
 const mapActionsToProps = (dispatch) => ({
   getCategories: (page, pageSize) =>
     dispatch(gallery.category.getCategories(page, pageSize)),

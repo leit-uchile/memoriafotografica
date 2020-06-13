@@ -2,6 +2,7 @@ import React from "react";
 import { Table, Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 export const CategoryTable = ({ cats, updateToDelete, toDelete }) => (
   <Table responsive striped className="statBox">
@@ -27,7 +28,11 @@ export const CategoryTable = ({ cats, updateToDelete, toDelete }) => (
                 defaultChecked={toDelete.includes(el.id)}
               ></input>
             </th>
-            <th>{el.title}</th>
+            <th>
+              <Link to={`/curador/dashboard/categories/${el.id}/`}>
+                {el.title}
+              </Link>
+            </th>
             <td>{new Date(el.created_at).toLocaleString()}</td>
             <td>{new Date(el.updated_at).toLocaleString()}</td>
             <td>{el.count}</td>
