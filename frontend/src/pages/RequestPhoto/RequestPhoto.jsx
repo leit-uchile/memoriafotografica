@@ -55,6 +55,7 @@ class RequestPhoto extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     const photosId = this.props.requestedPhotos.map((el) => el.id);
+    console.log(photosId)
     this.props.sendRequest(photosId, this.state.formData);
   };
 

@@ -14,19 +14,12 @@ import PhotoModal from "./PhotoModal";
  * @param {Function} updateRequest
  */
 const PhotoTable = ({ requests, updateRequest }) => {
-  const onlyInfo = (req) => {
-    let reqCopy = { ...req };
-    delete reqCopy.photos
-    delete reqCopy.resolved
-    delete reqCopy.email_sent
-    delete reqCopy.created_at
-    delete reqCopy.updated_at
-    return reqCopy
-  }
   const resolve = (req, bool) => {
-    let reqCopy = { ...req };
+    let originalPhotos = req.photos.map(el=>el.image)
+    let reqCopy = { ...req, originalPhotos };
+    delete reqCopy.photos
     reqCopy.resolved = !req.resolved;
-    reqCopy.approved = bool;
+    reqCopy.email_sent = bool; //Approved or Denied
     updateRequest(reqCopy);
   };
 
@@ -52,12 +45,11 @@ const PhotoTable = ({ requests, updateRequest }) => {
             request={r}
             key={r.id}
             actions={resolveButton}
-            render={(photos) => (
+            render={(info) => (
               <Fragment>
-                <Link to={`/photo/${photos}`}>Ver fotos</Link>
                 <PhotoModal
                 buttonLabel="Ver datos solicitante"
-                request={onlyInfo(r)}
+                request={info}
                 />
               </Fragment>
             )}

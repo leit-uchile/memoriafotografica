@@ -14,7 +14,7 @@ const ContactModal = (props) => {
     setData({ ...formData, [e.target.name]: e.target.value });
 
   const onSend = () =>{
-      send(message, formData);
+      send(message, formData, true);
       setModal(!modal);  
   }
   return (

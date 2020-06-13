@@ -25,9 +25,7 @@ class PhotoRequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PhotoRequest
-        fields = ('reason','photos','first_name','last_name',
-            'identity_document','profession','address','comuna',
-            'phone_number','email','institution','resolved','email_sent','created_at','updated_at')
+        fields ='__all__'
 
 class PhotoRequestNewSerializer(serializers.ModelSerializer):
     

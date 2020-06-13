@@ -93,9 +93,13 @@ class PhotoRequestDetailAPI(generics.GenericAPIView):
     def put(self, request, pk, *args, **kwargs):
         if request.user.user_type >= 2:
             photo_request = self.get_object(pk)
-            serializer = PhotoRequestSerializer(photo_request, data=request.data)
+            serializer = PhotoRequestSerializer(photo_request, data=request.data, partial=True)
             if serializer.is_valid():
               serializer.save()
+              if request.data['email_sent']:
+                sendEmail(emailto=photo_request.email, case="photo_request_success", subject='Hemos resuelto su solicitud', attached=request.data['attached'])
+              else:
+                sendEmail(emailto=photo_request.email, case="photo_request_failure", subject='Hemos resuelto su solicitud', attached=[])
               return Response(serializer.data)
             else:
               return Response(status = status.HTTP_400_BAD_REQUEST)
@@ -113,7 +117,7 @@ class PhotoRequestDetailAPI(generics.GenericAPIView):
 class PhotoRequestAPI(generics.GenericAPIView):
 
     serializer_class = PhotoRequestNewSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated,]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
@@ -161,7 +165,7 @@ class ContactRequestListAPI(generics.GenericAPIView):
         
 class ContactRequestDetailAPI(generics.GenericAPIView):
     
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated,]
 
     def get_object(self, pk):
         try:
@@ -180,7 +184,7 @@ class ContactRequestDetailAPI(generics.GenericAPIView):
             serializer = ContactRequestSerializer(contactrequest, data=request.data['newMsg'], partial=True)
             if serializer.is_valid():
                 serializer.save()
-                sendEmail(contactrequest.email, "contact_us", request.data['subject'], request.data['response'])
+                sendEmail(emailto=contactrequest.email, case="contact_us", subject=request.data['subject'], attached=request.data['response'])
                 return Response(serializer.data)
             return Response(status = status.HTTP_400_BAD_REQUEST)
         return Response(status = status.HTTP_401_UNAUTHORIZED)

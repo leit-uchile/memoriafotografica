@@ -1,6 +1,4 @@
-import React, { useEffect } from "react";
-import { site_misc } from "../../../actions";
-import { connect } from "react-redux";
+import React from "react";
 import { ButtonGroup } from "reactstrap";
 
 /**
@@ -9,12 +7,16 @@ import { ButtonGroup } from "reactstrap";
  * @param {Function} render how to render details
  * @param {Function} actions how to render actions
  */
-const PhotoRow = ({ request, key, actions, render, photoSet, getPhotoSet }) => {
-  useEffect(()=>{
-    console.log(key) // supuesto id de la request no incluido en {request}
-    getPhotoSet(request.photos)
-  })
-
+const PhotoRow = ({ request, key, actions, render }) => {
+  const onlyInfo = (req) => {
+    let reqCopy = { ...req };
+    delete reqCopy.photos
+    delete reqCopy.resolved
+    delete reqCopy.email_sent
+    delete reqCopy.created_at
+    delete reqCopy.updated_at
+    return reqCopy
+  }
   return (
     <tr>
       <td>
@@ -36,18 +38,10 @@ const PhotoRow = ({ request, key, actions, render, photoSet, getPhotoSet }) => {
         {request.reason}
       </td>
       <td>
-        {render(photoSet)}
+        {render(onlyInfo(request))}
       </td>
     </tr>
   );
 };
 
-const mapStateToProps = state => ({
-  photoSet: state.photos.photos
-});
-
-const mapActionsToProps = dispatch => ({
-  getPhotoSet: (set) => dispatch(site_misc.pushPhotoArray(set))
-});
-
-export default connect(mapStateToProps, mapActionsToProps)(PhotoRow);
+export default PhotoRow;

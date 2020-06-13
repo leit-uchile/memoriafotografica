@@ -1,9 +1,10 @@
 import React, { Fragment } from "react";
-import { Table, Button } from "reactstrap";
+import { Table, Button, ButtonGroup } from "reactstrap";
 import { connect } from "react-redux";
 import { webadmin } from "../../../actions";
 import ContactRow from "./ContactRow";
-import ContactModal from "./ContactModal";
+import ContactEmailModal from "./ContactEmailModal";
+import ContactPhoneModal from "./ContactPhoneModal";
 
 /**
  * Define different Renders and updates for.
@@ -12,15 +13,18 @@ import ContactModal from "./ContactModal";
  * @param {Function} updateMessage
  */
 const ContactTable = ({ messages, updateMessage }) => {
-  const resolve = (msg, formData) => {
+  const resolve = (msg, formData, bool) => {
     let msgCopy = { ...msg };
     msgCopy.resolved = true;
-    msgCopy.email_sent = true;
+    msgCopy.email_sent = bool;
     updateMessage(msgCopy, formData);
   };
 
   const resolveButton = msg => (
-    <ContactModal buttonLabel="Correo" message={msg} send={resolve}/>
+    <ButtonGroup>
+      <ContactEmailModal buttonLabel="Correo" message={msg} send={resolve}/>
+      <ContactPhoneModal buttonLabel="Teléfono" message={msg} send={resolve}/>
+    </ButtonGroup>
   );
 
   return (
@@ -29,11 +33,11 @@ const ContactTable = ({ messages, updateMessage }) => {
         <tr>
           <th>Responder por</th>
           <th>Estado</th>
-          <th>Fecha</th>
+          <th>Recibido el</th>
+          <th>Respondido el</th>
           <th>Nombre completo</th>
-          <th>Teléfono</th>
-          <th>Correo</th>
-          <th>Contenido</th>
+          <th>Mensaje</th>
+          <th>Detalles</th>
         </tr>
       </thead>
       <tbody>
@@ -41,6 +45,11 @@ const ContactTable = ({ messages, updateMessage }) => {
           <ContactRow
             message={e}
             actions={resolveButton}
+            render={() => (
+              <Fragment>
+                <p>Ver respuesta (Actualizar modelo)</p>
+              </Fragment>
+            )}
           />
         ))}
       </tbody>
