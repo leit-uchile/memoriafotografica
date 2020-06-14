@@ -1,0 +1,30 @@
+
+
+.misc.container{
+  margin-bottom: 2em;
+}
+
+.misc.container .misc-menu{
+  margin-top: 2em;
+}
+
+.misc.container .misc-content{
+  border-left: 1px solid rgb(210, 214, 218);
+  margin: 2em 0;
+  min-height: 65vh;
+}
+
+.misc.container .misc-menu .btn{
+  border: 1px solid rgb(210, 214, 218);
+  display: block;
+}
+
+@media (min-width: 576px){
+  .misc.container .misc-menu{
+    position: sticky;
+    z-index: 4;
+    height: fit-content;
+    top: calc(2em + 64px);
+    margin-top: 2em;
+  }  
+}

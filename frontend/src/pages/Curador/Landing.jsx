@@ -177,10 +177,17 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
       <Row>
         <Col>
           <div
-            style={{ width: "max-content", margin: "0 auto" }}
+            style={{
+              margin: "0 auto",
+            }}
             className="statBox"
           >
-            <Statistic.Group>
+            <Statistic.Group
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <Statistic>
                 <Statistic.Value>
                   {general ? general.count_photo : 0}

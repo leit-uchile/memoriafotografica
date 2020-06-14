@@ -4,7 +4,6 @@
   border-right: 1px solid rgb(210, 214, 218);
 }
 
-
 .navButton{
   color: #000000;
   padding: 1rem .75rem ;
@@ -38,11 +37,6 @@
   font-weight: 400;
 }
 
-.curador-filter-card.card{
-  height: 450px;
-  overflow-y: auto;
-}
-
 .curador-filter-card-img {
   background-repeat: no-repeat;
   background-size: contain;
@@ -62,4 +56,13 @@
 .statBox > h2{
   margin-bottom: 1em;
   text-align: left;
+}
+
+
+@media (min-width: 576px){
+  .leftcol.col-sm-2 {
+    position: sticky;
+    top: calc(1em + 64px);
+    height: fit-content;
+  }
 }

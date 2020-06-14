@@ -37,7 +37,7 @@ const PhotoList = ({ photos, editPhoto }) => {
                 <span style={{ color: "red" }}>No Aprobada</span>
               )}
               <br></br>
-              {el.censured ? (
+              {el.censure ? (
                 <span style={{ color: "red" }}>Censurada</span>
               ) : null}
             </td>
@@ -53,7 +53,9 @@ const PhotoList = ({ photos, editPhoto }) => {
             </td>
             <td>
               {el.metadata.map((m) => (
-                <span style={{ display: "block" }}>{m}</span>
+                <span key={m} style={{ display: "block" }}>
+                  {m}
+                </span>
               ))}
             </td>
             <td>{new Date(el.created_at).toLocaleDateString("es")}</td>

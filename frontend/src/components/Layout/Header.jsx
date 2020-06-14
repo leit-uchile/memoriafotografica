@@ -17,7 +17,7 @@ import {
   NavbarBrand,
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import {
   faImage,
   faHome,
@@ -111,6 +111,17 @@ const Header = ({ isAuth, currentRoute }) => {
                       ) : (
                         <NavLink tag={Link} to={"/upload"}>
                           <FontAwesomeIcon icon={faSmileWink} /> Participa
+                        </NavLink>
+                      )}{" "}
+                    </NavItem>
+                    <NavItem>
+                      {currentRoute.includes("/misc/") ? (
+                        <NavLink tag={Link} to={"/misc/about"} active>
+                          <FontAwesomeIcon icon={faInfoCircle} /> Sobre Nosotros
+                        </NavLink>
+                      ) : (
+                        <NavLink tag={Link} to={"/misc/about"}>
+                          <FontAwesomeIcon icon={faInfoCircle} /> Sobre Nosotros
                         </NavLink>
                       )}{" "}
                     </NavItem>

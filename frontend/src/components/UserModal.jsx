@@ -13,6 +13,8 @@ import {
 import { connect } from "react-redux";
 import { user } from "../actions";
 import { Redirect } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 const UserModal = ({ logout, user }) => {
   const [toggle, setToggle] = useState(false);
@@ -29,6 +31,7 @@ const UserModal = ({ logout, user }) => {
 
   return (
     <NavLink href="#" onClick={doToggle}>
+      <FontAwesomeIcon icon={faUser} />{" "}
       {`${first_name ? first_name : "Nombre"} ${
         last_name ? last_name : "Apellido"
       }`}

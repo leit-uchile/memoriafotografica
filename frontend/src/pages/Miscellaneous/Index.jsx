@@ -4,8 +4,16 @@ import FAQ from "./FAQ";
 import ContactUs from "./ContactUs";
 import { Container, Row, Button, Col } from "reactstrap";
 import { Route, Link, Switch } from "react-router-dom";
+import { connect } from "react-redux";
+import { site_misc } from "../../actions";
+import { NoMatch } from "../../components";
+import "./styles.css";
 
-const Index = ({ match, location }) => {
+const Index = ({ match, location, setRoute }) => {
+  useEffect(() => {
+    setRoute(location.pathname);
+  }, []);
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -15,23 +23,17 @@ const Index = ({ match, location }) => {
   }, [location.pathname]);
 
   return (
-    <Container style={styles.container} className="disable-css-transitions">
+    <Container className="disable-css-transitions misc">
       <div>
         {" "}
         {/* Do not remove this div, it allows for sticky behavior*/}
         <Row>
-          <Col sm="2" style={styles.leftcol}>
-            <Button
-              tag={Link}
-              style={styles.button}
-              color="primary"
-              to={match.path + "/about"}
-            >
+          <Col sm="2" className="misc-menu">
+            <Button tag={Link} color="primary" to={match.path + "/about"}>
               Acerca de
             </Button>
             <Button
               tag={Link}
-              style={styles.button}
               to={match.path + "/resources/faq"}
               color="primary"
             >
@@ -39,23 +41,17 @@ const Index = ({ match, location }) => {
             </Button>
             <Button
               tag={Link}
-              style={styles.button}
               to={match.path + "/resources/contact-us"}
               color="primary"
             >
               Contáctenos
             </Button>
-            <Button
-              tag={Link}
-              style={styles.button}
-              to={match.path + "/resources/"}
-              color="primary"
-            >
+            <Button tag={Link} to={match.path + "/resources/"} color="primary">
               Mapa del sitio
             </Button>
             <div className="navEnding"></div>
           </Col>
-          <Col sm="10" style={styles.rightcol}>
+          <Col sm="10" className="misc-content">
             <Switch>
               <Route path={match.path + "/about"} component={About} />
               <Route path={match.path + "/resources/faq"} component={FAQ} />
@@ -63,6 +59,7 @@ const Index = ({ match, location }) => {
                 path={match.path + "/resources/contact-us"}
                 component={ContactUs}
               />
+              <Route component={NoMatch} />
             </Switch>
           </Col>
         </Row>
@@ -71,26 +68,6 @@ const Index = ({ match, location }) => {
   );
 };
 
-const styles = {
-  container: {
-    marginBottom: "2em",
-  },
-  leftcol: {
-    position: "sticky",
-    zIndex: "4",
-    height: "fit-content",
-    top: "calc(2em + 64px)",
-    marginTop: "2em",
-  },
-  rightcol: {
-    borderLeft: "1px solid rgb(210, 214, 218)",
-    marginTop: "2em",
-    marginBottom: "2em",
-    minHeight: "75vh",
-  },
-  button: {
-    border: "1px solid rgb(210, 214, 218)",
-    display: "block",
-  },
-};
-export default Index;
+export default connect(null, (dispatch) => ({
+  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
+}))(Index);

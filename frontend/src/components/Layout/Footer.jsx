@@ -15,7 +15,7 @@ import { faArrowCircleUp } from "@fortawesome/free-solid-svg-icons";
 import "../../css/footer.css";
 
 const Footer = () => {
-  const componentDidMount = () =>
+  const goUp = () =>
     window.scrollTo({
       top: 0,
       left: 0,
@@ -126,11 +126,11 @@ const Footer = () => {
               color: "#9fa4a5",
             }}
           >
-            <p style={{ marginLeft: "auto", marginRight: "auto" }}>
+            <p style={{ margin: "0 auto" }}>
               Todos los derechos reservados. Biblioteca Central - Facultad de
-              Ciencias Fisicas y Matematicas - Universidad de Chile
+              Ciencias Fisicas y Matematicas - Universidad de Chile - 2020
             </p>
-            <Button color="link" onClick={componentDidMount}>
+            <Button color="link" onClick={goUp}>
               Volver al Inicio <FontAwesomeIcon icon={faArrowCircleUp} />
             </Button>
           </Col>

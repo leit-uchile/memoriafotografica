@@ -54,10 +54,22 @@ def filter_photos(photolist, request):
             photolist = photolist.filter(metadata__id__in = meta_query)
         if "title" in request.query_params:
             photolist = photolist.filter(title__icontains = request.query_params["title"])
+        if "censured" in request.query_params:
+            censure = True
+            if request.query_params["censured"] == "false":
+                censure = False
+            photolist = photolist.filter(censure = censure)
+        if "approved" in request.query_params:
+            approved = True
+            if request.query_params["approved"] == "false":
+                approved = False
+            photolist = photolist.filter(approved = approved)
         if "desc" in request.query_params:
             photolist = photolist.filter(description__icontains = request.query_params["desc"])
         if "uploaded" in request.query_params:
             photolist = photolist.filter(created_at__gte = date.fromisoformat(request.query_params["uploaded"]))
+        if "uploaded_until" in request.query_params:
+            photolist = photolist.filter(created_at__lte = date.fromisoformat(request.query_params["uploaded"]))
         if "taken" in request.query_params:
             photolist = photolist.filter(upload_date__gte = date.fromisoformat(request.query_params["taken"]))
         if "user" in request.query_params:
