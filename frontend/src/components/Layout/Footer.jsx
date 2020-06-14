@@ -118,11 +118,16 @@ const Footer = () => {
             </ul>
           </Col>
         </Row>
-        <Row style={{ paddingTop: "100px", paddingBottom: "100px" }}>
+        <Row
+          style={{
+            paddingTop: "50px",
+            paddingBottom: "100px",
+            textAlign: "center",
+          }}
+        >
           <Col
+            sm={8}
             style={{
-              display: "flex",
-              justifyContent: "space-between",
               color: "#9fa4a5",
             }}
           >
@@ -130,6 +135,8 @@ const Footer = () => {
               Todos los derechos reservados. Biblioteca Central - Facultad de
               Ciencias Fisicas y Matematicas - Universidad de Chile - 2020
             </p>
+          </Col>
+          <Col sm={4}>
             <Button color="link" onClick={goUp}>
               Volver al Inicio <FontAwesomeIcon icon={faArrowCircleUp} />
             </Button>

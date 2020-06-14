@@ -29,7 +29,7 @@
   background: white;
   position: sticky;
   top: calc(1em + 40px + 25px);
-  z-index: 2;
+  z-index: 4;
 }
 
 .home-gallery-container {

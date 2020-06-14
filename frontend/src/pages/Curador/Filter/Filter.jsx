@@ -152,7 +152,7 @@ class Filter extends Component {
           <Col>
             <Pagination
               maxPage={pageLimit}
-              page={this.state.page}
+              page={page}
               setStatePage={this.setCurrentPage}
               size="lg"
             />

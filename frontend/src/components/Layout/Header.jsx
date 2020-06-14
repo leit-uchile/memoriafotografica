@@ -15,6 +15,10 @@ import {
   NavLink,
   Row,
   NavbarBrand,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
@@ -29,16 +33,11 @@ const Header = ({ isAuth, currentRoute }) => {
 
   var doLoginNav = isAuth ? (
     <NavLink tag={UserModal}></NavLink>
-  ) : currentRoute === "/login" ? (
-    <NavLink tag={Link} to="/login" active>
-      <FontAwesomeIcon icon={faUser} /> Ingresar
-    </NavLink>
   ) : (
-    <NavLink tag={Link} to="/login">
+    <NavLink tag={Link} to="/login" active={currentRoute === "/login"}>
       <FontAwesomeIcon icon={faUser} /> Ingresar
     </NavLink>
   );
-
   // Change the style of the search bar as we scroll
   const [display, setDisplay] = useState(true);
   const yourElement = React.useRef();
@@ -82,48 +81,55 @@ const Header = ({ isAuth, currentRoute }) => {
                 <Collapse isOpen={toggle} navbar>
                   <Nav className="ml-auto" navbar>
                     <NavItem>
-                      {currentRoute === "/Inicio" ? (
-                        <NavLink tag={Link} to={"/"} active>
-                          <FontAwesomeIcon icon={faHome} /> Inicio
-                        </NavLink>
-                      ) : (
-                        <NavLink tag={Link} to={"/"}>
-                          <FontAwesomeIcon icon={faHome} /> Inicio
-                        </NavLink>
-                      )}
+                      <NavLink
+                        tag={Link}
+                        to={"/"}
+                        active={currentRoute === "/Inicio"}
+                      >
+                        <FontAwesomeIcon icon={faHome} /> Inicio
+                      </NavLink>
+                    </NavItem>
+                    <UncontrolledDropdown nav inNavbar>
+                      <DropdownToggle
+                        nav
+                        style={{
+                          color:
+                            currentRoute === "/gallery/"
+                              ? "var(--leit-pink)"
+                              : "rgba(0,0,0,.5)",
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faImage} /> Galer&iacute;a
+                      </DropdownToggle>
+                      <DropdownMenu left>
+                        <DropdownItem tag={Link} to={"/gallery"}>
+                          Galer&iacute;a
+                        </DropdownItem>
+                        <DropdownItem tag={Link} to={"/collections"}>
+                          Colecciones
+                        </DropdownItem>
+                        <DropdownItem tag={Link} to={"/news"}>
+                          Noticias
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </UncontrolledDropdown>
+                    <NavItem>
+                      <NavLink
+                        tag={Link}
+                        to={"/upload"}
+                        active={currentRoute === "/upload"}
+                      >
+                        <FontAwesomeIcon icon={faSmileWink} /> Participa
+                      </NavLink>
                     </NavItem>
                     <NavItem>
-                      {currentRoute === "/gallery/" ? (
-                        <NavLink tag={Link} to={"/gallery"} active>
-                          <FontAwesomeIcon icon={faImage} /> Galer&iacute;a
-                        </NavLink>
-                      ) : (
-                        <NavLink tag={Link} to={"/gallery"}>
-                          <FontAwesomeIcon icon={faImage} /> Galer&iacute;a
-                        </NavLink>
-                      )}
-                    </NavItem>
-                    <NavItem>
-                      {currentRoute === "/upload" ? (
-                        <NavLink tag={Link} to={"/upload"} active>
-                          <FontAwesomeIcon icon={faSmileWink} /> Participa
-                        </NavLink>
-                      ) : (
-                        <NavLink tag={Link} to={"/upload"}>
-                          <FontAwesomeIcon icon={faSmileWink} /> Participa
-                        </NavLink>
-                      )}{" "}
-                    </NavItem>
-                    <NavItem>
-                      {currentRoute.includes("/misc/") ? (
-                        <NavLink tag={Link} to={"/misc/about"} active>
-                          <FontAwesomeIcon icon={faInfoCircle} /> Sobre Nosotros
-                        </NavLink>
-                      ) : (
-                        <NavLink tag={Link} to={"/misc/about"}>
-                          <FontAwesomeIcon icon={faInfoCircle} /> Sobre Nosotros
-                        </NavLink>
-                      )}{" "}
+                      <NavLink
+                        tag={Link}
+                        to={"/misc/about"}
+                        active={currentRoute.includes("/misc/")}
+                      >
+                        <FontAwesomeIcon icon={faInfoCircle} /> Sobre Nosotros
+                      </NavLink>
                     </NavItem>
                     <NavItem>{doLoginNav}</NavItem>
                   </Nav>

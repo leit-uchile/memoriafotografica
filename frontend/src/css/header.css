@@ -24,6 +24,14 @@ h1 {
   font-size: 1.1em;
 }
 
+.navbar-nav .dropdown-menu.dropdown-menu{
+  background-color: #e9ecef;
+}
+
+.navbar-nav .dropdown-menu.dropdown-menu .dropdown-item{
+  color: rgba(0, 0, 0, 0.5);
+}
+
 @media screen and (max-width: 768px) {
     .navbar-brand p{
         display: none;
