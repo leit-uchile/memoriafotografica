@@ -8,11 +8,11 @@ import {
   UncontrolledButtonDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
 } from "reactstrap";
 import "./news.css";
 
-const NewsPage = props => {
+const NewsPage = (props) => {
   const { setRoute, loadNews } = props;
 
   useEffect(() => {
@@ -21,18 +21,16 @@ const NewsPage = props => {
   }, [loadNews]);
 
   return (
-    <Container>
+    <Container className="news-page">
       <Row>
-        <Col md={3} style={styles.leftcol}>
+        <Col md={3} className="news-menu">
           <h3>Filtrar por fecha</h3>
         </Col>
         <Col md={9}>
           <UncontrolledButtonDropdown className="home-button">
-            <DropdownToggle caret style={styles.dropdownButton}>
-              Ordenar
-            </DropdownToggle>
+            <DropdownToggle caret>Ordenar</DropdownToggle>
             <DropdownMenu style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}>
-              <div style={styles.triangulo}></div>
+              <div className="dropdown-triangle"></div>
               <DropdownItem header>Por fecha de subida</DropdownItem>
               <DropdownItem>Más antiguas primero</DropdownItem>
               <DropdownItem>Más nuevas primero</DropdownItem>
@@ -57,47 +55,13 @@ const NewsPage = props => {
   );
 };
 
-const styles = {
-  leftcol: {
-    position: "sticky",
-    zIndex: "4",
-    height: "fit-content",
-    top: "1em",
-    marginTop: "2em"
-  },
-  dropdownButton: {
-    color: "var(--leit-pink)",
-    backgroundColor: "white",
-    margin: "1em 1em 0.5em 1em",
-    borderRadius: "0",
-    padding: "10px",
-    border: "none"
-  },
-  triangulo: {
-    position: "absolute",
-    width: "20px",
-    height: "20px",
-    borderTop: "1px solid rgb(210,214,218)",
-    borderRight: "0px solid rgb(210,214,218)",
-    borderBottom: "0px solid rgb(210,214,218)",
-    borderLeft: "1px solid rgb(210,214,218)",
-    top: "0",
-    left: "8em",
-    marginLeft: "-25px",
-    content: "",
-    transform: "rotate(45deg)",
-    marginTop: "-10px",
-    background: "#ffff"
-  }
-};
-
-const mapStateToProps = state => ({
-  news: state.webadmin.news
+const mapStateToProps = (state) => ({
+  news: state.webadmin.news,
 });
 
-const mapActionsToProps = dispatch => ({
+const mapActionsToProps = (dispatch) => ({
   loadNews: () => dispatch(webadmin.getNews()),
-  setRoute: route => dispatch(site_misc.setCurrentRoute(route))
+  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(NewsPage);

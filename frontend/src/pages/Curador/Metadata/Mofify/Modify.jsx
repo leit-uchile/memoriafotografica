@@ -31,8 +31,6 @@ const Modify = ({
   useEffect(() => {
     searchMeta(searchState, pagination.page + 1, pagination.page_size);
   }, [pagination, searchState, searchMeta]);
-
-  const maxPage = Math.floor(metadata.count / pagination.page_size);
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
   };
@@ -157,7 +155,8 @@ const Modify = ({
             "No hay resultados disponibles"
           ) : (
             <Pagination
-              maxPage={maxPage}
+              count={metadata.count}
+              page_size={pagination.page_size}
               page={pagination.page}
               setStatePage={setPage}
               size="md"

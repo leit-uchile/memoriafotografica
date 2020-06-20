@@ -72,14 +72,6 @@ class Home extends Component {
     const { photos, filters, loadingPhotos, count } = this.props;
     const { maxAllowed } = this.state.photoPagination;
 
-    // BUGFIX: there's a border case like
-    // pageLimit = floor(50/25) = 2 and gives pages (0,1,2)
-    // but pageLimit should be 1 so we can have the pages (0,1)
-    const pageLimit =
-      Math.floor(count / maxAllowed) === count / maxAllowed
-        ? Math.floor(count / maxAllowed) - 1
-        : Math.floor(count / maxAllowed);
-
     // For gallery
     var mapped = photos.map((el) => ({
       src: el.thumbnail,
@@ -183,7 +175,8 @@ class Home extends Component {
               <Col>
                 {loadingPhotos ? null : (
                   <Pagination
-                    maxPage={pageLimit}
+                    count={count}
+                    page_size={maxAllowed}
                     page={this.state.photoPagination.page}
                     setStatePage={this.setPage}
                     size="lg"

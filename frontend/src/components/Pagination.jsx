@@ -11,8 +11,11 @@ import {
  * Manage the display and transition between pages
  * using a Function that sets an specific page
  *
+ * Use either maxPage or count + page_size. If count is provided the maxpage will be computed
  * @param {Number} maxPage lastPage
  * @param {Number} page current page
+ * @param {Number} count <optional> to compute max page
+ * @param {Number} page_size <optional> to compute max page
  * @param {Function} setStatePage parent function that calls the API
  * @param {String} size one of "sm" "md" "lg"
  * @param {String} label aria-label, default is "generic"
@@ -21,8 +24,10 @@ import {
  * @param {Number} displayRange amount of aditional pages to display (min = 1)
  */
 const Pagination = ({
-  maxPage,
+  maxPageProp,
   page,
+  count,
+  page_size,
   setStatePage,
   size,
   label = "generic",
@@ -30,6 +35,22 @@ const Pagination = ({
   displayLast = true,
   displayRange = 5,
 }) => {
+  const [range, setRange] = useState({
+    leftPage: [],
+    rightPage: [],
+    max: (displayRange - 1) / 2,
+  });
+
+  // BUGFIX: there's a border case like
+  // pageLimit = floor(50/25) = 2 and gives pages (0,1,2)
+  // but pageLimit should be 1 so we can have the pages (0,1)
+  const maxPage =
+    count === undefined
+      ? maxPageProp
+      : Math.floor(count / page_size) === count / page_size
+      ? Math.floor(count / page_size) - 1
+      : Math.floor(count / page_size);
+
   let changePage = (direction) => {
     if (direction < 0) {
       if (page > 0) {
@@ -47,12 +68,6 @@ const Pagination = ({
     setTimeout(() => setStatePage(number), 300);
     goTop();
   };
-
-  const [range, setRange] = useState({
-    leftPage: [],
-    rightPage: [],
-    max: (displayRange - 1) / 2,
-  });
 
   useEffect(() => {
     // Compute even distribution of pages at left and at right of current page
