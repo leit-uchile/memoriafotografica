@@ -14,16 +14,16 @@ import { connect } from "react-redux";
 import { webadmin } from "../../../actions";
 import { getMessages } from "../../../actions/webadmin_api";
 
-const EmailRequests = ({messages, getMessages, updateMessage, requestsPhoto, getRequests, updateRequest}) => {
+const EmailRequests = ({
+  messages,
+  getMessages,
+  messageUpdate
+}) => {
   const [activeTab, setActiveTab] = useState("1");
 
   useEffect(() => {
     getMessages();
-  }, [activeTab==="1", updateMessage]);
-
-  useEffect(() => {
-    getRequests();
-  }, [activeTab==="2", updateRequest]);
+  }, [activeTab === "2", messageUpdate]);
 
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -39,7 +39,7 @@ const EmailRequests = ({messages, getMessages, updateMessage, requestsPhoto, get
               toggle("1");
             }}
           >
-            Contacto
+            Solicitud de fotos
           </NavLink>
         </NavItem>
         <NavItem>
@@ -49,7 +49,7 @@ const EmailRequests = ({messages, getMessages, updateMessage, requestsPhoto, get
               toggle("2");
             }}
           >
-            Solicitud de fotos
+            Contacto
           </NavLink>
         </NavItem>
       </Nav>
@@ -57,14 +57,14 @@ const EmailRequests = ({messages, getMessages, updateMessage, requestsPhoto, get
         <TabPane tabId="1">
           <Row>
             <Col sm="12">
-              <ContactTable messages={messages}/>
+              <PhotoTable />
             </Col>
           </Row>
         </TabPane>
         <TabPane tabId="2">
           <Row>
             <Col sm="12">
-              <PhotoTable requests={requestsPhoto} />
+              <ContactTable messages={messages} />
             </Col>
           </Row>
         </TabPane>
@@ -73,20 +73,13 @@ const EmailRequests = ({messages, getMessages, updateMessage, requestsPhoto, get
   );
 };
 
-const mapStateToProps = state => ({
-  loading: state.site_misc.curador.loading,
+const mapStateToProps = (state) => ({
   messages: state.webadmin.messages,
-  updateMessage: state.webadmin.messageUpdate,
-  requestsPhoto: state.webadmin.requests,
-  updateRequest: state.webadmin.requestUpdate
+  messageUpdate: state.webadmin.messageUpdate
 });
 
-const mapActionsToProps = dispatch => ({
-  getRequests: () => dispatch(webadmin.getRequests()),
-  getMessages: () => dispatch(webadmin.getMessages())
+const mapActionsToProps = (dispatch) => ({
+  getMessages: () => dispatch(webadmin.getMessages()),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(EmailRequests);
-
-
-

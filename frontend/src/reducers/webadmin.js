@@ -17,6 +17,8 @@ import {
   CONTACTMESSAGES_ERROR,
   CONTACTMESSAGE_SWITCH_STATE,
   CONTACTMESSAGE_SWITCH_STATE_ERROR,
+  PHOTOREQUEST_RECOVERED,
+  PHOTOREQUEST_ERROR,
 } from "../actions/types";
 
 const initialState = {
@@ -31,6 +33,7 @@ const initialState = {
   messages:[],
   messageUpdate: {},
   requests: [],
+  requestDetail: {},
   requestUpdate: {}
 };
 
@@ -63,6 +66,10 @@ export default function webadmin(state = initialState, action) {
       return { ...state, requests: action.data}
     case PHOTOREQUESTS_ERROR:
       return { ...state, errors: data}
+    case PHOTOREQUEST_RECOVERED:
+      return { ...state, requestDetail: action.data };
+    case PHOTOREQUEST_ERROR:
+      return { ...state, requestDetail: {}, error: action.data };
     case PHOTOREQUEST_SWITCH_STATE:
       return { ...state, requestUpdate: action.data };
     case PHOTOREQUEST_SWITCH_STATE_ERROR:

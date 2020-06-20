@@ -25,6 +25,7 @@ import Reports from "./Reports/Reports";
 import Metadata from "./Metadata";
 import EmailRequest from "./EmailRequests/EmailRequests";
 import { Helmet } from "react-helmet";
+import PhotoRequestDetails from "./EmailRequests/PhotoRequestDetails";
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
 import { useEffect } from "react";
@@ -153,6 +154,11 @@ const Dashboard = ({ match, location, setRoute }) => {
               exact
               path={match.path + "/email"}
               component={EmailRequest}
+            />
+            <BoundedRoute
+              exact
+              path={match.path + "/email/photos/:id/"}
+              component={PhotoRequestDetails}
             />
             <Route component={NoMatch} />
           </Switch>
