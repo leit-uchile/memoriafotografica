@@ -3,29 +3,23 @@ import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { Button, Row, Col, Container } from "reactstrap";
 import { Helmet } from "react-helmet";
-
-import ReportModal from "../../components/ReportModal";
-import CommentHandler from "./CommentHandler";
-import Photo from "../../components/Photo";
+import { ReportModal, Photo, NoMatch, LeitSpinner } from "../../components/";
+import CommentHandler from "./Comments/CommentHandler";
 import { gallery, site_misc, webadmin } from "../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCalendarPlus,
-  faCamera,
-  faChevronCircleLeft,
-  faChevronCircleRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCalendarPlus, faCamera } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import "./photoInfo.css";
 import { getPermissionLogo } from "../../utils";
-import Tags from "./Tags";
-import Categories from "./Categories";
-import Addthis from "./Addthis";
+import Tags from "./Elements/Tags";
+import Categories from "./Elements/Categories";
+import Addthis from "./Elements/Addthis";
+import PhotoDisplay from "./Elements/PhotoDisplay";
 
 const PhotoDetails = ({
   photoInfo,
   suggestions,
-  photoIndex,
+  photoPage,
   onLoad,
   findPhotoQueryPage,
   loadSuggestions,
@@ -33,17 +27,16 @@ const PhotoDetails = ({
   putRequestPhoto,
   match,
   location,
+  errors,
 }) => {
   const [state, setState] = useState({
     loadingPhoto: true,
     redirectToGallery: false,
-    currentIndex: -1,
     // Page navigation
     leftIndex: -1,
     rightIndex: -1,
     pageSize: 10,
     page: 0,
-    currentPage: 0,
   });
 
   const imageContainer = React.createRef();
@@ -60,74 +53,76 @@ const PhotoDetails = ({
     // Load data
     onLoad(match.params.id);
     // Reset page counter
-    setState({ ...state, currentPage: -1 });
+    setState({ ...state, loadingPhoto: true });
     // Ask for our page number based on query
-    findPhotoQueryPage(match.params.id,location.search)
-    // METHOD
-    loadSuggestions(state.page, location.search);
+    findPhotoQueryPage(match.params.id, state.pageSize, location.search);
   }, [onLoad, match.params.id, location.search]);
+
+  useEffect(() => {
+    // Initial load
+    if (photoInfo.id !== undefined) {
+      setState({ ...state, loadingPhoto: false });
+    }
+  }, [photoInfo.id]);
+
+  // Get suggestions
+  useEffect(() => {
+    if (photoPage.page !== null) {
+      loadSuggestions(photoPage.page, state.pageSize, location.search);
+    }
+  }, [photoPage.page]);
+
+  useEffect(() => {
+    setState({
+      ...state,
+      page: photoPage.page,
+      rightIndex: photoPage.nextId,
+      leftIndex: photoPage.prevId,
+    });
+  }, [photoPage.position]);
+
+  // Find index
+  useEffect(() => {
+    if (suggestions.length !== 0) {
+      console.log("suggestions");
+    }
+  }, [suggestions]);
 
   if (state.redirectToGallery) {
     return <Redirect push to="/gallery" />;
   }
+
+  // In case of wrong id or banned id
+  if (errors !== null && errors !== undefined) {
+    return <NoMatch location={location} />;
+  }
+
   return (
-    <div ref={imageContainer} className="disable-css-transitions">
+    <div ref={imageContainer}>
       <Helmet>
         <meta
           property="og:url"
           content="http://memoriafotografica.ing.fcfm.cl/"
         />
-        <meta property="og:title" content={photoInfo.details.title} />
+        <meta property="og:title" content={photoInfo.title} />
         <meta property="og:type" content="website" />
-        <meta
-          property="og:description"
-          content={photoInfo.details.description}
-        />
-        <meta property="og:image" content={photoInfo.details.thumbnail} />
-        <title>{photoInfo.details.title}</title>
+        <meta property="og:description" content={photoInfo.description} />
+        <meta property="og:image" content={photoInfo.thumbnail} />
+        <title>{photoInfo.title}</title>
       </Helmet>
       <Container fluid>
-        <Row className="photoPanelView">
+        <Row className="photoPanelView" style={{ textAlign: "center" }}>
           <Col md={{ offset: 3, size: 6 }}>
-            <h2 style={styles.center}>{photoInfo.details.title}</h2>
-            <div style={{ textAlign: "center" }}>
-              <Link
-                className="photoDetailNavigation"
-                style={{
-                  display: "inline-block",
-                  marginRight: "1em",
-                }}
-                to={`/photo/${state.leftIndex}`}
-              >
-                <FontAwesomeIcon
-                  icon={faChevronCircleLeft}
-                  style={{ height: "25px", width: "25px" }}
-                />
-              </Link>
-              <img
-                alt={photoInfo.details.title}
-                src={photoInfo.details.thumbnail}
-                style={{
-                  display: "inline-block",
-                  margin: "0 auto",
-                  maxHeight: "60vh",
-                  maxWidth: "75%",
-                }}
+            {state.loadingPhoto ? (
+              <LeitSpinner />
+            ) : (
+              <PhotoDisplay
+                details={photoInfo}
+                leftIndex={state.leftIndex}
+                rightIndex={state.rightIndex}
+                params={location.search}
               />
-              <Link
-                className="photoDetailNavigation"
-                style={{
-                  display: "inline-block",
-                  marginLeft: "1em",
-                }}
-                to={`/photo/${state.rightIndex}`}
-              >
-                <FontAwesomeIcon
-                  icon={faChevronCircleRight}
-                  style={{ height: "25px", width: "25px" }}
-                />
-              </Link>
-            </div>
+            )}
           </Col>
         </Row>
         <Row
@@ -141,23 +136,25 @@ const PhotoDetails = ({
           <Col>
             <div style={{ textAlign: "center" }}>
               {suggestions
-                ? suggestions.map((im, k) => (
-                    <Photo
-                      className={
-                        im.id !== photoInfo.details.id
-                          ? "suggestionPhoto"
-                          : "suggestionPhoto thisPhoto"
-                      }
-                      key={k}
-                      url={im.thumbnail}
-                      name={"Foto relacionada"}
-                      useLink={im.id !== photoInfo.details.id}
-                      onClick={() => {}}
-                      redirectUrl={"/photo/" + im.id}
-                      height={"50px"}
-                      width={"50px"}
-                    />
-                  ))
+                ? suggestions.length > state.pageSize
+                  ? null
+                  : suggestions.map((im, k) => (
+                      <Photo
+                        className={
+                          im.id !== photoInfo.id
+                            ? "suggestionPhoto"
+                            : "suggestionPhoto thisPhoto"
+                        }
+                        key={k}
+                        url={im.thumbnail}
+                        name={"Foto relacionada"}
+                        useLink={im.id !== photoInfo.id}
+                        onClick={() => {}}
+                        redirectUrl={`/photo/${im.id}/${location.search}`}
+                        height={"50px"}
+                        width={"50px"}
+                      />
+                    ))
                 : null}
             </div>
           </Col>
@@ -167,33 +164,32 @@ const PhotoDetails = ({
             <Container>
               <Row>
                 <Col md={3}>
-                  {photoInfo.details.user ? (
+                  {photoInfo.user ? (
                     <Fragment>
                       <div
-                      className="photoDetailAvatar"
+                        className="photoDetailAvatar"
                         style={{
-                          backgroundImage: `url(${photoInfo.details.user.avatar})`,
+                          backgroundImage: `url(${photoInfo.user.avatar})`,
+                          marginBottom: "0.5em",
                         }}
                       ></div>
                       <div style={{ marginLeft: "6em" }}>
                         <b>
                           <Link
-                            to={
-                              "/user/public/" + photoInfo.details.user.id + "/"
-                            }
-                          >{`${photoInfo.details.user.first_name} ${photoInfo.details.user.last_name}`}</Link>
+                            to={"/user/public/" + photoInfo.user.id + "/"}
+                          >{`${photoInfo.user.first_name} ${photoInfo.user.last_name}`}</Link>
                         </b>
-                        <p>{photoInfo.details.user.rol_type}</p>
+                        <p>{photoInfo.user.rol_type}</p>
                       </div>
                     </Fragment>
                   ) : null}
                   <Tags
-                    tags={photoInfo.details.metadata}
+                    tags={photoInfo.metadata}
                     onRedirect={redirectToSearch}
                     style={{ clear: "both" }}
                   />
                   <Categories
-                    cats={photoInfo.details.category}
+                    cats={photoInfo.category}
                     onRedirect={redirectToSearch}
                   />
                 </Col>
@@ -212,9 +208,7 @@ const PhotoDetails = ({
                             style={{ marginRight: "1em" }}
                           />
                           Tomada el{" "}
-                          {moment(photoInfo.details.upload_date).format(
-                            "DD/MM/YYYY"
-                          )}
+                          {moment(photoInfo.upload_date).format("DD/MM/YYYY")}
                         </h5>
                       </Col>
 
@@ -225,15 +219,13 @@ const PhotoDetails = ({
                             style={{ marginRight: "1em" }}
                           />
                           Subida el{" "}
-                          {moment(photoInfo.details.created_at).format(
-                            "DD/MM/YYYY"
-                          )}
+                          {moment(photoInfo.created_at).format("DD/MM/YYYY")}
                         </h5>
                       </Col>
                     </Row>
                     <Row>
                       <Col>
-                        <p>{photoInfo.details.description}</p>
+                        <p>{photoInfo.description}</p>
                       </Col>
                     </Row>
                     <Row>
@@ -243,7 +235,7 @@ const PhotoDetails = ({
                           to="/request-photo"
                           className="float-left"
                           onClick={() => {
-                            putRequestPhoto(photoInfo.details);
+                            putRequestPhoto(photoInfo);
                           }}
                         >
                           Solicitar foto
@@ -269,31 +261,26 @@ const PhotoDetails = ({
                           reportType={2}
                         />
                         <Addthis
-                          title={photoInfo.details.title}
-                          description={photoInfo.details.description}
-                          thumbnail={photoInfo.details.thumbnail}
+                          title={photoInfo.title}
+                          description={photoInfo.description}
+                          thumbnail={photoInfo.thumbnail}
                         />
                       </Col>
                     </Row>
                   </Container>
                 </Col>
               </Row>
-            </Container>
-          </Col>
-        </Row>
-        <Row
-          style={{
-            borderTop: "solid 1px gray",
-            marginTop: "2em",
-            paddingTop: "2em",
-          }}
-        >
-          <Col>
-            <Container>
-              <Row>
+              <Row
+                style={{
+                  borderTop: "solid 1px gray",
+                  marginTop: "2em",
+                  paddingTop: "2em",
+                  marginBottom: "3em",
+                }}
+              >
                 <Col md={3}>
                   <h3>Licencia</h3>
-                  {photoInfo.details.permission.map((el) =>
+                  {photoInfo.permission.map((el) =>
                     getPermissionLogo(el, 90, 32)
                   )}
                 </Col>
@@ -310,9 +297,6 @@ const PhotoDetails = ({
 };
 
 const styles = {
-  center: {
-    textAlign: "center",
-  },
   cc: {
     position: "absolute",
     bottom: "0",
@@ -320,15 +304,19 @@ const styles = {
 };
 
 const mapStateToProps = (state) => ({
-  photoInfo: state.photos,
+  photoInfo: state.photos.details,
   suggestions: state.photos.photos,
+  errors: state.photos.errors,
   photoIndex: state.site_misc.home.selectedIndex,
+  photoPage: state.site_misc.home.photoPagination,
 });
 
 const mapActionsToProps = (dispatch) => ({
   onLoad: (id) => dispatch(gallery.photos.getPhoto(id)),
-  findPhotoQueryPage: (id,params) => dispatch(gallery.photos.findPhotoQueryPage(id,10,params)),
-  loadSuggestions: (page,params) => dispatch(gallery.photos.photoQuerySuggestions(page,10,params)),
+  findPhotoQueryPage: (id, pageSize, params) =>
+    dispatch(gallery.photos.findPhotoQueryPage(id, pageSize, params)),
+  loadSuggestions: (page, pageSize, params) =>
+    dispatch(gallery.photos.photoQuerySuggestions(page, pageSize, params)),
   putSearch: (id, value) => dispatch(site_misc.putSearchItem(id, value)),
   putRequestPhoto: (value) => dispatch(webadmin.putRequestPhoto(value)),
   setSelectedId: (id) => dispatch(site_misc.setSelectedId(id)),

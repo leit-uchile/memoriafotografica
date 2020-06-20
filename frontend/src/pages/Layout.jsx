@@ -39,6 +39,10 @@ const lazyComponents = [
   },
 ];
 
+const Empty = (props) => {
+  return <div></div>;
+};
+
 /**
  * Layout
  *
@@ -59,6 +63,8 @@ const Layout = () => {
         <Header />
         <div style={styles.body}>
           <Alert />
+          {/* This Route allows us to add transition animations
+            at the cost of mounting everytime the location changes */}
           <Route
             render={({ location }) => (
               <TransitionGroup>
@@ -73,12 +79,11 @@ const Layout = () => {
                     <BoundedRoute path={"/news"} component={NewsPage} />
                     <BoundedRoute path={"/gallery"} component={Home} />
                     <BoundedRoute path={"/login"} component={Login} />
-                    <BoundedRoute
-                      path={"/photo/:id/"}
-                      component={PhotoDetails}
-                    />
                     <BoundedRoute path={"/misc"} component={Index} />
                     <BoundedRoute path={"/register"} component={Register} />
+                    {/* The next route allows to keep the real component mounted
+                      with a persistent state; see outside transition */}
+                    <BoundedRoute path={"/photo/:id/"} component={Empty} />
                     <BoundedRoute
                       path={"/confirm"}
                       component={EmailConfirmation}
@@ -107,6 +112,8 @@ const Layout = () => {
               </TransitionGroup>
             )}
           />
+          {/* These are the persistent routes that do not unmount on id change*/}
+          <BoundedRoute path={"/photo/:id/"} component={PhotoDetails} />
         </div>
       </div>
       <Footer />
