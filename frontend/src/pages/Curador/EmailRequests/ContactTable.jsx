@@ -28,7 +28,7 @@ const ContactTable = ({ messages, updateMessage }) => {
   );
 
   return (
-    <Table responsive striped>
+    <Table responsive striped className="statBox">
       <thead>
         <tr>
           <th>Responder por</th>

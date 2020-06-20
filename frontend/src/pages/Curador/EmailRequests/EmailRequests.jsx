@@ -21,9 +21,9 @@ const EmailRequests = ({messages, getMessages, updateMessage, requestsPhoto, get
     getMessages();
   }, [activeTab==="1", updateMessage]);
 
-  useEffect(() => {
-    getRequests();
-  }, [activeTab==="2", updateRequest]);
+  // useEffect(() => {
+  //   getRequests();
+  // }, [activeTab==="2", updateRequest]);
 
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -64,7 +64,7 @@ const EmailRequests = ({messages, getMessages, updateMessage, requestsPhoto, get
         <TabPane tabId="2">
           <Row>
             <Col sm="12">
-              <PhotoTable requests={requestsPhoto} />
+              <PhotoTable/>
             </Col>
           </Row>
         </TabPane>
@@ -77,12 +77,12 @@ const mapStateToProps = state => ({
   loading: state.site_misc.curador.loading,
   messages: state.webadmin.messages,
   updateMessage: state.webadmin.messageUpdate,
-  requestsPhoto: state.webadmin.requests,
+  // requestsPhoto: state.webadmin.requests,
   updateRequest: state.webadmin.requestUpdate
 });
 
 const mapActionsToProps = dispatch => ({
-  getRequests: () => dispatch(webadmin.getRequests()),
+  // getRequests: () => dispatch(webadmin.getRequests()),
   getMessages: () => dispatch(webadmin.getMessages())
 });
 

@@ -85,7 +85,7 @@ class PhotoRequestDetailAPI(generics.GenericAPIView):
     def get(self, request, pk, *args, **kwargs):
         if request.user.user_type >= 2:
             photo_request = self.get_object(pk)
-            serializer = PhotoRequestSerializer(photo_request, data=request.data)
+            serializer = PhotoRequestSerializer(photo_request)
             return Response(serializer.data)
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)

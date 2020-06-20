@@ -1,5 +1,5 @@
 import React from "react";
-import { ButtonGroup } from "reactstrap";
+import { Button } from "reactstrap";
 
 /**
  * Render design pattern
@@ -10,36 +10,37 @@ import { ButtonGroup } from "reactstrap";
 const PhotoRow = ({ request, key, actions, render }) => {
   const onlyInfo = (req) => {
     let reqCopy = { ...req };
-    delete reqCopy.photos
-    delete reqCopy.resolved
-    delete reqCopy.email_sent
-    delete reqCopy.created_at
-    delete reqCopy.updated_at
-    return reqCopy
-  }
+    delete reqCopy.photos;
+    delete reqCopy.resolved;
+    delete reqCopy.email_sent;
+    delete reqCopy.created_at;
+    delete reqCopy.updated_at;
+    return reqCopy;
+  };
   return (
     <tr>
       <td>
-        <ButtonGroup>
-          {actions(request, true)}
-          {actions(request, false)}
-        </ButtonGroup>
+        <Button onClick={() => actions(request.id)}>Gestionar</Button>
       </td>
-      <td style={request.resolved ? request.email_sent ?{color: "green"} : {color: "red"}: {color: "red"}}>
-        {request.resolved ? request.email_sent ?"Aprobada" :"Rechazada" : "Sin resolver"}
+      <td
+        style={
+          request.resolved
+            ? request.email_sent
+              ? { color: "green" }
+              : { color: "red" }
+            : { color: "red" }
+        }
+      >
+        {request.resolved
+          ? request.email_sent
+            ? "Aprobada"
+            : "Rechazada"
+          : "Sin resolver"}
       </td>
-      <td>
-        {new Date(request.created_at).toLocaleDateString("es")}
-      </td>
-      <td>
-        {new Date(request.updated_at).toLocaleDateString("es")}
-      </td>
-      <td>
-        {request.reason}
-      </td>
-      <td>
-        {render(onlyInfo(request))}
-      </td>
+      <td>{new Date(request.created_at).toLocaleDateString("es")}</td>
+      <td>{new Date(request.updated_at).toLocaleDateString("es")}</td>
+      <td>{request.reason}</td>
+      <td>{render(onlyInfo(request))}</td>
     </tr>
   );
 };

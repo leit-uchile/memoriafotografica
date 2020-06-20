@@ -11,6 +11,8 @@ import {
   CONTACT_ERROR,
   PHOTOREQUESTS_RECOVERED,
   PHOTOREQUESTS_ERROR,
+  PHOTOREQUEST_RECOVERED,
+  PHOTOREQUEST_ERROR,
   PHOTOREQUEST_SWITCH_STATE,
   PHOTOREQUEST_SWITCH_STATE_ERROR,
   CONTACTMESSAGES_RECOVERED,
@@ -120,6 +122,29 @@ export const getRequests = () => (dispatch, getState) => {
       });
     } else {
       dispatch({ type: PHOTOREQUESTS_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
+/**
+ * Get Request Details
+ * @param {*} id 
+ */
+export const getRequest = (id) => (dispatch, getState) => {
+  let headers = {
+    Authorization: "Token " + getState().user.token
+  };
+  fetch(`/api/requests/photos/${id}/`, {
+    headers: headers
+  }).then(function(response) {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then(data => {
+        dispatch({ type: PHOTOREQUEST_RECOVERED, data: data });
+      });
+    } else {
+      dispatch({ type: PHOTOREQUEST_ERROR, data: r.data });
       throw r.data;
     }
   });

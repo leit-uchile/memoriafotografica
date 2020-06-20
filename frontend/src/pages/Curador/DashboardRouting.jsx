@@ -24,6 +24,7 @@ import Landing from "./Landing";
 import Reports from "./Reports/Reports";
 import Metadata from "./Metadata";
 import EmailRequest from "./EmailRequests/EmailRequests";
+import PhotoRequestDetails from "./EmailRequests/PhotoRequestDetails";
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
 import { useEffect } from "react";
@@ -144,6 +145,11 @@ const Dashboard = ({ match, location, setRoute }) => {
               exact
               path={match.path + "/email"}
               component={EmailRequest}
+            />
+            <BoundedRoute
+              exact
+              path={match.path + "/email/photoRequest/:id/"}
+              component={PhotoRequestDetails}
             />
             <Route component={NoMatch} />
           </Switch>
