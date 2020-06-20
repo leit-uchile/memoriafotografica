@@ -20,7 +20,13 @@ const PhotoRow = ({ request, key, actions, render }) => {
   return (
     <tr>
       <td>
-        <Button onClick={() => actions(request.id)}>Gestionar</Button>
+        <Button
+          color="danger"
+          disabled={request.resolved}
+          onClick={() => actions(request.id)}
+        >
+          Gestionar
+        </Button>
       </td>
       <td
         style={

@@ -121,7 +121,7 @@ class PhotoRequestDetailAPI(generics.GenericAPIView):
             serializer = PhotoRequestSerializer(photo_request, data=request.data, partial=True)
             if serializer.is_valid():
               serializer.save()
-              if request.data['email_sent']:
+              if request.data['email_sent']: #approved
                 sendEmail(emailto=photo_request.email, case="photo_request_success", subject='Hemos resuelto su solicitud', attached=request.data['attached'])
               else:
                 sendEmail(emailto=photo_request.email, case="photo_request_failure", subject='Hemos resuelto su solicitud', attached=[])

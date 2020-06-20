@@ -148,7 +148,7 @@ const Dashboard = ({ match, location, setRoute }) => {
             />
             <BoundedRoute
               exact
-              path={match.path + "/email/photoRequest/:id/"}
+              path={match.path + "/email/photos/:id/"}
               component={PhotoRequestDetails}
             />
             <Route component={NoMatch} />

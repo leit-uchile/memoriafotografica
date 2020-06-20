@@ -28,7 +28,7 @@ class PhotoTable extends Component {
       return (
         <Redirect
           push
-          to={`/curador/dashboard/email/photoRequest/${this.state.redirect}/`}
+          to={`/curador/dashboard/email/photos/${this.state.redirect}/`}
         />
       );
     }
@@ -67,10 +67,7 @@ class PhotoTable extends Component {
   }
 }
 
-
-
 const mapStateToProps = state => ({
-  loading: state.site_misc.curador.loading,
   requests: state.webadmin.requests,
 });
 
