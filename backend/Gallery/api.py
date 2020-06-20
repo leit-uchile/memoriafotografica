@@ -69,7 +69,7 @@ def filter_photos(photolist, request):
         if "uploaded" in request.query_params:
             photolist = photolist.filter(created_at__gte = date.fromisoformat(request.query_params["uploaded"]))
         if "uploaded_until" in request.query_params:
-            photolist = photolist.filter(created_at__lte = date.fromisoformat(request.query_params["uploaded"]))
+            photolist = photolist.filter(created_at__lte = date.fromisoformat(request.query_params["uploaded_until"]))
         if "taken" in request.query_params:
             photolist = photolist.filter(upload_date__gte = date.fromisoformat(request.query_params["taken"]))
         if "user" in request.query_params:
