@@ -272,7 +272,7 @@ export const getPhoto = (id) => (dispatch) => {
           dispatch({ type: RECOVERED_PHOTO_DETAILS, data: data });
         });
       } else {
-        dispatch({ type: PHOTO_DETAILS_ERROR, data: r.data });
+        dispatch({ type: PHOTO_DETAILS_ERROR, data: r.status });
         throw r.data;
       }
     }
@@ -406,7 +406,7 @@ export const findPhotoQueryPage = (id, pageSize, params) => (dispatch) => {
 };
 
 /**
- *
+ * Find the page of our photo in a list
  * @param {Number} pageSize
  * @param {String} params
  */

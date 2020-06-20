@@ -173,7 +173,7 @@ class SearchBar extends Component {
                 )}
                 getSectionSuggestions={(section) => section.suggestions}
                 inputProps={inputProps}
-                alwaysRenderSuggestions
+                alwaysRenderSuggestions={this.state.iptc_filter !== 0}
               />
               <Button
                 type="button"

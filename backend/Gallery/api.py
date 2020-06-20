@@ -141,19 +141,26 @@ class PhotoListAPI(generics.GenericAPIView):
             serializer = PhotoAdminSerializer(photo, many = True)
             serialized_data = serializer.data
         
+        # This does the magic fot PhotoDetails suggestions
         # If we just need the page number
         if "get_page" in request.query_params:
             photo_id = int(request.query_params["get_page"])
             size = int(request.query_params["page_size"])
             results = len(serialized_data)
-            # Get the position
-            position = -1
+            # Get the positions
+            position = -1 # On the entire array
+            prev_p = -1
+            next_p = -1
             for i in range(results):
                 if serialized_data[i]['id'] == photo_id:
+                    if i != 0:
+                        prev_p = serialized_data[i-1]["id"]
                     position = i
+                    if i != results - 1:
+                        next_p = serialized_data[i+1]["id"]
                     break
-            page = (position + 1)//size
-            return JsonResponse({"position": str(position), "page": str(page)})
+            page = (position)//size
+            return JsonResponse({"position": position, "page": page, "nextId": next_p, "prevId": prev_p, "total": results})
 
         for aPhoto in serialized_data:
             aPhoto['metadata'] = list(filter(lambda x: check_approval(x), aPhoto['metadata']))

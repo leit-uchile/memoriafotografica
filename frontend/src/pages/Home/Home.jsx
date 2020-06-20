@@ -97,6 +97,7 @@ class Home extends Component {
           : url +
             "&metadata=" +
             this.props.filters.map((el) => el.metaID).join(",");
+      this.setState({ redirect: false });
       return (
         <Redirect
           push

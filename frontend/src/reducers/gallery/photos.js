@@ -23,7 +23,11 @@ const initialState = {
 export default function photos(state = initialState, action) {
   switch (action.type) {
     case RECOVERED_PHOTOS:
-      return { ...state, photos: action.data.results, count: action.data.count };
+      return {
+        ...state,
+        photos: action.data.results,
+        count: action.data.count,
+      };
     case EMPTY_PHOTOS:
       return { ...state, photos: [] };
     case EDIT_PHOTO:
@@ -31,9 +35,20 @@ export default function photos(state = initialState, action) {
     case EDIT_PHOTO_ERROR:
       return { ...state, edit_photo_errors: action.data };
     case RECOVERED_PHOTO_DETAILS:
-      return { ...state, details: action.data };
+      return { ...state, details: action.data, errors: null };
     case PHOTO_DETAILS_ERROR:
-      return { ...state, errors: action.data };
+      return {
+        ...state,
+        errors: action.data,
+        details: {
+          title: "[Titulo]",
+          image: undefined,
+          desc: undefined,
+          permission: [],
+          category: [],
+          metadata: [],
+        },
+      };
 
     default:
       return state;

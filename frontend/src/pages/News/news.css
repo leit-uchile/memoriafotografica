@@ -5,7 +5,7 @@
   text-align: center;
 }
 .color-box:nth-child(2n + 1) {
-  background-color: var(--leit-pink);
+  background-color: var(--leit-bg-gray);
 }
 
 .news-page .dropdown-triangle {

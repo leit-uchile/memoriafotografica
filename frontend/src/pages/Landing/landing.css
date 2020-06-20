@@ -15,6 +15,7 @@
 .LandingPhoto p{
   font-size: 2em;
   padding: 2em;
+  background-color: rgba(213, 216, 219, 0.9);
 }
 
 h2.colTitle{

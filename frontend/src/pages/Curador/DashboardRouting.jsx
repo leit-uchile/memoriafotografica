@@ -24,6 +24,7 @@ import Landing from "./Landing";
 import Reports from "./Reports/Reports";
 import Metadata from "./Metadata";
 import EmailRequest from "./EmailRequests/EmailRequests";
+import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
 import { useEffect } from "react";
@@ -72,6 +73,9 @@ const Dashboard = ({ match, location, setRoute }) => {
       className="disable-css-transitions"
       fluid
     >
+      <Helmet>
+        <title>Interfaz de administracion</title>
+      </Helmet>
       <Row>
         <Col sm="2" className="leftcol">
           <Button
@@ -105,7 +109,12 @@ const Dashboard = ({ match, location, setRoute }) => {
         </Col>
         <Col
           sm="10"
-          style={{ marginTop: "2em", marginBottom: "2em", minHeight: "75vh" }}
+          style={{
+            marginTop: "2em",
+            marginBottom: "2em",
+            minHeight: "75vh",
+            borderLeft: "1px solid rgb(210, 214, 218)",
+          }}
         >
           <Switch>
             <BoundedRoute exact path={match.path + "/"} component={Landing} />
