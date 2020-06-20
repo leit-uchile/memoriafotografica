@@ -54,15 +54,18 @@ const PhotoDetails = ({
     onLoad(match.params.id);
     // Reset page counter
     setState({ ...state, loadingPhoto: true });
+    console.log("will be  True", photoInfo.id);
     // Ask for our page number based on query
     findPhotoQueryPage(match.params.id, state.pageSize, location.search);
   }, [onLoad, match.params.id, location.search]);
 
   useEffect(() => {
     // Initial load
-    if (photoInfo.id !== undefined) {
+    if (photoInfo.id !== undefined && state.loadingPhoto === true) {
       setState({ ...state, loadingPhoto: false });
+      console.log("hey Im in", photoInfo.id);
     }
+    console.log("hey", photoInfo.id);
   }, [photoInfo.id]);
 
   // Get suggestions
@@ -80,13 +83,6 @@ const PhotoDetails = ({
       leftIndex: photoPage.prevId,
     });
   }, [photoPage.position]);
-
-  // Find index
-  useEffect(() => {
-    if (suggestions.length !== 0) {
-      console.log("suggestions");
-    }
-  }, [suggestions]);
 
   if (state.redirectToGallery) {
     return <Redirect push to="/gallery" />;

@@ -168,7 +168,11 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
   }, [loadGeneralStats]);
 
   return (
-    <Container className="children-margin" style={{ textAlign: "center" }}>
+    <Container
+      className="children-margin"
+      style={{ textAlign: "center" }}
+      fluid
+    >
       <Row>
         <Col>
           <h2>Estad&iacute;sticas del sitio</h2>

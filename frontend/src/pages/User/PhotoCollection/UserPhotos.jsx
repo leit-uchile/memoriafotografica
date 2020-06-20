@@ -68,62 +68,69 @@ class UserPhotos extends Component {
       return (
         <Redirect
           push
-          to={`/photo/${mapped[this.state.chosenPhotoIndex].id}`}
+          to={`/photo/${mapped[this.state.chosenPhotoIndex].id}/?user=${
+            this.props.user.id
+          }`}
         />
       );
     }
     return (
       <Fragment>
-      <div className="userphotos-gallery-menu">
-        <Container>
-          <Row>
-            <Col md="7" lg="9">
-              <div className="userphotos-title-container">
-                <Button color="secondary" tag={Link} to="./dashboard" style={{height:"30px"}}>
-                  <FontAwesomeIcon icon={faArrowAltCircleLeft} />
-                </Button>
-                <h2 style={{ marginLeft: "10px" }}>Mis fotos</h2>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-      <div className="userphotos-background">
-        <Container className="userphotos-gallery-container">
-          <Row>
-            <Col sm={mapped.length === 1 ? { size: 4, offset: 4 } : { size: 9 }}>
-              <PhotoEditor
-                photos={mapped}
-                targetRowHeight={250}
-                onClick={(e, index) => this.handleOnSelect(index)}
-                // putAll={(state) => this.putAllToEdit(mapped,state)}
-                selectAll={this.state.selectedAll}
-                onRedirect={(e, index) => this.handleOnRedirect(index)}
-              />
-            </Col>
-            <Col className="userphotos-filters-container">
-              <Button onClick={() => this.putAllToEdit(mapped, true)}>
-                Seleccionar todas
-              </Button>
-              <Button
-                disabled={this.state.picturesToEdit.length === 0}
-                color="danger"
-                style={{backgroundColor: "var(--leit-pink)"}}
-                onClick={() => this.putAllToEdit(mapped, false)}
+        <div className="userphotos-gallery-menu">
+          <Container>
+            <Row>
+              <Col md="7" lg="9">
+                <div className="userphotos-title-container">
+                  <Button
+                    color="secondary"
+                    tag={Link}
+                    to="./dashboard"
+                    style={{ height: "30px" }}
+                  >
+                    <FontAwesomeIcon icon={faArrowAltCircleLeft} />
+                  </Button>
+                  <h2 style={{ marginLeft: "10px" }}>Mis fotos</h2>
+                </div>
+              </Col>
+            </Row>
+          </Container>
+        </div>
+        <div className="userphotos-background">
+          <Container className="userphotos-gallery-container">
+            <Row>
+              <Col
+                sm={mapped.length === 1 ? { size: 4, offset: 4 } : { size: 9 }}
               >
-                Deseleccionar
-              </Button>
-              <EditPhotosModal photosID={this.state.picturesToEdit} />
-              
-            </Col>
-          </Row>
-        </Container>
-      </div>
+                <PhotoEditor
+                  photos={mapped}
+                  targetRowHeight={250}
+                  onClick={(e, index) => this.handleOnSelect(index)}
+                  // putAll={(state) => this.putAllToEdit(mapped,state)}
+                  selectAll={this.state.selectedAll}
+                  onRedirect={(e, index) => this.handleOnRedirect(index)}
+                />
+              </Col>
+              <Col className="userphotos-filters-container">
+                <Button onClick={() => this.putAllToEdit(mapped, true)}>
+                  Seleccionar todas
+                </Button>
+                <Button
+                  disabled={this.state.picturesToEdit.length === 0}
+                  color="danger"
+                  style={{ backgroundColor: "var(--leit-pink)" }}
+                  onClick={() => this.putAllToEdit(mapped, false)}
+                >
+                  Deseleccionar
+                </Button>
+                <EditPhotosModal photosID={this.state.picturesToEdit} />
+              </Col>
+            </Row>
+          </Container>
+        </div>
       </Fragment>
     );
   }
 }
-
 
 const mapStateToProps = (state) => ({
   photos: state.user.photos,
