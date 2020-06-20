@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { site_misc, webadmin } from "../../actions";
 import {
@@ -8,96 +8,183 @@ import {
   UncontrolledButtonDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
+  FormGroup,
+  Form,
+  Input,
+  Label,
+  Button,
 } from "reactstrap";
+import { Pagination, LeitSpinner } from "../../components";
 import "./news.css";
 
-const NewsPage = props => {
+const NewsPage = (props) => {
   const { setRoute, loadNews } = props;
+
+  const [page, setPage] = useState({
+    page: 0,
+    page_size: 2,
+    loading: true,
+  });
 
   useEffect(() => {
     setRoute("/news");
-    loadNews();
+    loadNews(page.page, page.page_size);
   }, [loadNews]);
 
+  useEffect(() => {
+    if (props.news.length !== 0) {
+      setPage((d) => ({ ...d, loading: false }));
+    }
+  }, [props.news]);
+  const recoverUrl = () => {
+    const { created_at, created_at_until, sort } = page;
+    let url = "";
+    if (created_at && created_at !== "") {
+      url = url + `&created_at=${created_at}`;
+    }
+    if (created_at_until && created_at_until !== "") {
+      url = url + `&created_at_until=${created_at_until}`;
+    }
+    if (sort && sort !== "") {
+      url = url + `&sort=${sort}`;
+    }
+    return url;
+  };
+
+  const setDaPage = (p) => {
+    setPage((s) => ({ ...s, page: p, loading: true }));
+    let url = recoverUrl();
+    setTimeout(() => loadNews(p, page.page_size, url), 300);
+  };
+
+  const handleChange = (event) => {
+    event.persist(); // Fix Syntetic Event failure
+    setPage((d) => ({
+      ...d,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setDaPage(0);
+  };
+
   return (
-    <Container>
+    <Container className="news-page">
       <Row>
-        <Col md={3} style={styles.leftcol}>
+        <Col md={3} className="news-menu">
           <h3>Filtrar por fecha</h3>
+          <Form onSubmit={handleSearch}>
+            <FormGroup>
+              <Label for="startdate">Desde</Label>
+              <Input
+                name="created_at"
+                id="startdate"
+                type="date"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="enddate">Hasta</Label>
+              <Input
+                name="created_at_until"
+                id="enddate"
+                type="date"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <Button type="submit" color="success" block>
+              Filtrar
+            </Button>
+          </Form>
         </Col>
         <Col md={9}>
-          <UncontrolledButtonDropdown className="home-button">
-            <DropdownToggle caret style={styles.dropdownButton}>
-              Ordenar
-            </DropdownToggle>
-            <DropdownMenu style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}>
-              <div style={styles.triangulo}></div>
-              <DropdownItem header>Por fecha de subida</DropdownItem>
-              <DropdownItem>Más antiguas primero</DropdownItem>
-              <DropdownItem>Más nuevas primero</DropdownItem>
-            </DropdownMenu>
-          </UncontrolledButtonDropdown>
-          {props.news.map((it, key) => (
-            <div className="color-box">
+          <Container fluid>
+            <Row>
+              <Col>
+                <UncontrolledButtonDropdown
+                  className="home-button"
+                  style={{ marginTop: "1em" }}
+                >
+                  <DropdownToggle caret>Ordenar</DropdownToggle>
+                  <DropdownMenu
+                    style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}
+                  >
+                    <div className="dropdown-triangle"></div>
+                    <DropdownItem header>Por fecha de subida</DropdownItem>
+                    <DropdownItem
+                      onClick={() =>
+                        handleChange({
+                          target: { name: "sort", value: "created_at-asc" },
+                          persist: () => {},
+                        })
+                      }
+                    >
+                      Más antiguas primero
+                    </DropdownItem>
+                    <DropdownItem
+                      onClick={() =>
+                        handleChange({
+                          target: { name: "sort", value: "created_at-desc" },
+                          persist: () => {},
+                        })
+                      }
+                    >
+                      Más nuevas primero
+                    </DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledButtonDropdown>
+              </Col>
+            </Row>
+            {page.loading ? (
               <Row>
-                <Col>
-                  <img src={it.image} width="80%" />
-                </Col>
-                <Col>
-                  <h3>{it.title}</h3>
-                  <p>{it.content}</p>
+                <Col style={{ textAlign: "center", height: "400px" }}>
+                  <LeitSpinner />
                 </Col>
               </Row>
-            </div>
-          ))}
+            ) : (
+              props.news.map((it, key) => (
+                <div className="color-box" key={key}>
+                  <Row>
+                    <Col>
+                      <img src={it.image} width="80%" />
+                    </Col>
+                    <Col>
+                      <h3>{it.title}</h3>
+                      <p>{it.content}</p>
+                    </Col>
+                  </Row>
+                </div>
+              ))
+            )}
+          </Container>
+          <Pagination
+            count={props.count}
+            page_size={page.page_size}
+            page={page.page}
+            setStatePage={setDaPage}
+            size="lg"
+            label="news-pagination"
+            displayFirst
+            displayLast
+          />
         </Col>
       </Row>
     </Container>
   );
 };
 
-const styles = {
-  leftcol: {
-    position: "sticky",
-    zIndex: "4",
-    height: "fit-content",
-    top: "1em",
-    marginTop: "2em"
-  },
-  dropdownButton: {
-    color: "var(--leit-pink)",
-    backgroundColor: "white",
-    margin: "1em 1em 0.5em 1em",
-    borderRadius: "0",
-    padding: "10px",
-    border: "none"
-  },
-  triangulo: {
-    position: "absolute",
-    width: "20px",
-    height: "20px",
-    borderTop: "1px solid rgb(210,214,218)",
-    borderRight: "0px solid rgb(210,214,218)",
-    borderBottom: "0px solid rgb(210,214,218)",
-    borderLeft: "1px solid rgb(210,214,218)",
-    top: "0",
-    left: "8em",
-    marginLeft: "-25px",
-    content: "",
-    transform: "rotate(45deg)",
-    marginTop: "-10px",
-    background: "#ffff"
-  }
-};
-
-const mapStateToProps = state => ({
-  news: state.webadmin.news
+const mapStateToProps = (state) => ({
+  news: state.webadmin.news.results,
+  count: state.webadmin.news.count,
 });
 
-const mapActionsToProps = dispatch => ({
-  loadNews: () => dispatch(webadmin.getNews()),
-  setRoute: route => dispatch(site_misc.setCurrentRoute(route))
+const mapActionsToProps = (dispatch) => ({
+  loadNews: (page, pageSize, params = "") =>
+    dispatch(webadmin.getNews(page, pageSize, params)),
+  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(NewsPage);

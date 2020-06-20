@@ -25,8 +25,8 @@ import { setAlert } from "./site_misc";
 export const landingLoading = () => (dispatch) =>
   dispatch({ type: LANDING_LOADING, data: null });
 
-export const getNews = () => (dispatch) => {
-  return fetch("/api/news/").then((response) => {
+export const getNews = (page=0, page_size=4, params="") => (dispatch) => {
+  return fetch(`/api/news/?page=${page+1}&page_size=${page_size}${params}`).then((response) => {
     const r = response;
     if (r.status === 200) {
       return r

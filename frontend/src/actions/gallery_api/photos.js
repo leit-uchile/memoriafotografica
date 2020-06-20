@@ -110,7 +110,7 @@ export const associateCategory = (photoIds, catId, action = "add") => (
   }).then(function (response) {
     const r = response;
     if (r.status === 200) {
-        dispatch(setAlert(`Fotos ${action == "add" ? "agregadas a" : "eliminadas de la "} categoria`, "success"));
+        dispatch(setAlert(`Fotos ${action === "add" ? "agregadas a" : "eliminadas de la "} categoria`, "success"));
         dispatch({ type: UPDATED_CATEGORY_PHOTOS });
     } else {
       dispatch(

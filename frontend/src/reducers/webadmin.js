@@ -23,7 +23,7 @@ import {
 
 const initialState = {
   loading: false,
-  news: [],
+  news: {count: 0, results: []},
   caroussel: [],
   errors: [],
   requestedPhotos: [],
@@ -45,7 +45,7 @@ export default function webadmin(state = initialState, action) {
     case NEWS_RECOVERED:
       return {...state, loading: false, news: data};
     case NEWS_EMPTY:
-      return {...state, loading: false, news: [], errors: data};
+      return {...state, loading: false, news: {count: 0, results: []}, errors: data};
     case CAROUSSEL_RECOVERED:
       return {...state, loading: false, caroussel: data[0].news};
     case CAROUSSEL_ERROR:

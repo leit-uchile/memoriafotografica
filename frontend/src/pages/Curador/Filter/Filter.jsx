@@ -79,7 +79,6 @@ class Filter extends Component {
   render() {
     const { photos, photoCount } = this.props;
     const { pageSize, page } = this.state;
-    const pageLimit = Math.floor(photoCount / pageSize);
     return (
       <Container fluid>
         <h2>Filtrar Fotografías</h2>
@@ -151,7 +150,8 @@ class Filter extends Component {
         <Row style={{ marginTop: "2em" }}>
           <Col>
             <Pagination
-              maxPage={pageLimit}
+              count={photoCount}
+              page_size={pageSize}
               page={page}
               setStatePage={this.setCurrentPage}
               size="lg"

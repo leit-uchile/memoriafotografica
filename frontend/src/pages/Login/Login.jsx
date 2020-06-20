@@ -110,6 +110,8 @@ class Login extends Component {
 
               <div className="col-12 forgot">
                 <Link to={"/register"}>¿No tienes cuenta? Regístrate</Link>
+                {" / "}
+                <Link to={"/recoveruser"}>¿Olvidaste tu clave?</Link>
               </div>
             </div>
           </div>

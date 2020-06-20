@@ -11,6 +11,28 @@ from Gallery.serializers import PhotoAdminSerializer, CommentAdminSerializer, Re
 from Users.serializers import UserSerializer
 from django.http import Http404
 from WebAdmin.views import sendEmail
+from datetime import date
+
+def sort_by_field(element_list, request):
+    sort_type = {"asc":"", "desc":"-"}
+    if "sort" in request.query_params:
+        splitted_param = request.query_params["sort"].split("-")
+        query = sort_type[splitted_param[1]]+splitted_param[0]
+        element_list = element_list.order_by(query)
+    else: # Default to sorting by asc creation
+        element_list = element_list.order_by("created_at")
+    return element_list
+
+def filter_elements(elements, request):
+    try:
+        if "created_at" in request.query_params:
+            elements = elements.filter(created_at__gte = date.fromisoformat(request.query_params["created_at"]))
+        if "created_at_until" in request.query_params:
+            elements = elements.filter(created_at__lte = date.fromisoformat(request.query_params["created_at_until"]))
+    except Exception as e:
+        print("Error filtering news",e)
+        pass
+    return elements
 
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
@@ -22,8 +44,11 @@ class NewsListAPI(generics.GenericAPIView):
     serializer_class =  NewsSerializer
     def get(self, request, *args, **kwargs):
         news = News.objects.all()
+        news = filter_elements(news, request)
+        news = sort_by_field(news, request)
         serializer = NewsSerializer(news, many=True)
-        return Response(serializer.data)
+        serialized_data = serializer.data
+        return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
 class NewsDetailAPI(generics.GenericAPIView):
     permission_classes = [IsAuthenticated,]

@@ -31,7 +31,6 @@ class Categories extends Component {
     } else {
       this.setState({ toDelete: this.state.toDelete.filter((el) => el !== i) });
     }
-    // Update
   };
 
   removeCategories = () => {
@@ -50,14 +49,6 @@ class Categories extends Component {
   render() {
     const { match, cats, total } = this.props;
 
-    // BUGFIX: there's a border case like
-    // pageLimit = floor(50/25) = 2 and gives pages (0,1,2)
-    // but pageLimit should be 1 so we can have the pages (0,1)
-    const maxPage =
-      Math.floor(total / this.state.page_size) === total / this.state.page_size
-        ? Math.floor(total / this.state.page_size) - 1
-        : Math.floor(total / this.state.page_size);
-
     if (this.state.redirect) {
       return (
         <Redirect
@@ -68,7 +59,7 @@ class Categories extends Component {
     }
 
     return (
-      <Container>
+      <Container fluid>
         <h2>Administrar Categorías</h2>
         <Row>
           <Col xs="8">
@@ -109,7 +100,8 @@ class Categories extends Component {
         <Row>
           <Col>
             <Pagination
-              maxPage={maxPage}
+              count={total}
+              page_size={this.state.page_size}
               page={this.state.page}
               setStatePage={this.setPage}
               size="md"

@@ -163,14 +163,6 @@ const Category_Photos = ({
     setData((d) => ({ ...d, redirect: catDetails.id }));
   };
 
-  // BUGFIX: there's a border case like
-  // pageLimit = floor(50/25) = 2 and gives pages (0,1,2)
-  // but pageLimit should be 1 so we can have the pages (0,1)
-  const maxPage =
-    Math.floor(photo_count / page.page_size) === photo_count / page.page_size
-      ? Math.floor(photo_count / page.page_size) - 1
-      : Math.floor(photo_count / page.page_size);
-
   if (data.redirect) {
     return (
       <Redirect
@@ -239,7 +231,8 @@ const Category_Photos = ({
       <Row style={{ marginTop: "1em" }}>
         <Col>
           <Pagination
-            maxPage={maxPage}
+            count={photo_count}
+            page_size={page.page_size}
             page={page.page}
             setStatePage={setDaPage}
             size="lg"
