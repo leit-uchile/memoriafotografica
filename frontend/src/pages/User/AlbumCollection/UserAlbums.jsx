@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col } from "reactstrap";
+import { Container, Row, Col, Button } from "reactstrap";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { user } from "../../../actions";
 import uuid4 from "uuid";
+import { Redirect, Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import "./albumcollection.css";
-import { Redirect } from "react-router";
 
 const UserAlbums = ({
   isPublic,
@@ -64,8 +66,28 @@ const UserAlbums = ({
       </Helmet>
       <Row className="album-title-row">
         <Col>
-          <h2>Albums de {display.user.first_name}</h2>
-          <h5>Total: {albums.length}</h5>
+          <Container>
+            <Row>
+              <Col xs={1}>
+                <Button
+                  color="secondary"
+                  tag={Link}
+                  to={
+                    isPublic && publicUser
+                      ? `/user/public/${publicUser.id}`
+                      : "/user/dashboard"
+                  }
+                  style={{ height: "30px" }}
+                >
+                  <FontAwesomeIcon icon={faArrowAltCircleLeft} />
+                </Button>
+              </Col>
+              <Col xs={10}>
+                <h2>Albums de {display.user.first_name}</h2>
+                <h5>Total: {albums.length}</h5>
+              </Col>
+            </Row>
+          </Container>
         </Col>
       </Row>
       <Row>

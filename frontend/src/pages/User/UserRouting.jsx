@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { PrivateComponent } from "../../components";
+import { PrivateComponent, BoundedRoute } from "../../components";
 import { Switch, Route } from "react-router-dom";
 import UserDashboard from "./Profile/UserDashboard";
 import EditProfile from "./EditProfile";
@@ -18,21 +18,21 @@ const UserRouting = ({ setRoute, location, ...props }) => {
   }, []);
   return (
     <Switch>
-      <Route
+      <BoundedRoute
         exact
         path={"/user/public/:id"}
         component={PublicProfile}
         location={location}
         {...props}
       />
-      <Route
+      <BoundedRoute
         exact
         path={"/user/:id/public/albums"}
         component={PublicAlbums}
         location={location}
         {...props}
       />
-      <Route
+      <BoundedRoute
         exact
         path={"/user/public/albums/:id"}
         component={AlbumView}

@@ -6,7 +6,7 @@ import {
   Card,
   CardImg,
   CardText,
-  CardBody
+  CardBody,
 } from "reactstrap";
 import Photo from "../../../components/Photo";
 import { connect } from "react-redux";
@@ -18,7 +18,7 @@ import {
   faCameraRetro,
   faAddressCard,
   faEdit,
-  faPlusCircle
+  faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { userRolTranslation, userTypeTranslation } from "../utils";
 import { UserPicture, ReportModal } from "../../../components/";
@@ -31,7 +31,7 @@ class Dashboard extends Component {
     this.state = {
       redirect: "",
       isPublic: props.publicUser ? true : false,
-      user: props.publicUser ? props.publicUser : props.user
+      user: props.publicUser ? props.publicUser : props.user,
     };
 
     if (this.state.isPublic) {
@@ -77,7 +77,9 @@ class Dashboard extends Component {
               <UserPicture
                 user={user}
                 dims={200}
-                render={user => <CardImg top width="100%" src={user.avatar} />}
+                render={(user) => (
+                  <CardImg top width="100%" src={user.avatar} />
+                )}
               />
               {this.state.isPublic ? (
                 <ReportModal
@@ -124,7 +126,10 @@ class Dashboard extends Component {
                     {this.state.isPublic ? null : addMore}
                   </h2>
                   {photos.length !== 0 ? (
-                    <Link to="/user/photos" className="user-dashboard-see-all">
+                    <Link
+                      to={`/photo/${photos[0].id}/?user=${user.id}`}
+                      className="user-dashboard-see-all"
+                    >
                       {" "}
                       Ver Todas
                     </Link>
@@ -143,7 +148,7 @@ class Dashboard extends Component {
                             height="150px"
                             width="200px"
                             useLink
-                            redirectUrl={`/photo/${el.id}`}
+                            redirectUrl={`/photo/${el.id}/?user=${user.id}`}
                           />
                         </Col>
                       ))
@@ -157,7 +162,14 @@ class Dashboard extends Component {
                     &Aacute;lbumes {this.state.isPublic ? null : addMore}
                   </h2>
                   {albums.length !== 0 ? (
-                    <Link to={this.state.isPublic ? `/user/${this.state.user.id}/public/albums` : "/user/albums"} className="user-dashboard-see-all">
+                    <Link
+                      to={
+                        this.state.isPublic
+                          ? `/user/${this.state.user.id}/public/albums`
+                          : "/user/albums"
+                      }
+                      className="user-dashboard-see-all"
+                    >
                       {" "}
                       Ver Todos
                     </Link>
@@ -198,11 +210,11 @@ class Dashboard extends Component {
 
 const styles = {
   container: {
-    marginTop: "2em"
-  }
+    marginTop: "2em",
+  },
 };
 
-const makeIcons = rol_id => {
+const makeIcons = (rol_id) => {
   switch (rol_id) {
     case 1:
       return <FontAwesomeIcon icon={faCameraRetro} />;
@@ -214,24 +226,25 @@ const makeIcons = rol_id => {
       return "Failed";
   }
 };
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   data: {
     photos: state.user.photos,
     comments: state.user.comments,
-    albums: state.user.albums
+    albums: state.user.albums,
   },
-  user: state.user.userData
+  user: state.user.userData,
 });
 
-const mapActionsToProps = dispatch => ({
+const mapActionsToProps = (dispatch) => ({
   onLoadGetPhotos: (user_id, limit, offset) =>
     dispatch(user.getUserPhotos(user_id, limit, offset)),
   onLoadGetAlbums: (user_id, limit, offset) =>
     dispatch(user.getUserAlbums(user_id, limit, offset)),
-  setRoute: route => dispatch(site_misc.setCurrentRoute(route)),
-  onLoadGetPublicAlbums: user_id =>
+  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
+  onLoadGetPublicAlbums: (user_id) =>
     dispatch(user.loadPublicUserAlbums(user_id)),
-  onLoadGetPublicPhotos: user_id => dispatch(user.loadPublicUserPhotos(user_id))
+  onLoadGetPublicPhotos: (user_id) =>
+    dispatch(user.loadPublicUserPhotos(user_id)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(Dashboard);

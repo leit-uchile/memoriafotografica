@@ -35,7 +35,7 @@ const UserModal = ({ logout, user }) => {
       {`${first_name ? first_name : "Nombre"} ${
         last_name ? last_name : "Apellido"
       }`}
-      {redirect ? <Redirect to={redirect} /> : null}
+      {redirect ? <Redirect push to={redirect} /> : null}
       <Modal isOpen={toggle} toggle={doToggle} className="user-modal">
         <ModalHeader toggle={doToggle}>
           {`${first_name ? first_name : "Nombre"} ${
