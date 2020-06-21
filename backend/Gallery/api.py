@@ -74,6 +74,8 @@ def filter_photos(photolist, request):
             photolist = photolist.filter(upload_date__gte = date.fromisoformat(request.query_params["taken"]))
         if "user" in request.query_params:
             photolist = photolist.filter(user=request.query_params["user"])
+        if "album" in request.query_params:
+            photolist = photolist.filter(album=request.query_params["album"])
     except Exception as e:
         print("Error filtering photos",e)
         pass
