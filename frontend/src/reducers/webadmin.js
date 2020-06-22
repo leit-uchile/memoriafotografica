@@ -22,7 +22,6 @@ import {
 } from "../actions/types";
 
 const initialState = {
-  loading: false,
   news: {count: 0, results: []},
   caroussel: [],
   errors: [],
@@ -30,11 +29,12 @@ const initialState = {
   requested: false,
   contacted: false,
   //Used in curador
+  loading: false,
   messages:[],
-  messageUpdate: {},
+  updatedMessage: false,
   requests: [],
   requestDetail: {},
-  requestUpdate: {}
+  updatedRequest: false
 };
 
 export default function webadmin(state = initialState, action) {
@@ -71,9 +71,9 @@ export default function webadmin(state = initialState, action) {
     case PHOTOREQUEST_ERROR:
       return { ...state, requestDetail: {}, error: action.data };
     case PHOTOREQUEST_SWITCH_STATE:
-      return { ...state, requestUpdate: action.data };
+      return { ...state, updatedRequest: true };
     case PHOTOREQUEST_SWITCH_STATE_ERROR:
-      return { ...state, requestUpdate: {} };
+      return { ...state, updatedRequest: false };
     case CONTACT_SUCCESS:
       return { ...state, contacted: true }
     case CONTACT_ERROR:
@@ -83,9 +83,9 @@ export default function webadmin(state = initialState, action) {
     case CONTACTMESSAGES_ERROR:
       return { ...state, errors: data}
     case CONTACTMESSAGE_SWITCH_STATE:
-      return { ...state, messageUpdate: action.data };
+      return { ...state, updatedMessage: true };
     case CONTACTMESSAGE_SWITCH_STATE_ERROR:
-      return { ...state, messageUpdate: {} };
+      return { ...state, updatedMessage: false };
     default:
       return state;
   }

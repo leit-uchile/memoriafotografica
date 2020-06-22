@@ -17,13 +17,13 @@ import { getMessages } from "../../../actions/webadmin_api";
 const EmailRequests = ({
   messages,
   getMessages,
-  messageUpdate
+  updatedMessage
 }) => {
   const [activeTab, setActiveTab] = useState("1");
 
   useEffect(() => {
     getMessages();
-  }, [activeTab === "2", messageUpdate]);
+  }, [activeTab === "2", updatedMessage]);
 
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -75,7 +75,7 @@ const EmailRequests = ({
 
 const mapStateToProps = (state) => ({
   messages: state.webadmin.messages,
-  messageUpdate: state.webadmin.messageUpdate
+  updatedMessage: state.webadmin.updatedMessage
 });
 
 const mapActionsToProps = (dispatch) => ({
