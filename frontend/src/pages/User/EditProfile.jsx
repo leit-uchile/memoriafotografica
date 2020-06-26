@@ -23,7 +23,7 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter
+  ModalFooter,
 } from "reactstrap";
 import UserPicture from "../../components/UserPicture";
 import CropPhoto from "../../components/CropPhoto";
@@ -38,13 +38,12 @@ class EditProfile extends Component {
       user: { ...props.user },
       modal_pass: false,
       modal_crop: false,
-      newAvatar: null
     };
     this.fr = new FileReader();
-    this.fr.onload = (function(theFile) {
-      return function(e) {
+    this.fr.onload = (function (theFile) {
+      return function (e) {
         this.setState({
-          user: { ...this.state.user, avatar: e.target.result }
+          user: { ...this.state.user, avatar: e.target.result },
         });
         this.props.update(
           { id: this.state.user.id, avatar: this.state.avatar },
@@ -54,7 +53,7 @@ class EditProfile extends Component {
     })(props.photo).bind(this);
   }
 
-  handleFileSelect = e => {
+  handleFileSelect = (e) => {
     var image;
     var files = e.target.files;
     for (var i = 0, f; (f = files[i]); i++) {
@@ -70,24 +69,24 @@ class EditProfile extends Component {
     }
   };
 
-  toggleDropdown = e => {
+  toggleDropdown = (e) => {
     if (e.target.name === "untoggle") {
       return;
     }
     this.setState({
-      dropdownOpen: !this.state.dropdownOpen
+      dropdownOpen: !this.state.dropdownOpen,
     });
   };
 
   toggleModalpass = () => {
-    this.setState(prevState => ({
-      modal_pass: !prevState.modal_pass
+    this.setState((prevState) => ({
+      modal_pass: !prevState.modal_pass,
     }));
   };
 
   toggleModalCrop = () => {
-    this.setState(prevState => ({
-      modal_crop: !prevState.modal_crop
+    this.setState((prevState) => ({
+      modal_crop: !prevState.modal_crop,
     }));
   };
 
@@ -105,9 +104,9 @@ class EditProfile extends Component {
     this.props.setRoute("/userDashboard/");
   }
 
-  genericChangeHandler = event => {
+  genericChangeHandler = (event) => {
     this.setState({
-      user: { ...this.state.user, [event.target.id]: event.target.value }
+      user: { ...this.state.user, [event.target.id]: event.target.value },
     });
   };
 
@@ -122,7 +121,7 @@ class EditProfile extends Component {
       return false;
     } else if (this.state.user.password.length < 8) {
       this.setState({
-        error: "La contraseña es demasiado corta. Minimo 8 caracteres"
+        error: "La contraseña es demasiado corta. Minimo 8 caracteres",
       });
       this.props.sendAlert(
         "La contraseña es demasiado corta. Minimo 8 caracteres"
@@ -136,7 +135,7 @@ class EditProfile extends Component {
   /**
    * Submit user updates without avatar nor password
    */
-  onSubmit = e => {
+  onSubmit = (e) => {
     e.preventDefault();
 
     let user_copy = { ...this.state.user };
@@ -145,7 +144,7 @@ class EditProfile extends Component {
     this.props.update(user_copy);
   };
 
-  handleFileSelect = e => {
+  handleFileSelect = (e) => {
     var image;
     var files = e.target.files;
     for (var i = 0, f; (f = files[i]); i++) {
@@ -164,12 +163,13 @@ class EditProfile extends Component {
     }
   };
 
-  handleCrop(newPhoto) {
-    this.setState({ newAvatar: newPhoto });
-    this.props.update(
-      { id: this.state.user.id, avatar: this.state.newAvatar },
-      false
-    );
+  handleCrop(newAvatar) {
+    if (newAvatar) {
+      this.setState({ avatar: newAvatar });
+      this.fr.readAsDataURL(newAvatar);
+    } else {
+      this.setState({ avatar: "" });
+    }
   }
 
   render() {
@@ -185,7 +185,7 @@ class EditProfile extends Component {
               tag={Link}
               to="./dashboard"
             >
-              <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}Volver
+              <FontAwesomeIcon icon={faArrowAltCircleLeft} /> Volver
             </Button>
           </Col>
           <Col sm="9">
@@ -198,7 +198,9 @@ class EditProfile extends Component {
               <UserPicture
                 user={user}
                 dims={200}
-                render={user => <CardImg top width="100%" src={user.avatar} />}
+                render={(user) => (
+                  <CardImg top width="100%" src={user.avatar} />
+                )}
               />
               <CardBody>
                 <ButtonDropdown
@@ -208,16 +210,19 @@ class EditProfile extends Component {
                 >
                   <DropdownToggle caret>Cambiar foto de perfil</DropdownToggle>
                   <DropdownMenu>
-                    <DropdownItem onClick={this.toggleModalCrop}>
+                    <DropdownItem
+                      hidden={user.avatar === null}
+                      onClick={this.toggleModalCrop}
+                    >
                       Editar fotografía
                       <CropPhoto
-                        src={user.avatar}
                         isOpen={this.state.modal_crop}
+                        src={user.avatar}
                         handleToggle={this.toggleModalCrop}
-                        save={newAvatar => this.handleCrop(newAvatar)}
+                        saveAvatar={(newAvatar) => this.handleCrop(newAvatar)}
                       />
                     </DropdownItem>
-                    <DropdownItem divider />
+                    <DropdownItem divider hidden={user.avatar === null} />
                     <DropdownItem
                       className="upload-btn-wrapper"
                       name="untoggle"
@@ -244,7 +249,7 @@ class EditProfile extends Component {
           <Col sm="9">
             <Container fluid>
               <Row className="user-dashboard-row">
-                <Col style={{marginBottom: "1em"}}>
+                <Col style={{ marginBottom: "1em" }}>
                   <h2 style={{ margin: "0.5em 0" }}> Editar mis datos</h2>
                   <Form onSubmit={this.onSubmit}>
                     <FormGroup row>
@@ -398,20 +403,20 @@ class EditProfile extends Component {
 const styles = {
   title: {
     textAlign: "center",
-    margin: "1em"
-  }
+    margin: "1em",
+  },
 };
 
-const mapStateToProps = state => ({
-  user: state.user.userData
+const mapStateToProps = (state) => ({
+  user: state.user.userData,
 });
 
-const mapActionsToProps = dispatch => ({
+const mapActionsToProps = (dispatch) => ({
   update: (userInfo, doJSON = true) =>
     dispatch(user.editProfile(userInfo, doJSON)),
   updatePassword: (old_p, new_p) => dispatch(user.updatePassword(old_p, new_p)),
-  setRoute: route => dispatch(site_misc.setCurrentRoute(route)),
-  sendAlert: text => dispatch(site_misc.setAlert(text, "warning"))
+  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
+  sendAlert: (text) => dispatch(site_misc.setAlert(text, "warning")),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(EditProfile);
