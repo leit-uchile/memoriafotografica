@@ -142,12 +142,6 @@ export const editPhoto = (photoID, newData) => (dispatch, getState) => {
         dispatch({ type: EDIT_PHOTO, data: data });
       });
     } else {
-      dispatch(
-        setAlert(
-          "No se ha podido actualizar la información. Inténtelo nuevamente",
-          "warning"
-        )
-      );
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
       throw r.data;
     }

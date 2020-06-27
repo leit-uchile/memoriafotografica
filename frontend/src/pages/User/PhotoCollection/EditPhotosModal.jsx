@@ -23,7 +23,7 @@ import { metadata, gallery } from "../../../actions";
 import ReactTags from "react-tag-autocomplete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import "./userphotos.css"
+import "./userphotos.css";
 
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },
@@ -37,7 +37,7 @@ const CC_INFO = [
 const EditPhotosModal = (props) => {
   const [toggle, setToggle] = useState(false);
   const [toggleDelete, setToggleDelete] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [finished, setFinished] = useState(false);
   const [formData, setData] = useState({}); //nuevos datos
 
   useEffect(() => {
@@ -86,7 +86,6 @@ const EditPhotosModal = (props) => {
 
   const handleOnClose = () => {
     setToggle(!toggle);
-    setLoading(false);
   };
 
   const onSend = () => {
@@ -115,15 +114,15 @@ const EditPhotosModal = (props) => {
           })
         : props.editPhoto(el, to_send);
     });
-    setLoading(true);
+    setFinished(true);
   };
 
   const onDelete = (ids) => {
     ids.forEach((id) => props.deletePhoto(id));
-    setLoading(true);
+    setFinished(true);
   };
 
-  const { tags } = props;
+  const { tags, updatedPhoto } = props;
   const suggestions = tags
     ? tags.map((e) => ({ id: e.id, name: e.value }))
     : [];
@@ -242,7 +241,7 @@ const EditPhotosModal = (props) => {
     <div>
       <Button
         disabled={props.photosID.length === 0}
-        color="success"
+        color="primary"
         onClick={() => setToggle(!toggle)}
       >
         Editar selección ({props.photosID.length})
@@ -252,7 +251,6 @@ const EditPhotosModal = (props) => {
         toggle={() => setToggle(!toggle)}
         size={"lg"}
         className="user-modal"
-        centered
       >
         <ModalHeader>
           {props.photosID.length === 1 ? (
@@ -264,13 +262,14 @@ const EditPhotosModal = (props) => {
           )}
         </ModalHeader>
         <ModalBody>
-          {!loading
+          {!finished
             ? PhotosForm
-            : "Estado de la solicitud (Cambios guardados, Error, etc)"}
+            : updatedPhoto
+            ? "¡Actualizado con éxito!"
+            : "Hubo un error realizando la acción. Inténtelo nuevamente"}
           <Modal
             isOpen={toggleDelete}
             toggle={() => setToggleDelete(!toggleDelete)}
-            centered
           >
             <ModalHeader>Eliminar fotografía(s)</ModalHeader>
             <ModalBody>
@@ -284,7 +283,7 @@ const EditPhotosModal = (props) => {
                   setToggleDelete(!toggleDelete);
                 }}
               >
-                Sí, eliminar
+                Eliminar
               </Button>
               <Button
                 color="secondary"
@@ -296,19 +295,17 @@ const EditPhotosModal = (props) => {
           </Modal>
         </ModalBody>
         <ModalFooter>
-          {!loading ? (
+          {!finished ? (
             <Fragment>
               <FormText color="muted">
                 Los cambios estarán sujetos a aprobación
               </FormText>
-              <ButtonGroup>
-                <Button color="secondary" onClick={() => handleOnClose()}>
-                  Cancelar
-                </Button>
-                <Button color="success" onClick={() => onSend()}>
-                  Guardar cambios
-                </Button>
-              </ButtonGroup>
+              <Button color="success" onClick={() => onSend()}>
+                Guardar cambios
+              </Button>
+              <Button color="secondary" onClick={() => handleOnClose()}>
+                Cancelar
+              </Button>
             </Fragment>
           ) : (
             <Button color="secondary" onClick={() => handleOnClose()}>
@@ -321,12 +318,11 @@ const EditPhotosModal = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    photoInfo: state.photos.details,
-    tags: state.webadmin.all_tags,
-  };
-};
+const mapStateToProps = (state) => ({
+  photoInfo: state.photos.details,
+  tags: state.webadmin.all_tags,
+  updatedPhoto: state.photos.updatedPhoto,
+});
 
 const mapActionsToProps = (dispatch) => ({
   onLoad: (id) => dispatch(gallery.photos.getPhoto(id)),

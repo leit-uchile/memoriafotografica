@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserCircle, faCropAlt, faUser, faUserTag } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserCircle,
+  faCropAlt,
+  faUser,
+  faUserTag,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   Form,
   FormGroup,
@@ -14,9 +19,8 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  Container
+  Container,
 } from "reactstrap";
-import CropPhoto from "../../components/CropPhoto";
 
 class RegisterLoginInfo extends Component {
   constructor(Props) {
@@ -24,7 +28,7 @@ class RegisterLoginInfo extends Component {
     if (Props.cache != null) {
       this.state = {
         ...Props.cache,
-        error: null
+        error: null,
       };
     } else {
       this.state = {
@@ -40,15 +44,15 @@ class RegisterLoginInfo extends Component {
         difusion: "",
         cropModal: false,
         termsOfUseModal: false,
-        termsOfUseAcepted: false
+        termsOfUseAcepted: false,
       };
     }
     this.checkPassword = this.checkPassword.bind(this);
     this.props = Props;
     this.genericChangeHandler = this.genericChangeHandler.bind(this);
     this.fr = new FileReader();
-    this.fr.onload = (function(theFile) {
-      return function(e) {
+    this.fr.onload = (function (theFile) {
+      return function (e) {
         // Render thumbnail.
         this.setState({ avatarPreview: e.target.result });
       };
@@ -90,7 +94,7 @@ class RegisterLoginInfo extends Component {
       return false;
     } else if (this.state.password.length < 8) {
       this.setState({
-        error: "La contraseña es demasiado corta. Minimo 8 caracteres"
+        error: "La contraseña es demasiado corta. Minimo 8 caracteres",
       });
       return false;
     } else {
@@ -98,7 +102,7 @@ class RegisterLoginInfo extends Component {
     }
   }
 
-  onSubmit = e => {
+  onSubmit = (e) => {
     e.preventDefault();
     if (this.checkPassword()) {
       this.setState({ error: null });
@@ -138,7 +142,7 @@ class RegisterLoginInfo extends Component {
     var avatarPreview =
       this.state.avatarPreview === "" ? null : (
         <img
-          alt='avatar preview'
+          alt="avatar preview"
           src={this.state.avatarPreview}
           width="200px"
           height="200px"
@@ -146,7 +150,7 @@ class RegisterLoginInfo extends Component {
             borderRadius: "50%",
             margin: "0 auto",
             display: "block",
-            objectFit: "cover"
+            objectFit: "cover",
           }}
         />
       );
@@ -155,40 +159,50 @@ class RegisterLoginInfo extends Component {
       <Container>
         <Row>
           <Col>
-            <h2 style={styles.title}>Subir Fotograf&iacute;a / Datos del usuario </h2>
+            <h2 style={styles.title}>
+              Subir Fotograf&iacute;a / Datos del usuario{" "}
+            </h2>
           </Col>
         </Row>
         <Row>
           <Col>
-            <Form onSubmit={this.onSubmit} style={styles.form} className="white-box">
+            <Form
+              onSubmit={this.onSubmit}
+              style={styles.form}
+              className="white-box"
+            >
               <div style={styles.formTitle}>
-                <FontAwesomeIcon icon={faUserCircle} style={{marginRight: '1em'}}/>
-                <Label for='avatar'>Avatar</Label>
+                <FontAwesomeIcon
+                  icon={faUserCircle}
+                  style={{ marginRight: "1em" }}
+                />
+                <Label for="avatar">Avatar</Label>
               </div>
               {errorMessage}
               {avatarPreview}
-              {this.state.avatar !== ''
-                ?(<Button onClick={this.toggleCropModal} style={{margin: "0 auto", display: "block"}}>
-                    <FontAwesomeIcon icon={faCropAlt}/>
-                    {' '}Editar foto
-                  </Button>)
-                :(<span></span>)
-              }
-              <CropPhoto src={this.state.avatar} isOpen={this.state.cropModal} handleToggle={this.toggleCropModal}/>
+              {this.state.avatar !== "" ? (
+                <h4 style={styles.title}>Podrás editarla en tu perfil</h4>
+              ) : (
+                <span></span>
+              )}
               <FormGroup>
                 <Input
                   id="avatar"
                   type="file"
                   multiple={false}
-                  onChange={this.handleFileSelect}>
+                  onChange={this.handleFileSelect}
+                >
                   Subir imagen
                 </Input>
               </FormGroup>
               <Row>
                 <Col>
                   <div style={styles.formTitle}>
-                      <FontAwesomeIcon icon={faUser} style={{marginRight: '1em'}}/>
-                      <Label>Datos personales</Label>
+                    <FontAwesomeIcon
+                      icon={faUser}
+                      style={{ marginRight: "1em" }}
+                    />
+                    <Label>Datos personales</Label>
                   </div>
                 </Col>
               </Row>
@@ -201,7 +215,8 @@ class RegisterLoginInfo extends Component {
                       placeholder="Nombre"
                       onChange={this.genericChangeHandler}
                       required
-                      value={this.state.name}></Input>
+                      value={this.state.name}
+                    ></Input>
                   </FormGroup>
                 </Col>
                 <Col sm={6}>
@@ -212,7 +227,8 @@ class RegisterLoginInfo extends Component {
                       placeholder="Apellido"
                       onChange={this.genericChangeHandler}
                       required
-                      value={this.state.lastname}></Input>
+                      value={this.state.lastname}
+                    ></Input>
                   </FormGroup>
                 </Col>
               </Row>
@@ -223,13 +239,17 @@ class RegisterLoginInfo extends Component {
                   type="date"
                   onChange={this.genericChangeHandler}
                   required
-                  value={this.state.date}></Input>
+                  value={this.state.date}
+                ></Input>
               </FormGroup>
               <Row>
                 <Col>
                   <div style={styles.formTitle}>
-                      <FontAwesomeIcon icon={faUserTag} style={{marginRight: '1em'}}/>
-                      <Label>Datos de usuario</Label>
+                    <FontAwesomeIcon
+                      icon={faUserTag}
+                      style={{ marginRight: "1em" }}
+                    />
+                    <Label>Datos de usuario</Label>
                   </div>
                 </Col>
               </Row>
@@ -241,7 +261,8 @@ class RegisterLoginInfo extends Component {
                   placeholder="ejemplo@leit.cl"
                   onChange={this.genericChangeHandler}
                   value={this.state.email}
-                  required></Input>
+                  required
+                ></Input>
               </FormGroup>
               <FormGroup>
                 <Label for="password">Contraseña</Label>
@@ -249,7 +270,8 @@ class RegisterLoginInfo extends Component {
                   id="password"
                   type="password"
                   onChange={this.genericChangeHandler}
-                  required></Input>
+                  required
+                ></Input>
               </FormGroup>
               <FormGroup>
                 <Label for="passwordCheck">Repetir Contraseña</Label>
@@ -257,7 +279,8 @@ class RegisterLoginInfo extends Component {
                   id="passwordCheck"
                   type="password"
                   onChange={this.genericChangeHandler}
-                  required></Input>
+                  required
+                ></Input>
               </FormGroup>
               <FormGroup>
                 <Label for="rol">Rol en la facultad</Label>
@@ -266,7 +289,8 @@ class RegisterLoginInfo extends Component {
                   type="select"
                   onChange={this.genericChangeHandler}
                   value={this.state.rol}
-                  required>
+                  required
+                >
                   <option value="1">Alumno</option>
                   <option value="2">Ex-Alumno</option>
                   <option value="3">Acad&eacute;mico</option>
@@ -282,7 +306,8 @@ class RegisterLoginInfo extends Component {
                   type="select"
                   onChange={this.updateDif}
                   value={this.state.difusion}
-                  required>
+                  required
+                >
                   <option>internet</option>
                   <option>poster</option>
                   <option value="Correo">correo electrónico</option>
@@ -300,17 +325,19 @@ class RegisterLoginInfo extends Component {
                 />
                 <Label for="termsOfUse" check onClick={this.toggleTerms}>
                   Acepto los{" "}
-                  <span style={{ color: "blue", cursor:'pointer' }}>terminos de uso</span>
+                  <span style={{ color: "blue", cursor: "pointer" }}>
+                    terminos de uso
+                  </span>
                 </Label>
               </FormGroup>
-              <div style={{marginTop: "2em", marginBottom: "2em"}}>
+              <div style={{ marginTop: "2em", marginBottom: "2em" }}>
                 <TermsOfUseModal
                   isOpen={this.state.termsOfUseModal}
                   toggleFunc={this.toggleTerms}
                   acceptTerms={this.acceptTerms}
                 />
               </div>
-              
+
               <FormGroup>
                 <Button color="success">¡Reg&iacute;strame!</Button>
               </FormGroup>
@@ -371,10 +398,11 @@ const TermsOfUseModal = ({
     <ModalFooter>
       <Button
         color="primary"
-        onClick={e => {
+        onClick={(e) => {
           acceptTerms();
           toggleFunc(e);
-        }}>
+        }}
+      >
         Acepto los t&eacute;rminos de uso de la plataforma
       </Button>{" "}
     </ModalFooter>
@@ -382,22 +410,22 @@ const TermsOfUseModal = ({
 );
 
 const styles = {
-  form:{
-    padding:'2em', 
-    marginBottom:'2em',
-    border:'1px solid rgb(210,214,218)'
+  form: {
+    padding: "2em",
+    marginBottom: "2em",
+    border: "1px solid rgb(210,214,218)",
   },
-  title:{
-    textAlign:'center',
-    margin:'1em'
+  title: {
+    textAlign: "center",
+    margin: "1em",
   },
   formTitle: {
-    fontSize:'14px',
-    fontWeight:'bold',
-    padding:'0.5em',
-    borderBottom: '1px solid rgb(210,214,218)',
-    marginBottom: '10px',
+    fontSize: "14px",
+    fontWeight: "bold",
+    padding: "0.5em",
+    borderBottom: "1px solid rgb(210,214,218)",
+    marginBottom: "10px",
   },
-}
+};
 
 export default RegisterLoginInfo;

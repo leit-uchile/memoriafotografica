@@ -18,7 +18,13 @@ class UserPhotos extends Component {
       picturesToEdit: [],
       selectedAll: false,
     };
-    this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite, actualizar tras borrar foto
+    this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
+  }
+
+  componentDidUpdate() {
+    if (this.props.updatedPhoto || this.props.refresh) {
+      setTimeout(() => window.location.reload(), 1000);
+    }
   }
 
   handleOnRedirect = (obj) => {
@@ -42,15 +48,15 @@ class UserPhotos extends Component {
     // : (this.setState({selectedAll: false}))}
   };
 
-  putAllToEdit(mapped, state) {
-    state
+  putAllToEdit(mapped) {
+    !this.state.selectedAll
       ? this.setState({
           picturesToEdit: mapped.map((el) => el.id),
-          selectedAll: state,
+          selectedAll: true,
         })
       : this.setState({
           picturesToEdit: [],
-          selectedAll: state,
+          selectedAll: false,
         });
   }
 
@@ -84,7 +90,7 @@ class UserPhotos extends Component {
                   <Button
                     color="secondary"
                     tag={Link}
-                    to="./dashboard"
+                    to="/user/dashboard"
                     style={{ height: "30px" }}
                   >
                     <FontAwesomeIcon icon={faArrowAltCircleLeft} />
@@ -111,16 +117,13 @@ class UserPhotos extends Component {
                 />
               </Col>
               <Col className="userphotos-filters-container">
-                <Button onClick={() => this.putAllToEdit(mapped, true)}>
-                  Seleccionar todas
-                </Button>
                 <Button
-                  disabled={this.state.picturesToEdit.length === 0}
-                  color="danger"
-                  style={{ backgroundColor: "var(--leit-pink)" }}
-                  onClick={() => this.putAllToEdit(mapped, false)}
+                  color="secondary"
+                  onClick={() => this.putAllToEdit(mapped)}
                 >
-                  Deseleccionar
+                  {!this.state.selectedAll
+                    ? "Seleccionar todas"
+                    : "Deseleccionar"}
                 </Button>
                 <EditPhotosModal photosID={this.state.picturesToEdit} />
               </Col>
@@ -135,6 +138,8 @@ class UserPhotos extends Component {
 const mapStateToProps = (state) => ({
   photos: state.user.photos,
   user: state.user.userData,
+  updatedPhoto: state.photos.updatedPhoto,
+  refresh: state.photos.refresh,
 });
 const mapActionsToProps = (dispatch) => ({
   setSelectedId: (id) => dispatch(site_misc.setSelectedId(id)),
