@@ -70,7 +70,7 @@ class CropPhoto extends Component {
   onSave = () => {
     let image = new Image();
     image.src = this.state.src;
-    let newAvatar = this.getCroppedImgAsString(image, this.state.crop, "avatarCropped");
+    let newAvatar = this.getCroppedImg(image, this.state.crop, "avatarCropped", false);
     this.props.saveAvatar(newAvatar);
     this.toggle();
   };
@@ -95,21 +95,23 @@ class CropPhoto extends Component {
       const croppedImageUrl = await this.getCroppedImg(
         this.imageRef,
         crop,
-        "newFile.jpeg"
+        "newFile.jpeg",
+        true
       );
       this.setState({ croppedImageUrl });
     }
   }
 
   /**
-   * Returns a preview to crop modal
+   * Returns the cropped image as blob or string
    */
   /**
    * @param {HTMLImageElement} image - Image File Object
    * @param {Object} crop - crop Object
    * @param {String} fileName - Name of the returned file in Promise
+   * @param {Boolean} isPreview - If must returns as blob
    */
-  getCroppedImg(image, crop, fileName) {
+  getCroppedImg(image, crop, fileName, isPreview) {
     const canvas = document.createElement("canvas");
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
@@ -128,49 +130,26 @@ class CropPhoto extends Component {
       crop.width,
       crop.height
     );
-
-    return new Promise((resolve, reject) => {
-      canvas.toBlob((blob) => {
-        if (!blob) {
-          //reject(new Error('Canvas is empty'));
-          console.error("Canvas is empty");
-          return;
-        }
-        blob.name = fileName;
-        window.URL.revokeObjectURL(this.fileUrl);
-        this.fileUrl = window.URL.createObjectURL(blob);
-        resolve(this.fileUrl);
-      }, "image/jpeg");
-    });
-  }
-
-  /**
-   * Returns the new avatar readable to backend
-   */
-  getCroppedImgAsString(image, crop, fileName) {
-    const canvas = document.createElement("canvas");
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    canvas.width = crop.width;
-    canvas.height = crop.height;
-    const ctx = canvas.getContext("2d");
-
-    ctx.drawImage(
-      image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
-      0,
-      0,
-      crop.width,
-      crop.height
-    );
-
-    // As Base64 string
-    const base64Image = canvas.toDataURL();
-    let finalName = fileName + '.' + extractImageFileExtensionFromBase64(base64Image)
-    return base64StringtoFile(base64Image, finalName)
+    if(isPreview){
+      // As Blob
+      return new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            console.error("Canvas is empty");
+            return;
+          }
+          blob.name = fileName;
+          window.URL.revokeObjectURL(this.fileUrl);
+          this.fileUrl = window.URL.createObjectURL(blob);
+          resolve(this.fileUrl);
+        }, "image/jpeg");
+      });
+    } else {
+      // As Base64 string
+      const base64Image = canvas.toDataURL();
+      let finalName = fileName + '.' + extractImageFileExtensionFromBase64(base64Image)
+      return base64StringtoFile(base64Image, finalName)
+    } 
   }
 
   render() {
