@@ -13,6 +13,7 @@ import {
   Button,
   InputGroupAddon,
 } from "reactstrap";
+import { LeitSpinner, Pagination } from "../../components";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { gallery } from "../../actions";
@@ -21,17 +22,26 @@ import "./collection.css";
 import { Redirect } from "react-router";
 
 const AllCollections = ({ albums, loadCollections }) => {
-  const [display, setDisplay] = useState({
-    user: { first_name: "usuario" },
+  const [params, setParams] = useState({
+    name: "",
     redirectUrl: false,
   });
 
+  const [rows, setRows] = useState([]);
+
+  const [page, setPage] = useState({
+    page: 0,
+    page_size: 9,
+  });
+
+  const setDaPage = (p) => setPage((d) => ({ ...d, page: p }));
+
   // Set user info and load the albums accordingly
   useEffect(() => {
-    loadCollections(0, 9, "&collections");
-  }, [loadCollections]);
-
-  const [rows, setRows] = useState([]);
+    let par = "&collections=1";
+    par = params.name !== "" ? par + "&name=" + params.name : par;
+    loadCollections(page.page, page.page_size, par);
+  }, [loadCollections, page]);
 
   useEffect(() => {
     let list = [];
@@ -45,7 +55,7 @@ const AllCollections = ({ albums, loadCollections }) => {
       list.push(cols);
     }
     setRows(list);
-  }, [albums]);
+  }, [albums.results]);
 
   const formatDate = (d) => {
     var date = new Date(d);
@@ -53,14 +63,18 @@ const AllCollections = ({ albums, loadCollections }) => {
   };
 
   const setRedirect = (id) => {
-    setDisplay({
-      ...display,
+    setParams({
+      ...params,
       redirectUrl: `/user/public/collections/${id}`,
     });
   };
 
-  if (display.redirectUrl) {
-    return <Redirect push to={display.redirectUrl} />;
+  const onSearch = () => {
+    setDaPage(0);
+  };
+
+  if (params.redirectUrl) {
+    return <Redirect push to={params.redirectUrl} />;
   }
 
   return (
@@ -77,9 +91,15 @@ const AllCollections = ({ albums, loadCollections }) => {
         <Col sm={3}>
           <h4>¿Que est&aacute;s buscando?</h4>
           <InputGroup>
-            <Input placeholder="Nombre de la collecion" />
+            <Input
+              placeholder="Nombre de la collecion"
+              onChange={(e) => {
+                e.persist();
+                setParams((d) => ({ ...d, name: e.target.value }));
+              }}
+            />
             <InputGroupAddon addonType="append">
-              <Button>Buscar</Button>
+              <Button onClick={onSearch}>Buscar</Button>
             </InputGroupAddon>
           </InputGroup>
           <div className="white-box collections-help">
@@ -125,6 +145,19 @@ const AllCollections = ({ albums, loadCollections }) => {
                 </Row>
               ))
             )}
+            <Row>
+              <Col>
+                {albums.count !== 0 ? (
+                  <Pagination
+                    count={albums.count}
+                    page_size={page.page_size}
+                    page={page.page}
+                    setStatePage={setDaPage}
+                    size="lg"
+                  />
+                ) : null}
+              </Col>
+            </Row>
           </Container>
         </Col>
       </Row>

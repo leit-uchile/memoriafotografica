@@ -272,7 +272,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
             adm = True
         else:
             adm = False
-            photo = self.get_object(pk, adm)
+        photo = self.get_object(pk, adm)
         if request.user.user_type != 1 or photo in request.user.photos.all():
             photo.delete()
             return Response(status = status.HTTP_204_NO_CONTENT)
@@ -618,7 +618,7 @@ class AlbumListAPI(generics.GenericAPIView):
             album = album.filter(user=request.query_params["user"])
         if "collections" in request.query_params:
             album = album.filter(collection=True)
-        elif "name" in request.query_params:
+        if "name" in request.query_params:
             album = album.filter(name__icontains=request.query_params["name"])
         album = sort_by_field(album,request)
         serializer = AlbumSerializer(album, many=True)
