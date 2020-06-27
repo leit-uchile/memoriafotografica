@@ -99,7 +99,7 @@ const Header = ({ isAuth, currentRoute }) => {
                               : "rgba(0,0,0,.5)",
                         }}
                       >
-                        <FontAwesomeIcon icon={faImage} /> Galer&iacute;a
+                        <FontAwesomeIcon icon={faImage} /> Explorar
                       </DropdownToggle>
                       <DropdownMenu>
                         <DropdownItem tag={Link} to={"/gallery"}>

@@ -613,14 +613,15 @@ class AlbumListAPI(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         
-        try:
-            if request.query_params["user"]:
-                album = Album.objects.filter(user=request.query_params["user"])
-        except KeyError:
-            album = Album.objects.all()
+        album = Album.objects.all()
+        if "user" in request.query_params:
+            album = album.filter(user=request.query_params["user"])
+        if "collections" in request.query_params:
+            album = album.filter(collection=True)
+        elif "name" in request.query_params:
+            album = album.filter(name__icontains=request.query_params["name"])
         album = sort_by_field(album,request)
         serializer = AlbumSerializer(album, many=True)
-        
         serialized_data = serializer.data
         return self.get_paginated_response(self.paginate_queryset(serialized_data))
 

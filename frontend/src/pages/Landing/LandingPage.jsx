@@ -24,7 +24,7 @@ const LandingPage = (props) => {
   }));
 
   var onClickPhoto = (o) => {
-    setRedirect(`/photo/${mapped[o.index].id}`);
+    setRedirect(`/photo/${mapped[o.index].id}/?sort=created_at-desc`);
   };
 
   const [redirect, setRedirect] = useState(false);
