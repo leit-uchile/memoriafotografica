@@ -36,6 +36,14 @@ const AllCollections = ({ albums, loadCollections }) => {
 
   const setDaPage = (p) => setPage((d) => ({ ...d, page: p }));
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  });
+
   // Set user info and load the albums accordingly
   useEffect(() => {
     let par = "&collections=1";
@@ -146,7 +154,7 @@ const AllCollections = ({ albums, loadCollections }) => {
                 </Row>
               ))
             )}
-            <Row>
+            <Row style={{ margin: "1em 0" }}>
               <Col>
                 {albums.count !== 0 ? (
                   <Pagination

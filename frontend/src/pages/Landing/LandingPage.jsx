@@ -3,18 +3,27 @@ import { Redirect, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { gallery, site_misc } from "../../actions";
 import { Helmet } from "react-helmet";
-import { Container, Row, Col } from "reactstrap";
+import {
+  Container,
+  Row,
+  Col,
+  CardDeck,
+  Card,
+  CardTitle,
+  CardBody,
+} from "reactstrap";
 import NewsSlider from "../News/NewsSlider";
 import "./landing.css";
 import Gallery from "react-photo-gallery";
 
 const LandingPage = (props) => {
-  const { setRoute, loadPhotos } = props;
+  const { setRoute, loadPhotos, loadCollections } = props;
 
   useEffect(() => {
     setRoute("/Inicio");
     loadPhotos();
-  }, [loadPhotos, setRoute]);
+    loadCollections();
+  }, [loadPhotos, loadCollections, setRoute]);
 
   var mapped = props.photos.map((el) => ({
     src: el.thumbnail,
@@ -123,7 +132,7 @@ const LandingPage = (props) => {
       <Container className="landing-container">
         <Row>
           <Col>
-            <h2 className="colTitle">Fotograf&iacute;as destacadas</h2>
+            <h2 className="colTitle">&Uacute;ltimas Fotograf&iacute;as</h2>
           </Col>
           <Col>
             <div style={{ textAlign: "right", padding: "1em" }}>
@@ -165,16 +174,66 @@ const LandingPage = (props) => {
           </Row>
         </Container>
       </div>
+      {props.collections.length !== 0 ? (
+        <Container className="landing-container">
+          <Row>
+            <Col>
+              <h2 className="colTitle">Explora Nuestras Colleciones</h2>
+            </Col>
+            <Col>
+              <div style={{ textAlign: "right", padding: "1em" }}>
+                <Link to="/collections" style={{ fontSize: "1.5em" }}>
+                  Ver colecciones
+                </Link>
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm={3}>
+              <p className="detailText">
+                Nuestros editores suben colecciones de fotos oficiales con
+                contenido hist&oacute;rico particular.
+              </p>
+
+              <p className="detailText">
+                Tambi&eacute;n recibimos donaciones de contenido y las
+                publicamos en nuestras aqu&iacute;.
+              </p>
+            </Col>
+            <Col sm={9}>
+              <CardDeck>
+                {props.collections.slice(0, 3).map((c) => (
+                  <Card
+                    key={c.name}
+                    onClick={() => {
+                      setRedirect(c.id);
+                    }}
+                    className="white-box"
+                  >
+                    <CardTitle>{c.name}</CardTitle>
+                    <CardBody
+                      style={{ backgroundImage: `url("${c.thumbnail}")` }}
+                    ></CardBody>
+                  </Card>
+                ))}
+              </CardDeck>
+            </Col>
+          </Row>
+        </Container>
+      ) : null}
     </Fragment>
   );
 };
 
 const mapStateToProps = (state) => ({
   photos: state.photos.photos,
+  collections: state.albumcollection.albums.results,
 });
 
 const mapActionsToProps = (dispatch) => ({
   loadPhotos: () => dispatch(gallery.photos.home(0, 10)),
+  loadCollections: () =>
+    dispatch(gallery.album.getAlbums(0, 3, "&collections=1")),
   setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
 });
 
