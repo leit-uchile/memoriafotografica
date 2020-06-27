@@ -90,8 +90,8 @@ export const getPhotosAuth = (page = 0, pageSize = 25, search = "") => (
 
 /**
  * Add/Remove Category to photos
- * @param {*} photoIds 
- * @param {*} catId 
+ * @param {*} photoIds
+ * @param {*} catId
  * @param {*} action like add or remove
  */
 export const associateCategory = (photoIds, catId, action = "add") => (
@@ -110,8 +110,15 @@ export const associateCategory = (photoIds, catId, action = "add") => (
   }).then(function (response) {
     const r = response;
     if (r.status === 200) {
-        dispatch(setAlert(`Fotos ${action === "add" ? "agregadas a" : "eliminadas de la "} categoria`, "success"));
-        dispatch({ type: UPDATED_CATEGORY_PHOTOS });
+      dispatch(
+        setAlert(
+          `Fotos ${
+            action === "add" ? "agregadas a" : "eliminadas de la "
+          } categoria`,
+          "success"
+        )
+      );
+      dispatch({ type: UPDATED_CATEGORY_PHOTOS });
     } else {
       dispatch(
         setAlert(
@@ -143,7 +150,12 @@ export const editPhoto = (photoID, newData) => (dispatch, getState) => {
         dispatch({ type: EDIT_PHOTO, data: data });
       });
     } else {
-      dispatch(setAlert("Hubo un error al editar la(s) fotografia(s). Intente nuevamente", "warning"));
+      dispatch(
+        setAlert(
+          "Hubo un error al editar la(s) fotografia(s). Intente nuevamente",
+          "warning"
+        )
+      );
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
       throw r.data;
     }
@@ -165,7 +177,12 @@ export const deletePhoto = (photoID) => (dispatch, getState) => {
       dispatch(setAlert("Se ha(n) borrado con éxito", "success"));
       dispatch({ type: DELETED_PHOTO, data: photoID });
     } else {
-      dispatch(setAlert("Hubo un error al borrar la(s) fotografia(s). Intente nuevamente", "warning"));
+      dispatch(
+        setAlert(
+          "Hubo un error al borrar la(s) fotografia(s). Intente nuevamente",
+          "warning"
+        )
+      );
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
       throw r.data;
     }
@@ -299,7 +316,7 @@ export const mtPhoto = () => (dispatch) => {
     cc: String
   }
 */
-export const uploadImages = (photos) => {
+export const uploadImages = (data) => {
   return (dispatch, getState) => {
     let header = {
       Authorization: "Token " + getState().user.token,
@@ -311,9 +328,9 @@ export const uploadImages = (photos) => {
       currentTime.getMonth() + 1
     }-${currentTime.getFullYear()}`;
 
-    dispatch({ type: UPLOADING, data: photos.length });
+    dispatch({ type: UPLOADING, data: data.photos.length });
 
-    const funcs = photos.photosList.map((photo, key) => () => {
+    const funcs = data.photos.map((photo, key) => () => {
       let formData = new FormData();
       // If no title available create one for our date
       formData.append(
@@ -329,10 +346,10 @@ export const uploadImages = (photos) => {
       // Send our permissions
       formData.append(
         "permission",
-        photo.meta.cc !== null ? photo.meta.cc : photos.cc ? photos.cc : "CC BY"
+        photo.meta.cc !== null ? photo.meta.cc : data.cc ? data.cc : "CC BY"
       );
       // Date photos were taken
-      formData.append("upload_date", photos.date + "T00:00");
+      formData.append("upload_date", data.date + "T00:00");
 
       // Add metadata in format 1,2,4 string
       if (photo.meta.tags.length !== 0) {
@@ -340,7 +357,6 @@ export const uploadImages = (photos) => {
       }
 
       const this_key = key; // avoid binding bellow
-      console.log(photos);
       fetch("/api/photos/", {
         method: "POST",
         headers: header,

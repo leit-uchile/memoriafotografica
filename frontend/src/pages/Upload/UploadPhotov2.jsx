@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import UploadDetails from "./UploadDetails";
+import UploadDetails from "./UploadDetailsv2";
 import {
   Container,
   Row,
@@ -10,6 +10,10 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  CardDeck,
+  Card,
+  CardColumns,
+  CardBody,
 } from "reactstrap";
 import Dropzone from "react-dropzone";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,6 +25,7 @@ import {
 import "../../css/search.css";
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
+import uuid from "uuid";
 
 const imageMaxSize = 8000000; // Bytes ~ 8MB
 
@@ -75,9 +80,8 @@ class UploadPhoto extends Component {
 
   handleUpload(file) {
     var f = file.map((el) => {
-      const uuidv4 = require("uuid/v4");
       return {
-        id: uuidv4(),
+        id: uuid.v4(),
         photo: el,
         meta: {
           description: "",
@@ -96,29 +100,25 @@ class UploadPhoto extends Component {
 
   saveMeta(info, key) {
     var newphotos = [];
-    for (var i = 0; i < this.state.photos.length; i++) {
-      var el;
+    // Update info at key
+    this.state.photos.forEach((element, i) => {
       if (i === key) {
+        var el;
         el = {
-          id: this.state.photos[key].id,
-          photo: this.state.photos[key].photo,
+          id: element.id,
+          photo: element.photo,
           meta: { ...info },
         };
         newphotos = newphotos.concat(el);
       } else {
-        newphotos = newphotos.concat(this.state.photos[i]);
+        newphotos = newphotos.concat(element);
       }
-    }
+    });
     this.setState({ photos: newphotos, length: newphotos.length });
   }
 
   handleErase(key) {
-    var newphotos = [];
-    for (var i = 0; i < this.state.photos.length; i++) {
-      if (i !== key) {
-        newphotos = newphotos.concat(this.state.photos[i]);
-      }
-    }
+    var newphotos = this.state.photos.filter((el, i) => i !== key);
     this.setState({ photos: newphotos, length: newphotos.length });
   }
 
@@ -160,21 +160,54 @@ class UploadPhoto extends Component {
       ? meta.map((el) => ({ id: el.id, name: el.value }))
       : [];
 
-    var details = this.state.photos.map((el, key) => (
-      <UploadDetails
-        key={el.id}
-        id={el.id}
-        photo={el.photo}
-        save={(info) => this.saveMeta(info, key)}
-        delete={() => this.handleErase(key)}
-        meta={el.meta}
-        suggestions={suggestions}
-        search={this.handleInputChange}
-      />
-    ));
+    var first = this.state.photos
+      .slice(0, 2)
+      .map((el, key) => (
+        <UploadDetails
+          key={el.id}
+          id={el.id}
+          photo={el.photo}
+          save={(info) => this.saveMeta(info, key)}
+          delete={() => this.handleErase(key)}
+          meta={el.meta}
+          suggestions={suggestions}
+          search={this.handleInputChange}
+        />
+      ));
+    var rows = [];
+    for (var i = 2; i < this.state.photos.length; i = i + 3) {
+      var row = [];
+      for (let j = 0; j < 3 && i + j < this.state.photos.length; j++) {
+        const el = this.state.photos[j + i];
+        const key = i + j;
+        row.push(
+          <UploadDetails
+            key={el.id}
+            id={el.id}
+            photo={el.photo}
+            save={(info) => this.saveMeta(info, key)}
+            delete={() => this.handleErase(key)}
+            meta={el.meta}
+            suggestions={suggestions}
+            search={this.handleInputChange}
+          />
+        );
+      }
+      if (this.props.doColumns) {
+        rows.push(row);
+      } else {
+        rows.push(
+          <Row style={{ marginTop: "1em" }}>
+            <Col>
+              <CardDeck>{row}</CardDeck>
+            </Col>
+          </Row>
+        );
+      }
+    }
 
     return (
-      <Container>
+      <Container fluid>
         <DisclosureModal
           onClick={this.props.readDisclosure}
           isnotSet={!this.props.disclosed}
@@ -186,41 +219,96 @@ class UploadPhoto extends Component {
             </h2>
           </Col>
         </Row>
+        <Row>
+          <Col sm={9}>
+            <Container fluid>
+              <Row>
+                <Col>
+                  {this.props.doColumns ? (
+                    <CardColumns>
+                      <Card style={styles.dropzone}>
+                        <CardBody>
+                          <Dropzone onDrop={this.handleOnDrop}>
+                            {({ getRootProps, getInputProps }) => (
+                              <div
+                                {...getRootProps()}
+                                style={{ height: "100%" }}
+                              >
+                                <input {...getInputProps()} />
+                                <p>
+                                  Arrastra y suelta una imagen o haz click aqui
+                                </p>
+                                <FontAwesomeIcon
+                                  icon={faCloudUploadAlt}
+                                  size="3x"
+                                />
+                              </div>
+                            )}
+                          </Dropzone>
+                        </CardBody>
+                      </Card>
+                      {first}
+                      {rows}
+                    </CardColumns>
+                  ) : (
+                    <CardDeck>
+                      <Card style={styles.dropzone}>
+                        <CardBody>
+                          <Dropzone onDrop={this.handleOnDrop}>
+                            {({ getRootProps, getInputProps }) => (
+                              <div
+                                {...getRootProps()}
+                                style={{ height: "100%" }}
+                              >
+                                <input {...getInputProps()} />
+                                <p>
+                                  Arrastra y suelta una imagen o haz click aqui
+                                </p>
+                                <FontAwesomeIcon
+                                  icon={faCloudUploadAlt}
+                                  size="3x"
+                                />
+                              </div>
+                            )}
+                          </Dropzone>
+                        </CardBody>
+                      </Card>
+                      {first}
+                    </CardDeck>
+                  )}
+                </Col>
+              </Row>
+              {this.props.doColumns ? null : rows}
+            </Container>
+          </Col>
+          <Col sm={3}>
+            <div className="white-box upload-rules">
+              <h4 style={{ fontWeight: "600" }}>Metadatos</h4>
+              <ul>
+                <li>
+                  Cada foto <b>requiere</b> una descripci&oacute;n o breve
+                  historia asociada.
+                </li>
+              </ul>
+              <h4 style={{ fontWeight: "600" }}>
+                Informaci&oacute;n por fotograf&iacute;a
+              </h4>
+              <ul>
+                <li>
+                  Se puede asignar informaci&oacute;n separada como
+                  t&iacute;tulo, licencias, etiquetas.
+                </li>
+                <li>
+                  En caso de no asignar nada se considera la informaci&oacute;n
+                  general ya ingresada.
+                </li>
+              </ul>
+            </div>
+          </Col>
+        </Row>
         <Row style={{ marginTop: "2em" }}>
-          <Col md={8}>
-            <Dropzone onDrop={this.handleOnDrop}>
-              {({ getRootProps, getInputProps }) => (
-                <div style={styles.dropzone} {...getRootProps()}>
-                  <input {...getInputProps()} />
-                  <p>Arrastra y suelta una imagen o haz click aqui</p>
-                  <FontAwesomeIcon icon={faCloudUploadAlt} size="3x" />
-                </div> // <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
-              )}
-            </Dropzone>
-            {details}
-          </Col>
-          <Col md={4} className="white-box upload-rules">
-            <h4 style={{ fontWeight: "600" }}>Metadatos</h4>
-            <ul>
-              <li>
-                Cada foto <b>requiere</b> una descripci&oacute;n o breve
-                historia asociada.
-              </li>
-            </ul>
-            <h4 style={{ fontWeight: "600" }}>
-              Informaci&oacute;n por fotograf&iacute;a
-            </h4>
-            <ul>
-              <li>
-                Se puede asignar informaci&oacute;n separada como t&iacute;tulo,
-                licencias, etiquetas.
-              </li>
-              <li>
-                En caso de no asignar nada se considera la informaci&oacute;n
-                general ya ingresada.
-              </li>
-            </ul>
-          </Col>
+          <Col md={8}></Col>
+          <Col md={4}></Col>
         </Row>
         <Row>
           <Col style={{ textAlign: "center" }}>
@@ -245,10 +333,7 @@ const styles = {
   dropzone: {
     backgroundColor: "#f7f7f7",
     textAlign: "center",
-    padding: "15px",
-    width: "100%",
-    height: "auto",
-    border: "1px dashed rgb(156,158,159)",
+    border: "3px dashed var(--leit-pink)",
     boxShadow: "#ddd 3px 5px 10px",
   },
 };

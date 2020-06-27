@@ -5,6 +5,7 @@ import { Button, Row, Col, Container } from "reactstrap";
 import { user, site_misc } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
 import PhotoEditor from "../../../components/PhotoEditor";
+import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
 //import "./userphotos.css"
@@ -87,6 +88,9 @@ class UserPhotos extends Component {
     return (
       <Fragment>
         <div className="userphotos-gallery-menu">
+          <Helmet>
+            <title>Mis fotos</title>
+          </Helmet>
           <Container>
             <Row>
               <Col md="7" lg="9">

@@ -7,6 +7,7 @@ import { Route, Link, Switch } from "react-router-dom";
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
 import { NoMatch } from "../../components";
+import { Helmet } from "react-helmet";
 import "./styles.css";
 
 const Index = ({ match, location, setRoute }) => {
@@ -25,6 +26,9 @@ const Index = ({ match, location, setRoute }) => {
 
   return (
     <Container className="disable-css-transitions misc">
+      <Helmet>
+        <title>Informaci&oacute;n del sitio</title>
+      </Helmet>
       <div>
         {" "}
         {/* Do not remove this div, it allows for sticky behavior*/}

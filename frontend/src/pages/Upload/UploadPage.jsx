@@ -3,7 +3,7 @@ import React, { Component, Fragment } from "react";
 import UnregisteredPrompt from "./UnregisterPrompt";
 import UploadUnregister from "./UploadUnregister";
 import UploadAlbum from "./UploadAlbum";
-import UploadPhoto from "./UploadPhoto";
+import UploadPhoto from "./UploadPhotov2";
 import UploadProgress from "./UploadProgress";
 
 import { connect } from "react-redux";
@@ -24,26 +24,24 @@ class UploadPage extends Component {
     super(props);
     this.state = {
       userInfo: {}, // For anonymous upload
-      photos: { onAlbum: false }, // All info to upload
+      data: { onAlbum: false }, // All info to upload
       uploading: false,
       prog: 0, // May delete this later
       cacheCreatedPhotoIds: [], // In case of upload error
       metadata: [], // Used during metadata creation
-      newMetaCount: 0
+      newMetaCount: 0,
     };
-    // componentWillMount() (soon deprecated)
     this.props.setRoute("/upload");
-    this.props.recoverMetadata();
   }
 
-  saveUserInfo = info => {
+  saveUserInfo = (info) => {
     this.setState({
-      userInfo: { ...info }
+      userInfo: { ...info },
     });
   };
 
-  saveAlbumInfo = info => {
-    this.setState({ photos: { ...this.state.photos, ...info } });
+  saveAlbumInfo = (info) => {
+    this.setState({ data: { ...this.state.data, ...info } });
   };
 
   /**
@@ -53,30 +51,32 @@ class UploadPage extends Component {
     // Manage metadata creation:
     // Merge tags in one array
     let metadata = {};
-    this.state.photos.tags.forEach(tag => {
+    this.state.data.tags.forEach((tag) => {
       metadata[tag.value] = { ...tag };
     });
-    meta.forEach(tag => {
+    meta.forEach((tag) => {
       metadata[tag.value] = { ...tag };
     });
 
-    this.setState({ photos: { ...this.state.photos, ...photos } }, () =>
+    this.setState({ data: { ...this.state.data, ...photos } }, () =>
       this.createMetadata(Object.values(metadata))
     );
   };
 
   // On success componentDidUpdate will call
   // associateMeta()
-  createMetadata = meta => {
-    let new_metas = meta.filter(el => el.id === undefined).map(el => el.value);
-    let id_metas = meta.filter(el => el.id !== undefined);
+  createMetadata = (meta) => {
+    let new_metas = meta
+      .filter((el) => el.id === undefined)
+      .map((el) => el.value);
+    let id_metas = meta.filter((el) => el.id !== undefined);
 
     // If API call isn't necessary
     if (new_metas.length === 0) {
       this.setState(
         {
           metadata: id_metas,
-          newMetaCount: 0
+          newMetaCount: 0,
         },
         () => this.associateMeta()
       );
@@ -85,7 +85,7 @@ class UploadPage extends Component {
       // New metadata will be populated later
       this.setState({
         metadata: id_metas,
-        newMetaCount: new_metas.length
+        newMetaCount: new_metas.length,
       });
 
       this.props.createMultipleMetas(new_metas);
@@ -102,9 +102,9 @@ class UploadPage extends Component {
         {
           metadata: [
             ...this.state.metadata,
-            ...this.props.metadataCreation.newIds
+            ...this.props.metadataCreation.newIds,
           ],
-          newMetaCount: 0
+          newMetaCount: 0,
         },
         // Call AssociateMeta after state update
         () => this.associateMeta()
@@ -114,26 +114,26 @@ class UploadPage extends Component {
 
   associateMeta = () => {
     let meta_mapped = {};
-    this.state.metadata.forEach(t => {
+    this.state.metadata.forEach((t) => {
       meta_mapped[t.value] = t.id;
     });
 
     // get default metadata
     // As an array of IDs as 1,2,3
-    let default_metadata = this.state.photos.tags
-      .map(t => {
+    let default_metadata = this.state.data.tags
+      .map((t) => {
         return meta_mapped[t.value];
       })
       .join();
 
     // Read from photoList and change meta
-    let photo_copy = this.state.photos.photosList.map(el => {
+    let photo_copy = this.state.data.photos.map((el) => {
       // If the information is uniform
       if (el.meta.tags.length === 0) {
         return { ...el, meta: { ...el.meta, tags: default_metadata } };
       } else {
         let custom_metadata = el.meta.tags
-          .map(t => {
+          .map((t) => {
             // They have name saved
             return meta_mapped[t.value];
           })
@@ -143,23 +143,22 @@ class UploadPage extends Component {
     });
 
     // Start process
-    this.setState(
-      { photos: { ...this.state.photos, photosList: photo_copy } },
-      () => this.startUploading({})
+    this.setState({ data: { ...this.state.data, photos: photo_copy } }, () =>
+      this.startUploading({})
     );
   };
 
-  startUploading = photos => {
-    // Merge album info and photosList from arg photos
-    // Important: photosList is used to store the images
+  startUploading = (photos) => {
+    // Merge album info and photos from arg photos
+    // Important: photos is used to store the images
     this.setState(
       {
-        photos: { ...this.state.photos, ...photos },
-        uploading: true // This may be removed (?)
+        data: { ...this.state.data, ...photos },
+        uploading: true, // This may be removed (?)
       },
       () => {
         // Upload all
-        this.props.uploadPhotos(this.state.photos);
+        this.props.uploadPhotos(this.state.data);
       }
     );
   };
@@ -167,14 +166,14 @@ class UploadPage extends Component {
   /**
    * Create album using photo IDs and Album info
    */
-  saveAlbum = info => {
+  saveAlbum = (info) => {
     // Asume name and description in info
     let formData = {
       ...info,
       pictures: [
         ...this.props.upload.newPhotosIds,
-        ...this.state.cacheCreatedPhotoIds
-      ]
+        ...this.state.cacheCreatedPhotoIds,
+      ],
     };
     this.props.createAlbum(formData);
   };
@@ -182,19 +181,19 @@ class UploadPage extends Component {
   retryFailed = () => {
     // Create new array with ids from props
     var newPhotos = {
-      ...this.state.photos,
-      photosList: this.state.photos.photosList.filter(
+      ...this.state.data,
+      photos: this.state.data.photos.filter(
         (el, key) => this.props.upload.photosUploaded.indexOf(key) === -1
-      )
+      ),
     };
-    newPhotos.length = newPhotos.photosList.length;
+    newPhotos.length = newPhotos.photos.length;
     // Save our already created photos Ids
     this.setState(
       {
         cacheCreatedPhotoIds: [
           ...this.state.cacheCreatedPhotoIds,
-          ...this.props.upload.newPhotosIds
-        ]
+          ...this.props.upload.newPhotosIds,
+        ],
       },
       this.startUploading(newPhotos)
     );
@@ -232,15 +231,20 @@ class UploadPage extends Component {
               saveAll={this.saveAlbumInfo}
               meta={this.props.meta}
               sendAlert={this.props.sendAlert}
+              searchMeta={this.props.recoverMetadata}
             />
-            <UploadPhoto saveAll={this.startProcess} meta={this.props.meta} />
+            <UploadPhoto
+              saveAll={this.startProcess}
+              meta={this.props.meta}
+              searchMeta={this.props.recoverMetadata}
+            />
             <UploadProgress
               photosUploading={this.props.upload.photosUploading}
               opsFinished={this.props.upload.opsFinished}
               uploading={this.props.upload.uploading}
               completed={this.props.upload.photosUploaded.length}
-              doAlbum={this.state.photos.onAlbum}
-              albumInfo={this.state.photos} // TODO: remove data redundancy
+              doAlbum={this.state.data.onAlbum}
+              albumInfo={this.state.data} // TODO: remove data redundancy
               albumState={this.props.album.createAlbum}
               retry={this.retryFailed}
               saveAlbum={this.saveAlbum}
@@ -253,21 +257,28 @@ class UploadPage extends Component {
               window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
             }}
             nav={<Nav />}
+            initialStep={2}
           >
             <UploadAlbum
               isAuth={this.props.isAuthenticated}
               saveAll={this.saveAlbumInfo}
               meta={this.props.meta}
               sendAlert={this.props.sendAlert}
+              searchMeta={this.props.recoverMetadata}
             />
-            <UploadPhoto saveAll={this.startProcess} meta={this.props.meta} />
+            <UploadPhoto
+              saveAll={this.startProcess}
+              meta={this.props.meta}
+              doColumns={false}
+              searchMeta={this.props.recoverMetadata}
+            />
             <UploadProgress
               photosUploading={this.props.upload.photosUploading}
               opsFinished={this.props.upload.opsFinished}
               uploading={this.props.upload.uploading}
               completed={this.props.upload.photosUploaded.length}
-              doAlbum={this.state.photos.onAlbum}
-              albumInfo={this.state.photos}
+              doAlbum={this.state.data.onAlbum}
+              albumInfo={this.state.data}
               albumState={this.props.album.createAlbum}
               retry={this.retryFailed}
               saveAlbum={this.saveAlbum}
@@ -282,7 +293,7 @@ class UploadPage extends Component {
 const styles = {
   nav: {
     marginBottom: "15px",
-    textAlign: "center"
+    textAlign: "center",
   },
   dot: {
     color: "black",
@@ -293,34 +304,35 @@ const styles = {
     opacity: ".4",
     textShadow: "none",
     transition: "opacity 1s ease, text-shadow 1s ease",
-    willChange: "opacity, text-shadow"
+    willChange: "opacity, text-shadow",
   },
   active: {
     color: "var(--leit-pink)",
     opacity: "1",
-    textShadow: "0 0px 8px"
-  }
+    textShadow: "0 0px 8px",
+  },
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isAuthenticated: state.user.isAuthenticated,
   upload: state.upload,
   album: state.albumcollection,
-  meta: state.metadata.all_tags,
-  metadataCreation: state.metadata
+  meta: state.metadata.general_tags.results,
+  metadataCreation: state.metadata,
 });
 
-const mapActionsToProps = dispatch => ({
-  setRoute: route => dispatch(site_misc.setCurrentRoute(route)),
-  uploadPhotos: info => dispatch(gallery.photos.uploadImages(info)),
-  recoverMetadata: () => dispatch(metadata.tags()),
+const mapActionsToProps = (dispatch) => ({
+  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
   sendAlert: (message, color) => dispatch(site_misc.setAlert(message, color)),
-  createAlbum: formData => dispatch(gallery.album.createAlbum(formData)),
-  createMultipleMetas: name => dispatch(metadata.createMultipleMetas(name))
+  uploadPhotos: (info) => dispatch(gallery.photos.uploadImages(info)),
+  recoverMetadata: (query, page, pageSize) =>
+    dispatch(metadata.searchMetadataByValueGeneral(query, page, pageSize)),
+  createAlbum: (formData) => dispatch(gallery.album.createAlbum(formData)),
+  createMultipleMetas: (name) => dispatch(metadata.createMultipleMetas(name)),
 });
 
 // Example nav from https://github.com/jcmcneal/react-step-wizard/blob/master/app/components/nav.js
-const Nav = props => {
+const Nav = (props) => {
   const dots = [];
   /* onClick={() => props.goToStep(i)}> */
   for (let i = 1; i <= props.totalSteps; i += 1) {

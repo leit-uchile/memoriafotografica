@@ -133,7 +133,6 @@ class Category_New extends Component {
 
   handleInputChange = (query) => {
     if (query.length >= 2) {
-      console.log("I should call the backend");
       this.props.recoverTags(query, 1, 10);
     }
   };
