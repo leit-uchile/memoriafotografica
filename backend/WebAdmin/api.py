@@ -264,5 +264,46 @@ class CensureAPI(generics.GenericAPIView):
             return Response(report_serializer.data)
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
+class ReportEditAPI(generics.GenericAPIView):
+
+    model_dict = {
+        1 : User,
+        2 : Photo,
+        3 : Comment
+    }
+
+    serializer_dict = {
+        1 : UserSerializer,
+        2 : PhotoAdminSerializer,
+        3 : CommentAdminSerializer
+    }
+
+    permission_classes = [IsAuthenticated,]
+
+    def get_content(self, id, content_type):
+        try:
+            return self.model_dict[content_type].objects.get(pk=id)
+        except self.model_dict[content_type].DoesNotExist:
+            return Http404
+
+    def get_report(self,id):
+        try:
+            return Reporte.objects.get(pk=id)
+        except Reporte.DoesNotExist:
+            raise Http404
+
+    def post(self,request, *args, **kwargs):
+        if(request.data['newContent']['upload_date']):
+            request.data['newContent']['upload_date'] = request.data['newContent']['upload_date']+"T00:00:00Z"
+        content_type = request.data['report']['type']
+        to_edit = self.get_content(request.data['report']['content_id']['id'], content_type)
+        serializer = self.serializer_dict[content_type](to_edit, data=request.data['newContent'], partial=True)
+        report_serializer = ReportSerializer(self.get_report(request.data['report']['id']),data={'resolved' : True}, partial=True)
+        if serializer.is_valid() and report_serializer.is_valid():
+            serializer.save()
+            report_serializer.save()
+            return Response(report_serializer.data)
+        return Response(status = status.HTTP_400_BAD_REQUEST)
+
 
 

@@ -27,7 +27,7 @@ const EditPhotoForm = ({photo, saveAction}) => {
 
   const submitChanges = (event) => {
     event.preventDefault()
-    saveAction(newphoto)
+    saveAction({title : newphoto.title, description:newphoto.description, upload_date:newphoto.upload_date})
   }
 
   useEffect(()=>{

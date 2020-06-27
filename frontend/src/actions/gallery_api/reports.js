@@ -84,7 +84,7 @@ export const updateContent = (report, content) => (dispatch, getState) => {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
-  return fetch(`/api/actions/editContent/`, {
+  return fetch(`/api/actions/reportEditContent/`, {
     method: "POST",
     headers,
     body: JSON.stringify({report : report, newContent : content}),
