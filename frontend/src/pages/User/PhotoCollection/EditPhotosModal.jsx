@@ -37,7 +37,6 @@ const CC_INFO = [
 const EditPhotosModal = (props) => {
   const [toggle, setToggle] = useState(false);
   const [toggleDelete, setToggleDelete] = useState(false);
-  const [finished, setFinished] = useState(false);
   const [formData, setData] = useState({}); //nuevos datos
 
   useEffect(() => {
@@ -65,7 +64,7 @@ const EditPhotosModal = (props) => {
     } else {
       setData({ metadata: [] });
     }
-  }, [props.photoInfo, props.photosID]);
+  }, [props.photoInfo, props.photosID, toggle]);
 
   const updateData = (e) =>
     setData({ ...formData, [e.target.name]: e.target.value });
@@ -84,8 +83,9 @@ const EditPhotosModal = (props) => {
     setData({ ...formData, metadata: tags });
   };
 
-  const handleOnClose = () => {
+  const handleToggle = () => {
     setToggle(!toggle);
+    props.isOpen(!toggle); //permite el refresh una vez cerrado
   };
 
   const onSend = () => {
@@ -114,12 +114,12 @@ const EditPhotosModal = (props) => {
           })
         : props.editPhoto(el, to_send);
     });
-    setFinished(true);
+    handleToggle();
   };
 
   const onDelete = (ids) => {
     ids.forEach((id) => props.deletePhoto(id));
-    setFinished(true);
+    handleToggle();
   };
 
   const { tags, updatedPhoto } = props;
@@ -138,7 +138,7 @@ const EditPhotosModal = (props) => {
               <Input
                 type="text"
                 value={formData.title}
-                placeholder="Nuevo título de las fotografías"
+                placeholder="Nuevo título de la(s) fotografía(s)"
                 name="title"
                 onChange={updateData}
               />
@@ -152,7 +152,7 @@ const EditPhotosModal = (props) => {
               <Input
                 type="textarea"
                 value={formData.description}
-                placeholder="Nueva descripción de las fotografías"
+                placeholder="Nueva descripción de la(s) fotografía(s)"
                 name="description"
                 onChange={updateData}
               />
@@ -242,13 +242,13 @@ const EditPhotosModal = (props) => {
       <Button
         disabled={props.photosID.length === 0}
         color="primary"
-        onClick={() => setToggle(!toggle)}
+        onClick={() => handleToggle()}
       >
         Editar selección ({props.photosID.length})
       </Button>
       <Modal
         isOpen={toggle}
-        toggle={() => setToggle(!toggle)}
+        toggle={() => handleToggle()}
         size={"lg"}
         className="user-modal"
       >
@@ -262,11 +262,7 @@ const EditPhotosModal = (props) => {
           )}
         </ModalHeader>
         <ModalBody>
-          {!finished
-            ? PhotosForm
-            : updatedPhoto
-            ? "¡Actualizado con éxito!"
-            : "Hubo un error realizando la acción. Inténtelo nuevamente"}
+          {PhotosForm}
           <Modal
             isOpen={toggleDelete}
             toggle={() => setToggleDelete(!toggleDelete)}
@@ -295,7 +291,7 @@ const EditPhotosModal = (props) => {
           </Modal>
         </ModalBody>
         <ModalFooter>
-          {!finished ? (
+          {!updatedPhoto ? (
             <Fragment>
               <FormText color="muted">
                 Los cambios estarán sujetos a aprobación
@@ -303,12 +299,12 @@ const EditPhotosModal = (props) => {
               <Button color="success" onClick={() => onSend()}>
                 Guardar cambios
               </Button>
-              <Button color="secondary" onClick={() => handleOnClose()}>
+              <Button color="secondary" onClick={() => handleToggle()}>
                 Cancelar
               </Button>
             </Fragment>
           ) : (
-            <Button color="secondary" onClick={() => handleOnClose()}>
+            <Button color="secondary" onClick={() => handleToggle()}>
               Cerrar
             </Button>
           )}

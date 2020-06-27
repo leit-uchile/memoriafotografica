@@ -139,9 +139,11 @@ export const editPhoto = (photoID, newData) => (dispatch, getState) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
+        dispatch(setAlert("Se ha(n) editado con éxito", "success"));
         dispatch({ type: EDIT_PHOTO, data: data });
       });
     } else {
+      dispatch(setAlert("Hubo un error al editar la(s) fotografia(s). Intente nuevamente", "warning"));
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
       throw r.data;
     }
@@ -160,8 +162,10 @@ export const deletePhoto = (photoID) => (dispatch, getState) => {
   }).then(function (response) {
     const r = response;
     if (r.status === 204) {
+      dispatch(setAlert("Se ha(n) borrado con éxito", "success"));
       dispatch({ type: DELETED_PHOTO, data: photoID });
     } else {
+      dispatch(setAlert("Hubo un error al borrar la(s) fotografia(s). Intente nuevamente", "warning"));
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
       throw r.data;
     }

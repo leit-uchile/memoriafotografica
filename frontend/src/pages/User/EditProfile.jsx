@@ -53,22 +53,6 @@ class EditProfile extends Component {
     })(props.photo).bind(this);
   }
 
-  handleFileSelect = (e) => {
-    var image;
-    var files = e.target.files;
-    for (var i = 0, f; (f = files[i]); i++) {
-      if (!f.type.match("image.*")) {
-        continue;
-      } else {
-        image = f;
-        break;
-      }
-    }
-    if (image) {
-      this.fr.readAsDataURL(image);
-    }
-  };
-
   toggleDropdown = (e) => {
     if (e.target.name === "untoggle") {
       return;
@@ -155,15 +139,10 @@ class EditProfile extends Component {
         break;
       }
     }
-    if (image) {
-      this.setState({ avatar: image });
-      this.fr.readAsDataURL(image);
-    } else {
-      this.setState({ avatar: "" });
-    }
+    this.handleUploadAvatar(image)
   };
 
-  handleCrop(newAvatar) {
+  handleUploadAvatar = (newAvatar) => {
     if (newAvatar) {
       this.setState({ avatar: newAvatar });
       this.fr.readAsDataURL(newAvatar);
@@ -219,7 +198,7 @@ class EditProfile extends Component {
                         isOpen={this.state.modal_crop}
                         src={user.avatar}
                         handleToggle={this.toggleModalCrop}
-                        saveAvatar={(newAvatar) => this.handleCrop(newAvatar)}
+                        saveAvatar={(newAvatar) => this.handleUploadAvatar(newAvatar)}
                       />
                     </DropdownItem>
                     <DropdownItem divider hidden={user.avatar === null} />

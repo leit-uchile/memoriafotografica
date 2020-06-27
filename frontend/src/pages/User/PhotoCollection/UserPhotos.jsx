@@ -17,12 +17,16 @@ class UserPhotos extends Component {
       chosenPhotoIndex: 0,
       picturesToEdit: [],
       selectedAll: false,
+      modalOpen: false,
     };
     this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
   }
 
   componentDidUpdate() {
-    if (this.props.updatedPhoto || this.props.refresh) {
+    if (
+      (this.props.updatedPhoto || this.props.refresh) &&
+      !this.state.modalOpen
+    ) {
       setTimeout(() => window.location.reload(), 1000);
     }
   }
@@ -125,7 +129,10 @@ class UserPhotos extends Component {
                     ? "Seleccionar todas"
                     : "Deseleccionar"}
                 </Button>
-                <EditPhotosModal photosID={this.state.picturesToEdit} />
+                <EditPhotosModal
+                  photosID={this.state.picturesToEdit}
+                  isOpen={(bool) => this.setState({ modalOpen: bool })}
+                />
               </Col>
             </Row>
           </Container>
