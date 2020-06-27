@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Container, Row, Col, Badge } from "reactstrap";
+import { Badge } from "reactstrap";
 import { Link } from "react-router-dom";
 
 const Categories = ({ cats, onRedirect }) => (

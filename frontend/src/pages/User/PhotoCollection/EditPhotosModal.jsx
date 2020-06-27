@@ -17,7 +17,6 @@ import {
   Input,
   Form,
   FormText,
-  ButtonGroup,
 } from "reactstrap";
 import { metadata, gallery } from "../../../actions";
 import ReactTags from "react-tag-autocomplete";

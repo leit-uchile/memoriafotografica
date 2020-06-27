@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import {
   Container,
@@ -7,7 +7,6 @@ import {
   Card,
   CardBody,
   CardFooter,
-  CardSubtitle,
   CardText,
   CardHeader,
   CardDeck,
@@ -18,16 +17,11 @@ import {
 } from "reactstrap";
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronCircleLeft,
-  faCheckCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faChevronCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import uuid4 from "uuid";
 import { webadmin } from "../../../actions";
 
-const check = <FontAwesomeIcon icon={faCheckCircle} />;
-
-const PhotoRequestDetails = ({ request, updateRequest, requestUpdate}) => {
+const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
   const [rows, setRows] = useState([]);
   const [approved, setApproved] = useState([]);
   const [redirect, setRedirect] = useState(false);
@@ -69,8 +63,8 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate}) => {
     setTimeout(() => setRedirect(true), 1000);
   };
 
-  if(redirect){
-    return <Redirect to="/curador/dashboard/email"/>
+  if (redirect) {
+    return <Redirect to="/curador/dashboard/email" />;
   }
 
   return (
@@ -82,8 +76,10 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate}) => {
               <FontAwesomeIcon icon={faChevronCircleLeft} />
             </Link>{" "}
             Fotos solicitadas por: {request.first_name} {request.last_name}{" "}
-            <Button color={approved.length > 0 ? "primary" : "danger"}
-            onClick={()=>resolve(request, approved.length > 0)}>
+            <Button
+              color={approved.length > 0 ? "primary" : "danger"}
+              onClick={() => resolve(request, approved.length > 0)}
+            >
               {approved.length > 0
                 ? `Aprobar (${approved.length})`
                 : "Rechazar solicitud"}
@@ -172,7 +168,7 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate}) => {
 };
 
 const mapStateToProps = (state) => ({
-  request: state.webadmin.requestDetail
+  request: state.webadmin.requestDetail,
 });
 
 const mapActionsToProps = (dispatch) => ({

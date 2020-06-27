@@ -12,7 +12,8 @@ import "./styles.css";
 const Index = ({ match, location, setRoute }) => {
   useEffect(() => {
     setRoute(location.pathname);
-  }, []);
+    // eslint-disable-next-line
+  }, [setRoute]);
 
   useEffect(() => {
     window.scrollTo({

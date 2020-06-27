@@ -13,7 +13,7 @@ import {
   Button,
   InputGroupAddon,
 } from "reactstrap";
-import { LeitSpinner, Pagination } from "../../components";
+import { Pagination } from "../../components";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { gallery } from "../../actions";
@@ -41,6 +41,7 @@ const AllCollections = ({ albums, loadCollections }) => {
     let par = "&collections=1";
     par = params.name !== "" ? par + "&name=" + params.name : par;
     loadCollections(page.page, page.page_size, par);
+    // eslint-disable-next-line
   }, [loadCollections, page]);
 
   useEffect(() => {

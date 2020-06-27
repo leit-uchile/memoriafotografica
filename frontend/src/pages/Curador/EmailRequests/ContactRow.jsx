@@ -1,5 +1,4 @@
 import React from "react";
-import { ButtonGroup } from "reactstrap";
 
 /**
  * Render design pattern

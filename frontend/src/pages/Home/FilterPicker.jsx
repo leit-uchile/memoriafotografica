@@ -7,7 +7,7 @@ import {
   Row,
   Col,
   UncontrolledButtonDropdown,
-  DropdownItem
+  DropdownItem,
 } from "reactstrap";
 import Categories from "./Categories";
 import { connect } from "react-redux";
@@ -42,48 +42,48 @@ const FilterPicker = ({
   sortByField,
   recoverByCats,
   // Store
-  cats
+  cats,
 }) => {
   const [toggleCats, setToggleCats] = useState(false);
   const [filterState, setFilterState] = useState({
     selectedCategories: [],
     maxAllowed: defaultMaxAllowed,
-    searchOrder: { field: "created_at", order: "desc" }
+    searchOrder: { field: "created_at", order: "desc" },
   });
 
   // Initial Load
   useEffect(() => {
-    getCats(0,filterState.maxAllowed);
+    getCats(0, filterState.maxAllowed);
   }, [getCats, filterState.maxAllowed]);
 
   var allowMoreCats = () => {
-    if(filterState.maxAllowed < cats.total){
+    if (filterState.maxAllowed < cats.total) {
       setFilterState({
         ...filterState,
-        maxAllowed: filterState.maxAllowed + 4
+        maxAllowed: filterState.maxAllowed + 4,
       });
     }
   };
 
-  const setSortingOrder = order => {
+  const setSortingOrder = (order) => {
     setFilterState({ ...filterState, searchOrder: order });
     resetHomePagination();
   };
 
   // Add category's ID
-  const pickCategory = id => {
+  const pickCategory = (id) => {
     // Remove if in already
-    if (filterState.selectedCategories.filter(el => el === id).length !== 0) {
+    if (filterState.selectedCategories.filter((el) => el === id).length !== 0) {
       setFilterState({
         ...filterState,
         selectedCategories: filterState.selectedCategories.filter(
-          el => el !== id
-        )
+          (el) => el !== id
+        ),
       });
     } else {
       setFilterState({
         ...filterState,
-        selectedCategories: [...filterState.selectedCategories, id]
+        selectedCategories: [...filterState.selectedCategories, id],
       });
     }
     resetHomePagination();
@@ -92,38 +92,51 @@ const FilterPicker = ({
   // Reload Search Effect
   useEffect(() => {
     if (filterState.selectedCategories.length !== 0) {
-      recoverByCats(filterState.selectedCategories, filterState.searchOrder, page, maxPerPage);
+      recoverByCats(
+        filterState.selectedCategories,
+        filterState.searchOrder,
+        page,
+        maxPerPage
+      );
     } else {
-      sortByField(filterState.searchOrder.field, filterState.searchOrder.order, page, maxPerPage);
+      sortByField(
+        filterState.searchOrder.field,
+        filterState.searchOrder.order,
+        page,
+        maxPerPage
+      );
     }
     // Pass this to our parent so that after clicking a Photo our preferences
     // are saved on the URL query params
-    putInfo({cats: filterState.selectedCategories, sorting: `${filterState.searchOrder.field}-${filterState.searchOrder.order}`})
+    putInfo({
+      cats: filterState.selectedCategories,
+      sorting: `${filterState.searchOrder.field}-${filterState.searchOrder.order}`,
+    });
   }, [
     filterState.searchOrder,
     filterState.selectedCategories,
     filters,
     page,
+    maxPerPage,
     recoverByCats,
-    resetHomePagination,
-    sortByField
+    sortByField,
+    putInfo,
   ]);
 
   // If filters change reset pagination
   useEffect(() => {
     resetHomePagination();
-  }, [filters,
-    resetHomePagination])
+  }, [filters, resetHomePagination]);
 
   // Utility Function
   var isSelected = (id, array) => {
-    return array ? array.filter(el => el === id).length !== 0 : false;
+    return array ? array.filter((el) => el === id).length !== 0 : false;
   };
 
   var currentCats = cats
-    ? cats.categories.map(el => ({
+    ? cats.categories.map((el) => ({
         ...el,
-        selected: isSelected(el.id, filterState.selectedCategories)
+        selected: isSelected(el.id, filterState.selectedCategories),
       }))
     : [];
 
@@ -142,7 +155,7 @@ const FilterPicker = ({
               ? { ...styles.dropdownButton }
               : {
                   ...styles.dropdownButton,
-                  backgroundColor: "#e9ecef8a"
+                  backgroundColor: "#e9ecef8a",
                 }
           }
         >
@@ -155,7 +168,7 @@ const FilterPicker = ({
         </DropdownToggle>
         <DropdownMenu
           style={{
-            boxShadow: "0 0 15px 0 rgba(0,0,0,.20)"
+            boxShadow: "0 0 15px 0 rgba(0,0,0,.20)",
           }}
           className="home-category-filter"
         >
@@ -240,13 +253,13 @@ const styles = {
     margin: "1em 1em 0.5em 1em",
     borderRadius: "0",
     padding: "10px",
-    border: "none"
+    border: "none",
   },
   selectedCatsNumber: {
     backgroundColor: "#f2f2f2",
     color: "#ff5a60",
     padding: "0.5em",
-    borderRadius: "0.5em"
+    borderRadius: "0.5em",
   },
   triangulo: {
     position: "absolute",
@@ -262,19 +275,22 @@ const styles = {
     content: "",
     transform: "rotate(45deg)",
     marginTop: "-10px",
-    background: "#ffff"
-  }
+    background: "#ffff",
+  },
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   cats: state.categories,
-  filters: state.site_misc.searchMetaIDs
+  filters: state.site_misc.searchMetaIDs,
 });
 
-const mapActionstoProps = dispatch => ({
-  getCats: (page, pageSize) => dispatch(gallery.category.getCategories(page, pageSize)),
-  sortByField: (tag, order, page, size) => dispatch(gallery.photos.sortByField(tag, order, page, size)),
-  recoverByCats: (catIds, order, page, size) => dispatch(gallery.photos.recoverByCats(catIds, order, page, size))
+const mapActionstoProps = (dispatch) => ({
+  getCats: (page, pageSize) =>
+    dispatch(gallery.category.getCategories(page, pageSize)),
+  sortByField: (tag, order, page, size) =>
+    dispatch(gallery.photos.sortByField(tag, order, page, size)),
+  recoverByCats: (catIds, order, page, size) =>
+    dispatch(gallery.photos.recoverByCats(catIds, order, page, size)),
 });
 
 export default connect(mapStateToProps, mapActionstoProps)(FilterPicker);

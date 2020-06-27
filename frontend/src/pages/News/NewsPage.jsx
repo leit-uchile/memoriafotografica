@@ -16,6 +16,7 @@ import {
   Button,
 } from "reactstrap";
 import { Pagination, LeitSpinner } from "../../components";
+import { Helmet } from "react-helmet";
 import "./news.css";
 
 const NewsPage = (props) => {
@@ -30,6 +31,7 @@ const NewsPage = (props) => {
   useEffect(() => {
     setRoute("/news");
     loadNews(page.page, page.page_size);
+    // eslint-disable-next-line
   }, [loadNews]);
 
   useEffect(() => {
@@ -73,6 +75,9 @@ const NewsPage = (props) => {
 
   return (
     <Container className="news-page">
+      <Helmet>
+        <title>Noticias</title>
+      </Helmet>
       <Row>
         <Col md={3} className="news-menu">
           <h3>Filtrar por fecha</h3>
@@ -149,7 +154,7 @@ const NewsPage = (props) => {
                 <div className="color-box" key={key}>
                   <Row>
                     <Col>
-                      <img src={it.image} width="80%" />
+                      <img src={it.image} width="80%" alt={it.title} />
                     </Col>
                     <Col>
                       <h3>{it.title}</h3>

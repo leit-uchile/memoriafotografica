@@ -15,7 +15,7 @@ import { site_misc } from "../../actions";
 const UserRouting = ({ setRoute, location, ...props }) => {
   useEffect(() => {
     setRoute(location.pathname);
-  }, []);
+  }, [setRoute, location.pathname]);
   return (
     <Switch>
       <BoundedRoute
@@ -35,6 +35,13 @@ const UserRouting = ({ setRoute, location, ...props }) => {
       <BoundedRoute
         exact
         path={"/user/public/albums/:id"}
+        component={AlbumView}
+        location={location}
+        {...props}
+      />
+      <BoundedRoute
+        exact
+        path={"/user/public/collections/:id"}
         component={AlbumView}
         location={location}
         {...props}
