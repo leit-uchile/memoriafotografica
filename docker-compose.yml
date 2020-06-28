@@ -14,8 +14,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./backend:/app
-    ports:
-      - "8000:8000"
     depends_on:
       - db
   frontend:
@@ -23,5 +21,14 @@ services:
     volumes:
       - ./frontend:/app/frontend:rw
     stdin_open: true
+  nginx:
+    image: nginx:latest
     ports:
-      - '3000:3000'
+      - 80:80
+    depends_on:
+      - db
+      - backend
+      - frontend
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./nginx/static/:/data/nginx/cache
