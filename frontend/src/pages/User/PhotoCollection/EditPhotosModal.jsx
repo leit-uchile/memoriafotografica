@@ -38,10 +38,11 @@ const EditPhotosModal = (props) => {
   const [toggle, setToggle] = useState(false);
   const [toggleDelete, setToggleDelete] = useState(false);
   const [formData, setData] = useState({}); //nuevos datos
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     props.getTags(); //suggestions, TODO: llamar cuando el usuario ingresa nuevo tag
-  }, []);
+  }, [props.newIds]);
 
   useEffect(() => {
     if (props.photosID.length === 1) {
@@ -60,6 +61,8 @@ const EditPhotosModal = (props) => {
         props.photoInfo.permission !== undefined
           ? info.permission.toString()
           : null;
+      delete info.image;
+      delete info.thumbnail;
       setData(info);
     } else {
       setData({ metadata: [] });
@@ -88,24 +91,55 @@ const EditPhotosModal = (props) => {
     props.isOpen(!toggle); //permite el refresh una vez cerrado
   };
 
-  const onSend = () => {
+  const handleMetadata = () => {
     let to_send = { ...formData };
     if (props.photosID.length > 1 && to_send.metadata.length === 0) {
       //si hay más de una foto y no quiere cambiarle los tags
       delete to_send.metadata; //mantenemos los tags individuales
+      update(to_send);
     } else {
-      // let newTags = formData.metadata.filter(el => el.id === undefined).map(el => el.name);
-      // if (newTags.length>0){
-      //   props.createMultipleMetas(Object.values(newTags)).then(response => {
-      //     console.log(response)
-      //   })
-      // }else{
-
-      // }
-      to_send.metadata = to_send.metadata.map((el) => el.id); // problema con nuevosTags (el.id undefined)
+      //vemos si es necesario crear alguno
+      let newTags = to_send.metadata.filter((el) => el.id === undefined);
+      if (newTags.length == 0) {
+        console.log("No es necesario crearle id");
+        to_send.metadata = to_send.metadata.map(el=>el.id);
+        update(to_send);
+      } else {
+        console.log("Es necesario crearle id");
+        let toCreate = newTags.map((el) => el.name); //names
+        props.createMultipleMetas(toCreate); //->props.newIds
+      }
     }
-    delete to_send.image;
-    delete to_send.thumbnail;
+  };
+
+  //Une los nuevos tags tras crear una id para ellos
+  useEffect(() => {
+    console.log("verificando creacion de nuevos tags");
+    let to_send = { ...formData };
+    if (to_send.metadata) {
+      //Hay metadata
+      //Si se crearon los nuevos
+      if (
+        to_send.metadata.filter((el) => el.id === undefined).length ===
+        props.newIds.length
+      ) {
+        let newTags = Object.values(props.newIds).map((el) => el.id); //ids nuevas
+        console.log("Nuevas IDS", newTags);
+        let oldTags = to_send.metadata
+          .filter((el) => el.id !== undefined)
+          .map((el) => el.id); //ids ya creadas
+        console.log("Viejas IDS", oldTags);
+        to_send.metadata = oldTags.concat(newTags);
+        console.log("Por guardar", to_send.metadata);
+        //setSending(true);
+        update(to_send);
+      } else {
+        console.log("Aun no se crean ids para nuevos tags");
+      }
+    }
+  }, [props.newIds]);
+
+  const update = (to_send) => {
     props.photosID.forEach((el, index) => {
       props.photosID.length > 1 && to_send.title !== undefined //si está editando el título de varias
         ? props.editPhoto(el, {
@@ -296,7 +330,7 @@ const EditPhotosModal = (props) => {
               <FormText color="muted">
                 Los cambios estarán sujetos a aprobación
               </FormText>
-              <Button color="success" onClick={() => onSend()}>
+              <Button color="success" onClick={() => handleMetadata()}>
                 Guardar cambios
               </Button>
               <Button color="secondary" onClick={() => handleToggle()}>
@@ -316,7 +350,9 @@ const EditPhotosModal = (props) => {
 
 const mapStateToProps = (state) => ({
   photoInfo: state.photos.details,
-  tags: state.webadmin.all_tags,
+  tags: state.metadata.all_tags,
+  creating: state.metadata.creating,
+  newIds: state.metadata.newIds,
   updatedPhoto: state.photos.updatedPhoto,
 });
 
@@ -325,7 +361,7 @@ const mapActionsToProps = (dispatch) => ({
   getTags: () => dispatch(metadata.tags()),
   editPhoto: (pID, val) => dispatch(gallery.photos.editPhoto(pID, val)),
   deletePhoto: (pID) => dispatch(gallery.photos.deletePhoto(pID)),
-  createMultipleMetas: (name) => dispatch(metadata.createMultipleMetas(name)),
+  createMultipleMetas: (list) => dispatch(metadata.createMultipleMetas(list)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(EditPhotosModal);
