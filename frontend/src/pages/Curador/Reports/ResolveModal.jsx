@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { gallery, user} from "../../../actions";
 import LeitSpinner from "../../../components/Layout/LeitSpinner"
 import "./styles.css"
-import { updateReport } from "../../../actions/gallery_api/reports";
 
 const EditUserForm = () => {
   return (
@@ -29,16 +28,16 @@ const EditPhotoForm = ({photo, saveAction}) => {
     event.preventDefault()
     saveAction({title : newphoto.title, description:newphoto.description, upload_date:newphoto.upload_date})
   }
-
+  
+  const [newphoto, setNewphoto] = useState(photo)
+  const [originalphoto, setOriginalphoto] = useState(photo)
   useEffect(()=>{
-    if(photo != originalphoto){
+    if(photo !== originalphoto){
       setOriginalphoto(photo)
       setNewphoto(photo)
     }
-  })
+  }, [photo, originalphoto])
 
-  const [newphoto, setNewphoto] = useState(photo)
-  const [originalphoto, setOriginalphoto] = useState(photo)
   return (
     <Form>
         <FormGroup>
@@ -73,17 +72,18 @@ const ResolveModal = (props) => {
       updateReport,
       photo,
       getPhoto,
+      mtPhoto,
       editPhoto,
-      user,
+      //user,
       getUser,
     } = props;
   
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false)
     const [spinner, setSpinner] = useState(true)
-    const [shouldMail, setShouldMail] = useState(true)
+    //const [shouldMail, setShouldMail] = useState(true)
     const [newreport, setNewreport] = useState({...report});
-    const toggle = () => {setNewreport(report); setLoading(false); setModal(!modal)};
+    const toggle = () => {mtPhoto();setNewreport(report); setLoading(false); setModal(!modal)};
 
     const censure = () => {
       setLoading(!loading);
@@ -105,7 +105,6 @@ const ResolveModal = (props) => {
     
     const editAndSave = (editedPhoto) => {
       editPhoto(newreport, editedPhoto).then( r => {
-        alert("ready")
         window.location.reload()
       })
     }
@@ -115,12 +114,16 @@ const ResolveModal = (props) => {
           if(true) getUser(report.content_id.id).then(
             setSpinner(false)
           )
+          break;
         case 2:
+          console.log(photo)
           if(!photo.image) getPhoto(newreport.content_id.id).then(
             setSpinner(false)
-          )      
+          )     
+          break;
+        default:
       }
-    })
+    }, [modal, newreport.type, newreport.content_id.id, getUser, report.content_id.id,photo, photo.image, getPhoto])
     return (
         <div>
           <Button color="danger" onClick={toggle}>{buttonLabel}</Button>
@@ -129,10 +132,10 @@ const ResolveModal = (props) => {
             <ModalBody>    
               <Col>
                 <Row>
-                  <Col xs-12 md-6>
+                  <Col xs-12="true" md-6="true">
                     <Button color="danger" onClick={censure} >Censurar Contenido</Button>
                   </Col>
-                  <Col xs-12 md-6>
+                  <Col xs-12="true" md-6="true">
                     <Button color="success" onClick={discardReport} >Descartar Reporte</Button>
                   </Col>
                 </Row>            
@@ -142,10 +145,10 @@ const ResolveModal = (props) => {
                 <Col xs-12>
                   <Row className="spacerTop10px">
                     <Col xs-12>
-                      Editar {newreport.type == 2 ? "Foto" : "Usuario" } :
+                      Editar {newreport.type === 2 ? "Foto" : "Usuario" } :
                     </Col>
                   </Row>
-                  {spinner ? (<LeitSpinner/>) : (newreport.type == 2 ? (<EditPhotoForm photo={photo} saveAction={editAndSave}/>) : (<EditUserForm />))}
+                  {spinner ? (<LeitSpinner/>) : (newreport.type === 2 ? (<EditPhotoForm photo={photo} saveAction={editAndSave}/>) : (<EditUserForm />))}
                 </Col>
               ) : "" }
             </ModalBody>
@@ -164,6 +167,7 @@ const mapStateToProps = state => ({
 const mapActionsToProps = dispatch => ({
   editPhoto: (rep, cont) => dispatch(gallery.reports.updateContent(rep, cont)),
   getPhoto: pk => dispatch(gallery.photos.getPhoto(pk)),
+  mtPhoto: () => dispatch(gallery.photos.mtPhoto()),
   getUser: pk => dispatch(user.loadAUser(pk))
 });
 

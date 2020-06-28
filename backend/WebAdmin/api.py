@@ -293,12 +293,16 @@ class ReportEditAPI(generics.GenericAPIView):
             raise Http404
 
     def post(self,request, *args, **kwargs):
+        print(request.data['newContent'])
         if(request.data['newContent']['upload_date']):
-            request.data['newContent']['upload_date'] = request.data['newContent']['upload_date']+"T00:00:00Z"
+            request.data['newContent']['upload_date'] = request.data['newContent']['upload_date'][0:10]+"T00:00:00-03:00"
         content_type = request.data['report']['type']
+        print(request.data['newContent'])
         to_edit = self.get_content(request.data['report']['content_id']['id'], content_type)
         serializer = self.serializer_dict[content_type](to_edit, data=request.data['newContent'], partial=True)
-        report_serializer = ReportSerializer(self.get_report(request.data['report']['id']),data={'resolved' : True}, partial=True)
+        report_serializer = ReportSerializer(self.get_report(request.data['report']['id']),data={'resolved' : True}, partial=True)  
+        print(report_serializer.is_valid())
+        print(serializer.is_valid())      
         if serializer.is_valid() and report_serializer.is_valid():
             serializer.save()
             report_serializer.save()
