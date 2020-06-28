@@ -6,7 +6,7 @@ import {
   Col,
   Progress,
   Alert,
-  ButtonGroup
+  ButtonGroup,
 } from "reactstrap";
 
 /**
@@ -35,7 +35,7 @@ const UploadProgress = ({
   doAlbum,
   albumInfo,
   albumState,
-  saveAlbum
+  saveAlbum,
 }) => {
   // TODO: include button to create albums
   const [retryAlbum, setRetryAlbum] = useState(false);
@@ -47,7 +47,7 @@ const UploadProgress = ({
    * can be asociated to an album
    */
   useEffect(() => {
-    if (doAlbum && photosUploading === completed) {
+    if (doAlbum && photosUploading === completed && photosUploading !== 0) {
       saveAlbum(albumInfo);
     }
   }, [completed, doAlbum, saveAlbum]);
@@ -111,7 +111,7 @@ const UploadProgress = ({
                 textAlign: "center",
                 display: "block",
                 margin: "auto 1em auto 1em",
-                padding: "2em"
+                padding: "2em",
               }}
             >
               Las fotos tendr&aacute;n que ser aprobadas para que la comunidad

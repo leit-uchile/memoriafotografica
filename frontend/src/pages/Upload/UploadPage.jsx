@@ -45,6 +45,15 @@ class UploadPage extends Component {
   };
 
   /**
+   * DISCLAIMER: Uploading and putting data on different models is hard.
+   *
+   * What follows is all the necessary steps to upload photos with new metadata
+   * and finally an album
+   *
+   * They are called in order as follows
+   */
+
+  /**
    * Function called when all inputs are ok
    */
   startProcess = (photos, meta) => {
@@ -92,6 +101,7 @@ class UploadPage extends Component {
     }
   };
 
+  // Call method associateMeta if needed
   componentDidUpdate(prevProps) {
     if (
       prevProps.metadataCreation.creating && // We were creating
@@ -148,12 +158,13 @@ class UploadPage extends Component {
     );
   };
 
-  startUploading = (photos) => {
+  // Once the metadata is ready we upload photos
+  startUploading = (newData) => {
     // Merge album info and photos from arg photos
     // Important: photos is used to store the images
     this.setState(
       {
-        data: { ...this.state.data, ...photos },
+        data: { ...this.state.data, ...newData },
         uploading: true, // This may be removed (?)
       },
       () => {
@@ -178,15 +189,16 @@ class UploadPage extends Component {
     this.props.createAlbum(formData);
   };
 
+  // Retry process starting from startUploading
   retryFailed = () => {
     // Create new array with ids from props
-    var newPhotos = {
+    var newData = {
       ...this.state.data,
       photos: this.state.data.photos.filter(
         (el, key) => this.props.upload.photosUploaded.indexOf(key) === -1
       ),
     };
-    newPhotos.length = newPhotos.photos.length;
+    newData.length = newData.photos.length;
     // Save our already created photos Ids
     this.setState(
       {
@@ -195,7 +207,7 @@ class UploadPage extends Component {
           ...this.props.upload.newPhotosIds,
         ],
       },
-      this.startUploading(newPhotos)
+      this.startUploading(newData)
     );
   };
 
@@ -257,7 +269,6 @@ class UploadPage extends Component {
               window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
             }}
             nav={<Nav />}
-            initialStep={2}
           >
             <UploadAlbum
               isAuth={this.props.isAuthenticated}

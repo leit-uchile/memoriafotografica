@@ -197,7 +197,7 @@ const LandingPage = (props) => {
 
               <p className="detailText">
                 Tambi&eacute;n recibimos donaciones de contenido y las
-                publicamos en nuestras aqu&iacute;.
+                publicamos aqu&iacute;.
               </p>
             </Col>
             <Col sm={9}>

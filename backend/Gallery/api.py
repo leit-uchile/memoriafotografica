@@ -414,6 +414,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
         if request.user.is_anonymous or request.user.user_type == 1:
             p = self.get_object(pk, False)
             comments = p.comments.filter(censure=False)
+            comments = comments.order_by("created_at")
             serialized_class = CommentSerializer
             serializer = CommentSerializer(comments, many = True)
             serialized_data = serializer.data
@@ -426,6 +427,7 @@ class PhotoCommentListAPI(generics.GenericAPIView):
         else:
             p = self.get_object(pk, True)
             comments = p.comments.all()
+            comments = comments.order_by("created_at")
             #serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comments, many = True)
             serialized_data = serializer.data

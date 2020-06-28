@@ -109,6 +109,6 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = (dispatch) => ({
   newComment: (id, comment) =>
     dispatch(gallery.comments.putComment(id, comment)),
-  fetchComments: (id, auth) => dispatch(gallery.comments.getComments(id)),
+  fetchComments: (id) => dispatch(gallery.comments.getComments(id)),
 });
 export default connect(mapStateToProps, mapActionsToProps)(CommentHandler);
