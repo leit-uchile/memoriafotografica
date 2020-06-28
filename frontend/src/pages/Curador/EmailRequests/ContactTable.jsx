@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Table, Button, ButtonGroup } from "reactstrap";
+import { Table, ButtonGroup } from "reactstrap";
 import { connect } from "react-redux";
 import { webadmin } from "../../../actions";
 import ContactRow from "./ContactRow";
@@ -20,10 +20,10 @@ const ContactTable = ({ messages, updateMessage }) => {
     updateMessage(msgCopy, formData);
   };
 
-  const resolveButton = msg => (
+  const resolveButton = (msg) => (
     <ButtonGroup>
-      <ContactEmailModal buttonLabel="Correo" message={msg} send={resolve}/>
-      <ContactPhoneModal buttonLabel="Teléfono" message={msg} send={resolve}/>
+      <ContactEmailModal buttonLabel="Correo" message={msg} send={resolve} />
+      <ContactPhoneModal buttonLabel="Teléfono" message={msg} send={resolve} />
     </ButtonGroup>
   );
 
@@ -57,8 +57,9 @@ const ContactTable = ({ messages, updateMessage }) => {
   );
 };
 
-const mapActionsToProps = dispatch => ({
-  updateMessage: (msg,formData) => dispatch(webadmin.updateMessage(msg,formData)) 
+const mapActionsToProps = (dispatch) => ({
+  updateMessage: (msg, formData) =>
+    dispatch(webadmin.updateMessage(msg, formData)),
 });
 
 export default connect(null, mapActionsToProps)(ContactTable);

@@ -79,6 +79,30 @@ export const censureContent = (report) => (dispatch, getState) => {
   });
 };
 
+export const updateContent = (report, content) => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+  return fetch(`/api/actions/reportEditContent/`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({report : report, newContent : content}),
+  }).then((response) => {
+    console.log(response)
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch({ type: REPORT_SWITCH_STATE, data: data });
+      });
+    } else {
+      dispatch(setAlert("Hubo un error al editar el contenido solicitado.", "warning"));
+      dispatch({ type: REPORT_SWITCH_STATE_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
 export const reportPhoto = (data) => (dispatch, getState) => {
   let headers = {
     Authorization: "Token " + getState().user.token,

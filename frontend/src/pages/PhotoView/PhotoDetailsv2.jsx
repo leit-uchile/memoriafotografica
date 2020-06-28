@@ -54,18 +54,17 @@ const PhotoDetails = ({
     onLoad(match.params.id);
     // Reset page counter
     setState({ ...state, loadingPhoto: true });
-    console.log("will be  True", photoInfo.id);
     // Ask for our page number based on query
     findPhotoQueryPage(match.params.id, state.pageSize, location.search);
+    // eslint-disable-next-line
   }, [onLoad, match.params.id, location.search]);
 
   useEffect(() => {
     // Initial load
     if (photoInfo.id !== undefined && state.loadingPhoto === true) {
       setState({ ...state, loadingPhoto: false });
-      console.log("hey Im in", photoInfo.id);
     }
-    console.log("hey", photoInfo.id);
+    // eslint-disable-next-line
   }, [photoInfo.id]);
 
   // Get suggestions
@@ -73,6 +72,7 @@ const PhotoDetails = ({
     if (photoPage.page !== null) {
       loadSuggestions(photoPage.page, state.pageSize, location.search);
     }
+    // eslint-disable-next-line
   }, [photoPage.page]);
 
   useEffect(() => {
@@ -82,6 +82,7 @@ const PhotoDetails = ({
       rightIndex: photoPage.nextId,
       leftIndex: photoPage.prevId,
     });
+    // eslint-disable-next-line
   }, [photoPage.position]);
 
   if (state.redirectToGallery) {
@@ -290,13 +291,6 @@ const PhotoDetails = ({
       </Container>
     </div>
   );
-};
-
-const styles = {
-  cc: {
-    position: "absolute",
-    bottom: "0",
-  },
 };
 
 const mapStateToProps = (state) => ({

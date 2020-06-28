@@ -12,18 +12,15 @@ import {
 } from "reactstrap";
 import { connect } from "react-redux";
 import { webadmin } from "../../../actions";
-import { getMessages } from "../../../actions/webadmin_api";
 
-const EmailRequests = ({
-  messages,
-  getMessages,
-  updatedMessage
-}) => {
+const EmailRequests = ({ messages, getMessages, updatedMessage }) => {
   const [activeTab, setActiveTab] = useState("1");
 
   useEffect(() => {
-    getMessages();
-  }, [activeTab === "2", updatedMessage]);
+    if (activeTab === "2") {
+      getMessages();
+    }
+  }, [activeTab, updatedMessage, getMessages]);
 
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -75,7 +72,7 @@ const EmailRequests = ({
 
 const mapStateToProps = (state) => ({
   messages: state.webadmin.messages,
-  updatedMessage: state.webadmin.updatedMessage
+  updatedMessage: state.webadmin.updatedMessage,
 });
 
 const mapActionsToProps = (dispatch) => ({

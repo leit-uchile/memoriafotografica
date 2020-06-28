@@ -23,6 +23,7 @@ import PhotoDetails from "./PhotoView";
 import Index from "./Miscellaneous";
 import RequestPhoto from "./RequestPhoto";
 import UploadPage from "./Upload";
+import AllCollections from "./Collections";
 // Separate chunks for users
 const lazyComponents = [
   {
@@ -78,6 +79,7 @@ const Layout = () => {
                     <BoundedRoute exact path={"/"} component={LandingPage} />
                     <BoundedRoute path={"/news"} component={NewsPage} />
                     <BoundedRoute path={"/gallery"} component={Home} />
+                    <BoundedRoute path={"/collections"} component={AllCollections} />
                     <BoundedRoute path={"/login"} component={Login} />
                     <BoundedRoute path={"/misc"} component={Index} />
                     <BoundedRoute path={"/register"} component={Register} />

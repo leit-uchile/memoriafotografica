@@ -66,7 +66,8 @@ const availableRoutes = [
 const Dashboard = ({ match, location, setRoute }) => {
   useEffect(() => {
     setRoute(location.pathname);
-  }, []);
+    // eslint-disable-next-line
+  }, [setRoute]);
 
   return (
     <Container

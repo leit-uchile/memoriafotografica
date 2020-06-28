@@ -47,6 +47,31 @@ h2.colTitle{
   margin-bottom: 2em;
 }
 
+.landing-container .card-title {
+  font-size: 1.3em;
+  background-color: white;
+  padding: 0.2em 1em;
+}
+
+.landing-container .card-body {
+  background-position-x: center;
+  background-position-y: top;
+  background-size: cover;
+  min-height: 200px;
+  -o-transition: color 0.2s ease-out, background 0.5s ease-in;
+  -ms-transition: color 0.2s ease-out, background 0.5s ease-in;
+  -moz-transition: color 0.2s ease-out, background 0.5s ease-in;
+  -webkit-transition: color 0.2s ease-out, background 0.5s ease-in;
+  /* ...and now override with proper CSS property */
+  transition: color 0.2s ease-out, background 0.5s ease-in;
+}
+
+.landing-container .card-body:hover {
+  background-color: var(--leit-pink);
+  background-blend-mode: soft-light;
+  cursor: pointer;
+}
+
 .landing-background-1 {
   min-height: 75vh;
   max-height: 800px;

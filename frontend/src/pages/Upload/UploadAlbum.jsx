@@ -13,7 +13,7 @@ import {
   PopoverHeader,
   Button,
   ButtonGroup,
-  FormText
+  FormText,
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -21,11 +21,9 @@ import {
   faChevronCircleLeft,
   faChevronCircleRight,
   faPlusCircle,
-  faBook
+  faBook,
 } from "@fortawesome/free-solid-svg-icons";
-import {
-  faCreativeCommons
-} from "@fortawesome/free-brands-svg-icons";
+import { faCreativeCommons } from "@fortawesome/free-brands-svg-icons";
 import ReactTags from "react-tag-autocomplete";
 
 /**
@@ -39,6 +37,7 @@ import ReactTags from "react-tag-autocomplete";
  * @param nextStep StepWizard function
  * @param meta metadata info
  * @param sendAlert
+ * @param searchMeta by name
  */
 const UploadAlbum = ({
   isAuth,
@@ -46,7 +45,8 @@ const UploadAlbum = ({
   nextStep,
   previousStep,
   meta,
-  sendAlert
+  sendAlert,
+  searchMeta,
 }) => {
   const [formData, setFormData] = useState({
     date: "",
@@ -55,38 +55,46 @@ const UploadAlbum = ({
     onAlbum: false,
     // Album related info
     name: "",
-    description: ""
+    description: "",
   });
 
-  const suggestions = meta ? meta.map(e => ({ name: e.value, id: e.id })) : [];
+  const suggestions = meta
+    ? meta.map((e) => ({ name: e.value, id: e.id }))
+    : [];
 
-  const updateCC = selected => {
+  const updateCC = (selected) => {
     setFormData({ ...formData, cc: selected });
   };
 
-  const deleteTag = i => {
+  const handleInputChange = (query) => {
+    if (query.length >= 2) {
+      searchMeta(query, 1, 10);
+    }
+  };
+
+  const deleteTag = (i) => {
     const tags = formData.tags.slice(0);
     tags.splice(i, 1);
     setFormData({ ...formData, tags });
   };
 
-  const additionTag = tag => {
+  const additionTag = (tag) => {
     const tags = [].concat(formData.tags, tag);
     setFormData({ ...formData, tags: tags });
   };
 
-  const updateDate = e => {
+  const updateDate = (e) => {
     setFormData({ ...formData, date: e.target.value });
   };
 
-  const saveAlbum = e => {
+  const saveAlbum = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const isAlbum = () =>
     setFormData({ ...formData, onAlbum: !formData.onAlbum });
 
-  const onSubmitD = e => {
+  const onSubmitD = (e) => {
     e.preventDefault();
     if (formData.onAlbum && formData.name === "") {
       sendAlert("Debe rellenar el nombre del Album", "warning");
@@ -96,7 +104,7 @@ const UploadAlbum = ({
       sendAlert("Debe seleccionar una licencia", "warning");
     } else {
       // Map to value: el.name
-      let mapped_tags = formData.tags.map(tag => ({
+      let mapped_tags = formData.tags.map((tag) => ({
         // We need to trim the values so that the mapping
         // done by value after metadata creation doesnt fails.
         // Ex: value saved without trim -> "Hola   "
@@ -104,7 +112,7 @@ const UploadAlbum = ({
         //  Mapping by name using old name -> "Hola   " over backendInfo={"Hola": {...tag1}, "Chao": {...tag2}}
         // The mapping backendInfo["Hola    "] results in undefined
         value: tag.name.trim(),
-        id: tag.id
+        id: tag.id,
       }));
       saveAll({ ...formData, tags: mapped_tags });
       nextStep();
@@ -125,10 +133,13 @@ const UploadAlbum = ({
         <Col md={{ size: 6, offset: 1 }}>
           <div style={styles.titleBox}>
             <Label style={{ fontSize: "18px" }}>Crear Album</Label>
-              <FontAwesomeIcon icon={faPlusCircle}
-              onClick={() => isAlbum()} style={styles.plusButton}/>
+            <FontAwesomeIcon
+              icon={faPlusCircle}
+              onClick={() => isAlbum()}
+              style={styles.plusButton}
+            />
           </div>
-          <Form style={formData.onAlbum ?styles.content :styles.noContent}>
+          <Form style={formData.onAlbum ? styles.content : styles.noContent}>
             <FormGroup>
               <Collapse isOpen={formData.onAlbum}>
                 <Fragment>
@@ -136,28 +147,25 @@ const UploadAlbum = ({
                     name="name"
                     type="text"
                     placeholder="Nombre del album"
-                    onChange={info => saveAlbum(info)}
+                    onChange={(info) => saveAlbum(info)}
                     required
                   />
                   <Input
                     name="description"
                     type="textarea"
                     placeholder="Descripcion (Opcional)"
-                    onKeyUp={info => saveAlbum(info)}
+                    onKeyUp={(info) => saveAlbum(info)}
                   />
                 </Fragment>
               </Collapse>
             </FormGroup>
-            </Form>
-            <div style={styles.titleBox}>
-              <Label style={{ fontSize: "18px" }}>Información General</Label>
-            </div>
-            <Form style={styles.content} className="white-box">
+          </Form>
+          <div style={styles.titleBox}>
+            <Label style={{ fontSize: "18px" }}>Información General</Label>
+          </div>
+          <Form style={styles.content} className="white-box">
             <div className="upload-form-title">
-              <FontAwesomeIcon
-                icon={faBook}
-                style={{ marginRight: "1em" }}
-              />
+              <FontAwesomeIcon icon={faBook} style={{ marginRight: "1em" }} />
               <Label>Metadatos</Label>
             </div>
             <FormGroup>
@@ -175,9 +183,11 @@ const UploadAlbum = ({
                 suggestions={suggestions}
                 handleDelete={deleteTag}
                 handleAddition={additionTag}
+                handleInputChange={handleInputChange}
               />
               <FormText color="muted">
-                Para ingresar una nueva etiqueta debe presionar la tecla "Entrar" o "Tabulación" 
+                Para ingresar una nueva etiqueta debe presionar la tecla
+                "Entrar" o "Tabulación"
               </FormText>
             </FormGroup>
             <FormGroup>
@@ -234,13 +244,11 @@ const UploadAlbum = ({
             >
               {!isAuth ? (
                 <Button onClick={previousStep}>
-                  <FontAwesomeIcon icon={faChevronCircleLeft} />
-                  {" "} Volver
+                  <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
                 </Button>
               ) : null}
               <Button color="success" type="submit" onClick={onSubmitD}>
-                Continuar {" "}
-                <FontAwesomeIcon icon={faChevronCircleRight} />
+                Continuar <FontAwesomeIcon icon={faChevronCircleRight} />
               </Button>
             </ButtonGroup>
           </Form>
@@ -281,12 +289,12 @@ const styles = {
     justifyContent: "space-between",
     backgroundColor: "#f7f7f7",
     border: "1px solid rgb(210,214,218)",
-    borderBottom: "none"
+    borderBottom: "none",
   },
   plusButton: {
     fontSize: "2em",
     color: "var(--leit-pink)",
-    cursor: "pointer"
+    cursor: "pointer",
   },
   content: {
     backgroundColor: "white",
@@ -294,8 +302,8 @@ const styles = {
     padding: "15px",
   },
   noContent: {
-    marginBottom:'-12px'
-  }
+    marginBottom: "-12px",
+  },
 };
 
 const CC_INFO = [
@@ -304,43 +312,43 @@ const CC_INFO = [
     text: "Atribución",
     desc:
       "Esta licencia permite a otras distribuir, remezclar, retocar, y crear a partir de su obra, incluso con fines comerciales, siempre y cuando den crédito por la creación original. Esta es la más flexible de las licencias ofrecidas. Se recomienda para la máxima difusión y utilización de los materiales licenciados. ",
-    img: "/assets/CC/CCBY.svg"
+    img: "/assets/CC/CCBY.svg",
   },
   {
     name: "CC BY-SA",
     text: "Atribución, Compartir Igual",
     desc:
       "Esta licencia permite a otras remezclar, retocar, y crear a partir de su obra, incluso con fines comerciales, siempre y cuando den crédito y licencien sus nuevas creaciones bajo los mismos términos. Esta licencia suele ser comparada con las licencias «copyleft» de software libre y de código abierto. Todas las nuevas obras basadas en la suya portarán la misma licencia, así que cualesquiera obras derivadas permitirán también uso comercial. Esta es la licencia que usa Wikipedia, y se recomienda para materiales que se beneficiarían de incorporar contenido de Wikipedia y proyectos con licencias similares. ",
-    img: "/assets/CC/CCBYSA.svg"
+    img: "/assets/CC/CCBYSA.svg",
   },
   {
     name: "CC BY-ND",
     text: "Atribución, Sin Derivadas",
     desc:
       "Esta licencia permite a otras sólo descargar sus obras y compartirlas con otras siempre y cuando den crédito, incluso con fines comerciales, pero no pueden cambiarlas de forma alguna.",
-    img: "/assets/CC/CCBYND.svg"
+    img: "/assets/CC/CCBYND.svg",
   },
   {
     name: "CC BY-NC",
     text: "Atribución, No Comercial",
     desc:
       "Esta licencia permite a otras distribuir, remezclar, retocar, y crear a partir de su obra de forma no comercial y, a pesar de que sus nuevas obras deben siempre mencionarle y ser no comerciales, no están obligadas a licenciar sus obras derivadas bajo los mismos términos.",
-    img: "/assets/CC/CCBYNC.svg"
+    img: "/assets/CC/CCBYNC.svg",
   },
   {
     name: "CC BY-NC-SA",
     text: "Atribución, No Comercial, Compartir Igual",
     desc:
       "Esta licencia permite a otras remezclar, retocar, y crear a partir de su obra de forma no comercial, siempre y cuando den crédito y licencien sus nuevas creaciones bajo los mismos términos. ",
-    img: "/assets/CC/CCBYNCSA.svg"
+    img: "/assets/CC/CCBYNCSA.svg",
   },
   {
     name: "CC BY-NC-ND",
     text: "Atribución, No Comercial, Sin Derivadas",
     desc:
       "Esta licencia es la más restrictiva, permitiendo a otras sólo descargar sus obras y compartirlas con otras siempre y cuando den crédito, pero no pueden cambiarlas de forma alguna ni usarlas de forma comercial.",
-    img: "/assets/CCBYNCND.svg"
-  }
+    img: "/assets/CCBYNCND.svg",
+  },
 ];
 
 export default UploadAlbum;

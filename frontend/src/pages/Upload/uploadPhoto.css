@@ -33,3 +33,7 @@
     border: 1px solid rgb(210,214,218);
     height: fit-content;
 }
+
+.stepContainer .card img{
+    max-height: 200px;
+}

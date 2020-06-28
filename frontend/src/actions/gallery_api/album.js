@@ -1,4 +1,6 @@
 import {
+  ALBUMS_LOADED,
+  ALBUMS_EMPTY,
   ALBUM_LOADED,
   ALBUM_LOADING_ERROR,
   ALBUM_LOADING,
@@ -7,6 +9,29 @@ import {
   CREATED_ALBUM_ERROR,
 } from '../types'
 import {setAlert} from "../site_misc"
+
+/**
+ * Load Albums API with pages
+ * @param {*} page starts at 0
+ * @param {*} page_size defaults to 10
+ * @param {*} params like collections or user 
+ */
+export const getAlbums = (page, page_size, params) => (dispatch) => {
+  dispatch({ type: ALBUM_LOADING });
+  return fetch(`/api/albums/?page=${page + 1}&page_size=${page_size}${params}`).then(
+    (res) => {
+      const response = res;
+      if (res.status === 200) {
+        return response
+          .json()
+          .then((parsed) => dispatch({ type: ALBUMS_LOADED, data: parsed }));
+      } else {
+        dispatch(setAlert("Hubo un error al cargar las colecciones/albumes", "warning"));
+        dispatch({ type: ALBUMS_EMPTY, data: response.data });
+      }
+    }
+  );
+}
 
 /**
  * Load information from an album by id

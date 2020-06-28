@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Table, Button } from "reactstrap";
+import { Table } from "reactstrap";
 import ReportRow from "./ReportRow";
 import ResolveModal from "./ResolveModal";
 import { Link } from "react-router-dom";
@@ -14,14 +14,9 @@ import { gallery } from "../../../actions";
  * @param {Function} updateReport
  */
 const ReportsTable = ({ reports, updateReport, censureContent}) => {
-  const resolve = rep => {
-    let repCopy = {...rep};
-    delete repCopy.content_id
-    repCopy.resolved = !rep.resolved
-    updateReport(repCopy);
-  };  
+  
   const resolveButton = rep => (
-    (rep.resolved) ? "-" : (<ResolveModal buttonLabel="Acciones" report={rep} censureContent={censureContent}/>)
+    (rep.resolved) ? "-" : (<ResolveModal buttonLabel="Acciones" report={rep} updateReport={updateReport} censureContent={censureContent}/>)
   );
 
   return (

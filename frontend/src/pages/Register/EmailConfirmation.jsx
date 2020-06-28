@@ -8,7 +8,7 @@ const EmailConfirmation = ({ location, activateCode, status }) => {
     let code = location.search;
     code = code.slice(code.indexOf("code=") + 5);
     activateCode(code);
-  }, []);
+  }, [activateCode, location.search]);
 
   const SuccefulConfirmation = (props) => (
     <Container style={{ textAlign: "center", marginTop: "2em" }}>

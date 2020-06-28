@@ -4,6 +4,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter,
 import { connect } from "react-redux";
 import { gallery, user} from "../../../actions";
 import LeitSpinner from "../../../components/Layout/LeitSpinner"
+import "./styles.css"
 
 const EditUserForm = () => {
   return (
@@ -13,36 +14,51 @@ const EditUserForm = () => {
   )
 }
 
-const EditPhotoForm = ({photo}) => {
+const EditPhotoForm = ({photo, saveAction}) => {
   
   const handleChange = (event) => {
     const target = event.target;
-    const value = target.value;
+    let value = target.value;
     let editedPhoto = {...newphoto}
     editedPhoto[target.name] = value;
     setNewphoto(editedPhoto);
   }
 
+  const submitChanges = (event) => {
+    event.preventDefault()
+    saveAction({title : newphoto.title, description:newphoto.description, upload_date:newphoto.upload_date})
+  }
+  
+  const [newphoto, setNewphoto] = useState(photo)
+  const [originalphoto, setOriginalphoto] = useState(photo)
   useEffect(()=>{
-    if(photo != originalphoto){
+    if(photo !== originalphoto){
       setOriginalphoto(photo)
       setNewphoto(photo)
     }
-  })
+  }, [photo, originalphoto])
 
-  const [newphoto, setNewphoto] = useState(photo)
-  const [originalphoto, setOriginalphoto] = useState(photo)
   return (
-    <Row>
-      <FormGroup>
-                  <Label>Editar Título</Label>
-                  <Input type="text" name="title" value={newphoto.title} onChange={handleChange}/>
-      </FormGroup>
-      <FormGroup>
-                  <Label>Editar Descripción</Label>
-                  <Input type="textarea" name="description" value={newphoto.description} onChange={handleChange}/>
-      </FormGroup> 
-    </Row>
+    <Form>
+        <FormGroup>
+          <Label>Editar Título</Label>
+          <Input type="text" name="title" value={newphoto.title} onChange={handleChange}/>
+        </FormGroup>
+        <FormGroup>
+          <Label>Editar Descripción</Label>
+          <Input type="textarea" name="description" value={newphoto.description} onChange={handleChange}/>
+        </FormGroup>       
+        <FormGroup>
+          <Label>Editar Fecha</Label>  
+          <Input type="date" name="upload_date" value={newphoto.upload_date ? newphoto.upload_date.substring(0,10) : ""} onChange={handleChange}/>
+        </FormGroup>
+
+        <FormGroup>
+          ** Editar Tags **
+        </FormGroup>
+
+        <Button color="primary" onClick={submitChanges} >Guardar Cambios</Button>
+    </Form>
   )
 }
 
@@ -53,73 +69,90 @@ const ResolveModal = (props) => {
       className,
       report,     
       censureContent,
+      updateReport,
       photo,
       getPhoto,
-      user,
+      mtPhoto,
+      editPhoto,
+      //user,
       getUser,
     } = props;
   
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false)
     const [spinner, setSpinner] = useState(true)
-    const [shouldMail, setShouldMail] = useState(true)
+    //const [shouldMail, setShouldMail] = useState(true)
     const [newreport, setNewreport] = useState({...report});
-    const toggle = () => {setNewreport(report); setLoading(false); setModal(!modal)};
+    const toggle = () => {mtPhoto();setNewreport(report); setLoading(false); setModal(!modal)};
 
     const censure = () => {
       setLoading(!loading);
-      console.log(newreport)
       censureContent(newreport).then(response => {
         setLoading(!loading)
         window.location.reload()
       })
-      
+    }
 
+    const discardReport = () => {
+      setLoading(!loading);
+      let discardedReport = newreport;
+      discardedReport.resolved = true;
+      updateReport(discardedReport).then(r => {
+        setLoading(!loading)
+        window.location.reload()
+      })
     }
     
+    const editAndSave = (editedPhoto) => {
+      editPhoto(newreport, editedPhoto).then( r => {
+        window.location.reload()
+      })
+    }
     useEffect(() => {
-      console.log(!photo.image)
-      console.log(photo.image)
       if (modal) switch(newreport.type){
         case 1:
           if(true) getUser(report.content_id.id).then(
             setSpinner(false)
           )
+          break;
         case 2:
+          console.log(photo)
           if(!photo.image) getPhoto(newreport.content_id.id).then(
             setSpinner(false)
-          )      
+          )     
+          break;
+        default:
       }
-    })
+    }, [modal, newreport.type, newreport.content_id.id, getUser, report.content_id.id,photo, photo.image, getPhoto])
     return (
         <div>
           <Button color="danger" onClick={toggle}>{buttonLabel}</Button>
           <Modal isOpen={modal} toggle={toggle} className={className}>
             <ModalHeader toggle={toggle}>Resolver Reporte</ModalHeader>
             <ModalBody>    
-              <Row>
-                <Col xs-12 md-6>
-                  <Button color="danger" onClick={censure} >Censurar Contenido</Button>
-                </Col>
-                <Col xs-12 md-6>
-                  <Button color="success">Descartar Reporte</Button>
-                </Col>
-              </Row>
+              <Col>
+                <Row>
+                  <Col xs-12="true" md-6="true">
+                    <Button color="danger" onClick={censure} >Censurar Contenido</Button>
+                  </Col>
+                  <Col xs-12="true" md-6="true">
+                    <Button color="success" onClick={discardReport} >Descartar Reporte</Button>
+                  </Col>
+                </Row>            
+              </Col>
               {/* Si corresponde, editar contenido */}
               {newreport.type < 3 ? (
                 <Col xs-12>
-                  <Row>
-                    Editar {newreport.type == 1 ? "Foto" : "Usuario" } :
+                  <Row className="spacerTop10px">
+                    <Col xs-12>
+                      Editar {newreport.type === 2 ? "Foto" : "Usuario" } :
+                    </Col>
                   </Row>
-                  <Row>
-                      Formulario de edición
-                  </Row>
-                  {spinner ? (<LeitSpinner/>) : (newreport.type == 2 ? (<EditPhotoForm photo={photo}/>) : (<EditUserForm />))}
+                  {spinner ? (<LeitSpinner/>) : (newreport.type === 2 ? (<EditPhotoForm photo={photo} saveAction={editAndSave}/>) : (<EditUserForm />))}
                 </Col>
               ) : "" }
             </ModalBody>
-            <ModalFooter>
-              <Button color="primary">{!loading ? "Guardar Cambios" : "enviando..."}</Button>{' '}           
+            <ModalFooter>                        
               <Button color="secondary" onClick={toggle}>Cancelar</Button>
             </ModalFooter>
           </Modal>
@@ -132,7 +165,9 @@ const mapStateToProps = state => ({
 });
 
 const mapActionsToProps = dispatch => ({
+  editPhoto: (rep, cont) => dispatch(gallery.reports.updateContent(rep, cont)),
   getPhoto: pk => dispatch(gallery.photos.getPhoto(pk)),
+  mtPhoto: () => dispatch(gallery.photos.mtPhoto()),
   getUser: pk => dispatch(user.loadAUser(pk))
 });
 

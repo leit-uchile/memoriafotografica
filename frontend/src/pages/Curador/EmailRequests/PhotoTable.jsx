@@ -1,25 +1,24 @@
 import React, { Component, Fragment } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { Table, Button } from "reactstrap";
+import { Table } from "reactstrap";
 import PhotoRow from "./PhotoRow";
 import { webadmin } from "../../../actions";
 import PhotoUserModal from "./PhotoUserModal";
-
 
 class PhotoTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
       page: 0,
-    }
+    };
     this.props.getRequests();
   }
 
   doRedirect = (id) => {
     this.props.getPhotos(id);
-    this.setState({redirect:id});
-  }
+    this.setState({ redirect: id });
+  };
 
   render() {
     const { requests } = this.props;
@@ -54,8 +53,8 @@ class PhotoTable extends Component {
               render={(info) => (
                 <Fragment>
                   <PhotoUserModal
-                  buttonLabel="Ver datos solicitante"
-                  request={info}
+                    buttonLabel="Ver datos solicitante"
+                    request={info}
                   />
                 </Fragment>
               )}
@@ -67,11 +66,11 @@ class PhotoTable extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   requests: state.webadmin.requests,
 });
 
-const mapActionsToProps = dispatch => ({
+const mapActionsToProps = (dispatch) => ({
   getRequests: () => dispatch(webadmin.getRequests()),
   getPhotos: (id) => dispatch(webadmin.getRequest(id)),
 });
