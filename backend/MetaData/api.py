@@ -22,6 +22,18 @@ from django.http import Http404, QueryDict
 from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
 from rest_framework.documentation import include_docs_urls
 
+def sort_by_field(element_list, request):
+    sort_type = {"asc":"", "desc":"-"}
+    try:
+        if request.query_params["sort"]:
+            splitted_param = request.query_params["sort"].split("-")
+            query = sort_type[splitted_param[1]]+splitted_param[0]
+            element_list = element_list.order_by(query)
+    except KeyError:
+        # Default to sorting by asc creation
+        element_list = element_list.order_by("created_at")
+    return element_list
+
 def search_meta(elements, request):
     try:
         if "iptc" in request.query_params and  request.query_params["iptc"] != "0":
@@ -152,11 +164,13 @@ class MetadataListAPI(generics.GenericAPIView):
             if request.user.user_type != 1:
                 metadata_admin = Metadata.objects.all()
                 metadata_admin = search_meta(metadata_admin, request)
+                metadata_admin = sort_by_field(metadata_admin,request)
                 serializer_class = MetadataAdminSerializer
                 serializer = MetadataAdminSerializer(metadata_admin, many=True)
             else:
                 metadata = Metadata.objects.filter(approved=True)
                 metadata = search_meta(metadata, request)
+                metadata = sort_by_field(metadata,request)
                 serializer_class = MetadataSerializer
                 serializer = MetadataSerializer(metadata, many=True)
         except Exception:
