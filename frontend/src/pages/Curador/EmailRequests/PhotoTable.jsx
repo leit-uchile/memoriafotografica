@@ -36,12 +36,12 @@ class PhotoTable extends Component {
       <Table responsive striped className="statBox">
         <thead>
           <tr>
-            <th>Acciones</th>
             <th>Estado</th>
+            <th>Detalles</th>
+            <th>Finalidad</th>
             <th>Solicitado el</th>
             <th>&Uacute;ltima actualizaci&oacute;n</th>
-            <th>Finalidad</th>
-            <th>Detalles</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>

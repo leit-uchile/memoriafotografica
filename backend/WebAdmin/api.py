@@ -121,7 +121,7 @@ class PhotoRequestDetailAPI(generics.GenericAPIView):
             serializer = PhotoRequestSerializer(photo_request, data=request.data, partial=True)
             if serializer.is_valid():
               serializer.save()
-              if request.data['email_sent']: #approved
+              if request.data['approved']:
                 sendEmail(emailto=photo_request.email, case="photo_request_success", subject='Hemos resuelto su solicitud', attached=request.data['attached'])
               else:
                 sendEmail(emailto=photo_request.email, case="photo_request_failure", subject='Hemos resuelto su solicitud', attached=[])
@@ -206,10 +206,10 @@ class ContactRequestDetailAPI(generics.GenericAPIView):
     def put(self,request,pk, *args, **kwargs):
         if request.user.user_type > 1:
             contactrequest = self.get_object(pk)
-            serializer = ContactRequestSerializer(contactrequest, data=request.data['newMsg'], partial=True)
+            serializer = ContactRequestSerializer(contactrequest, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                sendEmail(emailto=contactrequest.email, case="contact_us", subject=request.data['subject'], attached=request.data['response'])
+                sendEmail(emailto=contactrequest.email, case="contact_us", subject=request.data['subject'], attached=request.data['reply'])
                 return Response(serializer.data)
             return Response(status = status.HTTP_400_BAD_REQUEST)
         return Response(status = status.HTTP_401_UNAUTHORIZED)

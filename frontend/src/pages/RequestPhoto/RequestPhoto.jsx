@@ -38,7 +38,7 @@ class RequestPhoto extends Component {
         identity_document: "",
         profession: "",
         address: "",
-        comuna: "",
+        district: "",
         phone_number: "",
         email: "",
         institution: "",
@@ -184,7 +184,7 @@ class RequestPhoto extends Component {
                     />
                     <Input
                       type="text"
-                      name="comuna"
+                      name="district"
                       onChange={this.updateData}
                       style={{ marginBottom: "0.5em" }}
                       placeholder="Comuna"

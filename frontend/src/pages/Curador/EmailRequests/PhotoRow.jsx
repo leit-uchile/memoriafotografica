@@ -1,5 +1,8 @@
 import React from "react";
 import { Button } from "reactstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+const check = <FontAwesomeIcon icon={faCheckCircle} />;
 
 /**
  * Render design pattern
@@ -12,13 +15,27 @@ const PhotoRow = ({ request, key, actions, render }) => {
     let reqCopy = { ...req };
     delete reqCopy.photos;
     delete reqCopy.resolved;
-    delete reqCopy.email_sent;
+    delete reqCopy.approved;
     delete reqCopy.created_at;
     delete reqCopy.updated_at;
     return reqCopy;
   };
   return (
     <tr>
+      <td>
+        {request.resolved
+          ? request.approved 
+            ? (
+            <span style={{ color: "green" }}>Aprobada{check}</span>
+            )  : (
+            <span style={{ color: "red" }}>No Aprobada</span>
+            )
+          : <span style={{ color: "red" }}>Sin Resolver</span>}
+      </td>
+      <td>{render(onlyInfo(request))}</td>
+      <td>{request.reason}</td>
+      <td>{new Date(request.created_at).toLocaleDateString("es")}</td>
+      <td>{new Date(request.updated_at).toLocaleDateString("es")}</td>
       <td>
         <Button
           color="danger"
@@ -28,25 +45,6 @@ const PhotoRow = ({ request, key, actions, render }) => {
           Gestionar
         </Button>
       </td>
-      <td
-        style={
-          request.resolved
-            ? request.email_sent
-              ? { color: "green" }
-              : { color: "red" }
-            : { color: "red" }
-        }
-      >
-        {request.resolved
-          ? request.email_sent
-            ? "Aprobada"
-            : "Rechazada"
-          : "Sin resolver"}
-      </td>
-      <td>{new Date(request.created_at).toLocaleDateString("es")}</td>
-      <td>{new Date(request.updated_at).toLocaleDateString("es")}</td>
-      <td>{request.reason}</td>
-      <td>{render(onlyInfo(request))}</td>
     </tr>
   );
 };
