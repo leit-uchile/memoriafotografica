@@ -64,7 +64,7 @@ const PhotoUserModal = (props) => {
             </Col>
             <Col>
               <p>
-                {request.address}, {request.comuna}
+                {request.address}, {request.district}
               </p>
             </Col>
           </Row>

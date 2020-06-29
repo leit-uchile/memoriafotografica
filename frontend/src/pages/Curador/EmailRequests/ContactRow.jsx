@@ -5,10 +5,9 @@ import React from "react";
  * @param {Object} message
  * @param {Function} actions how to render actions
  */
-const ContactRow = ({ message, actions, render }) => {
+const ContactRow = ({ message, actions }) => {
   return (
     <tr>
-      <td>{actions(message)}</td>
       <td style={message.resolved ? { color: "green" } : { color: "red" }}>
         {message.resolved
           ? message.email_sent
@@ -16,13 +15,16 @@ const ContactRow = ({ message, actions, render }) => {
             : "Respondido por teléfono"
           : "Sin responder"}
       </td>
-      <td>{new Date(message.created_at).toLocaleDateString("es")}</td>
-      <td>Actualizar modelo</td>
       <td>
         {message.first_name} {message.last_name}
       </td>
       <td>{message.message}</td>
-      <td>{render()}</td>
+      <td>
+        {message.reply}
+      </td>
+      <td>{new Date(message.created_at).toLocaleDateString("es")}</td>
+      <td>{new Date(message.updated_at).toLocaleDateString("es")}</td>
+      <td>{actions(message)}</td>
     </tr>
   );
 };

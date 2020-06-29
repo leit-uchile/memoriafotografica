@@ -55,11 +55,11 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
 
   const resolve = (req, bool) => {
     let approvedOriginal = approved.map((el) => el.image);
-    let reqCopy = { ...req, approvedOriginal };
-    delete reqCopy.photos;
-    reqCopy.resolved = !req.resolved;
-    reqCopy.email_sent = bool; //Approved or Denied
-    updateRequest(reqCopy);
+    let reqUpdate = { ...req, approvedOriginal };
+    delete reqUpdate.photos;
+    reqUpdate.resolved = !req.resolved;
+    reqUpdate.approved = bool;
+    updateRequest(reqUpdate);
     setTimeout(() => setRedirect(true), 1000);
   };
 

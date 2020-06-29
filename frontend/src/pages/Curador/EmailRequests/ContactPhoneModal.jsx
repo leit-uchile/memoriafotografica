@@ -18,8 +18,8 @@ const ContactPhoneModal = (props) => {
   const toggle = () => setModal(!modal);
   const formData = {
     subject: "Hemos respondido su consulta",
-    content:
-      "Buen día, confirmamos mediante este correo que usted ha sido contactado telefónicamente por nosotros.",
+    reply:
+      "Buen día, este es un mensaje automático confirmando que lo hemos contactado telefónicamente",
   };
 
   const onSend = () => {

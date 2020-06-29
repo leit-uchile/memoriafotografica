@@ -7,7 +7,7 @@ const ContactModal = (props) => {
   const toggle = () => setModal(!modal);
   const [formData, setData] = useState({
       subject: "Hemos respondido su consulta",
-      content: ''
+      reply: ''
   });
 
   const updateData = (e) =>
@@ -46,8 +46,8 @@ const ContactModal = (props) => {
                     <Label>Respuesta</Label>
                     <Input 
                     type="textarea" 
-                    name="content"
-                    value={formData.content}
+                    name="reply"
+                    value={formData.reply}
                     onChange={updateData}/>
                 </FormGroup>
             </Form>  

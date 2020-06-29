@@ -80,7 +80,7 @@ export const sendRequest = (photos, info) => {
       identity_document: info.identity_document,
       profession: info.profession,
       address: info.address,
-      comuna: info.comuna,
+      district: info.district,
       phone_number: info.phone_number,
       email: info.email,
       institution: info.institution,
@@ -158,7 +158,7 @@ export const updateRequest = (request) => (dispatch, getState) => {
   let jsonthing = JSON.stringify({
     attached: request.approvedOriginal,
     resolved: request.resolved,
-    email_sent: request.email_sent //Approved or Denied
+    approved: request.approved
   });
   
   return fetch(`/api/requests/photos/${request.id}/`, {
@@ -232,17 +232,18 @@ export const getMessages = () => (dispatch, getState) => {
   });
 };
 
-export const updateMessage = (message, formData) => (dispatch, getState) => {
+export const updateMessage = (messageUpdate, formData) => (dispatch, getState) => {
   let headers = {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
   let jsonthing = JSON.stringify({
-    newMsg: message,
+    reply: formData.reply,
+    resolved: messageUpdate.resolved,
+    email_sent: messageUpdate.email_sent,
     subject: formData.subject,
-    response: formData.content
   });
-  return fetch(`/api/requests/contacts/${message.id}/`, {
+  return fetch(`/api/requests/contacts/${messageUpdate.id}/`, {
     method: "PUT",
     headers,
     body: jsonthing,

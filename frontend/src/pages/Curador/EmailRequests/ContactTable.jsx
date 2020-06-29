@@ -14,10 +14,10 @@ import ContactPhoneModal from "./ContactPhoneModal";
  */
 const ContactTable = ({ messages, updateMessage }) => {
   const resolve = (msg, formData, bool) => {
-    let msgCopy = { ...msg };
-    msgCopy.resolved = true;
-    msgCopy.email_sent = bool;
-    updateMessage(msgCopy, formData);
+    let msgUpdate = { ...msg };
+    msgUpdate.resolved = true;
+    msgUpdate.email_sent = bool;
+    updateMessage(msgUpdate, formData);
   };
 
   const resolveButton = (msg) => (
@@ -31,13 +31,13 @@ const ContactTable = ({ messages, updateMessage }) => {
     <Table responsive striped className="statBox">
       <thead>
         <tr>
-          <th>Responder por</th>
           <th>Estado</th>
-          <th>Recibido el</th>
-          <th>Respondido el</th>
           <th>Nombre completo</th>
           <th>Mensaje</th>
-          <th>Detalles</th>
+          <th>Respuesta</th>
+          <th>Recibido el</th>
+          <th>Respondido el</th>
+          <th>Responder por</th>
         </tr>
       </thead>
       <tbody>
@@ -45,11 +45,6 @@ const ContactTable = ({ messages, updateMessage }) => {
           <ContactRow
             message={e}
             actions={resolveButton}
-            render={() => (
-              <Fragment>
-                <p>Ver respuesta (Actualizar modelo)</p>
-              </Fragment>
-            )}
           />
         ))}
       </tbody>

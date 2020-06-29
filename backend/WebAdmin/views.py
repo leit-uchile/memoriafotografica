@@ -9,18 +9,20 @@ from django.utils.html import strip_tags
 def sendEmail(emailto, case, subject, attached):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [emailto,]
+    
     if case == "sign_up":
         template = 'sendEmail/sign_up_email.html'
         data = 'http://memoriafotografica.cl/confirm/?code=' + attached #code
     elif case == "contact_us":
         template = 'sendEmail/contact_us_response_email.html'
         data = attached #reply
+    elif case == "photo_request_success":
+        template = 'sendEmail/photo_request_success_email.html'
+        data = '' #attached type list   
     elif case == "photo_request_failure":
         template = 'sendEmail/photo_request_failure_email.html'
         data = '' #automessage from template
-    elif case == "photo_request_success":
-        template = 'sendEmail/photo_request_success_email.html'
-        data = '' #attached type list            
+             
     html_message = render_to_string(template, {'data': data })
     email = EmailMessage(
         subject=subject, 
