@@ -46,12 +46,12 @@ const Metadata = () => {
         <TabPane tabId="1">
           <Row>
             <Col sm="12" className="metadata-classifier">
-              <Categorize />
+              <Categorize active={activeTab === "1"} />
             </Col>
           </Row>
         </TabPane>
         <TabPane tabId="2">
-          <Modify />
+          <Modify active={activeTab === "2"} />
         </TabPane>
       </TabContent>
     </div>
