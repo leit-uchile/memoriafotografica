@@ -21,19 +21,19 @@ import {
   USER_PASSWORD_UPDATE_FAILED,
   USER_PUBLIC_LOADING,
   USER_PUBLIC_LOADED,
-  USER_PUBLIC_ERROR
+  USER_PUBLIC_ERROR,
 } from "./types";
 import { setAlert } from "./site_misc";
 
 export const login = (email, password) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     let headers = { "Content-Type": "application/json" };
     let body = JSON.stringify({ email, password });
 
     return fetch("/api/auth/login/", { headers, body, method: "POST" })
-      .then(res => {
+      .then((res) => {
         if (res.status < 500) {
-          return res.json().then(data => {
+          return res.json().then((data) => {
             return { status: res.status, data };
           });
         } else {
@@ -41,7 +41,7 @@ export const login = (email, password) => {
           throw res;
         }
       })
-      .then(res => {
+      .then((res) => {
         if (res.status === 200) {
           dispatch({ type: USER_LOADED, data: res.data.user });
           dispatch({ type: LOGIN_SUCCESS, data: res.data.token });
@@ -66,7 +66,7 @@ export const register = (
   rol_type,
   avatar
 ) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     var formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
@@ -77,26 +77,26 @@ export const register = (
     formData.append("avatar", avatar);
 
     return fetch("/api/auth/register/", { body: formData, method: "POST" })
-      .then(res => {
+      .then((res) => {
         if (res.status < 500) {
           if (res.status === 200) {
             dispatch({ type: REGISTRATION_SUCCESS });
-            return { status: res.status};
-          } else{
-            return res.json().then(data => {
+            return { status: res.status };
+          } else {
+            return res.json().then((data) => {
               return { status: res.status, data };
             });
-          } 
+          }
         } else {
           console.log("Server Error!");
           dispatch({ type: REGISTRATION_FAILED, data: res.data });
           throw res;
         }
       })
-      .then(res => {
-        if (res.status === 200){
-          return
-        }else if (res.status === 403 || res.status === 401) {
+      .then((res) => {
+        if (res.status === 200) {
+          return;
+        } else if (res.status === 403 || res.status === 401) {
           dispatch({ type: AUTH_ERROR, data: res.data });
           throw res.data;
         } else {
@@ -108,34 +108,31 @@ export const register = (
 };
 
 export const cleanErrors = () => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: AUTH_CLEAR_ERRORS, data: null });
   };
 };
 
 export const logout = () => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: LOGOUT_SUCCESS, data: null });
   };
 };
 
-export const getRegisterLink = (code) => (
-  dispatch,
-  getState
-) => {
+export const getRegisterLink = (code) => (dispatch) => {
   let headers = {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   };
 
-  var daCode = code.slice(code.indexOf("=")+1)
+  var daCode = code.slice(code.indexOf("=") + 1);
 
-  return fetch(
-    `/api/confirm/?code=${daCode}`,
-    { method: "GET", headers: headers }
-  ).then(function(response) {
+  return fetch(`/api/confirm/?code=${daCode}`, {
+    method: "GET",
+    headers: headers,
+  }).then(function (response) {
     const r = response;
     if (r.status === 200) {
-      return r.json().then(data => {
+      return r.json().then((data) => {
         dispatch({ type: REGISTRATION_LINK_SUCCESS, data: data });
         dispatch({ type: USER_LOADED, data: data.user });
         dispatch({ type: LOGIN_SUCCESS, data: data.token });
@@ -153,15 +150,15 @@ export const getUserPhotos = (user_id, limit, offset) => (
 ) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token
+    Authorization: "Token " + getState().user.token,
   };
   return fetch(
     `/api/users/photos/${user_id}/?limit=${limit}&offset=${offset}`,
     { method: "GET", headers: headers }
-  ).then(function(response) {
+  ).then(function (response) {
     const r = response;
     if (r.status === 200) {
-      return r.json().then(data => {
+      return r.json().then((data) => {
         dispatch({ type: USER_RECOVERED_PHOTO, data: data.photos });
       });
     } else {
@@ -177,15 +174,15 @@ export const getUserAlbums = (user_id, limit, offset) => (
 ) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token
+    Authorization: "Token " + getState().user.token,
   };
   return fetch(
     `/api/users/albums/${user_id}/?limit=${limit}&offset=${offset}`,
     { method: "GET", headers: headers }
-  ).then(function(response) {
+  ).then(function (response) {
     const r = response;
     if (r.status === 200) {
-      return r.json().then(data => {
+      return r.json().then((data) => {
         dispatch({ type: USER_RECOVERED_ALBUM, data: data.albums });
       });
     } else {
@@ -201,15 +198,15 @@ export const getUserComments = (user_id, limit, offset) => (
 ) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token
+    Authorization: "Token " + getState().user.token,
   };
   return fetch(
     `/api/users/comments/${user_id}/?limit=${limit}&offset=${offset}`,
     { method: "GET", headers: headers }
-  ).then(function(response) {
+  ).then(function (response) {
     const r = response;
     if (r.status === 200) {
-      return r.json().then(data => {
+      return r.json().then((data) => {
         dispatch({ type: USER_RECOVERED_COMMENTS, data: data.comments });
       });
     } else {
@@ -222,13 +219,13 @@ export const getUserComments = (user_id, limit, offset) => (
 /**
  * Load a user by ID if it is public
  */
-export const loadAUser = id => dispatch => {
+export const loadAUser = (id) => (dispatch) => {
   dispatch({ type: USER_PUBLIC_LOADING });
   return fetch(`/api/users/${id}/`)
-    .then(res => {
+    .then((res) => {
       const response = res;
       if (res.status < 400) {
-        return response.json().then(data => {
+        return response.json().then((data) => {
           return { status: res.status, data };
         });
       } else {
@@ -236,7 +233,7 @@ export const loadAUser = id => dispatch => {
         throw res;
       }
     })
-    .then(res => {
+    .then((res) => {
       if (res.status === 200) {
         dispatch({ type: USER_PUBLIC_LOADED, data: res.data });
         return res.data;
@@ -251,13 +248,15 @@ export const loadAUser = id => dispatch => {
  * Load all albums from a specific public user
  * @param {String|Number} user_id
  */
-export const loadPublicUserAlbums = user_id => dispatch =>
-  fetch(`/api/albums/?user=${user_id}`).then(res => {
+export const loadPublicUserAlbums = (user_id) => (dispatch) =>
+  fetch(`/api/albums/?user=${user_id}`).then((res) => {
     const response = res;
     if (response.status === 200) {
       return response
         .json()
-        .then(parsed => dispatch({ type: USER_RECOVERED_ALBUM, data: parsed.results }));
+        .then((parsed) =>
+          dispatch({ type: USER_RECOVERED_ALBUM, data: parsed.results })
+        );
     } else {
       dispatch(
         setAlert("Hubo un error al cargar los albumes del usuario", "warning")
@@ -269,12 +268,13 @@ export const loadPublicUserAlbums = user_id => dispatch =>
 /**
  * Load all photos from a specific public user
  * @param {String|Number} user_id
+ * @param {String} extra params for sorting and pagination, filtering, etc
  */
-export const loadPublicUserPhotos = user_id => dispatch =>
-  fetch(`/api/photos/?user=${user_id}`).then(function(response) {
+export const loadPublicUserPhotos = (user_id, extra = "") => (dispatch) =>
+  fetch(`/api/photos/?user=${user_id}${extra}`).then(function (response) {
     const r = response;
     if (r.status === 200) {
-      return r.json().then(data => {
+      return r.json().then((data) => {
         dispatch({ type: USER_RECOVERED_PHOTO, data: data.results });
       });
     } else {
@@ -290,16 +290,16 @@ export const loadUser = () => (dispatch, getState) => {
   const token = getState().user.token;
 
   let headers = {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   };
 
   if (token) {
     headers["Authorization"] = `Token ${token}`;
   }
   return fetch("/api/auth/user/", { headers })
-    .then(res => {
+    .then((res) => {
       if (res.status < 500) {
-        return res.json().then(data => {
+        return res.json().then((data) => {
           return { status: res.status, data };
         });
       } else {
@@ -307,7 +307,7 @@ export const loadUser = () => (dispatch, getState) => {
         throw res;
       }
     })
-    .then(res => {
+    .then((res) => {
       if (res.status === 200) {
         dispatch({ type: USER_LOADED, user: res.data });
         return res.data;
@@ -329,24 +329,24 @@ export const editProfile = (user, doJSON = true) => (dispatch, getState) => {
   if (doJSON) {
     headers = {
       "Content-Type": "application/json",
-      Authorization: "Token " + getState().user.token
+      Authorization: "Token " + getState().user.token,
     };
     body = JSON.stringify({ ...user });
   } else {
     // Assume multipart from backend
     headers = {
-      Authorization: "Token " + getState().user.token
+      Authorization: "Token " + getState().user.token,
     };
     body = new FormData();
-    Object.keys(user).forEach(element => {
+    Object.keys(user).forEach((element) => {
       body.append(element, user[element]);
     });
   }
 
   return fetch(`/api/users/${user.id}/`, { headers, body, method: "PUT" })
-    .then(res => {
+    .then((res) => {
       if (res.status < 500) {
-        return res.json().then(data => {
+        return res.json().then((data) => {
           return { status: res.status, data };
         });
       } else {
@@ -354,7 +354,7 @@ export const editProfile = (user, doJSON = true) => (dispatch, getState) => {
         throw res;
       }
     })
-    .then(res => {
+    .then((res) => {
       if (res.status === 200) {
         dispatch({ type: USER_UPDATE_SUCCESS, data: res.data });
         dispatch(setAlert("Perfil actualizado", "success"));
@@ -380,16 +380,16 @@ export const updatePassword = (old_password, new_password) => (
 ) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token
+    Authorization: "Token " + getState().user.token,
   };
 
   let body = JSON.stringify({ old_password, new_password });
 
   return fetch("/api/auth/password/", { headers, body, method: "PUT" })
-    .then(res => {
+    .then((res) => {
       if (res.status < 500) {
         if (res.status !== 200) {
-          return res.json().then(data => {
+          return res.json().then((data) => {
             return { status: res.status, data };
           });
         } else {
@@ -401,16 +401,11 @@ export const updatePassword = (old_password, new_password) => (
         throw res;
       }
     })
-    .then(res => {
+    .then((res) => {
       // Response is NO CONTENT
       if (res.status === 200) {
         dispatch({ type: USER_PASSWORD_UPDATED, data: res.data });
-        dispatch(
-          setAlert(
-            "Contraseña cambiada.",
-            "success"
-          )
-        );
+        dispatch(setAlert("Contraseña cambiada.", "success"));
         return res.data;
       } else if (res.status === 403 || res.status === 401) {
         dispatch({ type: AUTH_ERROR, data: res.data });
@@ -429,4 +424,4 @@ export const updatePassword = (old_password, new_password) => (
     });
 };
 
-export const uploadUserPicture = avatar => (dispatch, getState) => {};
+export const uploadUserPicture = (avatar) => (dispatch, getState) => {};
