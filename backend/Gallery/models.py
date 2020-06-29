@@ -102,13 +102,18 @@ class Photo(models.Model):
             dimH = 480
             dimW = floor(gcd*tmp_w)
 
-            resized = get_thumbnail(self.image, "{}x{}".format(dimW,dimH), crop='center', quality=99)
-            #Manually reassign the resized image to the image field
-            archivo=self.image.url.split('/')[-1]
-            nombre = archivo.split('.')
-            nuevoNombre = nombre[0]+"_thumbnail."+nombre[1]
-            print(self.image.url)
-            self.thumbnail.save(nuevoNombre, ContentFile(resized.read()), True)
+            try:
+                resized = get_thumbnail(self.image, "{}x{}".format(dimW,dimH), crop='center', quality=99)
+                #Manually reassign the resized image to the image field
+                archivo=self.image.url.split('/')[-1]
+                nombre = archivo.split('.')
+                nuevoNombre = nombre[0]+"_thumbnail."+nombre[1]
+                self.thumbnail.save(nuevoNombre, ContentFile(resized.read()), True)
+            except Exception as e:
+                # TODO: verify this border case
+                print(e)
+                print("Using full file instead")
+                self.thumbnail = self.image
         else:
             super(Photo, self).save(*args, **kwargs)
 

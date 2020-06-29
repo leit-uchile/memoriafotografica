@@ -78,6 +78,14 @@ const NewsPage = (props) => {
       <Helmet>
         <title>Noticias</title>
       </Helmet>
+      <Row
+        className="album-title-row"
+        style={{ borderBottom: "none", marginBottom: 0 }}
+      >
+        <Col>
+          <h2>Noticias</h2>
+        </Col>
+      </Row>
       <Row>
         <Col md={3} className="news-menu">
           <h3>Filtrar por fecha</h3>
