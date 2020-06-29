@@ -70,6 +70,25 @@ const ModifyModal = ({
     }
   };
 
+  // Set defaults if only one element is here
+  useEffect(() => {
+    if (selected.length === 1) {
+      setState((s) => ({
+        ...s,
+        checked: selected[0].approved,
+        value: selected[0].value,
+        iptc: selected[0].metadata,
+      }));
+    } else {
+      setState((s) => ({
+        ...s,
+        checked: false,
+        value: "",
+        iptc: -1,
+      }));
+    }
+  }, [selected]);
+
   useEffect(() => {
     if (!open) {
       if (state.done) {
@@ -92,7 +111,9 @@ const ModifyModal = ({
 
   // Set default IPTC id
   useEffect(() => {
-    setState((s) => ({ ...s, iptc: iptcs[0].id }));
+    if (iptcs.length !== 0) {
+      setState((s) => ({ ...s, iptc: iptcs[0].id }));
+    }
   }, [iptcs]);
 
   return (
@@ -113,7 +134,7 @@ const ModifyModal = ({
                     type="checkbox"
                     id="aprobarCheckbox"
                     label="Aprobación"
-                    value={state.checked}
+                    checked={state.checked}
                     onClick={() =>
                       setState((s) => ({ ...s, checked: !s.checked }))
                     }

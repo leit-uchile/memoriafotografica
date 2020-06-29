@@ -64,7 +64,11 @@ const MetadataList = ({ metadata, iptcs, getSelection }) => {
       <thead>
         <tr>
           <th>
-            <input type="checkbox" onChange={() => selectAll()}></input>
+            <input
+              type="checkbox"
+              onChange={() => selectAll()}
+              value={state.checked}
+            ></input>
           </th>
           <th>Estado</th>
           <th>Valor</th>

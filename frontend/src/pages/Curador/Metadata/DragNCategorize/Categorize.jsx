@@ -23,15 +23,24 @@ import { LeitSpinner } from "../../../../components";
  * and change by one the state of a metadata.
  * @param {*} param0
  */
-const Categorize = ({ iptcs, batch, loadIptcs, loadBatch, putMeta }) => {
+const Categorize = ({
+  iptcs,
+  batch,
+  loadIptcs,
+  loadBatch,
+  putMeta,
+  active,
+}) => {
   // Item copies
   const [items, setItems] = useState([]);
   // Ready count
   const [doneCount, setDoneCount] = useState(0);
 
   useEffect(() => {
-    loadBatch(10);
-  }, [loadBatch]);
+    if (active) {
+      loadBatch(10);
+    }
+  }, [loadBatch, active]);
 
   useEffect(() => {
     setItems(batch.results);

@@ -21,6 +21,7 @@ const Modify = ({
   searchMeta,
   metadataHelp,
   setHelpDisclosure,
+  active,
 }) => {
   const [searchState, setSearchState] = useState("");
   const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
@@ -29,8 +30,11 @@ const Modify = ({
   const [selected, setSelected] = useState([]);
 
   useEffect(() => {
-    searchMeta(searchState, pagination.page + 1, pagination.page_size);
-  }, [pagination, searchState, searchMeta]);
+    if (active) {
+      searchMeta(searchState, pagination.page + 1, pagination.page_size);
+    }
+  }, [pagination, searchState, searchMeta, active]);
+
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
   };
@@ -45,6 +49,21 @@ const Modify = ({
   const doReload = (randomValue) => {
     setPagination((p) => ({ ...p, r: randomValue }));
   };
+
+  // Check that the selected elements are on the list
+  // otherwise remove the selection
+  useEffect(() => {
+    if (metadata && selected.length > 0) {
+      let newSelected = [];
+      // If they are still here keep them
+      selected.forEach((element) => {
+        if (metadata.results.filter((e) => e.id === element.id).length !== 0) {
+          newSelected.push(element);
+        }
+      });
+      setSelected(newSelected);
+    }
+  }, [metadata]);
 
   return (
     <Fragment>
