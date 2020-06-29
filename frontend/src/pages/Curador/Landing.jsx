@@ -25,14 +25,21 @@ const PhotoCountChart = ({ rawData, data2 }) => {
     ? rawData.map((cnt) => ({
         x: new Date(cnt.date_created).getTime(),
         y: cnt.created_count,
+        m: " fotos",
       }))
     : [];
   const mapped2 = data2
     ? data2.map((cnt) => ({
         x: new Date(cnt.date_created).getTime(),
         y: cnt.created_count,
+        m: " comentarios",
       }))
     : [];
+
+  const ITEMS = [
+    { title: "Fotos", color: "blue" },
+    { title: "Comentarios", color: "green" },
+  ];
 
   const [crossHair, setCrosshair] = useState({ crosshairValues: [] });
 
@@ -45,62 +52,69 @@ const PhotoCountChart = ({ rawData, data2 }) => {
   };
 
   return (
-    <FlexibleWidthXYPlot
-      height={350}
-      xType="time"
-      margin={{ bottom: 125 }}
-      animation={true}
-      onMouseLeave={onMouseLeave}
-    >
-      <VerticalGridLines />
-      <HorizontalGridLines />
-      <XAxis tickLabelAngle={-75} />
-      <YAxis />
-      <VerticalBarSeries
-        barWidth={0.5}
-        opacity={0.5}
-        color={"blue"}
-        data={mapped}
-      />
-      <LineSeries
-        color={"blue"}
-        curve={curveCatmullRom.alpha(0.5)}
-        data={mapped}
-        onNearestX={onNearestX}
-      />
-      <VerticalBarSeries
-        color={"green"}
-        barWidth={0.5}
-        opacity={0.5}
-        data={mapped2}
-      />
-      <LineSeries
-        color={"green"}
-        curve={curveCatmullRom.alpha(0.5)}
-        data={mapped2}
-        onNearestX={onNearestX}
-      />
-      <Crosshair
-        values={crossHair.crosshairValues}
-        titleFormat={function defaultTitleFormat(values) {
-          const value = values[0];
-          if (value) {
-            return {
-              title: "Fecha",
-              value: new Date(value.x).toLocaleDateString(),
-            };
-          }
-        }}
-        itemsFormat={function defaultItemsFormat(values) {
-          // eslint-disable-next-line
-          return values.map((v, i) => {
-            if (v) {
-              return { value: v.y, title: "Total" };
+    <Fragment>
+      <FlexibleWidthXYPlot
+        height={350}
+        xType="time"
+        margin={{ bottom: 50 }}
+        animation={true}
+        onMouseLeave={onMouseLeave}
+      >
+        <VerticalGridLines />
+        <HorizontalGridLines />
+        <XAxis tickLabelAngle={-75} />
+        <YAxis />
+        <VerticalBarSeries
+          barWidth={0.5}
+          opacity={0.5}
+          color={"blue"}
+          data={mapped}
+        />
+        <LineSeries
+          color={"blue"}
+          curve={curveCatmullRom.alpha(0.5)}
+          data={mapped}
+          onNearestX={onNearestX}
+        />
+        <VerticalBarSeries
+          color={"green"}
+          barWidth={0.5}
+          opacity={0.5}
+          data={mapped2}
+        />
+        <LineSeries
+          color={"green"}
+          curve={curveCatmullRom.alpha(0.5)}
+          data={mapped2}
+        />
+        <Crosshair
+          values={crossHair.crosshairValues}
+          titleFormat={function defaultTitleFormat(values) {
+            const value = values[0];
+            if (value) {
+              return {
+                title: "Fecha",
+                value: new Date(value.x).toLocaleDateString(),
+              };
             }
-          });
-        }}
+          }}
+          itemsFormat={function defaultItemsFormat(values) {
+            // eslint-disable-next-line
+            return values.map((v, i) => {
+              if (v) {
+                return { value: v.y, title: "Total" + v.m };
+              }
+            });
+          }}
+        />
+      </FlexibleWidthXYPlot>
+      <DiscreteColorLegend
+        height={80}
+        width={200}
+        items={ITEMS}
+        style={{ display: "inline-block" }}
       />
-    </FlexibleWidthXYPlot>
+    </Fragment>
   );
 };
 
@@ -226,7 +240,7 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
       </Row>
       <Row>
         <Col>
-          <div className="statBox" style={{ paddingBottom: "1em" }}>
+          <div className="statBox">
             <h2>Fotos y Comentarios subidos por día</h2>
             <PhotoCountChart
               rawData={general ? general.count_photos_by_date : []}

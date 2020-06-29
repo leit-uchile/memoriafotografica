@@ -70,7 +70,7 @@ def gen_uuid(instance, filename):
 class Photo(models.Model):
     image = models.ImageField(upload_to=gen_uuid)
     thumbnail = models.ImageField(blank=True)
-    title = models.CharField(max_length = 30)
+    title = models.CharField(max_length = 30, blank=True)
     upload_date = models.DateTimeField('date published', default=datetime.now, blank=True)
     description = models.CharField(max_length=255, blank=True)
     approved = models.BooleanField(default=True)
@@ -120,10 +120,11 @@ class Photo(models.Model):
     #thumbnail = get_thumbnail(image, '100x100', crop='center', quality=99)
     def __str__(self):
         try:
-            t = self.title
-            return "Photo: "+t
+            if self.title == "":
+                return "Photo id: " + str(self.id) + " uploaded at "+ str(self.created_at)
+            return "Photo: "+self.title
         except:
-            return "Photo without title (" + str(self.id) + ")"
+            return "Photo id: " + str(self.id) + " uploaded at "+ str(self.created_at)
 
 class Album(models.Model):
 

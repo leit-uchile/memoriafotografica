@@ -278,7 +278,6 @@ export const recoverByCats = (catIds, pair, page, pageSize = 25) => (
 
 export const getPhoto = (id) => (dispatch) => {
   let headers = { "Content-Type": "application/json" };
-  console.log("action --", "lookin pic with id", id)
   return fetch(`/api/photos/${id}`, { method: "GET", headers: headers }).then(
     function (response) {
       const r = response;
@@ -304,9 +303,9 @@ export const mtPhoto = () => (dispatch) => {
       permission: [],
       category: [],
       metadata: [],
-    }
-  })
-}
+    },
+  });
+};
 /* When uploading each photo will reduce to success or error.
   In case of error the payload will contain the id for
   user feedback (and posibly relaunch)
@@ -337,7 +336,9 @@ export const uploadImages = (data) => {
         "title",
         photo.meta.title
           ? photo.meta.title
-          : `Foto N-${key + 1} subida el ${currentTime}`
+          : data.name !== ""
+          ? data.name + `Nº${key + 1}`
+          : ""
       );
       formData.append("description", photo.meta.description);
       formData.append("aspect_h", photo.meta.aspect_h);
