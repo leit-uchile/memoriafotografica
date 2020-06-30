@@ -117,8 +117,10 @@ export const resetNewMetadataIds = () => (dispatch) =>
 /**
  * Search metadata by name using a token if available for header searchbar
  * @param {String} query
+ * @param {*} limit
+ * @param {*} iptc id
  */
-export const searchMetadataByValueSB = (query, limit = 10, iptc= 0) => (
+export const searchMetadataByValueSB = (query, limit = 10, iptc = 0) => (
   dispatch,
   getState
 ) => {
@@ -133,11 +135,13 @@ export const searchMetadataByValueSB = (query, limit = 10, iptc= 0) => (
 
   if (getState().user.isAuthenticated) {
     let headers = { Authorization: "Token " + getState().user.token };
-    fetch(`/api/metadata/?search=${query}&limit=${limit}&iptc=${iptc}`, { headers }).then(
+    fetch(`/api/metadata/?search=${query}&limit=${limit}&iptc=${iptc}`, {
+      headers,
+    }).then(success_func);
+  } else {
+    fetch(`/api/metadata/?search=${query}&limit=${limit}&iptc=${iptc}`).then(
       success_func
     );
-  } else {
-    fetch(`/api/metadata/?search=${query}&limit=${limit}&iptc=${iptc}`).then(success_func);
   }
 };
 
@@ -256,8 +260,9 @@ export const putMetadata = (metadata) => (dispatch, getState) => {
  * @param {String} query
  * @param {*} page
  * @param {*} page_size
+ * @param {String} extra parameters
  */
-export const searchMetadataByValueGeneral = (query, page, page_size) => (
+export const searchMetadataByValueGeneral = (query, page, page_size, extra) => (
   dispatch,
   getState
 ) => {
@@ -273,9 +278,12 @@ export const searchMetadataByValueGeneral = (query, page, page_size) => (
   };
 
   let headers = { Authorization: "Token " + getState().user.token };
-  fetch(`/api/metadata/?search=${query}&page=${page}&page_size=${page_size}`, {
-    headers,
-  }).then(success_func);
+  fetch(
+    `/api/metadata/?search=${query}&page=${page}&page_size=${page_size}${extra}`,
+    {
+      headers,
+    }
+  ).then(success_func);
 };
 
 /**
@@ -323,9 +331,7 @@ export const mergeMetadata = (ids) => (dispatch, getState) => {
   }).then(function (response) {
     const r = response;
     if (r.status === 200) {
-      r.json().then((data) =>
-        dispatch({ type: METADATA_MERGE, data: data })
-      );
+      r.json().then((data) => dispatch({ type: METADATA_MERGE, data: data }));
     } else {
       dispatch({ type: METADATA_MERGE_ERROR, data: ids.join(",") });
     }

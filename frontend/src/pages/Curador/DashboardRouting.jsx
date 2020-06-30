@@ -17,7 +17,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Filter from "./Filter/Filter";
 import Categories from "./Category/Categories";
-import Category_New from "./Category/Category_New";
 import Category_Photos from "./Category/Category_Photos";
 import Category_Add from "./Category/Category_Add";
 import Landing from "./Landing";
@@ -121,11 +120,6 @@ const Dashboard = ({ match, location, setRoute }) => {
           <Switch>
             <BoundedRoute exact path={match.path + "/"} component={Landing} />
             <BoundedRoute path={match.path + "/filter"} component={Filter} />
-            <BoundedRoute
-              exact
-              path={match.path + "/categories/new-category"}
-              component={Category_New}
-            />
             <BoundedRoute
               exact
               path={match.path + "/categories/:id/"}

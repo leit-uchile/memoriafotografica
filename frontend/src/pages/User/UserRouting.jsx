@@ -32,6 +32,13 @@ const UserRouting = ({ setRoute, location, ...props }) => {
         location={location}
         {...props}
       />
+      <PrivateComponent
+        exact
+        path={"/user/:id/public/photos"}
+        component={UserPhotos}
+        location={location}
+        {...props}
+      />
       <BoundedRoute
         exact
         path={"/user/public/albums/:id"}

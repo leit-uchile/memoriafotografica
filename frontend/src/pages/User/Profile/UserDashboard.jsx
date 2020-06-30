@@ -56,7 +56,7 @@ class Dashboard extends Component {
       <FontAwesomeIcon
         icon={faPlusCircle}
         onClick={() => this.setState({ redirect: "/upload" })}
-        style={{ cursor: "pointer", marginRight: '10px' }}
+        style={{ cursor: "pointer", marginRight: "10px" }}
         title="Agregar más"
       />
     );
@@ -136,13 +136,17 @@ class Dashboard extends Component {
                     {this.state.isPublic ? null : editMode}
                   </h2>
                   {photos.length !== 0 ? (
-                      <Link
-                        to={`/photo/${photos[0].id}/?user=${user.id}`}
-                        className="user-dashboard-see-all"
-                      >
-                        {" "}
-                        Ver Todas
-                      </Link>
+                    <Link
+                      to={
+                        this.state.isPublic
+                          ? `/user/${user.id}/public/photos`
+                          : "/user/photos"
+                      }
+                      className="user-dashboard-see-all"
+                    >
+                      {" "}
+                      Ver Todas
+                    </Link>
                   ) : null}
                 </Col>
                 <Container fluid>

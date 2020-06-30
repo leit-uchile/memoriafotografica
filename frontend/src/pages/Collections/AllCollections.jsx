@@ -87,11 +87,11 @@ const AllCollections = ({ albums, loadCollections }) => {
   }
 
   return (
-    <Container fluid style={{ marginBottom: "1em" }}>
+    <Container style={{ marginBottom: "1em" }}>
       <Helmet>
         <title>Colecciones</title>
       </Helmet>
-      <Row className="album-title-row">
+      <Row className="album-title-row" style={{ borderBottom: "none" }}>
         <Col>
           <h2>Colecciones</h2>
         </Col>

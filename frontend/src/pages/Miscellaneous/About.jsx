@@ -14,69 +14,77 @@ import {
 const photos = [
   {
     source:
-      "https://static.u-cursos.cl/r/usuario/27/27f2a6553b5e61f03459368cf07eba7f/datos_usuario/av_5c91a9bcd72a0.jpg",
+      "https://instagram.fscl10-1.fna.fbcdn.net/v/t51.2885-15/e35/83626955_3133417183549106_7503013508976441377_n.jpg?_nc_ht=instagram.fscl10-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=JSWPaOUDjEkAX9k-HgG&oh=51ae97e9e764913903c83411dc1c1664&oe=5F24487B",
     altText: "Foto de perfil Victoria Bollo",
     caption: "Victoria Bollo",
-    employment: "Estudiante de Astronomía",
+    employment: "Estudiante de  Magíster en Astronomía",
   },
   {
-    source: "https://avatars2.githubusercontent.com/u/7097907?s=400&v=4",
+    source:
+      "https://scontent.fscl7-1.fna.fbcdn.net/v/t31.0-8/p960x960/20248254_1604088656270906_1312142107271353514_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_oc=AQlLl-TbPVJupK2cTjO2fcbML42GJJ7AAZ5rdnYVjdR1utMfV3Hbs_ADeXXT35Gdd2w&_nc_ht=scontent.fscl7-1.fna&_nc_tp=6&oh=a37f179e1459af6a5d2f58e5e5deaf68&oe=5F1E56FA",
     altText: "Foto de perfil Darío Palma",
     caption: "Darío Palma",
-    employment: "Estudiante de Ingeniería en Computación",
+    employment: "Estudiante de Doble título e Ingeniería Civil en Computación",
   },
   {
     source:
       "https://avatars1.githubusercontent.com/u/26554728?s=400&u=30a71e6019159edbd3f720b234796319064bef95&v=4",
     altText: "Foto de perfil Darío Cáceres",
     caption: "Darío Cáceres",
-    employment: "Estudiante de Ingeniería en Computación",
-  },
-  {
-    source: "http://www.unfv.edu.pe/facultades/fiei/images/cono_a.png",
-    altText: "Foto de perfil Fernanda Carvajal",
-    caption: "Fernanda Carvajal",
-    employment: "Abogada",
-  },
-  {
-    source: "http://www.unfv.edu.pe/facultades/fiei/images/cono_a.png",
-    altText: "Foto de perfil Natalia Durán",
-    caption: "Natalia Durán",
-    employment: "Estudiante de Enfermería",
+    employment: "Estudiante de Ingeniería Civil en Computación",
   },
   {
     source:
-      "https://static.u-cursos.cl/r/usuario/e1/e16c6bc0ec3ad08209c24ea04f33e26f/datos_usuario/av_5b8f24c2e022d.jpg",
+      "https://scontent.fscl10-1.fna.fbcdn.net/v/t1.0-9/p960x960/94474622_10221722308824635_7192067009398439936_o.jpg?_nc_cat=105&_nc_sid=85a577&_nc_oc=AQlq2u1ZlC181-Dc2zeJxzX2klUVkc-iVEY398LM33lGC53SVsHIyqTNQ4bAYRA-Vy8&_nc_ht=scontent.fscl10-1.fna&_nc_tp=6&oh=737a9933285d776fb8bcbe5bafd94c11&oe=5F20D02E",
+    altText: "Foto de perfil Fernanda Carvajal",
+    caption: "Fernanda Carvajal",
+    employment: "Abogada, Licenciada en leyes",
+  },
+  {
+    source:
+      "https://instagram.fscl10-1.fna.fbcdn.net/v/t51.2885-15/e35/s1080x1080/82617884_213175779823992_1265458396420852989_n.jpg?_nc_ht=instagram.fscl10-1.fna.fbcdn.net&_nc_cat=100&_nc_ohc=NlaTgvcEUfAAX_b_jDD&oh=4979af9d1b74a8ac76ed75463b1bdb9f&oe=5F248995",
+    altText: "Foto de perfil Natalia Durán",
+    caption: "Natalia Durán",
+    employment: "Estudiante de Enfermería, Ex estudiante de Ingeniería",
+  },
+  {
+    source:
+      "https://instagram.fscl8-1.fna.fbcdn.net/v/t51.2885-15/e35/79947523_2605730699482441_6476856669643730739_n.jpg?_nc_ht=instagram.fscl8-1.fna.fbcdn.net&_nc_cat=101&_nc_ohc=opZMWLAn6jAAX-evGF7&oh=5499ee187c902c7059f279239938b440&oe=5F246212",
     altText: "Foto de perfil Isaías Venegas",
     caption: "Isaías Venegas",
-    employment: "Estudiante de Ingeniería en Computación",
+    employment: "Estudiante de Ingeniería Civil en Computación",
   },
 ];
 
 const former_photos = [
   {
-    source: "http://www.unfv.edu.pe/facultades/fiei/images/cono_a.png",
+    source:
+      "https://scontent.fscl7-1.fna.fbcdn.net/v/t1.0-9/92827288_10158101345774326_9069079769152225280_n.jpg?_nc_cat=101&_nc_sid=85a577&_nc_oc=AQkmSSMKL_Wcf1pXGCW7PMsBVvYjUnPMECHySDyvVQK2HofXQ8dv2tF40fHq13dIv1M&_nc_ht=scontent.fscl7-1.fna&oh=3fa5e60a96f17b7e4690992a54f3a3f1&oe=5F1F64B6",
     altText: "Foto de perfil Nicolás Varas",
     caption: "Nicolás Varas",
-    employment: "Ingeniero en Computación",
+    employment: "Ingeniero Civil en Computación, Ex miembro CEI",
   },
   {
-    source: "http://www.unfv.edu.pe/facultades/fiei/images/cono_a.png",
+    source:
+      "https://ucampus.uchile.cl/d/r/usuario/9d/9d4438c4ec735ef3b745b3b369a43216/perfil/3ee573197dde61aad94aa26359acb3d6.jpg",
     altText: "Foto de perfil Rosa Leal",
     caption: "Rosa Leal",
     employment: "Directora de la Biblioteca Central FCFM",
   },
   {
-    source: "http://www.unfv.edu.pe/facultades/fiei/images/cono_a.png",
-    altText: "Foto de perfil -",
-    caption: "1",
-    employment: "Bibliotecaria de la Biblioteca Central FCFM",
+    source:
+      "https://media-exp1.licdn.com/dms/image/C4D03AQGR8bWPEdfq2w/profile-displayphoto-shrink_800_800/0?e=1599091200&v=beta&t=HXL4_hlHpFmGjcRjxIbKq7ouE6votJEE4EAt63gBwKo",
+    altText: "Foto de perfil Rafael Castillo",
+    caption: "Rafael Castillo",
+    employment:
+      "Diseñador y Coordinador de Servicios Bibliográficos Electrónicos",
   },
   {
-    source: "http://www.unfv.edu.pe/facultades/fiei/images/cono_a.png",
-    altText: "Foto de perfil -",
-    caption: "2",
-    employment: "Bibliotecaria de la Biblioteca Central FCFM",
+    source:
+      "https://ucampus.uchile.cl/d/r/usuario/71/71c114dba2c0fe52dbf6ae0d6ab8c077/perfil/cb871295eba79e33262194660f10d537.jpg",
+    altText: "Jorge Concha",
+    caption: "Jorge Concha",
+    employment: "Ingeniero de Sistemas del Centro de Computación CEC.",
   },
 ];
 const About = () => {
@@ -190,8 +198,16 @@ const About = () => {
             distintas personas pertenecientes a la facultad de Ciencias Físicas
             y Matemáticas de la Universidad de Chile.{" "}
           </p>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
           <h3>Integrantes del equipo LEIT</h3>
           <CardDeck>{team}</CardDeck>
+        </Col>
+      </Row>
+      <Row>
+        <Col sm={{ size: 8 }}>
           <h3>Colaboradores</h3>
           <CardDeck>{formerteam}</CardDeck>
         </Col>

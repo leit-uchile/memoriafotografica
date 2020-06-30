@@ -31,7 +31,12 @@ const Modify = ({
 
   useEffect(() => {
     if (active) {
-      searchMeta(searchState, pagination.page + 1, pagination.page_size);
+      searchMeta(
+        searchState,
+        pagination.page + 1,
+        pagination.page_size,
+        "&sort=updated_at-desc"
+      );
     }
   }, [pagination, searchState, searchMeta, active]);
 
@@ -197,8 +202,10 @@ const mapStateToProps = (state) => ({
 });
 
 const mapActionsToProps = (dispatch) => ({
-  searchMeta: (search, page, page_size) =>
-    dispatch(metadata.searchMetadataByValueGeneral(search, page, page_size)),
+  searchMeta: (search, page, page_size, extra) =>
+    dispatch(
+      metadata.searchMetadataByValueGeneral(search, page, page_size, extra)
+    ),
   setHelpDisclosure: (val) => dispatch(site_misc.setMetadataHelp(val)),
 });
 

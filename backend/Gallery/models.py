@@ -70,7 +70,7 @@ def gen_uuid(instance, filename):
 class Photo(models.Model):
     image = models.ImageField(upload_to=gen_uuid)
     thumbnail = models.ImageField(blank=True)
-    title = models.CharField(max_length = 30)
+    title = models.CharField(max_length = 30, blank=True)
     upload_date = models.DateTimeField('date published', default=datetime.now, blank=True)
     description = models.CharField(max_length=255, blank=True)
     approved = models.BooleanField(default=True)
@@ -102,23 +102,29 @@ class Photo(models.Model):
             dimH = 480
             dimW = floor(gcd*tmp_w)
 
-            resized = get_thumbnail(self.image, "{}x{}".format(dimW,dimH), crop='center', quality=99)
-            #Manually reassign the resized image to the image field
-            archivo=self.image.url.split('/')[-1]
-            nombre = archivo.split('.')
-            nuevoNombre = nombre[0]+"_thumbnail."+nombre[1]
-            print(self.image.url)
-            self.thumbnail.save(nuevoNombre, ContentFile(resized.read()), True)
+            try:
+                resized = get_thumbnail(self.image, "{}x{}".format(dimW,dimH), crop='center', quality=99)
+                #Manually reassign the resized image to the image field
+                archivo=self.image.url.split('/')[-1]
+                nombre = archivo.split('.')
+                nuevoNombre = nombre[0]+"_thumbnail."+nombre[1]
+                self.thumbnail.save(nuevoNombre, ContentFile(resized.read()), True)
+            except Exception as e:
+                # TODO: verify this border case
+                print(e)
+                print("Using full file instead")
+                self.thumbnail = self.image
         else:
             super(Photo, self).save(*args, **kwargs)
 
     #thumbnail = get_thumbnail(image, '100x100', crop='center', quality=99)
     def __str__(self):
         try:
-            t = self.title
-            return "Photo: "+t
+            if self.title == "":
+                return "Photo id: " + str(self.id) + " uploaded at "+ str(self.created_at)
+            return "Photo: "+self.title
         except:
-            return "Photo without title (" + str(self.id) + ")"
+            return "Photo id: " + str(self.id) + " uploaded at "+ str(self.created_at)
 
 class Album(models.Model):
 

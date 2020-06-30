@@ -8,6 +8,7 @@ import PhotoEditor from "../../../components/PhotoEditor";
 import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import Gallery from "react-photo-gallery";
 //import "./userphotos.css"
 
 class UserPhotos extends Component {
@@ -19,8 +20,17 @@ class UserPhotos extends Component {
       picturesToEdit: [],
       selectedAll: false,
       modalOpen: false,
+      isPublic: props.location.pathname.includes("public"),
     };
-    this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
+    if (props.location.pathname.includes("public")) {
+      props.loadPublicUser(props.match.params.id);
+      props.onLoadGetPublicPhotos(
+        props.match.params.id,
+        "&page=1&page_size=100"
+      );
+    } else {
+      props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
+    }
   }
 
   componentDidUpdate() {
@@ -89,7 +99,11 @@ class UserPhotos extends Component {
       <Fragment>
         <div className="userphotos-gallery-menu">
           <Helmet>
-            <title>Mis fotos</title>
+            <title>
+              {this.state.isPublic && this.props.publicUser
+                ? "Fotos de " + this.props.publicUser.first_name
+                : "Mis fotos"}
+            </title>
           </Helmet>
           <Container>
             <Row>
@@ -98,12 +112,20 @@ class UserPhotos extends Component {
                   <Button
                     color="secondary"
                     tag={Link}
-                    to="/user/dashboard"
+                    to={
+                      this.state.isPublic && this.props.publicUser
+                        ? `/user/public/${this.props.publicUser.id}/`
+                        : "/user/dashboard"
+                    }
                     style={{ height: "30px" }}
                   >
                     <FontAwesomeIcon icon={faArrowAltCircleLeft} />
                   </Button>
-                  <h2 style={{ marginLeft: "10px" }}>Mis fotos</h2>
+                  <h2 style={{ marginLeft: "10px" }}>
+                    {this.state.isPublic && this.props.publicUser
+                      ? "Fotos de " + this.props.publicUser.first_name
+                      : "Mis fotos"}
+                  </h2>
                 </div>
               </Col>
             </Row>
@@ -113,31 +135,45 @@ class UserPhotos extends Component {
           <Container className="userphotos-gallery-container">
             <Row>
               <Col
-                sm={mapped.length === 1 ? { size: 4, offset: 4 } : { size: 9 }}
+                sm={
+                  mapped.length === 1
+                    ? { size: 4, offset: 4 }
+                    : { size: this.state.isPublic ? 12 : 9 }
+                }
               >
-                <PhotoEditor
-                  photos={mapped}
-                  targetRowHeight={250}
-                  onClick={(e, index) => this.handleOnSelect(index)}
-                  // putAll={(state) => this.putAllToEdit(mapped,state)}
-                  selectAll={this.state.selectedAll}
-                  onRedirect={(e, index) => this.handleOnRedirect(index)}
-                />
+                {this.state.isPublic ? (
+                  <Gallery
+                    photos={mapped}
+                    targetRowHeight={250}
+                    onClick={(e, index) => this.handleOnRedirect(index)}
+                  />
+                ) : (
+                  <PhotoEditor
+                    photos={mapped}
+                    targetRowHeight={250}
+                    onClick={(e, index) => this.handleOnSelect(index)}
+                    // putAll={(state) => this.putAllToEdit(mapped,state)}
+                    selectAll={this.state.selectedAll}
+                    onRedirect={(e, index) => this.handleOnRedirect(index)}
+                  />
+                )}
               </Col>
-              <Col className="userphotos-filters-container">
-                <Button
-                  color="secondary"
-                  onClick={() => this.putAllToEdit(mapped)}
-                >
-                  {!this.state.selectedAll
-                    ? "Seleccionar todas"
-                    : "Deseleccionar"}
-                </Button>
-                <EditPhotosModal
-                  photosID={this.state.picturesToEdit}
-                  isOpen={(bool) => this.setState({ modalOpen: bool })}
-                />
-              </Col>
+              {this.state.isPublic ? null : (
+                <Col className="userphotos-filters-container">
+                  <Button
+                    color="secondary"
+                    onClick={() => this.putAllToEdit(mapped)}
+                  >
+                    {!this.state.selectedAll
+                      ? "Seleccionar todas"
+                      : "Deseleccionar"}
+                  </Button>
+                  <EditPhotosModal
+                    photosID={this.state.picturesToEdit}
+                    isOpen={(bool) => this.setState({ modalOpen: bool })}
+                  />
+                </Col>
+              )}
             </Row>
           </Container>
         </div>
@@ -149,14 +185,19 @@ class UserPhotos extends Component {
 const mapStateToProps = (state) => ({
   photos: state.user.photos,
   user: state.user.userData,
+  publicUser: state.user.publicUser,
   updatedPhoto: state.photos.updatedPhoto,
   refresh: state.photos.refresh,
 });
+
 const mapActionsToProps = (dispatch) => ({
   setSelectedId: (id) => dispatch(site_misc.setSelectedId(id)),
   setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
+  loadPublicUser: (id) => dispatch(user.loadAUser(id)),
   onLoadGetPhotos: (user_id, limit, offset) =>
     dispatch(user.getUserPhotos(user_id, limit, offset)),
+  onLoadGetPublicPhotos: (user_id, params) =>
+    dispatch(user.loadPublicUserPhotos(user_id, params)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(UserPhotos);

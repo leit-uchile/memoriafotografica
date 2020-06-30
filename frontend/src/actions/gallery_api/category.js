@@ -18,14 +18,22 @@ import { setAlert } from "../site_misc";
  * Recover categories using pagination
  * @param {Number} page
  * @param {Number} pageSize
+ * @param {String} extra params
  */
-export const getCategories = (page = 0, pageSize = 6) => (dispatch) => {
+export const getCategories = (page = 0, pageSize = 6, extra = "") => (
+  dispatch
+) => {
   let headers = { "Content-Type": "application/json" };
 
-  return fetch(`/api/categories/?page=${page + 1}&page_size=${pageSize}`, {
-    method: "GET",
-    headers: headers,
-  }).then(function (response) {
+  return fetch(
+    `/api/categories/?page=${
+      page + 1
+    }&page_size=${pageSize}&sort=updated_at-desc${extra}`,
+    {
+      method: "GET",
+      headers: headers,
+    }
+  ).then(function (response) {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
@@ -65,7 +73,7 @@ export const createCategory = (data) => (dispatch, getState) => {
 
 /**
  * Get Category Details
- * @param {*} id 
+ * @param {*} id
  */
 export const getCategory = (id) => (dispatch, getState) => {
   let headers = {

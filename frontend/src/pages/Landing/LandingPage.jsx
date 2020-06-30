@@ -178,7 +178,7 @@ const LandingPage = (props) => {
         <Container className="landing-container">
           <Row>
             <Col>
-              <h2 className="colTitle">Explora Nuestras Colleciones</h2>
+              <h2 className="colTitle">Explora Nuestras Colecciones</h2>
             </Col>
             <Col>
               <div style={{ textAlign: "right", padding: "1em" }}>
