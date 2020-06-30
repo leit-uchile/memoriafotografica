@@ -36,7 +36,7 @@ class Home extends Component {
     };
 
     // componentWillLoad
-    this.props.setRoute("/gallery/");
+    this.props.setRoute("/gallery");
   }
 
   putFilterInfo = (o) => {
@@ -81,7 +81,7 @@ class Home extends Component {
     }));
 
     if (this.state.redirect) {
-      this.props.setRoute("/photo/"); // For NavLink in Navbar
+      this.props.setRoute("/photo"); // For NavLink in Navbar
       this.props.setSelectedId(this.state.chosenPhotoIndex); // For in photo navigation
       this.props.setPhotoPagination(this.state.photoPagination);
 

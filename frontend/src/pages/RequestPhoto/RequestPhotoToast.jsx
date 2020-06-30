@@ -21,7 +21,7 @@ const RequestPhotoToast = ({ requested, requestedPhotos, currentPage }) => {
   }, [requestedPhotos]);
 
   useEffect(() => {
-    if (currentPage !== "/gallery/" || currentPage !== "/photo/"){
+    if (currentPage !== "/gallery" || currentPage !== "/photo"){
       setShow(false);
     }
   },[currentPage])

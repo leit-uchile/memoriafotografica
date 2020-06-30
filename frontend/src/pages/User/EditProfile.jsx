@@ -84,10 +84,6 @@ class EditProfile extends Component {
     this.toggleModalpass();
   };
 
-  componentWillMount() {
-    this.props.setRoute("/userDashboard/");
-  }
-
   genericChangeHandler = (event) => {
     this.setState({
       user: { ...this.state.user, [event.target.id]: event.target.value },
@@ -394,7 +390,6 @@ const mapActionsToProps = (dispatch) => ({
   update: (userInfo, doJSON = true) =>
     dispatch(user.editProfile(userInfo, doJSON)),
   updatePassword: (old_p, new_p) => dispatch(user.updatePassword(old_p, new_p)),
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
   sendAlert: (text) => dispatch(site_misc.setAlert(text, "warning")),
 });
 

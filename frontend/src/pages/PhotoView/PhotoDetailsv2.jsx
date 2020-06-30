@@ -51,7 +51,7 @@ const PhotoDetails = ({
 
   // When the photo changes reload its info
   useEffect(() => {
-    setRoute("/photo/");
+    setRoute("/photo");
     // Load data
     onLoad(match.params.id);
     // Reset page counter
