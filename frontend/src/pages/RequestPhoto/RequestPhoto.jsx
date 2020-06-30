@@ -45,6 +45,7 @@ class RequestPhoto extends Component {
       },
     };
     this.updateData = this.updateData.bind(this);
+    this.props.setRoute("/request-photo/");
   }
 
   updateData = (e) =>
