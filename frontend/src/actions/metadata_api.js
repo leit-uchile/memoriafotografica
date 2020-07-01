@@ -277,13 +277,20 @@ export const searchMetadataByValueGeneral = (query, page, page_size, extra) => (
     }
   };
 
-  let headers = { Authorization: "Token " + getState().user.token };
-  fetch(
-    `/api/metadata/?search=${query}&page=${page}&page_size=${page_size}${extra}`,
-    {
-      headers,
-    }
-  ).then(success_func);
+  let user = getState().user;
+  if (user.isAuthenticated) {
+    let headers = { Authorization: "Token " + user.token };
+    fetch(
+      `/api/metadata/?search=${query}&page=${page}&page_size=${page_size}${extra}`,
+      {
+        headers,
+      }
+    ).then(success_func);
+  } else {
+    fetch(
+      `/api/metadata/?search=${query}&page=${page}&page_size=${page_size}${extra}`
+    ).then(success_func);
+  }
 };
 
 /**

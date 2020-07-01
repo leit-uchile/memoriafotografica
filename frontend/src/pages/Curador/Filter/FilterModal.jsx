@@ -48,6 +48,8 @@ const FilterModal = (props) => {
     delete to_send.image;
     delete to_send.thumbnail;
     delete to_send.permission;
+    // TODO: FIX IT!
+    delete to_send.metadata;
     editPhoto(to_send.id, to_send).then((response) => {
       setLoading(!loading);
       window.location.reload();

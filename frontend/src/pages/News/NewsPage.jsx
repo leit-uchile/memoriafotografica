@@ -158,7 +158,7 @@ const NewsPage = (props) => {
                 </Col>
               </Row>
             ) : (
-              props.news.map((it, key) => (
+              props.news.slice(0, page.page_size).map((it, key) => (
                 <div className="color-box" key={key}>
                   <Row>
                     <Col>

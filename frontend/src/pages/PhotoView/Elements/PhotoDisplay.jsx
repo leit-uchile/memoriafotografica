@@ -10,7 +10,7 @@ const PhotoDisplay = ({ details, leftIndex, rightIndex, params }) => (
   <Fragment>
     <h2>{details.title}</h2>
     <div>
-      {leftIndex === -1 ? null : (
+      {leftIndex === -1 || leftIndex === undefined ? null : (
         <Link
           className="photoDetailNavigation"
           style={{
@@ -35,7 +35,7 @@ const PhotoDisplay = ({ details, leftIndex, rightIndex, params }) => (
           maxWidth: "75%",
         }}
       />
-      {rightIndex === -1 ? null : (
+      {rightIndex === -1 || rightIndex === undefined ? null : (
         <Link
           className="photoDetailNavigation"
           style={{
