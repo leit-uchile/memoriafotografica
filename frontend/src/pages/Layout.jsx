@@ -24,6 +24,7 @@ import Index from "./Miscellaneous";
 import RequestPhoto from "./RequestPhoto";
 import UploadPage from "./Upload";
 import AllCollections from "./Collections";
+import RequestPhotoToast from "./RequestPhoto/RequestPhotoToast";
 // Separate chunks for users
 const lazyComponents = [
   {
@@ -64,6 +65,7 @@ const Layout = () => {
         <Header />
         <div style={styles.body}>
           <Alert />
+          <RequestPhotoToast />
           {/* This Route allows us to add transition animations
             at the cost of mounting everytime the location changes */}
           <Route

@@ -16,12 +16,12 @@ import {
 import { Pagination } from "../../components";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
-import { gallery } from "../../actions";
+import { site_misc, gallery } from "../../actions";
 import uuid4 from "uuid";
 import "./collection.css";
 import { Redirect } from "react-router";
 
-const AllCollections = ({ albums, loadCollections }) => {
+const AllCollections = ({ setRoute, albums, loadCollections }) => {
   const [params, setParams] = useState({
     name: "",
     redirectUrl: false,
@@ -46,6 +46,7 @@ const AllCollections = ({ albums, loadCollections }) => {
 
   // Set user info and load the albums accordingly
   useEffect(() => {
+    setRoute("/collections");
     let par = "&collections=1";
     par = params.name !== "" ? par + "&name=" + params.name : par;
     loadCollections(page.page, page.page_size, par);
@@ -179,6 +180,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapActionsToProps = (dispatch) => ({
+  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
   loadCollections: (page, size, params = "") =>
     dispatch(gallery.album.getAlbums(page, size, params)),
 });

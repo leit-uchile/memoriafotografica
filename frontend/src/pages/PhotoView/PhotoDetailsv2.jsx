@@ -21,6 +21,7 @@ const PhotoDetails = ({
   suggestions,
   photoPage,
   onLoad,
+  setRoute,
   findPhotoQueryPage,
   loadSuggestions,
   putSearch,
@@ -50,6 +51,7 @@ const PhotoDetails = ({
 
   // When the photo changes reload its info
   useEffect(() => {
+    setRoute("/photo");
     // Load data
     onLoad(match.params.id);
     // Reset page counter
@@ -228,8 +230,6 @@ const PhotoDetails = ({
                     <Row>
                       <Col>
                         <Button
-                          tag={Link}
-                          to="/request-photo"
                           className="float-left"
                           onClick={() => {
                             putRequestPhoto(photoInfo);
@@ -303,6 +303,7 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = (dispatch) => ({
   onLoad: (id) => dispatch(gallery.photos.getPhoto(id)),
+  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
   findPhotoQueryPage: (id, pageSize, params) =>
     dispatch(gallery.photos.findPhotoQueryPage(id, pageSize, params)),
   loadSuggestions: (page, pageSize, params) =>

@@ -94,7 +94,7 @@ const Header = ({ isAuth, currentRoute }) => {
                         nav
                         style={{
                           color:
-                            currentRoute === "/gallery/"
+                            currentRoute === "/gallery" || currentRoute === "/photo" || currentRoute === "/collections" || currentRoute === "/news"
                               ? "var(--leit-pink)"
                               : "rgba(0,0,0,.5)",
                         }}

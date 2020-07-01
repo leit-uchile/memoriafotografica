@@ -38,7 +38,6 @@ class Dashboard extends Component {
       this.props.onLoadGetPublicPhotos(this.state.user.id);
       this.props.onLoadGetPublicAlbums(this.state.user.id);
     } else {
-      this.props.setRoute("/userDashboard/");
       this.props.onLoadGetPhotos(this.state.user.id, 4, 0);
       this.props.onLoadGetAlbums(this.state.user.id, 4, 0);
     }
@@ -254,7 +253,6 @@ const mapActionsToProps = (dispatch) => ({
     dispatch(user.getUserPhotos(user_id, limit, offset)),
   onLoadGetAlbums: (user_id, limit, offset) =>
     dispatch(user.getUserAlbums(user_id, limit, offset)),
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
   onLoadGetPublicAlbums: (user_id) =>
     dispatch(user.loadPublicUserAlbums(user_id)),
   onLoadGetPublicPhotos: (user_id) =>
