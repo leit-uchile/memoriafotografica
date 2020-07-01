@@ -73,7 +73,7 @@ class Photo(models.Model):
     title = models.CharField(max_length = 30, blank=True)
     upload_date = models.DateTimeField('date published', default=datetime.now, blank=True)
     description = models.CharField(max_length=255, blank=True)
-    approved = models.BooleanField(default=True)
+    approved = models.BooleanField(default=False)
     censure = models.BooleanField(default = False)
     permission = PatchedMultiSelectField(choices=PERMISSION_CHOICES, max_choices=3)
     category = models.ManyToManyField(Category, blank = True)

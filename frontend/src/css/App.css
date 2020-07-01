@@ -115,3 +115,7 @@ a.nav-link.active {
 .add-rows-mtop .row{
   margin-top: 1em;
 }
+
+.badge-pill {
+  margin-top: 0.1em;
+}

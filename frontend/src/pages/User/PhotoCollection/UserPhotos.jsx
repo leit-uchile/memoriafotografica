@@ -90,7 +90,7 @@ class UserPhotos extends Component {
         <Redirect
           push
           to={`/photo/${mapped[this.state.chosenPhotoIndex].id}/?user=${
-            this.props.user.id
+            this.state.isPublic ? this.props.publicUser.id : this.props.user.id
           }`}
         />
       );

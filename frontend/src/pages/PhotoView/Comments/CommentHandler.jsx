@@ -62,33 +62,49 @@ const CommentHandler = ({
             <LeitSpinner />
           </div>
         )
-      ) : null}
-      <Row style={{ marginTop: "2em" }}>
-        <Col>
-          <Form
-            onSubmit={(e) => {
-              e.preventDefault();
-              newComment(id, comment);
-              setComment("");
+      ) : (
+        <Row>
+          <Col
+            className="commentDiv"
+            style={{
+              backgroundColor: "var(--leit-bg-gray)",
+              borderRadius: "5px",
+              padding: "0.5em",
             }}
           >
-            <FormGroup>
-              <Label>
-                <FontAwesomeIcon icon={faComment} /> Comentar
-              </Label>
-              <Input
-                type="text"
-                placeholder="Comentario ..."
-                onChange={(e) => setComment(e.target.value)}
-                value={comment}
-              />
-            </FormGroup>
-            <Button color="primary" type="submit">
-              Enviar comentario
-            </Button>
-          </Form>
-        </Col>
-      </Row>
+            {" "}
+            A&uacute;n no hay comentarios. ¡Se el primero!
+          </Col>
+        </Row>
+      )}
+      {auth ? (
+        <Row style={{ marginTop: "2em" }}>
+          <Col>
+            <Form
+              onSubmit={(e) => {
+                e.preventDefault();
+                newComment(id, comment);
+                setComment("");
+              }}
+            >
+              <FormGroup>
+                <Label>
+                  <FontAwesomeIcon icon={faComment} /> Comentar
+                </Label>
+                <Input
+                  type="text"
+                  placeholder="Comentario ..."
+                  onChange={(e) => setComment(e.target.value)}
+                  value={comment}
+                />
+              </FormGroup>
+              <Button color="primary" type="submit">
+                Enviar comentario
+              </Button>
+            </Form>
+          </Col>
+        </Row>
+      ) : null}
     </Container>
   );
 };

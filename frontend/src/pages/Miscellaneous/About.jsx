@@ -38,7 +38,7 @@ const photos = [
       "https://scontent.fscl10-1.fna.fbcdn.net/v/t1.0-9/p960x960/94474622_10221722308824635_7192067009398439936_o.jpg?_nc_cat=105&_nc_sid=85a577&_nc_oc=AQlq2u1ZlC181-Dc2zeJxzX2klUVkc-iVEY398LM33lGC53SVsHIyqTNQ4bAYRA-Vy8&_nc_ht=scontent.fscl10-1.fna&_nc_tp=6&oh=737a9933285d776fb8bcbe5bafd94c11&oe=5F20D02E",
     altText: "Foto de perfil Fernanda Carvajal",
     caption: "Fernanda Carvajal",
-    employment: "Abogada, Licenciada en leyes",
+    employment: "Egresada de Derecho, Licenciada en leyes",
   },
   {
     source:
@@ -66,13 +66,6 @@ const former_photos = [
   },
   {
     source:
-      "https://ucampus.uchile.cl/d/r/usuario/9d/9d4438c4ec735ef3b745b3b369a43216/perfil/3ee573197dde61aad94aa26359acb3d6.jpg",
-    altText: "Foto de perfil Rosa Leal",
-    caption: "Rosa Leal",
-    employment: "Directora de la Biblioteca Central FCFM",
-  },
-  {
-    source:
       "https://media-exp1.licdn.com/dms/image/C4D03AQGR8bWPEdfq2w/profile-displayphoto-shrink_800_800/0?e=1599091200&v=beta&t=HXL4_hlHpFmGjcRjxIbKq7ouE6votJEE4EAt63gBwKo",
     altText: "Foto de perfil Rafael Castillo",
     caption: "Rafael Castillo",
@@ -85,6 +78,13 @@ const former_photos = [
     altText: "Jorge Concha",
     caption: "Jorge Concha",
     employment: "Ingeniero de Sistemas del Centro de Computación CEC.",
+  },
+  {
+    source:
+      "https://ucampus.uchile.cl/d/r/usuario/0c/0c4d8c861f5ba6092fb87f3a1f37a5b7/perfil/239860710ecb1f95193ed0d183db3904.jpg",
+    altText: "Fernando Quezada",
+    caption: "Fernando Quezada",
+    employment: "Soporte y Webmaste de la Biblioteca Central",
   },
 ];
 const About = () => {
@@ -101,48 +101,41 @@ const About = () => {
     }
   }, [joinUs]);
 
-  const team = photos.map((el) => {
-    return (
-      <Card key={el.caption}>
-        <img
-          src={el.source}
-          alt={el.altText}
-          style={{ textAlign: "center" }}
-          width="100%"
-        />
-        <CardBody style={{ textAlign: "center" }}>
-          <CardText>
-            {el.caption}
+  const mapToCard = (ar) => {
+    return ar.map((el) => {
+      return (
+        <Card key={el.caption}>
+          <img
+            src={el.source}
+            alt={el.altText}
+            style={{ textAlign: "center" }}
+            width="100%"
+          />
+          <CardBody style={{ textAlign: "center" }}>
+            <CardText>
+              {el.caption}
 
-            <p style={{ textAlign: "center", color: "rgb(151, 135, 143)" }}>
-              {el.employment}
-            </p>
-          </CardText>
-        </CardBody>
-      </Card>
-    );
-  });
-  const formerteam = former_photos.map((el) => {
-    return (
-      <Card key={el.caption}>
-        <img
-          src={el.source}
-          alt={el.altText}
-          style={{ textAlign: "center" }}
-          width="100%"
-        />
-        <CardBody style={{ textAlign: "center" }}>
-          <CardText>
-            {el.caption}
+              <p style={{ textAlign: "center", color: "rgb(151, 135, 143)" }}>
+                {el.employment}
+              </p>
+            </CardText>
+          </CardBody>
+        </Card>
+      );
+    });
+  };
 
-            <p style={{ textAlign: "center", color: "rgb(151, 135, 143)" }}>
-              {el.employment}
-            </p>
-          </CardText>
-        </CardBody>
-      </Card>
-    );
-  });
+  const team = mapToCard(photos);
+  const formerteam = mapToCard(former_photos);
+  const rosita = mapToCard([
+    {
+      source:
+        "https://ucampus.uchile.cl/d/r/usuario/9d/9d4438c4ec735ef3b745b3b369a43216/perfil/3ee573197dde61aad94aa26359acb3d6.jpg",
+      altText: "Foto de perfil Rosa Leal",
+      caption: "Rosa Leal",
+      employment: "Directora de la Biblioteca Central FCFM",
+    },
+  ]);
   return (
     <Container fluid className="add-rows-mtop">
       <Row forwardref={project}>
@@ -210,6 +203,10 @@ const About = () => {
         <Col sm={{ size: 8 }}>
           <h3>Colaboradores</h3>
           <CardDeck>{formerteam}</CardDeck>
+        </Col>
+        <Col sm={2}>
+          <h3>Gestionadora</h3>
+          <CardDeck>{rosita}</CardDeck>
         </Col>
       </Row>
 
