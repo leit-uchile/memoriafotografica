@@ -8,6 +8,8 @@ import {
   Form,
   FormGroup,
   Label,
+  Card,
+  CardBody,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -177,79 +179,85 @@ const Category_Add = ({
       </Row>
       <Row>
         <Col>
-          <Form>
-            <Row form>
-              <Col md={4}>
-                <FormGroup>
-                  <Label for="metadata_category">Etiqueta</Label>
-                  <ReactTags
-                    style={{ width: "auto" }}
-                    placeholder={"Contiene etiqueta..."}
-                    autoresize={false}
-                    allowNew={true}
-                    tags={state.tags}
-                    suggestions={tags.results.map((e) => ({
-                      name: e.value,
-                      id: e.id,
-                    }))}
-                    handleDelete={deleteTag}
-                    handleAddition={additionTag}
-                    handleInputChange={handleInputChange}
-                  />
-                </FormGroup>
-              </Col>
-              <Col md={4}>
-                <FormGroup>
-                  <Label for="title_category">Titulo</Label>
-                  <Input
-                    type="text"
-                    placeholder="Titulo contiene..."
-                    onChange={handleChange}
-                    id="title_category"
-                    name="photo_title"
-                  />
-                </FormGroup>
-              </Col>
-              <Col md={4}>
-                <FormGroup>
-                  <Label for="description_category">Descripci&oacute;n</Label>
-                  <Input
-                    type="text"
-                    placeholder="Descripcion contiene..."
-                    onChange={handleChange}
-                    id="description_category"
-                    name="description"
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
-            <Row form>
-              <Col md={6}>
-                <FormGroup>
-                  <Label for="uploaded_on">Subida desde</Label>
-                  <Input
-                    type="date"
-                    placeholder="Contiene etiqueta..."
-                    onChange={handleChange}
-                    id="uploaded_on"
-                    name="uploaded_on"
-                  />
-                </FormGroup>
-              </Col>
-              <Col md={6}>
-                <FormGroup>
-                  <Label for="taken_on">Tomada desde</Label>
-                  <Input
-                    type="date"
-                    placeholder="Titulo contiene..."
-                    onChange={handleChange}
-                    id="taken_on"
-                    name="taken_on"
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
-          </Form>
+          <Card>
+            <CardBody>
+              <Form>
+                <Row form>
+                  <Col md={4}>
+                    <FormGroup>
+                      <Label for="metadata_category">Etiqueta</Label>
+                      <ReactTags
+                        style={{ width: "auto" }}
+                        placeholder={"Contiene etiqueta..."}
+                        autoresize={false}
+                        allowNew={true}
+                        tags={state.tags}
+                        suggestions={tags.results.map((e) => ({
+                          name: e.value,
+                          id: e.id,
+                        }))}
+                        handleDelete={deleteTag}
+                        handleAddition={additionTag}
+                        handleInputChange={handleInputChange}
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col md={4}>
+                    <FormGroup>
+                      <Label for="title_category">Titulo</Label>
+                      <Input
+                        type="text"
+                        placeholder="Titulo contiene..."
+                        onChange={handleChange}
+                        id="title_category"
+                        name="photo_title"
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col md={4}>
+                    <FormGroup>
+                      <Label for="description_category">
+                        Descripci&oacute;n
+                      </Label>
+                      <Input
+                        type="text"
+                        placeholder="Descripcion contiene..."
+                        onChange={handleChange}
+                        id="description_category"
+                        name="description"
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <Row form>
+                  <Col md={6}>
+                    <FormGroup>
+                      <Label for="uploaded_on">Subida desde</Label>
+                      <Input
+                        type="date"
+                        placeholder="Contiene etiqueta..."
+                        onChange={handleChange}
+                        id="uploaded_on"
+                        name="uploaded_on"
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col md={6}>
+                    <FormGroup>
+                      <Label for="taken_on">Tomada desde</Label>
+                      <Input
+                        type="date"
+                        placeholder="Titulo contiene..."
+                        onChange={handleChange}
+                        id="taken_on"
+                        name="taken_on"
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
+              </Form>
+            </CardBody>
+          </Card>
         </Col>
       </Row>
       <Row style={{ marginTop: "1em" }}>
@@ -261,7 +269,10 @@ const Category_Add = ({
             Agregar fotos nuevas
           </Button>{" "}
           {loading ? (
-            <LeitSpinner />
+            <Fragment>
+              <br />
+              <LeitSpinner />
+            </Fragment>
           ) : (
             <Fragment>
               <PhotoSelector
