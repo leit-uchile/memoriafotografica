@@ -257,7 +257,7 @@ class CensureAPI(generics.GenericAPIView):
         content_type = request.data['type']
         to_censure = self.get_content(request.data['content_id']['id'], content_type)
         serializer = self.serializer_dict[content_type](to_censure, data={'censure' : True, 'is_active' : False}, partial=True)
-        report_serializer = ReportSerializer(self.get_report(request.data['id']),data={'resolved' : True}, partial=True)        
+        report_serializer = ReportSerializer(self.get_report(request.data['id']),data={'resolved' : True, 'resolution_details' : "Contenido Censurado"}, partial=True)        
         if serializer.is_valid() and report_serializer.is_valid():
             serializer.save()
             report_serializer.save()
@@ -300,7 +300,7 @@ class ReportEditAPI(generics.GenericAPIView):
         print(request.data['newContent'])
         to_edit = self.get_content(request.data['report']['content_id']['id'], content_type)
         serializer = self.serializer_dict[content_type](to_edit, data=request.data['newContent'], partial=True)
-        report_serializer = ReportSerializer(self.get_report(request.data['report']['id']),data={'resolved' : True}, partial=True)  
+        report_serializer = ReportSerializer(self.get_report(request.data['report']['id']),data={'resolved' : True, 'resolution_details' : "Contenido Modificado"}, partial=True)  
         print(report_serializer.is_valid())
         print(serializer.is_valid())      
         if serializer.is_valid() and report_serializer.is_valid():

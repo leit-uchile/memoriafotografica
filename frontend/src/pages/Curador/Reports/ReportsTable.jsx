@@ -16,7 +16,7 @@ import { gallery } from "../../../actions";
 const ReportsTable = ({ reports, updateReport, censureContent}) => {
   
   const resolveButton = rep => (
-    (rep.resolved) ? "-" : (<ResolveModal buttonLabel="Acciones" report={rep} updateReport={updateReport} censureContent={censureContent}/>)
+    (rep.resolved) ? <b>{rep.resolution_details || "-"}</b> : (<ResolveModal buttonLabel="Acciones" report={rep} updateReport={updateReport} censureContent={censureContent}/>)
   );
 
   return (
