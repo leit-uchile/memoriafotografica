@@ -116,7 +116,7 @@ const FilterModal = (props) => {
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={saveChanges}>
-            {!loading ? "Guardar Cambios" : "enviando..."}
+            {!loading ? "Guardar cambios" : "enviando..."}
           </Button>{" "}
           <Button color="secondary" onClick={toggle}>
             Cancelar

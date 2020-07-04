@@ -136,7 +136,7 @@ const ResolveModal = (props) => {
                     <Button color="danger" onClick={censure} >Censurar Contenido</Button>
                   </Col>
                   <Col xs-12="true" md-6="true">
-                    <Button color="success" onClick={discardReport} >Descartar Reporte</Button>
+                    <Button color="primary" onClick={discardReport} >Descartar Reporte</Button>
                   </Col>
                 </Row>            
               </Col>

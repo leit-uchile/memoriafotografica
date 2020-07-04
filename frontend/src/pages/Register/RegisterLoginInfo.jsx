@@ -338,7 +338,7 @@ class RegisterLoginInfo extends Component {
               </div>
 
               <FormGroup>
-                <Button color="success">¡Reg&iacute;strame!</Button>
+                <Button color="primary">¡Reg&iacute;strame!</Button>
               </FormGroup>
             </Form>
           </Col>

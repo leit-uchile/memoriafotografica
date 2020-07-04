@@ -230,7 +230,7 @@ const PhotoDetails = ({
                     <Row>
                       <Col>
                         <Button
-                          className="float-left"
+                          className="secondary float-left"
                           onClick={() => {
                             putRequestPhoto(photoInfo);
                           }}
@@ -240,11 +240,9 @@ const PhotoDetails = ({
                         <ReportModal
                           style={{
                             display: "inline-block",
-                            width: "30px",
-                            height: "30px",
                             margin: "auto 2px auto 2px",
                           }}
-                          className="float-left"
+                          className="danger float-left"
                           elementId={match.params.id}
                           reportTitle={"Reportar fotografia"}
                           options={[

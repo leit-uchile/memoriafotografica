@@ -8,18 +8,13 @@ const Categories = ({ cats, onRedirect }) => (
     <h5>Categorias</h5>
     <p>
       {cats.length === 0 ? (
-        <span>No se encuentra en una categoría</span>
+        <span style={{fontStyle: 'italic'}}>No se encuentra en una categoría</span>
       ) : (
         cats.map((el, index) => (
           <Badge
             key={index}
-            color="primary"
-            style={{
-              cursor: "pointer",
-              fontSize: "12px",
-              marginRight: "0.2em",
-            }}
             pill
+            style= {{fontWeight: 'bold'}}
             onClick={(e) => onRedirect(el.id, el.value)}
           >
             {el.title}

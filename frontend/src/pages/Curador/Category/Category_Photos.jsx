@@ -200,7 +200,7 @@ const Category_Photos = ({
               maxLength="30"
             />
             <InputGroupAddon addonType="append">
-              <Button color="success" onClick={update}>
+              <Button color="primary" onClick={update}>
                 Modificar Nombre
               </Button>
             </InputGroupAddon>

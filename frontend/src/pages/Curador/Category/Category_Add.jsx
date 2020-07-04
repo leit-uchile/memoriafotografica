@@ -257,7 +257,7 @@ const Category_Add = ({
           <Button color="primary" onClick={handleSearch}>
             Buscar
           </Button>{" "}
-          <Button color="success" onClick={addPhotos}>
+          <Button color="primary" onClick={addPhotos}>
             Agregar fotos nuevas
           </Button>{" "}
           {loading ? (

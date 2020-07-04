@@ -153,12 +153,12 @@ class Categories extends Component {
                       />
                     </FormGroup>
                     {this.state.creating ? (
-                      <Button color="success" type="submit">
+                      <Button color="primary" type="submit">
                         Creando{" "}
                         <Spinner style={{ width: "1rem", height: "1rem" }} />
                       </Button>
                     ) : (
-                      <Button color="success" type="submit">
+                      <Button color="primary" type="submit">
                         Crear
                       </Button>
                     )}

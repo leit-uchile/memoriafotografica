@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
-import { Container, Row, Col } from "reactstrap";
+import { Container, Row, Col, Badge } from "reactstrap";
 import { Redirect } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -126,16 +126,19 @@ class Home extends Component {
                 <div className="home-filters-containers">
                   {filters.length !== 0 ? (
                     filters.map((el) => (
-                      <span key={el.metaID} className="home-tags">
+                      <Badge 
+                      key={el.metaID} 
+                      pill
+                      className="home-tags">
                         #{el.value}
                         <FontAwesomeIcon
                           icon={faTimesCircle}
-                          style={{ cursor: "pointer" }}
+                          style={{ marginLeft:"4px", cursor: "pointer" }}
                           onClick={() =>
                             this.props.removeSearch(el.metaID, el.value)
                           }
                         />
-                      </span>
+                      </Badge>
                     ))
                   ) : (
                     <h2> Todas las fotograf&iacute;as</h2>

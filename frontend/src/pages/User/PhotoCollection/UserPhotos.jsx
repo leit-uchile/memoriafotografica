@@ -96,19 +96,19 @@ class UserPhotos extends Component {
       );
     }
     return (
-      <Fragment>
-        <div className="userphotos-gallery-menu">
-          <Helmet>
-            <title>
-              {this.state.isPublic && this.props.publicUser
-                ? "Fotos de " + this.props.publicUser.first_name
-                : "Mis fotos"}
-            </title>
-          </Helmet>
-          <Container>
-            <Row>
-              <Col md="7" lg="9">
-                <div className="userphotos-title-container">
+      <Container fluid style={{ marginBottom: "1em" }}>
+        <Helmet>
+          <title>
+            {this.state.isPublic && this.props.publicUser
+              ? "Fotos de " + this.props.publicUser.first_name
+              : "Mis fotos"}
+          </title>
+        </Helmet>
+        <Row className="photos-title-row">
+          <Col>
+            <Container>
+              <Row>
+                <Col xs={1}>
                   <Button
                     color="secondary"
                     tag={Link}
@@ -121,63 +121,68 @@ class UserPhotos extends Component {
                   >
                     <FontAwesomeIcon icon={faArrowAltCircleLeft} />
                   </Button>
-                  <h2 style={{ marginLeft: "10px" }}>
+                </Col>
+                <Col xs={10}>
+                  <h2>
                     {this.state.isPublic && this.props.publicUser
                       ? "Fotos de " + this.props.publicUser.first_name
                       : "Mis fotos"}
                   </h2>
-                </div>
-              </Col>
-            </Row>
-          </Container>
-        </div>
-        <div className="userphotos-background">
-          <Container className="userphotos-gallery-container">
-            <Row>
-              <Col
-                sm={
-                  mapped.length === 1
-                    ? { size: 4, offset: 4 }
-                    : { size: this.state.isPublic ? 12 : 9 }
-                }
-              >
-                {this.state.isPublic ? (
-                  <Gallery
-                    photos={mapped}
-                    targetRowHeight={250}
-                    onClick={(e, index) => this.handleOnRedirect(index)}
-                  />
-                ) : (
-                  <PhotoEditor
-                    photos={mapped}
-                    targetRowHeight={250}
-                    onClick={(e, index) => this.handleOnSelect(index)}
-                    // putAll={(state) => this.putAllToEdit(mapped,state)}
-                    selectAll={this.state.selectedAll}
-                    onRedirect={(e, index) => this.handleOnRedirect(index)}
-                  />
-                )}
-              </Col>
-              {this.state.isPublic ? null : (
-                <Col className="userphotos-filters-container">
-                  <Button
-                    color="secondary"
-                    onClick={() => this.putAllToEdit(mapped)}
-                  >
-                    {!this.state.selectedAll
-                      ? "Seleccionar todas"
-                      : "Deseleccionar"}
-                  </Button>
-                  <EditPhotosModal
-                    photosID={this.state.picturesToEdit}
-                    isOpen={(bool) => this.setState({ modalOpen: bool })}
-                  />
                 </Col>
-              )}
-            </Row>
-          </Container>
-        </div>
-      </Fragment>
+              </Row>
+            </Container>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Container>
+              <Row>
+                <Col
+                  sm={
+                    mapped.length === 1
+                      ? { size: 4, offset: 4 }
+                      : { size: this.state.isPublic ? 12 : 9 }
+                  }
+                  className="photos-gallery-container"
+                >
+                  {this.state.isPublic ? (
+                    <Gallery
+                      photos={mapped}
+                      targetRowHeight={250}
+                      onClick={(e, index) => this.handleOnRedirect(index)}
+                    />
+                  ) : (
+                    <PhotoEditor
+                      photos={mapped}
+                      targetRowHeight={250}
+                      onClick={(e, index) => this.handleOnSelect(index)}
+                      // putAll={(state) => this.putAllToEdit(mapped,state)}
+                      selectAll={this.state.selectedAll}
+                      onRedirect={(e, index) => this.handleOnRedirect(index)}
+                    />
+                  )}
+                </Col>
+                {this.state.isPublic ? null : (
+                  <Col className="photos-filters-container">
+                    <Button
+                      color="secondary"
+                      onClick={() => this.putAllToEdit(mapped)}
+                    >
+                      {!this.state.selectedAll
+                        ? "Seleccionar todas"
+                        : "Deseleccionar"}
+                    </Button>
+                    <EditPhotosModal
+                      photosID={this.state.picturesToEdit}
+                      isOpen={(bool) => this.setState({ modalOpen: bool })}
+                    />
+                  </Col>
+                )}
+              </Row>
+            </Container>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }

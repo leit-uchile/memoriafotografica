@@ -28,7 +28,7 @@ const UnregisteredPrompt = ({ nextStep }) => (
             <FontAwesomeIcon icon={faUserPlus} size="6x" />
           </Row>
           <Row style={styles.item}>
-            <Button color="success" tag={Link} to="/register">
+            <Button color="primary" tag={Link} to="/register">
               Registrarme
             </Button>
             <Button color="link" onClick={nextStep}>

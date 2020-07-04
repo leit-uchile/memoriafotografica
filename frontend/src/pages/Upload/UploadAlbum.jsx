@@ -247,7 +247,7 @@ const UploadAlbum = ({
                   <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
                 </Button>
               ) : null}
-              <Button color="success" type="submit" onClick={onSubmitD}>
+              <Button color="primary" type="submit" onClick={onSubmitD}>
                 Continuar <FontAwesomeIcon icon={faChevronCircleRight} />
               </Button>
             </ButtonGroup>

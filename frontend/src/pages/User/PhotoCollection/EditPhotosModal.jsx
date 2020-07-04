@@ -259,7 +259,7 @@ const EditPhotosModal = (props) => {
                 icon={faTrashAlt}
                 onClick={() => setToggleDelete(!toggleDelete)}
                 style={{
-                  color: "var(--leit-pink)",
+                  color: "var(--leit-red)",
                   cursor: "pointer",
                   fontSize: "16px",
                 }}
@@ -283,7 +283,6 @@ const EditPhotosModal = (props) => {
         isOpen={toggle}
         toggle={() => handleToggle()}
         size={"lg"}
-        className="user-modal"
       >
         <ModalHeader>
           {props.photosID.length === 1 ? (
@@ -329,7 +328,7 @@ const EditPhotosModal = (props) => {
               <FormText color="muted">
                 Los cambios estarán sujetos a aprobación
               </FormText>
-              <Button color="success" onClick={() => handleMetadata()}>
+              <Button color="primary" onClick={() => handleMetadata()}>
                 Guardar cambios
               </Button>
               <Button color="secondary" onClick={() => handleToggle()}>

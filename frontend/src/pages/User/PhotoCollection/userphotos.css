@@ -1,36 +1,28 @@
-.userphotos-gallery-menu {
-  margin: 0 auto;
-  border-bottom: 1px solid rgb(210, 214, 218);
-  background: white;
-}
-
-.userphotos-title-container {
-  padding-top: 1em;
-  display: flex;
-  align-items: left;
-  vertical-align: middle;
-  flex-direction: row;
-}
-
-.userphotos-background .react-photo-gallery--gallery {
+.photos-title-row {
+  padding-top: 1.25em;
+  padding-bottom: 1.25em;
   background-color: white;
-}
-
-.userphotos-gallery-container {
-  width: 100%;
   text-align: center;
-  padding-top: 2em;
+  border-bottom: 1px solid rgb(210,214,218);
+  margin-bottom: 2em;
+  position: sticky;
+  z-index: 3;
+  top: calc(1em + 65px);
 }
 
-.userphotos-filters-container {
+.photos-gallery-container {
+  text-align: center;
+}
+
+.photos-filters-container {
   position: sticky;
   z-index: 2;
-  top: calc(1em + 40px + 25px);
+  top: calc(1em + 65px + 90px);
   height: fit-content;
   padding: 1em 0;
 }
 
-.userphotos-filters-container button{
+.photos-filters-container button{
     width: 80%;
     height: 30px;
     margin: 1px

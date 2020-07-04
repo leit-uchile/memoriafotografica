@@ -194,17 +194,17 @@ const ModifyModal = ({
             )}
           </ModalBody>
           <ModalFooter>
-            <Button color="secondary" onClick={toggle}>
-              Volver
-            </Button>
-            {selected.length >= 1 ? (
+          {selected.length >= 1 ? (
               <Button
-                color={op === "Eliminar" ? "danger" : "success"}
+                color={op === "Eliminar" ? "danger" : "primary"}
                 onClick={doOp}
               >
                 Confirmar
               </Button>
             ) : null}
+            <Button color="secondary" onClick={toggle}>
+              Volver
+            </Button>
           </ModalFooter>
         </Fragment>
       ) : state.done ? (

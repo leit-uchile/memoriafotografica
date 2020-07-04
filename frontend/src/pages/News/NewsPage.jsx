@@ -108,7 +108,7 @@ const NewsPage = (props) => {
                 onChange={handleChange}
               />
             </FormGroup>
-            <Button type="submit" color="success" block>
+            <Button type="submit" color="primary" block>
               Filtrar
             </Button>
           </Form>

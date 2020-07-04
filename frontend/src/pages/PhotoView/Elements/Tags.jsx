@@ -7,13 +7,11 @@ const Tags = ({ tags, onRedirect }) => (
     <br />
     <h5 style={{ textAlign: "left" }}>Etiquetas</h5>
     {tags.length === 0 ? (
-      <span>No hay tags asociados</span>
+      <span style={{fontStyle: 'italic'}}>No hay tags asociados</span>
     ) : (
       tags.map((el, index) => (
         <Badge
           key={el.id}
-          color="secondary"
-          style={{ cursor: "pointer", fontSize: "12px" }}
           pill
           onClick={(e) => onRedirect(el.id, el.value)}
         >

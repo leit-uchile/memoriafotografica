@@ -67,8 +67,9 @@ const CommentHandler = ({
           <Col
             className="commentDiv"
             style={{
+              border: "1px solid #ccc",
+              borderRadius: "3px",
               backgroundColor: "var(--leit-bg-gray)",
-              borderRadius: "5px",
               padding: "0.5em",
             }}
           >
