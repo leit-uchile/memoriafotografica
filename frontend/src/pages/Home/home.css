@@ -55,10 +55,6 @@
   font-size: 14px;
 }
 
-.home-tags:hover {
-  background-color: #e6e6e6;
-}
-
 @media (min-width: 768px){
   .home-category-filter{
     width: 30em;
