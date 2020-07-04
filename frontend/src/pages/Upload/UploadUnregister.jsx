@@ -180,7 +180,7 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
           <Button onClick={previousStep}>
             <FontAwesomeIcon icon={faChevronCircleLeft} /> {" "} Volver 
           </Button>
-          <Button type="submit" color="success">
+          <Button type="submit" color="primary">
             Continuar {" "} <FontAwesomeIcon icon={faChevronCircleRight} /> 
           </Button>
         </ButtonGroup>

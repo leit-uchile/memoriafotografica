@@ -129,7 +129,7 @@ class UploadDetails extends Component {
                   : "Información por separado"}{" "}
               </Button>
               {this.state.collapse ? (
-                <Button color="success" onClick={this.onSubmit}>
+                <Button color="primary" onClick={this.onSubmit}>
                   Guardar cambios
                 </Button>
               ) : null}

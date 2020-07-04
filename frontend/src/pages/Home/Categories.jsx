@@ -6,12 +6,12 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 const Categories = ({ categorias, onClick, size }) => (
   <Col {...size}>
     {categorias.length === 0
-      ? "-"
+      ? ""
       : categorias.map((el, index) => (
           <DropdownItem
             key={el.id}
             onClick={() => onClick(el.id)}
-            style={el.selected ? styles.Selected : styles.unSelected}
+            style={el.selected ? styles.selected : styles.unselected}
           >
             {el.title}
             {el.selected ? <FontAwesomeIcon icon={faCheck} /> : ""}
@@ -21,10 +21,10 @@ const Categories = ({ categorias, onClick, size }) => (
 );
 
 const styles = {
-  unSelected: {
+  unselected: {
     color: "#97878f"
   },
-  Selected: {
+  selected: {
     color: "#97878f",
     fontWeight: "bold"
   }

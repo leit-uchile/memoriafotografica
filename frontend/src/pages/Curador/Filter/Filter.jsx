@@ -111,14 +111,12 @@ class Filter extends Component {
             <ButtonGroup>
               <Button disabled>Ver como</Button>
               <Button
-                outline={this.state.listView ? true : false}
                 disabled={this.state.listView ? true : false}
                 onClick={() => this.swapView(1)}
               >
                 <FontAwesomeIcon icon={faThList} />
               </Button>
               <Button
-                outline={this.state.listView ? false : true}
                 disabled={this.state.listView ? false : true}
                 onClick={() => this.swapView(0)}
               >
@@ -154,7 +152,7 @@ class Filter extends Component {
               page_size={pageSize}
               page={page}
               setStatePage={this.setCurrentPage}
-              size="lg"
+              size="md"
             />
           </Col>
         </Row>

@@ -9,6 +9,8 @@ import {
   UncontrolledButtonDropdown,
   DropdownItem,
 } from "reactstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import Categories from "./Categories";
 import { connect } from "react-redux";
 import { gallery } from "../../actions";
@@ -174,32 +176,44 @@ const FilterPicker = ({
         >
           <div style={styles.triangulo}></div>
           <Container fluid>
-            <Row>
-              <Categories
-                categorias={
-                  currentCats ? currentCats.filter((e, i) => i % 2 === 0) : []
-                }
-                onClick={pickCategory}
-                size={{ md: "6" }}
-              />
-              <Categories
-                categorias={
-                  currentCats ? currentCats.filter((e, i) => i % 2 === 1) : []
-                }
-                onClick={pickCategory}
-                size={{ md: "6" }}
-              />
-            </Row>
-            <Row>
-              <Col>
-                <DropdownItem
-                  style={{ textAlign: "center" }}
-                  onClick={allowMoreCats}
-                >
-                  Cargar más categorias
-                </DropdownItem>
-              </Col>
-            </Row>
+            {currentCats.length > 0 ? (
+              <Row>
+                <Categories
+                  categorias={
+                    currentCats ? currentCats.filter((e, i) => i % 2 === 0) : []
+                  }
+                  onClick={pickCategory}
+                  size={{ md: "6" }}
+                />
+                <Categories
+                  categorias={
+                    currentCats ? currentCats.filter((e, i) => i % 2 === 1) : []
+                  }
+                  onClick={pickCategory}
+                  size={{ md: "6" }}
+                />
+              </Row>
+            ) : (
+              <Row>
+                <p style={styles.noCats}>No hay categorías disponibles</p>
+              </Row>
+            )}
+            {filterState.maxAllowed < cats.total ? (
+              <Row>
+                <Col>
+                  <DropdownItem
+                    style={{ textAlign: "center" }}
+                    onClick={allowMoreCats}
+                  >
+                    Cargar más categorias
+                  </DropdownItem>
+                </Col>
+              </Row>
+            ) : (
+              <Row>
+                <Col></Col>
+              </Row>
+            )}
           </Container>
         </DropdownMenu>
       </ButtonDropdown>
@@ -211,34 +225,83 @@ const FilterPicker = ({
           <div style={styles.triangulo}></div>
           <DropdownItem header>Por orden cronológico</DropdownItem>
           <DropdownItem
-            onClick={() =>
-              setSortingOrder({ field: "upload_date", order: "asc" })
+            style={
+              filterState.searchOrder.field === "upload_date" &&
+              filterState.searchOrder.order === "asc"
+                ? styles.selectedSort
+                : styles.unselectedSort
             }
+            onClick={() => {
+              setSortingOrder({ field: "upload_date", order: "asc" });
+              console.log(filterState.searchOrder);
+            }}
           >
-            Más antiguas primero
+            Más antiguas primero{" "}
+            {filterState.searchOrder.field === "upload_date" &&
+            filterState.searchOrder.order === "asc" ? (
+              <FontAwesomeIcon icon={faCheck} />
+            ) : (
+              ""
+            )}
           </DropdownItem>
           <DropdownItem
+            style={
+              filterState.searchOrder.field === "upload_date" &&
+              filterState.searchOrder.order === "desc"
+                ? styles.selectedSort
+                : styles.unselectedSort
+            }
             onClick={() =>
               setSortingOrder({ field: "upload_date", order: "desc" })
             }
           >
-            Más nuevas primero
+            Más nuevas primero{" "}
+            {filterState.searchOrder.field === "upload_date" &&
+            filterState.searchOrder.order === "desc" ? (
+              <FontAwesomeIcon icon={faCheck} />
+            ) : (
+              ""
+            )}
           </DropdownItem>
           <DropdownItem divider />
           <DropdownItem header>Por fecha de subida</DropdownItem>
           <DropdownItem
+            style={
+              filterState.searchOrder.field === "created_at" &&
+              filterState.searchOrder.order === "asc"
+                ? styles.selectedSort
+                : styles.unselectedSort
+            }
             onClick={() =>
               setSortingOrder({ field: "created_at", order: "asc" })
             }
           >
-            Más antiguas primero
+            Más antiguas primero{" "}
+            {filterState.searchOrder.field === "created_at" &&
+            filterState.searchOrder.order === "asc" ? (
+              <FontAwesomeIcon icon={faCheck} />
+            ) : (
+              ""
+            )}
           </DropdownItem>
           <DropdownItem
+            style={
+              filterState.searchOrder.field === "created_at" &&
+              filterState.searchOrder.order === "desc"
+                ? styles.selectedSort
+                : styles.unselectedSort
+            }
             onClick={() =>
               setSortingOrder({ field: "created_at", order: "desc" })
             }
           >
-            Más nuevas primero
+            Más nuevas primero{" "}
+            {filterState.searchOrder.field === "created_at" &&
+            filterState.searchOrder.order === "desc" ? (
+              <FontAwesomeIcon icon={faCheck} />
+            ) : (
+              ""
+            )}
           </DropdownItem>
         </DropdownMenu>
       </UncontrolledButtonDropdown>
@@ -254,6 +317,12 @@ const styles = {
     borderRadius: "0",
     padding: "10px",
     border: "none",
+  },
+  noCats: {
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: "8px",
+    color: "#6c757d",
   },
   selectedCatsNumber: {
     backgroundColor: "#f2f2f2",
@@ -276,6 +345,13 @@ const styles = {
     transform: "rotate(45deg)",
     marginTop: "-10px",
     background: "#ffff",
+  },
+  unselectedSort: {
+    color: "#97878f",
+  },
+  selectedSort: {
+    color: "#97878f",
+    fontWeight: "bold",
   },
 };
 

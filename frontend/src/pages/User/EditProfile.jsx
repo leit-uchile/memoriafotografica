@@ -306,7 +306,7 @@ class EditProfile extends Component {
                         </Input>
                       </Col>
                     </FormGroup>
-                    <Button color="success">Guardar Cambios</Button>
+                    <Button color="primary">Guardar cambios</Button>
                   </Form>
                 </Col>
               </Row>
@@ -362,7 +362,7 @@ class EditProfile extends Component {
             </FormGroup>
           </ModalBody>
           <ModalFooter>
-            <Button color="success" onClick={this.changePassword}>
+            <Button color="primary" onClick={this.changePassword}>
               Actualizar
             </Button>{" "}
             <Button color="secondary" onClick={this.toggleModalpass}>

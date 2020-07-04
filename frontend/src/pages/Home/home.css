@@ -42,11 +42,8 @@
 }
 
 .home-tags {
-  color: white;
-  border-radius: 10px;
-  background-color: #9a9e9d;
-  margin: 2px;
-  padding: 4px 12px 4px 12px;
+  cursor: default;
+  font-size: 14px;
 }
 
 @media (min-width: 768px){

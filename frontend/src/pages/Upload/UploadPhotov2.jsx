@@ -317,7 +317,7 @@ class UploadPhoto extends Component {
                 <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
               </Button>
               {this.state.photos.length !== 0 ? (
-                <Button color="success" onClick={this.onSubmit}>
+                <Button color="primary" onClick={this.onSubmit}>
                   Finalizar <FontAwesomeIcon icon={faChevronCircleRight} />
                 </Button>
               ) : null}
