@@ -179,6 +179,20 @@ footer {
   margin-bottom: 1.5em;
 }
 
+.form-control {
+  height: 30px;
+  line-height: 15px;
+}
+
+.react-tags {
+  border: 1px solid #ced4da !important;
+  border-radius: .25em !important;
+}
+
+.page-item .page-link{
+  color: var(--leit-pink);
+}
+
 .page-item.active .page-link{
   background-color: var(--leit-pink);
   border-color: var(--leit-pink);

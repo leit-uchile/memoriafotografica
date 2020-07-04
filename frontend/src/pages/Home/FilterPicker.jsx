@@ -195,26 +195,25 @@ const FilterPicker = ({
               </Row>
             ) : (
               <Row>
-                <p style={{marginLeft: 'auto', marginRight: 'auto'}}>No hay categorías disponibles</p>
+                <p style={styles.noCats}>No hay categorías disponibles</p>
               </Row>
             )}
-            {filterState.maxAllowed < cats.total
-            ? (
+            {filterState.maxAllowed < cats.total ? (
               <Row>
-              <Col>
-                <DropdownItem
-                  style={{ textAlign: "center" }}
-                  onClick={allowMoreCats}
-                >
-                  Cargar más categorias
-                </DropdownItem>
-              </Col>
-            </Row>
+                <Col>
+                  <DropdownItem
+                    style={{ textAlign: "center" }}
+                    onClick={allowMoreCats}
+                  >
+                    Cargar más categorias
+                  </DropdownItem>
+                </Col>
+              </Row>
             ) : (
-              <Row><Col></Col></Row>
-            )
-            }
-            
+              <Row>
+                <Col></Col>
+              </Row>
+            )}
           </Container>
         </DropdownMenu>
       </ButtonDropdown>
@@ -318,6 +317,12 @@ const styles = {
     borderRadius: "0",
     padding: "10px",
     border: "none",
+  },
+  noCats: {
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: "8px",
+    color: "#6c757d",
   },
   selectedCatsNumber: {
     backgroundColor: "#f2f2f2",
