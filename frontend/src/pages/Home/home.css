@@ -3,24 +3,15 @@
 }
 
 .home-background{
-  position: relative;
-  min-height: 75vh;
-}
-
-.home-background::before {
-  position: absolute;
-  background-image: url(/assets/frontis_background.jpg);
+  background-image: url(/assets/frontis_blur.jpg);
   background-color: var(--leit-modal-bg);
   background-blend-mode: luminosity;
-  height: 100%;
-  width: 100%;
-  content: "";
-  left: 0;
+  position: relative;
+  min-height: 75vh;
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  filter: blur(2px);
 }
 
 .home-gallery-menu {
@@ -53,10 +44,6 @@
 .home-tags {
   cursor: default;
   font-size: 14px;
-}
-
-.home-tags:hover {
-  background-color: #e6e6e6;
 }
 
 @media (min-width: 768px){

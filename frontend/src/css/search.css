@@ -269,7 +269,7 @@
 .logo-fadein{
   background-image: url("/assets/logo01.svg");
   background-repeat: no-repeat;
-  background-position-x: right;
+  background-position-x: center;
   visibility: visible;
   opacity: 1;
   transition: opacity 1s linear;
@@ -278,7 +278,7 @@
 .logo-fadeout{
   background-image: url("/assets/logo01.svg");
   background-repeat: no-repeat;
-  background-position-x: right;
+  background-position-x: center;
   visibility: hidden;
   opacity: 0;
   transition: visibility 0s 200ms, opacity 200ms linear;

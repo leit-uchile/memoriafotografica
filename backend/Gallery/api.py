@@ -283,7 +283,7 @@ class PhotoCategoryActions(generics.GenericAPIView):
     """
     Add or remove a category from the selected photos
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
     def get_object(self, pk):
         return Category.objects.get(pk=pk)
 
@@ -533,7 +533,7 @@ class ReportListAPI(generics.GenericAPIView):
     List all reports, or create a new report.
     """
     serializer_class = ReportSerializer
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
         # TODO: I changed it from == 3 to > 1 ... is it correct?
@@ -572,7 +572,7 @@ class ReportDetailAPI(generics.GenericAPIView):
     Retrieve, update or delete a report instance.
     """
     serializer_class = ReportSerializer
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
     def get_object(self, pk):
         try:
             return Reporte.objects.get(pk=pk)

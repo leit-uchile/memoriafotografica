@@ -51,7 +51,7 @@ class NewsListAPI(generics.GenericAPIView):
         return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
 class NewsDetailAPI(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get_object(self,pk):
         try:
@@ -99,7 +99,7 @@ class LandingCarousselAPI(generics.GenericAPIView):
 
 
 class PhotoRequestDetailAPI(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get_object(self,pk):
         try:
@@ -142,7 +142,7 @@ class PhotoRequestDetailAPI(generics.GenericAPIView):
 class PhotoRequestAPI(generics.GenericAPIView):
 
     serializer_class = PhotoRequestNewSerializer
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
@@ -157,7 +157,7 @@ class PhotoRequestListAPI(generics.GenericAPIView):
     """
 
     serializer_class = PhotoRequestSerializer
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
         if request.user.user_type > 1:
@@ -190,7 +190,7 @@ class ContactRequestListAPI(generics.GenericAPIView):
         
 class ContactRequestDetailAPI(generics.GenericAPIView):
     
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get_object(self, pk):
         try:
@@ -238,7 +238,7 @@ class CensureAPI(generics.GenericAPIView):
         3 : CommentAdminSerializer
     }
 
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get_content(self, id, content_type):
         try:
@@ -278,7 +278,7 @@ class ReportEditAPI(generics.GenericAPIView):
         3 : CommentAdminSerializer
     }
 
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get_content(self, id, content_type):
         try:

@@ -91,7 +91,7 @@ class IPTCKeywordDetailAPI(generics.GenericAPIView):
     delete:
     Delete a IPTCKeyword
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get_object(self, pk):
         try:
@@ -128,7 +128,7 @@ class IPTCKeywordMetadataListAPI(generics.GenericAPIView):
     """
     List all metadata from a IPTCKeyword.
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
     def get_object(self,pk):
         try:
             return IPTCKeyword.objects.get(pk=pk)
@@ -268,7 +268,7 @@ class MetadataPhotoListAPI(generics.GenericAPIView):
     """
     List all photos from a metadata.
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
     def get_object(self, pk, admin):
         try:
             metadata = Metadata.objects.get(pk=pk)
@@ -295,7 +295,7 @@ class MetadataBatchAPI(generics.GenericAPIView):
     get:
     Get a batch of a given size of metadata. i.e. 10 metadata
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
         try:
@@ -314,7 +314,7 @@ class MetadataMergeAPI(generics.GenericAPIView):
     post:
     Get a batch of a given size of metadata. i.e. 10 metadata
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def post(self, request, *args, **kwargs):
         try:
