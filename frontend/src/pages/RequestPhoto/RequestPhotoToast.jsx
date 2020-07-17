@@ -15,12 +15,6 @@ const RequestPhotoToast = ({ requestedPhotos, currentPage }) => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    if (requestedPhotos.length !== 0){
-      setShow(true);
-    }
-  }, [requestedPhotos]);
-
-  useEffect(() => {
     if (currentPage !== "/photo"){
       setShow(false);
     } else {
@@ -29,7 +23,7 @@ const RequestPhotoToast = ({ requestedPhotos, currentPage }) => {
       }
     }
     
-  },[currentPage])
+  },[requestedPhotos, currentPage])
 
   const toggle = () => setShow(!show);
 
