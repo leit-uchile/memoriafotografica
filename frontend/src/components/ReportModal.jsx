@@ -8,6 +8,7 @@ import {
   ModalFooter,
   Form,
   FormGroup,
+  Input,
   CustomInput,
   Label
 } from "reactstrap";
@@ -90,19 +91,21 @@ class ReportModal extends Component {
         </p>
         <Form>
           <FormGroup>
-            <Label for="exampleCheckbox">Problemas</Label>
-            <div>
+            <Label>Problemas</Label>
               {options.map((opt, key) => (
-                <CustomInput
+                <FormGroup check>
+                <Label check>
+                <Input
                   key={`option-${key}`}
                   type="checkbox"
                   id={`option-${key}`}
                   value={opt}
-                  label={opt}
                   onClick={this.updateReport}
-                />
+                />{" "}
+                {opt}
+                </Label>
+                </FormGroup>
               ))}
-            </div>
           </FormGroup>
         </Form>
       </Fragment>

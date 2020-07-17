@@ -24,7 +24,7 @@ import Reports from "./Reports/Reports";
 import Metadata from "./Metadata";
 import EmailRequest from "./EmailRequests/EmailRequests";
 import { Helmet } from "react-helmet";
-import PhotoRequestDetails from "./EmailRequests/PhotoRequestDetails";
+import PhotoRequestDetails from "./EmailRequests/PhotoRequests/PhotoRequestDetails";
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
 import { useEffect } from "react";

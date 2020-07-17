@@ -5,7 +5,6 @@ import {
   FormGroup,
   Label,
   Input,
-  CustomInput,
   Modal,
   ModalHeader,
   ModalBody,
@@ -129,16 +128,18 @@ const ModifyModal = ({
             ) : op === "Modificar Selección" ? (
               <Form>
                 Los elementos seran sobreescritos
-                <FormGroup>
-                  <CustomInput
-                    type="checkbox"
-                    id="aprobarCheckbox"
-                    label="Aprobación"
-                    checked={state.checked}
-                    onClick={() =>
-                      setState((s) => ({ ...s, checked: !s.checked }))
-                    }
-                  />
+                <FormGroup check>
+                  <Label check>
+                    <Input
+                      type="checkbox"
+                      name="aprobarCheckbox"
+                      checked={state.checked}
+                      onClick={() =>
+                        setState((s) => ({ ...s, checked: !s.checked }))
+                      }
+                    />{" "}
+                    Aprobación
+                  </Label>
                 </FormGroup>
                 {selected.length === 1 ? (
                   <FormGroup row>
@@ -149,7 +150,7 @@ const ModifyModal = ({
                       <Input
                         type="text"
                         placeholder="valor"
-                        id="valueInput"
+                        name="valueInput"
                         value={state.value}
                         onChange={(e) => {
                           const target = e.target;
@@ -167,7 +168,6 @@ const ModifyModal = ({
                     <Input
                       type="select"
                       name="selectIPTC"
-                      id="selectIPTC"
                       onChange={(e) => {
                         const target = e.target;
                         setState((s) => ({
@@ -194,7 +194,7 @@ const ModifyModal = ({
             )}
           </ModalBody>
           <ModalFooter>
-          {selected.length >= 1 ? (
+            {selected.length >= 1 ? (
               <Button
                 color={op === "Eliminar" ? "danger" : "primary"}
                 onClick={doOp}

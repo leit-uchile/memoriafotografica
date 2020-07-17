@@ -11,19 +11,24 @@ import {
   Spinner,
 } from "reactstrap";
 
-const RequestPhotoToast = ({ requested, requestedPhotos, currentPage }) => {
+const RequestPhotoToast = ({ requestedPhotos, currentPage }) => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    if (requestedPhotos.length != 0 && !requested){
+    if (requestedPhotos.length !== 0){
       setShow(true);
     }
   }, [requestedPhotos]);
 
   useEffect(() => {
-    if (currentPage !== "/gallery" || currentPage !== "/photo"){
+    if (currentPage !== "/photo"){
       setShow(false);
+    } else {
+      if (requestedPhotos.length !== 0){
+        setShow(true);
+      }
     }
+    
   },[currentPage])
 
   const toggle = () => setShow(!show);
@@ -62,7 +67,6 @@ const RequestPhotoToast = ({ requested, requestedPhotos, currentPage }) => {
 
 const mapStateToProps = (state) => ({
   requestedPhotos: state.webadmin.requestedPhotos,
-  requested: state.webadmin.requested,
   currentPage: state.site_misc.currentRoute,
 });
 

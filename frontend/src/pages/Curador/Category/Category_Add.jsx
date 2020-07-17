@@ -282,7 +282,7 @@ const Category_Add = ({
             page_size={page.page_size}
             page={page.page}
             setStatePage={setDaPage}
-            size="lg"
+            size="md"
             label="metadata-pagination"
             displayFirst
             displayLast

@@ -9,7 +9,7 @@ import {
   Col,
 } from "reactstrap";
 
-const PhotoUserModal = (props) => {
+const PhotoRequesterModal = (props) => {
   const { buttonLabel, className, request } = props;
 
   const [modal, setModal] = useState(false);
@@ -89,4 +89,4 @@ const PhotoUserModal = (props) => {
   );
 };
 
-export default PhotoUserModal;
+export default PhotoRequesterModal;

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
-import { Button, Row, Col, Container } from "reactstrap";
+import { Button, Row, Col, Container, Badge } from "reactstrap";
 import { user, site_misc } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
 import PhotoEditor from "../../../components/PhotoEditor";
@@ -123,11 +123,13 @@ class UserPhotos extends Component {
                   </Button>
                 </Col>
                 <Col xs={10}>
-                  <h2>
-                    {this.state.isPublic && this.props.publicUser
-                      ? "Fotos de " + this.props.publicUser.first_name
-                      : "Mis fotos"}
-                  </h2>
+                  {this.state.isPublic && this.props.publicUser ? (
+                    <h2>Fotos de {this.props.publicUser.first_name}</h2>
+                  ) : (
+                    <h2>
+                      Mis fotos <Badge color="primary">{mapped.length}</Badge>
+                    </h2>
+                  )}
                 </Col>
               </Row>
             </Container>
