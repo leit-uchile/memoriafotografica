@@ -20,9 +20,14 @@ def add_field(dictionary,field_name, val):
     dictionary[field_name] = val
     return dictionary
 
+
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS
+
 class GeneralKPIs(generics.GenericAPIView):
 
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
     def get(self, request, *args, **kwargs):
 
         output = {}

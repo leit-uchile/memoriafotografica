@@ -133,7 +133,7 @@ class UserListAPI(generics.GenericAPIView):
     Create a new user instance.
     """
     
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     serializer_class = UserSerializer
     def get(self, request, *args, **kwargs):
@@ -199,7 +199,7 @@ class UserPhotosAPI(generics.GenericAPIView):
        get:
        Get photos of a *user*.
        """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
     serializer_class = UserPhotoSerializer
     def get(self, request, pk, *args, **kwargs):
         try:
@@ -215,7 +215,7 @@ class UserAlbumsAPI(generics.GenericAPIView):
        Get albums of a *user*.
 
        """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
     serializer_class = UserAlbumSerializer
     def get(self, request, pk, *args, **kwargs):
         try:
@@ -233,7 +233,7 @@ class UserCommentsAPI(generics.GenericAPIView):
        TODO delete:
        Delete an comment asociated to a *user*.
        """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
     serializer_class = UserCommentSerializer
     def get(self, request, pk, *args, **kwargs):
         try:

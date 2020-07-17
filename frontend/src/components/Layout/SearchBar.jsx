@@ -132,59 +132,71 @@ class SearchBar extends Component {
     return (
       <Container className={"home-search sticky-search"} fluid>
         <Row>
-          <Col
-            md={2}
-            className={this.props.stickyClass ? "logo-fadein" : "logo-fadeout"}
-            onClick={() => this.setState({ redirectLanding: true })}
-          ></Col>
-          <Col
-            md={{ size: 10 }}
-            className={
-              this.props.stickyClass ? "col-fadein stretch" : "col-fadein"
-            }
-          >
-            <div style={{ margin: "0 auto" }} className="searchFitter">
-              <Input
-                type="select"
-                name="selectMulti"
-                id="exampleSelectMulti"
-                className="search-iptc-selector"
-                onChange={this.onChangeIPTCFilter}
-              >
-                <option value="0">Todo el sitio</option>
-                {this.props.iptc.map((iptc, k) => (
-                  <option key={k} value={iptc.id}>
-                    {iptc.name}
-                  </option>
-                ))}
-              </Input>
-              <Autosuggest
-                multiSection={true}
-                suggestions={suggestions}
-                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                onSuggestionSelected={this.onSuggestionSelected}
-                getSuggestionValue={(suggestion) => suggestion.value}
-                renderSuggestion={(suggestion) => (
-                  <span>{suggestion.value}</span>
-                )}
-                renderSectionTitle={(section) => (
-                  <strong>{section.title}</strong>
-                )}
-                getSectionSuggestions={(section) => section.suggestions}
-                inputProps={inputProps}
-                alwaysRenderSuggestions={this.state.iptc_filter !== 0}
-              />
-              <Button
-                type="button"
-                color="primary"
-                onClick={this.swapPage}
-                block
-                className="search-button"
-              >
-                <FontAwesomeIcon icon={faSearch} />
-              </Button>
-            </div>
+          <Col>
+            <Container>
+              <Row>
+                <Col
+                  md={2}
+                  className={
+                    this.props.stickyClass ? "logo-fadein" : "logo-fadeout"
+                  }
+                  onClick={() => this.setState({ redirectLanding: true })}
+                ></Col>
+                <Col
+                  md={{ size: 10 }}
+                  className={
+                    this.props.stickyClass ? "col-fadein stretch" : "col-fadein"
+                  }
+                >
+                  <div style={{ margin: "0 auto" }} className="searchFitter">
+                    <Input
+                      type="select"
+                      name="selectMulti"
+                      id="exampleSelectMulti"
+                      className="search-iptc-selector"
+                      onChange={this.onChangeIPTCFilter}
+                    >
+                      <option value="0">Todo el sitio</option>
+                      {this.props.iptc.map((iptc, k) => (
+                        <option key={k} value={iptc.id}>
+                          {iptc.name}
+                        </option>
+                      ))}
+                    </Input>
+                    <Autosuggest
+                      multiSection={true}
+                      suggestions={suggestions}
+                      onSuggestionsFetchRequested={
+                        this.onSuggestionsFetchRequested
+                      }
+                      onSuggestionsClearRequested={
+                        this.onSuggestionsClearRequested
+                      }
+                      onSuggestionSelected={this.onSuggestionSelected}
+                      getSuggestionValue={(suggestion) => suggestion.value}
+                      renderSuggestion={(suggestion) => (
+                        <span>{suggestion.value}</span>
+                      )}
+                      renderSectionTitle={(section) => (
+                        <strong>{section.title}</strong>
+                      )}
+                      getSectionSuggestions={(section) => section.suggestions}
+                      inputProps={inputProps}
+                      alwaysRenderSuggestions={this.state.iptc_filter !== 0}
+                    />
+                    <Button
+                      type="button"
+                      color="primary"
+                      onClick={this.swapPage}
+                      block
+                      className="search-button"
+                    >
+                      <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                  </div>
+                </Col>
+              </Row>
+            </Container>
           </Col>
         </Row>
       </Container>
