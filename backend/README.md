@@ -34,10 +34,20 @@ Este proyecto está modularizado bajo la siguiente estructura:
     - Solicitudes de Contacto
 
 ## ERD
-Actualizado al **28/07/2020**
+Actualizado al **29/07/2020**
 
+### ERD Plataforma
 ![](readme_media/ERD_LEIT_1.png)
+
+### ERD WebAdmin
+![](readme_media/ERD_LEIT_2.png)
+
 
 ### Anexo: IPTC Keywords
 
-Estándar de metadatos de biblioteca, contempla la inclusión de información diversa y 
+Estándar de metadatos para imágenes, contempla la inclusión de información contenida tal como:
+- **Información descriptiva**: Ubicación, personas, arte, productos, etc.
+- **Información de derechos**: Creador de la imagen, Copyright, créditos, etc.
+- **Información administrativa**: Instrucciones para los usuarios de la foto, Fecha de creación de la imagen, etc.
+
+Este es el formato que fue sugerido para la utilización en el proyecto, y por tanto es en el cual está basado el modelo de datos presentado.
