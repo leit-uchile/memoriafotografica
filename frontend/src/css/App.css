@@ -210,6 +210,16 @@ a.nav-link.active {
   margin-top: 1em;
 }
 
+.badge-primary{
+  color: #fff;
+  background-color: var(--leit-pink);
+}
+
+.badge-secondary{
+  color: #fff;
+  background-color: var(--leit-gray);
+}
+
 .badge-pill {
   margin-right: 4px;
   margin-bottom: 4px;

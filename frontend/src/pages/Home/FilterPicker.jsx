@@ -8,6 +8,7 @@ import {
   Col,
   UncontrolledButtonDropdown,
   DropdownItem,
+  Badge,
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
@@ -163,9 +164,9 @@ const FilterPicker = ({
         >
           Categorias
           {filterState.selectedCategories.length > 0 ? (
-            <span style={styles.selectedCatsNumber}>
+            <Badge style={{ marginLeft: "4px" }} color="secondary">
               {filterState.selectedCategories.length}
-            </span>
+            </Badge>
           ) : null}
         </DropdownToggle>
         <DropdownMenu
@@ -323,12 +324,6 @@ const styles = {
     marginRight: "auto",
     marginTop: "8px",
     color: "#6c757d",
-  },
-  selectedCatsNumber: {
-    backgroundColor: "#f2f2f2",
-    color: "#ff5a60",
-    padding: "0.5em",
-    borderRadius: "0.5em",
   },
   triangulo: {
     position: "absolute",

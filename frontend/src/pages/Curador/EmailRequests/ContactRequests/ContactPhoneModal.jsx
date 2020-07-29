@@ -46,19 +46,24 @@ const ContactPhoneModal = (props) => {
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input 
-                type="checkbox"
-                name="check"
-                checked={contacted}
-                onClick={()=>setContacted(!contacted)}
-                required
-                /> Ha sido contactado por esta vía
+                <Input
+                  type="checkbox"
+                  name="check"
+                  checked={contacted}
+                  onClick={() => setContacted(!contacted)}
+                  required
+                />{" "}
+                Ha sido contactado por esta vía
               </Label>
             </FormGroup>
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" disabled={!contacted} onClick={() => onSend()}>
+          <Button
+            color="primary"
+            disabled={!contacted}
+            onClick={() => onSend()}
+          >
             Actualizar
           </Button>{" "}
           <Button color="secondary" onClick={toggle}>

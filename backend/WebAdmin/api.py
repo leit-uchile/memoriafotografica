@@ -12,6 +12,7 @@ from Users.serializers import UserSerializer
 from django.http import Http404
 from WebAdmin.views import sendEmail
 from datetime import date
+from django.db.models import Q
 
 def sort_by_field(element_list, request):
     sort_type = {"asc":"", "desc":"-"}
@@ -29,8 +30,15 @@ def filter_elements(elements, request):
             elements = elements.filter(created_at__gte = date.fromisoformat(request.query_params["created_at"]))
         if "created_at_until" in request.query_params:
             elements = elements.filter(created_at__lte = date.fromisoformat(request.query_params["created_at_until"]))
+        if "search" in request.query_params:
+            elements = elements.filter(
+                Q(first_name__icontains=request.query_params["search"]) | 
+                Q(last_name__icontains=request.query_params["search"])
+            )
+        if "limit" in request.query_params:
+            elements = elements[0:int(request.query_params["limit"])]
     except Exception as e:
-        print("Error filtering news",e)
+        print("Error filtering",e)
         pass
     return elements
 
@@ -153,30 +161,45 @@ class PhotoRequestAPI(generics.GenericAPIView):
 
 class PhotoRequestListAPI(generics.GenericAPIView):
     """
-    Give curators the list of requests
-    """
+    Give curators a list of ALL requests
+    Permits search queries using the search and limit parameter
+    Permits pagination if page_size and page are on the query parameters
 
+    """
     serializer_class = PhotoRequestSerializer
     permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
         if request.user.user_type > 1:
             photorequests = PhotoRequest.objects.all()
+            photorequests = sort_by_field(photorequests, request)
             serializer = self.serializer_class(photorequests, many=True)
+            if "page" in request.query_params and "page_size" in request.query_params:
+                    return self.get_paginated_response(self.paginate_queryset(serializer.data))
             return Response(serializer.data)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class ContactRequestListAPI(generics.GenericAPIView):
-    
+    """
+    get:
+    Get a list of ALL messages.
+    Permits search queries using the search and limit parameter
+    Permits pagination if page_size and page are on the query parameters
+
+    """
     serializer_class = ContactRequestSerializer    
 
     def get(self, request, *args, **kwargs):
         if request.user:
             if request.user.user_type > 1:
                 contactrequests = ContactRequest.objects.all()
+                contactrequests = filter_elements(contactrequests, request)
+                contactrequests = sort_by_field(contactrequests, request)
                 serializer = self.serializer_class(contactrequests, many=True)
+                if "page" in request.query_params and "page_size" in request.query_params:
+                    return self.get_paginated_response(self.paginate_queryset(serializer.data))
                 return Response(serializer.data)
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         return Response(status=status.HTTP_401_UNAUTHORIZED)

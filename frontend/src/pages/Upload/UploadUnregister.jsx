@@ -4,19 +4,18 @@ import {
   faUserFriends,
   faEnvelope,
   faChevronCircleRight,
-  faChevronCircleLeft
+  faChevronCircleLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   Container,
   Form,
   FormGroup,
   Label,
-  CustomInput,
   Input,
   Button,
   Row,
   Col,
-  ButtonGroup
+  ButtonGroup,
 } from "reactstrap";
 
 const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
@@ -24,14 +23,14 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
     cache === {}
       ? {
           ...cache,
-          error: null
+          error: null,
         }
       : {
           rol: "",
           student: false,
           email: "",
           name: "",
-          lastname: ""
+          lastname: "",
         }
   );
 
@@ -40,25 +39,25 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
       ? { ...cache.info }
       : {
           estudiante: false,
-          generation: ""
+          generation: "",
         }
   );
 
-  const updateForm = e =>
+  const updateForm = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const updateInfo = e =>
+  const updateInfo = (e) =>
     setInfo({ ...info, [e.target.name]: e.target.checked });
 
-  const checkGeneration = e => {
+  const checkGeneration = (e) => {
     setFormData({ ...formData, student: e.target.checked });
     setInfo({ ...info, estudiante: e.target.checked });
   };
 
-  const updateGeneration = e =>
+  const updateGeneration = (e) =>
     setInfo({ ...info, generation: e.target.value });
 
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault();
     saveInfo({ ...formData, info: { ...info } });
     nextStep();
@@ -73,7 +72,10 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
           </h2>
         </Col>
       </Row>
-      <Form onSubmit={onSubmit} className="upload-unregister-container white-box">
+      <Form
+        onSubmit={onSubmit}
+        className="upload-unregister-container white-box"
+      >
         <div style={styles.formTitle}>
           <FontAwesomeIcon
             icon={faUserFriends}
@@ -83,35 +85,33 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
         </div>
         <FormGroup>
           <Label>¿Cuál o cuáles fueron sus roles (o son)?</Label>
-          <div>
-            <CustomInput
-              type="checkbox"
-              id="exampleCustomCheckbox"
-              label="Académico"
-              name="academico"
-              onChange={updateInfo}
-            />
-            <CustomInput
-              type="checkbox"
-              id="exampleCustomCheckbox2"
-              label="Funcionario"
-              name="funcionario"
-              onChange={updateInfo}
-            />
-            <CustomInput
-              type="checkbox"
-              id="exampleCustomCheckbox3"
-              label="Externo a la comunidad"
-              name="externo"
-              onChange={updateInfo}
-            />
-            <CustomInput
-              type="checkbox"
-              id="exampleCustomCheckbox4"
-              label="Estudiante"
-              name="estudiante"
-              onChange={checkGeneration}
-            />
+          <FormGroup check>
+            <Label check>
+              <Input type="checkbox" name="academico" onChange={updateInfo} />{" "}
+              Académico
+            </Label>
+          </FormGroup>
+          <FormGroup check>
+            <Label check>
+              <Input type="checkbox" name="funcionario" onChange={updateInfo} />{" "}
+              Funcionario
+            </Label>
+          </FormGroup>
+          <FormGroup check>
+            <Label check>
+              <Input type="checkbox" name="externo" onChange={updateInfo} />{" "}
+              Externo a la comunidad
+            </Label>
+          </FormGroup>
+          <FormGroup check>
+            <Label check>
+              <Input
+                type="checkbox"
+                name="estudiante"
+                onChange={checkGeneration}
+              />{" "}
+              Estudiante
+            </Label>
             {formData.student ? (
               <label>
                 {" "}
@@ -125,7 +125,7 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
                 />{" "}
               </label>
             ) : null}
-          </div>
+          </FormGroup>
         </FormGroup>
         <div style={styles.formTitle}>
           <FontAwesomeIcon icon={faEnvelope} style={{ marginRight: "1em" }} />
@@ -178,10 +178,10 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
         </FormGroup>
         <ButtonGroup style={{ minWidth: "20em" }}>
           <Button onClick={previousStep}>
-            <FontAwesomeIcon icon={faChevronCircleLeft} /> {" "} Volver 
+            <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
           </Button>
           <Button type="submit" color="primary">
-            Continuar {" "} <FontAwesomeIcon icon={faChevronCircleRight} /> 
+            Continuar <FontAwesomeIcon icon={faChevronCircleRight} />
           </Button>
         </ButtonGroup>
       </Form>
@@ -192,14 +192,14 @@ const styles = {
   title: {
     color: "var(--leit-pink)",
     textAlign: "center",
-    marginBottom: "2em"
+    marginBottom: "2em",
   },
   formTitle: {
     fontSize: "14px",
     fontWeight: "bold",
     padding: "0.5em",
     borderBottom: "1px solid rgb(210,214,218)",
-    marginBottom: "10px"
-  }
+    marginBottom: "10px",
+  },
 };
 export default UploadUnregister;

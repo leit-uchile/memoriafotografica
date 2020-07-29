@@ -106,12 +106,12 @@ export const sendRequest = (photos, info) => {
 /**
  * Recover all Photo Request
  */
-export const getRequests = () => (dispatch, getState) => {
+export const getRequests = (page, page_size, extra) => (dispatch, getState) => {
   let headers = {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token
   };
-  return fetch("/api/requests/photos/all/", {
+  return fetch(`/api/requests/photos/all/?page=${page}&page_size=${page_size}${extra}`, {
     method: "GET",
     headers: headers
   }).then(function(response) {
@@ -211,12 +211,15 @@ export const contactUs = (formData) => {
 /**
  * Recover all Messages from Contact Us
  */
-export const getMessages = () => (dispatch, getState) => {
+export const getMessages = (query, page, page_size, extra) => (
+  dispatch, 
+  getState
+  ) => {
   let headers = {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token
   };
-  return fetch('/api/requests/contacts/all/', {
+  return fetch(`/api/requests/contact/all/?search=${query}&page=${page}&page_size=${page_size}${extra}`, {
     method: "GET",
     headers: headers
   }).then(function(response) {
@@ -243,7 +246,7 @@ export const updateMessage = (messageUpdate, formData) => (dispatch, getState) =
     email_sent: messageUpdate.email_sent,
     subject: formData.subject,
   });
-  return fetch(`/api/requests/contacts/${messageUpdate.id}/`, {
+  return fetch(`/api/requests/contact/${messageUpdate.id}/`, {
     method: "PUT",
     headers,
     body: jsonthing,

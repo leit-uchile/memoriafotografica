@@ -284,7 +284,7 @@ const EditPhotosModal = (props) => {
         toggle={() => handleToggle()}
         size={"lg"}
       >
-        <ModalHeader>
+        <ModalHeader toggle={handleToggle}>
           {props.photosID.length === 1 ? (
             <h4 style={{ fontWeight: "bold" }}>Editando 1 foto</h4>
           ) : (
@@ -299,7 +299,7 @@ const EditPhotosModal = (props) => {
             isOpen={toggleDelete}
             toggle={() => setToggleDelete(!toggleDelete)}
           >
-            <ModalHeader>Eliminar fotografía(s)</ModalHeader>
+            <ModalHeader toggle={handleToggle}>Eliminar fotografía(s)</ModalHeader>
             <ModalBody>
               Esta acción no se puede deshacer. ¿Está seguro?
             </ModalBody>

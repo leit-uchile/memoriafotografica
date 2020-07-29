@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button } from "reactstrap";
+import { Container, Row, Col, Button, Badge } from "reactstrap";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { user } from "../../../actions";
@@ -62,7 +62,11 @@ const UserAlbums = ({
   ) : (
     <Container fluid style={{ marginBottom: "1em" }}>
       <Helmet>
-        <title>Albums de {display.user.first_name}</title>
+        <title>
+          {isPublic && publicUser
+            ? "Albums de" + display.user.first_name
+            : "Mis albums"}
+        </title>
       </Helmet>
       <Row className="album-title-row">
         <Col>
@@ -83,8 +87,13 @@ const UserAlbums = ({
                 </Button>
               </Col>
               <Col xs={10}>
-                <h2>Albums de {display.user.first_name}</h2>
-                <h5>Total: {albums.length}</h5>
+                {isPublic && publicUser ? (
+                  <h2>Albums de {display.user.first_name}</h2>
+                ) : (
+                  <h2>
+                    Mis albums <Badge color="primary">{albums.length}</Badge>
+                  </h2>
+                )}
               </Col>
             </Row>
           </Container>

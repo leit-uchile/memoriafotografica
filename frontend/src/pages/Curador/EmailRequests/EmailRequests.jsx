@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import ContactTable from "./ContactTable";
-import PhotoTable from "./PhotoTable";
+import ContactTable from "./ContactRequests/ContactTable";
+import PhotoTable from "./PhotoRequests/PhotoTable";
 import {
   TabContent,
   TabPane,
@@ -10,25 +10,16 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import { connect } from "react-redux";
-import { webadmin } from "../../../actions";
 
-const EmailRequests = ({ messages, getMessages, updatedMessage }) => {
+const EmailRequests = () => {
   const [activeTab, setActiveTab] = useState("1");
-
-  useEffect(() => {
-    if (activeTab === "2") {
-      getMessages();
-    }
-  }, [activeTab, updatedMessage, getMessages]);
 
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
   return (
     <div>
-      <h2>Mensajes recibidos</h2>
-      <Nav tabs>
+      <Nav tabs style={{ marginBottom: "1em" }}>
         <NavItem>
           <NavLink
             className={activeTab === "1" ? "active" : ""}
@@ -61,7 +52,7 @@ const EmailRequests = ({ messages, getMessages, updatedMessage }) => {
         <TabPane tabId="2">
           <Row>
             <Col sm="12">
-              <ContactTable messages={messages} />
+              <ContactTable active={activeTab === "2"} />
             </Col>
           </Row>
         </TabPane>
@@ -70,13 +61,4 @@ const EmailRequests = ({ messages, getMessages, updatedMessage }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  messages: state.webadmin.messages,
-  updatedMessage: state.webadmin.updatedMessage,
-});
-
-const mapActionsToProps = (dispatch) => ({
-  getMessages: () => dispatch(webadmin.getMessages()),
-});
-
-export default connect(mapStateToProps, mapActionsToProps)(EmailRequests);
+export default EmailRequests;

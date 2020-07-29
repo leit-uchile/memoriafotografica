@@ -81,7 +81,7 @@ class RegisterLoginInfo extends Component {
   }
 
   genericChangeHandler(event) {
-    this.setState({ [event.target.id]: event.target.value });
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   checkPassword() {
@@ -186,8 +186,8 @@ class RegisterLoginInfo extends Component {
               )}
               <FormGroup>
                 <Input
-                  id="avatar"
                   type="file"
+                  name="avatar"
                   multiple={false}
                   onChange={this.handleFileSelect}
                 >
@@ -209,8 +209,8 @@ class RegisterLoginInfo extends Component {
                 <Col sm={6}>
                   <FormGroup>
                     <Input
-                      id="name"
                       type="text"
+                      name="name"
                       placeholder="Nombre"
                       onChange={this.genericChangeHandler}
                       required
@@ -221,8 +221,8 @@ class RegisterLoginInfo extends Component {
                 <Col sm={6}>
                   <FormGroup>
                     <Input
-                      id="lastname"
                       type="text"
+                      name="lastname"
                       placeholder="Apellido"
                       onChange={this.genericChangeHandler}
                       required
@@ -234,8 +234,8 @@ class RegisterLoginInfo extends Component {
               <FormGroup>
                 <Label for="date">Fecha de nacimiento</Label>
                 <Input
-                  id="date"
                   type="date"
+                  name="date"
                   onChange={this.genericChangeHandler}
                   required
                   value={this.state.date}
@@ -255,8 +255,8 @@ class RegisterLoginInfo extends Component {
               <FormGroup>
                 <Label for="email">Correo electronico</Label>
                 <Input
-                  id="email"
                   type="email"
+                  name="email"
                   placeholder="ejemplo@leit.cl"
                   onChange={this.genericChangeHandler}
                   value={this.state.email}
@@ -266,8 +266,8 @@ class RegisterLoginInfo extends Component {
               <FormGroup>
                 <Label for="password">Contraseña</Label>
                 <Input
-                  id="password"
                   type="password"
+                  name="password"
                   onChange={this.genericChangeHandler}
                   required
                 ></Input>
@@ -275,8 +275,8 @@ class RegisterLoginInfo extends Component {
               <FormGroup>
                 <Label for="passwordCheck">Repetir Contraseña</Label>
                 <Input
-                  id="passwordCheck"
                   type="password"
+                  name="passwordCheck"
                   onChange={this.genericChangeHandler}
                   required
                 ></Input>
@@ -284,8 +284,8 @@ class RegisterLoginInfo extends Component {
               <FormGroup>
                 <Label for="rol">Rol en la facultad</Label>
                 <Input
-                  id="rol"
                   type="select"
+                  name="rol"
                   onChange={this.genericChangeHandler}
                   value={this.state.rol}
                   required
@@ -301,8 +301,8 @@ class RegisterLoginInfo extends Component {
               <FormGroup>
                 <Label for="difusion">¿Como te enteraste de esta página?</Label>
                 <Input
-                  id="difusion"
                   type="select"
+                  name="difusion"
                   onChange={this.updateDif}
                   value={this.state.difusion}
                   required
@@ -316,8 +316,7 @@ class RegisterLoginInfo extends Component {
               <FormGroup check>
                 <Input
                   type="checkbox"
-                  name="check"
-                  id="termsOfUse"
+                  name="termsOfUse"
                   checked={this.state.termsOfUseAcepted}
                   onClick={this.toggleTermsValue}
                   required

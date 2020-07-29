@@ -5,6 +5,8 @@ import { gallery } from "../../../actions";
 import ReportModal from "../../../components/ReportModal";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashAlt, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 const Comment = ({
   element: { content, censure, usuario, id, created_at, updated_at },
@@ -97,20 +99,32 @@ const Comment = ({
           {usuario.id === viewerId ? (
             !editing ? (
               <div style={{ display: "inline-block", padding: "0" }}>
-                <Button
-                  color="link"
-                  style={{ display: "inline-block", padding: "0" }}
+                
+                <FontAwesomeIcon
+                  icon={faEdit}
                   onClick={() => setEditing(true)}
-                >
-                  Editar
-                </Button>
-                <Button
-                  color="link"
-                  style={{ display: "inline-block", padding: "0" }}
+                  style={{
+                    color: "var(--leit-pink)",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                    display: "inline-block",
+                    padding: "0",
+                  }}
+                  title="Editar"
+                />
+                <FontAwesomeIcon
+                  icon={faTrashAlt}
                   onClick={() => deleteComment(id)}
-                >
-                  Eliminar
-                </Button>
+                  style={{
+                    color: "var(--leit-red)",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                    display: "inline-block",
+                    padding: "0",
+                    marginLeft: "4px"
+                  }}
+                  title="Eliminar"
+                />
               </div>
             ) : (
               <div style={{ display: "inline-block", padding: "0" }}>
@@ -138,23 +152,24 @@ const Comment = ({
                 </Button>
               </div>
             )
-          ) : null}
-          <ReportModal
-            style={{ display: "inline-block" }}
-            className="float-right"
-            elementId={id}
-            reportTitle={"Reportar Comentario"}
-            options={[
-              "Contenido inapropiado",
-              "Incita a la violencia",
-              "Contenido difamatorio",
-            ]}
-            helpText={
-              "Si consideras que hay un problema con esta comentario por favor envíamos un reporte mediante este formulario."
-            }
-            reportType={3}
-            buttonTitle={"Comentario inapropiado"}
-          />
+          ) : (
+            <ReportModal
+              style={{ display: "inline-block" }}
+              className="float-right"
+              elementId={id}
+              reportTitle={"Reportar Comentario"}
+              options={[
+                "Contenido inapropiado",
+                "Incita a la violencia",
+                "Contenido difamatorio",
+              ]}
+              helpText={
+                "Si consideras que hay un problema con esta comentario por favor envíamos un reporte mediante este formulario."
+              }
+              reportType={3}
+              buttonTitle={"Comentario inapropiado"}
+            />
+          )}
           {editing ? (
             <Input
               type="text"

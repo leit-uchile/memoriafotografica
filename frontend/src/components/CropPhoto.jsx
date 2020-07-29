@@ -157,7 +157,7 @@ class CropPhoto extends Component {
 
     return (
       <Modal isOpen={this.state.modal} size={"lg"}>
-        <ModalHeader>
+        <ModalHeader toggle={this.toggle}>
           <h4 style={{ fontWeight: "bold" }}>Recortando foto</h4>
         </ModalHeader>
         <ModalBody style={{ textAlign: "center" }}>
