@@ -3,29 +3,22 @@ import {
   Container,
   Row,
   Col,
-  Card,
-  CardImg,
-  CardText,
-  CardBody,
 } from "reactstrap";
-import Photo from "../../../components/Photo";
+import Photo from "../../components/Photo";
 import { connect } from "react-redux";
-import { user, site_misc } from "../../../actions";
+import { user } from "../../actions";
 import { Link, Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSuitcase,
   faCameraRetro,
   faAddressCard,
-  faEdit,
   faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { userRolTranslation, userTypeTranslation } from "../utils";
-import { UserPicture, ReportModal } from "../../../components/";
-import "./userDashboard.css";
+import "./Profile/userDashboard.css";
 import { Helmet } from "react-helmet";
 
-class Dashboard extends Component {
+class Landing extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -60,15 +53,6 @@ class Dashboard extends Component {
       />
     );
 
-    const editMode = (
-      <FontAwesomeIcon
-        icon={faEdit}
-        onClick={() => this.setState({ redirect: "/user/photos" })}
-        style={{ cursor: "pointer" }}
-        title="Modo edición"
-      />
-    );
-
     return (
       <Container>
         <Helmet>
@@ -80,66 +64,20 @@ class Dashboard extends Component {
           </Col>
         </Row>
         <Row style={styles.container}>
-          <Col md="3">
-            <Card className="user-dashboard-card">
-              <UserPicture
-                user={user}
-                dims={200}
-                render={(user) => (
-                  <CardImg top width="100%" src={user.avatar} />
-                )}
-              />
-              {this.state.isPublic ? (
-                <ReportModal
-                  className="editProfile"
-                  reportType={1}
-                  elementId={user.id}
-                  options={["Fotos inapropiadas", "Comentarios ofensivos"]}
-                  reportTitle={"Denunciar Usuario"}
-                  helpText={
-                    "Si consideras que este usuario tiene una conducta que no sigue nuestras reglas de la comunidad por favor envíanos un reporte."
-                  }
-                />
-              ) : (
-                <FontAwesomeIcon
-                  icon={faEdit}
-                  className="editProfile"
-                  title="Editar"
-                  onClick={() =>
-                    this.setState({ redirect: "/user/editProfile" })
-                  }
-                />
-              )}
-
-              <CardBody>
-                <CardText className="name">
-                  {`${user.first_name} ${user.last_name}`}
-                </CardText>
-                <CardText>
-                  {userTypeTranslation(user.user_type)}{" "}
-                  {makeIcons(user.user_type)}
-                </CardText>
-                <CardText className="rol-card">
-                  {userRolTranslation(user.rol_type)}
-                </CardText>
-              </CardBody>
-            </Card>
-          </Col>
-          <Col md="9">
+          <Col>
             <Container fluid>
               <Row className="user-dashboard-row">
                 <Col>
                   <h2 className="user-dashboard-title">
-                    &Uacute;ltimas fotograf&iacute;as{" "}
+                    Fotograf&iacute;as no listadas{" "}
                     {this.state.isPublic ? null : addMore}
-                    {this.state.isPublic ? null : editMode}
                   </h2>
                   {photos.length !== 0 ? (
                     <Link
                       to={
                         this.state.isPublic
-                          ? `/user/${user.id}/public/photos`
-                          : "/user/photos"
+                          ? `/user/public/${this.state.user.id}/photos`
+                          : "/user/dashboard/photos"
                       }
                       className="user-dashboard-see-all"
                     >
@@ -172,14 +110,62 @@ class Dashboard extends Component {
               <Row className="user-dashboard-row">
                 <Col>
                   <h2 className="user-dashboard-title">
-                    &Aacute;lbumes {this.state.isPublic ? null : addMore}
+                    Etiquetas en espera {this.state.isPublic ? null : addMore}
                   </h2>
                   {albums.length !== 0 ? (
                     <Link
                       to={
                         this.state.isPublic
-                          ? `/user/${this.state.user.id}/public/albums`
-                          : "/user/albums"
+                          ? `/user/public/${this.state.user.id}/albums`
+                          : "/user/dashboard/albums"
+                      }
+                      className="user-dashboard-see-all"
+                    >
+                      {" "}
+                      Ver Todos
+                    </Link>
+                  ) : null}
+                </Col>
+                <Container fluid>
+                  <Row style={{ margin: "1em auto" }} xs="9" align="center">
+                    {albums.length === 0 ? (
+                      <h5> No hay &aacute;lbumes </h5>
+                    ) : (
+                      albums.slice(0, 3).map((el, key) => (
+                        <Col sm="3" key={key}>
+                          <Photo
+                            name={el.title}
+                            url={el.thumbnail}
+                            height="150px"
+                            width="200px"
+                            useLink
+                            redirectUrl={
+                              this.state.isPublic
+                                ? `/user/public/albums/${el.id}`
+                                : `/user/albums/${el.id}`
+                            }
+                          />
+                        </Col>
+                      ))
+                    )}
+                  </Row>
+                </Container>
+              </Row>
+            </Container>
+          </Col>
+          <Col className="user-dashboard-row">
+            <Container fluid>
+              <Row>
+                <Col>
+                  <h2 className="user-dashboard-title">
+                    Me han comentado {this.state.isPublic ? null : addMore}
+                  </h2>
+                  {albums.length !== 0 ? (
+                    <Link
+                      to={
+                        this.state.isPublic
+                          ? `/user/public/${this.state.user.id}/albums`
+                          : "/user/dashboard/albums"
                       }
                       className="user-dashboard-see-all"
                     >
@@ -259,4 +245,4 @@ const mapActionsToProps = (dispatch) => ({
     dispatch(user.loadPublicUserPhotos(user_id)),
 });
 
-export default connect(mapStateToProps, mapActionsToProps)(Dashboard);
+export default connect(mapStateToProps, mapActionsToProps)(Landing);

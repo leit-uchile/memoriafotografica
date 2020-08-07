@@ -3,7 +3,7 @@ import { user } from "../../../actions";
 import { connect } from "react-redux";
 import { Container, Row, Col } from "reactstrap";
 import { LeitSpinner } from "../../../components";
-import UserDashboard from "./UserDashboard";
+import Landing from "../Landing";
 
 const PublicProfile = ({
   match,
@@ -43,7 +43,7 @@ const PublicProfile = ({
       </Row>
     </Container>
   ) : (
-    <UserDashboard location={location} match={match} publicUser={publicUser} {...rest}/>
+    <Landing location={location} match={match} publicUser={publicUser} {...rest}/>
   );
 };
 

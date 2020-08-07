@@ -22,7 +22,6 @@ import {
   faChevronCircleRight,
   faCloudUploadAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import "../../css/search.css";
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
 import uuid from "uuid";

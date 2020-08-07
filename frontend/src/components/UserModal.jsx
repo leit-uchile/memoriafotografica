@@ -65,7 +65,7 @@ const UserModal = ({ logout, user }) => {
                 <Col>
                   <Button
                     block
-                    color="warning"
+                    color="info"
                     onClick={() => {
                       doToggle();
                       window.location.assign("http://localhost:8000/admin");
@@ -110,7 +110,7 @@ const UserModal = ({ logout, user }) => {
           </Container>
         </ModalBody>
         <ModalFooter>
-          <Button color="warning" onClick={doLogout}>
+          <Button color="info" onClick={doLogout}>
             Cerrar sesi&oacute;n
           </Button>
         </ModalFooter>

@@ -23,7 +23,7 @@ const FailedRegistration = (props) => (
           </a>
         </p>
         <Button
-          color="warning"
+          color="info"
           onClick={() => {
             props.back();
             props.goToStep(1);

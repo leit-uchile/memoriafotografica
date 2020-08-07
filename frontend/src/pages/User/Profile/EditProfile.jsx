@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { user, site_misc } from "../../actions";
+import { user, site_misc } from "../../../actions";
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
@@ -25,10 +25,10 @@ import {
   ModalBody,
   ModalFooter,
 } from "reactstrap";
-import UserPicture from "../../components/UserPicture";
-import CropPhoto from "../../components/CropPhoto";
-import "./style.css";
-import "./Profile/userDashboard.css";
+import UserPicture from "../../../components/UserPicture";
+import CropPhoto from "../../../components/CropPhoto";
+import "../style.css";
+import "./userDashboard.css";
 
 class EditProfile extends Component {
   constructor(props) {
@@ -158,9 +158,9 @@ class EditProfile extends Component {
               style={{ margin: "0 auto" }}
               color="secondary"
               tag={Link}
-              to="./dashboard"
+              to="./"
             >
-              <FontAwesomeIcon icon={faArrowAltCircleLeft} /> Volver
+              <FontAwesomeIcon icon={faArrowAltCircleLeft} />
             </Button>
           </Col>
           <Col sm="9">

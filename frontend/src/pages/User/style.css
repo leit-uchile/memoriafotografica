@@ -12,6 +12,40 @@
   opacity: 0;
 }
 
+.card.user-dashboard-card{
+  border: none;
+  text-align: center;
+  background-color: inherit;
+  line-height: 50%;
+}
+
+.user-dashboard-card .card-body{
+  background-color: inherit;
+}
+
+.user-dashboard-card .card-img-top{
+  border-radius: 50%;
+}
+
+.user-dashboard-card .rol-card{
+  color: white;
+  font-weight: 700;
+}
+
+.user-dashboard-card .name{
+  font-size: 1.2em;
+}
+
+.user-dashboard-card .editProfile{
+  position: absolute;
+  right: 0;
+  font-size: 1.5em;
+  color: white;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+
 /* User albums background*/
 
 .user-albums-background{
@@ -54,5 +88,75 @@
 @media(min-width: 576px){
   .userNotAvailable .row .col-sm-6:last-child {
     text-align: left;
+  }
+}
+
+.leftcol{
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.navButton{
+  color: #000000;
+  margin: 0px;
+  padding: 0 60px;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  text-align: left;
+  font-size: 14px;
+  background-color: white;
+  border-radius:0;
+  display: inline-block;
+  border:0px;
+  border-bottom:1px solid rgba(0,0,0,0.05);
+}
+
+.leftcol .navButton:hover{
+  border-color: none;
+}
+
+.navButton:hover{
+  line-height: 60px;
+  border: none;
+  border-right: var(--leit-gray) solid 3px;
+  background-color: var(--leit-gray-disabled);
+}
+
+.navSpacer{
+  padding: .375rem .75rem ;
+  background-color:#cad8e6;
+  border-bottom:1px solid rgba(0,0,0,0.05);
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.curador-filter-card-img {
+  background-repeat: no-repeat;
+  background-size: contain;
+  min-height: 150px;
+  max-height: 300px;
+  background-color: black;
+  background-position: center;
+}
+
+.statBox{
+  border: 1px solid lightgray;
+  padding: 2em;
+  border-radius: 4px;
+  box-shadow: 0 .46875rem 2.1875rem rgba(59,62,102,.03),0 .9375rem 1.40625rem rgba(59,62,102,.03),0 .25rem .53125rem rgba(59,62,102,.05),0 .125rem .1875rem rgba(59,62,102,.03);
+}
+
+.statBox > h2{
+  margin-bottom: 1em;
+  text-align: left;
+}
+
+
+@media (min-width: 576px){
+  .leftcol.col-sm-2 {
+    position: sticky;
+    top: calc(1em + 64px);
+    height: fit-content;
   }
 }

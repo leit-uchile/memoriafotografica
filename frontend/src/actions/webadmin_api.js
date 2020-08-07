@@ -189,7 +189,7 @@ export const contactUs = (formData) => {
       email: formData.email,
       message: formData.message,
     });
-    return fetch(`/api/requests/contacts/all/`, {
+    return fetch(`/api/requests/contact/all/`, {
       method: "POST",
       headers: headers,
       body: jsonthing,

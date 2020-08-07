@@ -33,7 +33,7 @@ const ContactUs = ({ contacted, contactUs }) => {
         </Col>
       </Row>
       <Row>
-        <Col md={10}>
+        <Col>
           {!contacted ? (
             <Form style={styles.form}>
               <div style={styles.formTitle}>
@@ -121,14 +121,14 @@ const ContactUs = ({ contacted, contactUs }) => {
         </Col>
       </Row>
       <Row style={{ marginTop: "3em" }}>
-        <Col md={5}>
+        <Col md={7}>
           <Map
             source={
               "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d832.1722723612256!2d-70.66411451184945!3d-33.457405879914106!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI3JzI2LjciUyA3MMKwMzknNDguOCJX!5e0!3m2!1ses!2sus!4v1568426455672!5m2!1ses!2sus"
             }
           />
         </Col>
-        <Col md={5} style={{ margin: "0 1em" }}>
+        <Col md={5}>
           <p style={styles.info}>
             Para más información puede visitarnos en la Biblioteca Central de la
             Facultad de Ciencias Físicas y Matemáticas ubicada en Beauchef 850,
@@ -167,7 +167,8 @@ const styles = {
   },
   title: {
     color: "var(--leit-pink)",
-    margin: "1em 28% 1em",
+    margin: "1em",
+    textAlign: "center",
   },
   formTitle: {
     fontSize: "14px",
