@@ -33,6 +33,7 @@ PERMISSION_CHOICES = (
 class Reporte(models.Model):
     content = models.TextField()
     resolved = models.BooleanField(default = False)
+    resolution_details = models.TextField(default="")
     created_at = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)
     REPORT_TYPE_CHOICES = (
