@@ -15,6 +15,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import Categories from "./Categories";
 import { connect } from "react-redux";
 import { gallery } from "../../actions";
+import "./filterPicker.css";
 
 /**
  * FilterPicker
@@ -149,18 +150,10 @@ const FilterPicker = ({
         isOpen={toggleCats}
         toggle={() => setToggleCats(!toggleCats)}
         direction="down"
-        className="home-button"
       >
         <DropdownToggle
           caret
-          style={
-            !toggleCats
-              ? { ...styles.dropdownButton }
-              : {
-                  ...styles.dropdownButton,
-                  backgroundColor: "#e9ecef8a",
-                }
-          }
+          className={`filter-toggle ${!toggleCats ? "" : "active"}`}
         >
           Categorias
           {filterState.selectedCategories.length > 0 ? (
@@ -170,15 +163,12 @@ const FilterPicker = ({
           ) : null}
         </DropdownToggle>
         <DropdownMenu
-          style={{
-            boxShadow: "0 0 15px 0 rgba(0,0,0,.20)",
-          }}
-          className="home-category-filter"
+          className="filter-button"
         >
-          <div style={styles.triangulo}></div>
-          <Container fluid>
+          <div className="filter-triangle"></div>
+          <Container fluid className="filter-cats">
             {currentCats.length > 0 ? (
-              <Row>
+              <Row fluid>
                 <Categories
                   categorias={
                     currentCats ? currentCats.filter((e, i) => i % 2 === 0) : []
@@ -196,7 +186,9 @@ const FilterPicker = ({
               </Row>
             ) : (
               <Row>
-                <p style={styles.noCats}>No hay categorías disponibles</p>
+                <p style={{ marginTop: "8px", color: "#6c757d" }}>
+                  No hay categorías disponibles
+                </p>
               </Row>
             )}
             {filterState.maxAllowed < cats.total ? (
@@ -218,20 +210,20 @@ const FilterPicker = ({
           </Container>
         </DropdownMenu>
       </ButtonDropdown>
-      <UncontrolledButtonDropdown className="home-button">
-        <DropdownToggle caret style={styles.dropdownButton}>
+      <UncontrolledButtonDropdown>
+        <DropdownToggle caret className="filter-toggle">
           Ordenar
         </DropdownToggle>
-        <DropdownMenu style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}>
-          <div style={styles.triangulo}></div>
+        <DropdownMenu className="filter-button">
+          <div className="filter-triangle"></div>
           <DropdownItem header>Por orden cronológico</DropdownItem>
           <DropdownItem
-            style={
+            className={`filter-sort ${
               filterState.searchOrder.field === "upload_date" &&
               filterState.searchOrder.order === "asc"
-                ? styles.selectedSort
-                : styles.unselectedSort
-            }
+                ? "selected"
+                : ""
+            }`}
             onClick={() => {
               setSortingOrder({ field: "upload_date", order: "asc" });
               console.log(filterState.searchOrder);
@@ -246,12 +238,12 @@ const FilterPicker = ({
             )}
           </DropdownItem>
           <DropdownItem
-            style={
+            className={`filter-sort ${
               filterState.searchOrder.field === "upload_date" &&
               filterState.searchOrder.order === "desc"
-                ? styles.selectedSort
-                : styles.unselectedSort
-            }
+                ? "selected"
+                : ""
+            }`}
             onClick={() =>
               setSortingOrder({ field: "upload_date", order: "desc" })
             }
@@ -267,12 +259,12 @@ const FilterPicker = ({
           <DropdownItem divider />
           <DropdownItem header>Por fecha de subida</DropdownItem>
           <DropdownItem
-            style={
+            className={`filter-sort ${
               filterState.searchOrder.field === "created_at" &&
               filterState.searchOrder.order === "asc"
-                ? styles.selectedSort
-                : styles.unselectedSort
-            }
+                ? "selected"
+                : ""
+            }`}
             onClick={() =>
               setSortingOrder({ field: "created_at", order: "asc" })
             }
@@ -286,12 +278,12 @@ const FilterPicker = ({
             )}
           </DropdownItem>
           <DropdownItem
-            style={
+            className={`filter-sort ${
               filterState.searchOrder.field === "created_at" &&
               filterState.searchOrder.order === "desc"
-                ? styles.selectedSort
-                : styles.unselectedSort
-            }
+                ? "selected"
+                : ""
+            }`}
             onClick={() =>
               setSortingOrder({ field: "created_at", order: "desc" })
             }
@@ -308,46 +300,6 @@ const FilterPicker = ({
       </UncontrolledButtonDropdown>
     </Fragment>
   );
-};
-
-const styles = {
-  dropdownButton: {
-    color: "#ff5a60",
-    backgroundColor: "white",
-    margin: "1em 1em 0.5em 1em",
-    borderRadius: "0",
-    padding: "10px",
-    border: "none",
-  },
-  noCats: {
-    marginLeft: "auto",
-    marginRight: "auto",
-    marginTop: "8px",
-    color: "#6c757d",
-  },
-  triangulo: {
-    position: "absolute",
-    width: "20px",
-    height: "20px",
-    borderTop: "1px solid rgb(210,214,218)",
-    borderRight: "0px solid rgb(210,214,218)",
-    borderBottom: "0px solid rgb(210,214,218)",
-    borderLeft: "1px solid rgb(210,214,218)",
-    top: "0",
-    left: "8em",
-    marginLeft: "-25px",
-    content: "",
-    transform: "rotate(45deg)",
-    marginTop: "-10px",
-    background: "#ffff",
-  },
-  unselectedSort: {
-    color: "#97878f",
-  },
-  selectedSort: {
-    color: "#97878f",
-    fontWeight: "bold",
-  },
 };
 
 const mapStateToProps = (state) => ({

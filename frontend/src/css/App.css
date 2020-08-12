@@ -1,10 +1,10 @@
 /* CSS Variable declaration */
-:root{
+:root {
   --leit-pink: #ff5a60;
-  --leit-pink-disabled: #ff6166; 
+  --leit-pink-disabled: #f39c9f;
   --leit-pink-hover: #e15454f0;
   --leit-gray: #777777;
-  --leit-gray-disabled: #cfcccc ;
+  --leit-gray-disabled: #cfcccc;
   --leit-gray-hover: #616161;
   --leit-red: #eb2932;
   --leit-red-hover: #be1f27;
@@ -13,231 +13,49 @@
   --leit-bg-gray: #e9ecef;
   --leit-modal-bg: #efefef;
 }
-
-html{
-    font-family: 'Helvetica Neue', sans-serif;
-    font-weight: 400;
-    font-size: 13px;
+html {
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  font-size: 13px;
 }
-
 body {
   margin: 0;
   padding: 0;
 }
-
-.centering {
-    margin: 0 auto;
+[class*="primary"] {
+  color: #fff;
+  background-color: var(--leit-pink);
+  border-color: var(--leit-pink);
 }
-
-.checkbox-album{
-  display: inline;
+[class*="secondary"] {
+  color: #fff;
+  background-color: var(--leit-gray);
+  border-color: var(--leit-gray);
 }
-
-.doHoverPhoto{
-  opacity: 0;
-  transition-duration: 300ms;
+[class*="tertiary"] {
+  color: #000;
+  border-color: var(--leit-gray);
 }
-
-.doHoverPhoto:hover{
-  opacity: 0.7;
-  transition-duration: 300ms;
+[class*="danger"] {
+  color: #fff;
+  background-color: var(--leit-red);
+  border-color: var(--leit-red);
 }
-
-.CCName {
-  margin-left: 0.5em;
-}
-
 .progress-bar.progress-bar-animated.progress-bar-striped {
   background-color: var(--leit-pink);
 }
-
-.btn-primary {
-  color: #fff;
-  background-color: var(--leit-pink);
-  border: 1px solid var(--leit-pink);
-  border-radius: 4px;
-  padding: .5em 1.2em;
-  white-space: nowrap;
-  text-decoration: none;
-  text-align: center;
-  vertical-align: middle;
-  min-height: 30px;
-  line-height: 15px;
-}
-
-.btn-primary:hover {
-  background-color: var(--leit-pink-hover);
-  border-color: var(--leit-pink-hover);
-}
-
-.btn-primary:disabled {
-  background-color: var(--leit-pink-disabled);
-  border-color: var(--leit-pink-disabled);
-}
-
-.btn-secondary {
-  color: #fff;
-  background-color: var(--leit-gray);
-  border: 1px solid var(--leit-gray);
-  border-radius: 4px;
-  padding: .5em 1.2em;
-  white-space: nowrap;
-  text-decoration: none;
-  text-align: center;
-  vertical-align: middle;
-  min-height: 30px;
-  line-height: 15px;
-}
-
-.btn-secondary:hover {
-  background-color: var(--leit-gray-hover);
-  border-color: var(--leit-gray-hover);
-}
-
-.btn-secondary:disabled {
-  color: #000;
-  background-color: #ffffff;
-  border-color: var(--leit-gray-hover);
-}
-
-.btn-danger {
-  color: #fff;
-  background-color: var(--leit-red);
-  border: 1px solid var(--leit-red);
-  border-radius: 4px;
-  padding: .5em 1.2em;
-  white-space: nowrap;
-  text-decoration: none;
-  text-align: center;
-  vertical-align: middle;
-  min-height: 30px;
-  line-height: 15px;
-}
-
-.btn-danger:hover {
-  background-color: var(--leit-red-hover);
-  border-color: var(--leit-red-hover);
-}
-
-.btn-warning {
-  color: #000;
-  background-color: var(--leit-yellow);
-  border: 1px solid var(--leit-yellow);
-  border-radius: 4px;
-  padding: .5em 1.2em;
-  white-space: nowrap;
-  text-decoration: none;
-  text-align: center;
-  vertical-align: middle;
-  min-height: 30px;
-  line-height: 15px;
-}
-
-.btn-warning:hover {
-  background-color: var(--leit-yellow-hover);
-  border-color: var(--leit-yellow-hover);
-}
-
-.children-margin > div{
-  margin-bottom: 2em;
-}
-
-.curador-donut-chart {
-  display: inline-block;
-}
-
-a {
-  color: var(--leit-pink);
-}
-
-.btn-link {
-  color: var(--leit-pink);
-}
-
-.modal-header, .modal-footer{
-  background-color: var(--leit-modal-bg);
-}
-
-footer {
-  background-color: var(--leit-bg-gray);
-}
-
-.parallax {
-  /* The image used */
-  /* Loaded on the other class */
-  
-  /* Create the parallax scrolling effect */
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
 .white-box {
   background-color: #fff;
   box-shadow: #ddd 3px 5px 10px;
   margin-bottom: 1.5em;
 }
+.parallax {
+  /* The image used */
+  /* Loaded on the other class */
 
-.form-control {
-  height: 30px;
-  line-height: 15px;
-}
-
-.react-tags {
-  border: 1px solid #ced4da !important;
-  border-radius: .25em !important;
-}
-
-.page-item .page-link{
-  color: var(--leit-pink);
-}
-
-.page-item.active .page-link{
-  background-color: var(--leit-pink);
-  border-color: var(--leit-pink);
-}
-
-.leit-spinner{
-  color: var(--leit-pink)
-}
-
-a.nav-link.active {
-  color: var(--leit-pink) !important;
-}
-
-.add-rows-mtop .row{
-  margin-top: 1em;
-}
-
-.badge-primary{
-  color: #fff;
-  background-color: var(--leit-pink);
-}
-
-.badge-secondary{
-  color: #fff;
-  background-color: var(--leit-gray);
-}
-
-.badge-pill {
-  margin-right: 4px;
-  margin-bottom: 4px;
-  padding: 1px 5px;
-  line-height: 18px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  background-color: #fff;
-  font-size: 11px;
-  text-align: center;
-  vertical-align: middle;
-  color: #555;
-  display: inline-block;
-  font-weight: 400;
-  cursor: pointer;
-  white-space: nowrap;  
-}
-
-.badge-pill:hover {
-  background-color: #e6e6e6;
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }

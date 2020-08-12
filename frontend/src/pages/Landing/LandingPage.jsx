@@ -13,8 +13,8 @@ import {
   CardBody,
 } from "reactstrap";
 import NewsSlider from "../News/NewsSlider";
-import "./landing.css";
 import Gallery from "react-photo-gallery";
+import "./landing.css";
 
 const LandingPage = (props) => {
   const { setRoute, loadPhotos, loadCollections } = props;
@@ -106,21 +106,15 @@ const LandingPage = (props) => {
           </Col>
         </Row>
       </Container>
-      <div
-        style={{
-          backgroundColor: "var(--leit-bg-gray)",
-          paddingTop: "2em",
-          paddingBottom: "2em",
-        }}
-      >
+      <div className="landing-news">
         <Container>
           <Row>
             <Col>
               <h2 className="colTitle">Noticias recientes</h2>
             </Col>
             <Col>
-              <div style={{ textAlign: "right", padding: "1em" }}>
-                <Link to="/news" style={{ fontSize: "1.5em" }}>
+              <div className="landing-see-more">
+                <Link to="/news">
                   Ver todas
                 </Link>
               </div>
@@ -135,8 +129,8 @@ const LandingPage = (props) => {
             <h2 className="colTitle">&Uacute;ltimas Fotograf&iacute;as</h2>
           </Col>
           <Col>
-            <div style={{ textAlign: "right", padding: "1em" }}>
-              <Link to="/gallery" style={{ fontSize: "1.5em" }}>
+            <div className="landing-see-more">
+              <Link to="/gallery">
                 Ver galeria
               </Link>
             </div>
@@ -181,8 +175,8 @@ const LandingPage = (props) => {
               <h2 className="colTitle">Explora Nuestras Colecciones</h2>
             </Col>
             <Col>
-              <div style={{ textAlign: "right", padding: "1em" }}>
-                <Link to="/collections" style={{ fontSize: "1.5em" }}>
+              <div className="landing-see-more">
+                <Link to="/collections">
                   Ver colecciones
                 </Link>
               </div>

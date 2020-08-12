@@ -1,0 +1,24 @@
+div.not-selected:hover img {
+  filter: blur(6px);
+}
+.middle {
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
+}
+.not-selected:hover .middle {
+  opacity: 1;
+}
+.icons {
+  font-size: 3rem;
+  color: var(--leit-gray);
+}
+.icons > svg:hover{
+  transform: scale(1.5);
+  color: var(--leit-pink);
+  transition: all 0.1s ease-in;
+}

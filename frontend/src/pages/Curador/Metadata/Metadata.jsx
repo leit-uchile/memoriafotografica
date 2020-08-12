@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Categorize from "./DragNCategorize/Categorize";
 import Modify from "./Mofify/Modify";
-import "./style.css";
 import {
   TabContent,
   TabPane,
@@ -11,6 +10,7 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import "./styles.css";
 
 const Metadata = () => {
   const [activeTab, setActiveTab] = useState("2");

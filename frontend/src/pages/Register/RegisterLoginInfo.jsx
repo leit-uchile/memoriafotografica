@@ -158,29 +158,27 @@ class RegisterLoginInfo extends Component {
       <Container>
         <Row>
           <Col>
-            <h2 style={styles.title}>
+            <h2 className="page-title">
               Subir Fotograf&iacute;a / Datos del usuario{" "}
             </h2>
           </Col>
         </Row>
         <Row>
           <Col>
-            <Form
-              onSubmit={this.onSubmit}
-              style={styles.form}
-              className="white-box"
-            >
-              <div style={styles.formTitle}>
-                <FontAwesomeIcon
-                  icon={faUserCircle}
-                  style={{ marginRight: "1em" }}
-                />
-                <Label for="avatar">Avatar</Label>
+            <Form onSubmit={this.onSubmit} className="white-box form-container">
+              <div className="form-title">
+                <FontAwesomeIcon icon={faUserCircle} />
+                <Label for="avatar"> Avatar</Label>
               </div>
               {errorMessage}
               {avatarPreview}
               {this.state.avatar !== "" ? (
-                <h4 style={styles.title}>Podrás editarla en tu perfil</h4>
+                <h4
+                  className="form-subtitle"
+                  style={{ textAlign: "center", marginTop: "4px" }}
+                >
+                  Podrás editarla en tu perfil
+                </h4>
               ) : (
                 <span></span>
               )}
@@ -196,12 +194,9 @@ class RegisterLoginInfo extends Component {
               </FormGroup>
               <Row>
                 <Col>
-                  <div style={styles.formTitle}>
-                    <FontAwesomeIcon
-                      icon={faUser}
-                      style={{ marginRight: "1em" }}
-                    />
-                    <Label>Datos personales</Label>
+                  <div className="form-title">
+                    <FontAwesomeIcon icon={faUser} />
+                    <Label> Datos personales</Label>
                   </div>
                 </Col>
               </Row>
@@ -243,12 +238,9 @@ class RegisterLoginInfo extends Component {
               </FormGroup>
               <Row>
                 <Col>
-                  <div style={styles.formTitle}>
-                    <FontAwesomeIcon
-                      icon={faUserTag}
-                      style={{ marginRight: "1em" }}
-                    />
-                    <Label>Datos de usuario</Label>
+                  <div className="form-title">
+                    <FontAwesomeIcon icon={faUserTag} />
+                    <Label> Datos de usuario</Label>
                   </div>
                 </Col>
               </Row>
@@ -406,24 +398,5 @@ const TermsOfUseModal = ({
     </ModalFooter>
   </Modal>
 );
-
-const styles = {
-  form: {
-    padding: "2em",
-    marginBottom: "2em",
-    border: "1px solid rgb(210,214,218)",
-  },
-  title: {
-    textAlign: "center",
-    margin: "1em",
-  },
-  formTitle: {
-    fontSize: "14px",
-    fontWeight: "bold",
-    padding: "0.5em",
-    borderBottom: "1px solid rgb(210,214,218)",
-    marginBottom: "10px",
-  },
-};
 
 export default RegisterLoginInfo;

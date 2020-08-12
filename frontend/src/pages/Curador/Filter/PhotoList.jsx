@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import FilterModal from "./FilterModal";
+import "../styles.css";
+
 const check = <FontAwesomeIcon icon={faCheckCircle} />;
 
 const PhotoList = ({ photos, editPhoto }) => {

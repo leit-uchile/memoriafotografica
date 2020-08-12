@@ -113,7 +113,7 @@ class UploadDetails extends Component {
           <Col md="9" style={{ padding: "20px" }}>
             <Form>
               <FormGroup>
-                <Label>Descripcion:</Label>
+                <Label className="form-subtitle">Descripcion:</Label>
                 <Input
                   type="textarea"
                   placeholder="Historia asociada a la foto"
@@ -152,7 +152,9 @@ class UploadDetails extends Component {
               <Row>
                 <Col sm="12" md="4">
                   <div style={styles.hr}>
-                    <Label>Informaci&oacute;n adicional</Label>
+                    <Label className="form-subtitle">
+                      Informaci&oacute;n adicional
+                    </Label>
                   </div>
                   <ReactTags
                     placeholder={"Añadir etiquetas"}
@@ -169,7 +171,7 @@ class UploadDetails extends Component {
                 <Col sm="6" md="4">
                   <FormGroup>
                     <div style={styles.hr}>
-                      <Label for="CreativeCommons">
+                      <Label className="form-subtitle" for="CreativeCommons">
                         Permisos de acceso e intercambio
                       </Label>
                     </div>
@@ -191,7 +193,9 @@ class UploadDetails extends Component {
                 </Col>
                 <Col sm="6" md="4">
                   <div style={styles.hr}>
-                    <Label for="title">Titulo de la fotograf&iacute;a</Label>
+                    <Label className="form-subtitle" for="title">
+                      Titulo de la fotograf&iacute;a
+                    </Label>
                   </div>
                   <Input
                     type="text"

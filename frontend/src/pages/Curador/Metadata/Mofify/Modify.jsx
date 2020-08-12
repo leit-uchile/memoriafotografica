@@ -8,6 +8,7 @@ import { metadata, site_misc } from "../../../../actions";
 import { Pagination } from "../../../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import "../styles.css";
 
 /**
  * Modify metadata
@@ -78,7 +79,7 @@ const Modify = ({
         </Col>
       </Row>
       <Row>
-        <Col sm={6} className="curador-metadata-search">
+        <Col sm={6}>
           <ButtonGroup>
             <Button onClick={() => setDismiss(false)}>¿Ayuda?</Button>
             <Input
@@ -110,7 +111,7 @@ const Modify = ({
             />
           </ButtonGroup>
         </Col>
-        <Col sm={6} className="curador-metadata-search">
+        <Col sm={6}>
           <ButtonGroup className="mr-auto">
             <Input
               type="select"

@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Row, Col } from "reactstrap";
 import {Link} from 'react-router-dom';
-import "./404.css"
+import "./noMatch.css"
 
 const NoMatch = ({ location }) => {
   return (

@@ -1,0 +1,7 @@
+.page-item .page-link {
+  color: var(--leit-pink);
+}
+.page-item.active .page-link {
+  background-color: var(--leit-pink);
+  border-color: var(--leit-pink);
+}

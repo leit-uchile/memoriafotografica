@@ -101,7 +101,7 @@ const EditPhotosModal = (props) => {
       let newTags = to_send.metadata.filter((el) => el.id === undefined);
       if (newTags.length == 0) {
         console.log("No es necesario crearle id");
-        to_send.metadata = to_send.metadata.map(el=>el.id);
+        to_send.metadata = to_send.metadata.map((el) => el.id);
         update(to_send);
       } else {
         console.log("Es necesario crearle id");
@@ -279,19 +279,11 @@ const EditPhotosModal = (props) => {
       >
         Editar selección ({props.photosID.length})
       </Button>
-      <Modal
-        isOpen={toggle}
-        toggle={() => handleToggle()}
-        size={"lg"}
-      >
+      <Modal isOpen={toggle} toggle={() => handleToggle()} size={"lg"}>
         <ModalHeader toggle={handleToggle}>
-          {props.photosID.length === 1 ? (
-            <h4 style={{ fontWeight: "bold" }}>Editando 1 foto</h4>
-          ) : (
-            <h4 style={{ fontWeight: "bold" }}>
-              Editando {props.photosID.length} fotos
-            </h4>
-          )}
+          {props.photosID.length === 1
+            ? "Editando 1 foto"
+            : `Editando ${props.photosID.length} fotos`}
         </ModalHeader>
         <ModalBody>
           {PhotosForm}
@@ -299,7 +291,9 @@ const EditPhotosModal = (props) => {
             isOpen={toggleDelete}
             toggle={() => setToggleDelete(!toggleDelete)}
           >
-            <ModalHeader toggle={handleToggle}>Eliminar fotografía(s)</ModalHeader>
+            <ModalHeader toggle={handleToggle}>
+              Eliminar fotografía(s)
+            </ModalHeader>
             <ModalBody>
               Esta acción no se puede deshacer. ¿Está seguro?
             </ModalBody>

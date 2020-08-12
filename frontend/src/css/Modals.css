@@ -1,0 +1,4 @@
+.modal-header,
+.modal-footer {
+  background-color: var(--leit-modal-bg);
+}

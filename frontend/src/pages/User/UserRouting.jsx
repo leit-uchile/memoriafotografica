@@ -10,7 +10,6 @@ import {
   CardBody,
 } from "reactstrap";
 import { Route, Link, Switch, Redirect } from "react-router-dom";
-import "./style.css";
 // Important for ReactVis
 import "../../../node_modules/react-vis/dist/style.css";
 import "../../css/semantic-ui-min-custom.css";
@@ -38,6 +37,7 @@ import AlbumView from "./AlbumCollection/AlbumView";
 import PublicAlbums from "./AlbumCollection/PublicAlbums";
 import { UserPicture } from "../../components";
 import { userRolTranslation, userTypeTranslation } from "./utils";
+import "./userRouting.css";
 /**
  * TODO:
  * arreglar estilo de nav
@@ -71,7 +71,7 @@ const makeIcons = (rol_id) => {
 
 const Dashboard = ({ match, location, setRoute, user, props }) => {
   const [redirect, setRedirect] = useState(false);
-  const isPublic = location.pathname.includes("public")
+  const isPublic = location.pathname.includes("public");
 
   useEffect(() => {
     setRoute(location.pathname);
@@ -91,80 +91,69 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
         <title>Interfaz de usuario</title>
       </Helmet>
       <Row>
-        {!isPublic
-        ?(
-        <Col sm="2" className="leftcol">
-          <Container style={{ backgroundColor: "var(--leit-pink)" }}>
-            <Row style={{ padding: "10px" }}>
-              <Col sm="4">
-                <Card className="user-dashboard-card">
-                  <UserPicture
-                    user={user}
-                    dims={200}
-                    render={(user) => (
-                      <CardImg top width="100%" src={user.avatar} />
-                    )}
-                  />
-                </Card>
+        {!isPublic ? (
+          <Col sm="2" className="leftcol">
+            <Row className="user-dashboard-block">
+              <Col md="4" style={{ padding: "0" }}>
+                <UserPicture
+                  user={user}
+                  dims={200}
+                  render={(user) => (
+                    <img style={{ width: "100%" }} src={user.avatar} />
+                  )}
+                />
               </Col>
-              <Col sm="8">
-                <Card className="user-dashboard-card">
+              <Col md="8">
+                <div className="info">
                   <FontAwesomeIcon
                     icon={faEdit}
-                    className="editProfile"
+                    className="editButton"
                     title="Editar"
                     onClick={() => setRedirect("/user/dashboard/editProfile")}
                   />
-
-                  <CardBody>
-                    <CardText className="name">
-                      {`${user.first_name} ${user.last_name}`}
-                    </CardText>
-                    <CardText>
-                      {userTypeTranslation(user.user_type)}{" "}
-                      {makeIcons(user.user_type)}
-                    </CardText>
-                    <CardText className="rol-card">
-                      {userRolTranslation(user.rol_type)}
-                    </CardText>
-                  </CardBody>
-                </Card>
+                  <h2>{`${user.first_name} ${user.last_name}`}</h2>
+                  <p>
+                    {userTypeTranslation(user.user_type)}{" "}
+                    {makeIcons(user.user_type)}
+                  </p>
+                  <p className="rol">{userRolTranslation(user.rol_type)}</p>
+                </div>
               </Col>
             </Row>
-          </Container>
-          <Button
-            tag={Link}
-            to={match.path + "dashboard/"}
-            className={
-              "navButton" +
-              (location.pathname === "/user/dashboard/" ? " active" : "")
-            }
-          >
-            <FontAwesomeIcon icon={faChartBar} /> Dashboard
-          </Button>
-          {availableRoutes.map((el, k) => (
-            <Button
-              tag={Link}
-              to={match.path + "dashboard/" + el.to}
-              className={
-                "navButton" +
-                (location.pathname.includes(`/user/dashboard/${el.to}`)
-                  ? " active"
-                  : "")
-              }
-              key={k}
-            >
-              {el.icon}
-              {"  "}
-              {el.display}
-            </Button>
-          ))}
-          <div className="navEnding"></div>
-        </Col>
-        ):(
-          null
-        )
-        }
+            <Row>
+              <Col>
+                <Button
+                  tag={Link}
+                  to={match.path + "dashboard/"}
+                  className={
+                    "navButton" +
+                    (location.pathname === "/user/dashboard/" ? " active" : "")
+                  }
+                >
+                  <FontAwesomeIcon icon={faChartBar} /> Dashboard
+                </Button>
+                {availableRoutes.map((el, k) => (
+                  <Button
+                    tag={Link}
+                    to={match.path + "dashboard/" + el.to}
+                    className={
+                      "navButton" +
+                      (location.pathname.includes(`/user/dashboard/${el.to}`)
+                        ? " active"
+                        : "")
+                    }
+                    key={k}
+                  >
+                    {el.icon}
+                    {"  "}
+                    {el.display}
+                  </Button>
+                ))}
+              </Col>
+            </Row>
+            <div className="navEnding"></div>
+          </Col>
+        ) : null}
         <Col
           sm={!isPublic ? "10" : "12"}
           style={{

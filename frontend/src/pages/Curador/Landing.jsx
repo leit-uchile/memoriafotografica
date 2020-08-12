@@ -19,6 +19,7 @@ import { curveCatmullRom } from "d3-shape";
 import { metrics } from "../../actions";
 import { connect } from "react-redux";
 import { userRolTranslation, userTypeTranslation } from "../User/utils";
+import "./styles.css";
 
 const PhotoCountChart = ({ rawData, data2 }) => {
   const mapped = rawData

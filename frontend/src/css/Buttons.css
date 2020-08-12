@@ -1,0 +1,60 @@
+.btn-primary,
+.btn-secondary,
+.btn-tertiary,
+.btn-danger {
+  border-radius: 4px;
+  border-style: solid;
+  padding: 0.5em 1.2em;
+  white-space: nowrap;
+  text-decoration: none;
+  text-align: center;
+  vertical-align: middle;
+  min-height: 30px;
+  line-height: 15px;
+}
+.btn-primary:hover,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:focus {
+  background-color: var(--leit-pink-hover);
+  border-color: var(--leit-pink-hover);
+}
+.btn-primary:focus {
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  box-shadow: 0 0 0 0.2rem var(--leit-pink-disabled) !important;
+}
+.btn-primary:disabled {
+  background-color: var(--leit-pink-disabled);
+  border-color: var(--leit-pink-disabled);
+}
+.btn-secondary:hover,
+.btn-secondary:not(:disabled):not(.disabled):active,
+.btn-secondary:focus {
+  background-color: var(--leit-gray-hover);
+  border-color: var(--leit-gray-hover);
+}
+.btn-secondary:disabled {
+  color: rgba(59, 59, 59, 0.596);
+  background-color: #ffffff;
+  border-color: var(--leit-gray-hover);
+}
+.btn-tertiary:hover,
+.btn-tertiary:not(:disabled):not(.disabled):active,
+.btn-tertiary:focus {
+  color: #fff;
+  background-color: var(--leit-gray-hover);
+  border-color: var(--leit-gray-hover);
+}
+.btn-danger:hover,
+.btn-danger:not(:disabled):not(.disabled):active,
+.btn-danger:focus {
+  background-color: var(--leit-red-hover);
+  border-color: var(--leit-red-hover);
+}
+a,
+.btn-link {
+  color: var(--leit-pink);
+}
+a:hover,
+.btn-link:hover {
+  color: var(--leit-pink-hover);
+}

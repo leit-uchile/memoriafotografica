@@ -118,7 +118,6 @@ const NewsPage = (props) => {
             <Row>
               <Col>
                 <UncontrolledButtonDropdown
-                  className="home-button"
                   style={{ marginTop: "1em" }}
                 >
                   <DropdownToggle caret>Ordenar</DropdownToggle>

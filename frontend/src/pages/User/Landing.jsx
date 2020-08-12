@@ -1,9 +1,5 @@
 import React, { Component } from "react";
-import {
-  Container,
-  Row,
-  Col,
-} from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import Photo from "../../components/Photo";
 import { connect } from "react-redux";
 import { user } from "../../actions";
@@ -15,8 +11,8 @@ import {
   faAddressCard,
   faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import "./Profile/userDashboard.css";
 import { Helmet } from "react-helmet";
+import "./landing.css";
 
 class Landing extends Component {
   constructor(props) {
@@ -60,10 +56,14 @@ class Landing extends Component {
         </Helmet>
         <Row style={{ marginTop: "2em" }}>
           <Col style={{ textAlign: "center" }}>
-            <h2>{this.state.isPublic ? "Perfil" : "Mi perfil"}</h2>
+            <h2>
+              {this.state.isPublic
+                ? `Perfil de ${user.first_name + " " + user.last_name}`
+                : "Mi perfil"}
+            </h2>
           </Col>
         </Row>
-        <Row style={styles.container}>
+        <Row style={{ marginTop: "2em" }}>
           <Col>
             <Container fluid>
               <Row className="user-dashboard-row">
@@ -88,7 +88,7 @@ class Landing extends Component {
                 </Col>
                 <Container fluid>
                   <Row style={{ margin: "1em auto" }} xs="9" align="center">
-                    {photos.length === 0 ? (
+                    {/* {photos.length === 0 ? (
                       <h5> No hay fotograf&iacute;as </h5>
                     ) : (
                       photos.slice(0, 3).map((el, key) => (
@@ -103,7 +103,8 @@ class Landing extends Component {
                           />
                         </Col>
                       ))
-                    )}
+                    )} */}
+                    <p>En construccion</p>
                   </Row>
                 </Container>
               </Row>
@@ -128,7 +129,7 @@ class Landing extends Component {
                 </Col>
                 <Container fluid>
                   <Row style={{ margin: "1em auto" }} xs="9" align="center">
-                    {albums.length === 0 ? (
+                    {/* {albums.length === 0 ? (
                       <h5> No hay &aacute;lbumes </h5>
                     ) : (
                       albums.slice(0, 3).map((el, key) => (
@@ -147,7 +148,8 @@ class Landing extends Component {
                           />
                         </Col>
                       ))
-                    )}
+                    )} */}
+                    <p>En construccion</p>
                   </Row>
                 </Container>
               </Row>
@@ -176,7 +178,7 @@ class Landing extends Component {
                 </Col>
                 <Container fluid>
                   <Row style={{ margin: "1em auto" }} xs="9" align="center">
-                    {albums.length === 0 ? (
+                    {/* {albums.length === 0 ? (
                       <h5> No hay &aacute;lbumes </h5>
                     ) : (
                       albums.slice(0, 3).map((el, key) => (
@@ -195,7 +197,8 @@ class Landing extends Component {
                           />
                         </Col>
                       ))
-                    )}
+                    )} */}
+                    <p>En construccion</p>
                   </Row>
                 </Container>
               </Row>
@@ -206,12 +209,6 @@ class Landing extends Component {
     );
   }
 }
-
-const styles = {
-  container: {
-    marginTop: "2em",
-  },
-};
 
 const makeIcons = (rol_id) => {
   switch (rol_id) {

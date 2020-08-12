@@ -158,7 +158,7 @@ class CropPhoto extends Component {
     return (
       <Modal isOpen={this.state.modal} size={"lg"}>
         <ModalHeader toggle={this.toggle}>
-          <h4 style={{ fontWeight: "bold" }}>Recortando foto</h4>
+          Recortando foto
         </ModalHeader>
         <ModalBody style={{ textAlign: "center" }}>
           <Row>
@@ -232,7 +232,6 @@ class CropPhoto extends Component {
                   <h4>Vista previa</h4>
                   <img
                     alt="Crop"
-                    style={{ maxWidth: "100%" }}
                     src={croppedImageUrl}
                   />
                 </div>

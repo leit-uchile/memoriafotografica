@@ -9,12 +9,12 @@ import { gallery, site_misc, webadmin } from "../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarPlus, faCamera } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
-import "./photoInfo.css";
 import { getPermissionLogo } from "../../utils";
 import Tags from "./Elements/Tags";
 import Categories from "./Elements/Categories";
 import Addthis from "./Elements/Addthis";
 import PhotoDisplay from "./Elements/PhotoDisplay";
+import "./styles.css";
 
 const PhotoDetails = ({
   photoInfo,
@@ -139,11 +139,9 @@ const PhotoDetails = ({
                   ? null
                   : suggestions.map((im, k) => (
                       <Photo
-                        className={
-                          im.id !== photoInfo.id
-                            ? "suggestionPhoto"
-                            : "suggestionPhoto thisPhoto"
-                        }
+                        className={`suggestionPhoto ${
+                          im.id === photoInfo.id ? "thisPhoto" : ""
+                        }`}
                         key={k}
                         url={im.thumbnail}
                         name={"Foto relacionada"}
@@ -169,7 +167,6 @@ const PhotoDetails = ({
                         className="photoDetailAvatar"
                         style={{
                           backgroundImage: `url(${photoInfo.user.avatar})`,
-                          marginBottom: "0.5em",
                         }}
                       ></div>
                       <div style={{ marginLeft: "6em" }}>
@@ -204,9 +201,8 @@ const PhotoDetails = ({
                         <h5 style={{ color: "#999" }}>
                           <FontAwesomeIcon
                             icon={faCamera}
-                            style={{ marginRight: "1em" }}
                           />
-                          Tomada el{" "}
+                          {" "}Tomada el{" "}
                           {moment(photoInfo.upload_date).format("DD/MM/YYYY")}
                         </h5>
                       </Col>
@@ -215,9 +211,8 @@ const PhotoDetails = ({
                         <h5 style={{ color: "#999" }}>
                           <FontAwesomeIcon
                             icon={faCalendarPlus}
-                            style={{ marginRight: "1em" }}
                           />
-                          Subida el{" "}
+                          {" "}Subida el{" "}
                           {moment(photoInfo.created_at).format("DD/MM/YYYY")}
                         </h5>
                       </Col>

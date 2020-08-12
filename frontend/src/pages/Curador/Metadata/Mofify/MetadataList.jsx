@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Table } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import "../../styles.css";
+
 const check = <FontAwesomeIcon icon={faCheckCircle} />;
 
 /**

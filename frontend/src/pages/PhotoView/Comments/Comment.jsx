@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt, faEdit } from "@fortawesome/free-solid-svg-icons";
+import "./styles.css";
 
 const Comment = ({
   element: { content, censure, usuario, id, created_at, updated_at },
@@ -21,39 +22,18 @@ const Comment = ({
   const [editing, setEditing] = useState(false);
   const [newComment, setNewComment] = useState(content);
   return (
-    <Container
-      fluid
-      className="commentDiv"
-      style={{
-        border: "1px solid #ccc",
-        borderRadius: "3px",
-        backgroundColor: "var(--leit-bg-gray)",
-        padding: "0.5em",
-      }}
-    >
+    <Container fluid className="commentDiv">
       <Row>
         <Col xs={3} md={2} ld={1}>
           <div
+            className="comment-photo"
             style={{
-              width: "50px",
-              height: "50px",
-              borderRadius: "25px",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat",
               backgroundImage: `url(${usuario.avatar})`,
-              backgroundColor: "var(--leit-pink)",
-              marginLeft: "auto",
             }}
           ></div>
         </Col>
         <Col xs={9} md={10} ld={11}>
-          <div
-            style={{
-              display: "inline-block",
-              borderRight: "2px solid gray",
-              padding: "0 15px 0 0",
-            }}
-          >
+          <div className="comment-user">
             <b>
               <Link to={"/user/public/" + usuario.id + "/"}>{userName}</Link>
             </b>
@@ -61,76 +41,39 @@ const Comment = ({
           {created_at ? (
             moment(created_at).format("hh:mm") ===
             moment(updated_at).format("hh:mm") ? (
-              <div
-                style={{
-                  display: "inline-block",
-                  padding: "0 15px",
-                  color: "#999",
-                }}
-              >
+              <div className="comment-date">
                 {" "}
                 Publicado el {moment(created_at).format("DD/MM/YYYY")} a las{" "}
                 {moment(created_at).format("hh:mm")}{" "}
               </div>
             ) : (
-              <div
-                style={{
-                  display: "inline-block",
-                  padding: "0 15px",
-                  color: "#999",
-                }}
-              >
+              <div className="comment-date">
                 {" "}
                 Editado el {moment(updated_at).format("DD/MM/YYYY")} a las{" "}
                 {moment(updated_at).format("hh:mm")}{" "}
               </div>
             )
           ) : (
-            <div
-              style={{
-                display: "inline-block",
-                padding: "0 15px",
-                color: "#999",
-              }}
-            >
-              Cargando...
-            </div>
+            <div className="comment-date">Cargando...</div>
           )}
           {usuario.id === viewerId ? (
             !editing ? (
-              <div style={{ display: "inline-block", padding: "0" }}>
-                
+              <div className="comment-user-options">
                 <FontAwesomeIcon
                   icon={faEdit}
                   onClick={() => setEditing(true)}
-                  style={{
-                    color: "var(--leit-pink)",
-                    cursor: "pointer",
-                    fontSize: "16px",
-                    display: "inline-block",
-                    padding: "0",
-                  }}
                   title="Editar"
                 />
                 <FontAwesomeIcon
                   icon={faTrashAlt}
                   onClick={() => deleteComment(id)}
-                  style={{
-                    color: "var(--leit-red)",
-                    cursor: "pointer",
-                    fontSize: "16px",
-                    display: "inline-block",
-                    padding: "0",
-                    marginLeft: "4px"
-                  }}
                   title="Eliminar"
                 />
               </div>
             ) : (
-              <div style={{ display: "inline-block", padding: "0" }}>
+              <div className="comment-user-options">
                 <Button
                   color="link"
-                  style={{ display: "inline-block", padding: "0" }}
                   onClick={() => {
                     content !== newComment
                       ? updateComment(id, newComment, moment(Date(Date.now())))
@@ -142,7 +85,6 @@ const Comment = ({
                 </Button>
                 <Button
                   color="link"
-                  style={{ display: "inline-block", padding: "0" }}
                   onClick={() => {
                     setNewComment(content);
                     setEditing(false);

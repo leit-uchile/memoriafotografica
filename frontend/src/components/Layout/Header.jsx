@@ -2,7 +2,6 @@ import React, { useState, Fragment, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import UserModal from "../UserModal";
-import "../../css/header.css";
 import SearchBar from "./SearchBar";
 import {
   Navbar,
@@ -27,6 +26,7 @@ import {
   faHome,
   faSmileWink,
 } from "@fortawesome/free-solid-svg-icons";
+import "./header.css";
 
 const Header = ({ isAuth, currentRoute }) => {
   const [toggle, setToggle] = useState(false);
@@ -53,11 +53,7 @@ const Header = ({ isAuth, currentRoute }) => {
   const [redirect, setRedirect] = useState(false);
   return (
     <Fragment>
-      <header
-        ref={yourElement}
-        className="jumbotron"
-        style={{ marginBottom: "0", paddingBottom: "1rem", paddingTop: "1rem" }}
-      >
+      <header ref={yourElement}>
         <Container>
           {redirect ? <Redirect to="/" /> : null}
           <Row>
@@ -69,10 +65,9 @@ const Header = ({ isAuth, currentRoute }) => {
                     setTimeout(() => setRedirect(false), 1000);
                   }}
                   tag={"div"}
-                  style={{ maxWidth: "50%" }}
                 >
                   <h1>Memoria fotográfica</h1>
-                  <p style={{ fontSize: "0.8em", whiteSpace: "normal" }}>
+                  <p>
                     Facultad de Ciencias Fisicas y Matematicas - Universidad de
                     Chile
                   </p>
@@ -92,12 +87,14 @@ const Header = ({ isAuth, currentRoute }) => {
                     <UncontrolledDropdown nav inNavbar>
                       <DropdownToggle
                         nav
-                        style={{
-                          color:
-                            currentRoute === "/gallery" || currentRoute === "/photo" || currentRoute === "/collections" || currentRoute === "/news"
-                              ? "var(--leit-pink)"
-                              : "rgba(0,0,0,.5)",
-                        }}
+                        className={
+                          currentRoute === "/gallery" ||
+                          currentRoute === "/photo" ||
+                          currentRoute === "/collections" ||
+                          currentRoute === "/news"
+                            ? "active"
+                            : ""
+                        }
                       >
                         <FontAwesomeIcon icon={faImage} /> Explorar
                       </DropdownToggle>

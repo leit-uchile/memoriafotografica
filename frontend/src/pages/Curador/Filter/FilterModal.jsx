@@ -10,8 +10,10 @@ import {
   Label,
   Input,
   Row,
+  Col,
   FormText,
 } from "reactstrap";
+import Spinner from "reactstrap/lib/Spinner";
 
 const FilterModal = (props) => {
   const { buttonLabel, className, photo, editPhoto } = props;
@@ -70,28 +72,32 @@ const FilterModal = (props) => {
             <img src={photo.image} width="100%" alt="fotografia a editar" />
             <FormText>Visibilidad de la foto</FormText>
             <Row form>
-              <FormGroup check>
-                <Label check>
-                  <Input
+              <Col sm={6}>
+                <FormGroup check>
+                  <input
                     type="checkbox"
                     name="approved"
                     checked={newphoto.approved}
                     onChange={handleCheckboxChange}
-                  />{" "}
-                  Foto Aprobada
-                </Label>
-              </FormGroup>
-              <FormGroup check>
-                <Label check>
-                  <Input
+                    id="approved"
+                    class="toggle-button"
+                  />
+                  <label for="approved">Aprobada</label>
+                </FormGroup>
+              </Col>
+              <Col sm={6}>
+                <FormGroup check>
+                  <input
                     type="checkbox"
                     name="censure"
                     checked={newphoto.censure}
                     onChange={handleCheckboxChange}
-                  />{" "}
-                  Foto Censurada
-                </Label>
-              </FormGroup>
+                    id="censured"
+                    class="toggle-button"
+                  />
+                  <label for="censured">Censurada</label>
+                </FormGroup>
+              </Col>
             </Row>
             <FormText>Información de la foto</FormText>
             <FormGroup>
@@ -116,7 +122,8 @@ const FilterModal = (props) => {
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={saveChanges}>
-            {!loading ? "Guardar cambios" : "enviando..."}
+            {loading ? <Spinner style={{ width: "1rem", height: "1rem" }} /> : ""}
+            {" "} Guardar cambios
           </Button>{" "}
           <Button color="secondary" onClick={toggle}>
             Cancelar

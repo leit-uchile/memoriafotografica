@@ -25,6 +25,53 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faCreativeCommons } from "@fortawesome/free-brands-svg-icons";
 import ReactTags from "react-tag-autocomplete";
+import "./styles.css";
+import "./uploadAlbum.css";
+
+const CC_INFO = [
+  {
+    name: "CC BY",
+    text: "Atribución",
+    desc:
+      "Esta licencia permite a otras distribuir, remezclar, retocar, y crear a partir de su obra, incluso con fines comerciales, siempre y cuando den crédito por la creación original. Esta es la más flexible de las licencias ofrecidas. Se recomienda para la máxima difusión y utilización de los materiales licenciados. ",
+    img: "/assets/CC/CCBY.svg",
+  },
+  {
+    name: "CC BY-SA",
+    text: "Atribución, Compartir Igual",
+    desc:
+      "Esta licencia permite a otras remezclar, retocar, y crear a partir de su obra, incluso con fines comerciales, siempre y cuando den crédito y licencien sus nuevas creaciones bajo los mismos términos. Esta licencia suele ser comparada con las licencias «copyleft» de software libre y de código abierto. Todas las nuevas obras basadas en la suya portarán la misma licencia, así que cualesquiera obras derivadas permitirán también uso comercial. Esta es la licencia que usa Wikipedia, y se recomienda para materiales que se beneficiarían de incorporar contenido de Wikipedia y proyectos con licencias similares. ",
+    img: "/assets/CC/CCBYSA.svg",
+  },
+  {
+    name: "CC BY-ND",
+    text: "Atribución, Sin Derivadas",
+    desc:
+      "Esta licencia permite a otras sólo descargar sus obras y compartirlas con otras siempre y cuando den crédito, incluso con fines comerciales, pero no pueden cambiarlas de forma alguna.",
+    img: "/assets/CC/CCBYND.svg",
+  },
+  {
+    name: "CC BY-NC",
+    text: "Atribución, No Comercial",
+    desc:
+      "Esta licencia permite a otras distribuir, remezclar, retocar, y crear a partir de su obra de forma no comercial y, a pesar de que sus nuevas obras deben siempre mencionarle y ser no comerciales, no están obligadas a licenciar sus obras derivadas bajo los mismos términos.",
+    img: "/assets/CC/CCBYNC.svg",
+  },
+  {
+    name: "CC BY-NC-SA",
+    text: "Atribución, No Comercial, Compartir Igual",
+    desc:
+      "Esta licencia permite a otras remezclar, retocar, y crear a partir de su obra de forma no comercial, siempre y cuando den crédito y licencien sus nuevas creaciones bajo los mismos términos. ",
+    img: "/assets/CC/CCBYNCSA.svg",
+  },
+  {
+    name: "CC BY-NC-ND",
+    text: "Atribución, No Comercial, Sin Derivadas",
+    desc:
+      "Esta licencia es la más restrictiva, permitiendo a otras sólo descargar sus obras y compartirlas con otras siempre y cuando den crédito, pero no pueden cambiarlas de forma alguna ni usarlas de forma comercial.",
+    img: "/assets/CCBYNCND.svg",
+  },
+];
 
 /**
  * Upload Album
@@ -123,7 +170,7 @@ const UploadAlbum = ({
     <Container>
       <Row>
         <Col>
-          <h2 className="upload-title">
+          <h2 className="page-title">
             Subir Fotograf&iacute;a / Informacion general de las
             fotograf&iacute;as
           </h2>
@@ -131,15 +178,19 @@ const UploadAlbum = ({
       </Row>
       <Row style={{ marginTop: "2em" }}>
         <Col md={{ size: 6, offset: 1 }}>
-          <div style={styles.titleBox}>
-            <Label style={{ fontSize: "18px" }}>Crear Album</Label>
+          <div className="upload-album-section">
+            <Label>Crear Album</Label>
             <FontAwesomeIcon
               icon={faPlusCircle}
               onClick={() => isAlbum()}
-              style={styles.plusButton}
+              className="upload-album-button"
             />
           </div>
-          <Form style={formData.onAlbum ? styles.content : styles.noContent}>
+          <Form
+            className={`upload-album-section-content form-container ${
+              !formData.onAlbum ? "hide" : ""
+            }`}
+          >
             <FormGroup>
               <Collapse isOpen={formData.onAlbum}>
                 <Fragment>
@@ -160,20 +211,20 @@ const UploadAlbum = ({
               </Collapse>
             </FormGroup>
           </Form>
-          <div style={styles.titleBox}>
-            <Label style={{ fontSize: "18px" }}>Información General</Label>
+          <div className="upload-album-section">
+            <Label>Información General</Label>
           </div>
-          <Form style={styles.content} className="white-box">
-            <div className="upload-form-title">
-              <FontAwesomeIcon icon={faBook} style={{ marginRight: "1em" }} />
-              <Label>Metadatos</Label>
+          <Form className="white-box form-container upload-album-section-content">
+            <div className="form-title">
+              <FontAwesomeIcon icon={faBook}/>
+              <Label>{" "}Metadatos</Label>
             </div>
             <FormGroup>
-              <Label style={{ color: "#848687" }}>Fecha de las fotos:</Label>
+              <Label className="form-subtitle">Fecha de las fotos:</Label>
               <Input type="date" onChange={updateDate} required />
             </FormGroup>
             <FormGroup>
-              <Label style={{ color: "#848687" }}>Etiquetas:</Label>
+              <Label className="form-subtitle">Etiquetas:</Label>
               <ReactTags
                 placeholder={"Añadir etiquetas"}
                 autoresize={false}
@@ -190,12 +241,11 @@ const UploadAlbum = ({
               </FormText>
             </FormGroup>
             <FormGroup>
-              <div className="upload-form-title">
+              <div className="form-title">
                 <FontAwesomeIcon
                   icon={faCreativeCommons}
-                  style={{ marginRight: "1em" }}
                 />
-                <Label>Licencias: Permisos de acceso e intercambio</Label>
+                <Label>{" "}Licencias: Permisos de acceso e intercambio</Label>
               </div>
               <div style={{ marginTop: "10px" }}>
                 <FormGroup tag="fieldset">
@@ -253,14 +303,14 @@ const UploadAlbum = ({
           </Form>
         </Col>
         <Col md={4} className="white-box upload-rules">
-          <h4 style={{ fontWeight: "600" }}>Subida de contenido</h4>
+          <h4>Subida de contenido</h4>
           <ul>
             <li>
               Las fotos pueden agruparse en un <b>&aacute;lbum</b>
             </li>
             <li>Es necesario seleccionar una licencia de Creative Commons</li>
           </ul>
-          <h4 style={{ fontWeight: "600" }}>Creaci&oacute;n de metadata</h4>
+          <h4>Creaci&oacute;n de metadata</h4>
           <ul>
             <li>
               Los metadatos permiten realizar b&uacute;squedas y ordenar el
@@ -276,78 +326,5 @@ const UploadAlbum = ({
     </Container>
   );
 };
-
-const styles = {
-  titleBox: {
-    display: "flex",
-    height: "auto",
-    padding: "2px 10px 0px 10px",
-    marginLeft: "auto",
-    marginRight: "auto",
-    marginBottom: "-5px",
-    justifyContent: "space-between",
-    backgroundColor: "#f7f7f7",
-    border: "1px solid rgb(210,214,218)",
-    borderBottom: "none",
-  },
-  plusButton: {
-    fontSize: "2em",
-    color: "var(--leit-pink)",
-    cursor: "pointer",
-  },
-  content: {
-    backgroundColor: "white",
-    border: "1px solid rgb(210,214,218)",
-    padding: "15px",
-  },
-  noContent: {
-    marginBottom: "-12px",
-  },
-};
-
-const CC_INFO = [
-  {
-    name: "CC BY",
-    text: "Atribución",
-    desc:
-      "Esta licencia permite a otras distribuir, remezclar, retocar, y crear a partir de su obra, incluso con fines comerciales, siempre y cuando den crédito por la creación original. Esta es la más flexible de las licencias ofrecidas. Se recomienda para la máxima difusión y utilización de los materiales licenciados. ",
-    img: "/assets/CC/CCBY.svg",
-  },
-  {
-    name: "CC BY-SA",
-    text: "Atribución, Compartir Igual",
-    desc:
-      "Esta licencia permite a otras remezclar, retocar, y crear a partir de su obra, incluso con fines comerciales, siempre y cuando den crédito y licencien sus nuevas creaciones bajo los mismos términos. Esta licencia suele ser comparada con las licencias «copyleft» de software libre y de código abierto. Todas las nuevas obras basadas en la suya portarán la misma licencia, así que cualesquiera obras derivadas permitirán también uso comercial. Esta es la licencia que usa Wikipedia, y se recomienda para materiales que se beneficiarían de incorporar contenido de Wikipedia y proyectos con licencias similares. ",
-    img: "/assets/CC/CCBYSA.svg",
-  },
-  {
-    name: "CC BY-ND",
-    text: "Atribución, Sin Derivadas",
-    desc:
-      "Esta licencia permite a otras sólo descargar sus obras y compartirlas con otras siempre y cuando den crédito, incluso con fines comerciales, pero no pueden cambiarlas de forma alguna.",
-    img: "/assets/CC/CCBYND.svg",
-  },
-  {
-    name: "CC BY-NC",
-    text: "Atribución, No Comercial",
-    desc:
-      "Esta licencia permite a otras distribuir, remezclar, retocar, y crear a partir de su obra de forma no comercial y, a pesar de que sus nuevas obras deben siempre mencionarle y ser no comerciales, no están obligadas a licenciar sus obras derivadas bajo los mismos términos.",
-    img: "/assets/CC/CCBYNC.svg",
-  },
-  {
-    name: "CC BY-NC-SA",
-    text: "Atribución, No Comercial, Compartir Igual",
-    desc:
-      "Esta licencia permite a otras remezclar, retocar, y crear a partir de su obra de forma no comercial, siempre y cuando den crédito y licencien sus nuevas creaciones bajo los mismos términos. ",
-    img: "/assets/CC/CCBYNCSA.svg",
-  },
-  {
-    name: "CC BY-NC-ND",
-    text: "Atribución, No Comercial, Sin Derivadas",
-    desc:
-      "Esta licencia es la más restrictiva, permitiendo a otras sólo descargar sus obras y compartirlas con otras siempre y cuando den crédito, pero no pueden cambiarlas de forma alguna ni usarlas de forma comercial.",
-    img: "/assets/CCBYNCND.svg",
-  },
-];
 
 export default UploadAlbum;

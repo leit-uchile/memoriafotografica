@@ -1,0 +1,61 @@
+/* Nav */
+
+.leftcol {
+  padding: 0;
+  overflow: hidden;
+}
+.user-dashboard-block {
+  background-color: var(--leit-pink);
+  padding: 20px 30px;
+  line-height: 50%;
+}
+.user-dashboard-block .info {
+  text-align: center;
+}
+.editButton {
+  display: inline-block;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+}
+.user-dashboard-block h2 {
+  font-size: 1.1rem;
+  font-weight: bold;
+  display: inline-block;
+}
+.user-dashboard-block .rol {
+  color: white;
+  font-weight: bold;
+}
+.navButton {
+  color: #000000;
+  margin: 0px;
+  padding: 0 60px;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  text-align: left;
+  font-size: 14px;
+  background-color: white;
+  border-radius: 0;
+  display: inline-block;
+  border: 0px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.navButton:hover {
+  line-height: 60px;
+  border: none;
+  border-right: var(--leit-gray) solid 3px;
+  background-color: var(--leit-gray-disabled);
+}
+
+@media (min-width: 576px) {
+  .leftcol.col-sm-2 {
+    position: sticky;
+    top: calc(1em + 64px);
+    height: fit-content;
+  }
+}

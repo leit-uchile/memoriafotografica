@@ -8,6 +8,8 @@ import ContactEmailModal from "./ContactEmailModal";
 import ContactPhoneModal from "./ContactPhoneModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faFilter } from "@fortawesome/free-solid-svg-icons";
+import "../../styles.css";
+
 /**
  * Define different Renders and updates for.
  *
@@ -61,26 +63,26 @@ const ContactTable = ({
         </Col>
       </Row>
       <Row>
-        <Col sm={6} className="curador-contact-search">
+        <Col sm={6}>
           <ButtonGroup>
-              <Button disabled>Filtrar</Button>
-              <Button color="primary" id="toggler">
-                <FontAwesomeIcon icon={faFilter} />
-              </Button>
-              <Input
-                type="select"
-                className="btn btn-secondary"
-                onChange={(e) =>
-                  setPagination({ page: 0, page_size: Number(e.target.value) })
-                }
-              >
-                <option value="11">12 por p&aacute;gina</option>
-                <option value="25">25 por p&aacute;gina</option>
-                <option value="50">50 por p&aacute;gina</option>
-              </Input>
-            </ButtonGroup>
+            <Button disabled>Filtrar</Button>
+            <Button color="primary" id="toggler">
+              <FontAwesomeIcon icon={faFilter} />
+            </Button>
+            <Input
+              type="select"
+              className="btn btn-secondary"
+              onChange={(e) =>
+                setPagination({ page: 0, page_size: Number(e.target.value) })
+              }
+            >
+              <option value="11">12 por p&aacute;gina</option>
+              <option value="25">25 por p&aacute;gina</option>
+              <option value="50">50 por p&aacute;gina</option>
+            </Input>
+          </ButtonGroup>
         </Col>
-        <Col sm={6} className="curador-contact-search">
+        <Col sm={6}>
           <ButtonGroup className="mr-auto">
             <Input
               type="text"

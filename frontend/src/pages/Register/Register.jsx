@@ -8,13 +8,13 @@ import StepWizard from "react-step-wizard";
 import { LeitSpinner } from "../../components";
 
 const FailedRegistration = (props) => (
-  <Container style={{ textAlign: "center", marginTop: "2em" }}>
+  <Container>
     <Row>
       <Col>
-        <h2> No pudimos realizar tu registro </h2>
+        <h2 className="page-title"> No pudimos realizar tu registro </h2>
       </Col>
     </Row>
-    <Row>
+    <Row className="white-box form-container" style={{ textAlign: "center" }}>
       <Col>
         <p style={{ marginTop: "2em" }}>
           Si esto persiste por favor informanos a{" "}
@@ -23,7 +23,7 @@ const FailedRegistration = (props) => (
           </a>
         </p>
         <Button
-          color="info"
+          color="secondary"
           onClick={() => {
             props.back();
             props.goToStep(1);
@@ -44,13 +44,13 @@ const RegisterSent = ({ registerSuccess, goToStep, errors }) => {
     goToStep(3);
   }
   return (
-    <Container style={{ textAlign: "center", marginTop: "2em" }}>
+    <Container>
       <Row>
         <Col>
-          <h2>Completando registro</h2>
+          <h2 className="page-title">Completando registro</h2>
         </Col>
       </Row>
-      <Row>
+      <Row className="white-box form-container" style={{ textAlign: "center" }}>
         <Col style={{ marginTop: "2em" }}>
           <LeitSpinner />
         </Col>
@@ -60,13 +60,13 @@ const RegisterSent = ({ registerSuccess, goToStep, errors }) => {
 };
 
 const SuccessfulRegistration = () => (
-  <Container style={{ textAlign: "center", marginTop: "2em" }}>
+  <Container>
     <Row>
       <Col>
-        <h2>¡Registro con éxito!</h2>
+        <h2 className="page-title">¡Registro con éxito!</h2>
       </Col>
     </Row>
-    <Row>
+    <Row className="white-box form-container" style={{ textAlign: "center" }}>
       <Col>
         <p style={{ marginTop: "2em" }}>
           Por favor confirma tu correo electronico

@@ -15,6 +15,8 @@ import Comment from "./Comment";
 import { LeitSpinner } from "../../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faComments } from "@fortawesome/free-solid-svg-icons";
+import "./styles.css";
+
 const CommentHandler = ({
   id,
   comments,
@@ -35,7 +37,7 @@ const CommentHandler = ({
   // If is auth then allow reports
   var commentRows = comments.map((el, key) => (
     <Row key={"Comment" + key}>
-      <Col style={styles.commentContainerStyle}>
+      <Col style={{ padding: "0.2em" }}>
         <Comment
           element={el}
           modal={auth}
@@ -64,15 +66,7 @@ const CommentHandler = ({
         )
       ) : (
         <Row>
-          <Col
-            className="commentDiv"
-            style={{
-              border: "1px solid #ccc",
-              borderRadius: "3px",
-              backgroundColor: "var(--leit-bg-gray)",
-              padding: "0.5em",
-            }}
-          >
+          <Col className="commentDiv">
             {" "}
             A&uacute;n no hay comentarios. ¡Se el primero!
           </Col>
@@ -108,12 +102,6 @@ const CommentHandler = ({
       ) : null}
     </Container>
   );
-};
-
-const styles = {
-  commentContainerStyle: {
-    padding: "0.2em",
-  },
 };
 
 const mapStateToProps = (state) => ({

@@ -6,6 +6,7 @@ import { site_misc, metadata } from "../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import Autosuggest from "react-autosuggest";
+import "./searchBar.css";
 
 class SearchBar extends Component {
   constructor(props) {
@@ -130,7 +131,7 @@ class SearchBar extends Component {
     }
 
     return (
-      <Container className={"home-search sticky-search"} fluid>
+      <Container className="home-search sticky-search" fluid>
         <Row>
           <Col>
             <Container>

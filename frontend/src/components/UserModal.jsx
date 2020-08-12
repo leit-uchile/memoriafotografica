@@ -15,6 +15,7 @@ import { user } from "../actions";
 import { Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import "./userModal.css";
 
 const UserModal = ({ logout, user }) => {
   const [toggle, setToggle] = useState(false);
@@ -44,20 +45,20 @@ const UserModal = ({ logout, user }) => {
         </ModalHeader>
         <ModalBody>
           <Container fluid>
-            <Row>
+            <Row className="user-modal-interfaces">
               {user_type > 2 ? (
                 <Col>
-                  <h4 style={styles.headers}>Interfaz de Administrador</h4>
+                  <h4>Interfaz de Administrador</h4>
                 </Col>
               ) : null}
               {user_type > 1 ? (
                 <Col>
-                  <h4 style={styles.headers}>Interfaz de curador</h4>
+                  <h4>Interfaz de curador</h4>
                 </Col>
               ) : null}
 
               <Col>
-                <h4 style={styles.headers}>Gestionar perfil</h4>
+                <h4>Gestionar perfil</h4>
               </Col>
             </Row>
             <Row style={{ marginTop: "0.5em" }}>
@@ -65,7 +66,7 @@ const UserModal = ({ logout, user }) => {
                 <Col>
                   <Button
                     block
-                    color="info"
+                    color="primary"
                     onClick={() => {
                       doToggle();
                       window.location.assign("http://localhost:8000/admin");
@@ -80,7 +81,7 @@ const UserModal = ({ logout, user }) => {
                 <Col>
                   <Button
                     block
-                    color="primary"
+                    color="secondary"
                     onClick={() => {
                       doToggle();
                       setRedirect("/curador/dashboard/");
@@ -110,7 +111,7 @@ const UserModal = ({ logout, user }) => {
           </Container>
         </ModalBody>
         <ModalFooter>
-          <Button color="info" onClick={doLogout}>
+          <Button color="tertiary" onClick={doLogout}>
             Cerrar sesi&oacute;n
           </Button>
         </ModalFooter>
@@ -126,12 +127,5 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = (dispatch) => ({
   logout: () => dispatch(user.logout()),
 });
-
-const styles = {
-  headers: {
-    fontSize: "1.2em",
-    textAlign: "center",
-  },
-};
 
 export default connect(mapStateToProps, mapActionsToProps)(UserModal);

@@ -130,7 +130,7 @@ const PhotoSelector = ({
       <Container fluid>
         <Row>
           <Col>
-            <Button onClick={toggleSelectAll}>Seleccionar todas</Button>
+            <Button color="tertiary" onClick={toggleSelectAll}>Seleccionar todas</Button>
           </Col>
         </Row>
         <Row>
@@ -143,7 +143,7 @@ const PhotoSelector = ({
   }
   return (
     <Fragment>
-      <Button onClick={toggleSelectAll}>Seleccionar todas</Button>
+      <Button color="tertiary" onClick={toggleSelectAll}>Seleccionar todas</Button>
       <br />
       <br />
       <Gallery photos={photos} renderImage={imageRenderer} {...props} />

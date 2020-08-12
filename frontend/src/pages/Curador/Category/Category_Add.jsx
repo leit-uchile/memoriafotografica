@@ -262,7 +262,7 @@ const Category_Add = ({
       </Row>
       <Row style={{ marginTop: "1em" }}>
         <Col style={{ textAlign: "center" }}>
-          <Button color="primary" onClick={handleSearch}>
+          <Button color="secondary" onClick={handleSearch}>
             Buscar
           </Button>{" "}
           <Button color="primary" onClick={addPhotos}>

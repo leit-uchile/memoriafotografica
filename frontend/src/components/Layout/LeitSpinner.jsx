@@ -1,5 +1,6 @@
 import React from "react";
 import { Spinner } from "reactstrap";
+import "./leitSpinner.css";
 
 const LeitSpinner = ({ remSize = "6rem" }) => (
   <Spinner

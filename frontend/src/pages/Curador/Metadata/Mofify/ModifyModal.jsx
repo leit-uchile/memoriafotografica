@@ -14,6 +14,7 @@ import {
 import { connect } from "react-redux";
 import { metadata } from "../../../../actions";
 import { LeitSpinner } from "../../../../components";
+import "./modifyModal.css";
 
 const ModifyModal = ({
   selected,
@@ -128,19 +129,6 @@ const ModifyModal = ({
             ) : op === "Modificar Selección" ? (
               <Form>
                 Los elementos seran sobreescritos
-                <FormGroup check>
-                  <Label check>
-                    <Input
-                      type="checkbox"
-                      name="aprobarCheckbox"
-                      checked={state.checked}
-                      onClick={() =>
-                        setState((s) => ({ ...s, checked: !s.checked }))
-                      }
-                    />{" "}
-                    Aprobación
-                  </Label>
-                </FormGroup>
                 {selected.length === 1 ? (
                   <FormGroup row>
                     <Label for="valueInput" sm={2}>
@@ -184,9 +172,22 @@ const ModifyModal = ({
                     </Input>
                   </Col>
                 </FormGroup>
+                <FormGroup check>
+                  <input
+                    type="checkbox"
+                    name="aprobarCheckbox"
+                    checked={state.checked}
+                    onClick={() =>
+                      setState((s) => ({ ...s, checked: !s.checked }))
+                    }
+                    id="approved"
+                    class="toggle-button"
+                  />
+                  <label for="approved">Aprobación</label>
+                </FormGroup>
               </Form>
             ) : (
-              <div style={{ textAlign: "center" }}>
+              <div className="modify-modal-content">
                 Las etiquetas seran ahora y sus fotograf&iacute;as tendran
                 s&oacute;lo esta etiqueta.
                 <b>{selected[0].value}</b>
@@ -209,16 +210,16 @@ const ModifyModal = ({
         </Fragment>
       ) : state.done ? (
         errors.length === 0 ? (
-          <ModalBody style={{ textAlign: "center" }}>
+          <ModalBody className="modify-modal-content">
             Operaci&oacute;n completada
           </ModalBody>
         ) : (
-          <ModalBody style={{ textAlign: "center" }}>
+          <ModalBody className="modify-modal-content">
             Algunas operaciones fallaron, reintenta mas tarde.
           </ModalBody>
         )
       ) : (
-        <ModalBody style={{ textAlign: "center" }}>
+        <ModalBody className="modify-modal-content">
           <LeitSpinner />
           Enviando petici&oacute;n
         </ModalBody>

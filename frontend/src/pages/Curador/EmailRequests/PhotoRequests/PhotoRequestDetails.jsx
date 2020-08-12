@@ -114,19 +114,19 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
                     <CardText>
                       <b>Permisos:</b>{" "}
                       {c.permission.map((m) => (
-                        <span style={{ display: "inline" }}>{m}</span>
+                        <span>{m}</span>
                       ))}
                     </CardText>
                     <CardText>
                       <b>Categorías:</b>{" "}
                       {c.category.map((m) => (
-                        <span style={{ display: "inline" }}>{m}</span>
+                        <span>{m}</span>
                       ))}
                     </CardText>
                     <CardText>
                       <b>Metadata:</b>{" "}
                       {c.metadata.map((m) => (
-                        <span style={{ display: "inline" }}>{m}</span>
+                        <span>{m}</span>
                       ))}
                     </CardText>
                     <CardText>

@@ -1,0 +1,22 @@
+.containerPhoto {
+  position: relative;
+  background-size: cover;
+  background-position-y: center;
+  background-position-x: center;
+}
+.doHoverPhoto {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+  text-align: center;
+  vertical-align: middle;
+  color: white;
+  font-weight: 700;
+  opacity: 0;
+}
+.doHoverPhoto:hover {
+  opacity: 0.7;
+  transition-duration: 300ms;
+}

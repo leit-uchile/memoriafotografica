@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Container, Row, Col } from "reactstrap";
 import { LeitSpinner } from "../../../components";
 import Landing from "../Landing";
+import "./styles.css";
 
 const PublicProfile = ({
   match,
@@ -34,26 +35,36 @@ const PublicProfile = ({
     <Container className="userNotAvailable">
       <Row>
         <Col sm={6}>
-          <h2>Usuario <br></br> No encontrado</h2>
+          <h2>
+            Usuario <br></br> No encontrado
+          </h2>
         </Col>
         <Col sm={6}>
           <p>El usuario que buscas no existe o no est&aacute; disponible</p>
-          <p>Esto puede ser debido a una URL defectuosa o a que el usuario fue censurado por mala conducta.</p>
+          <p>
+            Esto puede ser debido a una URL defectuosa o a que el usuario fue
+            censurado por mala conducta.
+          </p>
         </Col>
       </Row>
     </Container>
   ) : (
-    <Landing location={location} match={match} publicUser={publicUser} {...rest}/>
+    <Landing
+      location={location}
+      match={match}
+      publicUser={publicUser}
+      {...rest}
+    />
   );
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   publicUser: state.user.publicUser,
-  loading: state.user.publicLoading
+  loading: state.user.publicLoading,
 });
 
-const mapActionsToProps = dispatch => ({
-  loadPublicUser: id => dispatch(user.loadAUser(id))
+const mapActionsToProps = (dispatch) => ({
+  loadPublicUser: (id) => dispatch(user.loadAUser(id)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(PublicProfile);

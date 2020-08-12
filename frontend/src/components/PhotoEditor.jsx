@@ -3,7 +3,7 @@ import Gallery from "react-photo-gallery";
 import { Container, Row, Col} from 'reactstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faEye, faPencilAlt} from "@fortawesome/free-solid-svg-icons";
-import "../css/photoEditor.css";
+import "./photoEditor.css";
 
 /**
  * From documentation
@@ -106,8 +106,8 @@ const SelectedImage = ({
       {!isSelected
       ? <div className="middle">
           <div className="icons">
-            <FontAwesomeIcon id="eye" icon={faEye} style={{marginRight: '0.35em'}} onClick={handleOnRedirect}/>
-            <FontAwesomeIcon id="pencil" icon={faPencilAlt} onClick={handleOnSelect} />
+            <FontAwesomeIcon icon={faEye} style={{marginRight: '0.35em'}} onClick={handleOnRedirect}/>
+            <FontAwesomeIcon icon={faPencilAlt} onClick={handleOnSelect} />
           </div>
         </div>
       : <span></span>

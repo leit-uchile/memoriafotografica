@@ -11,6 +11,7 @@ import {
   Card,
   CardBody,
 } from "reactstrap";
+import "./uploadDetails.css";
 
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },
@@ -96,18 +97,12 @@ class UploadDetails extends Component {
 
   render() {
     return (
-      <Card
-        style={{
-          border: "1px solid rgb(210,214,218)",
-          maxWidth: "30.5%",
-        }}
-        className="white-box"
-      >
+      <Card className="white-box upload-details-container">
         <img width="100%" src={this.state.src} alt="Thumbnail" />
         <CardBody>
           <Form>
             <FormGroup>
-              <Label>Descripcion:</Label>
+              <Label className="form-subtitle">Descripcion:</Label>
               <Input
                 type="textarea"
                 placeholder="Historia asociada a la foto"
@@ -140,8 +135,10 @@ class UploadDetails extends Component {
             style={{ width: "100%", marginTop: "1em" }}
           >
             <Form>
-              <FormGroup style={styles.hr}>
-                <Label>Informaci&oacute;n adicional</Label>
+              <FormGroup className="upload-details-hr">
+                <Label className="form-subtitle">
+                  Informaci&oacute;n adicional
+                </Label>
                 <ReactTags
                   placeholder={"Añadir etiquetas"}
                   labelField={"value"}
@@ -155,8 +152,8 @@ class UploadDetails extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <div style={styles.hr}>
-                  <Label for="CreativeCommons">
+                <div className="upload-details-hr">
+                  <Label className="form-subtitle" for="CreativeCommons">
                     Permisos de acceso e intercambio
                   </Label>
                 </div>
@@ -175,8 +172,10 @@ class UploadDetails extends Component {
                   </Input>
                 </FormGroup>
               </FormGroup>
-              <FormGroup style={styles.hr}>
-                <Label for="title">Titulo de la fotograf&iacute;a</Label>
+              <FormGroup className="upload-details-hr">
+                <Label className="form-subtitle" for="title">
+                  Titulo de la fotograf&iacute;a
+                </Label>
                 <Input
                   type="text"
                   name="title"
@@ -191,11 +190,5 @@ class UploadDetails extends Component {
     );
   }
 }
-
-const styles = {
-  hr: {
-    marginBottom: "1em",
-  },
-};
 
 export default UploadDetails;

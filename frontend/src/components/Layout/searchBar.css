@@ -1,0 +1,145 @@
+.react-autosuggest__container {
+  position: relative;
+}
+.react-autosuggest__input {
+  width: 240px;
+  height: 30px;
+  padding: 10px 20px;
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+  font-size: 1.1em;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+.react-autosuggest__input--focused {
+  outline: none;
+}
+.react-autosuggest__input--open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.react-autosuggest__suggestions-container {
+  display: none;
+}
+.react-autosuggest__suggestions-container--open {
+  display: block;
+  position: absolute;
+  /* top: 51px; */
+  width: 280px;
+  border: 1px solid #aaa;
+  background-color: #fff;
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+  font-size: 1em;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  z-index: 2;
+}
+.react-autosuggest__suggestions-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+.react-autosuggest__suggestion {
+  cursor: pointer;
+  padding: 10px 20px;
+}
+.react-autosuggest__suggestion--highlighted {
+  background-color: #ddd;
+}
+.react-autosuggest__section-container {
+  border-top: 1px dashed #ccc;
+}
+.react-autosuggest__section-container--first {
+  border-top: 0;
+}
+.react-autosuggest__section-title {
+  padding: 10px 0 0 10px;
+  font-size: 12px;
+  color: #777;
+}
+
+/* General size distribution */
+.home-search .react-autosuggest__container {
+  display: inline-block;
+  width: 50%;
+}
+.home-search .stretch .react-autosuggest__container {
+  width: 70%;
+}
+@media (max-width: 995px) and (min-width:540px){
+  .home-search .react-autosuggest__container {
+    width: 35vh;
+  }
+  .home-search .stretch .react-autosuggest__container {
+    width: 35vh;
+  }
+}
+@media (max-width: 540px) {
+  .home-search .react-autosuggest__container {
+    width: 25vh;
+  }
+  .home-search .stretch .react-autosuggest__container {
+    width: 25vh;
+  }
+}
+.home-search .react-autosuggest__suggestions-container--open {
+  width: 100%;
+}
+.home-search .react-autosuggest__input {
+  width: 100%;
+  border-radius: 0;
+  height: 40px;
+}
+.home-search .search-iptc-selector {
+  width: fit-content;
+  font-size: 1.1em;
+  display: inline-block;
+  background-color: var(--leit-pink);
+  color: wheat;
+  font-weight: 700;
+  border-color: var(--leit-pink);
+  border-radius: 4px 0 0 4px;
+  height: 40px;
+}
+.home-search .search-button {
+  width: fit-content;
+  display: inline-block;
+  font-size: 1.1em;
+  vertical-align: initial;
+  border-color: var(--leit-pink);
+  border-radius: 0 4px 4px 0;
+  height: 40px;
+}
+.sticky-search {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background-color: var(--leit-bg-gray);
+  height: calc(1em + 40px + 25px);
+  padding-top: 1em;
+  padding-bottom: 25px;
+  border-bottom: 1px solid rgb(210, 214, 218);
+}
+.logo-fadein {
+  background-image: url("/assets/logo01.svg");
+  background-repeat: no-repeat;
+  background-position-x: center;
+  /* display: inline-block; */
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 1s linear;
+}
+.logo-fadeout {
+  background-image: url("/assets/logo01.svg");
+  background-repeat: no-repeat;
+  background-position-x: center;
+  /* display: none; */
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 200ms, opacity 200ms linear;
+}
+.col-fadein,
+.react-autosuggest__container {
+  transition: width 1s;
+}

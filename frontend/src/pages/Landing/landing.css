@@ -1,48 +1,63 @@
-.slick-prev::before, .slick-next::before{
+.slick-prev::before,
+.slick-next::before {
   color: var(--leit-pink);
 }
 
-.LandingPhoto p, .LandingPhoto h3{
+.LandingPhoto p,
+.LandingPhoto h3 {
   color: white;
-  text-shadow: black 3px 2px 5px ;
+  text-shadow: black 3px 2px 5px;
 }
 
-.LandingPhoto h3{
+.LandingPhoto h3 {
   font-size: 4em;
   padding: 1em;
 }
 
-.LandingPhoto p{
+.LandingPhoto p {
   font-size: 2em;
   padding: 2em;
   background-color: rgba(213, 216, 219, 0.9);
 }
 
-h2.colTitle{
+h2.colTitle {
   font-size: 2.5em;
   font-weight: 700;
 }
 
-.missionDiv div{
+.missionDiv div {
   align-content: center;
   text-align: center;
   padding: 2em;
 }
 
-.missionDiv div img{
+.missionDiv div img {
   margin: 1em 0;
 }
 
-.missionDiv .detailText, .missionDiv h2{
+.missionDiv .detailText,
+.missionDiv h2 {
   text-align: left;
 }
 
+.landing-news {
+  background-color: var(--leit-bg-gray);
+  padding-top: 2em;
+  padding-bottom: 2em;
+}
+
+.landing-see-more {
+  text-align: right;
+  padding: 1em;
+  font-size: 1.5em;
+}
+
 /* Future optimization ? */
-.row div p.detailText{
+.row div p.detailText {
   font-size: 1.3em;
 }
 
-.landing-container .row{
+.landing-container .row {
   margin-top: 2em;
   margin-bottom: 2em;
 }
@@ -91,18 +106,17 @@ h2.colTitle{
   background-position-y: top;
 }
 
-.landing-background-2 .container{
+.landing-background-2 .container {
   padding-top: 20vh;
   color: white;
-  text-shadow: black 3px 2px 5px ;
+  text-shadow: black 3px 2px 5px;
 }
 
-
-.landing-presentation .row{
+.landing-presentation .row {
   padding-top: 30vh;
 }
 
-.landing-presentation-text{
+.landing-presentation-text {
   color: white;
   text-shadow: black 3px 2px 5px;
   font-size: 2em;
@@ -110,16 +124,15 @@ h2.colTitle{
   text-align: right;
 }
 
-@media (min-width: 576px){
-
-  .landing-title > div{
+@media (min-width: 576px) {
+  .landing-title > div {
     padding: 1em;
     background-color: white;
     max-width: 300px;
     height: fit-content;
   }
-  
-  .landing-title h2{
+
+  .landing-title h2 {
     background-image: url("/assets/logo01.svg");
     text-indent: -9999px;
     background-repeat: no-repeat;

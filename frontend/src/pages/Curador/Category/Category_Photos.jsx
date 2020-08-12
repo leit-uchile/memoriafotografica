@@ -32,7 +32,7 @@ const RemovePhotos = ({ action }) => {
 
   return (
     <Fragment>
-      <Button color="info" onClick={toggle}>
+      <Button color="secondary" onClick={toggle}>
         Remover Fotos
       </Button>
       <Modal

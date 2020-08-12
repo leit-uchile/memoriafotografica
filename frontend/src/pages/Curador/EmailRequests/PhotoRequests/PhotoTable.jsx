@@ -8,6 +8,7 @@ import { Pagination } from "../../../../components";
 import PhotoRequesterModal from "./PhotoRequesterModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faFilter } from "@fortawesome/free-solid-svg-icons";
+import "../../styles.css";
 
 class PhotoTable extends Component {
   constructor(props) {
@@ -57,7 +58,7 @@ class PhotoTable extends Component {
           </Col>
         </Row>
         <Row>
-          <Col sm={6} className="curador-contact-search">
+          <Col sm={6}>
             <ButtonGroup>
               <Button disabled>Filtrar</Button>
               <Button color="primary" id="toggler">

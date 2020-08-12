@@ -152,16 +152,16 @@ class Categories extends Component {
                         maxLength="30"
                       />
                     </FormGroup>
-                    {this.state.creating ? (
-                      <Button color="primary" type="submit">
-                        Creando{" "}
-                        <Spinner style={{ width: "1rem", height: "1rem" }} />
-                      </Button>
-                    ) : (
-                      <Button color="primary" type="submit">
-                        Crear
-                      </Button>
-                    )}
+                    <Button color="primary" type="submit">
+                      <Spinner
+                        size="sm"
+                        color="light"
+                        style={{
+                          display: this.state.creating ? "inline-block" : "none",
+                        }}
+                      />{" "}
+                      Crear
+                    </Button>
                   </Form>
                 </CardBody>
               </Card>

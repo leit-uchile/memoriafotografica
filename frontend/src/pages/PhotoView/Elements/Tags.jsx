@@ -11,6 +11,7 @@ const Tags = ({ tags, onRedirect }) => (
     ) : (
       tags.map((el, index) => (
         <Badge
+          className="tags"
           key={el.id}
           pill
           onClick={(e) => onRedirect(el.id, el.value)}

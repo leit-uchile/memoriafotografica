@@ -36,8 +36,6 @@ export const ModifyModal = ({ toDelete, loading, removeCategories }) => {
               removeCategories();
             }}
           >
-            {" "}
-            Eliminar{" "}
             <Spinner
               size="sm"
               color="light"
@@ -45,6 +43,7 @@ export const ModifyModal = ({ toDelete, loading, removeCategories }) => {
                 display: loading ? "inline-block" : "none",
               }}
             />{" "}
+            Eliminar
           </Button>
           <Button onClick={() => setToggle((s) => !s)}>Volver</Button>
         </ModalFooter>

@@ -126,14 +126,11 @@ class Home extends Component {
                 <div className="home-filters-containers">
                   {filters.length !== 0 ? (
                     filters.map((el) => (
-                      <Badge 
-                      key={el.metaID} 
-                      pill
-                      className="home-tags">
+                      <Badge className="tags" key={el.metaID} pill>
                         #{el.value}
                         <FontAwesomeIcon
                           icon={faTimesCircle}
-                          style={{ marginLeft:"4px", cursor: "pointer" }}
+                          style={{ marginLeft: "4px", cursor: "pointer" }}
                           onClick={() =>
                             this.props.removeSearch(el.metaID, el.value)
                           }

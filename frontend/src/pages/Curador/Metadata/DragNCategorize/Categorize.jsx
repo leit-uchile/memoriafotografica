@@ -15,6 +15,7 @@ import HighLight from "./HighlightWrapper";
 import { connect } from "react-redux";
 import { metadata } from "../../../../actions";
 import { LeitSpinner } from "../../../../components";
+import "../styles.css";
 
 /**
  * Categorize unapproved metadata

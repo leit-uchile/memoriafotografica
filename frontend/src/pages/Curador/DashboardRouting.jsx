@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, Row, Button, Col } from "reactstrap";
 import { Route, Link, Switch } from "react-router-dom";
-import "./styles.css";
 // Important for ReactVis
 import "../../../node_modules/react-vis/dist/style.css";
 import "../../css/semantic-ui-min-custom.css";
@@ -28,6 +27,7 @@ import PhotoRequestDetails from "./EmailRequests/PhotoRequests/PhotoRequestDetai
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
 import { useEffect } from "react";
+import "./styles.css";
 
 /**
  * TODO:

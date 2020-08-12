@@ -25,6 +25,8 @@ import {
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
 import uuid from "uuid";
+import "./styles.css";
+import "./uploadPhoto.css";
 
 const imageMaxSize = 8000000; // Bytes ~ 8MB
 
@@ -213,7 +215,7 @@ class UploadPhoto extends Component {
         />
         <Row>
           <Col>
-            <h2 className="upload-title">
+            <h2 className="page-title">
               Subir Fotograf&iacute;a / Agregar fotograf&iacute;as
             </h2>
           </Col>
@@ -225,13 +227,12 @@ class UploadPhoto extends Component {
                 <Col>
                   {this.props.doColumns ? (
                     <CardColumns>
-                      <Card style={styles.dropzone}>
+                      <Card className="upload-photo-dropzone">
                         <CardBody>
                           <Dropzone onDrop={this.handleOnDrop}>
                             {({ getRootProps, getInputProps }) => (
                               <div
                                 {...getRootProps()}
-                                style={{ height: "100%" }}
                               >
                                 <input {...getInputProps()} />
                                 <p>
@@ -251,13 +252,12 @@ class UploadPhoto extends Component {
                     </CardColumns>
                   ) : (
                     <CardDeck>
-                      <Card style={styles.dropzone}>
+                      <Card className="upload-photo-dropzone">
                         <CardBody>
                           <Dropzone onDrop={this.handleOnDrop}>
                             {({ getRootProps, getInputProps }) => (
                               <div
                                 {...getRootProps()}
-                                style={{ height: "100%" }}
                               >
                                 <input {...getInputProps()} />
                                 <p>
@@ -282,14 +282,14 @@ class UploadPhoto extends Component {
           </Col>
           <Col sm={3}>
             <div className="white-box upload-rules">
-              <h4 style={{ fontWeight: "600" }}>Metadatos</h4>
+              <h4>Metadatos</h4>
               <ul>
                 <li>
                   Cada foto <b>requiere</b> una descripci&oacute;n o breve
                   historia asociada.
                 </li>
               </ul>
-              <h4 style={{ fontWeight: "600" }}>
+              <h4>
                 Informaci&oacute;n por fotograf&iacute;a
               </h4>
               <ul>
@@ -327,15 +327,6 @@ class UploadPhoto extends Component {
     );
   }
 }
-
-const styles = {
-  dropzone: {
-    backgroundColor: "#f7f7f7",
-    textAlign: "center",
-    border: "3px dashed var(--leit-pink)",
-    boxShadow: "#ddd 3px 5px 10px",
-  },
-};
 
 const mapStateToProps = (state) => ({
   disclosed: state.site_misc.uploadDisclosureSet,

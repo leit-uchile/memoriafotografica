@@ -1,0 +1,8 @@
+.upload-rules {
+  padding: 2em;
+  border: 1px solid rgb(210, 214, 218);
+  height: fit-content;
+}
+.upload-rules h4 {
+  font-weight: 600;
+}

@@ -18,6 +18,7 @@ import {
   Button,
 } from "reactstrap";
 import { webadmin } from "../../actions";
+import "./styles.css";
 
 const ContactUs = ({ contacted, contactUs }) => {
   const [formData, setData] = useState({});
@@ -29,26 +30,23 @@ const ContactUs = ({ contacted, contactUs }) => {
     <Container>
       <Row>
         <Col>
-          <h2 style={styles.title}>Contáctenos</h2>
+          <h2 className="page-title">Contáctenos</h2>
         </Col>
       </Row>
       <Row>
         <Col>
           {!contacted ? (
-            <Form style={styles.form}>
-              <div style={styles.formTitle}>
-                <FontAwesomeIcon
-                  icon={faAddressCard}
-                  style={{ marginRight: "1em" }}
-                />
-                <Label>Identificación de contacto</Label>
+            <Form className="white-box form-container">
+              <div className="form-title">
+                <FontAwesomeIcon icon={faAddressCard} />
+                <Label> Identificación de contacto</Label>
               </div>
               <FormGroup row>
                 <Col>
                   <Input
                     type="text"
                     name="name"
-                    style={{ marginBottom: "0.5em", order: "1" }}
+                    tabIndex="1"
                     placeholder="Nombre"
                     required
                     onChange={updateData}
@@ -56,7 +54,7 @@ const ContactUs = ({ contacted, contactUs }) => {
                   <Input
                     type="text"
                     name="phone"
-                    style={{ marginBottom: "0.5em", order: "3" }}
+                    tabIndex="3"
                     placeholder="Teléfono"
                     required
                     onChange={updateData}
@@ -66,7 +64,7 @@ const ContactUs = ({ contacted, contactUs }) => {
                   <Input
                     type="text"
                     name="lastname"
-                    style={{ marginBottom: "0.5em", order: "2" }}
+                    tabIndex="2"
                     placeholder="Apellidos"
                     required
                     onChange={updateData}
@@ -74,7 +72,7 @@ const ContactUs = ({ contacted, contactUs }) => {
                   <Input
                     type="email"
                     name="email"
-                    style={{ marginBottom: "0.5em", order: "4" }}
+                    tabIndex="4"
                     placeholder="Correo"
                     required
                     onChange={updateData}
@@ -82,25 +80,25 @@ const ContactUs = ({ contacted, contactUs }) => {
                 </Col>
               </FormGroup>
               <FormGroup>
-                <div style={styles.formTitle}>
-                  <FontAwesomeIcon
-                    icon={faEnvelope}
-                    style={{ marginRight: "1em" }}
-                  />
+                <div className="form-title">
+                  <FontAwesomeIcon icon={faEnvelope} />
                   <Label>Motivo</Label>
                 </div>
                 <Input
                   type="textarea"
                   name="message"
+                  tabIndex="5"
                   placeholder="Mensaje"
                   required
                   onChange={updateData}
                 />
               </FormGroup>
-              <Button onClick={() => contactUs(formData)}>Enviar</Button>
+              <Button color="primary" tabIndex="5" onClick={() => contactUs(formData)}>
+                Enviar
+              </Button>
             </Form>
           ) : (
-            <div style={styles.form}>
+            <div className="form-container">
               <FontAwesomeIcon
                 icon={faCheckSquare}
                 style={{
@@ -129,12 +127,12 @@ const ContactUs = ({ contacted, contactUs }) => {
           />
         </Col>
         <Col md={5}>
-          <p style={styles.info}>
+          <p style={{ textAlign: "justify", textJustify: "inter-word" }}>
             Para más información puede visitarnos en la Biblioteca Central de la
             Facultad de Ciencias Físicas y Matemáticas ubicada en Beauchef 850,
             Santiago
           </p>
-          <div style={styles.phoneInfo}>
+          <div className="contact-success">
             <FontAwesomeIcon
               icon={faPhoneAlt}
               style={{ marginRight: "0.2em" }}
@@ -149,56 +147,31 @@ const ContactUs = ({ contacted, contactUs }) => {
 
 const Map = ({ source }) => {
   if (!source) {
-    return <div style={styles.mapError}>No se ha podido cargar el mapa</div>;
+    return (
+      <div
+        style={{ width: "460px", height: "300px", border: "1px solid black" }}
+      >
+        No se ha podido cargar el mapa
+      </div>
+    );
   }
   const src = source;
   return (
     <div>
-      <iframe src={src} style={styles.map} title="Location Map"></iframe>
+      <iframe
+        src={src}
+        style={{
+          width: "100%",
+          height: "300px",
+          border: "0",
+          allowFullScreen: "",
+        }}
+        title="Location Map"
+      ></iframe>
     </div>
   );
 };
 
-const styles = {
-  form: {
-    backgroundColor: "#f7f7f7",
-    padding: "2em",
-    border: "1px solid rgb(210,214,218)",
-  },
-  title: {
-    color: "var(--leit-pink)",
-    margin: "1em",
-    textAlign: "center",
-  },
-  formTitle: {
-    fontSize: "14px",
-    fontWeight: "bold",
-    padding: "0.5em",
-    borderBottom: "1px solid rgb(210,214,218)",
-    marginBottom: "10px",
-  },
-  mapError: {
-    width: "460px",
-    height: "300px",
-    border: "1px solid black",
-  },
-  map: {
-    width: "100%",
-    height: "300px",
-    border: "0",
-    allowFullScreen: "",
-  },
-  info: {
-    textAlign: "justify",
-    textJustify: "inter-word",
-  },
-  phoneInfo: {
-    display: "block",
-    backgroundColor: "#f7f7f7",
-    textAlign: "center",
-    padding: "0.2em",
-  },
-};
 const mapStateToProps = (state) => ({
   contacted: state.webadmin.contacted,
 });

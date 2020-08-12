@@ -3,6 +3,7 @@ import { Table, Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faImage } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import "../styles.css"
 
 export const CategoryTable = ({ cats, updateToDelete, toDelete, onAdd }) => (
   <Table responsive striped className="statBox">

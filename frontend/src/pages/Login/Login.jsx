@@ -3,9 +3,9 @@ import { Link, Redirect } from "react-router-dom";
 import { user, site_misc } from "../../actions";
 import { connect } from "react-redux";
 import { Alert } from "reactstrap";
-import "./login.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUnlock } from "@fortawesome/free-solid-svg-icons";
+import "./login.css";
 
 class Login extends Component {
   state = {

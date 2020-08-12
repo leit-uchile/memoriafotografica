@@ -1,0 +1,39 @@
+.filter-button {
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);
+}
+.filter-toggle {
+  color: #ff5a60;
+  background-color: white;
+  margin: 1em 1em 0.5em 1em;
+  border-radius: 0;
+  padding: 10px;
+  border: none;
+}
+.filter-toggle.active {
+  background-color: #e9ecef8a;
+}
+.filter-triangle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-top: 1px solid rgb(210, 214, 218);
+  border-right: 0px solid rgb(210, 214, 218);
+  border-bottom: 0px solid rgb(210, 214, 218);
+  border-left: 1px solid rgb(210, 214, 218);
+  top: 0;
+  left: 4.5em;
+  content: "";
+  transform: rotate(45deg);
+  margin-top: -10px;
+  background: #ffff;
+}
+.filter-cats {
+  width: 440px;
+}
+.filter-sort {
+  color: #97878f;
+}
+.filter-sort.selected {
+  color: #000;
+  font-weight: bold;
+}

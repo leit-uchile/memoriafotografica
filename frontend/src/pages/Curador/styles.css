@@ -1,9 +1,15 @@
-.leftcol{
+.curador-donut-chart {
+  display: inline-block;
+}
+.children-margin > div {
+  margin-bottom: 2em;
+}
+.leftcol {
   padding-left: 0;
   padding-right: 0;
 }
 
-.navButton{
+.navButton {
   color: #000000;
   margin: 0px;
   padding: 0 60px;
@@ -13,27 +19,27 @@
   text-align: left;
   font-size: 14px;
   background-color: white;
-  border-radius:0;
+  border-radius: 0;
   display: inline-block;
-  border:0px;
-  border-bottom:1px solid rgba(0,0,0,0.05);
+  border: 0px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.leftcol .navButton:hover{
+.leftcol .navButton:hover {
   border-color: none;
 }
 
-.navButton:hover{
+.navButton:hover {
   line-height: 60px;
   border: none;
   border-right: var(--leit-gray) solid 3px;
   background-color: var(--leit-gray-disabled);
 }
 
-.navSpacer{
-  padding: .375rem .75rem ;
-  background-color:#cad8e6;
-  border-bottom:1px solid rgba(0,0,0,0.05);
+.navSpacer {
+  padding: 0.375rem 0.75rem;
+  background-color: #cad8e6;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   font-size: 16px;
   font-weight: 400;
 }
@@ -47,20 +53,22 @@
   background-position: center;
 }
 
-.statBox{
+.statBox {
   border: 1px solid lightgray;
   padding: 2em;
   border-radius: 4px;
-  box-shadow: 0 .46875rem 2.1875rem rgba(59,62,102,.03),0 .9375rem 1.40625rem rgba(59,62,102,.03),0 .25rem .53125rem rgba(59,62,102,.05),0 .125rem .1875rem rgba(59,62,102,.03);
+  box-shadow: 0 0.46875rem 2.1875rem rgba(59, 62, 102, 0.03),
+    0 0.9375rem 1.40625rem rgba(59, 62, 102, 0.03),
+    0 0.25rem 0.53125rem rgba(59, 62, 102, 0.05),
+    0 0.125rem 0.1875rem rgba(59, 62, 102, 0.03);
 }
 
-.statBox > h2{
+.statBox > h2 {
   margin-bottom: 1em;
   text-align: left;
 }
 
-
-@media (min-width: 576px){
+@media (min-width: 576px) {
   .leftcol.col-sm-2 {
     position: sticky;
     top: calc(1em + 64px);

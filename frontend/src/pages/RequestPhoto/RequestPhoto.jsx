@@ -26,6 +26,61 @@ import {
   ListGroupItemText,
 } from "reactstrap";
 import { getPermissionLogo } from "../../utils";
+import "./requestPhoto.css";
+
+var Requested = ({ list, removeRequestPhoto }) => (
+  <ListGroup>
+    {list.length === 0 ? (
+      <ListGroupItem disabled>No hay fotos solicitadas</ListGroupItem>
+    ) : (
+      list.map((el, i) => (
+        <ListGroupItem key={i}>
+          <Row>
+            <Col style={{ textAlign: "center" }}>
+              <img
+                src={el.thumbnail}
+                alt={el.title}
+                height={el.aspect_h * 50}
+                width={el.aspect_w * 50}
+                style={
+                  el.aspect_w > el.aspect_h
+                    ? { maxHeight: "128px", maxWidth: "225px" }
+                    : { maxHeight: "128px", maxWidth: "100px" }
+                }
+              />
+              {getPermissionLogo(el, 90, 32)}
+            </Col>
+            <Col>
+              <Row>
+                <Col md={10}>
+                  <ListGroupItemHeading tag={Link} to={"/photo/" + el.id}>
+                    {el.title}
+                  </ListGroupItemHeading>
+                </Col>
+                <Col md={2}>
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    style={{ marginRight: "1em", cursor: "pointer" }}
+                    onClick={() => removeRequestPhoto(el)}
+                  />
+                </Col>
+              </Row>
+              <ListGroupItemText className="form-subtitle">
+                ID:{el.id}
+              </ListGroupItemText>
+              <ListGroupItemText
+                className="form-subtitle"
+                style={{ textAlign: "justify", textJustify: "inter-word" }}
+              >
+                Descripción: {el.description}
+              </ListGroupItemText>
+            </Col>
+          </Row>
+        </ListGroupItem>
+      ))
+    )}
+  </ListGroup>
+);
 
 class RequestPhoto extends Component {
   constructor(props) {
@@ -56,7 +111,7 @@ class RequestPhoto extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     const photosId = this.props.requestedPhotos.map((el) => el.id);
-    console.log(photosId)
+    console.log(photosId);
     this.props.sendRequest(photosId, this.state.formData);
   };
 
@@ -69,22 +124,19 @@ class RequestPhoto extends Component {
         </Helmet>
         <Row>
           <Col>
-            <h2 style={styles.title}>
+            <h2 className="page-title">
               Formulario para solicitud de material audiovisual
             </h2>
           </Col>
         </Row>
         <Row>
-          <Col sm={8} style={styles.form} className="white-box">
+          <Col sm={8} className="white-box form-container">
             {!requested ? (
               <Form>
                 <FormGroup>
-                  <div style={styles.formTitle}>
-                    <FontAwesomeIcon
-                      icon={faImages}
-                      style={{ marginRight: "1em" }}
-                    />
-                    <Label>Material solicitado</Label>
+                  <div className="form-title">
+                    <FontAwesomeIcon icon={faImages} />
+                    <Label> Material solicitado</Label>
                   </div>
                   <Requested
                     list={requestedPhotos}
@@ -92,16 +144,14 @@ class RequestPhoto extends Component {
                   />
                 </FormGroup>
                 <FormGroup>
-                  <div style={styles.formTitle}>
-                    <FontAwesomeIcon
-                      icon={faBook}
-                      style={{ marginRight: "1em" }}
-                    />
-                    <Label>Finalidad de la reproducción</Label>
+                  <div className="form-title">
+                    <FontAwesomeIcon icon={faBook} />
+                    <Label> Finalidad de la reproducción</Label>
                   </div>
                   <Input
                     type="textarea"
                     name="reason"
+                    tabIndex="1"
                     onChange={this.updateData}
                     placeholder="Especificación"
                     required
@@ -109,20 +159,17 @@ class RequestPhoto extends Component {
                   />
                 </FormGroup>
 
-                <div style={styles.formTitle}>
-                  <FontAwesomeIcon
-                    icon={faAddressCard}
-                    style={{ marginRight: "1em" }}
-                  />
-                  <Label>Identificación del solicitante</Label>
+                <div className="form-title">
+                  <FontAwesomeIcon icon={faAddressCard} />
+                  <Label> Identificación del solicitante</Label>
                 </div>
                 <FormGroup row>
                   <Col>
                     <Input
                       type="text"
                       name="first_name"
+                      tabIndex="2"
                       onChange={this.updateData}
-                      style={{ marginBottom: "0.5em" }}
                       placeholder="Nombre"
                       required
                       disabled={requested}
@@ -130,8 +177,8 @@ class RequestPhoto extends Component {
                     <Input
                       type="text"
                       name="identity_document"
+                      tabIndex="4"
                       onChange={this.updateData}
-                      style={{ marginBottom: "0.5em" }}
                       placeholder="CI"
                       required
                       disabled={requested}
@@ -139,8 +186,8 @@ class RequestPhoto extends Component {
                     <Input
                       type="text"
                       name="address"
+                      tabIndex="6"
                       onChange={this.updateData}
-                      style={{ marginBottom: "0.5em" }}
                       placeholder="Dirección"
                       required
                       disabled={requested}
@@ -148,8 +195,8 @@ class RequestPhoto extends Component {
                     <Input
                       type="text"
                       name="phone_number"
+                      tabIndex="8"
                       onChange={this.updateData}
-                      style={{ marginBottom: "0.5em" }}
                       placeholder="Teléfono"
                       required
                       disabled={requested}
@@ -157,8 +204,8 @@ class RequestPhoto extends Component {
                     <Input
                       type="text"
                       name="institution"
+                      tabIndex="10"
                       onChange={this.updateData}
-                      style={{ marginBottom: "0.5em" }}
                       placeholder="Institución"
                       required
                       disabled={requested}
@@ -168,8 +215,8 @@ class RequestPhoto extends Component {
                     <Input
                       type="text"
                       name="last_name"
+                      tabIndex="3"
                       onChange={this.updateData}
-                      style={{ marginBottom: "0.5em" }}
                       placeholder="Apellidos"
                       required
                       disabled={requested}
@@ -177,8 +224,8 @@ class RequestPhoto extends Component {
                     <Input
                       type="text"
                       name="profession"
+                      tabIndex="5"
                       onChange={this.updateData}
-                      style={{ marginBottom: "0.5em" }}
                       placeholder="Actividad/Profesión"
                       required
                       disabled={requested}
@@ -186,8 +233,8 @@ class RequestPhoto extends Component {
                     <Input
                       type="text"
                       name="district"
+                      tabIndex="7"
                       onChange={this.updateData}
-                      style={{ marginBottom: "0.5em" }}
                       placeholder="Comuna"
                       required
                       disabled={requested}
@@ -195,28 +242,23 @@ class RequestPhoto extends Component {
                     <Input
                       type="email"
                       name="email"
+                      tabIndex="9"
                       onChange={this.updateData}
-                      style={{ marginBottom: "0.5em" }}
                       placeholder="Email"
                       required
                       disabled={requested}
                     />
                   </Col>
                 </FormGroup>
-                <Button onClick={this.onSubmit}>Solicitar</Button>
+                <Button color="primary" tabIndex="11" onClick={this.onSubmit}>
+                  Solicitar
+                </Button>
               </Form>
             ) : (
               <div style={{ paddingTop: "4vh" }}>
                 <FontAwesomeIcon
                   icon={faCheckSquare}
-                  style={{
-                    color: "var(--leit-pink)",
-                    fontSize: "40px",
-                    display: "inline-block",
-                    width: "100%",
-                    textAlign: "center",
-                    marginBottom: "2vh",
-                  }}
+                  className="request-photo-success"
                 />
                 <h4 style={{ textAlign: "center" }}>
                   {" "}
@@ -270,77 +312,6 @@ class RequestPhoto extends Component {
     );
   }
 }
-
-var Requested = ({ list, removeRequestPhoto }) => (
-  <ListGroup>
-    {list.length === 0 ? (
-      <ListGroupItem disabled>No hay fotos solicitadas</ListGroupItem>
-    ) : (
-      list.map((el, i) => (
-        <ListGroupItem key={i}>
-          <Row>
-            <Col style={{ textAlign: "center" }}>
-              <img
-                src={el.thumbnail}
-                alt={el.title}
-                height={el.aspect_h * 50}
-                width={el.aspect_w * 50}
-                style={
-                  el.aspect_w > el.aspect_h
-                    ? { maxHeight: "128px", maxWidth: "225px" }
-                    : { maxHeight: "128px", maxWidth: "100px" }
-                }
-              />
-              {getPermissionLogo(el, 90, 32)}
-            </Col>
-            <Col>
-              <Row>
-                <Col md={10}>
-                  <ListGroupItemHeading tag={Link} to={"/photo/" + el.id}>
-                    {el.title}
-                  </ListGroupItemHeading>
-                </Col>
-                <Col md={2}>
-                  <FontAwesomeIcon
-                    icon={faTimes}
-                    style={{ marginRight: "1em", cursor: "pointer" }}
-                    onClick={() => removeRequestPhoto(el)}
-                  />
-                </Col>
-              </Row>
-              <ListGroupItemText>ID:{el.id}</ListGroupItemText>
-              <ListGroupItemText
-                style={{ textAlign: "justify", textJustify: "inter-word" }}
-              >
-                Descripción: {el.description}
-              </ListGroupItemText>
-            </Col>
-          </Row>
-        </ListGroupItem>
-      ))
-    )}
-  </ListGroup>
-);
-
-const styles = {
-  form: {
-    backgroundColor: "white",
-    border: "1px solid rgb(210,214,218)",
-    padding: "15px",
-  },
-  title: {
-    color: "var(--leit-pink)",
-    textAlign: "center",
-    margin: "1em",
-  },
-  formTitle: {
-    fontSize: "14px",
-    fontWeight: "bold",
-    padding: "0.5em",
-    borderBottom: "1px solid rgb(210,214,218)",
-    marginBottom: "10px",
-  },
-};
 
 const mapStateToProps = (state) => ({
   requestedPhotos: state.webadmin.requestedPhotos,

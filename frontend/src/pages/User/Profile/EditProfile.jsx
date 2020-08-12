@@ -27,8 +27,7 @@ import {
 } from "reactstrap";
 import UserPicture from "../../../components/UserPicture";
 import CropPhoto from "../../../components/CropPhoto";
-import "../style.css";
-import "./userDashboard.css";
+import "./styles.css";
 
 class EditProfile extends Component {
   constructor(props) {
@@ -184,7 +183,7 @@ class EditProfile extends Component {
                   className="btn-block"
                 >
                   <DropdownToggle caret>Cambiar foto de perfil</DropdownToggle>
-                  <DropdownMenu>
+                  <DropdownMenu className="edit-profile-dropdown">
                     <DropdownItem
                       hidden={user.avatar === null}
                       onClick={this.toggleModalCrop}

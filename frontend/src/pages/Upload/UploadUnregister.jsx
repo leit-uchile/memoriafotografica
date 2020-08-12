@@ -67,21 +67,20 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
     <Container>
       <Row>
         <Col>
-          <h2 className="upload-title">
+          <h2 className="page-title">
             Subir Fotograf&iacute;a / Cuentanos un poco sobre ti
           </h2>
         </Col>
       </Row>
       <Form
         onSubmit={onSubmit}
-        className="upload-unregister-container white-box"
+        className="white-box form-container"
       >
-        <div style={styles.formTitle}>
+        <div className="form-title">
           <FontAwesomeIcon
             icon={faUserFriends}
-            style={{ marginRight: "1em" }}
           />
-          <Label>Acerca de la comunidad FCFM</Label>
+          <Label>{" "}Acerca de la comunidad FCFM</Label>
         </div>
         <FormGroup>
           <Label>¿Cuál o cuáles fueron sus roles (o son)?</Label>
@@ -127,9 +126,9 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
             ) : null}
           </FormGroup>
         </FormGroup>
-        <div style={styles.formTitle}>
-          <FontAwesomeIcon icon={faEnvelope} style={{ marginRight: "1em" }} />
-          <Label>Si necesitamos contactarte</Label>
+        <div className="form-title">
+          <FontAwesomeIcon icon={faEnvelope}/>
+          <Label>{" "}Si necesitamos contactarte</Label>
         </div>
         <FormGroup row>
           <Col sm={2}>
@@ -188,18 +187,5 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
     </Container>
   );
 };
-const styles = {
-  title: {
-    color: "var(--leit-pink)",
-    textAlign: "center",
-    marginBottom: "2em",
-  },
-  formTitle: {
-    fontSize: "14px",
-    fontWeight: "bold",
-    padding: "0.5em",
-    borderBottom: "1px solid rgb(210,214,218)",
-    marginBottom: "10px",
-  },
-};
+
 export default UploadUnregister;

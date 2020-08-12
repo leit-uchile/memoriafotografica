@@ -5,13 +5,11 @@ import UploadUnregister from "./UploadUnregister";
 import UploadAlbum from "./UploadAlbum";
 import UploadPhoto from "./UploadPhotov2";
 import UploadProgress from "./UploadProgress";
-
 import { connect } from "react-redux";
 import { metadata, gallery, site_misc } from "../../actions";
 import { Helmet } from "react-helmet";
 import StepWizard from "react-step-wizard";
-
-import "./uploadPhoto.css";
+import "./uploadPage.css";
 
 /**
  * Upload page
@@ -301,29 +299,6 @@ class UploadPage extends Component {
   }
 }
 
-const styles = {
-  nav: {
-    marginBottom: "15px",
-    textAlign: "center",
-  },
-  dot: {
-    color: "black",
-    cursor: "pointer",
-    fontSize: "36px",
-    lineHeight: "1",
-    margin: "0 15px",
-    opacity: ".4",
-    textShadow: "none",
-    transition: "opacity 1s ease, text-shadow 1s ease",
-    willChange: "opacity, text-shadow",
-  },
-  active: {
-    color: "var(--leit-pink)",
-    opacity: "1",
-    textShadow: "0 0px 8px",
-  },
-};
-
 const mapStateToProps = (state) => ({
   isAuthenticated: state.user.isAuthenticated,
   upload: state.upload,
@@ -351,13 +326,13 @@ const Nav = (props) => {
     dots.push(
       <span
         key={`step-${i}`}
-        style={isActive ? { ...styles.dot, ...styles.active } : styles.dot}
+        className={`upload-page-dot ${isActive ? "active" : ""}`}
       >
         &bull;
       </span>
     );
   }
-  return <div style={styles.nav}>{dots}</div>;
+  return <div className="upload-page-nav">{dots}</div>;
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(UploadPage);

@@ -1,6 +1,7 @@
 import React from "react";
 import { useDrop } from "react-dnd";
 import METADATA_TYPE from "./types";
+import "../styles.css";
 
 const DropWrapper = ({ onDrop, children, name, iptc_id }) => {
   const [{ isOver }, drop] = useDrop({

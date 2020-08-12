@@ -7,7 +7,7 @@ import uuid4 from "uuid";
 import { Redirect, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
-import "./albumcollection.css";
+import "./styles.css";
 
 const UserAlbums = ({
   isPublic,

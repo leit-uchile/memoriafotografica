@@ -4,10 +4,10 @@ import { gallery, site_misc } from "../../../actions";
 import { connect } from "react-redux";
 import Gallery from "react-photo-gallery";
 import { LeitSpinner } from "../../../components";
-import "./albumcollection.css";
 import { Redirect, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import "./styles.css";
 
 /**
  * Display album with pagination and individual image links

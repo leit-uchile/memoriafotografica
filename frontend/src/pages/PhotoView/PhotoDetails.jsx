@@ -16,11 +16,11 @@ import {
   faChevronCircleRight,
 } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
-import "./photoInfo.css";
 import { getPermissionLogo } from "../../utils";
 import Tags from "./Tags";
 import Categories from "./Categories";
 import Addthis from "./Addthis";
+import "./styles.css";
 
 class PhotoDetails extends Component {
   constructor(props) {
@@ -213,16 +213,9 @@ class PhotoDetails extends Component {
               <div style={{ textAlign: "center" }}>
                 <Link
                   className="photoDetailNavigation"
-                  style={{
-                    display: "inline-block",
-                    marginRight: "1em",
-                  }}
                   to={`/photo/${this.state.leftIndex}`}
                 >
-                  <FontAwesomeIcon
-                    icon={faChevronCircleLeft}
-                    style={{ height: "25px", width: "25px" }}
-                  />
+                  <FontAwesomeIcon icon={faChevronCircleLeft} />
                 </Link>
                 <img
                   alt={photoInfo.title}
@@ -236,16 +229,9 @@ class PhotoDetails extends Component {
                 />
                 <Link
                   className="photoDetailNavigation"
-                  style={{
-                    display: "inline-block",
-                    marginLeft: "1em",
-                  }}
                   to={`/photo/${this.state.rightIndex}`}
                 >
-                  <FontAwesomeIcon
-                    icon={faChevronCircleRight}
-                    style={{ height: "25px", width: "25px" }}
-                  />
+                  <FontAwesomeIcon icon={faChevronCircleRight} />
                 </Link>
               </div>
             </Col>
