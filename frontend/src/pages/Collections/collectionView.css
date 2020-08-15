@@ -21,22 +21,95 @@
   margin-top: -20px;
   text-align: left;
 }
-.collection-photo,
-.collection-desc {
+
+/* Component */
+.timeline {
+  position: relative;
+  margin: 20px auto;
+  padding: 40px 0;
+  width: 100%;
+}
+/* Vertical line*/
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 2px;
+  height: 95%;
+  background-color: #c5c5c5;
+}
+/* Container*/
+.timeline .collection-view-container {
   margin: 0;
-  padding: 20px 40px;
+  padding: 0;
 }
-.collection-photo {
+/* Elements */
+.timeline .collection-view-container .collection-view-element {
+  position: relative;
   width: 50%;
+  padding: 20px 40px;
+  box-sizing: border-box;
+  margin-bottom: 10%;
 }
-.collection-desc {
-  width: 25%;
-}
-.left {
+.timeline .collection-view-container .collection-view-element:nth-child(odd) {
   float: left;
   text-align: right;
+  clear: both;
 }
-.right {
+.timeline .collection-view-container .collection-view-element:nth-child(even) {
   float: right;
   text-align: left;
+  clear: both;
+}
+/* Photo */
+.collection-view-photo {
+  padding-bottom: 20px;
+}
+/* Info */
+.timeline .collection-view-container .collection-view-element:nth-child(odd) .collection-view-info{
+  position: absolute;
+  top: 40%;
+  right: -50%; /*-280px%*/
+  width: 412px;
+  margin: 0;
+  padding: 8px 32px;
+  color: #000;
+  border-radius: 18px;
+  box-shadow: 0 0 0 3px var(--leit-gray-disabled);
+  text-align: left;
+}
+.timeline .collection-view-container .collection-view-element:nth-child(even) .collection-view-info{
+  position: absolute;
+  top: 40%;
+  left: -50%;
+  width: 412px;
+  margin: 0;
+  padding: 8px 32px;
+  color: #000;
+  border-radius: 18px;
+  box-shadow: 0 0 0 3px var(--leit-gray-disabled);
+  text-align: right;
+}
+/* Time marker */
+.timeline .collection-view-container .collection-view-element:nth-child(odd):before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -6px;
+  width: 10px;
+  height: 10px;
+  background-color: var(--leit-pink);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px var(--leit-pink-disabled);
+}
+.timeline .collection-view-container .collection-view-element:nth-child(even):before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -4px;
+  width: 10px;
+  height: 10px;
+  background-color: var(--leit-pink);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px var(--leit-pink-disabled);
 }
