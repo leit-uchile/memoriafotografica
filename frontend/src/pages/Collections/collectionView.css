@@ -1,0 +1,42 @@
+.collection-view-description {
+  max-width: 800px;
+  margin: 10px auto;
+  padding: 20px;
+  box-shadow: #ddd 3px 5px 10px;
+}
+.collection-view-description p {
+  color: black;
+  font-style: italic;
+  font-size: 2em;
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+}
+.collection-view-description::before {
+  content: "\201c";
+  font-size: 100px;
+  color: gray;
+  display: block;
+  margin-bottom: -80px;
+  margin-top: -20px;
+  text-align: left;
+}
+.collection-photo,
+.collection-desc {
+  margin: 0;
+  padding: 20px 40px;
+}
+.collection-photo {
+  width: 50%;
+}
+.collection-desc {
+  width: 25%;
+}
+.left {
+  float: left;
+  text-align: right;
+}
+.right {
+  float: right;
+  text-align: left;
+}

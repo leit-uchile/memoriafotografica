@@ -102,7 +102,7 @@ const AllCollections = ({ setRoute, albums, loadCollections }) => {
           <h4>¿Que est&aacute;s buscando?</h4>
           <InputGroup>
             <Input
-              placeholder="Nombre de la collecion"
+              placeholder="Nombre de la coleccion"
               onChange={(e) => {
                 e.persist();
                 setParams((d) => ({ ...d, name: e.target.value }));
@@ -115,7 +115,7 @@ const AllCollections = ({ setRoute, albums, loadCollections }) => {
           <div className="white-box collections-help">
             <p>
               Las colecciones son albumes seleccionados por nuestro equipo de
-              curadores de la biblioteca central.
+              curadores de la Biblioteca Central.
             </p>
             <p>También contamos con colecciones propias de la biblioteca</p>
           </div>

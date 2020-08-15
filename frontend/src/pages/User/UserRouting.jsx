@@ -4,10 +4,6 @@ import {
   Row,
   Button,
   Col,
-  Card,
-  CardImg,
-  CardText,
-  CardBody,
 } from "reactstrap";
 import { Route, Link, Switch, Redirect } from "react-router-dom";
 // Important for ReactVis
@@ -38,6 +34,7 @@ import PublicAlbums from "./AlbumCollection/PublicAlbums";
 import { UserPicture } from "../../components";
 import { userRolTranslation, userTypeTranslation } from "./utils";
 import "./userRouting.css";
+import CollectionView from "../Collections/CollectionView";
 /**
  * TODO:
  * arreglar estilo de nav
@@ -83,7 +80,6 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
   }
   return (
     <Container
-      style={{ borderTop: "1px solid rgb(210, 214, 218)" }}
       className="disable-css-transitions"
       fluid
     >
@@ -195,7 +191,7 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
             <BoundedRoute
               exact
               path={"/user/public/collections/:id"}
-              component={AlbumView}
+              component={CollectionView}
               location={location}
               {...props}
             />

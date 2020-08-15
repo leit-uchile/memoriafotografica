@@ -29,7 +29,6 @@
 .form-control {
   height: 30px;
   line-height: 15px;
-  margin-bottom: 0.5em;
 }
 .form-control:focus {
   border-color: var(--leit-pink-disabled);

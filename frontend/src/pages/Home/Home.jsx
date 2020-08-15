@@ -126,7 +126,12 @@ class Home extends Component {
                 <div className="home-filters-containers">
                   {filters.length !== 0 ? (
                     filters.map((el) => (
-                      <Badge className="tags" key={el.metaID} pill>
+                      <Badge
+                        className="tags"
+                        key={el.metaID}
+                        style={{ cursor: "default" }}
+                        pill
+                      >
                         #{el.value}
                         <FontAwesomeIcon
                           icon={faTimesCircle}
