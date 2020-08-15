@@ -3,12 +3,15 @@ import { Container, Row, Col, Button } from "reactstrap";
 import { gallery, site_misc } from "../../actions";
 import { connect } from "react-redux";
 import { LeitSpinner, Photo } from "../../components";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import "./collectionView.css";
 
+const loremIpsum =
+  " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ut pretium augue. Etiam in odio enim. Mauris vitae pretium libero. Aliquam erat volutpat. Aliquam risus nisl, varius sed viverra vel, sagittis quis massa. Duis vitae mattis dui, eu convallis dui. Duis a ex leo. Donec vulputate pretium massa eu pellentesque. Fusce vestibulum non libero vel tincidunt. Morbi consectetur ipsum justo. Nunc dictum nisl vitae porttitor commodo. Cras vel aliquet velit. Aliquam blandit, ipsum vel suscipit ullamcorper, libero quam sollicitudin augue, non aliquam purus nulla non libero. Curabitur suscipit lectus in tempus luctus. Suspendisse non augue erat. ";
+const eloremIpsum = "Descripcion de la foto";
 /**
  * Display album with pagination and individual image links
  *
@@ -113,33 +116,42 @@ const CollectionView = ({
               </blockquote>
             </Col>
           </Row>
-          {display.photos.map((photo, i) => (
-            <div data-aos="fade-up">
-              <div
-                className={`collection-photo ${i % 2 == 0 ? "left" : "right"}`}
-              >
-                <img src={photo.src} width="50%" />
-              </div>
-              <div
-                className={`collection-photo ${i % 2 == 0 ? "right" : "left"}`}
-              >
-                <h5 style={{ color: "#999" }}>
-                  <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
-                  {moment("1990-10-10T00:00:00-03:00").format("DD/MM/YYYY")}
-                </h5>
-                <p>Descripcion de la foto</p>
-                <Button
-                  color="link"
-                  onClick={() => {
-                    handleOnClick(i);
-                  }}
-                >
-                  Ver más
-                </Button>
-              </div>
+          <div className="timeline">
+            <div className="collection-view-container">
+              {display.photos.map((photo, i) => (
+                <div className="collection-view-element" data-aos="fade-up">
+                  <div className="collection-view-photo">
+                    <img src={photo.src} width="50%" />
+                  </div>
+                  <div className="collection-view-info">
+                    <h5 style={{ color: "#999" }}>
+                      <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
+                      {moment("1990-10-10T00:00:00-03:00").format("DD/MM/YYYY")}
+                    </h5>
+                    <p>{loremIpsum}</p>
+                    <Button
+                      color="link"
+                      onClick={() => {
+                        handleOnClick(i);
+                      }}
+                    >
+                      Ver más
+                    </Button>
+                  </div>
+                </div>
+              ))}
               <div style={{ clear: "both" }}></div>
             </div>
-          ))}
+          </div>
+          <div style={{textAlign: "center"}}>
+            <Button
+              color="primary"
+              tag={Link}
+              to={"/collections"}
+            >
+              Ver más colecciones
+            </Button>
+          </div>
         </Fragment>
       )}
     </Container>
