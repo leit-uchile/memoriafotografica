@@ -36,6 +36,10 @@ const LandingPage = (props) => {
     setRedirect(`/photo/${mapped[o.index].id}/?sort=created_at-desc`);
   };
 
+  var onClickCollection = (o) => {
+    setRedirect(`/user/public/collections/${o}`);
+  };
+
   const [redirect, setRedirect] = useState(false);
 
   if (redirect) return <Redirect to={redirect} />;
@@ -114,9 +118,7 @@ const LandingPage = (props) => {
             </Col>
             <Col>
               <div className="landing-see-more">
-                <Link to="/news">
-                  Ver todas
-                </Link>
+                <Link to="/news">Ver todas</Link>
               </div>
             </Col>
           </Row>
@@ -130,9 +132,7 @@ const LandingPage = (props) => {
           </Col>
           <Col>
             <div className="landing-see-more">
-              <Link to="/gallery">
-                Ver galeria
-              </Link>
+              <Link to="/gallery">Ver galeria</Link>
             </div>
           </Col>
         </Row>
@@ -176,9 +176,7 @@ const LandingPage = (props) => {
             </Col>
             <Col>
               <div className="landing-see-more">
-                <Link to="/collections">
-                  Ver colecciones
-                </Link>
+                <Link to="/collections">Ver colecciones</Link>
               </div>
             </Col>
           </Row>
@@ -200,7 +198,7 @@ const LandingPage = (props) => {
                   <Card
                     key={c.name}
                     onClick={() => {
-                      setRedirect(c.id);
+                      onClickCollection(c.id);
                     }}
                     className="white-box"
                   >
