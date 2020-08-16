@@ -50,7 +50,7 @@ class Landing extends Component {
     );
 
     return (
-      <Container>
+      <Container fluid={!this.state.isPublic}>
         <Helmet>
           <title>{`Perfil de ${user.first_name} ${user.last_name}`}</title>
         </Helmet>

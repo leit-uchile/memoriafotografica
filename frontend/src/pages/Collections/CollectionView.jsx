@@ -38,6 +38,14 @@ const CollectionView = ({
     loadInfo(match.params.id);
   }, [match.params.id, loadInfo]);
 
+  // Scroll up!
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+    });
+  });
+
   // compute one time and store here
   const [display, setDisplay] = useState({
     photos: [],
@@ -79,7 +87,7 @@ const CollectionView = ({
   }
 
   return albumData !== {} ? (
-    <Container fluid style={{ padding: "0", margin: "0" }}>
+    <Container fluid style={{ padding: "0", margin: "0", marginTop: "-2em" }}>
       {loading ? (
         <LeitSpinner />
       ) : (

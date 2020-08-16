@@ -70,7 +70,7 @@ const UserAlbums = ({
       </Helmet>
       <Row className="album-title-row">
         <Col>
-          <Container>
+          <Container fluid>
             <Row>
               <Col xs={1}>
                 <Button
@@ -101,7 +101,7 @@ const UserAlbums = ({
       </Row>
       <Row>
         <Col>
-          <Container>
+          <Container fluid>
             {rows.map((r) => (
               <Row key={r.key} style={{ marginTop: "1em" }}>
                 {r.map((c) => (

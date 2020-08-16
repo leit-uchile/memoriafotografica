@@ -106,7 +106,7 @@ class UserPhotos extends Component {
         </Helmet>
         <Row className="photos-title-row">
           <Col>
-            <Container>
+            <Container fluid>
               <Row>
                 <Col xs={1}>
                   <Button
@@ -137,7 +137,7 @@ class UserPhotos extends Component {
         </Row>
         <Row>
           <Col>
-            <Container>
+            <Container fluid>
               <Row>
                 <Col
                   sm={
