@@ -21,6 +21,7 @@ html {
 body {
   margin: 0;
   padding: 0;
+  min-width: 660px;
 }
 [class*="primary"] {
   color: #fff;
