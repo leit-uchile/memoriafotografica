@@ -123,14 +123,12 @@
   border-radius: 50%;
   box-shadow: 0 0 0 3px var(--leit-pink-disabled);
 }
-
-@media (max-width: 1082px) {
+@media (max-width: 1000px) {
   .timeline {
     width: 100%;
   }
 }
-
-@media (max-width: 1081px) {
+@media (max-width: 999px) {
   .timeline {
     width: 100%;
   }
@@ -157,8 +155,8 @@
     .collection-view-container
     .collection-view-element:nth-child(even)
     .collection-view-photo {
-      min-width: 590px;
-      max-width: 63%;
+    min-width: 590px;
+    max-width: 63%;
   }
   .timeline
     .collection-view-container
