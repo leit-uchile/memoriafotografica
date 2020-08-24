@@ -4,10 +4,8 @@ import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { user } from "../../../actions";
 import uuid4 from "uuid";
-import { Redirect, Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
-import "./styles.css";
+import { Redirect } from "react-router-dom";
+import "../styles.css";
 
 const UserAlbums = ({
   isPublic,
@@ -60,43 +58,24 @@ const UserAlbums = ({
   return display.redirectUrl ? (
     <Redirect push to={display.redirectUrl} />
   ) : (
-    <Container fluid style={{ marginBottom: "1em" }}>
+    <Container fluid className="dashboard">
       <Helmet>
         <title>
           {isPublic && publicUser
             ? "Albums de" + display.user.first_name
-            : "Mis albums"}
+            : "Mis albumes"}
         </title>
       </Helmet>
-      <Row className="album-title-row">
+      <Row>
         <Col>
-          <Container fluid>
-            <Row>
-              <Col xs={1}>
-                <Button
-                  color="secondary"
-                  tag={Link}
-                  to={
-                    isPublic && publicUser
-                      ? `/user/public/${publicUser.id}`
-                      : "/user/dashboard"
-                  }
-                  style={{ height: "30px" }}
-                >
-                  <FontAwesomeIcon icon={faArrowAltCircleLeft} />
-                </Button>
-              </Col>
-              <Col xs={10}>
-                {isPublic && publicUser ? (
-                  <h2>Albums de {display.user.first_name}</h2>
-                ) : (
-                  <h2>
-                    Mis albums <Badge color="primary">{albums.length}</Badge>
-                  </h2>
-                )}
-              </Col>
-            </Row>
-          </Container>
+          <h2
+            style={{
+              textAlign: `${isPublic ? "center" : "left"}`,
+            }}
+          >
+            {isPublic ? `Albums de ${display.user.first_name}` : "Mis albumes"}
+          </h2>
+          {/* <Badge color="primary">{mapped.length}</Badge> */}
         </Col>
       </Row>
       <Row>

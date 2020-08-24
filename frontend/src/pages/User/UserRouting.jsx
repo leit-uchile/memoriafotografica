@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  Container,
-  Row,
-  Button,
-  Col,
-} from "reactstrap";
+import { Container, Row, Button, Col } from "reactstrap";
 import { Route, Link, Switch, Redirect } from "react-router-dom";
 // Important for ReactVis
 import "../../../node_modules/react-vis/dist/style.css";
@@ -79,42 +74,44 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
     return <Redirect push to={redirect} />;
   }
   return (
-    <Container
-      className="disable-css-transitions"
-      fluid
-    >
+    <Container className="disable-css-transitions" fluid>
       <Helmet>
         <title>Interfaz de usuario</title>
       </Helmet>
       <Row>
         {!isPublic ? (
           <Col sm="2" className="leftcol">
-            <Row className="user-dashboard-block">
-              <Col md="4" style={{ padding: "0" }}>
-                <UserPicture
-                  user={user}
-                  dims={200}
-                  render={(user) => (
-                    <img style={{ width: "100%" }} src={user.avatar} />
-                  )}
-                />
-              </Col>
-              <Col md="8">
-                <div className="info">
-                  <FontAwesomeIcon
-                    icon={faEdit}
-                    className="editButton"
-                    title="Editar"
-                    onClick={() => setRedirect("/user/dashboard/editProfile")}
-                  />
-                  <h2>{`${user.first_name} ${user.last_name}`}</h2>
-                  <p>
-                    {userTypeTranslation(user.user_type)}{" "}
-                    {makeIcons(user.user_type)}
-                  </p>
-                  <p className="rol">{userRolTranslation(user.rol_type)}</p>
-                </div>
-              </Col>
+            <Row>
+              <Container fluid>
+                <Row className="user-dashboard-block">
+                  <Col>
+                    <UserPicture
+                      user={user}
+                      dims={100}
+                      render={(user) => <img height="100" width="100" style={{borderRadius:"50%"}} src={user.avatar} />}
+                    />
+                  </Col>
+                  <Col>
+                    <Container className="info">
+                      <h2>
+                        {`${user.first_name} ${user.last_name}`}{" "}
+                        <FontAwesomeIcon
+                          icon={faEdit}
+                          title="Editar perfil"
+                          onClick={() => setRedirect("/user/dashboard/editProfile")}
+                        />
+                      </h2>
+                    </Container>
+                    <Container fluid>
+                      <p>
+                        {userTypeTranslation(user.user_type)}{" "}
+                        {makeIcons(user.user_type)}
+                      </p>
+                      <p>{userRolTranslation(user.rol_type)}</p>
+                    </Container>
+                  </Col>
+                </Row>
+              </Container>
             </Row>
             <Row>
               <Col>
@@ -153,10 +150,11 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
         <Col
           sm={!isPublic ? "10" : "12"}
           style={{
-            marginTop: "2em",
-            marginBottom: "2em",
+            backgroundColor: "#f4f6f8",
             minHeight: "75vh",
             borderLeft: "1px solid rgb(210, 214, 218)",
+            paddingTop: "2em",
+            paddingLeft: "20px",
           }}
         >
           <Switch>

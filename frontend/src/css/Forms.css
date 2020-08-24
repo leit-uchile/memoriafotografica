@@ -35,13 +35,18 @@
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   box-shadow: 0 0 0 0.1rem var(--leit-pink-disabled) !important;
 }
+.form-container .form-control{
+  margin: 8px 0;
+}
+.form-container button{
+  margin: 8px 0;
+}
 
 /* Toggle Switch for checkboxes */
 .toggle-button {
   display: none;
 }
 .toggle-button + label {
-  display: block;
   width: 36px;
   height: 18px;
   margin-left: auto;

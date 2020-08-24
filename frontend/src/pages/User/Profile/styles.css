@@ -1,38 +1,18 @@
 .card.user-dashboard-card {
   border: none;
 }
-
 .user-dashboard-card img {
   border-radius: 50%;
   width: 100%;
 }
-.user-dashboard-row {
-  background-color: white;
-  box-shadow: #ddd 3px 5px 10px;
-  margin-bottom: 1.5em;
-}
-
-.user-dashboard-row > div:first-child {
-  padding: 0 30px;
-}
 .edit-profile-dropdown .dropdown-item {
   display: inline-block;
-  height: 25px;
 }
 .edit-profile-dropdown .dropdown-item:hover {
   background-color: var(--leit-gray-disabled);
 }
-.upload-btn-wrapper {
-  position: relative;
-  overflow: hidden;
-}
-
-.upload-btn-wrapper input[type="file"] {
-  font-size: 100px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  opacity: 0;
+.edit-profile label{
+  text-align: left;
 }
 
 /* User not available */

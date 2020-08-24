@@ -1,14 +1,10 @@
 .curador-donut-chart {
   display: inline-block;
 }
-.children-margin > div {
-  margin-bottom: 2em;
-}
 .leftcol {
-  padding-left: 0;
-  padding-right: 0;
+  padding: 0;
+  overflow: hidden;
 }
-
 .navButton {
   color: #000000;
   margin: 0px;
@@ -24,24 +20,11 @@
   border: 0px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
-
-.leftcol .navButton:hover {
-  border-color: none;
-}
-
 .navButton:hover {
   line-height: 60px;
   border: none;
   border-right: var(--leit-gray) solid 3px;
   background-color: var(--leit-gray-disabled);
-}
-
-.navSpacer {
-  padding: 0.375rem 0.75rem;
-  background-color: #cad8e6;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  font-size: 16px;
-  font-weight: 400;
 }
 
 .curador-filter-card-img {
@@ -51,21 +34,6 @@
   max-height: 300px;
   background-color: black;
   background-position: center;
-}
-
-.statBox {
-  border: 1px solid lightgray;
-  padding: 2em;
-  border-radius: 4px;
-  box-shadow: 0 0.46875rem 2.1875rem rgba(59, 62, 102, 0.03),
-    0 0.9375rem 1.40625rem rgba(59, 62, 102, 0.03),
-    0 0.25rem 0.53125rem rgba(59, 62, 102, 0.05),
-    0 0.125rem 0.1875rem rgba(59, 62, 102, 0.03);
-}
-
-.statBox > h2 {
-  margin-bottom: 1em;
-  text-align: left;
 }
 
 @media (min-width: 576px) {

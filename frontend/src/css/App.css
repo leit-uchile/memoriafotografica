@@ -21,7 +21,12 @@ html {
 body {
   margin: 0;
   padding: 0;
-  min-width: 660px;
+}
+hr {
+  border: none;
+  height: 1px;
+  margin: 0;
+  background-color: rgb(210, 214, 218);
 }
 [class*="primary"] {
   color: #fff;
@@ -49,6 +54,42 @@ body {
   background-color: #fff;
   box-shadow: #ddd 3px 5px 10px;
   margin-bottom: 1.5em;
+}
+.dashboard .col {
+  padding: 12px; /* Dos Rows en un Col -> Col padre {{padding: "0"}} */
+}
+.stat-box {
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  box-shadow: 0 0.46875rem 2.1875rem rgba(59, 62, 102, 0.03),
+    0 0.9375rem 1.40625rem rgba(59, 62, 102, 0.03),
+    0 0.25rem 0.53125rem rgba(59, 62, 102, 0.05),
+    0 0.125rem 0.1875rem rgba(59, 62, 102, 0.03);
+  background-color: #fff;
+}
+.stat-box > h2 {
+  text-align: left;
+}
+.stat-box > .container-fluid {
+  padding: 16px;
+}
+.stat-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.stat-box-header > h2 {
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+}
+.stat-box-header > h2 > svg {
+  color: rgb(255, 90, 96);
+  cursor: pointer;
+}
+.stat-box-header > .link {
+  flex: 0 0 auto;
+  align-self: flex-start;
 }
 .parallax {
   /* The image used */

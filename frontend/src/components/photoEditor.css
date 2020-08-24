@@ -1,7 +1,4 @@
-div.not-selected:hover img {
-  filter: blur(6px);
-}
-.middle {
+.icons {
   opacity: 0;
   position: absolute;
   top: 50%;
@@ -9,16 +6,22 @@ div.not-selected:hover img {
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   text-align: center;
-}
-.not-selected:hover .middle {
-  opacity: 1;
-}
-.icons {
   font-size: 3rem;
   color: var(--leit-gray);
+}
+.not-selected:hover img, .selected:hover img {
+  filter: blur(6px);
+}
+.not-selected:hover .icons, .selected:hover .icons  {
+  opacity: 1;
 }
 .icons > svg:hover{
   transform: scale(1.5);
   color: var(--leit-pink);
   transition: all 0.1s ease-in;
+}
+.selected:hover .icons > svg  {
+  transform: scale(1.5);
+  color: var(--leit-red);
+  transition: transform 0.1s ease-in;
 }

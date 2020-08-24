@@ -250,6 +250,7 @@ class RequestPhoto extends Component {
                     />
                   </Col>
                 </FormGroup>
+                <hr />
                 <Button color="primary" tabIndex="11" onClick={this.onSubmit}>
                   Solicitar
                 </Button>

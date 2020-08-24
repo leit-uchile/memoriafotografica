@@ -1,13 +1,13 @@
 import React, { useState, useCallback, useEffect } from "react";
 import Gallery from "react-photo-gallery";
-import { Container, Row, Col} from 'reactstrap';
+import { Container, Row, Col } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faEye, faPencilAlt} from "@fortawesome/free-solid-svg-icons";
+import { faEye, faPencilAlt, faTimes } from "@fortawesome/free-solid-svg-icons";
 import "./photoEditor.css";
 
 /**
  * From documentation
- * Credits to https://codesandbox.io/s/o7o241q09?from-embed 
+ * Credits to https://codesandbox.io/s/o7o241q09?from-embed
  */
 
 const Checkmark = ({ selected }) => (
@@ -37,17 +37,16 @@ const Checkmark = ({ selected }) => (
 
 const imgStyle = {
   transition: "transform .135s cubic-bezier(0.0,0.0,0.2,1),opacity linear .15s",
-  opacity: 1
+  opacity: 1,
 };
 const selectedImgStyle = {
   transform: "translateZ(0px) scale3d(0.9, 0.9, 1)",
-  transition: "transform .135s cubic-bezier(0.0,0.0,0.2,1),opacity linear .15s"
+  transition: "transform .135s cubic-bezier(0.0,0.0,0.2,1),opacity linear .15s",
 };
 const cont = {
-  backgroundColor: "#eee",
   cursor: "pointer",
   overflow: "hidden",
-  position: "relative"
+  position: "relative",
 };
 
 const SelectedImage = ({
@@ -59,7 +58,7 @@ const SelectedImage = ({
   left,
   selected,
   onClick,
-  onRedirect
+  onRedirect,
 }) => {
   const [isSelected, setIsSelected] = useState(selected);
   //calculate x,y scale
@@ -73,13 +72,13 @@ const SelectedImage = ({
     cont.top = top;
   }
 
-  const handleOnRedirect = e => {
-    onRedirect(e, {index});
+  const handleOnRedirect = (e) => {
+    onRedirect(e, { index });
   };
 
-  const handleOnSelect = e => {
+  const handleOnSelect = (e) => {
     setIsSelected(!isSelected);
-    onClick(e,{index});
+    onClick(e, { index });
   };
 
   useEffect(() => {
@@ -89,7 +88,7 @@ const SelectedImage = ({
   return (
     <div
       style={{ margin, height: photo.height, width: photo.width, ...cont }}
-      className={!isSelected ? "not-selected" : ""}
+      className={!isSelected ? "not-selected" : "selected"}
     >
       <Checkmark selected={isSelected ? true : false} />
       <img
@@ -98,34 +97,36 @@ const SelectedImage = ({
           isSelected ? { ...imgStyle, ...selectedImgStyle } : { ...imgStyle }
         }
         {...photo}
-        
-        onClick={
-          isSelected ? handleOnSelect : {}
-        }        
+        onClick={isSelected ? handleOnSelect : {}}
       />
-      {!isSelected
-      ? <div className="middle">
+
+        {!isSelected ? (
           <div className="icons">
-            <FontAwesomeIcon icon={faEye} style={{marginRight: '0.35em'}} onClick={handleOnRedirect}/>
+            <FontAwesomeIcon
+              icon={faEye}
+              style={{ marginRight: "0.35em" }}
+              onClick={handleOnRedirect}
+            />
             <FontAwesomeIcon icon={faPencilAlt} onClick={handleOnSelect} />
           </div>
-        </div>
-      : <span></span>
-      }
-      
+        ) : (
+          <div className="icons">
+            <FontAwesomeIcon icon={faTimes} onClick={handleOnSelect} />
+          </div>
+        )}
+
       <style>{`.not-selected:hover{outline:2px solid #06befa}`}</style>
     </div>
   );
 };
 
-const PhotoEditor = ({photos, selectAll,...props}) => {
+const PhotoEditor = ({ photos, selectAll, ...props }) => {
   // const [selectAll, setSelectAll] = useState(false);
 
   // const toggleSelectAll = () => {
   //   setSelectAll(!selectAll);
   //   putAll(!selectAll)
   // };
-  
 
   const imageRenderer = useCallback(
     ({ index, left, top, key, photo, onClick }) => (
@@ -161,6 +162,6 @@ const PhotoEditor = ({photos, selectAll,...props}) => {
       </Row>
     </Container>
   );
-}
+};
 
 export default PhotoEditor;
