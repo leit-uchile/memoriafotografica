@@ -12,7 +12,7 @@ db.sqlite3
 backend/media/*
 
 # ========== Visual Studio Code ========
-.vscode/
+.vscode
 
 venv
 *.orig

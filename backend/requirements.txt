@@ -9,6 +9,6 @@ pygments==2.3.0
 rest_condition==1.0.3
 Pillow==6.2.0
 sorl-thumbnail==12.5.0
-psycopg2
-gunicorn
 django-cors-headers==3.4.0
+ptvsd==4.3.2
+psycopg2
