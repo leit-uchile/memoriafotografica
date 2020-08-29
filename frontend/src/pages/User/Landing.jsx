@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Container, Row, Col } from "reactstrap";
-import Photo from "../../components/Photo";
 import { connect } from "react-redux";
 import { user } from "../../actions";
 import { Link, Redirect } from "react-router-dom";
@@ -12,7 +11,6 @@ import {
   faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet";
-import "./landing.css";
 
 class Landing extends Component {
   constructor(props) {
@@ -44,165 +42,78 @@ class Landing extends Component {
       <FontAwesomeIcon
         icon={faPlusCircle}
         onClick={() => this.setState({ redirect: "/upload" })}
-        style={{ cursor: "pointer", marginRight: "10px" }}
         title="Agregar más"
       />
     );
 
     return (
-      <Container fluid={!this.state.isPublic}>
+      <Container fluid={!this.state.isPublic} className="dashboard">
         <Helmet>
-          <title>{`Perfil de ${user.first_name} ${user.last_name}`}</title>
+          <title>{`Escritorio de ${user.first_name} ${user.last_name}`}</title>
         </Helmet>
-        <Row style={{ marginTop: "2em" }}>
-          <Col style={{ textAlign: "center" }}>
-            <h2>
+        <Row>
+          <Col>
+            <h2
+              style={{
+                textAlign: `${this.state.isPublic ? "center" : "left"}`,
+              }}
+            >
               {this.state.isPublic
                 ? `Perfil de ${user.first_name + " " + user.last_name}`
-                : "Mi perfil"}
+                : "Escritorio"}
             </h2>
           </Col>
         </Row>
-        <Row style={{ marginTop: "2em" }}>
+        <Row>
           <Col>
-            <Container fluid>
-              <Row className="user-dashboard-row">
-                <Col>
-                  <h2 className="user-dashboard-title">
-                    Fotograf&iacute;as no listadas{" "}
-                    {this.state.isPublic ? null : addMore}
-                  </h2>
-                  {photos.length !== 0 ? (
-                    <Link
-                      to={
-                        this.state.isPublic
-                          ? `/user/public/${this.state.user.id}/photos`
-                          : "/user/dashboard/photos"
-                      }
-                      className="user-dashboard-see-all"
-                    >
-                      {" "}
-                      Ver Todas
-                    </Link>
-                  ) : null}
-                </Col>
-                <Container fluid>
-                  <Row style={{ margin: "1em auto" }} xs="9" align="center">
-                    {/* {photos.length === 0 ? (
-                      <h5> No hay fotograf&iacute;as </h5>
-                    ) : (
-                      photos.slice(0, 3).map((el, key) => (
-                        <Col sm="3" key={key}>
-                          <Photo
-                            name={el.title}
-                            url={el.thumbnail}
-                            height="150px"
-                            width="200px"
-                            useLink
-                            redirectUrl={`/photo/${el.id}/?user=${user.id}`}
-                          />
-                        </Col>
-                      ))
-                    )} */}
-                    <p>En construccion</p>
-                  </Row>
-                </Container>
-              </Row>
-              <Row className="user-dashboard-row">
-                <Col>
-                  <h2 className="user-dashboard-title">
-                    Etiquetas en espera {this.state.isPublic ? null : addMore}
-                  </h2>
-                  {albums.length !== 0 ? (
-                    <Link
-                      to={
-                        this.state.isPublic
-                          ? `/user/public/${this.state.user.id}/albums`
-                          : "/user/dashboard/albums"
-                      }
-                      className="user-dashboard-see-all"
-                    >
-                      {" "}
-                      Ver Todos
-                    </Link>
-                  ) : null}
-                </Col>
-                <Container fluid>
-                  <Row style={{ margin: "1em auto" }} xs="9" align="center">
-                    {/* {albums.length === 0 ? (
-                      <h5> No hay &aacute;lbumes </h5>
-                    ) : (
-                      albums.slice(0, 3).map((el, key) => (
-                        <Col sm="3" key={key}>
-                          <Photo
-                            name={el.title}
-                            url={el.thumbnail}
-                            height="150px"
-                            width="200px"
-                            useLink
-                            redirectUrl={
-                              this.state.isPublic
-                                ? `/user/public/albums/${el.id}`
-                                : `/user/albums/${el.id}`
-                            }
-                          />
-                        </Col>
-                      ))
-                    )} */}
-                    <p>En construccion</p>
-                  </Row>
-                </Container>
-              </Row>
-            </Container>
+            <div className="stat-box">
+              <Container fluid className="stat-box-header">
+                <h2>
+                  Fotograf&iacute;as no listadas{" "}
+                  {this.state.isPublic ? null : addMore}
+                </h2>
+                {photos.length !== 0 ? (
+                  <Link
+                    to={
+                      this.state.isPublic
+                        ? `/user/public/${this.state.user.id}/photos`
+                        : "/user/dashboard/photos"
+                    }
+                  >
+                    {" "}
+                    Ver Todas
+                  </Link>
+                ) : null}
+              </Container>
+              <hr />
+              <Container fluid>
+                <p>En construccion</p>
+              </Container>
+            </div>
           </Col>
-          <Col className="user-dashboard-row">
-            <Container fluid>
-              <Row>
-                <Col>
-                  <h2 className="user-dashboard-title">
-                    Me han comentado {this.state.isPublic ? null : addMore}
-                  </h2>
-                  {albums.length !== 0 ? (
-                    <Link
-                      to={
-                        this.state.isPublic
-                          ? `/user/public/${this.state.user.id}/albums`
-                          : "/user/dashboard/albums"
-                      }
-                      className="user-dashboard-see-all"
-                    >
-                      {" "}
-                      Ver Todos
-                    </Link>
-                  ) : null}
-                </Col>
-                <Container fluid>
-                  <Row style={{ margin: "1em auto" }} xs="9" align="center">
-                    {/* {albums.length === 0 ? (
-                      <h5> No hay &aacute;lbumes </h5>
-                    ) : (
-                      albums.slice(0, 3).map((el, key) => (
-                        <Col sm="3" key={key}>
-                          <Photo
-                            name={el.title}
-                            url={el.thumbnail}
-                            height="150px"
-                            width="200px"
-                            useLink
-                            redirectUrl={
-                              this.state.isPublic
-                                ? `/user/public/albums/${el.id}`
-                                : `/user/albums/${el.id}`
-                            }
-                          />
-                        </Col>
-                      ))
-                    )} */}
-                    <p>En construccion</p>
-                  </Row>
-                </Container>
-              </Row>
-            </Container>
+          <Col>
+            <div className="stat-box">
+              <Container fluid className="stat-box-header">
+                <h2>Me han comentado</h2>
+              </Container>
+              <hr />
+              <Container fluid>
+                <p>En construccion</p>
+              </Container>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <div className="stat-box">
+              <Container fluid className="stat-box-header">
+                <h2>Notificaciones</h2>
+              </Container>
+              <hr />
+              <Container fluid>
+                <p>En construccion</p>
+              </Container>
+            </div>
           </Col>
         </Row>
       </Container>

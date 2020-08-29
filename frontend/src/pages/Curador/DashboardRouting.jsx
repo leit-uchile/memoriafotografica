@@ -70,12 +70,11 @@ const Dashboard = ({ match, location, setRoute }) => {
 
   return (
     <Container
-      style={{ borderTop: "1px solid rgb(210, 214, 218)" }}
       className="disable-css-transitions"
       fluid
     >
       <Helmet>
-        <title>Interfaz de administracion</title>
+        <title>Interfaz de curación</title>
       </Helmet>
       <Row>
         <Col sm="2" className="leftcol">
@@ -111,10 +110,11 @@ const Dashboard = ({ match, location, setRoute }) => {
         <Col
           sm="10"
           style={{
-            marginTop: "2em",
-            marginBottom: "2em",
+            backgroundColor: "#f4f6f8",
             minHeight: "75vh",
             borderLeft: "1px solid rgb(210, 214, 218)",
+            paddingTop: "2em",
+            paddingLeft: "20px",
           }}
         >
           <Switch>

@@ -10,7 +10,7 @@ import moment from "moment";
 import "./collectionView.css";
 
 const loremIpsum =
-  " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ut pretium augue. Etiam in odio enim. Mauris vitae pretium libero. Aliquam erat volutpat. Aliquam risus nisl, varius sed viverra vel, sagittis quis massa. Duis vitae mattis dui, eu convallis dui. Duis a ex leo. Donec vulputate pretium massa eu pellentesque. Fusce vestibulum non libero vel tincidunt. Morbi consectetur ipsum justo. Nunc dictum nisl vitae porttitor commodo. Cras vel aliquet velit. Aliquam blandit, ipsum vel suscipit ullamcorper, libero quam sollicitudin augue, non aliquam purus nulla non libero. Curabitur suscipit lectus in tempus luctus. Suspendisse non augue erat. ";
+  " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ut pretium augue. Etiam in odio enim. Mauris vitae pretium libero. Aliquam erat volutpat. Aliquam risus nisl, varius sed viverra vel, sagittis quis massa. Duis vitae mattis dui, eu convalli";
 const eloremIpsum = "Descripcion de la foto";
 /**
  * Display album with pagination and individual image links

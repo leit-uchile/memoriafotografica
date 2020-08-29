@@ -34,9 +34,9 @@ const ContactUs = ({ contacted, contactUs }) => {
         </Col>
       </Row>
       <Row>
-        <Col>
+        <Col className="white-box form-container">
           {!contacted ? (
-            <Form className="white-box form-container">
+            <Form>
               <div className="form-title">
                 <FontAwesomeIcon icon={faAddressCard} />
                 <Label> Identificación de contacto</Label>
@@ -93,6 +93,7 @@ const ContactUs = ({ contacted, contactUs }) => {
                   onChange={updateData}
                 />
               </FormGroup>
+              <hr />
               <Button color="primary" tabIndex="5" onClick={() => contactUs(formData)}>
                 Enviar
               </Button>

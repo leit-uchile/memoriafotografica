@@ -183,11 +183,7 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
   }, [loadGeneralStats]);
 
   return (
-    <Container
-      className="children-margin"
-      style={{ textAlign: "center" }}
-      fluid
-    >
+    <Container fluid className="dashboard" style={{ textAlign: "center" }}>
       <Row>
         <Col>
           <h2>Estad&iacute;sticas del sitio</h2>
@@ -195,16 +191,12 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
       </Row>
       <Row>
         <Col>
-          <div
-            style={{
-              margin: "0 auto",
-            }}
-            className="statBox"
-          >
+          <div className="stat-box">
             <Statistic.Group
               style={{
                 alignItems: "center",
                 justifyContent: "center",
+                padding: "16px",
               }}
             >
               <Statistic>
@@ -241,84 +233,109 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
       </Row>
       <Row>
         <Col>
-          <div className="statBox">
-            <h2>Fotos y Comentarios subidos por día</h2>
-            <PhotoCountChart
-              rawData={general ? general.count_photos_by_date : []}
-              data2={general ? general.count_comments_by_date : []}
-            />
+          <div className="stat-box">
+            <Container fluid className="stat-box-header">
+              <h2>Fotos y Comentarios subidos por día</h2>
+            </Container>
+            <hr />
+            <Container fluid>
+              <PhotoCountChart
+                rawData={general ? general.count_photos_by_date : []}
+                data2={general ? general.count_comments_by_date : []}
+              />
+            </Container>
           </div>
         </Col>
       </Row>
       <Row>
-        <Col md={6}>
-          <div className="statBox">
-            <h2>Caracter&iacute;sticas de usuarios</h2>
-            <DonutChart
-              rawData={
-                general
-                  ? general.count_user_role.map((cnt) => ({
-                      total: cnt.total,
-                      name: userRolTranslation(cnt.rol_type),
-                    }))
-                  : []
-              }
-              crossHairTitle={"Rol de usuario"}
-              crossHairValue="Total"
-            />
+        <Col>
+          <div className="stat-box">
+            <Container fluid className="stat-box-header">
+              <h2>Caracter&iacute;sticas de usuarios</h2>
+            </Container>
+            <hr />
+            <Container fluid>
+              <DonutChart
+                rawData={
+                  general
+                    ? general.count_user_role.map((cnt) => ({
+                        total: cnt.total,
+                        name: userRolTranslation(cnt.rol_type),
+                      }))
+                    : []
+                }
+                crossHairTitle={"Rol de usuario"}
+                crossHairValue="Total"
+              />
+            </Container>
           </div>
         </Col>
-        <Col md={6}>
-          <div className="statBox">
-            <h2>Tipos de usuarios</h2>
-            <DonutChart
-              rawData={
-                general
-                  ? general.count_user_type.map((cnt) => ({
-                      total: cnt.total,
-                      name: userTypeTranslation(cnt.user_type),
-                    }))
-                  : []
-              }
-              crossHairTitle={"Tipo de usuario"}
-              crossHairValue="Total"
-            />
+        <Col>
+          <div className="stat-box">
+            <Container fluid className="stat-box-header">
+              <h2>Tipos de usuarios</h2>
+            </Container>
+            <hr />
+            <Container fluid>
+              <DonutChart
+                rawData={
+                  general
+                    ? general.count_user_type.map((cnt) => ({
+                        total: cnt.total,
+                        name: userTypeTranslation(cnt.user_type),
+                      }))
+                    : []
+                }
+                crossHairTitle={"Tipo de usuario"}
+                crossHairValue="Total"
+              />
+            </Container>
           </div>
         </Col>
       </Row>
       <Row>
-        <Col md={6}>
-          <div className="statBox">
-            <h2>Categorías con más fotos</h2>
-            <DonutChart
-              rawData={
-                general
-                  ? general.count_popular_categories.map((cnt) => ({
-                      total: cnt.num_photos,
-                      name: cnt.title,
-                    }))
-                  : []
-              }
-              crossHairTitle={"Categorías"}
-              crossHairValue="Total"
-            />
+        <Col>
+          <div className="stat-box">
+            <Container fluid className="stat-box-header">
+              <h2>Categorías con más fotos</h2>
+            </Container>
+            <hr />
+            <Container fluid>
+              <DonutChart
+                rawData={
+                  general
+                    ? general.count_popular_categories.map((cnt) => ({
+                        total: cnt.num_photos,
+                        name: cnt.title,
+                      }))
+                    : []
+                }
+                crossHairTitle={"Categorías"}
+                crossHairValue="Total"
+              />
+            </Container>
           </div>
         </Col>
-        <Col md={6}>
-          <div className="statBox">
-            <h2>Metadata con más fotos</h2>
-            <DonutChart
-              rawData={
-                general
-                  ? general.count_popular_metadata.map((cnt) => ({
-                      total: cnt.num_photos,
-                      name: cnt.value,
-                    }))
-                  : []
-              }
-              crossHairTitle={"Metadata"}
-              crossHairValue="Total"
-            />
+        <Col>
+          <div className="stat-box">
+            <Container fluid className="stat-box-header">
+              <h2>Metadata con más fotos</h2>
+            </Container>
+            <hr />
+            <Container fluid>
+              <DonutChart
+                rawData={
+                  general
+                    ? general.count_popular_metadata.map((cnt) => ({
+                        total: cnt.num_photos,
+                        name: cnt.value,
+                      }))
+                    : []
+                }
+                crossHairTitle={"Metadata"}
+                crossHairValue="Total"
+              />
+            </Container>
           </div>
         </Col>
       </Row>

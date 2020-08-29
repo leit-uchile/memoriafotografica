@@ -1,15 +1,13 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { Button, Row, Col, Container, Badge } from "reactstrap";
 import { user, site_misc } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
 import PhotoEditor from "../../../components/PhotoEditor";
 import { Helmet } from "react-helmet";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
-//import "./userphotos.css"
+import "../styles.css";
 
 class UserPhotos extends Component {
   constructor(props) {
@@ -96,7 +94,7 @@ class UserPhotos extends Component {
       );
     }
     return (
-      <Container fluid style={{ marginBottom: "1em" }}>
+      <Container fluid className="dashboard">
         <Helmet>
           <title>
             {this.state.isPublic && this.props.publicUser
@@ -104,82 +102,66 @@ class UserPhotos extends Component {
               : "Mis fotos"}
           </title>
         </Helmet>
-        <Row className="photos-title-row">
+        <Row>
           <Col>
-            <Container fluid>
-              <Row>
-                <Col xs={1}>
-                  <Button
-                    color="secondary"
-                    tag={Link}
-                    to={
-                      this.state.isPublic && this.props.publicUser
-                        ? `/user/public/${this.props.publicUser.id}/`
-                        : "/user/dashboard"
-                    }
-                    style={{ height: "30px" }}
-                  >
-                    <FontAwesomeIcon icon={faArrowAltCircleLeft} />
-                  </Button>
-                </Col>
-                <Col xs={10}>
-                  {this.state.isPublic && this.props.publicUser ? (
-                    <h2>Fotos de {this.props.publicUser.first_name}</h2>
-                  ) : (
-                    <h2>
-                      Mis fotos <Badge color="primary">{mapped.length}</Badge>
-                    </h2>
-                  )}
-                </Col>
-              </Row>
-            </Container>
+            <h2
+              style={{
+                textAlign: `${this.state.isPublic ? "center" : "left"}`,
+              }}
+            >
+              {this.state.isPublic
+                ? `Fotos de ${this.props.publicUser.first_name}`
+                : "Mis fotos"}
+            </h2>
+            {/* <Badge color="primary">{mapped.length}</Badge> */}
           </Col>
         </Row>
+        {this.state.isPublic ? null : (
+          <Row>
+            <Col className="user-dashboard-buttons">
+              <Button
+                color="secondary"
+                onClick={() => this.putAllToEdit(mapped)}
+              >
+                {!this.state.selectedAll
+                  ? "Seleccionar todas"
+                  : "Deseleccionar"}
+              </Button>
+              <EditPhotosModal
+                photosID={this.state.picturesToEdit}
+                isOpen={(bool) => this.setState({ modalOpen: bool })}
+              />
+            </Col>
+          </Row>
+        )}
         <Row>
           <Col>
             <Container fluid>
               <Row>
                 <Col
                   sm={
-                    mapped.length === 1
-                      ? { size: 4, offset: 4 }
-                      : { size: this.state.isPublic ? 12 : 9 }
+                    mapped.length === 1 ? { size: 4, offset: 4 } : { size: 12 }
                   }
-                  className="photos-gallery-container"
                 >
-                  {this.state.isPublic ? (
-                    <Gallery
-                      photos={mapped}
-                      targetRowHeight={250}
-                      onClick={(e, index) => this.handleOnRedirect(index)}
-                    />
-                  ) : (
-                    <PhotoEditor
-                      photos={mapped}
-                      targetRowHeight={250}
-                      onClick={(e, index) => this.handleOnSelect(index)}
-                      // putAll={(state) => this.putAllToEdit(mapped,state)}
-                      selectAll={this.state.selectedAll}
-                      onRedirect={(e, index) => this.handleOnRedirect(index)}
-                    />
-                  )}
+                  <div className="stat-box rounded">
+                    {this.state.isPublic ? (
+                      <Gallery
+                        photos={mapped}
+                        targetRowHeight={250}
+                        onClick={(e, index) => this.handleOnRedirect(index)}
+                      />
+                    ) : (
+                      <PhotoEditor
+                        photos={mapped}
+                        targetRowHeight={250}
+                        onClick={(e, index) => this.handleOnSelect(index)}
+                        // putAll={(state) => this.putAllToEdit(mapped,state)}
+                        selectAll={this.state.selectedAll}
+                        onRedirect={(e, index) => this.handleOnRedirect(index)}
+                      />
+                    )}
+                  </div>
                 </Col>
-                {this.state.isPublic ? null : (
-                  <Col className="photos-filters-container">
-                    <Button
-                      color="secondary"
-                      onClick={() => this.putAllToEdit(mapped)}
-                    >
-                      {!this.state.selectedAll
-                        ? "Seleccionar todas"
-                        : "Deseleccionar"}
-                    </Button>
-                    <EditPhotosModal
-                      photosID={this.state.picturesToEdit}
-                      isOpen={(bool) => this.setState({ modalOpen: bool })}
-                    />
-                  </Col>
-                )}
               </Row>
             </Container>
           </Col>

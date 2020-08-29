@@ -22,12 +22,12 @@
   text-align: left;
 }
 
-/* Component */
+/* Container */
 .timeline {
   position: relative;
-  margin: 20px auto;
+  margin: 20px auto; /*50px auto*/
   padding: 40px 0;
-  width: 100%;
+  width: 100%; /*1000px*/
 }
 /* Vertical line*/
 .timeline::before {
@@ -35,21 +35,21 @@
   position: absolute;
   left: 50%;
   width: 2px;
-  height: 95%;
+  height: 95%; /*100%*/
   background-color: #c5c5c5;
 }
-/* Container*/
+/* Container ul*/
 .timeline .collection-view-container {
   margin: 0;
   padding: 0;
 }
-/* Elements */
+/* Elements ul li*/
 .timeline .collection-view-container .collection-view-element {
   position: relative;
   width: 50%;
   padding: 20px 40px;
   box-sizing: border-box;
-  margin-bottom: 10%;
+  margin-bottom: 10%; /* */
 }
 .timeline .collection-view-container .collection-view-element:nth-child(odd) {
   float: left;
@@ -61,40 +61,48 @@
   text-align: left;
   clear: both;
 }
-/* Photo */
+/* Photo content*/
 .collection-view-photo {
   padding-bottom: 20px;
 }
-/* Info */
-.timeline .collection-view-container .collection-view-element:nth-child(odd) .collection-view-info{
+/* Info time*/
+.timeline
+  .collection-view-container
+  .collection-view-element:nth-child(odd)
+  .collection-view-info {
   position: absolute;
-  top: 40%;
-  right: -50%; /*-280px%*/
-  width: 412px;
+  top: 60px; /*12px -> 40%*/
+  right: -450px; /*-165px -> -50%*/
+  width: 412px; /*  */
   margin: 0;
-  padding: 8px 32px;
+  padding: 8px 32px; /*8px 16px*/
   color: #000;
   border-radius: 18px;
   box-shadow: 0 0 0 3px var(--leit-gray-disabled);
-  text-align: left;
+  text-align: left; /* */
 }
-.timeline .collection-view-container .collection-view-element:nth-child(even) .collection-view-info{
+.timeline
+  .collection-view-container
+  .collection-view-element:nth-child(even)
+  .collection-view-info {
   position: absolute;
-  top: 40%;
-  left: -50%;
-  width: 412px;
+  top: 12px; /*12px -> 40%*/
+  left: -450px; /*-165px -> -50%*/
+  width: 412px; /* */
   margin: 0;
-  padding: 8px 32px;
+  padding: 8px 32px; /*8px 16px*/
   color: #000;
   border-radius: 18px;
   box-shadow: 0 0 0 3px var(--leit-gray-disabled);
-  text-align: right;
+  text-align: right; /* */
 }
 /* Time marker */
-.timeline .collection-view-container .collection-view-element:nth-child(odd):before {
+.timeline
+  .collection-view-container
+  .collection-view-element:nth-child(odd):before {
   content: "";
   position: absolute;
-  top: 50%;
+  top: 150px; /*24px -> 50%*/
   right: -6px;
   width: 10px;
   height: 10px;
@@ -102,14 +110,73 @@
   border-radius: 50%;
   box-shadow: 0 0 0 3px var(--leit-pink-disabled);
 }
-.timeline .collection-view-container .collection-view-element:nth-child(even):before {
+.timeline
+  .collection-view-container
+  .collection-view-element:nth-child(even):before {
   content: "";
   position: absolute;
-  top: 50%;
+  top: 150px; /*24px -> 50%*/
   left: -4px;
   width: 10px;
   height: 10px;
   background-color: var(--leit-pink);
   border-radius: 50%;
   box-shadow: 0 0 0 3px var(--leit-pink-disabled);
+}
+@media (max-width: 1000px) {
+  .timeline {
+    width: 100%;
+  }
+}
+@media (max-width: 999px) {
+  .timeline {
+    width: 100%;
+  }
+  .timeline:before {
+    left: 20px;
+  }
+  .timeline .collection-view-container .collection-view-element {
+    margin-bottom: 200px;
+  }
+  .timeline .collection-view-container .collection-view-element:nth-child(odd),
+  .timeline
+    .collection-view-container
+    .collection-view-element:nth-child(even) {
+    width: 100%;
+    text-align: left;
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+  .timeline
+    .collection-view-container
+    .collection-view-element:nth-child(odd)
+    .collection-view-photo,
+  .timeline
+    .collection-view-container
+    .collection-view-element:nth-child(even)
+    .collection-view-photo {
+    min-width: 590px;
+    max-width: 63%;
+  }
+  .timeline
+    .collection-view-container
+    .collection-view-element:nth-child(odd)
+    .collection-view-info,
+  .timeline
+    .collection-view-container
+    .collection-view-element:nth-child(even)
+    .collection-view-info {
+    top: 240px;
+    left: 50px;
+    right: inherit;
+  }
+  .timeline
+    .collection-view-container
+    .collection-view-element:nth-child(odd):before,
+  .timeline
+    .collection-view-container
+    .collection-view-element:nth-child(even):before {
+    top: 100px; /*50%*/
+    left: 16px;
+  }
 }

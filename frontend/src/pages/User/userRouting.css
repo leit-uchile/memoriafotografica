@@ -1,34 +1,22 @@
 /* Nav */
-
 .leftcol {
   padding: 0;
   overflow: hidden;
 }
 .user-dashboard-block {
-  background-color: var(--leit-pink);
-  padding: 20px 30px;
+  padding: 10px;
   line-height: 50%;
-}
-.user-dashboard-block .info {
+  align-items: center;
+  border-bottom: 1px solid rgb(210, 214, 218);
   text-align: center;
 }
-.editButton {
-  display: inline-block;
-  position: absolute;
-  top: 0px;
-  right: 0px;
+.user-dashboard-block .info > h2{
   font-size: 16px;
-  color: white;
+  color: var(--leit-pink);
+  font-weight: bold;
+}
+.user-dashboard-block .info > h2 > svg{
   cursor: pointer;
-}
-.user-dashboard-block h2 {
-  font-size: 1.1rem;
-  font-weight: bold;
-  display: inline-block;
-}
-.user-dashboard-block .rol {
-  color: white;
-  font-weight: bold;
 }
 .navButton {
   color: #000000;
