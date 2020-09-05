@@ -6,7 +6,6 @@ from django.conf import settings
 from .serializers import (CreateUserSerializer,UserSerializer, LoginUserSerializer, UserAlbumSerializer, UserCommentSerializer, UserPhotoSerializer, ChangePasswordSerializer)
 from .models import User, RegisterLink
 from .permissions import *
-from .views import createHash 
 from WebAdmin.views import sendEmail
 from rest_framework.documentation import include_docs_urls
 from rest_framework.permissions import IsAuthenticated
@@ -14,6 +13,10 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_condition import ConditionalPermission, C, And, Or, Not
 from django.http import Http404
 
+def createHash(id):
+    integer = str(id).encode("UTF-8")
+    return str(hashlib.sha256(integer).hexdigest())
+    
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
         return request.method in SAFE_METHODS
