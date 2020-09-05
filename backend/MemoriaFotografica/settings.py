@@ -95,7 +95,7 @@ if DOCKER:
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'postgres',
             'USER': 'postgres',
-            'PASSWORD': 'postgres',
+            'PASSWORD': os.getenv('DJANGO_DB_PASSWORD', 'postgres'),
             'HOST': 'db',
             'PORT': 5432,
         }
@@ -175,17 +175,12 @@ REST_KNOX = {
 
 # Email configuration
 EMAIL_HOST = 'smtp.gmail.com'
-
 EMAIL_PORT = 587
-
 EMAIL_USE_TLS = True
-
 EMAIL_HOST_USER = 'isaiasvenegasalmonacid@gmail.com'
-
 EMAIL_HOST_PASSWORD = 'lmzopvjdjwayaujy'
 
 CORS_ORIGIN_ALLOW_ALL = False
-
 CORS_ORIGIN_WHITELIST = (
     'http://localhost',
 )

@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   db:
-    image: postgres
+    image: postgres:12.4
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: postgres
@@ -25,7 +25,9 @@ services:
       - 8000:8000
       - 5678:5678
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      target: dev
     volumes:
       - ./frontend:/app/frontend:rw
     ports:
