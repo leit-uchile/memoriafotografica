@@ -12,3 +12,4 @@ sorl-thumbnail==12.5.0
 django-cors-headers==3.4.0
 ptvsd==4.3.2
 psycopg2
+djangorestframework-recaptcha=0.2.0

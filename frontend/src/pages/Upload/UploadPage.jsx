@@ -235,6 +235,7 @@ class UploadPage extends Component {
             <UploadUnregister
               saveInfo={this.saveUserInfo}
               cache={this.state.userInfo}
+              sendAlert={this.props.sendAlert}
             />
             <UploadAlbum
               isAuth={this.props.isAuthenticated}

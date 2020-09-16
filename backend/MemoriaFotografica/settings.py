@@ -48,8 +48,12 @@ INSTALLED_APPS = [
     'knox',
     'multiselectfield',
     'sorl.thumbnail',
-    'corsheaders'
+    'corsheaders',
+    'rest_framework_recaptcha'
 ]
+
+#TODO change secret KEY for production 
+DRF_RECAPTCHA_SECRET_KEY = "6LdqEM0ZAAAAAIClslUTdWYpZdZQZqdRwupjTTIN"
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
