@@ -1,24 +1,27 @@
 import React, { useEffect } from "react";
-import { Container, Row, Col, 
-//  Button, ButtonGroup 
+import {
+  Container,
+  Row,
+  Col,
+  //  Button, ButtonGroup
 } from "reactstrap";
 import { connect } from "react-redux";
 import { gallery } from "../../../actions";
 //import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 //import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { LeitSpinner } from "../../../components";
+import { bindActionCreators } from "redux";
 import ReportsTable from "./ReportsTable";
 
 /**
  * Load reports and call actions to filter them.
  * Manage provided to the table.
- * 
+ *
  * @param {Boolean} loading
  * @param {Array} reports
  * @param {Function} getReports
  */
 const Reports = ({ loading, reports, getReports, updatedReports }) => {
-
   // const [state, setState] = useState({
   //   currentPage: 0,
   //   reportsPerPage: 6,
@@ -54,14 +57,18 @@ const Reports = ({ loading, reports, getReports, updatedReports }) => {
   );
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   loading: state.site_misc.curador.loading,
   reports: state.reports.reports,
   updatedReports: state.reports.reportUpdate,
 });
 
-const mapActionsToProps = dispatch => ({
-  getReports: () => dispatch(gallery.reports.getReportes())
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getReports: gallery.reports.getReportes,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Reports);

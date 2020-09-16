@@ -7,11 +7,11 @@ import { Redirect, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
+import { bindActionCreators } from "redux";
 import "./collectionView.css";
 
 const loremIpsum =
   " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ut pretium augue. Etiam in odio enim. Mauris vitae pretium libero. Aliquam erat volutpat. Aliquam risus nisl, varius sed viverra vel, sagittis quis massa. Duis vitae mattis dui, eu convalli";
-const eloremIpsum = "Descripcion de la foto";
 /**
  * Display album with pagination and individual image links
  *
@@ -35,7 +35,7 @@ const CollectionView = ({
 }) => {
   // Load album info
   useEffect(() => {
-    loadInfo(match.params.id);
+    loadInfo(match.params.id, true);
   }, [match.params.id, loadInfo]);
 
   // Scroll up!
@@ -121,7 +121,11 @@ const CollectionView = ({
               {display.photos.map((photo, i) => (
                 <div className="collection-view-element" data-aos="fade-up">
                   <div className="collection-view-photo">
-                    <img src={photo.src} width="50%" />
+                    <img
+                      src={photo.src}
+                      width="50%"
+                      alt={photo.title ? photo.title : "titulo"}
+                    />
                   </div>
                   <div className="collection-view-info">
                     <h5 style={{ color: "#999" }}>
@@ -143,12 +147,8 @@ const CollectionView = ({
               <div style={{ clear: "both" }}></div>
             </div>
           </div>
-          <div style={{textAlign: "center"}}>
-            <Button
-              color="primary"
-              tag={Link}
-              to={"/collections"}
-            >
+          <div style={{ textAlign: "center" }}>
+            <Button color="primary" tag={Link} to={"/collections"}>
               Ver más colecciones
             </Button>
           </div>
@@ -163,11 +163,14 @@ const mapStateToProps = (state) => ({
   albumData: state.albumcollection.albumData,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  loadInfo: (id, detailed = true) =>
-    dispatch(gallery.album.loadAlbumInfo(id, detailed)),
-  pushPhotos: (photos) => dispatch(site_misc.pushPhotoArray(photos)),
-  setIndex: (num) => dispatch(site_misc.setSelectedId(num)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadInfo: gallery.album.loadAlbumInfo,
+      pushPhotos: site_misc.pushPhotoArray,
+      setIndex: site_misc.setSelectedId,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(CollectionView);

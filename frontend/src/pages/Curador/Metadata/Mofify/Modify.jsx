@@ -8,6 +8,7 @@ import { metadata, site_misc } from "../../../../actions";
 import { Pagination } from "../../../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { bindActionCreators } from "redux";
 import "../styles.css";
 
 /**
@@ -69,6 +70,7 @@ const Modify = ({
       });
       setSelected(newSelected);
     }
+    // eslint-disable-next-line
   }, [metadata]);
 
   return (
@@ -202,12 +204,13 @@ const mapStateToProps = (state) => ({
   metadataHelp: state.site_misc.metadataHelpDisclosure,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  searchMeta: (search, page, page_size, extra) =>
-    dispatch(
-      metadata.searchMetadataByValueGeneral(search, page, page_size, extra)
-    ),
-  setHelpDisclosure: (val) => dispatch(site_misc.setMetadataHelp(val)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      searchMeta: metadata.searchMetadataByValueGeneral,
+      setHelpDisclosure: site_misc.setMetadataHelp,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Modify);

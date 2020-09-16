@@ -18,6 +18,7 @@ import { connect } from "react-redux";
 import { gallery, metadata } from "../../../actions";
 import { PhotoSelector, LeitSpinner, Pagination } from "../../../components";
 import ReactTags from "react-tag-autocomplete";
+import { bindActionCreators } from "redux";
 
 const Category_Add = ({
   photos,
@@ -152,7 +153,7 @@ const Category_Add = ({
   };
 
   const addPhotos = () => {
-    associate(state.pictures, match.params.id);
+    associate(state.pictures, match.params.id, "add");
   };
 
   var mapped = photos.map((el) => ({
@@ -314,15 +315,16 @@ const mapStateToProps = (state) => ({
   tags: state.metadata.general_tags,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  getCategory: (id) => dispatch(gallery.category.getCategory(id)),
-  associate: (pIds, catId, action = "add") =>
-    dispatch(gallery.photos.associateCategory(pIds, catId, action)),
-  resetErrors: () => dispatch(gallery.category.resetErrors()),
-  getPhotosAuth: (page, page_size, search = "") =>
-    dispatch(gallery.photos.getPhotosAuth(page, page_size, search)),
-  recoverTags: (query, page, pageSize) =>
-    dispatch(metadata.searchMetadataByValueGeneral(query, page, pageSize)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getCategory: gallery.category.getCategory,
+      associate: gallery.photos.associateCategory,
+      resetErrors: gallery.category.resetErrors,
+      getPhotosAuth: gallery.photos.getPhotosAuth,
+      recoverTags: metadata.searchMetadataByValueGeneral,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Category_Add);

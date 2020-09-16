@@ -3,6 +3,7 @@ import { Container, Row, Col } from "reactstrap";
 import { connect } from "react-redux";
 import { user } from "../../../actions";
 import { LeitSpinner } from "../../../components";
+import { bindActionCreators } from "redux";
 import UserAlbums from "./UserAlbums";
 
 const PublicAlbums = ({ match, publicLoading, publicUser, loadPublicUser }) => {
@@ -26,13 +27,17 @@ const PublicAlbums = ({ match, publicLoading, publicUser, loadPublicUser }) => {
   );
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   publicLoading: state.user.publicLoading,
-  publicUser: state.user.publicUser
+  publicUser: state.user.publicUser,
 });
 
-const mapActionsToProps = dispatch => ({
-  loadPublicUser: id => dispatch(user.loadAUser(id))
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadPublicUser: user.loadAUser,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(PublicAlbums);

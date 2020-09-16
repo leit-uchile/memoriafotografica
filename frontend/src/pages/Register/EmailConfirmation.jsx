@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { user } from "../../actions";
 import { Container, Row, Col } from "reactstrap";
+import { bindActionCreators } from "redux";
 
 const EmailConfirmation = ({ location, activateCode, status }) => {
   useEffect(() => {
@@ -58,8 +59,12 @@ const mapStateToProps = (state) => ({
   status: state.user.activated,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  activateCode: (code) => dispatch(user.getRegisterLink(code)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      activateCode: user.getRegisterLink,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(EmailConfirmation);

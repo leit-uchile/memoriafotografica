@@ -9,7 +9,6 @@ import {
   Form,
   FormGroup,
   Input,
-  CustomInput,
   Label,
 } from "reactstrap";
 import { connect } from "react-redux";

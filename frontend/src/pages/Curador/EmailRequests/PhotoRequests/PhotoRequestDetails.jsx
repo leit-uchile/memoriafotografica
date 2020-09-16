@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import uuid4 from "uuid";
 import { webadmin } from "../../../../actions";
+import { bindActionCreators } from "redux";
 
 const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
   const [rows, setRows] = useState([]);
@@ -171,8 +172,12 @@ const mapStateToProps = (state) => ({
   request: state.webadmin.requestDetail,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  updateRequest: (req) => dispatch(webadmin.updateRequest(req)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      updateRequest: webadmin.updateRequest,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(PhotoRequestDetails);

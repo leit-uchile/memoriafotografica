@@ -1,12 +1,13 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { Button, Row, Col, Container, Badge } from "reactstrap";
+import { Button, Row, Col, Container } from "reactstrap";
 import { user, site_misc } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
 import PhotoEditor from "../../../components/PhotoEditor";
 import { Helmet } from "react-helmet";
 import Gallery from "react-photo-gallery";
+import { bindActionCreators } from "redux";
 import "../styles.css";
 
 class UserPhotos extends Component {
@@ -179,14 +180,16 @@ const mapStateToProps = (state) => ({
   refresh: state.photos.refresh,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  setSelectedId: (id) => dispatch(site_misc.setSelectedId(id)),
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-  loadPublicUser: (id) => dispatch(user.loadAUser(id)),
-  onLoadGetPhotos: (user_id, limit, offset) =>
-    dispatch(user.getUserPhotos(user_id, limit, offset)),
-  onLoadGetPublicPhotos: (user_id, params) =>
-    dispatch(user.loadPublicUserPhotos(user_id, params)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setSelectedId: site_misc.setSelectedId,
+      setRoute: site_misc.setCurrentRoute,
+      loadPublicUser: user.loadAUser,
+      onLoadGetPhotos: user.getUserPhotos,
+      onLoadGetPublicPhotos: user.loadPublicUserPhotos,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(UserPhotos);

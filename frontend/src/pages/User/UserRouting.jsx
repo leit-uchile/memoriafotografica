@@ -30,6 +30,7 @@ import { UserPicture } from "../../components";
 import { userRolTranslation, userTypeTranslation } from "./utils";
 import "./userRouting.css";
 import CollectionView from "../Collections/CollectionView";
+import { bindActionCreators } from "redux";
 /**
  * TODO:
  * arreglar estilo de nav
@@ -88,7 +89,15 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
                     <UserPicture
                       user={user}
                       dims={100}
-                      render={(user) => <img height="100" width="100" style={{borderRadius:"50%"}} src={user.avatar} />}
+                      render={(user) => (
+                        <img
+                          height="100"
+                          width="100"
+                          style={{ borderRadius: "50%" }}
+                          src={user.avatar}
+                          alt="user-avatar"
+                        />
+                      )}
                     />
                   </Col>
                   <Col>
@@ -98,7 +107,9 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
                         <FontAwesomeIcon
                           icon={faEdit}
                           title="Editar perfil"
-                          onClick={() => setRedirect("/user/dashboard/editProfile")}
+                          onClick={() =>
+                            setRedirect("/user/dashboard/editProfile")
+                          }
                         />
                       </h2>
                     </Container>
@@ -239,8 +250,12 @@ const mapStateToProps = (state) => ({
   user: state.user.userData,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setRoute: site_misc.setCurrentRoute,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Dashboard);

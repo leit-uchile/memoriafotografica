@@ -6,6 +6,7 @@ import { Alert } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUnlock } from "@fortawesome/free-solid-svg-icons";
 import "./login.css";
+import { bindActionCreators } from "redux";
 
 class Login extends Component {
   state = {
@@ -135,10 +136,14 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapActionsToProps = (dispatch) => ({
-  login: (email, password) => dispatch(user.login(email, password)),
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-  setLoginSuccessRoute: () => dispatch(site_misc.addLoginRoute("")),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      login: user.login,
+      setRoute: site_misc.setCurrentRoute,
+      setLoginSuccessRoute: site_misc.addLoginRoute,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Login);

@@ -1,17 +1,18 @@
-import React, { Component } from "react";
-import { Row, Col, Button, Container, ButtonGroup, Input } from "reactstrap";
-import { connect } from "react-redux";
-import { gallery } from "../../../actions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { Component } from 'react';
+import { Row, Col, Button, Container, ButtonGroup, Input } from 'reactstrap';
+import { connect } from 'react-redux';
+import { gallery } from '../../../actions';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faThLarge,
   faThList,
   faFilter,
-} from "@fortawesome/free-solid-svg-icons";
-import { LeitSpinner, Pagination } from "../../../components";
-import PhotoList from "./PhotoList";
-import PhotoCards from "./PhotoCards";
-import OptionSelector from "./OptionSelector";
+} from '@fortawesome/free-solid-svg-icons';
+import { LeitSpinner, Pagination } from '../../../components';
+import PhotoList from './PhotoList';
+import PhotoCards from './PhotoCards';
+import OptionSelector from './OptionSelector';
+import { bindActionCreators } from 'redux';
 
 class Filter extends Component {
   constructor(props) {
@@ -20,10 +21,10 @@ class Filter extends Component {
       listView: 1,
       page: 0,
       pageSize: 12,
-      approved: "",
-      censured: "",
-      since: "",
-      until: "",
+      approved: '',
+      censured: '',
+      since: '',
+      until: '',
     };
     this.props.getPhotosAuth(0, 12);
   }
@@ -37,7 +38,7 @@ class Filter extends Component {
   };
 
   setCurrentPage = (number) => {
-    console.log("Page set:", number);
+    console.log('Page set:', number);
     this.setState(
       {
         page: number,
@@ -53,14 +54,14 @@ class Filter extends Component {
 
   recoverUrl = () => {
     const { censured, since, until, approved } = this.state;
-    let url = "";
-    if (censured && censured !== "") {
+    let url = '';
+    if (censured && censured !== '') {
       url = url + `&censured=${censured}`;
     }
-    if (since && since !== "") {
+    if (since && since !== '') {
       url = url + `&uploaded=${since}`;
     }
-    if (until && until !== "") {
+    if (until && until !== '') {
       url = url + `&uploaded_until=${until}`;
     }
     if (approved.length !== 0) {
@@ -82,7 +83,7 @@ class Filter extends Component {
     return (
       <Container fluid>
         <h2>Filtrar Fotografías</h2>
-        <Row style={{ marginBottom: "10px" }}>
+        <Row style={{ marginBottom: '10px' }}>
           <Col sm="6">
             <ButtonGroup>
               <Button disabled>Filtrar</Button>
@@ -132,7 +133,7 @@ class Filter extends Component {
         </Row>
         <Row>
           {this.props.loading ? (
-            <Col style={{ textAlign: "center" }}>
+            <Col style={{ textAlign: 'center' }}>
               <LeitSpinner />
             </Col>
           ) : (
@@ -145,7 +146,7 @@ class Filter extends Component {
             </Col>
           )}
         </Row>
-        <Row style={{ marginTop: "2em" }}>
+        <Row style={{ marginTop: '2em' }}>
           <Col>
             <Pagination
               count={photoCount}
@@ -178,11 +179,13 @@ const mapStateToProps = (state) => {
     refresh: state.site_misc.curador.refresh,
   };
 };
-const mapActionsToProps = (dispatch) => ({
-  getPhotosAuth: (pageNum, pageSize, params = "") =>
-    dispatch(gallery.photos.getPhotosAuth(pageNum, pageSize, params)),
-  editPhoto: (photoID, data) =>
-    dispatch(gallery.photos.editPhoto(photoID, data)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getPhotosAuth: gallery.photos.getPhotosAuth,
+      editPhoto: gallery.photos.editPhoto,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Filter);

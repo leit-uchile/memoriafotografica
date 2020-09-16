@@ -25,6 +25,7 @@ import {
 import UserPicture from "../../../components/UserPicture";
 import CropPhoto from "../../../components/CropPhoto";
 import "./styles.css";
+import { bindActionCreators } from "redux";
 
 class EditProfile extends Component {
   constructor(props) {
@@ -94,18 +95,19 @@ class EditProfile extends Component {
   checkPassword = () => {
     if (this.state.user.password === "") {
       this.setState({ error: "Por favor ingrese su contraseña" });
-      this.props.sendAlert("Por favor ingrese su contraseña");
+      this.props.sendAlert("Por favor ingrese su contraseña", "warning");
       return false;
     } else if (this.state.user.password !== this.state.user.newPasswordCheck) {
       this.setState({ error: "Las contraseñas son diferentes" });
-      this.props.sendAlert("Las contraseñas son diferentes");
+      this.props.sendAlert("Las contraseñas son diferentes", "warning");
       return false;
     } else if (this.state.user.password.length < 8) {
       this.setState({
         error: "La contraseña es demasiado corta. Minimo 8 caracteres",
       });
       this.props.sendAlert(
-        "La contraseña es demasiado corta. Minimo 8 caracteres"
+        "La contraseña es demasiado corta. Minimo 8 caracteres",
+        "warning"
       );
       return false;
     } else {
@@ -448,11 +450,14 @@ const mapStateToProps = (state) => ({
   user: state.user.userData,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  update: (userInfo, doJSON = true) =>
-    dispatch(user.editProfile(userInfo, doJSON)),
-  updatePassword: (old_p, new_p) => dispatch(user.updatePassword(old_p, new_p)),
-  sendAlert: (text) => dispatch(site_misc.setAlert(text, "warning")),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      update: user.editProfile,
+      updatePassword: user.updatePassword,
+      sendAlert: site_misc.setAlert,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(EditProfile);

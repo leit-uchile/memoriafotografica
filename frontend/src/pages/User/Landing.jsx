@@ -4,13 +4,9 @@ import { connect } from "react-redux";
 import { user } from "../../actions";
 import { Link, Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSuitcase,
-  faCameraRetro,
-  faAddressCard,
-  faPlusCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet";
+import { bindActionCreators } from "redux";
 
 class Landing extends Component {
   constructor(props) {
@@ -121,18 +117,6 @@ class Landing extends Component {
   }
 }
 
-const makeIcons = (rol_id) => {
-  switch (rol_id) {
-    case 1:
-      return <FontAwesomeIcon icon={faCameraRetro} />;
-    case 2:
-      return <FontAwesomeIcon icon={faAddressCard} />;
-    case 3:
-      return <FontAwesomeIcon icon={faSuitcase} />;
-    default:
-      return "Failed";
-  }
-};
 const mapStateToProps = (state) => ({
   data: {
     photos: state.user.photos,
@@ -142,15 +126,15 @@ const mapStateToProps = (state) => ({
   user: state.user.userData,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  onLoadGetPhotos: (user_id, limit, offset) =>
-    dispatch(user.getUserPhotos(user_id, limit, offset)),
-  onLoadGetAlbums: (user_id, limit, offset) =>
-    dispatch(user.getUserAlbums(user_id, limit, offset)),
-  onLoadGetPublicAlbums: (user_id) =>
-    dispatch(user.loadPublicUserAlbums(user_id)),
-  onLoadGetPublicPhotos: (user_id) =>
-    dispatch(user.loadPublicUserPhotos(user_id)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      onLoadGetPhotos: user.getUserPhotos,
+      onLoadGetAlbums: user.getUserAlbums,
+      onLoadGetPublicAlbums: user.loadPublicUserAlbums,
+      onLoadGetPublicPhotos: user.loadPublicUserPhotos,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Landing);

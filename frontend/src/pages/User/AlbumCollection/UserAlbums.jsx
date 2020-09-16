@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button, Badge } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { user } from "../../../actions";
 import uuid4 from "uuid";
 import { Redirect } from "react-router-dom";
+import { bindActionCreators } from "redux";
 import "../styles.css";
 
 const UserAlbums = ({
@@ -26,7 +27,7 @@ const UserAlbums = ({
       setDisplay((d) => ({ ...d, user: publicUser }));
       loadPublicAlbums(publicUser.id);
     } else if (!isPublic) {
-      loadAlbums(user.id);
+      loadAlbums(user.id, -1, -1);
       setDisplay((d) => ({ ...d, user: user }));
     }
   }, [isPublic, publicUser, loadPublicAlbums, loadAlbums, user]);
@@ -113,9 +114,13 @@ const mapStateToProps = (state) => ({
   albums: state.user.albums,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  loadPublicAlbums: (user_id) => dispatch(user.loadPublicUserAlbums(user_id)),
-  loadAlbums: (user_id) => dispatch(user.getUserAlbums(user_id, -1, -1)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadPublicAlbums: user.loadPublicUserAlbums,
+      loadAlbums: user.getUserAlbums,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(UserAlbums);

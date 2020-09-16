@@ -8,6 +8,7 @@ import ContactEmailModal from "./ContactEmailModal";
 import ContactPhoneModal from "./ContactPhoneModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faFilter } from "@fortawesome/free-solid-svg-icons";
+import { bindActionCreators } from "redux";
 import "../../styles.css";
 
 /**
@@ -151,11 +152,13 @@ const mapStateToProps = (state) => ({
   updatedMessage: state.webadmin.updatedMessage,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  getMessages: (search, page, page_size, extra) =>
-    dispatch(webadmin.getMessages(search, page, page_size, extra)),
-  updateMessage: (msg, formData) =>
-    dispatch(webadmin.updateMessage(msg, formData)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getMessages: webadmin.getMessages,
+      updateMessage: webadmin.updateMessage,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(ContactTable);

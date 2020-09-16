@@ -7,6 +7,7 @@ import { LeitSpinner } from "../../../components";
 import { Redirect, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import { bindActionCreators } from "redux";
 import "./styles.css";
 
 /**
@@ -32,7 +33,7 @@ const AlbumView = ({
 }) => {
   // Load album info
   useEffect(() => {
-    loadInfo(match.params.id);
+    loadInfo(match.params.id, true);
   }, [match.params.id, loadInfo]);
 
   // compute one time and store here
@@ -157,11 +158,14 @@ const mapStateToProps = (state) => ({
   albumData: state.albumcollection.albumData,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  loadInfo: (id, detailed = true) =>
-    dispatch(gallery.album.loadAlbumInfo(id, detailed)),
-  pushPhotos: (photos) => dispatch(site_misc.pushPhotoArray(photos)),
-  setIndex: (num) => dispatch(site_misc.setSelectedId(num)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadInfo: gallery.album.loadAlbumInfo,
+      pushPhotos: site_misc.pushPhotoArray,
+      setIndex: site_misc.setSelectedId,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(AlbumView);

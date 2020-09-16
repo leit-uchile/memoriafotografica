@@ -26,6 +26,7 @@ import {
   ListGroupItemText,
 } from "reactstrap";
 import { getPermissionLogo } from "../../utils";
+import { bindActionCreators } from "redux";
 import "./requestPhoto.css";
 
 var Requested = ({ list, removeRequestPhoto }) => (
@@ -319,10 +320,14 @@ const mapStateToProps = (state) => ({
   requested: state.webadmin.requested,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-  removeRequestPhoto: (value) => dispatch(webadmin.removeRequestPhoto(value)),
-  sendRequest: (photos, info) => dispatch(webadmin.sendRequest(photos, info)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setRoute: site_misc.setCurrentRoute,
+      removeRequestPhoto: webadmin.removeRequestPhoto,
+      sendRequest: webadmin.sendRequest,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(RequestPhoto);

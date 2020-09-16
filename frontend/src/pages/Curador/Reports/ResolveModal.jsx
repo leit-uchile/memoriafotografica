@@ -14,8 +14,9 @@ import {
 } from "reactstrap";
 import { connect } from "react-redux";
 import { gallery, user } from "../../../actions";
-import LeitSpinner from "../../../components/Layout/LeitSpinner";
+import { LeitSpinner } from "../../../components";
 import "./resolveModal.css";
+import { bindActionCreators } from "redux";
 
 const EditUserForm = () => {
   return <div>Edit User</div>;
@@ -218,11 +219,15 @@ const mapStateToProps = (state) => ({
   photo: state.photos.details,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  editPhoto: (rep, cont) => dispatch(gallery.reports.updateContent(rep, cont)),
-  getPhoto: (pk) => dispatch(gallery.photos.getPhoto(pk)),
-  mtPhoto: () => dispatch(gallery.photos.mtPhoto()),
-  getUser: (pk) => dispatch(user.loadAUser(pk)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      editPhoto: gallery.reports.updateContent,
+      getPhoto: gallery.photos.getPhoto,
+      mtPhoto: gallery.photos.mtPhoto,
+      getUser: user.loadAUser,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(ResolveModal);

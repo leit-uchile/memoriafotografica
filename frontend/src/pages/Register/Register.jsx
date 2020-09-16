@@ -6,6 +6,7 @@ import { Button, Container, Row, Col } from "reactstrap";
 import { Redirect, Link } from "react-router-dom";
 import StepWizard from "react-step-wizard";
 import { LeitSpinner } from "../../components";
+import { bindActionCreators } from "redux";
 
 const FailedRegistration = (props) => (
   <Container>
@@ -168,12 +169,13 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapActionsToProps = (dispatch) => ({
-  register: (username, password, name, lastname, date, rol, avatar) =>
-    dispatch(
-      user.register(username, password, name, lastname, date, rol, avatar)
-    ),
-  cleanErrors: () => dispatch(user.cleanErrors()),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      register: user.register,
+      cleanErrors: user.cleanErrors,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Register);

@@ -18,6 +18,7 @@ import {
 import { Pagination, LeitSpinner } from "../../components";
 import { Helmet } from "react-helmet";
 import "./news.css";
+import { bindActionCreators } from "redux";
 
 const NewsPage = (props) => {
   const { setRoute, loadNews } = props;
@@ -117,9 +118,7 @@ const NewsPage = (props) => {
           <Container fluid>
             <Row>
               <Col>
-                <UncontrolledButtonDropdown
-                  style={{ marginTop: "1em" }}
-                >
+                <UncontrolledButtonDropdown style={{ marginTop: "1em" }}>
                   <DropdownToggle caret>Ordenar</DropdownToggle>
                   <DropdownMenu
                     style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}
@@ -193,10 +192,13 @@ const mapStateToProps = (state) => ({
   count: state.webadmin.news.count,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  loadNews: (page, pageSize, params = "") =>
-    dispatch(webadmin.getNews(page, pageSize, params)),
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadNews: webadmin.getNews,
+      setRoute: site_misc.setCurrentRoute,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(NewsPage);

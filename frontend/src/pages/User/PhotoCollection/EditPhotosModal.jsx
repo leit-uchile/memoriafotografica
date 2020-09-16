@@ -22,6 +22,7 @@ import { metadata, gallery } from "../../../actions";
 import ReactTags from "react-tag-autocomplete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { bindActionCreators } from "redux";
 
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },
@@ -32,40 +33,49 @@ const CC_INFO = [
   { name: "CC BY-NC-ND", text: "Atribución, No Comercial, Sin Derivadas" },
 ];
 
-const EditPhotosModal = (props) => {
+const EditPhotosModal = ({
+  getTags,
+  newIds,
+  onLoad,
+  photosID,
+  photoInfo,
+  isOpen,
+  createMultipleMetas,
+  editPhoto,
+  deletePhoto,
+  tags,
+  updatedPhoto,
+}) => {
   const [toggle, setToggle] = useState(false);
   const [toggleDelete, setToggleDelete] = useState(false);
   const [formData, setData] = useState({}); //nuevos datos
-  const [sending, setSending] = useState(false);
 
   useEffect(() => {
-    props.getTags(); //suggestions, TODO: llamar cuando el usuario ingresa nuevo tag
-  }, [props.newIds]);
+    getTags(); //suggestions, TODO: llamar cuando el usuario ingresa nuevo tag
+  }, [newIds, getTags]);
 
   useEffect(() => {
-    if (props.photosID.length === 1) {
-      props.onLoad(props.photosID); //photoInfo
+    if (photosID.length === 1) {
+      onLoad(photosID); //photoInfo
     }
-  }, [props.photosID]);
+  }, [photosID]);
 
   useEffect(() => {
-    if (props.photosID.length === 1) {
-      let info = { ...props.photoInfo };
+    if (photosID.length === 1) {
+      let info = { ...photoInfo };
       info.metadata =
-        props.photoInfo.metadata !== undefined
-          ? props.photoInfo.metadata.map((e) => ({ id: e.id, name: e.value }))
+        photoInfo.metadata !== undefined
+          ? photoInfo.metadata.map((e) => ({ id: e.id, name: e.value }))
           : [];
       info.permission =
-        props.photoInfo.permission !== undefined
-          ? info.permission.toString()
-          : null;
+        photoInfo.permission !== undefined ? info.permission.toString() : null;
       delete info.image;
       delete info.thumbnail;
       setData(info);
     } else {
       setData({ metadata: [] });
     }
-  }, [props.photoInfo, props.photosID, toggle]);
+  }, [photoInfo, photosID, toggle]);
 
   const updateData = (e) =>
     setData({ ...formData, [e.target.name]: e.target.value });
@@ -86,12 +96,12 @@ const EditPhotosModal = (props) => {
 
   const handleToggle = () => {
     setToggle(!toggle);
-    props.isOpen(!toggle); //permite el refresh una vez cerrado
+    isOpen(!toggle); //permite el refresh una vez cerrado
   };
 
   const handleMetadata = () => {
     let to_send = { ...formData };
-    if (props.photosID.length > 1 && to_send.metadata.length === 0) {
+    if (photosID.length > 1 && to_send.metadata.length === 0) {
       //si hay más de una foto y no quiere cambiarle los tags
       delete to_send.metadata; //mantenemos los tags individuales
       update(to_send);
@@ -99,62 +109,59 @@ const EditPhotosModal = (props) => {
       //vemos si es necesario crear alguno
       let newTags = to_send.metadata.filter((el) => el.id === undefined);
       if (newTags.length == 0) {
-        console.log("No es necesario crearle id");
         to_send.metadata = to_send.metadata.map((el) => el.id);
         update(to_send);
       } else {
-        console.log("Es necesario crearle id");
         let toCreate = newTags.map((el) => el.name); //names
-        props.createMultipleMetas(toCreate); //->props.newIds
+        createMultipleMetas(toCreate); //->props.newIds
       }
     }
   };
 
   //Une los nuevos tags tras crear una id para ellos
   useEffect(() => {
-    console.log("verificando creacion de nuevos tags");
     let to_send = { ...formData };
     if (to_send.metadata) {
       //Hay metadata
       //Si se crearon los nuevos
       if (
         to_send.metadata.filter((el) => el.id === undefined).length ===
-        props.newIds.length
+        newIds.length
       ) {
-        let newTags = Object.values(props.newIds).map((el) => el.id); //ids nuevas
-        console.log("Nuevas IDS", newTags);
+        let newTags = Object.values(newIds).map((el) => el.id); //ids nuevas
         let oldTags = to_send.metadata
           .filter((el) => el.id !== undefined)
           .map((el) => el.id); //ids ya creadas
-        console.log("Viejas IDS", oldTags);
         to_send.metadata = oldTags.concat(newTags);
-        console.log("Por guardar", to_send.metadata);
-        //setSending(true);
         update(to_send);
       } else {
         console.log("Aun no se crean ids para nuevos tags");
       }
     }
-  }, [props.newIds]);
+  }, [newIds]);
 
   const update = (to_send) => {
-    props.photosID.forEach((el, index) => {
-      props.photosID.length > 1 && to_send.title !== undefined //si está editando el título de varias
-        ? props.editPhoto(el, {
-            ...to_send,
-            title: `${to_send.title} (${index + 1})`,
-          })
-        : props.editPhoto(el, to_send);
+    photosID.forEach((el, index) => {
+      let updatedPhoto =
+        photosID.length > 1 && to_send.title !== undefined //si está editando el título de varias
+          ? {
+              ...to_send,
+              title: `${to_send.title} (${index + 1})`,
+            }
+          : { ...to_send };
+      // Dont send user nor categories
+      delete updatedPhoto.category;
+      delete updatedPhoto.user;
+      editPhoto(el, updatedPhoto);
     });
     handleToggle();
   };
 
   const onDelete = (ids) => {
-    ids.forEach((id) => props.deletePhoto(id));
+    ids.forEach((id) => deletePhoto(id));
     handleToggle();
   };
 
-  const { tags, updatedPhoto } = props;
   const suggestions = tags
     ? tags.map((e) => ({ id: e.id, name: e.value }))
     : [];
@@ -272,17 +279,17 @@ const EditPhotosModal = (props) => {
   return (
     <div>
       <Button
-        disabled={props.photosID.length === 0}
+        disabled={photosID.length === 0}
         color="primary"
         onClick={() => handleToggle()}
       >
-        Editar selección ({props.photosID.length})
+        Editar selección ({photosID.length})
       </Button>
       <Modal isOpen={toggle} toggle={() => handleToggle()} size={"lg"}>
         <ModalHeader toggle={handleToggle}>
-          {props.photosID.length === 1
+          {photosID.length === 1
             ? "Editando 1 foto"
-            : `Editando ${props.photosID.length} fotos`}
+            : `Editando ${photosID.length} fotos`}
         </ModalHeader>
         <ModalBody>
           {PhotosForm}
@@ -300,7 +307,7 @@ const EditPhotosModal = (props) => {
               <Button
                 color="danger"
                 onClick={() => {
-                  onDelete(props.photosID);
+                  onDelete(photosID);
                   setToggleDelete(!toggleDelete);
                 }}
               >
@@ -347,12 +354,16 @@ const mapStateToProps = (state) => ({
   updatedPhoto: state.photos.updatedPhoto,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  onLoad: (id) => dispatch(gallery.photos.getPhoto(id)),
-  getTags: () => dispatch(metadata.tags()),
-  editPhoto: (pID, val) => dispatch(gallery.photos.editPhoto(pID, val)),
-  deletePhoto: (pID) => dispatch(gallery.photos.deletePhoto(pID)),
-  createMultipleMetas: (list) => dispatch(metadata.createMultipleMetas(list)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      onLoad: gallery.photos.getPhoto,
+      getTags: metadata.tags,
+      editPhoto: gallery.photos.editPhoto,
+      deletePhoto: gallery.photos.deletePhoto,
+      createMultipleMetas: metadata.createMultipleMetas,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(EditPhotosModal);

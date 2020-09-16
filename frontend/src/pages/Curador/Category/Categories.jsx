@@ -9,17 +9,18 @@ import {
   Card,
   CardBody,
   Input,
+  Collapse,
+  Form,
+  FormGroup,
+  Label,
+  Spinner,
 } from "reactstrap";
 import { connect } from "react-redux";
 import { gallery } from "../../../actions";
 import { Pagination } from "../../../components";
 import { CategoryTable } from "./CategoryTable";
 import { ModifyModal } from "./ModifyModal";
-import Collapse from "reactstrap/lib/Collapse";
-import Form from "reactstrap/lib/Form";
-import FormGroup from "reactstrap/lib/FormGroup";
-import Label from "reactstrap/lib/Label";
-import Spinner from "reactstrap/lib/Spinner";
+import { bindActionCreators } from "redux";
 
 class Categories extends Component {
   constructor(props) {
@@ -157,7 +158,9 @@ class Categories extends Component {
                         size="sm"
                         color="light"
                         style={{
-                          display: this.state.creating ? "inline-block" : "none",
+                          display: this.state.creating
+                            ? "inline-block"
+                            : "none",
                         }}
                       />{" "}
                       Crear
@@ -206,13 +209,16 @@ const mapStateToProps = (state) => ({
   newCat: state.categories.newCat,
   catError: state.categories.error,
 });
-const mapActionsToProps = (dispatch) => ({
-  getCategories: (page, pageSize, extra) =>
-    dispatch(gallery.category.getCategories(page, pageSize, extra)),
-  deleteCategories: (catArray) =>
-    dispatch(gallery.category.deleteCategories(catArray)),
-  createCategory: (data) => dispatch(gallery.category.createCategory(data)),
-  resetErrors: () => dispatch(gallery.category.resetErrors()),
-});
+
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getCategories: gallery.category.getCategories,
+      deleteCategories: gallery.category.deleteCategories,
+      createCategory: gallery.category.createCategory,
+      resetErrors: gallery.category.resetErrors,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Categories);

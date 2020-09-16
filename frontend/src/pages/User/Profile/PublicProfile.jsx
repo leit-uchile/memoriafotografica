@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Container, Row, Col } from "reactstrap";
 import { LeitSpinner } from "../../../components";
 import Landing from "../Landing";
+import { bindActionCreators } from "redux";
 import "./styles.css";
 
 const PublicProfile = ({
@@ -63,8 +64,12 @@ const mapStateToProps = (state) => ({
   loading: state.user.publicLoading,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  loadPublicUser: (id) => dispatch(user.loadAUser(id)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadPublicUser: user.loadAUser,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(PublicProfile);
