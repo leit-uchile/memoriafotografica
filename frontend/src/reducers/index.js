@@ -3,13 +3,14 @@ import categories from "./gallery/categories";
 import comments from "./gallery/comments";
 import metadata from "./metadata";
 import metrics from "./metrics";
-import photos from "./gallery/photos";
+import photos, * as fromPhotos from "./gallery/photos";
 import reports from "./gallery/reports";
 import site_misc from "./site_misc";
 import upload from "./upload";
 import user from "./user";
 import webadmin from "./webadmin";
 import { combineReducers } from "redux";
+
 
 const rootReducer = combineReducers({
   albumcollection,
@@ -26,3 +27,5 @@ const rootReducer = combineReducers({
 });
 
 export default rootReducer;
+
+export const selectPhotos = (state) => fromPhotos.selectPhotos(state);

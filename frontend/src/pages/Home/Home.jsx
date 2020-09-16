@@ -10,6 +10,7 @@ import Gallery from "react-photo-gallery";
 import { LeitSpinner, Pagination } from "../../components";
 import FilterPicker from "./FilterPicker";
 import { bindActionCreators } from "redux";
+import { selectPhotos } from "../../reducers";
 import "./home.css";
 
 /**
@@ -199,7 +200,7 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  photos: state.photos.photos,
+  photos: selectPhotos(state),
   count: state.photos.count,
   filters: state.site_misc.searchMetaIDs,
   auth: state.user.token,
