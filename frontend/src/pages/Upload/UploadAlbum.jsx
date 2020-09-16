@@ -69,7 +69,7 @@ const CC_INFO = [
     text: "Atribución, No Comercial, Sin Derivadas",
     desc:
       "Esta licencia es la más restrictiva, permitiendo a otras sólo descargar sus obras y compartirlas con otras siempre y cuando den crédito, pero no pueden cambiarlas de forma alguna ni usarlas de forma comercial.",
-    img: "/assets/CCBYNCND.svg",
+    img: "/assets/CC/CCBYNCND.svg",
   },
 ];
 
