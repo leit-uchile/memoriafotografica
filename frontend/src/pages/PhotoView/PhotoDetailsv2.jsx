@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
+import { selectPhotos } from "../../reducers";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { Button, Row, Col, Container } from "reactstrap";
@@ -199,20 +200,14 @@ const PhotoDetails = ({
                     <Row>
                       <Col>
                         <h5 style={{ color: "#999" }}>
-                          <FontAwesomeIcon
-                            icon={faCamera}
-                          />
-                          {" "}Tomada el{" "}
+                          <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
                           {moment(photoInfo.upload_date).format("DD/MM/YYYY")}
                         </h5>
                       </Col>
 
                       <Col>
                         <h5 style={{ color: "#999" }}>
-                          <FontAwesomeIcon
-                            icon={faCalendarPlus}
-                          />
-                          {" "}Subida el{" "}
+                          <FontAwesomeIcon icon={faCalendarPlus} /> Subida el{" "}
                           {moment(photoInfo.created_at).format("DD/MM/YYYY")}
                         </h5>
                       </Col>
@@ -288,7 +283,7 @@ const PhotoDetails = ({
 
 const mapStateToProps = (state) => ({
   photoInfo: state.photos.details,
-  suggestions: state.photos.photos,
+  suggestions: selectPhotos(state),
   errors: state.photos.errors,
   photoIndex: state.site_misc.home.selectedIndex,
   photoPage: state.site_misc.home.photoPagination,
