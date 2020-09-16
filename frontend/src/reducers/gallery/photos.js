@@ -8,6 +8,8 @@ import {
   DELETED_PHOTO,
 } from "../../actions/types";
 
+import {createSelector} from 'reselect';
+
 const initialState = {
   photos: [],
   errors: null,
@@ -59,4 +61,12 @@ export default function photos(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export const selectPhotos = (state) => {
+  if(Array.isArray(state.photos.photos)){
+    return state.photos.photos;
+  }else{
+    return [];
+  }  
 }
