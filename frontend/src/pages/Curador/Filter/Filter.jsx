@@ -1,18 +1,20 @@
-import React, { Component } from 'react';
-import { Row, Col, Button, Container, ButtonGroup, Input } from 'reactstrap';
-import { connect } from 'react-redux';
-import { gallery } from '../../../actions';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { Component } from "react";
+import { Row, Col, Button, Container, ButtonGroup, Input } from "reactstrap";
+import { connect } from "react-redux";
+import { gallery } from "../../../actions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faThLarge,
   faThList,
   faFilter,
-} from '@fortawesome/free-solid-svg-icons';
-import { LeitSpinner, Pagination } from '../../../components';
-import PhotoList from './PhotoList';
-import PhotoCards from './PhotoCards';
-import OptionSelector from './OptionSelector';
-import { bindActionCreators } from 'redux';
+} from "@fortawesome/free-solid-svg-icons";
+import { LeitSpinner, Pagination } from "../../../components";
+import PhotoList from "./PhotoList";
+import PhotoCards from "./PhotoCards";
+import OptionSelector from "./OptionSelector";
+import { bindActionCreators } from "redux";
+import { selectPhotos } from "../../../reducers";
+import { selectErrors } from "../../../reducers";
 
 class Filter extends Component {
   constructor(props) {
@@ -21,10 +23,10 @@ class Filter extends Component {
       listView: 1,
       page: 0,
       pageSize: 12,
-      approved: '',
-      censured: '',
-      since: '',
-      until: '',
+      approved: "",
+      censured: "",
+      since: "",
+      until: "",
     };
     this.props.getPhotosAuth(0, 12);
   }
@@ -38,7 +40,7 @@ class Filter extends Component {
   };
 
   setCurrentPage = (number) => {
-    console.log('Page set:', number);
+    console.log("Page set:", number);
     this.setState(
       {
         page: number,
@@ -54,14 +56,14 @@ class Filter extends Component {
 
   recoverUrl = () => {
     const { censured, since, until, approved } = this.state;
-    let url = '';
-    if (censured && censured !== '') {
+    let url = "";
+    if (censured && censured !== "") {
       url = url + `&censured=${censured}`;
     }
-    if (since && since !== '') {
+    if (since && since !== "") {
       url = url + `&uploaded=${since}`;
     }
-    if (until && until !== '') {
+    if (until && until !== "") {
       url = url + `&uploaded_until=${until}`;
     }
     if (approved.length !== 0) {
@@ -83,7 +85,7 @@ class Filter extends Component {
     return (
       <Container fluid>
         <h2>Filtrar Fotografías</h2>
-        <Row style={{ marginBottom: '10px' }}>
+        <Row style={{ marginBottom: "10px" }}>
           <Col sm="6">
             <ButtonGroup>
               <Button disabled>Filtrar</Button>
@@ -133,7 +135,7 @@ class Filter extends Component {
         </Row>
         <Row>
           {this.props.loading ? (
-            <Col style={{ textAlign: 'center' }}>
+            <Col style={{ textAlign: "center" }}>
               <LeitSpinner />
             </Col>
           ) : (
@@ -146,7 +148,7 @@ class Filter extends Component {
             </Col>
           )}
         </Row>
-        <Row style={{ marginTop: '2em' }}>
+        <Row style={{ marginTop: "2em" }}>
           <Col>
             <Pagination
               count={photoCount}
@@ -162,23 +164,16 @@ class Filter extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  let errors = [];
-  if (state.user.errors) {
-    errors = Object.keys(state.user.errors).map((field) => {
-      return { field, message: state.user.errors[field] };
-    });
-  }
-  return {
-    errors,
-    isAuthenticated: state.user.isAuthenticated,
-    meta: state.webadmin.all_tags,
-    photos: state.photos.photos,
-    photoCount: state.photos.count,
-    loading: state.site_misc.curador.loading,
-    refresh: state.site_misc.curador.refresh,
-  };
-};
+const mapStateToProps = (state) => ({
+  errors: selectErrors(state),
+  isAuthenticated: state.user.isAuthenticated,
+  meta: state.webadmin.all_tags,
+  photos: selectPhotos(state),
+  photoCount: state.photos.count,
+  loading: state.site_misc.curador.loading,
+  refresh: state.site_misc.curador.refresh,
+});
+
 const mapActionsToProps = (dispatch) =>
   bindActionCreators(
     {

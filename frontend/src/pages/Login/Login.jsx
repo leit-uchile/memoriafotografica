@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUnlock } from "@fortawesome/free-solid-svg-icons";
 import "./login.css";
 import { bindActionCreators } from "redux";
+import { selectErrors } from "../../reducers";
 
 class Login extends Component {
   state = {
@@ -122,19 +123,11 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  let errors = [];
-  if (state.user.errors) {
-    errors = Object.keys(state.user.errors).map((field) => {
-      return { field, message: state.user.errors[field] };
-    });
-  }
-  return {
-    errors,
-    isAuthenticated: state.user.isAuthenticated,
-    loginRoute: state.site_misc.loginSuccessRoute,
-  };
-};
+const mapStateToProps = (state) => ({
+  errors: selectErrors(state),
+  isAuthenticated: state.user.isAuthenticated,
+  loginRoute: state.site_misc.loginSuccessRoute,
+});
 
 const mapActionsToProps = (dispatch) =>
   bindActionCreators(

@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect } from "react";
 import {
   Container,
   Row,
@@ -12,17 +12,18 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from 'reactstrap';
-import { Link, Redirect } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "reactstrap";
+import { Link, Redirect } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronCircleLeft,
   faExternalLinkAlt,
-} from '@fortawesome/free-solid-svg-icons';
-import { connect } from 'react-redux';
-import { gallery } from '../../../actions';
-import { PhotoSelector, LeitSpinner, Pagination } from '../../../components';
-import { bindActionCreators } from 'redux';
+} from "@fortawesome/free-solid-svg-icons";
+import { connect } from "react-redux";
+import { gallery } from "../../../actions";
+import { PhotoSelector, LeitSpinner, Pagination } from "../../../components";
+import { bindActionCreators } from "redux";
+import { selectPhotos } from "../../../reducers";
 
 const RemovePhotos = ({ action }) => {
   const [modal, setModal] = useState(false);
@@ -57,7 +58,7 @@ const RemovePhotos = ({ action }) => {
             }}
           >
             Continuar
-          </Button>{' '}
+          </Button>{" "}
           <Button color="secondary" onClick={toggle}>
             Cancelar
           </Button>
@@ -81,11 +82,11 @@ const Category_Photos = ({
   match,
 }) => {
   const [page, setPage] = useState({ page: 0, page_size: 10 });
-  const [data, setData] = useState({ title: '', pictures: [] });
+  const [data, setData] = useState({ title: "", pictures: [] });
 
   // Initial load and on photos update
   useEffect(() => {
-    let params = '&category=' + match.params.id;
+    let params = "&category=" + match.params.id;
     getCategory(match.params.id);
     getPhotosAuth(page.page, page.page_size, params);
     if (updatedPhotos) {
@@ -107,7 +108,7 @@ const Category_Photos = ({
 
   const setDaPage = (p) => {
     setPage((s) => ({ ...s, page: p }));
-    let params = '&category=' + match.params.id;
+    let params = "&category=" + match.params.id;
     getPhotosAuth(p, page.page_size, params);
   };
 
@@ -157,7 +158,7 @@ const Category_Photos = ({
   };
 
   const removePhotos = () => {
-    associate(data.pictures, catDetails.id, 'remove');
+    associate(data.pictures, catDetails.id, "remove");
   };
 
   const doRedirect = () => {
@@ -183,7 +184,7 @@ const Category_Photos = ({
               className="btn btn-secondary"
             >
               <FontAwesomeIcon icon={faChevronCircleLeft} />
-            </Link>{' '}
+            </Link>{" "}
             Ver/Modificar Categoria: {catDetails.title}
           </h2>
         </Col>
@@ -195,7 +196,7 @@ const Category_Photos = ({
         <Col sm={10}>
           <InputGroup>
             <Input
-              placeholder={'Nombre'}
+              placeholder={"Nombre"}
               defaultValue={data.title}
               onChange={addTitle}
               maxLength="30"
@@ -208,12 +209,12 @@ const Category_Photos = ({
           </InputGroup>
         </Col>
       </Row>
-      <Row style={{ marginTop: '1em' }}>
-        <Col style={{ textAlign: 'center' }}>
+      <Row style={{ marginTop: "1em" }}>
+        <Col style={{ textAlign: "center" }}>
           <Button color="primary" onClick={doRedirect}>
             Agregar fotos nuevas <FontAwesomeIcon icon={faExternalLinkAlt} />
-          </Button>{' '}
-          <RemovePhotos action={removePhotos} />{' '}
+          </Button>{" "}
+          <RemovePhotos action={removePhotos} />{" "}
           {loading ? (
             <LeitSpinner />
           ) : (
@@ -229,7 +230,7 @@ const Category_Photos = ({
           )}
         </Col>
       </Row>
-      <Row style={{ marginTop: '1em' }}>
+      <Row style={{ marginTop: "1em" }}>
         <Col>
           <Pagination
             count={photo_count}
@@ -248,7 +249,7 @@ const Category_Photos = ({
 };
 
 const mapStateToProps = (state) => ({
-  photos: state.photos.photos,
+  photos: selectPhotos(state),
   photo_count: state.photos.count,
   loading: state.site_misc.curador.loading,
   catError: state.categories.error,

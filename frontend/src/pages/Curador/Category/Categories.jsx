@@ -21,6 +21,7 @@ import { Pagination } from "../../../components";
 import { CategoryTable } from "./CategoryTable";
 import { ModifyModal } from "./ModifyModal";
 import { bindActionCreators } from "redux";
+import { selectCategories } from "../../../reducers";
 
 class Categories extends Component {
   constructor(props) {
@@ -202,7 +203,7 @@ class Categories extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  cats: state.categories.categories,
+  cats: selectCategories(state),
   total: state.categories.total,
   loading: state.site_misc.curador.loading,
   refresh: state.site_misc.curador.refresh,

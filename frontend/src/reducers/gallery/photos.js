@@ -8,8 +8,6 @@ import {
   DELETED_PHOTO,
 } from "../../actions/types";
 
-import {createSelector} from 'reselect';
-
 const initialState = {
   photos: [],
   errors: null,
@@ -36,7 +34,11 @@ export default function photos(state = initialState, action) {
     case EMPTY_PHOTOS:
       return { ...state, photos: [] };
     case EDIT_PHOTO:
-      return { ...state, details: { ...state.details, ...action.data }, updatedPhoto: true };
+      return {
+        ...state,
+        details: { ...state.details, ...action.data },
+        updatedPhoto: true,
+      };
     case EDIT_PHOTO_ERROR:
       return { ...state, edit_photo_errors: action.data };
     case DELETED_PHOTO:
@@ -64,9 +66,9 @@ export default function photos(state = initialState, action) {
 }
 
 export const selectPhotos = (state) => {
-  if(Array.isArray(state.photos.photos)){
+  if (Array.isArray(state.photos.photos)) {
     return state.photos.photos;
-  }else{
+  } else {
     return [];
-  }  
-}
+  }
+};

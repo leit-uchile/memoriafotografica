@@ -16,6 +16,7 @@ import { LeitSpinner } from "../../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faComments } from "@fortawesome/free-solid-svg-icons";
 import { bindActionCreators } from "redux";
+import { selectComments } from "../../../reducers";
 import "./styles.css";
 
 const CommentHandler = ({
@@ -106,7 +107,7 @@ const CommentHandler = ({
 };
 
 const mapStateToProps = (state) => ({
-  comments: state.comments.comments,
+  comments: selectComments(state),
   commentsLoaded: state.comments.commentsLoaded,
   auth: state.user.isAuthenticated,
   userData: state.user.userData,

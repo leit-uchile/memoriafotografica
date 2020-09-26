@@ -102,7 +102,7 @@ export default function user(state = initialState, action) {
     case REGISTRATION_LINK_SUCCESS:
       return {
         ...state,
-        activated: true
+        activated: true,
       };
     case REGISTRATION_LINK_FAILED:
       return { ...state, activated: false };
@@ -186,3 +186,13 @@ export default function user(state = initialState, action) {
       return { ...state };
   }
 }
+
+export const selectErrors = (state) => {
+  let errors = [];
+  if (state.user.errors) {
+    errors = Object.keys(state.user.errors).map((field) => {
+      return { field, message: state.user.errors[field] };
+    });
+  }
+  return errors;
+};

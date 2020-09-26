@@ -19,6 +19,7 @@ import { gallery, metadata } from "../../../actions";
 import { PhotoSelector, LeitSpinner, Pagination } from "../../../components";
 import ReactTags from "react-tag-autocomplete";
 import { bindActionCreators } from "redux";
+import { selectPhotos } from "../../../reducers";
 
 const Category_Add = ({
   photos,
@@ -306,7 +307,7 @@ const Category_Add = ({
 };
 
 const mapStateToProps = (state) => ({
-  photos: state.photos.photos,
+  photos: selectPhotos(state),
   photo_count: state.photos.count,
   loading: state.site_misc.curador.loading,
   catError: state.categories.error,
