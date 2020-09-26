@@ -26,7 +26,7 @@ def createHash(id):
 class VerifyTokenAPI(generics.GenericAPIView):
     serializer_class = ReCaptchaSerializer
 
-    #allowed_methods = ["POST"]
+    allowed_methods = ["POST"]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

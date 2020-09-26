@@ -73,6 +73,23 @@ const UploadUnregister = ({
     if (validateCaptcha()) {
       saveInfo({ ...formData, info: { ...info } });
       //TODO get guest token, for this step backend must verify if the value of captcha is correct
+      {
+        let header = { "Content-Type": "application/json" };
+        let data = { recaptcha: recaptchaRef.current.getValue() };
+        fetch("/api/users/recaptcha/", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: header,
+        }).then(function (response) {
+          if (response.status == 200) {
+            console.log("FUNCIONAAAAAAAAAA");
+            return response.status;
+          } else {
+            console.log("NO FUNCIONA UNU :CCCCC");
+            throw "Error en la llamada Ajax";
+          }
+        });
+      }
       nextStep();
     } else {
       sendAlert("Debe rellenar el captcha", "warning");
@@ -81,8 +98,6 @@ const UploadUnregister = ({
 
   const validateCaptcha = () => {
     const recaptchaValue = recaptchaRef.current.getValue();
-    //TODO delete this log, used for development porpuses only
-    console.log(recaptchaValue);
     if (recaptchaValue == null || recaptchaValue == "") {
       return false;
     } else {
