@@ -72,6 +72,7 @@ const UploadUnregister = ({
     e.preventDefault();
     if (validateCaptcha()) {
       saveInfo({ ...formData, info: { ...info } });
+      //TODO get guest token, for this step backend must verify if the value of captcha is correct
       nextStep();
     } else {
       sendAlert("Debe rellenar el captcha", "warning");
@@ -80,6 +81,8 @@ const UploadUnregister = ({
 
   const validateCaptcha = () => {
     const recaptchaValue = recaptchaRef.current.getValue();
+    //TODO delete this log, used for development porpuses only
+    console.log(recaptchaValue);
     if (recaptchaValue == null || recaptchaValue == "") {
       return false;
     } else {
