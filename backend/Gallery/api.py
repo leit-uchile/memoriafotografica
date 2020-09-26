@@ -165,8 +165,8 @@ class PhotoListAPI(generics.GenericAPIView):
             return JsonResponse({"position": position, "page": page, "nextId": next_p, "prevId": prev_p, "total": results})
 
         for aPhoto in serialized_data:
-            aPhoto['metadata'] = list(filter(lambda x: check_approval(x), aPhoto['metadata']))
-            aPhoto['metadata'] = list(map(lambda x: make_tag(x), aPhoto['metadata']))
+            if request.user.is_anonymous or request.user.user_type == 1: aPhoto['metadata'] = list(filter(lambda x: check_approval(x), aPhoto['metadata']))
+            ##aPhoto['metadata'] = list(map(lambda x: make_tag(x), aPhoto['metadata']))
         photos_to_map = list(map(get_user,zip(photo, serialized_data)))
         return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
