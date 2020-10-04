@@ -1,5 +1,9 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { selectPhotos } from "../../reducers";
+import {
+  selectPhotos,
+  selectPhotosDetails,
+  selectPhotosError,
+} from "../../reducers";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { Button, Row, Col, Container } from "reactstrap";
@@ -283,9 +287,9 @@ const PhotoDetails = ({
 };
 
 const mapStateToProps = (state) => ({
-  photoInfo: state.photos.details,
+  photoInfo: selectPhotosDetails(state),
   suggestions: selectPhotos(state),
-  errors: state.photos.errors,
+  errors: selectPhotosError(state),
   photoIndex: state.site_misc.home.selectedIndex,
   photoPage: state.site_misc.home.photoPagination,
 });

@@ -66,3 +66,15 @@ export const selectCategories = (state) => {
     return [];
   }
 };
+
+export const selectCategoriesError = (state) => state.categories.error;
+
+export const selectCategoriesDetails = (state) =>
+  state.categories.categoryDetail;
+
+export const selectCategoriesUpdatePhotos = (state) =>
+  state.categories.updatedPhotos;
+
+export const selectCategoriesTotal = (state) => state.categories.total;
+
+export const selectNewCategories = (state) => state.categories.newCat;

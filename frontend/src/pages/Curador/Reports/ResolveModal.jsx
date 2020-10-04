@@ -17,6 +17,7 @@ import { gallery, user } from "../../../actions";
 import { LeitSpinner } from "../../../components";
 import "./resolveModal.css";
 import { bindActionCreators } from "redux";
+import { selectPhotosDetails } from "../../../reducers";
 
 const EditUserForm = () => {
   return <div>Edit User</div>;
@@ -216,7 +217,7 @@ const ResolveModal = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  photo: state.photos.details,
+  photo: selectPhotosDetails(state),
 });
 
 const mapActionsToProps = (dispatch) =>

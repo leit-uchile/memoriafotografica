@@ -23,7 +23,13 @@ import { connect } from "react-redux";
 import { gallery } from "../../../actions";
 import { PhotoSelector, LeitSpinner, Pagination } from "../../../components";
 import { bindActionCreators } from "redux";
-import { selectPhotos } from "../../../reducers";
+import {
+  selectPhotos,
+  selectPhotosCount,
+  selectCategoriesError,
+  selectCategoriesDetails,
+  selectCategoriesUpdatePhotos,
+} from "../../../reducers";
 
 const RemovePhotos = ({ action }) => {
   const [modal, setModal] = useState(false);
@@ -250,11 +256,11 @@ const Category_Photos = ({
 
 const mapStateToProps = (state) => ({
   photos: selectPhotos(state),
-  photo_count: state.photos.count,
+  photo_count: selectPhotosCount(state),
   loading: state.site_misc.curador.loading,
-  catError: state.categories.error,
-  catDetails: state.categories.categoryDetail,
-  updatedPhotos: state.categories.updatedPhotos,
+  catError: selectCategoriesError(state),
+  catDetails: selectCategoriesDetails(state),
+  updatedPhotos: selectCategoriesUpdatePhotos(state),
 });
 const mapActionsToProps = (dispatch) =>
   bindActionCreators(

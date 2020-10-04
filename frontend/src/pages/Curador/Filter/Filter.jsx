@@ -13,8 +13,11 @@ import PhotoList from "./PhotoList";
 import PhotoCards from "./PhotoCards";
 import OptionSelector from "./OptionSelector";
 import { bindActionCreators } from "redux";
-import { selectPhotos } from "../../../reducers";
-import { selectErrors } from "../../../reducers";
+import {
+  selectPhotos,
+  selectPhotosCount,
+  selectErrors,
+} from "../../../reducers";
 
 class Filter extends Component {
   constructor(props) {
@@ -169,7 +172,7 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.user.isAuthenticated,
   meta: state.webadmin.all_tags,
   photos: selectPhotos(state),
-  photoCount: state.photos.count,
+  photoCount: selectPhotosCount(state),
   loading: state.site_misc.curador.loading,
   refresh: state.site_misc.curador.refresh,
 });

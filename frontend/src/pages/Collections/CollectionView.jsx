@@ -9,6 +9,7 @@ import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import { bindActionCreators } from "redux";
 import "./collectionView.css";
+import { selectAlbumsLoading, selectAlbumsData } from "../../reducers";
 
 const loremIpsum =
   " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ut pretium augue. Etiam in odio enim. Mauris vitae pretium libero. Aliquam erat volutpat. Aliquam risus nisl, varius sed viverra vel, sagittis quis massa. Duis vitae mattis dui, eu convalli";
@@ -159,8 +160,8 @@ const CollectionView = ({
 };
 
 const mapStateToProps = (state) => ({
-  loading: state.albumcollection.loading,
-  albumData: state.albumcollection.albumData,
+  loading: selectAlbumsLoading(state),
+  albumData: selectAlbumsData(state),
 });
 
 const mapActionsToProps = (dispatch) =>

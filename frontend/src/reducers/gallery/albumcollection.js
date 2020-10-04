@@ -13,8 +13,8 @@ const initialState = {
   albumData: {},
   loading: false,
   errors: [],
-  createAlbum: {sent: false, success: false},
-  albums: {count: 0, results: []},
+  createAlbum: { sent: false, success: false },
+  albums: { count: 0, results: [] },
 };
 
 export default function albumcollection(state = initialState, action) {
@@ -32,10 +32,16 @@ export default function albumcollection(state = initialState, action) {
     case CREATED_ALBUM_ERROR:
       return { ...state, createAlbum: { sent: true, success: false } };
     case ALBUMS_LOADED:
-      return { ...state, albums: action.data, loading: false}
+      return { ...state, albums: action.data, loading: false };
     case ALBUMS_EMPTY:
-      return { ...state, albums: {count: 0, results: []}, loading: false}
+      return { ...state, albums: { count: 0, results: [] }, loading: false };
     default:
       return state;
   }
 }
+
+export const selectAlbums = (state) => state.albumcollection.albums;
+
+export const selectAlbumsLoading = (state) => state.albumcollection.loading;
+
+export const selectAlbumsData = (state) => state.albumcollection.albumData;

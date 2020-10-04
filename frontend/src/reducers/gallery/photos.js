@@ -72,3 +72,9 @@ export const selectPhotos = (state) => {
     return [];
   }
 };
+
+export const selectPhotosCount = (state) => state.photos.count;
+
+export const selectPhotosDetails = (state) => state.photos.details;
+
+export const selectPhotosError = (state) => state.photos.errors;
