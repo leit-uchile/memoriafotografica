@@ -45,7 +45,7 @@ export default function webadmin(state = initialState, action) {
   switch (type) {
     //TODO -Joaquin Testing redux actions for the recaptcha
     case VALIDATE_RECAPTCHA:
-      return { ...state, recaptchaState: true };
+      return { ...state, recaptchaState: data };
     case VALIDATE_RECAPTCHA_ERROR:
       return { ...state, recaptchaState: false };
     case LANDING_LOADING:

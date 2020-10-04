@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserFriends,
@@ -20,6 +20,7 @@ import {
 import ReCAPTCHA from "react-google-recaptcha";
 import { connect } from "react-redux";
 import { webadmin } from "../../actions";
+
 //TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
 const captchaKey = "6LdqEM0ZAAAAAHkqSnB_dHDEjh4xy7euetQLrW7O";
 
@@ -30,6 +31,7 @@ const UploadUnregister = ({
   nextStep,
   sendAlert,
   recaptchaBack,
+  recaptchaState,
 }) => {
   const recaptchaRef = React.createRef();
 
@@ -57,6 +59,17 @@ const UploadUnregister = ({
         }
   );
 
+  useEffect(() => {
+    if (recaptchaState.success) {
+      nextStep();
+    }
+    return () => {
+      //TODO -Joaquin Unmount cuando cambie de vaina?
+      // Poner catpcha en false
+      console.log("unmount");
+    };
+  }, [recaptchaState.success]);
+
   const updateForm = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -73,11 +86,12 @@ const UploadUnregister = ({
 
   const onSubmit = (e) => {
     e.preventDefault();
+    recaptchaRef.current.execute();
     if (validateCaptcha()) {
       saveInfo({ ...formData, info: { ...info } });
+
       //TODO -Joaquin get guest token, for this step backend must verify if the value of captcha is correct
       recaptchaBack(recaptchaRef.current.getValue());
-      nextStep();
     } else {
       sendAlert("Debe rellenar el captcha", "warning");
     }
@@ -206,7 +220,7 @@ const UploadUnregister = ({
           </Col>
         </FormGroup>
         <ButtonGroup style={{ minWidth: "20em" }}>
-          <ReCAPTCHA sitekey={captchaKey} ref={recaptchaRef} />
+          <ReCAPTCHA size="invisible" sitekey={captchaKey} ref={recaptchaRef} />
           <Button onClick={previousStep}>
             <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
           </Button>
