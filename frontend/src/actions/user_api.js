@@ -7,6 +7,12 @@ import {
   AUTH_CLEAR_ERRORS,
   REGISTRATION_LINK_SUCCESS,
   REGISTRATION_LINK_FAILED,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_FAILED,
+  RESET_PASSWORD_VALIDATE_SUCCESS,
+  RESET_PASSWORD_VALIDATE_FAILED,
+  RESET_PASSWORD_CONFIRM_SUCCESS,
+  RESET_PASSWORD_CONFIRM_FAILED,
   LOGOUT_SUCCESS,
   USER_LOADED,
   USER_RECOVERED_PHOTO,
@@ -425,3 +431,69 @@ export const updatePassword = (old_password, new_password) => (
 };
 
 export const uploadUserPicture = (avatar) => (dispatch, getState) => {};
+
+export const resetPasswordRequest = (email) => (dispatch) => {
+  let headers = { "Content-Type": "application/json" };
+  let body = JSON.stringify({ email });
+
+  return fetch("/api/auth/password_reset/", {
+    headers,
+    body,
+    method: "POST",
+  }).then((res) => {
+    if (res.status === 200) {
+      return res.json().then((data) => {
+        dispatch({ type: RESET_PASSWORD_SUCCESS, data: null });
+        return { status: res.status, data: null };
+      });
+    } else {
+      setAlert("Hubo un error al enviar el link", "error")
+      dispatch({ type: RESET_PASSWORD_FAILED, data: null });
+      throw res.data;
+    }
+  });
+};
+
+export const resetPasswordValidate = (token) => (dispatch) => {
+  let headers = { "Content-Type": "application/json" };
+  let body = JSON.stringify({ token });
+
+  return fetch("/api/auth/password_reset/validate_token/", {
+    headers,
+    body,
+    method: "POST",
+  }).then((res) => {
+    if (res.status === 200) {
+      return res.json().then((data) => {
+        dispatch({ type: RESET_PASSWORD_VALIDATE_SUCCESS, data: null });
+        return { status: res.status, data: null };
+      });
+    } else {
+      dispatch({ type: RESET_PASSWORD_VALIDATE_FAILED, data: null });
+      throw res.data;
+    }
+  });
+};
+
+export const resetPasswordConfirm = (token, password) => (
+  dispatch
+) => {
+  let headers = { "Content-Type": "application/json" };
+  let body = JSON.stringify({ token, password});
+
+  return fetch("/api/auth/password_reset/confirm/", {
+    headers,
+    body,
+    method: "POST",
+  }).then((res) => {
+    if (res.status === 200) {
+      return res.json().then((data) => {
+        dispatch({ type: RESET_PASSWORD_CONFIRM_SUCCESS, data: null });
+        return { status: res.status, data: null };
+      });
+    } else {
+      dispatch({ type: RESET_PASSWORD_CONFIRM_FAILED, data: null });
+      throw res.data;
+    }
+  });
+};
