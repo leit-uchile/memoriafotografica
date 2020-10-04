@@ -18,15 +18,18 @@ import {
   ButtonGroup,
 } from "reactstrap";
 import ReCAPTCHA from "react-google-recaptcha";
-
-//TODO change client captcha key for production
+import { connect } from "react-redux";
+import { webadmin } from "../../actions";
+//TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
 const captchaKey = "6LdqEM0ZAAAAAHkqSnB_dHDEjh4xy7euetQLrW7O";
+
 const UploadUnregister = ({
   cache,
   saveInfo,
   previousStep,
   nextStep,
   sendAlert,
+  recaptchaBack,
 }) => {
   const recaptchaRef = React.createRef();
 
@@ -72,24 +75,8 @@ const UploadUnregister = ({
     e.preventDefault();
     if (validateCaptcha()) {
       saveInfo({ ...formData, info: { ...info } });
-      //TODO get guest token, for this step backend must verify if the value of captcha is correct
-      {
-        let header = { "Content-Type": "application/json" };
-        let data = { recaptcha: recaptchaRef.current.getValue() };
-        fetch("/api/users/recaptcha/", {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers: header,
-        }).then(function (response) {
-          if (response.status == 200) {
-            console.log("FUNCIONAAAAAAAAAA");
-            return response.status;
-          } else {
-            console.log("NO FUNCIONA UNU :CCCCC");
-            throw "Error en la llamada Ajax";
-          }
-        });
-      }
+      //TODO -Joaquin get guest token, for this step backend must verify if the value of captcha is correct
+      recaptchaBack(recaptchaRef.current.getValue());
       nextStep();
     } else {
       sendAlert("Debe rellenar el captcha", "warning");
@@ -231,5 +218,13 @@ const UploadUnregister = ({
     </Container>
   );
 };
+//TODO -Joaquin Fix redux not working properly
+const mapStateToProps = (state) => ({
+  recaptchaState: state.webadmin.recaptchaState,
+});
 
-export default UploadUnregister;
+const mapActionsToProps = (dispatch) => ({
+  recaptchaBack: (value) => dispatch(webadmin.validateRecaptcha(value)),
+});
+
+export default connect(mapStateToProps, mapActionsToProps)(UploadUnregister);
