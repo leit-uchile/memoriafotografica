@@ -132,7 +132,7 @@ class UserPhotos extends Component {
                 photosID={this.state.picturesToEdit}
                 isOpen={(bool) => this.setState({ modalOpen: bool })}
               />
-              <CreateAlbumModal />
+              <CreateAlbumModal photosID={this.state.picturesToEdit} isOpen={(bool) => this.setState({modalOpen: bool})}/>
             </Col>
           </Row>
         )}

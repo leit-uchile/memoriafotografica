@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import Gallery from "react-photo-gallery";
 import { Container, Row, Col } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faPencilAlt, faTimes, faImages } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faPencilAlt, faTimes } from "@fortawesome/free-solid-svg-icons";
 import "./photoEditor.css";
 
 /**
@@ -97,7 +97,7 @@ const SelectedImage = ({
           isSelected ? { ...imgStyle, ...selectedImgStyle } : { ...imgStyle }
         }
         {...photo}
-        onClick={isSelected ? handleOnSelect : {}}
+        onClick={isSelected ? handleOnSelect : ()=>{}}
       />
 
         {!isSelected ? (
@@ -111,8 +111,7 @@ const SelectedImage = ({
               icon={faPencilAlt}
               style={{ marginRight: "0.35em" }} 
               onClick={handleOnSelect} 
-            />
-            <FontAwesomeIcon icon={faImages} />
+            />            
           </div>
         ) : (
           <div className="icons">
