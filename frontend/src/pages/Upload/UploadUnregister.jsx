@@ -86,7 +86,7 @@ const UploadUnregister = ({
 
   const onSubmit = (e) => {
     e.preventDefault();
-    recaptchaRef.current.execute();
+    //recaptchaRef.current.execute();
     if (validateCaptcha()) {
       saveInfo({ ...formData, info: { ...info } });
 
@@ -220,7 +220,11 @@ const UploadUnregister = ({
           </Col>
         </FormGroup>
         <ButtonGroup style={{ minWidth: "20em" }}>
-          <ReCAPTCHA size="invisible" sitekey={captchaKey} ref={recaptchaRef} />
+          <ReCAPTCHA
+            //size="invisible"
+            sitekey={captchaKey}
+            ref={recaptchaRef}
+          />
           <Button onClick={previousStep}>
             <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
           </Button>
