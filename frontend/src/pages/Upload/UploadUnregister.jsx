@@ -18,15 +18,18 @@ import {
   ButtonGroup,
 } from "reactstrap";
 import ReCAPTCHA from "react-google-recaptcha";
-
-//TODO change client captcha key for production
+import { connect } from "react-redux";
+import { webadmin } from "../../actions";
+//TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
 const captchaKey = "6LdqEM0ZAAAAAHkqSnB_dHDEjh4xy7euetQLrW7O";
+
 const UploadUnregister = ({
   cache,
   saveInfo,
   previousStep,
   nextStep,
   sendAlert,
+  recaptchaBack,
 }) => {
   const recaptchaRef = React.createRef();
 
@@ -72,7 +75,8 @@ const UploadUnregister = ({
     e.preventDefault();
     if (validateCaptcha()) {
       saveInfo({ ...formData, info: { ...info } });
-      //TODO get guest token, for this step backend must verify if the value of captcha is correct
+      //TODO -Joaquin get guest token, for this step backend must verify if the value of captcha is correct
+      recaptchaBack(recaptchaRef.current.getValue());
       nextStep();
     } else {
       sendAlert("Debe rellenar el captcha", "warning");
@@ -81,8 +85,6 @@ const UploadUnregister = ({
 
   const validateCaptcha = () => {
     const recaptchaValue = recaptchaRef.current.getValue();
-    //TODO delete this log, used for development porpuses only
-    console.log(recaptchaValue);
     if (recaptchaValue == null || recaptchaValue == "") {
       return false;
     } else {
@@ -216,5 +218,13 @@ const UploadUnregister = ({
     </Container>
   );
 };
+//TODO -Joaquin Fix redux not working properly
+const mapStateToProps = (state) => ({
+  recaptchaState: state.webadmin.recaptchaState,
+});
 
-export default UploadUnregister;
+const mapActionsToProps = (dispatch) => ({
+  recaptchaBack: (value) => dispatch(webadmin.validateRecaptcha(value)),
+});
+
+export default connect(mapStateToProps, mapActionsToProps)(UploadUnregister);
