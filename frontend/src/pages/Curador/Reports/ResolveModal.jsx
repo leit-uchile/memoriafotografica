@@ -19,7 +19,12 @@ import EditUserModal from "./EditUserModal";
 import EditPhotosModal from "../../User/PhotoCollection/EditPhotosModal";
 import EditCommentModal from "../../User/PhotoCollection/EditPhotosModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faTrashAlt, faCamera, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEye,
+  faTrashAlt,
+  faCamera,
+  faPencilAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import "./resolveModal.css";
 
 const ResolveModal = (props) => {
@@ -29,9 +34,8 @@ const ResolveModal = (props) => {
     report,
     censureContent,
     updateReport,
+    editUser,
     editPhoto,
-    //user,
-    getUser,
   } = props;
 
   const [modal, setModal] = useState(false);
@@ -77,13 +81,14 @@ const ResolveModal = (props) => {
       <EditUserModal
         report={newreport}
         isOpen={editModal}
-        handleToggle={()=>setEditModal(!editModal)}
+        handleToggle={() => setEditModal(!editModal)}
+        onSend={(newData) => editUser(newData)}
       />
-    ) : (newreport.type === 2 ? (
+    ) : newreport.type === 2 ? (
       <EditPhotosModal
         photosId={[newreport.content_id.id]}
         isOpen={editModal}
-        handleToggle={()=>setEditModal(!editModal)}
+        handleToggle={() => setEditModal(!editModal)}
         editPhoto={(photoId, newData) => editPhoto(newreport, newData)}
         isCurator={true}
       />
@@ -91,16 +96,14 @@ const ResolveModal = (props) => {
       <EditCommentModal
         comment={newreport}
         isOpen={editModal}
-        handleToggle={()=>setEditModal(!editModal)}
+        handleToggle={() => setEditModal(!editModal)}
       />
-    ));
-    
+    );
+
   const modalContent = (
     <Fragment>
       <Modal isOpen={modal} toggle={() => setModal()} size={"lg"}>
-        <ModalHeader toggle={() => setModal()}>
-          Resolver Reporte
-        </ModalHeader>
+        <ModalHeader toggle={() => setModal()}>Resolver Reporte</ModalHeader>
         <ModalBody>
           <Form>
             <FormGroup>
@@ -143,7 +146,7 @@ const ResolveModal = (props) => {
                 <Col>
                   <FontAwesomeIcon
                     icon={faPencilAlt}
-                    onClick={()=> setEditModal(true)}
+                    onClick={() => setEditModal(true)}
                     style={{
                       color: "var(--leit-red)",
                       cursor: "pointer",
@@ -171,8 +174,8 @@ const ResolveModal = (props) => {
 };
 
 const mapActionsToProps = (dispatch) => ({
+  editUser: (userInfo, doJSON = true) => dispatch(user.editProfile(userInfo, doJSON)),
   editPhoto: (rep, cont) => dispatch(gallery.reports.updateContent(rep, cont)),
-  getUser: (pk) => dispatch(user.loadAUser(pk)),
 });
 
 export default connect(null, mapActionsToProps)(ResolveModal);

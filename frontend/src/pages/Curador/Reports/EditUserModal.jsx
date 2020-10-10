@@ -21,7 +21,7 @@ const EditUserModal = ({
   report,
   isOpen,
   handleToggle,
-  editUser,
+  onSend,
   userDetails,
   getUser,
 }) => {
@@ -39,6 +39,11 @@ const EditUserModal = ({
   const updateData = (e) =>
     setData({ ...formData, [e.target.name]: e.target.value });
 
+  const deletePhoto = () => {
+    let info = { ...formData };
+    delete info.avatar;
+    onSend(info);
+  };
   return (
     <div>
       <Modal isOpen={isOpen} toggle={() => handleToggle()} size={"lg"}>
@@ -117,7 +122,7 @@ const EditUserModal = ({
         <ModalFooter>
           {!false ? (
             <Fragment>
-              <Button color="primary" onClick={() => editUser(formData)}>
+              <Button color="primary" onClick={() => onSend(formData)}>
                 Guardar cambios
               </Button>
               <Button color="secondary" onClick={() => handleToggle()}>
