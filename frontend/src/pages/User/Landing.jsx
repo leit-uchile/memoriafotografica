@@ -11,6 +11,7 @@ import {
   faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet";
+import { ReportModal } from "../../components";
 
 class Landing extends Component {
   constructor(props) {
@@ -63,6 +64,20 @@ class Landing extends Component {
                 : "Escritorio"}
             </h2>
           </Col>
+          <ReportModal
+              style={{ display: "inline-block" }}
+              className="float-right"
+              elementId={this.state.user.id}
+              reportTitle={"Reportar Usuario"}
+              options={[
+                "Finge ser otra persona",
+                "Fotografía inadecuada",
+              ]}
+              helpText={
+                "Si consideras que hay un problema con esta usuario por favor envíamos un reporte mediante este formulario."
+              }
+              reportType={1}
+            />
         </Row>
         <Row>
           <Col>

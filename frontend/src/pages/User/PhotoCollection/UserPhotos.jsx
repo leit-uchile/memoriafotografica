@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { Button, Row, Col, Container, Badge } from "reactstrap";
-import { user, site_misc } from "../../../actions";
+import { user, site_misc, gallery } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
 import PhotoEditor from "../../../components/PhotoEditor";
 import { Helmet } from "react-helmet";
@@ -130,15 +130,23 @@ class UserPhotos extends Component {
               <Button
                 disabled={this.state.picturesToEdit.length === 0}
                 color="primary"
-                onClick={()=>this.setState({modalOpen: !this.state.modalOpen})}
+                onClick={() =>
+                  this.setState({ modalOpen: !this.state.modalOpen })
+                }
               >
                 Editar selección ({this.state.picturesToEdit.length})
               </Button>
               <EditPhotosModal
                 photosId={this.state.picturesToEdit}
                 isOpen={this.state.modalOpen}
-                handleToggle={()=>this.setState({modalOpen: !this.state.modalOpen})}
+                handleToggle={() =>
+                  this.setState({ modalOpen: !this.state.modalOpen })
+                }
+                editPhoto={(id,content)=>this.props.editPhoto(id,content)}
+                deletePhoto={(id)=>this.props.deletePhoto(id)}
                 isCurator={false}
+                censurePhoto={null}
+                
               />
             </Col>
           </Row>
@@ -196,6 +204,8 @@ const mapActionsToProps = (dispatch) => ({
     dispatch(user.getUserPhotos(user_id, limit, offset)),
   onLoadGetPublicPhotos: (user_id, params) =>
     dispatch(user.loadPublicUserPhotos(user_id, params)),
+  editPhoto: (pID, val) => dispatch(gallery.photos.editPhoto(pID, val)),
+  deletePhoto: (pID) => dispatch(gallery.photos.deletePhoto(pID)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(UserPhotos);

@@ -45,7 +45,6 @@ const EditPhotosModal = ({
   createMultipleMetas,
   editPhoto,
   deletePhoto,
-  editReport,
   updatedPhoto,
 }) => {
   const [toggleDelete, setToggleDelete] = useState(false);
@@ -140,16 +139,14 @@ const EditPhotosModal = ({
 
   const updatePhotoDetails = (newDetails) => {
     {
-      !isCurator
-        ? photosId.forEach((photoIdToUpdate, index) => {
-            photosId.length > 1 && newDetails.title !== undefined // If user renames multiple photos
-              ? editPhoto(photoIdToUpdate, {
-                  ...newDetails,
-                  title: `${newDetails.title} (${index + 1})`, // Each photo gets the new title with an index
-                })
-              : editPhoto(photoIdToUpdate, newDetails);
-          })
-        : editReport();
+      photosId.forEach((photoIdToUpdate, index) => {
+        photosId.length > 1 && newDetails.title !== undefined // If user renames multiple photos
+          ? editPhoto(photoIdToUpdate, {
+              ...newDetails,
+              title: `${newDetails.title} (${index + 1})`, // Each photo gets the new title with an index
+            })
+          : editPhoto(photoIdToUpdate, newDetails);
+      });
     }
     handleToggle();
   };
@@ -166,48 +163,21 @@ const EditPhotosModal = ({
     <Fragment>
       <Form>
         <FormGroup>
-          <Row>
-            <Col>
-              {!isCurator ? (
-                <Label>Eliminar</Label>
-              ) : (
-                <Label>Descartar reporte</Label>
-              )}
-            </Col>
-            <Col>
-              <FontAwesomeIcon
-                icon={faTrashAlt}
-                onClick={() => setToggleDelete(!toggleDelete)}
-                style={{
-                  color: "var(--leit-red)",
-                  cursor: "pointer",
-                  fontSize: "16px",
-                }}
-              />
-            </Col>
-          </Row>
-
-          {isCurator ? (
+          {!isCurator ? (
             <Row>
               <Col>
-                <Label>Censurar contenido</Label>
+                <Label>Eliminar</Label>
               </Col>
               <Col>
                 <FontAwesomeIcon
-                  icon={faEye}
+                  icon={faTrashAlt}
+                  onClick={() => setToggleDelete(!toggleDelete)}
                   style={{
                     color: "var(--leit-red)",
                     cursor: "pointer",
                     fontSize: "16px",
                   }}
                 />
-              </Col>
-            </Row>
-          ) : null}
-          {isCurator ? (
-            <Row style={{ marginBottom: "0.5em" }}>
-              <Col>
-                <h4>Editar contenido</h4>
               </Col>
             </Row>
           ) : null}
@@ -308,9 +278,7 @@ const EditPhotosModal = ({
     <div>
       <Modal isOpen={isOpen} toggle={() => handleToggle()} size={"lg"}>
         <ModalHeader toggle={() => handleToggle()}>
-          {!isCurator
-            ? `Editando ${photosId.length} foto(s)`
-            : `Resolver Reporte`}
+          Editando {photosId.length} foto(s)
         </ModalHeader>
         <ModalBody>
           {PhotosForm}
@@ -318,15 +286,9 @@ const EditPhotosModal = ({
             isOpen={toggleDelete}
             toggle={() => setToggleDelete(!toggleDelete)}
           >
-            {!isCurator ? (
-              <ModalHeader toggle={() => setToggleDelete(!toggleDelete)}>
+            <ModalHeader toggle={() => setToggleDelete(!toggleDelete)}>
                 Eliminar fotografía(s)
               </ModalHeader>
-            ) : (
-              <ModalHeader toggle={() => setToggleDelete(!toggleDelete)}>
-                Descartar reporte
-              </ModalHeader>
-            )}
             <ModalBody>
               Esta acción no se puede deshacer. ¿Está seguro?
             </ModalBody>
@@ -387,10 +349,6 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = (dispatch) => ({
   getPhotoDetails: (id) => dispatch(gallery.photos.getPhoto(id)),
   getTags: () => dispatch(metadata.tags()),
-  editPhoto: (pID, val) => dispatch(gallery.photos.editPhoto(pID, val)),
-  deletePhoto: (pID) => dispatch(gallery.photos.deletePhoto(pID)),
-  // updateReport: rep => dispatch(gallery.reports.updateReport(rep)),
-  // censureContent: rep => dispatch(gallery.reports.censureContent(rep)),
   createMultipleMetas: (list) => dispatch(metadata.createMultipleMetas(list)),
 });
 
