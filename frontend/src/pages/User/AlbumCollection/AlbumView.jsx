@@ -157,13 +157,15 @@ const AlbumView = ({
                 {/* Do not remove this div, it allows for sticky behavior*/}
                 <Row>
                   <Col sm={9}>
-                    <Gallery
-                      photos={display.photos}
-                      targetRowHeight={200}
-                      onClick={(e, index) => {
-                        handleOnClick(index);
-                      }}
-                    />
+                    editing ? <PhotoEditor/> : (
+                      <Gallery
+                        photos={display.photos}
+                        targetRowHeight={200}
+                        onClick={(e, index) => {
+                          handleOnClick(index);
+                        }}
+                      />
+                    )
                   </Col>
                   <Col sm={3} className="album-sticky-element">
                     <div className="album-white-box">                      
@@ -207,6 +209,7 @@ const mapActionsToProps = (dispatch) => ({
     dispatch(gallery.album.loadAlbumInfo(id, detailed)),
   pushPhotos: (photos) => dispatch(site_misc.pushPhotoArray(photos)),
   setIndex: (num) => dispatch(site_misc.setSelectedId(num)),
+  
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(AlbumView);
