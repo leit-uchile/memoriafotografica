@@ -59,6 +59,7 @@ const SelectedImage = ({
   selected,
   onClick,
   onRedirect,
+  selectAllBtn
 }) => {
   const [isSelected, setIsSelected] = useState(selected);
   //calculate x,y scale
@@ -124,7 +125,7 @@ const SelectedImage = ({
   );
 };
 
-const PhotoEditor = ({ photos, selectAll, ...props }) => {
+const PhotoEditor = ({ photos, selectAll, selectAllBtn, ...props }) => {
   // const [selectAll, setSelectAll] = useState(false);
 
   // const toggleSelectAll = () => {
@@ -133,9 +134,9 @@ const PhotoEditor = ({ photos, selectAll, ...props }) => {
   // };
 
   const imageRenderer = useCallback(
-    ({ index, left, top, key, photo, onClick }) => (
+    ({ index, left, top, key, photo, onClick}) => (
       <SelectedImage
-        selected={selectAll}
+        selected={selectAllBtn ? selectAll : photo.selected}
         key={key}
         margin={"2px"}
         index={index}
@@ -144,6 +145,7 @@ const PhotoEditor = ({ photos, selectAll, ...props }) => {
         top={top}
         onClick={onClick}
         onRedirect={props.onRedirect}
+        selectAllBtn={selectAllBtn}
       />
     ),
     [selectAll]
