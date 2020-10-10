@@ -13,9 +13,33 @@ import { gallery, site_misc } from "../../actions";
 import { connect } from "react-redux";
 import "./collectionView.css";
 
-const loremIpsum =
-  " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ut pretium augue. Etiam in odio enim. Mauris vitae pretium libero. Aliquam erat volutpat. Aliquam risus nisl, varius sed viverra vel, sagittis quis massa. Duis vitae mattis dui, eu convalli";
-const eloremIpsum = "Descripcion de la foto";
+/*
+ Helper local rendering functions
+*/
+const RenderPhoto = ({ photo }) => (
+  <div className="collection-view-photo">
+    <img src={photo.thumbnail} width="100%" />
+  </div>
+);
+
+const RenderData = ({ photo, handle }) => (
+  <div className="collection-view-info">
+    <h5 style={{ color: "#999" }}>
+      <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
+      {moment(photo.upload_date).format("DD/MM/YYYY")}
+    </h5>
+    <p>{photo.description}</p>
+    <Button
+      color="link"
+      onClick={() => {
+        handle();
+      }}
+    >
+      Ver más
+    </Button>
+  </div>
+);
+
 /**
  * Display album with pagination and individual image links
  *
@@ -35,7 +59,6 @@ const CollectionView = ({
   loading,
   setIndex,
   pushPhotos,
-  location,
 }) => {
   // Load album info
   useEffect(() => {
@@ -66,12 +89,7 @@ const CollectionView = ({
     if (albumData !== null && albumData.pictures) {
       setDisplay({
         ...display,
-        photos: albumData.pictures.map((el) => ({
-          src: el.thumbnail,
-          height: el.aspect_h,
-          width: el.aspect_w,
-          id: el.id,
-        })),
+        photos: albumData.pictures,
         uploaded: new Date(albumData.created_at).toLocaleDateString("es"),
         redirect: false,
       });
@@ -98,9 +116,9 @@ const CollectionView = ({
   }
 
   const mapped = display.photos.map((el) => ({
-    src: el.src,
-    height: el.height,
-    width: el.width,
+    src: el.thumbnail,
+    height: el.aspect_h,
+    width: el.aspect_w,
     id: el.id,
   }));
 
@@ -149,92 +167,40 @@ const CollectionView = ({
                 ? display.photos.map((photo, i) => (
                     <Row className="collection-view-element">
                       <Col sm={{ size: 6 }}>
-                        <div className="collection-view-photo">
-                          <img src={photo.src} width="100%" />
-                        </div>
+                        <RenderPhoto photo={photo} />
                       </Col>
                       <Col sm={{ size: 6 }} className="collection-view-line">
-                        <div className="collection-view-info">
-                          <h5 style={{ color: "#999" }}>
-                            <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
-                            {moment("1990-10-10T00:00:00-03:00").format(
-                              "DD/MM/YYYY"
-                            )}
-                          </h5>
-                          <p>{loremIpsum}</p>
-                          <Button
-                            color="link"
-                            onClick={() => {
-                              handleOnClick(i);
-                            }}
-                          >
-                            Ver más
-                          </Button>
-                        </div>
+                        <RenderData
+                          photo={photo}
+                          handle={() => handleOnClick(i)}
+                        />
                       </Col>
                     </Row>
                   ))
                 : display.photos.map((photo, i) =>
                     i % 2 === 0 ? (
                       <Row className="collection-view-element">
-                        <Col sm={{ size: 6 }} md={{ size: 6 }}>
-                          <div className="collection-view-info">
-                            <h5 style={{ color: "#999" }}>
-                              <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
-                              {moment("1990-10-10T00:00:00-03:00").format(
-                                "DD/MM/YYYY"
-                              )}
-                            </h5>
-                            <p>{loremIpsum}</p>
-                            <Button
-                              color="link"
-                              onClick={() => {
-                                handleOnClick(i);
-                              }}
-                            >
-                              Ver más
-                            </Button>
-                          </div>
+                        <Col sm={{ size: 6 }}>
+                          <RenderData
+                            photo={photo}
+                            handle={() => handleOnClick(i)}
+                          />
                         </Col>
-                        <Col
-                          sm={{ size: 6 }}
-                          md={{ size: 6 }}
-                          className="collection-view-line"
-                        >
-                          <div className="collection-view-photo">
-                            <img src={photo.src} width="100%" />
-                          </div>
+                        <Col sm={{ size: 6 }} className="collection-view-line">
+                          <RenderPhoto photo={photo} />
                         </Col>
                       </Row>
                     ) : (
                       <Row className="collection-view-element">
-                        <Col md={{ size: 6 }} sm={{ size: 6 }}>
-                          <div className="collection-view-photo">
-                            <img src={photo.src} width="100%" />
-                          </div>
+                        <Col sm={{ size: 6 }}>
+                          {" "}
+                          <RenderPhoto photo={photo} />
                         </Col>
-                        <Col
-                          sm={{ size: 6 }}
-                          md={{ size: 6 }}
-                          className="collection-view-line"
-                        >
-                          <div className="collection-view-info">
-                            <h5 style={{ color: "#999" }}>
-                              <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
-                              {moment("1990-10-10T00:00:00-03:00").format(
-                                "DD/MM/YYYY"
-                              )}
-                            </h5>
-                            <p>{loremIpsum}</p>
-                            <Button
-                              color="link"
-                              onClick={() => {
-                                handleOnClick(i);
-                              }}
-                            >
-                              Ver más
-                            </Button>
-                          </div>
+                        <Col sm={{ size: 6 }} className="collection-view-line">
+                          <RenderData
+                            photo={photo}
+                            handle={() => handleOnClick(i)}
+                          />
                         </Col>
                       </Row>
                     )
