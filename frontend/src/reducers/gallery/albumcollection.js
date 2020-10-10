@@ -5,6 +5,9 @@ import {
   CREATED_ALBUM,
   CREATE_ALBUM_SENT,
   CREATED_ALBUM_ERROR,
+  DELETED_ALBUM,
+  DELETE_ALBUM_SENT,
+  DELETED_ALBUM_ERROR,
   ALBUMS_LOADED,
   ALBUMS_EMPTY,
 } from "../../actions/types";
@@ -14,6 +17,7 @@ const initialState = {
   loading: false,
   errors: [],
   createAlbum: {sent: false, success: false},
+  deleteAlbum: {sent: false, success: false},
   albums: {count: 0, results: []},
 };
 
@@ -35,6 +39,12 @@ export default function albumcollection(state = initialState, action) {
       return { ...state, albums: action.data, loading: false}
     case ALBUMS_EMPTY:
       return { ...state, albums: {count: 0, results: []}, loading: false}
+    case DELETE_ALBUM_SENT:
+      return { ...state, deleteAlbum: {sent: false, success: false}};
+    case DELETED_ALBUM:
+      return { ...state, deleteAlbum: {sent: true, success: true}};
+    case DELETED_ALBUM_ERROR:
+      return { ...state, deleteAlbum: {sent: true, success: false}};
     default:
       return state;
   }
