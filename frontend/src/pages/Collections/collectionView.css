@@ -84,3 +84,20 @@
     display: none;
   }
 }
+
+/* CSS Transition Animations */
+
+.timeline-enter {
+  opacity: 0;
+}
+.timeline-enter-active {
+  opacity: 1;
+  transition: opacity 1000ms;
+}
+.timeline-exit {
+  opacity: 1;
+}
+.timeline-exit-active {
+  opacity: 0;
+  transition: opacity 400ms;
+}

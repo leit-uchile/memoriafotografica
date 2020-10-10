@@ -1,13 +1,16 @@
 import React, { useEffect, useState, Fragment } from "react";
-import { Container, Row, Col, Button } from "reactstrap";
-import { gallery, site_misc } from "../../actions";
-import { connect } from "react-redux";
-import { LeitSpinner, Photo } from "../../components";
+import { Container, Row, Col, Button, ButtonGroup } from "reactstrap";
+import { LeitSpinner } from "../../components";
 import { Redirect, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
+import Helmet from "react-helmet";
+import Gallery from "react-photo-gallery";
 import { useMediaQuery } from "react-responsive";
+import { CSSTransition } from "react-transition-group";
+import { gallery, site_misc } from "../../actions";
+import { connect } from "react-redux";
 import "./collectionView.css";
 
 const loremIpsum =
@@ -56,11 +59,13 @@ const CollectionView = ({
     photos: [],
     uploaded: "",
     redirect: false,
+    timeline: true,
   });
 
   useEffect(() => {
     if (albumData !== null && albumData.pictures) {
       setDisplay({
+        ...display,
         photos: albumData.pictures.map((el) => ({
           src: el.thumbnail,
           height: el.aspect_h,
@@ -74,6 +79,7 @@ const CollectionView = ({
   }, [albumData]);
 
   const handleOnClick = (id) => {
+    console.log(id);
     setIndex(id);
     setDisplay({ ...display, redirect: id });
   };
@@ -91,29 +97,22 @@ const CollectionView = ({
     );
   }
 
+  const mapped = display.photos.map((el) => ({
+    src: el.src,
+    height: el.height,
+    width: el.width,
+    id: el.id,
+  }));
+
   return albumData !== {} ? (
     <Container fluid style={{ padding: "0", margin: "0", marginTop: "-2em" }}>
       {loading ? (
         <LeitSpinner />
       ) : (
         <Fragment>
-          <Row>
-            <Col style={{ padding: "0", margin: "0" }}>
-              <Photo
-                url={
-                  "https://www.cec.uchile.cl/cinetica/pcordero/recordando/FotosFCFM/FCFM_1921.jpg"
-                }
-                height="300px"
-                hover={false}
-                redirectUrl="#"
-                style={{
-                  backgroundPositionY: "55%",
-                  maskImage:
-                    "linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0))",
-                }}
-              />
-            </Col>
-          </Row>
+          <Helmet>
+            <title>{`Colección: ${albumData.name}`}</title>
+          </Helmet>
           <Row>
             <Col>
               <blockquote className="collection-view-description">
@@ -121,113 +120,156 @@ const CollectionView = ({
               </blockquote>
             </Col>
           </Row>
-
-          {isTabletOrMobileDevice
-            ? display.photos.map((photo, i) => (
-                <Row className="collection-view-element">
-                  <Col sm={{ size: 3 }}>
-                    <div className="collection-view-photo">
-                      <img src={photo.src} width="100%" />
-                    </div>
-                  </Col>
-                  <Col sm={{ size: 3 }} className="collection-view-line">
-                    <div className="collection-view-info">
-                      <h5 style={{ color: "#999" }}>
-                        <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
-                        {moment("1990-10-10T00:00:00-03:00").format(
-                          "DD/MM/YYYY"
-                        )}
-                      </h5>
-                      <p>{loremIpsum}</p>
-                      <Button
-                        color="link"
-                        onClick={() => {
-                          handleOnClick(i);
-                        }}
-                      >
-                        Ver más
-                      </Button>
-                    </div>
-                  </Col>
-                </Row>
-              ))
-            : display.photos.map((photo, i) =>
-                i % 2 === 0 ? (
-                  <Row className="collection-view-element">
-                    <Col
-                      sm={i % 2 === 0 ? { size: 5, offset: 1 } : { size: 5 }}
-                      md={i % 2 === 0 ? { size: 3, offset: 3 } : { size: 3 }}
-                    >
-                      <div className="collection-view-info">
-                        <h5 style={{ color: "#999" }}>
-                          <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
-                          {moment("1990-10-10T00:00:00-03:00").format(
-                            "DD/MM/YYYY"
-                          )}
-                        </h5>
-                        <p>{loremIpsum}</p>
-                        <Button
-                          color="link"
-                          onClick={() => {
-                            handleOnClick(i);
-                          }}
+          <Row>
+            <Col style={{ textAlign: "center", marginBottom: "1rem" }}>
+              <ButtonGroup>
+                <Button
+                  disabled={!display.timeline}
+                  onClick={() => setDisplay({ ...display, timeline: false })}
+                >
+                  Ver como galeria
+                </Button>
+                <Button
+                  disabled={display.timeline}
+                  onClick={() => setDisplay({ ...display, timeline: true })}
+                >
+                  Ver como linea de tiempo
+                </Button>
+              </ButtonGroup>
+            </Col>
+          </Row>
+          <CSSTransition
+            in={display.timeline}
+            timeout={400}
+            classNames="timeline"
+            unmountOnExit
+          >
+            <Container>
+              {isTabletOrMobileDevice
+                ? display.photos.map((photo, i) => (
+                    <Row className="collection-view-element">
+                      <Col sm={{ size: 6 }}>
+                        <div className="collection-view-photo">
+                          <img src={photo.src} width="100%" />
+                        </div>
+                      </Col>
+                      <Col sm={{ size: 6 }} className="collection-view-line">
+                        <div className="collection-view-info">
+                          <h5 style={{ color: "#999" }}>
+                            <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
+                            {moment("1990-10-10T00:00:00-03:00").format(
+                              "DD/MM/YYYY"
+                            )}
+                          </h5>
+                          <p>{loremIpsum}</p>
+                          <Button
+                            color="link"
+                            onClick={() => {
+                              handleOnClick(i);
+                            }}
+                          >
+                            Ver más
+                          </Button>
+                        </div>
+                      </Col>
+                    </Row>
+                  ))
+                : display.photos.map((photo, i) =>
+                    i % 2 === 0 ? (
+                      <Row className="collection-view-element">
+                        <Col sm={{ size: 6 }} md={{ size: 6 }}>
+                          <div className="collection-view-info">
+                            <h5 style={{ color: "#999" }}>
+                              <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
+                              {moment("1990-10-10T00:00:00-03:00").format(
+                                "DD/MM/YYYY"
+                              )}
+                            </h5>
+                            <p>{loremIpsum}</p>
+                            <Button
+                              color="link"
+                              onClick={() => {
+                                handleOnClick(i);
+                              }}
+                            >
+                              Ver más
+                            </Button>
+                          </div>
+                        </Col>
+                        <Col
+                          sm={{ size: 6 }}
+                          md={{ size: 6 }}
+                          className="collection-view-line"
                         >
-                          Ver más
-                        </Button>
-                      </div>
-                    </Col>
-                    <Col
-                      sm={i % 2 === 0 ? { size: 5 } : { size: 5, offset: 1 }}
-                      md={i % 2 === 0 ? { size: 3 } : { size: 3, offset: 3 }}
-                      className="collection-view-line"
-                    >
-                      <div className="collection-view-photo">
-                        <img src={photo.src} width="100%" />
-                      </div>
+                          <div className="collection-view-photo">
+                            <img src={photo.src} width="100%" />
+                          </div>
+                        </Col>
+                      </Row>
+                    ) : (
+                      <Row className="collection-view-element">
+                        <Col md={{ size: 6 }} sm={{ size: 6 }}>
+                          <div className="collection-view-photo">
+                            <img src={photo.src} width="100%" />
+                          </div>
+                        </Col>
+                        <Col
+                          sm={{ size: 6 }}
+                          md={{ size: 6 }}
+                          className="collection-view-line"
+                        >
+                          <div className="collection-view-info">
+                            <h5 style={{ color: "#999" }}>
+                              <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
+                              {moment("1990-10-10T00:00:00-03:00").format(
+                                "DD/MM/YYYY"
+                              )}
+                            </h5>
+                            <p>{loremIpsum}</p>
+                            <Button
+                              color="link"
+                              onClick={() => {
+                                handleOnClick(i);
+                              }}
+                            >
+                              Ver más
+                            </Button>
+                          </div>
+                        </Col>
+                      </Row>
+                    )
+                  )}
+            </Container>
+          </CSSTransition>
+          <CSSTransition
+            in={!display.timeline}
+            timeout={400}
+            classNames="timeline"
+            unmountOnExit
+          >
+            <Row>
+              <Col>
+                <Container>
+                  <Row>
+                    <Col>
+                      <Gallery
+                        photos={mapped}
+                        targetRowHeight={200}
+                        onClick={(e, index) => handleOnClick(index.index)}
+                      />
                     </Col>
                   </Row>
-                ) : (
-                  <Row className="collection-view-element">
-                    <Col
-                      md={i % 2 !== 0 ? { size: 3, offset: 3 } : { size: 3 }}
-                      sm={i % 2 !== 0 ? { size: 5, offset: 1 } : { size: 5 }}
-                    >
-                      <div className="collection-view-photo">
-                        <img src={photo.src} width="100%" />
-                      </div>
-                    </Col>
-                    <Col
-                      sm={i % 2 !== 0 ? { size: 5 } : { size: 5, offset: 1 }}
-                      md={i % 2 !== 0 ? { size: 3 } : { size: 3, offset: 3 }}
-                      className="collection-view-line"
-                    >
-                      <div className="collection-view-info">
-                        <h5 style={{ color: "#999" }}>
-                          <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
-                          {moment("1990-10-10T00:00:00-03:00").format(
-                            "DD/MM/YYYY"
-                          )}
-                        </h5>
-                        <p>{loremIpsum}</p>
-                        <Button
-                          color="link"
-                          onClick={() => {
-                            handleOnClick(i);
-                          }}
-                        >
-                          Ver más
-                        </Button>
-                      </div>
-                    </Col>
-                  </Row>
-                )
-              )}
-
-          <div style={{ textAlign: "center" }}>
-            <Button color="primary" tag={Link} to={"/collections"}>
-              Ver más colecciones
-            </Button>
-          </div>
+                </Container>
+              </Col>
+            </Row>
+          </CSSTransition>
+          <Row>
+            <Col style={{ textAlign: "center", margin: "1rem 0" }}>
+              <Button color="primary" tag={Link} to={"/collections"}>
+                Ver más colecciones
+              </Button>
+            </Col>
+          </Row>
         </Fragment>
       )}
     </Container>
