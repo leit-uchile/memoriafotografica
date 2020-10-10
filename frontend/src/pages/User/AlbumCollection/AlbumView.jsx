@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Button, Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
-import { gallery, site_misc } from "../../../actions";
+import { Container, Row, Col, Button, Modal, ModalBody, ModalHeader, ModalFooter, Input} from "reactstrap";
+import { gallery,user, site_misc } from "../../../actions";
 import { connect } from "react-redux";
 import Gallery from "react-photo-gallery";
 import { LeitSpinner } from "../../../components";
@@ -8,6 +8,9 @@ import { Redirect, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft, faCamera, faCloudUploadAlt, faPencilAlt, faSave, faTrashAlt, faUndo } from "@fortawesome/free-solid-svg-icons";
 import "./styles.css";
+import PhotoEditor from "../../../components/PhotoEditor"
+import { album } from "../../../actions/gallery_api";
+import { deleteAlbum } from "../../../actions/gallery_api/album";
 /**
  * Display album with pagination and individual image links
  *
@@ -20,6 +23,7 @@ import "./styles.css";
  * @param {Function} setIndex
  * @param {Function} pushPhotos
  */
+
 const AlbumView = ({
   match,
   albumData,
@@ -28,6 +32,11 @@ const AlbumView = ({
   setIndex,
   pushPhotos,
   location,
+  onLoadGetPhotos,
+  user,
+  userPhotos,
+  deleteAlbum,
+  deleteAlbumStatus
 }) => {
   // Load album info
   useEffect(() => {
@@ -42,12 +51,15 @@ const AlbumView = ({
   });
 
   const [editing, setEditing] = useState(false)
-  const [description, setDescription] = useState(albumData.description)
-  
+  const [description, setDescription] = useState("")
+  const [pictures, setPictures] = useState([])
+  const [action, setAction] = useState(false)
+  const [deleteLoader, setDeleteLoader] = useState(false)
   const DeleteAlbumModal = (props) => {
     const {
       buttonLabel,
-      className
+      className,
+      deleteButton
     } = props;
   
     const [modal, setModal] = useState(false);
@@ -63,7 +75,8 @@ const AlbumView = ({
             Está seguro/a ? Esta acción no puede deshacerse
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={toggle}>Eliminar</Button>{' '}            
+            <Button color="primary" onClick={deleteButton}>Eliminar</Button>{' '}            
+            <Button color="secondary" onClick={toggle}>Cancelar</Button>{' '}            
           </ModalFooter>
         </Modal>
       </div>
@@ -74,10 +87,32 @@ const AlbumView = ({
 
   const editButton = () => {
     if(editing){
-
+      let newPhotoIds = pictures.filter(e => e.selected).map(e => e.id)
+      let newDescript = description
+      console.log(newPhotoIds)
+      console.log(newDescript)
     } else {
       setEditing(true)
     }
+  }
+
+  const deleteButton = () => {
+    deleteAlbum(albumData.id)
+    setDeleteLoader(true)
+  }
+  useEffect( () => {
+    if(deleteAlbumStatus.sent && deleteAlbumStatus.success) setAction(true)
+  }, [deleteAlbumStatus])
+  useEffect( () => setAction(false), [action])
+
+  const handleOnSelect = (selectedPhoto) => {
+    let pics = pictures.map(p => {
+      if(p.id == selectedPhoto.id){
+        p.selected = !p.selected
+      }
+      return p
+    })
+    setPictures(pics)    
   }
   useEffect(() => {
     if (albumData !== null && albumData.pictures) {
@@ -92,8 +127,29 @@ const AlbumView = ({
         redirect: false,
       });
     }
+    if(albumData) setDescription(albumData.description);
   }, [albumData]);
 
+  useEffect(() => {
+    onLoadGetPhotos(user.id, 0, 0);
+  }, [])
+  
+  useEffect(()=>{
+    if(editing){
+      let albIds = display.photos.map(e => (e.id))
+      let selectedpics = userPhotos.map(e => {
+        let newP = {}
+        newP.id = e.id
+        newP.selected = albIds.includes(e.id)
+        newP.src = e.thumbnail        
+        newP.height = e.aspect_h
+        newP.width = e.aspect_w
+        return newP;
+      })
+      setPictures(selectedpics)
+      setDescription(albumData.description)
+    }
+  }, [editing])
   const handleOnClick = (obj) => {
     setIndex(obj.index);
     setDisplay({ ...display, redirect: obj.index });
@@ -112,7 +168,7 @@ const AlbumView = ({
     );
   }
 
-  return albumData !== {} ? (
+  return action ? <Redirect to="/user/dashboard/albums"></Redirect> : (albumData !== {} ? (
     <Container fluid className="album-container home-background parallax">
       <Row className="album-title-row">
         <Col>
@@ -157,7 +213,7 @@ const AlbumView = ({
                 {/* Do not remove this div, it allows for sticky behavior*/}
                 <Row>
                   <Col sm={9}>
-                    editing ? <PhotoEditor/> : (
+                    {editing ? <PhotoEditor photos={pictures} onClick={(e,index)=>(handleOnSelect(index.photo))} /> : (
                       <Gallery
                         photos={display.photos}
                         targetRowHeight={200}
@@ -165,7 +221,7 @@ const AlbumView = ({
                           handleOnClick(index);
                         }}
                       />
-                    )
+                    )}
                   </Col>
                   <Col sm={3} className="album-sticky-element">
                     <div className="album-white-box">                      
@@ -175,14 +231,16 @@ const AlbumView = ({
                       <span className="album-meta">
                         {display.uploaded} <FontAwesomeIcon icon={faCloudUploadAlt}/>
                       </span>
-                      <p className="album-desc">{albumData.description}</p>
+                      {editing ? (<Input type="textarea" className="album-textarea" rows="7" value={description} onChange={e => setDescription(e.target.value)}></Input>) : (
+                        <p className="album-desc">{albumData.description}</p>
+                      )}
                       <Row>
                         <Col>
                           <Button color="primary" onClick={editButton}>{editing ? "Confirmar Cambios ":"Editar"}  <FontAwesomeIcon icon={editing ? faSave : faPencilAlt}/></Button>
 
                         </Col>
                         <Col>
-                          {editing ? <Button color="danger" onClick={()=>setEditing(!editing)}>Cancelar <FontAwesomeIcon icon={faUndo}/></Button> : <DeleteAlbumModal buttonLabel="Eliminar"/>}
+                          {editing ? <Button color="danger" onClick={()=>setEditing(!editing)}>Cancelar <FontAwesomeIcon icon={faUndo}/></Button> : <DeleteAlbumModal deleteButton={deleteButton} buttonLabel="Eliminar"/>}
                         </Col>
                       </Row>
                     </div>
@@ -196,12 +254,15 @@ const AlbumView = ({
       <Row>
       </Row>
     </Container>
-  ) : null;
+  ) : null);
 };
 
 const mapStateToProps = (state) => ({
   loading: state.albumcollection.loading,
   albumData: state.albumcollection.albumData,
+  deleteAlbumStatus: state.albumcollection.deleteAlbum,
+  user: state.user.userData,
+  userPhotos: state.user.photos,
 });
 
 const mapActionsToProps = (dispatch) => ({
@@ -209,7 +270,9 @@ const mapActionsToProps = (dispatch) => ({
     dispatch(gallery.album.loadAlbumInfo(id, detailed)),
   pushPhotos: (photos) => dispatch(site_misc.pushPhotoArray(photos)),
   setIndex: (num) => dispatch(site_misc.setSelectedId(num)),
-  
+  onLoadGetPhotos: (user_id, limit, offset) =>
+    dispatch(user.getUserPhotos(user_id, limit, offset)),
+  deleteAlbum: id => dispatch(gallery.album.deleteAlbum(id))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(AlbumView);
