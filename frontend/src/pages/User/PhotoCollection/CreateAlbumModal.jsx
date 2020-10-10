@@ -15,7 +15,7 @@ import {
   Form,
 } from "reactstrap";
 
-import { metadata, gallery, albumcollection } from "../../../actions";
+import { gallery } from "../../../actions";
 
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },

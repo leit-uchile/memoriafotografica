@@ -133,6 +133,7 @@ const makeIcons = (rol_id) => {
       return "Failed";
   }
 };
+
 const mapStateToProps = (state) => ({
   data: {
     photos: state.user.photos,

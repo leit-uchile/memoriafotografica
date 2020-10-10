@@ -28,17 +28,24 @@
 }
 
 .album-container .album-white-box .album-desc{
-  font-size: 1.5em;
+  font-size: 1em;
 }
 
 .album-container .album-white-box .album-photo-count{
-  font-size: 2em;
+  font-size: 1.5em;
   font-weight: 700;
+  margin-right: 20px;
 }
 
 .album-container .album-white-box .album-meta {
-  display: block;
+  font-size: 1.5em;
+  display: inline-block;
   color: grey;
+}
+
+.album-container .album-white-box .album-edit-button{  
+  margin-right: 5px;
+  display: inline-block;
 }
 
 /* User albums background*/
@@ -48,6 +55,7 @@
   background-position: center;
   background-size: cover;
   position: relative;
+  
 }
 
 .user-albums-background h4 {

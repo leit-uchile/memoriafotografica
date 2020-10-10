@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Button } from "reactstrap";
+import { Container, Row, Col, Button, Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import { gallery, site_misc } from "../../../actions";
 import { connect } from "react-redux";
 import Gallery from "react-photo-gallery";
 import { LeitSpinner } from "../../../components";
 import { Redirect, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowAltCircleLeft, faCamera, faCloudUploadAlt, faPencilAlt, faSave, faTrashAlt, faUndo } from "@fortawesome/free-solid-svg-icons";
 import "./styles.css";
-
 /**
  * Display album with pagination and individual image links
  *
@@ -42,6 +41,44 @@ const AlbumView = ({
     redirect: false,
   });
 
+  const [editing, setEditing] = useState(false)
+  const [description, setDescription] = useState(albumData.description)
+  
+  const DeleteAlbumModal = (props) => {
+    const {
+      buttonLabel,
+      className
+    } = props;
+  
+    const [modal, setModal] = useState(false);
+  
+    const toggle = () => setModal(!modal);
+  
+    return (
+      <div>
+        <Button color="danger" onClick={toggle}>{buttonLabel}<FontAwesomeIcon icon={faTrashAlt}/></Button>
+        <Modal isOpen={modal} toggle={toggle} className={className}>
+          <ModalHeader toggle={toggle}>Confirmar eliminación</ModalHeader>
+          <ModalBody>
+            Está seguro/a ? Esta acción no puede deshacerse
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={toggle}>Eliminar</Button>{' '}            
+          </ModalFooter>
+        </Modal>
+      </div>
+    );
+  }
+  
+
+
+  const editButton = () => {
+    if(editing){
+
+    } else {
+      setEditing(true)
+    }
+  }
   useEffect(() => {
     if (albumData !== null && albumData.pictures) {
       setDisplay({
@@ -129,16 +166,23 @@ const AlbumView = ({
                     />
                   </Col>
                   <Col sm={3} className="album-sticky-element">
-                    <div className="album-white-box">
-                      <p className="album-desc">{albumData.description}</p>
+                    <div className="album-white-box">                      
                       <span className="album-photo-count">
-                        {`Fotos: ${
-                          albumData.pictures ? albumData.pictures.length : 0
-                        }`}
+                        {albumData.pictures ? albumData.pictures.length : "0"} <FontAwesomeIcon icon={faCamera} />                        
                       </span>
                       <span className="album-meta">
-                        {`Subida el : ${display.uploaded}`}
+                        {display.uploaded} <FontAwesomeIcon icon={faCloudUploadAlt}/>
                       </span>
+                      <p className="album-desc">{albumData.description}</p>
+                      <Row>
+                        <Col>
+                          <Button color="primary" onClick={editButton}>{editing ? "Confirmar Cambios ":"Editar"}  <FontAwesomeIcon icon={editing ? faSave : faPencilAlt}/></Button>
+
+                        </Col>
+                        <Col>
+                          {editing ? <Button color="danger" onClick={()=>setEditing(!editing)}>Cancelar <FontAwesomeIcon icon={faUndo}/></Button> : <DeleteAlbumModal buttonLabel="Eliminar"/>}
+                        </Col>
+                      </Row>
                     </div>
                   </Col>
                 </Row>
@@ -147,7 +191,8 @@ const AlbumView = ({
           </Container>
         </Col>
       </Row>
-      ;
+      <Row>
+      </Row>
     </Container>
   ) : null;
 };
