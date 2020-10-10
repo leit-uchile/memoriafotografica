@@ -21,7 +21,7 @@ import {
 import { metadata, gallery } from "../../../actions";
 import ReactTags from "react-tag-autocomplete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },
@@ -32,31 +32,48 @@ const CC_INFO = [
   { name: "CC BY-NC-ND", text: "Atribución, No Comercial, Sin Derivadas" },
 ];
 
-const EditPhotosModal = (props) => {
-  const [toggle, setToggle] = useState(false);
+const EditPhotosModal = ({
+  isCurator,
+  isOpen,
+  handleToggle,
+  photosId,
+  photoDetails,
+  getPhotoDetails,
+  newTagsId,
+  tags,
+  getTags,
+  createMultipleMetas,
+  editPhoto,
+  deletePhoto,
+  editReport,
+  updatedPhoto,
+}) => {
   const [toggleDelete, setToggleDelete] = useState(false);
   const [formData, setData] = useState({}); //nuevos datos
-  const [sending, setSending] = useState(false);
 
   useEffect(() => {
-    props.getTags(); //suggestions, TODO: llamar cuando el usuario ingresa nuevo tag
-  }, [props.newIds]);
+    getTags(); //get tags from backend
+  }, [newTagsId]);
 
   useEffect(() => {
-    if (props.photosID.length === 1) {
-      props.onLoad(props.photosID); //photoInfo
+    if (photosId.length === 1) {
+      getPhotoDetails(photosId); //if user is editing only one photo, then get its details
     }
-  }, [props.photosID]);
+  }, [photosId]);
 
+  // It fills formData with actual details to show it on screen later
   useEffect(() => {
-    if (props.photosID.length === 1) {
-      let info = { ...props.photoInfo };
+    if (photosId.length === 1) {
+      let info = { ...photoDetails };
       info.metadata =
-        props.photoInfo.metadata !== undefined
-          ? props.photoInfo.metadata.map((e) => ({ id: e.id, name: e.value }))
+        photoDetails.metadata !== undefined
+          ? photoDetails.metadata.map((e) => ({
+              id: e.id,
+              name: e.value,
+            }))
           : [];
       info.permission =
-        props.photoInfo.permission !== undefined
+        photoDetails.permission !== undefined
           ? info.permission.toString()
           : null;
       delete info.image;
@@ -65,7 +82,7 @@ const EditPhotosModal = (props) => {
     } else {
       setData({ metadata: [] });
     }
-  }, [props.photoInfo, props.photosID, toggle]);
+  }, [photoDetails, photosId, isOpen]);
 
   const updateData = (e) =>
     setData({ ...formData, [e.target.name]: e.target.value });
@@ -74,87 +91,74 @@ const EditPhotosModal = (props) => {
     setData({ ...formData, [e.target.name]: e.target.value + "T00:00" });
 
   const additionTag = (tag) => {
-    const tags = [].concat(formData.metadata, tag);
-    setData({ ...formData, metadata: tags });
+    const tagsList = [].concat(formData.metadata, tag);
+    setData({ ...formData, metadata: tagsList });
   };
 
   const deleteTag = (i) => {
-    const tags = formData.metadata.slice(0);
-    tags.splice(i, 1);
-    setData({ ...formData, metadata: tags });
+    const tagsList = formData.metadata.slice(0);
+    tagsList.splice(i, 1);
+    setData({ ...formData, metadata: tagsList });
   };
 
-  const handleToggle = () => {
-    setToggle(!toggle);
-    props.isOpen(!toggle); //permite el refresh una vez cerrado
-  };
-
+  // It checks if there are new tags with no ID
   const handleMetadata = () => {
-    let to_send = { ...formData };
-    if (props.photosID.length > 1 && to_send.metadata.length === 0) {
-      //si hay más de una foto y no quiere cambiarle los tags
-      delete to_send.metadata; //mantenemos los tags individuales
-      update(to_send);
+    let newDetails = { ...formData };
+    if (photosId.length > 1 && newDetails.metadata.length === 0) {
+      delete newDetails.metadata; // No changes for each photo in its metadata field
+      updatePhotoDetails(newDetails);
     } else {
-      //vemos si es necesario crear alguno
-      let newTags = to_send.metadata.filter((el) => el.id === undefined);
+      // There are metadata to push
+      let newTags = newDetails.metadata.filter((el) => el.id === undefined); // New metadata unregistered
       if (newTags.length == 0) {
-        console.log("No es necesario crearle id");
-        to_send.metadata = to_send.metadata.map((el) => el.id);
-        update(to_send);
+        newDetails.metadata = newDetails.metadata.map((el) => el.id);
+        updatePhotoDetails(newDetails);
       } else {
-        console.log("Es necesario crearle id");
-        let toCreate = newTags.map((el) => el.name); //names
-        props.createMultipleMetas(toCreate); //->props.newIds
+        let toCreate = newTags.map((el) => el.name);
+        createMultipleMetas(toCreate);
       }
     }
   };
 
-  //Une los nuevos tags tras crear una id para ellos
+  // It create array with registered metadata
   useEffect(() => {
-    console.log("verificando creacion de nuevos tags");
-    let to_send = { ...formData };
-    if (to_send.metadata) {
-      //Hay metadata
-      //Si se crearon los nuevos
+    let newDetails = { ...formData };
+    if (newDetails.metadata) {
       if (
-        to_send.metadata.filter((el) => el.id === undefined).length ===
-        props.newIds.length
+        newDetails.metadata.filter((el) => el.id === undefined).length ===
+        newTagsId.length
       ) {
-        let newTags = Object.values(props.newIds).map((el) => el.id); //ids nuevas
-        console.log("Nuevas IDS", newTags);
-        let oldTags = to_send.metadata
-          .filter((el) => el.id !== undefined)
-          .map((el) => el.id); //ids ya creadas
-        console.log("Viejas IDS", oldTags);
-        to_send.metadata = oldTags.concat(newTags);
-        console.log("Por guardar", to_send.metadata);
-        //setSending(true);
-        update(to_send);
+        let oldTags = newDetails.metadata.filter((el) => el.id !== undefined);
+        let newTags = Object.values(newTagsId).map((el) => el.id);
+        newDetails.metadata = oldTags.concat(newTags);
+        updatePhotoDetails(newDetails);
       } else {
-        console.log("Aun no se crean ids para nuevos tags");
+        console.log("Waiting for new tags ID");
       }
     }
-  }, [props.newIds]);
+  }, [newTagsId]);
 
-  const update = (to_send) => {
-    props.photosID.forEach((el, index) => {
-      props.photosID.length > 1 && to_send.title !== undefined //si está editando el título de varias
-        ? props.editPhoto(el, {
-            ...to_send,
-            title: `${to_send.title} (${index + 1})`,
+  const updatePhotoDetails = (newDetails) => {
+    {
+      !isCurator
+        ? photosId.forEach((photoIdToUpdate, index) => {
+            photosId.length > 1 && newDetails.title !== undefined // If user renames multiple photos
+              ? editPhoto(photoIdToUpdate, {
+                  ...newDetails,
+                  title: `${newDetails.title} (${index + 1})`, // Each photo gets the new title with an index
+                })
+              : editPhoto(photoIdToUpdate, newDetails);
           })
-        : props.editPhoto(el, to_send);
-    });
+        : editReport();
+    }
     handleToggle();
   };
 
   const onDelete = (ids) => {
-    ids.forEach((id) => props.deletePhoto(id));
+    ids.forEach((id) => deletePhoto(id));
     handleToggle();
   };
 
-  const { tags, updatedPhoto } = props;
   const suggestions = tags
     ? tags.map((e) => ({ id: e.id, name: e.value }))
     : [];
@@ -162,6 +166,51 @@ const EditPhotosModal = (props) => {
     <Fragment>
       <Form>
         <FormGroup>
+          <Row>
+            <Col>
+              {!isCurator ? (
+                <Label>Eliminar</Label>
+              ) : (
+                <Label>Descartar reporte</Label>
+              )}
+            </Col>
+            <Col>
+              <FontAwesomeIcon
+                icon={faTrashAlt}
+                onClick={() => setToggleDelete(!toggleDelete)}
+                style={{
+                  color: "var(--leit-red)",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                }}
+              />
+            </Col>
+          </Row>
+
+          {isCurator ? (
+            <Row>
+              <Col>
+                <Label>Censurar contenido</Label>
+              </Col>
+              <Col>
+                <FontAwesomeIcon
+                  icon={faEye}
+                  style={{
+                    color: "var(--leit-red)",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                  }}
+                />
+              </Col>
+            </Row>
+          ) : null}
+          {isCurator ? (
+            <Row style={{ marginBottom: "0.5em" }}>
+              <Col>
+                <h4>Editar contenido</h4>
+              </Col>
+            </Row>
+          ) : null}
           <Row style={{ marginBottom: "0.5em" }}>
             <Col>
               <Label>Título</Label>
@@ -224,65 +273,44 @@ const EditPhotosModal = (props) => {
               </FormText>
             </Col>
           </Row>
-          <Row style={{ marginBottom: "0.5em" }}>
-            <Col>
-              <Label>Permisos de acceso e intercambio</Label>
-            </Col>
-            <Col>
-              <UncontrolledButtonDropdown>
-                <DropdownToggle caret color="link" style={{ padding: "0" }}>
-                  {formData.permission ? formData.permission : "Seleccionar"}
-                </DropdownToggle>
-                <DropdownMenu>
-                  {CC_INFO.map((el, k) => (
-                    <DropdownItem
-                      name="permission"
-                      value={el.name}
-                      onClick={updateData}
-                      active={`${formData.permission}` === el.name}
-                      style={{ display: "block", width: "100%" }}
-                    >
-                      {el.name}
-                    </DropdownItem>
-                  ))}
-                </DropdownMenu>
-              </UncontrolledButtonDropdown>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Label>Eliminar</Label>
-            </Col>
-            <Col>
-              <FontAwesomeIcon
-                icon={faTrashAlt}
-                onClick={() => setToggleDelete(!toggleDelete)}
-                style={{
-                  color: "var(--leit-red)",
-                  cursor: "pointer",
-                  fontSize: "16px",
-                }}
-              />
-            </Col>
-          </Row>
+          {!isCurator ? (
+            <Row style={{ marginBottom: "0.5em" }}>
+              <Col>
+                <Label>Permisos de acceso e intercambio</Label>
+              </Col>
+              <Col>
+                <UncontrolledButtonDropdown>
+                  <DropdownToggle caret color="link" style={{ padding: "0" }}>
+                    {formData.permission ? formData.permission : "Seleccionar"}
+                  </DropdownToggle>
+                  <DropdownMenu>
+                    {CC_INFO.map((el, k) => (
+                      <DropdownItem
+                        name="permission"
+                        value={el.name}
+                        onClick={updateData}
+                        active={`${formData.permission}` === el.name}
+                        style={{ display: "block", width: "100%" }}
+                      >
+                        {el.name}
+                      </DropdownItem>
+                    ))}
+                  </DropdownMenu>
+                </UncontrolledButtonDropdown>
+              </Col>
+            </Row>
+          ) : null}
         </FormGroup>
       </Form>
     </Fragment>
   );
   return (
     <div>
-      <Button
-        disabled={props.photosID.length === 0}
-        color="primary"
-        onClick={() => handleToggle()}
-      >
-        Editar selección ({props.photosID.length})
-      </Button>
-      <Modal isOpen={toggle} toggle={() => handleToggle()} size={"lg"}>
-        <ModalHeader toggle={handleToggle}>
-          {props.photosID.length === 1
-            ? "Editando 1 foto"
-            : `Editando ${props.photosID.length} fotos`}
+      <Modal isOpen={isOpen} toggle={() => handleToggle()} size={"lg"}>
+        <ModalHeader toggle={() => handleToggle()}>
+          {!isCurator
+            ? `Editando ${photosId.length} foto(s)`
+            : `Resolver Reporte`}
         </ModalHeader>
         <ModalBody>
           {PhotosForm}
@@ -290,9 +318,15 @@ const EditPhotosModal = (props) => {
             isOpen={toggleDelete}
             toggle={() => setToggleDelete(!toggleDelete)}
           >
-            <ModalHeader toggle={handleToggle}>
-              Eliminar fotografía(s)
-            </ModalHeader>
+            {!isCurator ? (
+              <ModalHeader toggle={() => setToggleDelete(!toggleDelete)}>
+                Eliminar fotografía(s)
+              </ModalHeader>
+            ) : (
+              <ModalHeader toggle={() => setToggleDelete(!toggleDelete)}>
+                Descartar reporte
+              </ModalHeader>
+            )}
             <ModalBody>
               Esta acción no se puede deshacer. ¿Está seguro?
             </ModalBody>
@@ -300,7 +334,7 @@ const EditPhotosModal = (props) => {
               <Button
                 color="danger"
                 onClick={() => {
-                  onDelete(props.photosID);
+                  onDelete(photosId);
                   setToggleDelete(!toggleDelete);
                 }}
               >
@@ -318,9 +352,12 @@ const EditPhotosModal = (props) => {
         <ModalFooter>
           {!updatedPhoto ? (
             <Fragment>
-              <FormText color="muted">
-                Los cambios estarán sujetos a aprobación
-              </FormText>
+              {!isCurator ? (
+                <FormText color="muted">
+                  Los cambios estarán sujetos a aprobación
+                </FormText>
+              ) : null}
+
               <Button color="primary" onClick={() => handleMetadata()}>
                 Guardar cambios
               </Button>
@@ -340,18 +377,20 @@ const EditPhotosModal = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  photoInfo: state.photos.details,
+  photoDetails: state.photos.details,
   tags: state.metadata.all_tags,
   creating: state.metadata.creating,
-  newIds: state.metadata.newIds,
+  newTagsId: state.metadata.newTagsId,
   updatedPhoto: state.photos.updatedPhoto,
 });
 
 const mapActionsToProps = (dispatch) => ({
-  onLoad: (id) => dispatch(gallery.photos.getPhoto(id)),
+  getPhotoDetails: (id) => dispatch(gallery.photos.getPhoto(id)),
   getTags: () => dispatch(metadata.tags()),
   editPhoto: (pID, val) => dispatch(gallery.photos.editPhoto(pID, val)),
   deletePhoto: (pID) => dispatch(gallery.photos.deletePhoto(pID)),
+  // updateReport: rep => dispatch(gallery.reports.updateReport(rep)),
+  // censureContent: rep => dispatch(gallery.reports.censureContent(rep)),
   createMultipleMetas: (list) => dispatch(metadata.createMultipleMetas(list)),
 });
 

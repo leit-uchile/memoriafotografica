@@ -15,78 +15,11 @@ import {
 import { connect } from "react-redux";
 import { gallery, user } from "../../../actions";
 import LeitSpinner from "../../../components/Layout/LeitSpinner";
+import EditPhotosModal from "../../User/PhotoCollection/EditPhotosModal";
 import "./resolveModal.css";
 
 const EditUserForm = () => {
   return <div>Edit User</div>;
-};
-
-const EditPhotoForm = ({ photo, saveAction }) => {
-  const handleChange = (event) => {
-    const target = event.target;
-    let value = target.value;
-    let editedPhoto = { ...newphoto };
-    editedPhoto[target.name] = value;
-    setNewphoto(editedPhoto);
-  };
-
-  const submitChanges = (event) => {
-    event.preventDefault();
-    saveAction({
-      title: newphoto.title,
-      description: newphoto.description,
-      upload_date: newphoto.upload_date,
-    });
-  };
-
-  const [newphoto, setNewphoto] = useState(photo);
-  const [originalphoto, setOriginalphoto] = useState(photo);
-  useEffect(() => {
-    if (photo !== originalphoto) {
-      setOriginalphoto(photo);
-      setNewphoto(photo);
-    }
-  }, [photo, originalphoto]);
-
-  return (
-    <Form>
-      <FormGroup>
-        <Label>Editar Título</Label>
-        <Input
-          type="text"
-          name="title"
-          value={newphoto.title}
-          onChange={handleChange}
-        />
-      </FormGroup>
-      <FormGroup>
-        <Label>Editar Descripción</Label>
-        <Input
-          type="textarea"
-          name="description"
-          value={newphoto.description}
-          onChange={handleChange}
-        />
-      </FormGroup>
-      <FormGroup>
-        <Label>Editar Fecha</Label>
-        <Input
-          type="date"
-          name="upload_date"
-          value={
-            newphoto.upload_date ? newphoto.upload_date.substring(0, 10) : ""
-          }
-          onChange={handleChange}
-        />
-      </FormGroup>
-
-      <FormGroup>** Editar Tags **</FormGroup>
-
-      <Button color="primary" onClick={submitChanges}>
-        Guardar Cambios
-      </Button>
-    </Form>
-  );
 };
 
 const ResolveModal = (props) => {
@@ -162,11 +95,15 @@ const ResolveModal = (props) => {
     photo.image,
     getPhoto,
   ]);
-  return (
-    <div>
-      <Button color="danger" onClick={toggle}>
-        {buttonLabel}
-      </Button>
+  const display =
+    newreport.type === 2 ? (
+      <EditPhotosModal
+        photosId={[1]}
+        isOpen={modal}
+        handleToggle={toggle}
+        isCurator={true}
+      />
+    ) : (
       <Modal isOpen={modal} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>Resolver Reporte</ModalHeader>
         <ModalBody>
@@ -195,7 +132,8 @@ const ResolveModal = (props) => {
               {spinner ? (
                 <LeitSpinner />
               ) : newreport.type === 2 ? (
-                <EditPhotoForm photo={photo} saveAction={editAndSave} />
+                // <EditPhotoForm photo={photo} saveAction={editAndSave} />
+                <p>NUEVO MODAL</p>
               ) : (
                 <EditUserForm />
               )}
@@ -210,6 +148,13 @@ const ResolveModal = (props) => {
           </Button>
         </ModalFooter>
       </Modal>
+    );
+  return (
+    <div>
+      <Button color="danger" onClick={toggle}>
+        {buttonLabel}
+      </Button>
+      {display}
     </div>
   );
 };
