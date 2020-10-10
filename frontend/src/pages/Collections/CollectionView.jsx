@@ -7,6 +7,7 @@ import { Redirect, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
+import { useMediaQuery } from "react-responsive";
 import "./collectionView.css";
 
 const loremIpsum =
@@ -44,6 +45,10 @@ const CollectionView = ({
       top: 0,
       left: 0,
     });
+  });
+
+  const isTabletOrMobileDevice = useMediaQuery({
+    query: "(max-device-width: 480px)",
   });
 
   // compute one time and store here
@@ -116,39 +121,110 @@ const CollectionView = ({
               </blockquote>
             </Col>
           </Row>
-          <div className="timeline">
-            <div className="collection-view-container">
-              {display.photos.map((photo, i) => (
-                <div className="collection-view-element" data-aos="fade-up">
-                  <div className="collection-view-photo">
-                    <img src={photo.src} width="50%" />
-                  </div>
-                  <div className="collection-view-info">
-                    <h5 style={{ color: "#999" }}>
-                      <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
-                      {moment("1990-10-10T00:00:00-03:00").format("DD/MM/YYYY")}
-                    </h5>
-                    <p>{loremIpsum}</p>
-                    <Button
-                      color="link"
-                      onClick={() => {
-                        handleOnClick(i);
-                      }}
+
+          {isTabletOrMobileDevice
+            ? display.photos.map((photo, i) => (
+                <Row className="collection-view-element">
+                  <Col sm={{ size: 3 }}>
+                    <div className="collection-view-photo">
+                      <img src={photo.src} width="100%" />
+                    </div>
+                  </Col>
+                  <Col sm={{ size: 3 }} className="collection-view-line">
+                    <div className="collection-view-info">
+                      <h5 style={{ color: "#999" }}>
+                        <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
+                        {moment("1990-10-10T00:00:00-03:00").format(
+                          "DD/MM/YYYY"
+                        )}
+                      </h5>
+                      <p>{loremIpsum}</p>
+                      <Button
+                        color="link"
+                        onClick={() => {
+                          handleOnClick(i);
+                        }}
+                      >
+                        Ver más
+                      </Button>
+                    </div>
+                  </Col>
+                </Row>
+              ))
+            : display.photos.map((photo, i) =>
+                i % 2 === 0 ? (
+                  <Row className="collection-view-element">
+                    <Col
+                      sm={i % 2 === 0 ? { size: 5, offset: 1 } : { size: 5 }}
+                      md={i % 2 === 0 ? { size: 3, offset: 3 } : { size: 3 }}
                     >
-                      Ver más
-                    </Button>
-                  </div>
-                </div>
-              ))}
-              <div style={{ clear: "both" }}></div>
-            </div>
-          </div>
-          <div style={{textAlign: "center"}}>
-            <Button
-              color="primary"
-              tag={Link}
-              to={"/collections"}
-            >
+                      <div className="collection-view-info">
+                        <h5 style={{ color: "#999" }}>
+                          <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
+                          {moment("1990-10-10T00:00:00-03:00").format(
+                            "DD/MM/YYYY"
+                          )}
+                        </h5>
+                        <p>{loremIpsum}</p>
+                        <Button
+                          color="link"
+                          onClick={() => {
+                            handleOnClick(i);
+                          }}
+                        >
+                          Ver más
+                        </Button>
+                      </div>
+                    </Col>
+                    <Col
+                      sm={i % 2 === 0 ? { size: 5 } : { size: 5, offset: 1 }}
+                      md={i % 2 === 0 ? { size: 3 } : { size: 3, offset: 3 }}
+                      className="collection-view-line"
+                    >
+                      <div className="collection-view-photo">
+                        <img src={photo.src} width="100%" />
+                      </div>
+                    </Col>
+                  </Row>
+                ) : (
+                  <Row className="collection-view-element">
+                    <Col
+                      md={i % 2 !== 0 ? { size: 3, offset: 3 } : { size: 3 }}
+                      sm={i % 2 !== 0 ? { size: 5, offset: 1 } : { size: 5 }}
+                    >
+                      <div className="collection-view-photo">
+                        <img src={photo.src} width="100%" />
+                      </div>
+                    </Col>
+                    <Col
+                      sm={i % 2 !== 0 ? { size: 5 } : { size: 5, offset: 1 }}
+                      md={i % 2 !== 0 ? { size: 3 } : { size: 3, offset: 3 }}
+                      className="collection-view-line"
+                    >
+                      <div className="collection-view-info">
+                        <h5 style={{ color: "#999" }}>
+                          <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
+                          {moment("1990-10-10T00:00:00-03:00").format(
+                            "DD/MM/YYYY"
+                          )}
+                        </h5>
+                        <p>{loremIpsum}</p>
+                        <Button
+                          color="link"
+                          onClick={() => {
+                            handleOnClick(i);
+                          }}
+                        >
+                          Ver más
+                        </Button>
+                      </div>
+                    </Col>
+                  </Row>
+                )
+              )}
+
+          <div style={{ textAlign: "center" }}>
+            <Button color="primary" tag={Link} to={"/collections"}>
               Ver más colecciones
             </Button>
           </div>
