@@ -10,7 +10,7 @@ import { faArrowAltCircleLeft, faCamera, faCloudUploadAlt, faPencilAlt, faSave, 
 import "./styles.css";
 import PhotoEditor from "../../../components/PhotoEditor"
 import { album } from "../../../actions/gallery_api";
-import { deleteAlbum } from "../../../actions/gallery_api/album";
+import { deleteAlbum, editAlbum } from "../../../actions/gallery_api/album";
 /**
  * Display album with pagination and individual image links
  *
@@ -36,7 +36,9 @@ const AlbumView = ({
   user,
   userPhotos,
   deleteAlbum,
-  deleteAlbumStatus
+  deleteAlbumStatus,
+  editAlbum,
+  editAlbumStatus
 }) => {
   // Load album info
   useEffect(() => {
@@ -52,14 +54,17 @@ const AlbumView = ({
 
   const [editing, setEditing] = useState(false)
   const [description, setDescription] = useState("")
+  const [name, setName] = useState("")
   const [pictures, setPictures] = useState([])
   const [action, setAction] = useState(false)
   const [deleteLoader, setDeleteLoader] = useState(false)
+  const [editLoader, setEditLoader] = useState(false)
   const DeleteAlbumModal = (props) => {
     const {
       buttonLabel,
       className,
-      deleteButton
+      deleteButton,
+      loading
     } = props;
   
     const [modal, setModal] = useState(false);
@@ -75,8 +80,8 @@ const AlbumView = ({
             Está seguro/a ? Esta acción no puede deshacerse
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={deleteButton}>Eliminar</Button>{' '}            
-            <Button color="secondary" onClick={toggle}>Cancelar</Button>{' '}            
+            {loading ? <LeitSpinner/> : (<Button color="primary" onClick={deleteButton}>Eliminar</Button>)}
+            <Button color="secondary" onClick={toggle}>Cancelar</Button>            
           </ModalFooter>
         </Modal>
       </div>
@@ -87,10 +92,15 @@ const AlbumView = ({
 
   const editButton = () => {
     if(editing){
-      let newPhotoIds = pictures.filter(e => e.selected).map(e => e.id)
-      let newDescript = description
-      console.log(newPhotoIds)
-      console.log(newDescript)
+      let newPhotoIds = pictures.filter(e => e.selected).map(e => e.id)      
+      console.log(newPhotoIds)      
+      let data = {        
+        pictures : newPhotoIds,
+        name,
+        description
+      }
+      editAlbum(albumData.id, data)
+      setEditLoader(true)
     } else {
       setEditing(true)
     }
@@ -102,7 +112,8 @@ const AlbumView = ({
   }
   useEffect( () => {
     if(deleteAlbumStatus.sent && deleteAlbumStatus.success) setAction(true)
-  }, [deleteAlbumStatus])
+    if(editAlbumStatus.sent && editAlbumStatus.success) setAction(true)
+  }, [deleteAlbumStatus, editAlbumStatus])
   useEffect( () => setAction(false), [action])
 
   const handleOnSelect = (selectedPhoto) => {
@@ -148,6 +159,7 @@ const AlbumView = ({
       })
       setPictures(selectedpics)
       setDescription(albumData.description)
+      setName(albumData.name)
     }
   }, [editing])
   const handleOnClick = (obj) => {
@@ -193,9 +205,7 @@ const AlbumView = ({
                 {loading ? (
                   <LeitSpinner />
                 ) : (
-                  <h2>{`${albumData.collection ? "Colección" : "Album"}: ${
-                    albumData.name
-                  }`}</h2>
+                  <h2>{albumData.collection ? "Colección" : "Album"} : {editing ? (<Input type="text" value={name} onChange={(e => setName(e.target.value))}/>) : albumData.name }</h2>
                 )}
               </Col>
             </Row>
@@ -234,13 +244,12 @@ const AlbumView = ({
                       {editing ? (<Input type="textarea" className="album-textarea" rows="7" value={description} onChange={e => setDescription(e.target.value)}></Input>) : (
                         <p className="album-desc">{albumData.description}</p>
                       )}
-                      <Row>
+                      <Row>                        
                         <Col>
                           <Button color="primary" onClick={editButton}>{editing ? "Confirmar Cambios ":"Editar"}  <FontAwesomeIcon icon={editing ? faSave : faPencilAlt}/></Button>
-
                         </Col>
                         <Col>
-                          {editing ? <Button color="danger" onClick={()=>setEditing(!editing)}>Cancelar <FontAwesomeIcon icon={faUndo}/></Button> : <DeleteAlbumModal deleteButton={deleteButton} buttonLabel="Eliminar"/>}
+                          {editing ? <Button color="danger" onClick={()=>setEditing(!editing)}>Cancelar <FontAwesomeIcon icon={faUndo}/></Button> : <DeleteAlbumModal loading={deleteLoader} deleteButton={deleteButton} buttonLabel="Eliminar"/>}
                         </Col>
                       </Row>
                     </div>
@@ -261,6 +270,7 @@ const mapStateToProps = (state) => ({
   loading: state.albumcollection.loading,
   albumData: state.albumcollection.albumData,
   deleteAlbumStatus: state.albumcollection.deleteAlbum,
+  editAlbumStatus: state.albumcollection.editAlbum,
   user: state.user.userData,
   userPhotos: state.user.photos,
 });
@@ -272,7 +282,8 @@ const mapActionsToProps = (dispatch) => ({
   setIndex: (num) => dispatch(site_misc.setSelectedId(num)),
   onLoadGetPhotos: (user_id, limit, offset) =>
     dispatch(user.getUserPhotos(user_id, limit, offset)),
-  deleteAlbum: id => dispatch(gallery.album.deleteAlbum(id))
+  deleteAlbum: id => dispatch(gallery.album.deleteAlbum(id)),
+  editAlbum: (id,data) => dispatch(gallery.album.editAlbum(id,data))
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(AlbumView);
