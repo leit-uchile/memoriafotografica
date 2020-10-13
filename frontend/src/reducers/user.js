@@ -196,7 +196,7 @@ export default function user(state = initialState, action) {
     case RESET_PASSWORD_SUCCESS:
       return { ...state, resetPasswordRequest: true };
     case RESET_PASSWORD_FAILED:
-      return { ...state, resetPasswordRequest: false, errors: {reset_password: "LINK_FAILED"} };
+      return { ...state, resetPasswordRequest: false, errors: action.data };
     case RESET_PASSWORD_VALIDATE_SUCCESS:
       return { ...state, resetPasswordTokenValid: true };
     case RESET_PASSWORD_VALIDATE_FAILED:

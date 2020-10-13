@@ -17,12 +17,12 @@ const RecoverAccount = ({sendLink, linkSent, errors}) => {
     <div>
     <form onSubmit={(e) => {e.preventDefault(); sendLink(mail)}} >
       <fieldset>
-        {/* {errors.length > 0 &&
-          errors.map((error) => (
-            <Alert key={error.field} color="warning">
-              {this.translateError(error.message)}
+        {errors.email && errors.email.length > 0 &&
+          errors.email.map((error, index) => (
+            <Alert key={index} color="warning">
+              {error}
             </Alert>
-          ))} */}
+          ))}
         <div className="col-12 form-input">
           <div className="form-group">
             <div className="input-group">

@@ -435,23 +435,33 @@ export const uploadUserPicture = (avatar) => (dispatch, getState) => {};
 export const resetPasswordRequest = (email) => (dispatch) => {
   let headers = { "Content-Type": "application/json" };
   let body = JSON.stringify({ email });
-
+  
+  
   return fetch("/api/auth/password_reset/", {
     headers,
     body,
     method: "POST",
-  }).then((res) => {
-    if (res.status === 200) {
+  })
+  .then((res) => {
+    if (res.status < 500) {
       return res.json().then((data) => {
-        dispatch({ type: RESET_PASSWORD_SUCCESS, data: null });
-        return { status: res.status, data: null };
+        return { status: res.status, data: data };
       });
     } else {
-      setAlert("Hubo un error al enviar el link", "error")
-      dispatch({ type: RESET_PASSWORD_FAILED, data: null });
-      throw res.data;
+      console.log("Server Error!");
+      throw res;
+      // return { status: res.status, res.data };
     }
-  });
+  })
+  .then((res) => {
+    if (res.status === 200) {
+      dispatch({ type: RESET_PASSWORD_SUCCESS, data: null });
+    }
+    else {
+      dispatch({ type: RESET_PASSWORD_FAILED, data: res.data });
+      // throw res.data;
+    }
+  })
 };
 
 export const resetPasswordValidate = (token) => (dispatch) => {
@@ -469,8 +479,8 @@ export const resetPasswordValidate = (token) => (dispatch) => {
         return { status: res.status, data: null };
       });
     } else {
-      dispatch({ type: RESET_PASSWORD_VALIDATE_FAILED, data: null });
-      throw res.data;
+      dispatch({ type: RESET_PASSWORD_VALIDATE_FAILED, data: res.data });
+      // throw res.data;
     }
   });
 };
@@ -492,8 +502,8 @@ export const resetPasswordConfirm = (token, password) => (
         return { status: res.status, data: null };
       });
     } else {
-      dispatch({ type: RESET_PASSWORD_CONFIRM_FAILED, data: null });
-      throw res.data;
+      dispatch({ type: RESET_PASSWORD_CONFIRM_FAILED, data: res.data });
+      // throw res.data;
     }
   });
 };
