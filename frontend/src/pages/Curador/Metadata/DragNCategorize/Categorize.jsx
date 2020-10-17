@@ -1,6 +1,6 @@
-import React, { useState, Fragment, useEffect } from "react";
-import Item from "./Item";
-import DropWrapper from "./DropWrapper";
+import React, { useState, Fragment, useEffect } from 'react';
+import Item from './Item';
+import DropWrapper from './DropWrapper';
 import {
   Row,
   Col,
@@ -10,12 +10,15 @@ import {
   Button,
   ButtonGroup,
   Alert,
-} from "reactstrap";
-import HighLight from "./HighlightWrapper";
-import { connect } from "react-redux";
-import { metadata } from "../../../../actions";
-import { LeitSpinner } from "../../../../components";
-import "../styles.css";
+} from 'reactstrap';
+import HighLight from './HighlightWrapper';
+import { connect } from 'react-redux';
+import { metadata } from '../../../../actions';
+import { LeitSpinner } from '../../../../components';
+import { bindActionCreators } from 'redux';
+import {selectMetaDataAllIptcs,
+        selectMetaDataBatch} from "../../../../reducers"
+import '../styles.css';
 
 /**
  * Categorize unapproved metadata
@@ -65,7 +68,7 @@ const Categorize = ({
 
   // Drag & Drop Behavior methods
   const onDrop = (item, monitor, name, iptc_id) => {
-    console.log("OnDrop", item);
+    console.log('OnDrop', item);
     const itemCopy = { ...item, approved: true, metadata: iptc_id };
     putMeta(itemCopy);
     // Only add if the original wasnt classfied already
@@ -82,7 +85,7 @@ const Categorize = ({
 
   // Move Item to category
   const moveItem = (dragIndex, hoverIndex) => {
-    console.log("MoveItems");
+    console.log('MoveItems');
     const item = items[dragIndex];
     setItems((prevState) => {
       const newItems = prevState.filter((i, idx) => idx !== dragIndex);
@@ -108,15 +111,15 @@ const Categorize = ({
               ¿Ayuda?
             </Button>
             <Button
-              color={loadMoreCondition ? "success" : "secondary"}
+              color={loadMoreCondition ? 'success' : 'secondary'}
               disabled={!loadMoreCondition}
               onClick={getMore}
             >
               {loadMoreCondition
-                ? "Cargar más"
+                ? 'Cargar más'
                 : batch.count > 10
-                ? "Para cargar mas termine de clasificar"
-                : "No hay mas datos para cargar"}
+                ? 'Para cargar mas termine de clasificar'
+                : 'No hay mas datos para cargar'}
             </Button>
           </ButtonGroup>
           <br></br>
@@ -147,12 +150,12 @@ const Categorize = ({
       ) : batch.count !== 0 ? (
         <Fragment>
           <Row>
-            <div key={"nochanges"} className="col-sm-6 col-md-3">
+            <div key={'nochanges'} className="col-sm-6 col-md-3">
               <div className="col-wrapper no-category">
-                <h2 className={"col-header"}>
-                  {"Sin Categoria".toUpperCase()} <span>(Vaciar)</span>
+                <h2 className={'col-header'}>
+                  {'Sin Categoria'.toUpperCase()} <span>(Vaciar)</span>
                 </h2>
-                <DropWrapper onDrop={onDrop} name={"Sin Categoria"}>
+                <DropWrapper onDrop={onDrop} name={'Sin Categoria'}>
                   <HighLight>
                     {items
                       .filter((i) => !i.approved)
@@ -173,7 +176,7 @@ const Categorize = ({
               return (
                 <div key={s.name} className="col-sm-6 col-md-3">
                   <div className="col-wrapper">
-                    <h2 className={"col-header"}>{s.name.toUpperCase()}</h2>
+                    <h2 className={'col-header'}>{s.name.toUpperCase()}</h2>
                     <DropWrapper onDrop={onDrop} name={s.name} iptc_id={s.id}>
                       <HighLight>
                         {items
@@ -200,7 +203,7 @@ const Categorize = ({
               return (
                 <div key={s.name} className="col-sm-6 col-md-3">
                   <div className="col-wrapper">
-                    <h2 className={"col-header"}>{s.name.toUpperCase()}</h2>
+                    <h2 className={'col-header'}>{s.name.toUpperCase()}</h2>
                     <DropWrapper onDrop={onDrop} name={s.name} iptc_id={s.id}>
                       <HighLight>
                         {items
@@ -237,14 +240,18 @@ const Categorize = ({
 };
 
 const mapStateToProps = (state) => ({
-  iptcs: state.metadata.all_iptcs,
-  batch: state.metadata.batch,
+  iptcs: selectMetaDataAllIptcs(state),
+  batch: selectMetaDataBatch(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  loadIptcs: () => dispatch(metadata.iptcs()),
-  loadBatch: (size) => dispatch(metadata.getUnapprovedMetadataBatch(size)),
-  putMeta: (meta) => dispatch(metadata.putMetadata(meta)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadIptcs: metadata.iptcs,
+      loadBatch: metadata.getUnapprovedMetadataBatch,
+      putMeta: metadata.putMetadata,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Categorize);

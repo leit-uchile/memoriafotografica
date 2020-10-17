@@ -27,6 +27,7 @@ import { site_misc } from "../../actions";
 import uuid from "uuid";
 import "./styles.css";
 import "./uploadPhoto.css";
+import { selectSiteMiscUploadDisclosureSet } from "../../reducers";
 
 const imageMaxSize = 8000000; // Bytes ~ 8MB
 
@@ -329,7 +330,7 @@ class UploadPhoto extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  disclosed: state.site_misc.uploadDisclosureSet,
+  disclosed: selectSiteMiscUploadDisclosureSet(state),
 });
 
 const mapActionsToProps = (dispatch) => ({

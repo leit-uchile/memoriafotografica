@@ -7,7 +7,9 @@ import { webadmin } from "../../../../actions";
 import { Pagination } from "../../../../components";
 import PhotoRequesterModal from "./PhotoRequesterModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { bindActionCreators } from "redux";
+import {selectWebAdminRequests} from "../../../../reducers"
 import "../../styles.css";
 
 class PhotoTable extends Component {
@@ -142,13 +144,16 @@ class PhotoTable extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  requests: state.webadmin.requests,
+  requests: selectWebAdminRequests(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  getRequests: (page, pageSize, extra) =>
-    dispatch(webadmin.getRequests(page, pageSize, extra)),
-  getPhotos: (id) => dispatch(webadmin.getRequest(id)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getRequests: webadmin.getRequests,
+      getPhotos: webadmin.getRequest,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(PhotoTable);

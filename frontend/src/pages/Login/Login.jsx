@@ -6,6 +6,10 @@ import { Alert } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUnlock } from "@fortawesome/free-solid-svg-icons";
 import "./login.css";
+import { bindActionCreators } from "redux";
+import { selectErrors,
+        selectUserIsAuthenticated,
+        selectSiteMiscLoginSuccesRoute,} from "../../reducers";
 
 class Login extends Component {
   state = {
@@ -121,24 +125,20 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  let errors = [];
-  if (state.user.errors) {
-    errors = Object.keys(state.user.errors).map((field) => {
-      return { field, message: state.user.errors[field] };
-    });
-  }
-  return {
-    errors,
-    isAuthenticated: state.user.isAuthenticated,
-    loginRoute: state.site_misc.loginSuccessRoute,
-  };
-};
-
-const mapActionsToProps = (dispatch) => ({
-  login: (email, password) => dispatch(user.login(email, password)),
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-  setLoginSuccessRoute: () => dispatch(site_misc.addLoginRoute("")),
+const mapStateToProps = (state) => ({
+  errors: selectErrors(state),
+  isAuthenticated: selectUserIsAuthenticated(state),
+  loginRoute: selectSiteMiscLoginSuccesRoute(state),
 });
+
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      login: user.login,
+      setRoute: site_misc.setCurrentRoute,
+      setLoginSuccessRoute: site_misc.addLoginRoute,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Login);

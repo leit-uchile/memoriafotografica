@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Row, Button, Col } from "reactstrap";
 import { Route, Link, Switch } from "react-router-dom";
 // Important for ReactVis
@@ -26,7 +26,6 @@ import { Helmet } from "react-helmet";
 import PhotoRequestDetails from "./EmailRequests/PhotoRequests/PhotoRequestDetails";
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
-import { useEffect } from "react";
 import "./styles.css";
 
 /**
@@ -69,10 +68,7 @@ const Dashboard = ({ match, location, setRoute }) => {
   }, [setRoute]);
 
   return (
-    <Container
-      className="disable-css-transitions"
-      fluid
-    >
+    <Container className="disable-css-transitions" fluid>
       <Helmet>
         <title>Interfaz de curación</title>
       </Helmet>

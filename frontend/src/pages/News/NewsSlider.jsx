@@ -3,7 +3,10 @@ import { connect } from "react-redux";
 import { webadmin } from "../../actions";
 import { Container, Row, Col } from "reactstrap";
 import Slider from "react-slick";
+import { bindActionCreators } from "redux";
 import "../Landing/landing.css";
+import {selectWebAdminCarousel,
+        selectWebAdminNewsResult} from "../../reducers";
 
 const NewsSlider = (props) => {
   const { loadCaroussel, loadNews } = props;
@@ -57,13 +60,17 @@ const NewsSlider = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  caroussel: state.webadmin.caroussel,
-  news: state.webadmin.news.results,
+  caroussel: selectWebAdminCarousel(state),
+  news: selectWebAdminNewsResult(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  loadCaroussel: () => dispatch(webadmin.getCaroussel()),
-  loadNews: () => dispatch(webadmin.getNews()),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadCaroussel: webadmin.getCaroussel,
+      loadNews: webadmin.getNews,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(NewsSlider);

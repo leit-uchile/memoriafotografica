@@ -276,8 +276,15 @@ export const recoverByCats = (catIds, pair, page, pageSize = 25) => (
   });
 };
 
-export const getPhoto = (id) => (dispatch) => {
-  let headers = { "Content-Type": "application/json" };
+export const getPhoto = (id) => (dispatch, getState) => {
+  let isAuth = getState().user.isAuthenticated;
+  let headers = !isAuth
+    ? { "Content-Type": "application/json" }
+    : {
+        "Content-Type": "application/json",
+        Authorization: "Token " + getState().user.token,
+      };
+
   return fetch(`/api/photos/${id}`, { method: "GET", headers: headers }).then(
     function (response) {
       const r = response;
@@ -291,20 +298,6 @@ export const getPhoto = (id) => (dispatch) => {
       }
     }
   );
-};
-
-export const mtPhoto = () => (dispatch) => {
-  dispatch({
-    type: RECOVERED_PHOTO_DETAILS,
-    data: {
-      title: "[Titulo]",
-      image: undefined,
-      desc: undefined,
-      permission: [],
-      category: [],
-      metadata: [],
-    },
-  });
 };
 /* When uploading each photo will reduce to success or error.
   In case of error the payload will contain the id for
@@ -321,11 +314,11 @@ export const uploadImages = (data) => {
       Authorization: "Token " + getState().user.token,
     };
 
-    var currentTime = new Date();
-    // Bug: January is 0
-    currentTime = `${currentTime.getDate()}-${
-      currentTime.getMonth() + 1
-    }-${currentTime.getFullYear()}`;
+    // var currentTime = new Date();
+    // // Bug: January is 0
+    // currentTime = `${currentTime.getDate()}-${
+    //   currentTime.getMonth() + 1
+    // }-${currentTime.getFullYear()}`;
 
     dispatch({ type: UPLOADING, data: data.photos.length });
 
