@@ -439,33 +439,31 @@ export const uploadUserPicture = (avatar) => (dispatch, getState) => {};
 export const resetPasswordRequest = (email) => (dispatch) => {
   let headers = { "Content-Type": "application/json" };
   let body = JSON.stringify({ email });
-  
-  
+
   return fetch("/api/auth/password_reset/", {
     headers,
     body,
     method: "POST",
   })
-  .then((res) => {
-    if (res.status < 500) {
-      return res.json().then((data) => {
-        return { status: res.status, data: data };
-      });
-    } else {
-      console.log("Server Error!");
-      throw res;
-      // return { status: res.status, res.data };
-    }
-  })
-  .then((res) => {
-    if (res.status === 200) {
-      dispatch({ type: RESET_PASSWORD_SUCCESS, data: null });
-    }
-    else {
-      dispatch({ type: RESET_PASSWORD_FAILED, data: res.data });
-      // throw res.data;
-    }
-  })
+    .then((res) => {
+      if (res.status < 500) {
+        return res.json().then((data) => {
+          return { status: res.status, data: data };
+        });
+      } else {
+        console.log("Server Error!");
+        throw res;
+        // return { status: res.status, res.data };
+      }
+    })
+    .then((res) => {
+      if (res.status === 200) {
+        dispatch({ type: RESET_PASSWORD_SUCCESS, data: null });
+      } else {
+        dispatch({ type: RESET_PASSWORD_FAILED, data: res.data });
+        // throw res.data;
+      }
+    });
 };
 
 export const resetPasswordValidate = (token) => (dispatch) => {
@@ -489,25 +487,33 @@ export const resetPasswordValidate = (token) => (dispatch) => {
   });
 };
 
-export const resetPasswordConfirm = (token, password) => (
-  dispatch
-) => {
+export const resetPasswordConfirm = (token, password) => (dispatch) => {
   let headers = { "Content-Type": "application/json" };
-  let body = JSON.stringify({ token, password});
+  let body = JSON.stringify({ token, password });
 
   return fetch("/api/auth/password_reset/confirm/", {
     headers,
     body,
     method: "POST",
-  }).then((res) => {
-    if (res.status === 200) {
-      return res.json().then((data) => {
+  })
+    .then((res) => {
+      if (res.status < 500) {
+        return res.json().then((data) => {
+          return { status: res.status, data };
+        });
+      } else {
+        console.log("Server Error!");
+        throw res;
+      }
+      // throw res.data;
+    })
+    .then((res) => {
+      if (res.status === 200) {
         dispatch({ type: RESET_PASSWORD_CONFIRM_SUCCESS, data: null });
         return { status: res.status, data: null };
-      });
-    } else {
-      dispatch({ type: RESET_PASSWORD_CONFIRM_FAILED, data: res.data });
-      // throw res.data;
-    }
-  });
+      } else {
+         dispatch({ type: RESET_PASSWORD_CONFIRM_FAILED, data: res.data });
+      }
+    });
 };
+

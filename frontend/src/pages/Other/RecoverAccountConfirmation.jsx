@@ -10,17 +10,17 @@ import { user } from "../../actions";
 import StepWizard from "react-step-wizard";
 
 const InvalidToken = () => (
-  <div> El token ingresado es inválido o ha expirado </div>
+  <div> El token ingresado es inválido o ha expirado <br/><br/><br/></div>
 );
 
 const SuccessfulUpdatePassword = () => (
   <div> Tu contraseña ha sido actualizada con éxito </div>
 );
 
-const FailedUpdatePassword = ({volver, goToStep}) => (
+const FailedUpdatePassword = ({ volver, goToStep }) => (
   <Container>
     <Row> Recuperación de cuenta fallida </Row>
-    <Button 
+    <Button
       color="danger"
       onClick={() => {
         volver();
@@ -37,45 +37,51 @@ const UpdatePasswordSent = ({
   errors,
   passwordSent,
   goToStep,
-  tokenIsValid,
+  
 }) => {
-
-  if (tokenIsValid) {
-    goToStep(2);
+  if (passwordSent && passwordUpdated) {
+    goToStep(3);
+  } 
+  else if (passwordSent && errors && errors.password) {
+    goToStep(1);
   }
-  else if (passwordSent && passwordUpdated) {
+  else if (passwordSent && errors && errors.updatePassword) {
     goToStep(4);
-  } else if (passwordSent && errors && errors.updatePassword) {
-    goToStep(5);
   }
 
   return <div>Cargando...</div>;
 };
 
-const ChangePassword = ({ updatePassword, nextStep }) => {
+const ChangePassword = ({ updatePassword, nextStep, errors }) => {
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
-  const [errors, setError] = useState([]);
+  const [passErrors, setpassErrors] = useState([]);
 
   const onSubmitPassword = (e) => {
     e.preventDefault();
 
     if (password1 !== password2) {
-      setError(["Las contraseñas no coinciden"]);
+      setpassErrors(["Las contraseñas no coinciden"]);
     } else {
-      setError([""]);
+      setpassErrors([""]);
       updatePassword(password1);
       nextStep();
     }
   };
 
-
+  var totalErrors = [];
+  if(errors.password){
+    totalErrors = errors.password;
+  }else{
+    totalErrors = passErrors;
+  }
   return (
     <div>
       <form onSubmit={onSubmitPassword}>
         <fieldset>
-          {errors.length > 0 &&
-            errors.map((error, index) => (
+          {totalErrors &&
+            totalErrors.length > 0 &&
+            totalErrors.map((error, index) => (
               <Alert key={index} color="warning">
                 {error}
               </Alert>
@@ -161,32 +167,39 @@ const RecoverAccountConfirmation = ({
       <div className="modal-dialog text-center">
         <div className="col-sm-9 main-section">
           <div className="modal-content">
-            <h2>Recuperar Clave</h2>
+            { tokenIsValid 
+              ? (
+              <div>
+                <h2>Recuperar Clave</h2>
+                <StepWizard
+                  className="stepContainer"
+                  onStepChange={() => {
+                    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+                  }}
+                  initialStep={1}
+                >
+                  <ChangePassword
+                    updatePassword={onUpdatePassword}
+                    errors={errors}
+                  />
 
-            <StepWizard
-              className="stepContainer"
-              onStepChange={() => {
-                window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-              }}
-              initialStep={1}
-            >
+                  <UpdatePasswordSent
+                    passwordSent={passwordSent}
+                    tokenIsValid={tokenIsValid}
+                    passwordUpdated={passwordUpdated}
+                    errors={errors}
+                  />
 
-              <InvalidToken />
-
-              <ChangePassword updatePassword={onUpdatePassword} />
-
-              <UpdatePasswordSent
-                passwordSent={passwordSent}
-                tokenIsValid={tokenIsValid}
-                passwordUpdated={passwordUpdated}
-                errors={errors}
-              />
-
-              <SuccessfulUpdatePassword />
-              <FailedUpdatePassword 
-                volver={volver}
-              />
-            </StepWizard>
+                  <SuccessfulUpdatePassword />
+                  <FailedUpdatePassword volver={volver} />
+                </StepWizard> </div>)
+              : (
+                <div>
+                  <h2> Recuperación Fallida </h2>
+                  <InvalidToken/>
+                </div>
+              )
+             }
           </div>
         </div>
       </div>

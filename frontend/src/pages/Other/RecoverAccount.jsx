@@ -25,7 +25,8 @@ const RecoverAccount = ({ isAuthenticated, sendLink, linkSent, errors }) => {
         }}
       >
         <fieldset>
-          {errors.email &&
+          {errors &&
+            errors.email &&
             errors.email.length > 0 &&
             errors.email.map((error, index) => (
               <Alert key={index} color="warning">
