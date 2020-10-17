@@ -223,7 +223,7 @@ const AlbumView = ({
                 {/* Do not remove this div, it allows for sticky behavior*/}
                 <Row>
                   <Col sm={9}>
-                    {editing ? <PhotoEditor photos={pictures} onClick={(e,index)=>(handleOnSelect(index.photo))} /> : (
+                    {editing ? <PhotoEditor viewLink={false} selectAllBtn={false} selectIcon="check" photos={pictures} onClick={(e,index)=>(handleOnSelect(index.photo))} /> : (
                       <Gallery
                         photos={display.photos}
                         targetRowHeight={200}

@@ -145,15 +145,13 @@ const PhotoEditor = ({ photos, selectAll, selectAllBtn, ...props }) => {
       validIcons.includes(iconStr) ? iconStr : "pen"
     )
   }
-  console.log("props.viewLink:",props.viewLink)
-  console.log("props.selectIcon:",props.selectIcon)
   const [viewLink, setViewLink] = useState(props.viewLink === undefined ? true : (props.viewLink))
   const [selectIcon, setSelectIcon] = useState(props.selectIcon === undefined ? "pen" : checkIcon(props.selectIcon))
-
+  const [allButton, setAllButton] = useState(props.selectAllBtn === undefined ? true : (props.viewLink))
   const imageRenderer = useCallback(
     ({ index, left, top, key, photo, onClick}) => (
       <SelectedImage
-        selected={selectAllBtn ? selectAll : photo.selected}
+        selected={allButton ? selectAll : photo.selected}
         key={key}
         margin={"2px"}
         index={index}
@@ -162,7 +160,7 @@ const PhotoEditor = ({ photos, selectAll, selectAllBtn, ...props }) => {
         top={top}
         onClick={onClick}
         onRedirect={props.onRedirect}
-        selectAllBtn={selectAllBtn}
+        selectAllBtn={allButton}
         selectIcon={iconsDict[selectIcon]}
         viewLink={viewLink}
       />

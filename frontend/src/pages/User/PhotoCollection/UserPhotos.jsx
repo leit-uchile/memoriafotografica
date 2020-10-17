@@ -160,7 +160,6 @@ class UserPhotos extends Component {
                         // putAll={(state) => this.putAllToEdit(mapped,state)}
                         selectAll={this.state.selectedAll}
                         onRedirect={(e, index) => this.handleOnRedirect(index)}
-                        selectAllBtn={true}
                       />
                     )}
                   </div>
