@@ -37,12 +37,6 @@ const ResolveModal = ({
   const [loading, setLoading] = useState(false);
   const [newreport, setNewreport] = useState({});
 
-  // const toggle = () => {
-  //   setNewreport(report);
-  //   setLoading(false);
-  //   setModal(!modal);
-  // };
-
   useEffect(() => {
     let info = { ...report };
     setNewreport(info);

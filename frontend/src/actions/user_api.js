@@ -219,9 +219,13 @@ export const getUserComments = (user_id, limit, offset) => (
 /**
  * Load a user by ID if it is public
  */
-export const loadAUser = (id) => (dispatch) => {
+export const loadAUser = (id) => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
   dispatch({ type: USER_PUBLIC_LOADING });
-  return fetch(`/api/users/${id}/`)
+  return fetch(`/api/users/${id}/`, { method: "GET", headers: headers })
     .then((res) => {
       const response = res;
       if (res.status < 400) {
@@ -424,4 +428,4 @@ export const updatePassword = (old_password, new_password) => (
     });
 };
 
-export const uploadUserPicture = (avatar) => (dispatch, getState) => {};
+export const uploadUserPicture = (avatar) => (dispatch, getState) => { };

@@ -13,8 +13,6 @@ import {
   Form,
 } from "reactstrap";
 import { user } from "../../../actions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 
 const EditUserModal = ({
@@ -26,22 +24,23 @@ const EditUserModal = ({
   getUser,
 }) => {
   const [formData, setData] = useState({});
+  const [deletePhoto, setDelete] = useState(false);
 
   useEffect(() => {
     getUser(report.content_id.id);
   }, [isOpen]);
 
   useEffect(() => {
-    let info = { ...report.content_id, upload_date: moment(Date(Date.now())) };
+    let info = { ...userDetails, upload_date: moment(Date(Date.now())) };
     setData(info);
   }, [userDetails]);
 
   const updateData = (e) =>
     setData({ ...formData, [e.target.name]: e.target.value });
 
-  const deletePhoto = () => {
+  const onSend = () => {
     let info = { ...formData };
-    delete info.avatar;
+    deletePhoto ? (info.avatar = null) : delete info.avatar;
     editUser(info);
   };
   return (
@@ -56,14 +55,14 @@ const EditUserModal = ({
               </Label>
 
               <Col sm={9}>
-                <FontAwesomeIcon
-                  icon={faCamera}
-                  style={{
-                    color: "var(--leit-red)",
-                    cursor: "pointer",
-                    fontSize: "16px",
-                  }}
+                <input
+                  type="checkbox"
+                  class="toggle-button"
+                  id="photo"
+                  checked={deletePhoto}
+                  onChange={() => setDelete(!deletePhoto)}
                 />
+                <label for="photo"></label>
               </Col>
             </FormGroup>
             <FormGroup row>
@@ -122,7 +121,7 @@ const EditUserModal = ({
         <ModalFooter>
           {true ? (
             <Fragment>
-              <Button color="primary" onClick={() => editUser(formData)}>
+              <Button color="primary" onClick={() => onSend()}>
                 Guardar cambios
               </Button>
               <Button color="secondary" onClick={() => handleToggle()}>
