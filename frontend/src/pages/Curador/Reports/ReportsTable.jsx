@@ -5,6 +5,7 @@ import ResolveModal from "./ResolveModal";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { gallery } from "../../../actions";
+import { bindActionCreators } from "redux";
 
 /**
  * Define different Renders and updates for
@@ -92,9 +93,13 @@ const ReportsTable = ({ reports, updateReport, censureContent }) => {
 
 const mapStateToProps = (state) => ({});
 
-const mapActionsToProps = (dispatch) => ({
-  updateReport: (rep) => dispatch(gallery.reports.updateReport(rep)),
-  censureContent: (rep) => dispatch(gallery.reports.censureContent(rep)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      updateReport: gallery.reports.updateReport,
+      censureContent: gallery.reports.censureContent,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(ReportsTable);

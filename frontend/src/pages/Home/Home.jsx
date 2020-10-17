@@ -9,6 +9,12 @@ import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
 import { LeitSpinner, Pagination } from "../../components";
 import FilterPicker from "./FilterPicker";
+import { bindActionCreators } from "redux";
+import {  selectPhotos, 
+          selectPhotosCount,
+          selectSiteMiscSearchMetaIDS,
+          selectSiteMiscHomeLoading,
+          selectUserToken } from "../../reducers";
 import "./home.css";
 
 /**
@@ -198,20 +204,24 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  photos: state.photos.photos,
-  count: state.photos.count,
-  filters: state.site_misc.searchMetaIDs,
-  auth: state.user.token,
-  loadingPhotos: state.site_misc.home.loading,
+  photos: selectPhotos(state),
+  count: selectPhotosCount(state),
+  filters: selectSiteMiscSearchMetaIDS(state),
+  auth: selectUserToken(state),
+  loadingPhotos: selectSiteMiscHomeLoading(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-  removeSearch: (id, value) => dispatch(site_misc.removeSearchItem(id, value)),
-  // TODO: use it!
-  // eslint-disable-next-line
-  setSelectedId: (id) => dispatch(site_misc.setSelectedId(id)),
-  setPhotoPagination: (obj) => dispatch(site_misc.setPhotoPagination(obj)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setRoute: site_misc.setCurrentRoute,
+      removeSearch: site_misc.removeSearchItem,
+      // TODO: use it!
+      // eslint-disable-next-line
+      setSelectedId: site_misc.setSelectedId,
+      setPhotoPagination: site_misc.setPhotoPagination,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Home);

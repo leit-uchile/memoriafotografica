@@ -12,6 +12,16 @@ import { LeitSpinner, Pagination } from "../../../components";
 import PhotoList from "./PhotoList";
 import PhotoCards from "./PhotoCards";
 import OptionSelector from "./OptionSelector";
+import { bindActionCreators } from "redux";
+import {
+  selectPhotos,
+  selectPhotosCount,
+  selectErrors,
+  selectSiteMiscCuradorRefresh,
+  selectSiteMiscCuradorLoading,
+  selectWebAdminAllTags,
+  selectUserIsAuthenticated,
+} from "../../../reducers";
 
 class Filter extends Component {
   constructor(props) {
@@ -161,28 +171,23 @@ class Filter extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  let errors = [];
-  if (state.user.errors) {
-    errors = Object.keys(state.user.errors).map((field) => {
-      return { field, message: state.user.errors[field] };
-    });
-  }
-  return {
-    errors,
-    isAuthenticated: state.user.isAuthenticated,
-    meta: state.webadmin.all_tags,
-    photos: state.photos.photos,
-    photoCount: state.photos.count,
-    loading: state.site_misc.curador.loading,
-    refresh: state.site_misc.curador.refresh,
-  };
-};
-const mapActionsToProps = (dispatch) => ({
-  getPhotosAuth: (pageNum, pageSize, params = "") =>
-    dispatch(gallery.photos.getPhotosAuth(pageNum, pageSize, params)),
-  editPhoto: (photoID, data) =>
-    dispatch(gallery.photos.editPhoto(photoID, data)),
+const mapStateToProps = (state) => ({
+  errors: selectErrors(state),
+  isAuthenticated: selectUserIsAuthenticated(state),
+  meta: selectWebAdminAllTags(state),
+  photos: selectPhotos(state),
+  photoCount: selectPhotosCount(state),
+  loading: selectSiteMiscCuradorLoading(state),
+  refresh: selectSiteMiscCuradorRefresh(state),
 });
+
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getPhotosAuth: gallery.photos.getPhotosAuth,
+      editPhoto: gallery.photos.editPhoto,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Filter);

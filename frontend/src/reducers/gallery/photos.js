@@ -34,7 +34,11 @@ export default function photos(state = initialState, action) {
     case EMPTY_PHOTOS:
       return { ...state, photos: [] };
     case EDIT_PHOTO:
-      return { ...state, details: { ...state.details, ...action.data }, updatedPhoto: true };
+      return {
+        ...state,
+        details: { ...state.details, ...action.data },
+        updatedPhoto: true,
+      };
     case EDIT_PHOTO_ERROR:
       return { ...state, edit_photo_errors: action.data };
     case DELETED_PHOTO:
@@ -60,3 +64,21 @@ export default function photos(state = initialState, action) {
       return state;
   }
 }
+
+export const selectPhotos = (state) => {
+  if (Array.isArray(state.photos.photos)) {
+    return state.photos.photos;
+  } else {
+    return [];
+  }
+};
+
+export const selectPhotosCount = (state) => state.photos.count;
+
+export const selectPhotosDetails = (state) => state.photos.details;
+
+export const selectPhotosError = (state) => state.photos.errors;
+
+export const selectPhotosUpdatedPhoto = (state) => state.photos.updatedPhoto;
+
+export const selectPhotosRefresh = (state) => state.photos.refresh;

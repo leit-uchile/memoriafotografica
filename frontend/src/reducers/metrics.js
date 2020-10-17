@@ -18,3 +18,5 @@ export default function metrics(state = initialState, action) {
       return state;
   }
 }
+
+export const selectMetrics = (state) => state.metrics;

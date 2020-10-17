@@ -9,17 +9,26 @@ import {
   Card,
   CardBody,
   Input,
+  Collapse,
+  Form,
+  FormGroup,
+  Label,
+  Spinner,
 } from "reactstrap";
 import { connect } from "react-redux";
 import { gallery } from "../../../actions";
 import { Pagination } from "../../../components";
 import { CategoryTable } from "./CategoryTable";
 import { ModifyModal } from "./ModifyModal";
-import Collapse from "reactstrap/lib/Collapse";
-import Form from "reactstrap/lib/Form";
-import FormGroup from "reactstrap/lib/FormGroup";
-import Label from "reactstrap/lib/Label";
-import Spinner from "reactstrap/lib/Spinner";
+import { bindActionCreators } from "redux";
+import {
+  selectCategories,
+  selectCategoriesTotal,
+  selectCategoriesError,
+  selectNewCategories,
+  selectSiteMiscCuradorLoading,
+  selectSiteMiscCuradorRefresh
+} from "../../../reducers";
 
 class Categories extends Component {
   constructor(props) {
@@ -157,7 +166,9 @@ class Categories extends Component {
                         size="sm"
                         color="light"
                         style={{
-                          display: this.state.creating ? "inline-block" : "none",
+                          display: this.state.creating
+                            ? "inline-block"
+                            : "none",
                         }}
                       />{" "}
                       Crear
@@ -199,20 +210,23 @@ class Categories extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  cats: state.categories.categories,
-  total: state.categories.total,
-  loading: state.site_misc.curador.loading,
-  refresh: state.site_misc.curador.refresh,
-  newCat: state.categories.newCat,
-  catError: state.categories.error,
+  cats: selectCategories(state),
+  total: selectCategoriesTotal(state),
+  loading: selectSiteMiscCuradorLoading(state) ,
+  refresh: selectSiteMiscCuradorRefresh(state),
+  newCat: selectNewCategories(state),
+  catError: selectCategoriesError(state),
 });
-const mapActionsToProps = (dispatch) => ({
-  getCategories: (page, pageSize, extra) =>
-    dispatch(gallery.category.getCategories(page, pageSize, extra)),
-  deleteCategories: (catArray) =>
-    dispatch(gallery.category.deleteCategories(catArray)),
-  createCategory: (data) => dispatch(gallery.category.createCategory(data)),
-  resetErrors: () => dispatch(gallery.category.resetErrors()),
-});
+
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getCategories: gallery.category.getCategories,
+      deleteCategories: gallery.category.deleteCategories,
+      createCategory: gallery.category.createCategory,
+      resetErrors: gallery.category.resetErrors,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Categories);

@@ -21,6 +21,8 @@ import {
   faPencilAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import "./resolveModal.css";
+import { bindActionCreators } from "redux";
+import { selectPhotosDetails } from "../../../reducers";
 
 const ResolveModal = ({
   buttonLabel,
@@ -158,8 +160,11 @@ const ResolveModal = ({
   );
 };
 
-const mapActionsToProps = (dispatch) => ({
-  editReport: (rep, cont) => dispatch(gallery.reports.updateContent(rep, cont)),
-});
+const mapActionsToProps = (dispatch) => 
+    bindActionCreators(
+      {
+        editReport: gallery.reports.updateContent,
+      }
+    );
 
 export default connect(null, mapActionsToProps)(ResolveModal);

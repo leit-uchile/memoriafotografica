@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { Button, Row, Col, Container, Badge } from "reactstrap";
@@ -7,7 +7,13 @@ import EditPhotosModal from "./EditPhotosModal";
 import PhotoEditor from "../../../components/PhotoEditor";
 import { Helmet } from "react-helmet";
 import Gallery from "react-photo-gallery";
+import { bindActionCreators } from "redux";
 import "../styles.css";
+import {   selectUserPhotos,
+            selectUserData,
+            selectUserPublicUser,
+            selectPhotosUpdatedPhoto,
+            selectPhotosRefresh,} from "../../../reducers";
 
 class UserPhotos extends Component {
   constructor(props) {
@@ -189,23 +195,25 @@ class UserPhotos extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  photos: state.user.photos,
-  user: state.user.userData,
-  publicUser: state.user.publicUser,
-  updatedPhoto: state.photos.updatedPhoto,
-  refresh: state.photos.refresh,
+  photos: selectUserPhotos(state),
+  user: selectUserData(state),
+  publicUser: selectUserPublicUser(state),
+  updatedPhoto: selectPhotosUpdatedPhoto(state),
+  refresh: selectPhotosRefresh(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  setSelectedId: (id) => dispatch(site_misc.setSelectedId(id)),
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-  loadPublicUser: (id) => dispatch(user.loadAUser(id)),
-  onLoadGetPhotos: (user_id, limit, offset) =>
-    dispatch(user.getUserPhotos(user_id, limit, offset)),
-  onLoadGetPublicPhotos: (user_id, params) =>
-    dispatch(user.loadPublicUserPhotos(user_id, params)),
-  editPhoto: (pID, val) => dispatch(gallery.photos.editPhoto(pID, val)),
-  deletePhoto: (pID) => dispatch(gallery.photos.deletePhoto(pID)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setSelectedId: site_misc.setSelectedId,
+      setRoute: site_misc.setCurrentRoute,
+      loadPublicUser: user.loadAUser,
+      onLoadGetPhotos: user.getUserPhotos,
+      onLoadGetPublicPhotos: user.loadPublicUserPhotos,
+      editPhoto: gallery.photos.editPhoto,
+      deletePhoto: gallery.photos.deletePhoto,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(UserPhotos);

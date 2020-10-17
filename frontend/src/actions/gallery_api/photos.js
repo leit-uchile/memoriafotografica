@@ -307,11 +307,11 @@ export const uploadImages = (data) => {
       Authorization: "Token " + getState().user.token,
     };
 
-    var currentTime = new Date();
-    // Bug: January is 0
-    currentTime = `${currentTime.getDate()}-${
-      currentTime.getMonth() + 1
-    }-${currentTime.getFullYear()}`;
+    // var currentTime = new Date();
+    // // Bug: January is 0
+    // currentTime = `${currentTime.getDate()}-${
+    //   currentTime.getMonth() + 1
+    // }-${currentTime.getFullYear()}`;
 
     dispatch({ type: UPLOADING, data: data.photos.length });
 

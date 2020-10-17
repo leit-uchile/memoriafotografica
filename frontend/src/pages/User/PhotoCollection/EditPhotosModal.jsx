@@ -21,6 +21,14 @@ import { metadata, gallery } from "../../../actions";
 import ReactTags from "react-tag-autocomplete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { bindActionCreators } from "redux";
+import {
+  selectPhotosDetails,
+  selectPhotosUpdatedPhoto,
+  selectMetaDataAllTags,
+  selectMetaDataCreating,
+  selectMetaDataNewIds,
+} from "../../../reducers";
 
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },
@@ -337,17 +345,21 @@ const EditPhotosModal = ({
 };
 
 const mapStateToProps = (state) => ({
-  photoDetails: state.photos.details,
-  tags: state.metadata.all_tags,
-  creating: state.metadata.creating,
-  newTagsId: state.metadata.newTagsId,
-  updatedPhoto: state.photos.updatedPhoto,
+  photoDetails: selectPhotosDetails(state),
+  tags: selectMetaDataAllTags(state),
+  creating: selectMetaDataCreating(state),
+  newTagsId: selectMetaDataNewIds(state),
+  updatedPhoto: selectPhotosUpdatedPhoto(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  getPhotoDetails: (id) => dispatch(gallery.photos.getPhoto(id)),
-  getTags: () => dispatch(metadata.tags()),
-  createMultipleMetas: (list) => dispatch(metadata.createMultipleMetas(list)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getPhotoDetails: gallery.photos.getPhoto,
+      getTags: metadata.tags,
+      createMultipleMetas: metadata.createMultipleMetas,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(EditPhotosModal);
