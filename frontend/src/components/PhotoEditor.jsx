@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import Gallery from "react-photo-gallery";
 import { Container, Row, Col } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faPencilAlt, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faEye, faPencilAlt, faTimes } from "@fortawesome/free-solid-svg-icons";
 import "./photoEditor.css";
 
 /**
@@ -59,7 +59,9 @@ const SelectedImage = ({
   selected,
   onClick,
   onRedirect,
-  selectAllBtn
+  selectAllBtn,
+  viewLink,
+  selectIcon
 }) => {
   const [isSelected, setIsSelected] = useState(selected);
   //calculate x,y scale
@@ -103,13 +105,13 @@ const SelectedImage = ({
 
         {!isSelected ? (
           <div className="icons">
-            <FontAwesomeIcon
+            {viewLink ? (<FontAwesomeIcon
               icon={faEye}
               style={{ marginRight: "0.35em" }}
               onClick={handleOnRedirect}
-            />
+            />) : ""}
             <FontAwesomeIcon 
-              icon={faPencilAlt}
+              icon={selectIcon}
               style={{ marginRight: "0.35em" }} 
               onClick={handleOnSelect} 
             />            
@@ -133,6 +135,21 @@ const PhotoEditor = ({ photos, selectAll, selectAllBtn, ...props }) => {
   //   putAll(!selectAll)
   // };
 
+  const validIcons = ["pen", "check"]
+  const iconsDict = {
+    "pen" : faPencilAlt,
+    "check" : faCheck
+  }
+  const checkIcon = (iconStr) => {
+    return props.selectIcon === undefined ? "pen" : (
+      validIcons.includes(iconStr) ? iconStr : "pen"
+    )
+  }
+  console.log("props.viewLink:",props.viewLink)
+  console.log("props.selectIcon:",props.selectIcon)
+  const [viewLink, setViewLink] = useState(props.viewLink === undefined ? true : (props.viewLink))
+  const [selectIcon, setSelectIcon] = useState(props.selectIcon === undefined ? "pen" : checkIcon(props.selectIcon))
+
   const imageRenderer = useCallback(
     ({ index, left, top, key, photo, onClick}) => (
       <SelectedImage
@@ -146,6 +163,8 @@ const PhotoEditor = ({ photos, selectAll, selectAllBtn, ...props }) => {
         onClick={onClick}
         onRedirect={props.onRedirect}
         selectAllBtn={selectAllBtn}
+        selectIcon={iconsDict[selectIcon]}
+        viewLink={viewLink}
       />
     ),
     [selectAll]
