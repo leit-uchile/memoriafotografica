@@ -21,12 +21,12 @@ import {
   CONTACTMESSAGE_SWITCH_STATE_ERROR,
   VALIDATE_RECAPTCHA,
   VALIDATE_RECAPTCHA_ERROR,
+  RESET_RECAPTCHA,
 } from "./types";
 import { setAlert } from "./site_misc";
 
 export const validateRecaptcha = (valueRecaptcha) => (dispatch) => {
   {
-    // TODO -Joaquin Doing the action creation of the recaptcha validation
     let header = { "Content-Type": "application/json" };
     let data = { recaptcha: valueRecaptcha };
     fetch("/api/users/recaptcha/", {
@@ -44,6 +44,10 @@ export const validateRecaptcha = (valueRecaptcha) => (dispatch) => {
       }
     });
   }
+};
+
+export const resetValidateRecaptcha = () => (dispatch) => {
+  dispatch({ type: RESET_RECAPTCHA, data: null });
 };
 
 export const landingLoading = () => (dispatch) =>

@@ -32,9 +32,9 @@ const UploadUnregister = ({
   sendAlert,
   recaptchaBack,
   recaptchaState,
+  recaptchaReset,
 }) => {
-  const recaptchaRef = React.createRef();
-
+  let recaptchaRef;
   const [formData, setFormData] = useState(
     cache === {}
       ? {
@@ -60,14 +60,11 @@ const UploadUnregister = ({
   );
 
   useEffect(() => {
+    recaptchaRef.reset();
     if (recaptchaState.success) {
       nextStep();
+      return recaptchaReset();
     }
-    return () => {
-      //TODO -Joaquin Unmount cuando cambie de vaina?
-      // Poner catpcha en false
-      console.log("unmount");
-    };
   }, [recaptchaState.success]);
 
   const updateForm = (e) =>
@@ -86,19 +83,16 @@ const UploadUnregister = ({
 
   const onSubmit = (e) => {
     e.preventDefault();
-    //recaptchaRef.current.execute();
     if (validateCaptcha()) {
       saveInfo({ ...formData, info: { ...info } });
-
-      //TODO -Joaquin get guest token, for this step backend must verify if the value of captcha is correct
-      recaptchaBack(recaptchaRef.current.getValue());
+      recaptchaBack(recaptchaRef.getValue());
     } else {
       sendAlert("Debe rellenar el captcha", "warning");
     }
   };
 
   const validateCaptcha = () => {
-    const recaptchaValue = recaptchaRef.current.getValue();
+    const recaptchaValue = recaptchaRef.getValue();
     if (recaptchaValue == null || recaptchaValue == "") {
       return false;
     } else {
@@ -219,12 +213,14 @@ const UploadUnregister = ({
             />
           </Col>
         </FormGroup>
+        <ReCAPTCHA
+          //size="invisible"
+          sitekey={captchaKey}
+          ref={(el) => {
+            recaptchaRef = el;
+          }}
+        />
         <ButtonGroup style={{ minWidth: "20em" }}>
-          <ReCAPTCHA
-            //size="invisible"
-            sitekey={captchaKey}
-            ref={recaptchaRef}
-          />
           <Button onClick={previousStep}>
             <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
           </Button>
@@ -236,13 +232,13 @@ const UploadUnregister = ({
     </Container>
   );
 };
-//TODO -Joaquin Fix redux not working properly
 const mapStateToProps = (state) => ({
   recaptchaState: state.webadmin.recaptchaState,
 });
 
 const mapActionsToProps = (dispatch) => ({
   recaptchaBack: (value) => dispatch(webadmin.validateRecaptcha(value)),
+  recaptchaReset: () => dispatch(webadmin.resetValidateRecaptcha()),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(UploadUnregister);
