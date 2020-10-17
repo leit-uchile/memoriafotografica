@@ -4,6 +4,7 @@ WORKDIR /app/frontend
 COPY package.json /app/frontend
 COPY .env-cmdrc /app/frontend/.env-cmdrc
 RUN npm install --silent
+RUN npm install env-cmd
 COPY . ./
 EXPOSE 3000
 
