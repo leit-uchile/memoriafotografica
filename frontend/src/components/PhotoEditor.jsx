@@ -127,7 +127,7 @@ const SelectedImage = ({
   );
 };
 
-const PhotoEditor = ({ photos, selectAll, selectAllBtn, ...props }) => {
+const PhotoEditor = ({ photos, selectAll, ...props }) => {
   // const [selectAll, setSelectAll] = useState(false);
 
   // const toggleSelectAll = () => {
@@ -147,7 +147,8 @@ const PhotoEditor = ({ photos, selectAll, selectAllBtn, ...props }) => {
   }
   const [viewLink, setViewLink] = useState(props.viewLink === undefined ? true : (props.viewLink))
   const [selectIcon, setSelectIcon] = useState(props.selectIcon === undefined ? "pen" : checkIcon(props.selectIcon))
-  const [allButton, setAllButton] = useState(props.selectAllBtn === undefined ? true : (props.viewLink))
+  const [allButton, setAllButton] = useState(props.selectAllBtn === undefined ? true : (props.selectAllBtn))
+  console.log(allButton)
   const imageRenderer = useCallback(
     ({ index, left, top, key, photo, onClick}) => (
       <SelectedImage
