@@ -19,6 +19,8 @@ import { Pagination, LeitSpinner } from "../../components";
 import { Helmet } from "react-helmet";
 import "./news.css";
 import { bindActionCreators } from "redux";
+import {selectWebAdminNewCount,
+        selectWebAdminNewsResult} from "../../reducers"
 
 const NewsPage = (props) => {
   const { setRoute, loadNews } = props;
@@ -188,8 +190,8 @@ const NewsPage = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  news: state.webadmin.news.results,
-  count: state.webadmin.news.count,
+  news: selectWebAdminNewsResult(state),
+  count: selectWebAdminNewCount(state),
 });
 
 const mapActionsToProps = (dispatch) =>

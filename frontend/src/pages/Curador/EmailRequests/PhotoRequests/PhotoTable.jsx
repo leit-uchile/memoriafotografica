@@ -9,6 +9,7 @@ import PhotoRequesterModal from "./PhotoRequesterModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { bindActionCreators } from "redux";
+import {selectWebAdminRequests} from "../../../../reducers"
 import "../../styles.css";
 
 class PhotoTable extends Component {
@@ -143,7 +144,7 @@ class PhotoTable extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  requests: state.webadmin.requests,
+  requests: selectWebAdminRequests(state),
 });
 
 const mapActionsToProps = (dispatch) =>

@@ -2,7 +2,8 @@ import React, { useState, useEffect, Fragment } from "react";
 import { Redirect, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { gallery, site_misc } from "../../actions";
-import { selectPhotos } from "../../reducers";
+import {  selectPhotos,
+          selectAlbumResult } from "../../reducers";
 import { Helmet } from "react-helmet";
 import {
   Container,
@@ -221,7 +222,7 @@ const LandingPage = (props) => {
 
 const mapStateToProps = (state) => ({
   photos: selectPhotos(state),
-  collections: state.albumcollection.albums.results,
+  collections: selectAlbumResult(state),
 });
 
 const mapActionsToProps = (dispatch) =>

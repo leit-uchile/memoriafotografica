@@ -9,6 +9,9 @@ import { Pagination } from "../../../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { bindActionCreators } from "redux";
+import {selectMetaDataAllIptcs,
+        selectMetaDataGeneralTags,
+        selectSiteMiscMetaDataHelpDiscloure} from "../../../../reducers"
 import "../styles.css";
 
 /**
@@ -199,9 +202,9 @@ const Modify = ({
 };
 
 const mapStateToProps = (state) => ({
-  metadata: state.metadata.general_tags,
-  iptcs: state.metadata.all_iptcs,
-  metadataHelp: state.site_misc.metadataHelpDisclosure,
+  metadata: selectMetaDataGeneralTags(state),
+  iptcs: selectMetaDataAllIptcs(state),
+  metadataHelp: selectSiteMiscMetaDataHelpDiscloure(state),
 });
 
 const mapActionsToProps = (dispatch) =>

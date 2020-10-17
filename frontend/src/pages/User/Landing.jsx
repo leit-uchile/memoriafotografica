@@ -7,6 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet";
 import { bindActionCreators } from "redux";
+import { selectUserPhotos,
+         selectUserComments,
+         selectUserAlbums,} from "../../reducers";
 
 class Landing extends Component {
   constructor(props) {
@@ -119,9 +122,9 @@ class Landing extends Component {
 
 const mapStateToProps = (state) => ({
   data: {
-    photos: state.user.photos,
-    comments: state.user.comments,
-    albums: state.user.albums,
+    photos: selectUserPhotos(state),
+    comments: selectUserComments(state),
+    albums:  selectUserAlbums(state),
   },
   user: state.user.userData,
 });

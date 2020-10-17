@@ -16,6 +16,8 @@ import { connect } from 'react-redux';
 import { metadata } from '../../../../actions';
 import { LeitSpinner } from '../../../../components';
 import { bindActionCreators } from 'redux';
+import {selectMetaDataAllIptcs,
+        selectMetaDataBatch} from "../../../../reducers"
 import '../styles.css';
 
 /**
@@ -238,8 +240,8 @@ const Categorize = ({
 };
 
 const mapStateToProps = (state) => ({
-  iptcs: state.metadata.all_iptcs,
-  batch: state.metadata.batch,
+  iptcs: selectMetaDataAllIptcs(state),
+  batch: selectMetaDataBatch(state),
 });
 
 const mapActionsToProps = (dispatch) =>

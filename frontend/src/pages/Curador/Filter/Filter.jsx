@@ -17,6 +17,10 @@ import {
   selectPhotos,
   selectPhotosCount,
   selectErrors,
+  selectSiteMiscCuradorRefresh,
+  selectSiteMiscCuradorLoading,
+  selectWebAdminAllTags,
+  selectUserIsAuthenticated,
 } from "../../../reducers";
 
 class Filter extends Component {
@@ -169,12 +173,12 @@ class Filter extends Component {
 
 const mapStateToProps = (state) => ({
   errors: selectErrors(state),
-  isAuthenticated: state.user.isAuthenticated,
-  meta: state.webadmin.all_tags,
+  isAuthenticated: selectUserIsAuthenticated(state),
+  meta: selectWebAdminAllTags(state),
   photos: selectPhotos(state),
   photoCount: selectPhotosCount(state),
-  loading: state.site_misc.curador.loading,
-  refresh: state.site_misc.curador.refresh,
+  loading: selectSiteMiscCuradorLoading(state),
+  refresh: selectSiteMiscCuradorRefresh(state),
 });
 
 const mapActionsToProps = (dispatch) =>

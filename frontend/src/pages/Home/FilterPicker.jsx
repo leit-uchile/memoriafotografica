@@ -16,6 +16,8 @@ import Categories from "./Categories";
 import { connect } from "react-redux";
 import { gallery } from "../../actions";
 import { bindActionCreators } from "redux";
+import { selectCats,
+          selectSiteMiscSearchMetaIDS}  from "../../reducers"
 import "./filterPicker.css";
 
 /**
@@ -302,8 +304,8 @@ const FilterPicker = ({
 };
 
 const mapStateToProps = (state) => ({
-  cats: state.categories,
-  filters: state.site_misc.searchMetaIDs,
+  cats: selectCats(state),
+  filters: selectSiteMiscSearchMetaIDS(state),
 });
 
 const mapActionstoProps = (dispatch) =>

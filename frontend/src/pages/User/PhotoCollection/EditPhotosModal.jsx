@@ -23,6 +23,11 @@ import ReactTags from "react-tag-autocomplete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { bindActionCreators } from "redux";
+import { selectPhotosDetails,
+         selectPhotosUpdatedPhoto,
+         selectMetaDataAllTags,
+         selectMetaDataCreating,
+         selectMetaDataNewIds,} from "../../../reducers";
 
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },
@@ -347,11 +352,11 @@ const EditPhotosModal = ({
 };
 
 const mapStateToProps = (state) => ({
-  photoInfo: state.photos.details,
-  tags: state.metadata.all_tags,
-  creating: state.metadata.creating,
-  newIds: state.metadata.newIds,
-  updatedPhoto: state.photos.updatedPhoto,
+  photoInfo: selectPhotosDetails(state),
+  tags: selectMetaDataAllTags(state),
+  creating: selectMetaDataCreating(state),
+  newIds: selectMetaDataNewIds(state),
+  updatedPhoto: selectPhotosUpdatedPhoto(state),
 });
 
 const mapActionsToProps = (dispatch) =>

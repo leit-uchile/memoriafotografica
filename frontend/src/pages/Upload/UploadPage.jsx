@@ -11,6 +11,12 @@ import { Helmet } from "react-helmet";
 import StepWizard from "react-step-wizard";
 import "./uploadPage.css";
 import { bindActionCreators } from "redux";
+import {selectUserIsAuthenticated,
+        selectUpload,
+        selectAlbumCollections,
+        selectMetaDataGeneralTagsResult,
+        selectMetaData,
+       } from "../../reducers";
 
 /**
  * Upload page
@@ -301,11 +307,11 @@ class UploadPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.user.isAuthenticated,
-  upload: state.upload,
-  album: state.albumcollection,
-  meta: state.metadata.general_tags.results,
-  metadataCreation: state.metadata,
+  isAuthenticated: selectUserIsAuthenticated(state) ,
+  upload: selectUpload(state),
+  album: selectAlbumCollections(state),
+  meta: selectMetaDataGeneralTagsResult(state),
+  metadataCreation: selectMetaData(state),
 });
 
 const mapActionsToProps = (dispatch) =>

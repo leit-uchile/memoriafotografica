@@ -6,6 +6,8 @@ import { LeitSpinner } from "../../../components";
 import Landing from "../Landing";
 import { bindActionCreators } from "redux";
 import "./styles.css";
+import { selectUserPublicUser,
+         selectUserPublicLoading} from "../../../reducers";
 
 const PublicProfile = ({
   match,
@@ -60,8 +62,8 @@ const PublicProfile = ({
 };
 
 const mapStateToProps = (state) => ({
-  publicUser: state.user.publicUser,
-  loading: state.user.publicLoading,
+  publicUser: selectUserPublicUser(state),
+  loading: selectUserPublicLoading(state),
 });
 
 const mapActionsToProps = (dispatch) =>

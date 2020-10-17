@@ -45,3 +45,9 @@ export const selectAlbums = (state) => state.albumcollection.albums;
 export const selectAlbumsLoading = (state) => state.albumcollection.loading;
 
 export const selectAlbumsData = (state) => state.albumcollection.albumData;
+
+export const selectAlbumResult = (state) => state.albumcollection.albums.results;
+
+export const selectAlbumCollections = (state) => state.albumcollection;
+
+export const selectAlbumCollectionAlbumData = (state) => state.albumcollection.albumData;

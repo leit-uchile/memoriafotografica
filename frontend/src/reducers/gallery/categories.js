@@ -78,3 +78,5 @@ export const selectCategoriesUpdatePhotos = (state) =>
 export const selectCategoriesTotal = (state) => state.categories.total;
 
 export const selectNewCategories = (state) => state.categories.newCat;
+
+export const selectCats = (state) => state.categories;

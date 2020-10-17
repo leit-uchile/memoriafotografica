@@ -9,6 +9,8 @@ import ContactPhoneModal from "./ContactPhoneModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { bindActionCreators } from "redux";
+import {selectWebAdminMessages,
+        selectWebAdminUpdateMessage} from "../../../../reducers"
 import "../../styles.css";
 
 /**
@@ -148,8 +150,8 @@ const ContactTable = ({
 };
 
 const mapStateToProps = (state) => ({
-  messages: state.webadmin.messages,
-  updatedMessage: state.webadmin.updatedMessage,
+  messages: selectWebAdminMessages(state),
+  updatedMessage: selectWebAdminUpdateMessage(state),
 });
 
 const mapActionsToProps = (dispatch) =>

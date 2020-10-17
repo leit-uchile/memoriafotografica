@@ -5,6 +5,8 @@ import { user } from "../../../actions";
 import { LeitSpinner } from "../../../components";
 import { bindActionCreators } from "redux";
 import UserAlbums from "./UserAlbums";
+import { selectUserPublicLoading,
+         selectUserPublicUser } from "../../../reducers";
 
 const PublicAlbums = ({ match, publicLoading, publicUser, loadPublicUser }) => {
   useEffect(() => {
@@ -28,8 +30,8 @@ const PublicAlbums = ({ match, publicLoading, publicUser, loadPublicUser }) => {
 };
 
 const mapStateToProps = (state) => ({
-  publicLoading: state.user.publicLoading,
-  publicUser: state.user.publicUser,
+  publicLoading: selectUserPublicLoading(state),
+  publicUser: selectUserPublicUser(state),
 });
 
 const mapActionsToProps = (dispatch) =>

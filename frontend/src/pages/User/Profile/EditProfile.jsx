@@ -26,6 +26,7 @@ import UserPicture from "../../../components/UserPicture";
 import CropPhoto from "../../../components/CropPhoto";
 import "./styles.css";
 import { bindActionCreators } from "redux";
+import { selectUserData} from "../../../reducers";
 
 class EditProfile extends Component {
   constructor(props) {
@@ -447,7 +448,7 @@ class EditProfile extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.user.userData,
+  user: selectUserData(state),
 });
 
 const mapActionsToProps = (dispatch) =>

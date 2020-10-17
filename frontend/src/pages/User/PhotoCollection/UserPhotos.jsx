@@ -9,6 +9,11 @@ import { Helmet } from "react-helmet";
 import Gallery from "react-photo-gallery";
 import { bindActionCreators } from "redux";
 import "../styles.css";
+import {   selectUserPhotos,
+            selectUserData,
+            selectUserPublicUser,
+            selectPhotosUpdatedPhoto,
+            selectPhotosRefresh,} from "../../../reducers";
 
 class UserPhotos extends Component {
   constructor(props) {
@@ -173,11 +178,11 @@ class UserPhotos extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  photos: state.user.photos,
-  user: state.user.userData,
-  publicUser: state.user.publicUser,
-  updatedPhoto: state.photos.updatedPhoto,
-  refresh: state.photos.refresh,
+  photos: selectUserPhotos(state),
+  user: selectUserData(state),
+  publicUser: selectUserPublicUser(state),
+  updatedPhoto: selectPhotosUpdatedPhoto(state),
+  refresh: selectPhotosRefresh(state),
 });
 
 const mapActionsToProps = (dispatch) =>

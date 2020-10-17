@@ -7,6 +7,8 @@ import uuid4 from "uuid";
 import { Redirect } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import "../styles.css";
+import { selectUserData,
+         selectUserAlbums,} from "../../../reducers";
 
 const UserAlbums = ({
   isPublic,
@@ -110,8 +112,8 @@ const UserAlbums = ({
 };
 
 const mapStateToProps = (state) => ({
-  user: state.user.userData,
-  albums: state.user.albums,
+  user: selectUserData(state),
+  albums: selectUserAlbums(state),
 });
 
 const mapActionsToProps = (dispatch) =>

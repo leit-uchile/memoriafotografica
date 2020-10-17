@@ -21,6 +21,7 @@ import { faChevronCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import uuid4 from "uuid";
 import { webadmin } from "../../../../actions";
 import { bindActionCreators } from "redux";
+import {selectWebAdminRequestDetail} from "../../../../reducers"
 
 const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
   const [rows, setRows] = useState([]);
@@ -169,7 +170,7 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
 };
 
 const mapStateToProps = (state) => ({
-  request: state.webadmin.requestDetail,
+  request: selectWebAdminRequestDetail(state),
 });
 
 const mapActionsToProps = (dispatch) =>

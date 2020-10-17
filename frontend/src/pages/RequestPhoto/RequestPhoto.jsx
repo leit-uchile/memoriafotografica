@@ -28,6 +28,8 @@ import {
 import { getPermissionLogo } from "../../utils";
 import { bindActionCreators } from "redux";
 import "./requestPhoto.css";
+import {selectWebAdminRequestPhotos,
+        selectWebAdminRequested,} from "../../reducers";
 
 var Requested = ({ list, removeRequestPhoto }) => (
   <ListGroup>
@@ -316,8 +318,8 @@ class RequestPhoto extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  requestedPhotos: state.webadmin.requestedPhotos,
-  requested: state.webadmin.requested,
+  requestedPhotos: selectWebAdminRequestPhotos(state),
+  requested: selectWebAdminRequested(state),
 });
 
 const mapActionsToProps = (dispatch) =>

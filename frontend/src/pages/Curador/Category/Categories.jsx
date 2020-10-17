@@ -26,6 +26,8 @@ import {
   selectCategoriesTotal,
   selectCategoriesError,
   selectNewCategories,
+  selectSiteMiscCuradorLoading,
+  selectSiteMiscCuradorRefresh
 } from "../../../reducers";
 
 class Categories extends Component {
@@ -210,8 +212,8 @@ class Categories extends Component {
 const mapStateToProps = (state) => ({
   cats: selectCategories(state),
   total: selectCategoriesTotal(state),
-  loading: state.site_misc.curador.loading,
-  refresh: state.site_misc.curador.refresh,
+  loading: selectSiteMiscCuradorLoading(state) ,
+  refresh: selectSiteMiscCuradorRefresh(state),
   newCat: selectNewCategories(state),
   catError: selectCategoriesError(state),
 });

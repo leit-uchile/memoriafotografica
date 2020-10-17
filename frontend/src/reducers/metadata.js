@@ -109,3 +109,23 @@ export default function metadata(state = initialState, action) {
       return state;
   }
 }
+
+export const selectMetaDataGeneralTags = (state) => state.metadata.general_tags;
+
+export const selectMetaDataAllIptcs = (state) => state.metadata.all_iptcs;
+
+export const selectMetaDataBatch = (state) => state.metadata.batch;
+
+export const selectMetaDataOpsCompleted = (state) => state.metadata.opsCompleted;
+
+export const selectMetaDataOpsErrors = (state) => state.metadata.opsErrors;
+
+export const selectMetaDataGeneralTagsResult = (state) => state.metadata.general_tags.results;
+
+export const selectMetaData = (state) => state.metadata;
+
+export const selectMetaDataAllTags = (state) => state.metadata.all_tags;
+
+export const selectMetaDataCreating = (state) => state.metadata.creating;
+
+export const selectMetaDataNewIds = (state) => state.metadata.newIds;

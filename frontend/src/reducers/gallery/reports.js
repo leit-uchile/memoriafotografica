@@ -36,3 +36,8 @@ export default function curador(state = initialState, action) {
       return state;
   }
 }
+
+
+export const selectReportReport = (state) => state.reports.reports;
+
+export const selectReportUpdate = (state) => state.reports.reportUpdate;

@@ -15,6 +15,9 @@ import { connect } from "react-redux";
 import { metadata } from "../../../../actions";
 import { LeitSpinner } from "../../../../components";
 import { bindActionCreators } from "redux";
+import { selectMetaDataOpsErrors,
+          selectMetaDataOpsCompleted,
+          } from "../../../../reducers"
 import "./modifyModal.css";
 
 const ModifyModal = ({
@@ -230,8 +233,8 @@ const ModifyModal = ({
 };
 
 const mapStateToProps = (state) => ({
-  completed: state.metadata.opsCompleted,
-  errors: state.metadata.opsErrors,
+  completed: selectMetaDataOpsCompleted(state),
+  errors: selectMetaDataOpsErrors(state),
 });
 
 const mapActionsToProps = (dispatch) =>

@@ -3,6 +3,8 @@ import {
   selectPhotos,
   selectPhotosDetails,
   selectPhotosError,
+  selectSiteMiscHomeSelectedIndex,
+  selectSiteMiscHomephotoPagination,
 } from "../../reducers";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
@@ -290,8 +292,8 @@ const mapStateToProps = (state) => ({
   photoInfo: selectPhotosDetails(state),
   suggestions: selectPhotos(state),
   errors: selectPhotosError(state),
-  photoIndex: state.site_misc.home.selectedIndex,
-  photoPage: state.site_misc.home.photoPagination,
+  photoIndex: selectSiteMiscHomeSelectedIndex(state),
+  photoPage: selectSiteMiscHomephotoPagination(state),
 });
 
 const mapActionsToProps = (dispatch) =>

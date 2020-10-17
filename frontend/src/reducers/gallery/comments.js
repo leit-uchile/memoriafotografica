@@ -53,3 +53,5 @@ export const selectComments = (state) => {
     return [];
   }
 };
+
+export const selectCommentsLoaded = (state) => state.comments.commentsLoaded;

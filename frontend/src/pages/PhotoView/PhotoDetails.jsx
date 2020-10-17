@@ -4,7 +4,9 @@ import { connect } from "react-redux";
 import { Button, Row, Col, Container } from "reactstrap";
 import { Helmet } from "react-helmet";
 
-import { selectPhotos } from "../../reducers";
+import { selectPhotos,
+          selectPhotosDetails,
+          selectSiteMiscHomeSelectedIndex} from "../../reducers";
 import ReportModal from "../../components/ReportModal";
 import CommentHandler from "./CommentHandler";
 import Photo from "../../components/Photo";
@@ -426,9 +428,9 @@ const styles = {
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-  photoInfo: state.photos.details,
+  photoInfo: selectPhotosDetails(state),
   suggestions: selectPhotos(state),
-  photoIndex: state.site_misc.home.selectedIndex,
+  photoIndex: selectSiteMiscHomeSelectedIndex(state),
 });
 
 const mapActionsToProps = (dispatch) => ({

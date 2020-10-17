@@ -12,6 +12,9 @@ import { gallery } from "../../../actions";
 import { LeitSpinner } from "../../../components";
 import { bindActionCreators } from "redux";
 import ReportsTable from "./ReportsTable";
+import {selectReportReport,
+        selectReportUpdate,
+        selectSiteMiscCuradorLoading} from "../../../reducers"
 
 /**
  * Load reports and call actions to filter them.
@@ -58,9 +61,9 @@ const Reports = ({ loading, reports, getReports, updatedReports }) => {
 };
 
 const mapStateToProps = (state) => ({
-  loading: state.site_misc.curador.loading,
-  reports: state.reports.reports,
-  updatedReports: state.reports.reportUpdate,
+  loading: selectSiteMiscCuradorLoading(state),
+  reports: selectReportReport(state),
+  updatedReports: selectReportUpdate(state),
 });
 
 const mapActionsToProps = (dispatch) =>

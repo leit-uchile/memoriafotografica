@@ -25,6 +25,7 @@ import {
   selectCategoriesError,
   selectCategoriesDetails,
   selectCategoriesUpdatePhotos,
+  selectMetaDataGeneralTags
 } from "../../../reducers";
 
 const Category_Add = ({
@@ -319,7 +320,7 @@ const mapStateToProps = (state) => ({
   catError: selectCategoriesError(state),
   catDetails: selectCategoriesDetails(state),
   updatedPhotos: selectCategoriesUpdatePhotos(state),
-  tags: state.metadata.general_tags,
+  tags: selectMetaDataGeneralTags(state),
 });
 
 const mapActionsToProps = (dispatch) =>

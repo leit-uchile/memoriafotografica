@@ -196,3 +196,24 @@ export const selectErrors = (state) => {
   }
   return errors;
 };
+
+export const selectUserIsAuthenticated = (state) => state.user.isAuthenticated;
+
+export const selectUserToken = (state) => state.user.token;
+
+export const selectUserData = (state) => state.user.userData;
+
+export const selectUserActivate = (state) => state.user.activated;
+
+export const selectUserRegisterSucces = (state) => state.user.registerSuccess;
+
+export const selectUserPhotos = (state) => state.user.photos;
+
+export const selectUserComments = (state) => state.user.comments;
+
+export const selectUserAlbums = (state) => state.user.albums;
+
+export const selectUserPublicUser = (state) => state.user.publicUser;
+
+export const selectUserPublicLoading = (state) => state.user.publicLoading;
+

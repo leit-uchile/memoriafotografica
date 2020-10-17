@@ -31,6 +31,8 @@ import { userRolTranslation, userTypeTranslation } from "./utils";
 import "./userRouting.css";
 import CollectionView from "../Collections/CollectionView";
 import { bindActionCreators } from "redux";
+import { selectUserData } from "../../reducers";
+
 /**
  * TODO:
  * arreglar estilo de nav
@@ -247,7 +249,7 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
 };
 
 const mapStateToProps = (state) => ({
-  user: state.user.userData,
+  user: selectUserData(state),
 });
 
 const mapActionsToProps = (dispatch) =>

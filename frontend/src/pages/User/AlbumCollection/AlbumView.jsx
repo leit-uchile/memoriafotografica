@@ -9,6 +9,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import { bindActionCreators } from "redux";
 import "./styles.css";
+import {selectAlbumsLoading,
+        selectAlbumCollectionAlbumData,} from "../../../reducers";
 
 /**
  * Display album with pagination and individual image links
@@ -154,8 +156,8 @@ const AlbumView = ({
 };
 
 const mapStateToProps = (state) => ({
-  loading: state.albumcollection.loading,
-  albumData: state.albumcollection.albumData,
+  loading: selectAlbumsLoading(state),
+  albumData: selectAlbumCollectionAlbumData(state),
 });
 
 const mapActionsToProps = (dispatch) =>

@@ -86,3 +86,24 @@ export default function site_misc(state = initialState, action) {
       return { ...state };
   }
 }
+
+
+export const selectSiteMiscCuradorLoading = (state) => state.site_misc.curador.loading;
+
+export const selectSiteMiscHomeLoading = (state) => state.site_misc.home.loading;
+
+export const selectSiteMiscCuradorRefresh = (state) => state.site_misc.curador.refresh;
+
+export const selectSiteMiscMetaDataHelpDiscloure = (state) => state.site_misc.metadataHelpDisclosure;
+
+export const selectSiteMiscSearchMetaIDS = (state) => state.site_misc.searchMetaIDs;
+
+export const selectSiteMiscLoginSuccesRoute = (state) => state.site_misc.loginSuccessRoute;
+
+export const selectSiteMiscHomeSelectedIndex = (state) => state.site_misc.home.selectedIndex;
+
+export const selectSiteMiscHomephotoPagination = (state) => state.site_misc.home.photoPagination;
+
+export const selectSiteMiscCurrentRoute = (state) => state.site_misc.currentRoute;
+
+export const selectSiteMiscUploadDisclosureSet = (state) => state.site_misc.uploadDisclosureSet;

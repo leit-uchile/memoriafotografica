@@ -7,7 +7,9 @@ import { Redirect, Link } from "react-router-dom";
 import StepWizard from "react-step-wizard";
 import { LeitSpinner } from "../../components";
 import { bindActionCreators } from "redux";
-import { selectErrors } from "../../reducers";
+import { selectErrors,
+          selectUserIsAuthenticated,
+          selectUserRegisterSucces, } from "../../reducers";
 
 const FailedRegistration = (props) => (
   <Container>
@@ -158,8 +160,8 @@ class Register extends Component {
 
 const mapStateToProps = (state) => ({
   errors: selectErrors(state),
-  isAuthenticated: state.user.isAuthenticated,
-  registerSuccess: state.user.registerSuccess,
+  isAuthenticated: selectUserIsAuthenticated(state),
+  registerSuccess: selectUserRegisterSucces(state),
 });
 
 const mapActionsToProps = (dispatch) =>
