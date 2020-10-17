@@ -25,7 +25,8 @@ import {
   selectCategoriesError,
   selectCategoriesDetails,
   selectCategoriesUpdatePhotos,
-  selectMetaDataGeneralTags
+  selectMetaDataGeneralTags,
+  selectSiteMiscCuradorLoading,
 } from "../../../reducers";
 
 const Category_Add = ({
@@ -316,7 +317,7 @@ const Category_Add = ({
 const mapStateToProps = (state) => ({
   photos: selectPhotos(state),
   photo_count: selectPhotosCount(state),
-  loading: state.site_misc.curador.loading,
+  loading: selectSiteMiscCuradorLoading(state),
   catError: selectCategoriesError(state),
   catDetails: selectCategoriesDetails(state),
   updatedPhotos: selectCategoriesUpdatePhotos(state),

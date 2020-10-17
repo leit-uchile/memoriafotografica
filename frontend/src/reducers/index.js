@@ -42,7 +42,7 @@ export const selectPhotosRefresh = (state) => fromPhotos.selectPhotosRefresh(sta
 
 
 // Categories
-export const selectCats = (state) => selectCats(state);
+export const selectCats = (state) => fromCategories.selectCats(state);
 
 export const selectCategories = (state) => fromCategories.selectCategories(state);
 
@@ -118,8 +118,9 @@ export const selectSiteMiscHomeSelectedIndex = (state) => fromSiteMisc.selectSit
 
 export const selectSiteMiscUploadDisclosureSet = (state) => fromSiteMisc.selectSiteMiscUploadDisclosureSet(state);
 
-//WebAdmin
+export const selectSiteMiscAlerts = (state) => fromSiteMisc.selectSiteMiscAlerts(state);
 
+//WebAdmin
 export const selectWebAdminMessages = (state) => fromWebAdmin.selectWebAdminMessages(state);
 
 export const selectWebAdminUpdateMessage = (state) => fromWebAdmin.selectWebAdminUpdateMessage(state);
@@ -143,7 +144,6 @@ export const selectWebAdminRequested = (state) => fromWebAdmin.selectWebAdminReq
 export const selectWebAdminRequestPhotos = (state) => fromWebAdmin.selectWebAdminRequestPhotos(state);
 
 //Users
-
 export const selectUserIsAuthenticated = (state) => fromUser.selectUserIsAuthenticated(state);
 
 export const selectErrors = (state) => fromUser.selectErrors(state);
@@ -168,16 +168,17 @@ export const selectUserPublicLoading = (state) => fromUser.selectUserPublicLoadi
 
 
 //Report
-
 export const selectReportReport = (state) => fromReports.selectReportReport(state);
 
-export const selectReportUpdate = (state) => fromReports.selectReportReport(state);
+export const selectReportUpdate = (state) => fromReports.selectReportUpdate(state);
+
+export const selectReportPhotoReportSent = (state) => fromReports.selectReportPhotoReportSent(state);
+
+export const selectReportComplete = (state) => fromReports.selectReportComplete(state);
 
 
 //Metrics
-
 export const selectMetrics = (state) => fromMetrics.selectMetrics(state);
 
 //Upload
-
 export const selectUpload = (state) => fromUpload.selectUpload(state);

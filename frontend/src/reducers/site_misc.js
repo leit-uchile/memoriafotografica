@@ -107,3 +107,5 @@ export const selectSiteMiscHomephotoPagination = (state) => state.site_misc.home
 export const selectSiteMiscCurrentRoute = (state) => state.site_misc.currentRoute;
 
 export const selectSiteMiscUploadDisclosureSet = (state) => state.site_misc.uploadDisclosureSet;
+
+export const selectSiteMiscAlerts = (state) => state.site_misc.alerts;

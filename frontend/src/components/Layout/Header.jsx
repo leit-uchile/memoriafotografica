@@ -27,6 +27,8 @@ import {
   faSmileWink,
 } from "@fortawesome/free-solid-svg-icons";
 import "./header.css";
+import { selectUserIsAuthenticated,
+          selectSiteMiscCurrentRoute } from "../../reducers";
 
 const Header = ({ isAuth, currentRoute }) => {
   const [toggle, setToggle] = useState(false);
@@ -143,8 +145,8 @@ const Header = ({ isAuth, currentRoute }) => {
 
 const mapStateToProps = (state) => {
   return {
-    isAuth: state.user.isAuthenticated,
-    currentRoute: state.site_misc.currentRoute,
+    isAuth: selectUserIsAuthenticated(state),
+    currentRoute: selectSiteMiscCurrentRoute(state),
   };
 };
 

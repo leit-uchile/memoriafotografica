@@ -41,3 +41,7 @@ export default function curador(state = initialState, action) {
 export const selectReportReport = (state) => state.reports.reports;
 
 export const selectReportUpdate = (state) => state.reports.reportUpdate;
+
+export const selectReportPhotoReportSent = (state) => state.reports.photoReportSent;
+
+export const selectReportComplete = (state) => state.reports.reportComplete;

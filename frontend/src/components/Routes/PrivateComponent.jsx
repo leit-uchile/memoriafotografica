@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import { site_misc } from "../../actions";
 import { connect } from "react-redux";
+import { selectUserIsAuthenticated,} from "../../reducers";
 
 const PrivateComponent = ({ component: Component, setLoginSuccessRoute, ...rest }) => {
 
@@ -15,7 +16,7 @@ const PrivateComponent = ({ component: Component, setLoginSuccessRoute, ...rest 
 };
 
 const mapStateToProps = state => ({
-  isAuthenticated: state.user.isAuthenticated
+  isAuthenticated: selectUserIsAuthenticated(state)
 });
 
 const mapActionToProps = dispatch => ({
