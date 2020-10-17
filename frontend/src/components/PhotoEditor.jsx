@@ -3,6 +3,7 @@ import Gallery from "react-photo-gallery";
 import { Container, Row, Col } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faEye, faPencilAlt, faTimes } from "@fortawesome/free-solid-svg-icons";
+import PropTypes from 'prop-types';
 import "./photoEditor.css";
 
 /**
@@ -147,8 +148,7 @@ const PhotoEditor = ({ photos, selectAll, ...props }) => {
   }
   const [viewLink, setViewLink] = useState(props.viewLink === undefined ? true : (props.viewLink))
   const [selectIcon, setSelectIcon] = useState(props.selectIcon === undefined ? "pen" : checkIcon(props.selectIcon))
-  const [allButton, setAllButton] = useState(props.selectAllBtn === undefined ? true : (props.selectAllBtn))
-  console.log(allButton)
+  const [allButton, setAllButton] = useState(props.selectAllBtn === undefined ? true : (props.selectAllBtn))  
   const imageRenderer = useCallback(
     ({ index, left, top, key, photo, onClick}) => (
       <SelectedImage
@@ -186,6 +186,12 @@ const PhotoEditor = ({ photos, selectAll, ...props }) => {
       </Row>
     </Container>
   );
+};
+
+PhotoEditor.propTypes = {
+  viewLink : PropTypes.bool,
+  selectIcon : PropTypes.oneOf(['pen', 'check']),
+  selectAllBtn : PropTypes.bool
 };
 
 export default PhotoEditor;
