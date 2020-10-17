@@ -213,14 +213,14 @@ const UploadUnregister = ({
             />
           </Col>
         </FormGroup>
+        <ReCAPTCHA
+          //size="invisible"
+          sitekey={captchaKey}
+          ref={(el) => {
+            recaptchaRef = el;
+          }}
+        />
         <ButtonGroup style={{ minWidth: "20em" }}>
-          <ReCAPTCHA
-            //size="invisible"
-            sitekey={captchaKey}
-            ref={(el) => {
-              recaptchaRef = el;
-            }}
-          />
           <Button onClick={previousStep}>
             <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
           </Button>
