@@ -31,8 +31,6 @@ class VerifyTokenAPI(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            ##TODO -Joaquin instead of returning true, it might be better to return the guest token instead.
-            ## Quiza devolver True la clientValue captcha y un token guest?
             return Response({'success': True}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
