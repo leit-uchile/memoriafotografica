@@ -13,11 +13,18 @@ import { gallery } from "../../../actions";
  * @param {Array} reports
  * @param {Function} updateReport
  */
-const ReportsTable = ({ reports, updateReport, censureContent}) => {
-  
-  const resolveButton = rep => (
-    (rep.resolved) ? <b>{rep.resolution_details || "-"}</b> : (<ResolveModal buttonLabel="Acciones" report={rep} updateReport={updateReport} censureContent={censureContent}/>)
-  );
+const ReportsTable = ({ reports, updateReport, censureContent }) => {
+  const resolveButton = (rep) =>
+    rep.resolved ? (
+      <b>{rep.resolution_details || "-"}</b>
+    ) : (
+      <ResolveModal
+        buttonLabel="Acciones"
+        report={rep}
+        updateReport={updateReport}
+        censureContent={censureContent}
+      />
+    );
 
   return (
     <Table responsive striped>
@@ -33,11 +40,11 @@ const ReportsTable = ({ reports, updateReport, censureContent}) => {
         </tr>
       </thead>
       <tbody>
-        {reports.map(r =>
+        {reports.map((r) =>
           r.type === 1 ? (
             <ReportRow
               report={r}
-              render={content => (
+              render={(content) => (
                 <p>
                   Ver perfil de{" "}
                   <Link
@@ -51,9 +58,9 @@ const ReportsTable = ({ reports, updateReport, censureContent}) => {
           ) : r.type === 2 ? (
             <ReportRow
               report={r}
-              render={content => (
+              render={(content) => (
                 <Fragment>
-                  <img src={content.thumbnail} height="100px" alt="content"/>
+                  <img src={content.thumbnail} height="100px" alt="content" />
                   <div>
                     <Link to={`/photo/${content.id}`}>Ver imagen</Link>
                   </div>
@@ -65,7 +72,7 @@ const ReportsTable = ({ reports, updateReport, censureContent}) => {
           ) : (
             <ReportRow
               report={r}
-              render={content => (
+              render={(content) => (
                 <Fragment>
                   <p>{content.content}</p>
                   <Link to={`/curador/comment/${content.id}/`}>
@@ -83,11 +90,11 @@ const ReportsTable = ({ reports, updateReport, censureContent}) => {
   );
 };
 
-const mapStateToProps = state => ({});
+const mapStateToProps = (state) => ({});
 
-const mapActionsToProps = dispatch => ({
-  updateReport: rep => dispatch(gallery.reports.updateReport(rep)),
-  censureContent: rep => dispatch(gallery.reports.censureContent(rep))
+const mapActionsToProps = (dispatch) => ({
+  updateReport: (rep) => dispatch(gallery.reports.updateReport(rep)),
+  censureContent: (rep) => dispatch(gallery.reports.censureContent(rep)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(ReportsTable);

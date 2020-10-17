@@ -1,55 +1,50 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Form,
   FormGroup,
   Label,
-  Input,
-  Row,
   Col,
 } from "reactstrap";
 import { connect } from "react-redux";
-import { gallery, user } from "../../../actions";
-import LeitSpinner from "../../../components/Layout/LeitSpinner";
+import { gallery } from "../../../actions";
 import EditUserModal from "./EditUserModal";
 import EditPhotosModal from "../../User/PhotoCollection/EditPhotosModal";
-import EditCommentModal from "../../User/PhotoCollection/EditPhotosModal";
+import EditCommentModal from "./EditCommentModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEye,
   faTrashAlt,
-  faCamera,
   faPencilAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import "./resolveModal.css";
 
-const ResolveModal = (props) => {
-  const {
-    buttonLabel,
-    className,
-    report,
-    censureContent,
-    updateReport,
-    editUser,
-    editPhoto,
-  } = props;
-
+const ResolveModal = ({
+  buttonLabel,
+  className,
+  report,
+  censureContent,
+  updateReport,
+  editReport,
+}) => {
   const [modal, setModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [spinner, setSpinner] = useState(true);
-  //const [shouldMail, setShouldMail] = useState(true)
-  const [newreport, setNewreport] = useState({ ...report });
+  const [newreport, setNewreport] = useState({});
 
-  const toggle = () => {
-    setNewreport(report);
-    setLoading(false);
-    setModal(!modal);
-  };
+  // const toggle = () => {
+  //   setNewreport(report);
+  //   setLoading(false);
+  //   setModal(!modal);
+  // };
+
+  useEffect(() => {
+    let info = { ...report };
+    setNewreport(info);
+  }, [report, modal]);
 
   const discardReport = () => {
     setLoading(!loading);
@@ -58,7 +53,7 @@ const ResolveModal = (props) => {
     discardedReport.resolution_details = "descarted";
     updateReport(discardedReport).then((r) => {
       setLoading(!loading);
-      window.location.reload();
+      //window.location.reload();
     });
   };
 
@@ -66,15 +61,9 @@ const ResolveModal = (props) => {
     setLoading(!loading);
     censureContent(newreport).then((response) => {
       setLoading(!loading);
-      window.location.reload();
+      //window.location.reload();
     });
   };
-
-  // const editAndSave = (editedPhoto) => {
-  //   editPhoto(newreport, editedPhoto).then((r) => {
-  //     window.location.reload();
-  //   });
-  // };
 
   const editOption =
     newreport.type === 1 ? (
@@ -82,100 +71,95 @@ const ResolveModal = (props) => {
         report={newreport}
         isOpen={editModal}
         handleToggle={() => setEditModal(!editModal)}
-        onSend={(newData) => editUser(newData)}
+        editUser={(newData) => editReport(newreport, newData)}
       />
     ) : newreport.type === 2 ? (
       <EditPhotosModal
         photosId={[newreport.content_id.id]}
         isOpen={editModal}
         handleToggle={() => setEditModal(!editModal)}
-        editPhoto={(photoId, newData) => editPhoto(newreport, newData)}
+        editPhoto={(photoId, newData) => editReport(newreport, newData)}
         isCurator={true}
       />
     ) : (
       <EditCommentModal
-        comment={newreport}
+        report={newreport}
         isOpen={editModal}
         handleToggle={() => setEditModal(!editModal)}
+        editComment={(comment) => editReport(newreport, comment)}
       />
     );
 
-  const modalContent = (
-    <Fragment>
+  return (
+    <div>
+      <Button color="danger" onClick={setModal}>
+        {buttonLabel}
+      </Button>
       <Modal isOpen={modal} toggle={() => setModal()} size={"lg"}>
         <ModalHeader toggle={() => setModal()}>Resolver Reporte</ModalHeader>
         <ModalBody>
           <Form>
-            <FormGroup>
-              <Row>
-                <Col>
-                  <Label>Descartar reporte</Label>
-                </Col>
-                <Col>
-                  <FontAwesomeIcon
-                    icon={faTrashAlt}
-                    onClick={discardReport}
-                    style={{
-                      color: "var(--leit-red)",
-                      cursor: "pointer",
-                      fontSize: "16px",
-                    }}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Label>Censurar</Label>
-                </Col>
-                <Col>
-                  <FontAwesomeIcon
-                    icon={faEye}
-                    onClick={censure}
-                    style={{
-                      color: "var(--leit-red)",
-                      cursor: "pointer",
-                      fontSize: "16px",
-                    }}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Label>Editar contenido reportado</Label>
-                </Col>
-                <Col>
-                  <FontAwesomeIcon
-                    icon={faPencilAlt}
-                    onClick={() => setEditModal(true)}
-                    style={{
-                      color: "var(--leit-red)",
-                      cursor: "pointer",
-                      fontSize: "16px",
-                    }}
-                  />
-                </Col>
-              </Row>
-              {editOption}
+            <FormGroup row>
+              <Label for="delete" sm={3}>
+                Descartar reporte{" "}
+              </Label>
+
+              <Col sm={9}>
+                <FontAwesomeIcon
+                  icon={faTrashAlt}
+                  onClick={discardReport}
+                  style={{
+                    color: "var(--leit-red)",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                  }}
+                />
+              </Col>
             </FormGroup>
+            <FormGroup row>
+              <Label for="censure" sm={3}>
+                Censurar{" "}
+              </Label>
+
+              <Col sm={9}>
+                <FontAwesomeIcon
+                  icon={faEye}
+                  onClick={censure}
+                  style={{
+                    color: "var(--leit-red)",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                  }}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label for="edit" sm={3}>
+                Editar contenido reportado{" "}
+              </Label>
+
+              <Col sm={9}>
+                <FontAwesomeIcon
+                  icon={faPencilAlt}
+                  onClick={() => setEditModal(true)}
+                  style={{
+                    color: "var(--leit-red)",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                  }}
+                />
+              </Col>
+            </FormGroup>
+            {editOption}
           </Form>
         </ModalBody>
       </Modal>
-    </Fragment>
-  );
-
-  return (
-    <div>
-      <Button color="danger" onClick={toggle}>
-        {buttonLabel}
-      </Button>
-      {modalContent}
     </div>
   );
 };
 
 const mapActionsToProps = (dispatch) => ({
-  editUser: (userInfo, doJSON = true) => dispatch(user.editProfile(userInfo, doJSON)),
-  editPhoto: (rep, cont) => dispatch(gallery.reports.updateContent(rep, cont)),
+  editReport: (rep, cont) => dispatch(gallery.reports.updateContent(rep, cont)),
 });
 
 export default connect(null, mapActionsToProps)(ResolveModal);

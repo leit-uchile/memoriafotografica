@@ -2,7 +2,6 @@ import React, { Fragment, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import {
   Button,
-  Row,
   Col,
   Modal,
   ModalHeader,
@@ -16,25 +15,26 @@ import {
 import { user } from "../../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import moment from "moment";
 
 const EditUserModal = ({
   report,
   isOpen,
   handleToggle,
-  onSend,
+  editUser,
   userDetails,
   getUser,
 }) => {
-  const [formData, setData] = useState({}); //nuevos datos
+  const [formData, setData] = useState({});
 
   useEffect(() => {
     getUser(report.content_id.id);
-  }, [report]);
+  }, [isOpen]);
 
   useEffect(() => {
-    let info = { ...userDetails };
+    let info = { ...report.content_id, upload_date: moment(Date(Date.now())) };
     setData(info);
-  }, [userDetails, report, isOpen]);
+  }, [userDetails]);
 
   const updateData = (e) =>
     setData({ ...formData, [e.target.name]: e.target.value });
@@ -42,87 +42,87 @@ const EditUserModal = ({
   const deletePhoto = () => {
     let info = { ...formData };
     delete info.avatar;
-    onSend(info);
+    editUser(info);
   };
   return (
     <div>
       <Modal isOpen={isOpen} toggle={() => handleToggle()} size={"lg"}>
-        <ModalHeader toggle={() => handleToggle()}>
-          Editar usuario
-        </ModalHeader>
+        <ModalHeader toggle={() => handleToggle()}>Editar usuario</ModalHeader>
         <ModalBody>
           <Form>
-            <FormGroup>
-              <Row>
-                <Col>
-                  <Label>Eliminar foto de perfil</Label>
-                </Col>
-                <Col>
-                  <FontAwesomeIcon
-                    icon={faCamera}
-                    style={{
-                      color: "var(--leit-red)",
-                      cursor: "pointer",
-                      fontSize: "16px",
-                    }}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Label>Nombre</Label>
-                </Col>
-                <Col>
-                  <Input
-                    type="text"
-                    placeholder="Nombre del usuario"
-                    name="first_name"
-                    onChange={updateData}
-                    value={formData.first_name}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Label>Apellido</Label>
-                </Col>
-                <Col>
-                  <Input
-                    type="text"
-                    placeholder="Apellido del usuario"
-                    name="last_name"
-                    onChange={updateData}
-                    value={formData.last_name}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Label>Rol</Label>
-                </Col>
-                <Col>
-                  <Input
-                    name="rol_type"
-                    type="select"
-                    onChange={updateData}
-                    value={formData.rol_type}
-                  >
-                    <option value="1">Alumno</option>
-                    <option value="2">Ex-Alumno</option>
-                    <option value="3">Acad&eacute;mico</option>
-                    <option value="4">Ex-Acad&eacute;mico</option>
-                    <option value="5">Funcionario</option>
-                    <option value="6">Externo</option>
-                  </Input>
-                </Col>
-              </Row>
+            <FormGroup row>
+              <Label for="photo" sm={3}>
+                Eliminar foto de perfil{" "}
+              </Label>
+
+              <Col sm={9}>
+                <FontAwesomeIcon
+                  icon={faCamera}
+                  style={{
+                    color: "var(--leit-red)",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                  }}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label for="first_name" sm={3}>
+                Nombre{" "}
+              </Label>
+
+              <Col sm={9}>
+                <Input
+                  type="text"
+                  placeholder="Nombre del usuario"
+                  name="first_name"
+                  onChange={updateData}
+                  value={formData.first_name}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label for="last_name" sm={3}>
+                Apellido{" "}
+              </Label>
+
+              <Col sm={9}>
+                <Input
+                  type="text"
+                  placeholder="Apellido del usuario"
+                  name="last_name"
+                  onChange={updateData}
+                  value={formData.last_name}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label for="rol_type" sm={3}>
+                Rol{" "}
+              </Label>
+
+              <Col sm={9}>
+                <Input
+                  name="rol_type"
+                  type="select"
+                  onChange={updateData}
+                  value={formData.rol_type}
+                >
+                  <option value="1">Alumno</option>
+                  <option value="2">Ex-Alumno</option>
+                  <option value="3">Acad&eacute;mico</option>
+                  <option value="4">Ex-Acad&eacute;mico</option>
+                  <option value="5">Funcionario</option>
+                  <option value="6">Externo</option>
+                </Input>
+              </Col>
             </FormGroup>
           </Form>
         </ModalBody>
         <ModalFooter>
-          {!false ? (
+          {true ? (
             <Fragment>
-              <Button color="primary" onClick={() => onSend(formData)}>
+              <Button color="primary" onClick={() => editUser(formData)}>
                 Guardar cambios
               </Button>
               <Button color="secondary" onClick={() => handleToggle()}>

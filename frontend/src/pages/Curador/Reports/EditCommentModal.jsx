@@ -1,9 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { connect } from "react-redux";
 import {
   Button,
-  Row,
-  Col,
   Modal,
   ModalHeader,
   ModalBody,
@@ -12,18 +9,17 @@ import {
   FormGroup,
   Input,
   Form,
+  Col,
 } from "reactstrap";
+import moment from "moment";
 
-const EditCommentModal = ({
-  comment,
-  isOpen,
-  handleToggle,
-  editComment
-}) => {
-  const [formData, setData] = useState({...comment}); //nuevos datos
+const EditCommentModal = ({ report, isOpen, handleToggle, editComment }) => {
+  const [comment, setComment] = useState("");
 
-  const updateData = (e) =>
-    setData({ ...formData, [e.target.name]: e.target.value });
+  useEffect(() => {
+    let info = { ...report.content_id, "upload_date": moment(Date(Date.now()))};
+    setComment(info);
+  }, [report, isOpen]);
 
   return (
     <div>
@@ -33,22 +29,25 @@ const EditCommentModal = ({
         </ModalHeader>
         <ModalBody>
           <Form>
-            <FormGroup>
-              <Label>Comentario</Label>
+            <FormGroup row>
+              <Label for="content" sm={3}>{" "} Comentario</Label>
+              <Col sm={9}>
               <Input
                 type="textarea"
-                value={formData.content}
                 placeholder="Nuevo comentario"
                 name="content"
-                onChange={updateData}
+                value={comment.content}
+                onChange={(e) => setComment({...comment, [e.target.name]: e.target.value })}
               />
+              
+              </Col>
             </FormGroup>
           </Form>
         </ModalBody>
         <ModalFooter>
           {!false ? (
             <Fragment>
-              <Button color="primary" onClick={()=> editComment(formData)}>
+              <Button color="primary" onClick={() => editComment(comment)}>
                 Guardar cambios
               </Button>
               <Button color="secondary" onClick={() => handleToggle()}>
@@ -66,4 +65,4 @@ const EditCommentModal = ({
   );
 };
 
-export default (EditCommentModal);
+export default EditCommentModal;
