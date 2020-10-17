@@ -3,13 +3,11 @@ import { Button, Container, Col, Row } from "reactstrap";
 import "../Login/login.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUnlock } from "@fortawesome/free-solid-svg-icons";
-import { Link, Redirect } from "react-router-dom";
 import { Alert } from "reactstrap";
 import { connect } from "react-redux";
 import { user } from "../../actions";
 
 import StepWizard from "react-step-wizard";
-import { LeitSpinner } from "../../components";
 
 const InvalidToken = () => (
   <div> El token ingresado es inválido o ha expirado </div>
@@ -19,14 +17,14 @@ const SuccessfulUpdatePassword = () => (
   <div> Tu contraseña ha sido actualizada con éxito </div>
 );
 
-const FailedUpdatePassword = (props) => (
+const FailedUpdatePassword = ({volver, goToStep}) => (
   <Container>
     <Row> Recuperación de cuenta fallida </Row>
-    <Button
-      color="secondary"
+    <Button 
+      color="danger"
       onClick={() => {
-        props.volver();
-        props.goToStep(1);
+        volver();
+        goToStep(1);
       }}
     >
       Volver
@@ -39,13 +37,19 @@ const UpdatePasswordSent = ({
   errors,
   passwordSent,
   goToStep,
+  tokenIsValid,
 }) => {
-  if (passwordSent && passwordUpdated) {
-    goToStep(3);
-  } else if (passwordSent && errors && errors.updatePassword) {
-    goToStep(4);
+
+  if (tokenIsValid) {
+    goToStep(2);
   }
-  return <div>Cargando</div>;
+  else if (passwordSent && passwordUpdated) {
+    goToStep(4);
+  } else if (passwordSent && errors && errors.updatePassword) {
+    goToStep(5);
+  }
+
+  return <div>Cargando...</div>;
 };
 
 const ChangePassword = ({ updatePassword, nextStep }) => {
@@ -64,6 +68,7 @@ const ChangePassword = ({ updatePassword, nextStep }) => {
       nextStep();
     }
   };
+
 
   return (
     <div>
@@ -124,8 +129,6 @@ const ChangePassword = ({ updatePassword, nextStep }) => {
   );
 };
 
-const TokenInvalid = <div> El código ya fue usado o ha expirado. </div>;
-
 const RecoverAccountConfirmation = ({
   location,
   updatePassword,
@@ -160,28 +163,30 @@ const RecoverAccountConfirmation = ({
           <div className="modal-content">
             <h2>Recuperar Clave</h2>
 
-            {tokenIsValid ? (
-              <StepWizard
-                className="stepContainer"
-                onStepChange={() => {
-                  window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-                }}
-                initialStep={1}
-              >
-                <ChangePassword updatePassword={onUpdatePassword} />
+            <StepWizard
+              className="stepContainer"
+              onStepChange={() => {
+                window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+              }}
+              initialStep={1}
+            >
 
-                <UpdatePasswordSent
-                  passwordSent={passwordSent}
-                  passwordUpdated={passwordUpdated}
-                  errors={errors}
-                />
-
-                <SuccessfulUpdatePassword />
-                <FailedUpdatePassword />
-              </StepWizard>
-            ) : (
               <InvalidToken />
-            )}
+
+              <ChangePassword updatePassword={onUpdatePassword} />
+
+              <UpdatePasswordSent
+                passwordSent={passwordSent}
+                tokenIsValid={tokenIsValid}
+                passwordUpdated={passwordUpdated}
+                errors={errors}
+              />
+
+              <SuccessfulUpdatePassword />
+              <FailedUpdatePassword 
+                volver={volver}
+              />
+            </StepWizard>
           </div>
         </div>
       </div>
