@@ -10,6 +10,7 @@ import { metadata, gallery, site_misc } from "../../actions";
 import { Helmet } from "react-helmet";
 import StepWizard from "react-step-wizard";
 import "./uploadPage.css";
+import UploadSuccess from "./UploadSuccess";
 
 /**
  * Upload page
@@ -249,17 +250,8 @@ class UploadPage extends Component {
               meta={this.props.meta}
               searchMeta={this.props.recoverMetadata}
             />
-            <UploadProgress
-              photosUploading={this.props.upload.photosUploading}
-              opsFinished={this.props.upload.opsFinished}
-              uploading={this.props.upload.uploading}
-              completed={this.props.upload.photosUploaded.length}
-              doAlbum={this.state.data.onAlbum}
-              albumInfo={this.state.data} // TODO: remove data redundancy
-              albumState={this.props.album.createAlbum}
-              retry={this.retryFailed}
-              saveAlbum={this.saveAlbum}
-            />
+            
+            <UploadSuccess />
           </StepWizard>
         ) : (
           <StepWizard
@@ -282,17 +274,7 @@ class UploadPage extends Component {
               doColumns={false}
               searchMeta={this.props.recoverMetadata}
             />
-            <UploadProgress
-              photosUploading={this.props.upload.photosUploading}
-              opsFinished={this.props.upload.opsFinished}
-              uploading={this.props.upload.uploading}
-              completed={this.props.upload.photosUploaded.length}
-              doAlbum={this.state.data.onAlbum}
-              albumInfo={this.state.data}
-              albumState={this.props.album.createAlbum}
-              retry={this.retryFailed}
-              saveAlbum={this.saveAlbum}
-            />
+            <UploadSuccess />
           </StepWizard>
         )}
       </Fragment>

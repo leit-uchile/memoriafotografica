@@ -27,7 +27,7 @@ const UploadSuccess = () => {
                 Tus fotos deber&aacute;n ser aprobadas 
                 por nuestro equipo de curadores. 
                 Cuando esto ocurra tus fotos 
-                estar&aacute;n disponibles para la comunidad
+                estar&aacute;n disponibles para la comunidad.
             </h4>
           </Col>
         </Row>
