@@ -276,6 +276,6 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
         Handles password reset tokens
         When a token is created, an  e-mail needs to be sent to the user
     """
-    sendEmail(reset_password_token.user.email, "sign_up",
+    sendEmail(reset_password_token.user.email, "reset_password",
         'Reinicia tu contraseña', reset_password_token.key)
     return Response(status=status.HTTP_200_OK)
