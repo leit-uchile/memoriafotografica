@@ -1,4 +1,11 @@
 import React, { useState, useEffect, Fragment } from "react";
+import {
+  selectPhotos,
+  selectPhotosDetails,
+  selectPhotosError,
+  selectSiteMiscHomeSelectedIndex,
+  selectSiteMiscHomephotoPagination,
+} from "../../reducers";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { Button, Row, Col, Container } from "reactstrap";
@@ -14,6 +21,7 @@ import Tags from "./Elements/Tags";
 import Categories from "./Elements/Categories";
 import Addthis from "./Elements/Addthis";
 import PhotoDisplay from "./Elements/PhotoDisplay";
+import { bindActionCreators } from "redux";
 import "./styles.css";
 
 const PhotoDetails = ({
@@ -199,20 +207,14 @@ const PhotoDetails = ({
                     <Row>
                       <Col>
                         <h5 style={{ color: "#999" }}>
-                          <FontAwesomeIcon
-                            icon={faCamera}
-                          />
-                          {" "}Tomada el{" "}
+                          <FontAwesomeIcon icon={faCamera} /> Tomada el{" "}
                           {moment(photoInfo.upload_date).format("DD/MM/YYYY")}
                         </h5>
                       </Col>
 
                       <Col>
                         <h5 style={{ color: "#999" }}>
-                          <FontAwesomeIcon
-                            icon={faCalendarPlus}
-                          />
-                          {" "}Subida el{" "}
+                          <FontAwesomeIcon icon={faCalendarPlus} /> Subida el{" "}
                           {moment(photoInfo.created_at).format("DD/MM/YYYY")}
                         </h5>
                       </Col>
@@ -287,23 +289,25 @@ const PhotoDetails = ({
 };
 
 const mapStateToProps = (state) => ({
-  photoInfo: state.photos.details,
-  suggestions: state.photos.photos,
-  errors: state.photos.errors,
-  photoIndex: state.site_misc.home.selectedIndex,
-  photoPage: state.site_misc.home.photoPagination,
+  photoInfo: selectPhotosDetails(state),
+  suggestions: selectPhotos(state),
+  errors: selectPhotosError(state),
+  photoIndex: selectSiteMiscHomeSelectedIndex(state),
+  photoPage: selectSiteMiscHomephotoPagination(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  onLoad: (id) => dispatch(gallery.photos.getPhoto(id)),
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-  findPhotoQueryPage: (id, pageSize, params) =>
-    dispatch(gallery.photos.findPhotoQueryPage(id, pageSize, params)),
-  loadSuggestions: (page, pageSize, params) =>
-    dispatch(gallery.photos.photoQuerySuggestions(page, pageSize, params)),
-  putSearch: (id, value) => dispatch(site_misc.putSearchItem(id, value)),
-  putRequestPhoto: (value) => dispatch(webadmin.putRequestPhoto(value)),
-  setSelectedId: (id) => dispatch(site_misc.setSelectedId(id)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      onLoad: gallery.photos.getPhoto,
+      setRoute: site_misc.setCurrentRoute,
+      findPhotoQueryPage: gallery.photos.findPhotoQueryPage,
+      loadSuggestions: gallery.photos.photoQuerySuggestions,
+      putSearch: site_misc.putSearchItem,
+      putRequestPhoto: webadmin.putRequestPhoto,
+      setSelectedId: site_misc.setSelectedId,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(PhotoDetails);

@@ -11,7 +11,9 @@ import { useMediaQuery } from "react-responsive";
 import { CSSTransition } from "react-transition-group";
 import { gallery, site_misc } from "../../actions";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import "./collectionView.css";
+import { selectAlbumsLoading, selectAlbumsData } from "../../reducers";
 
 /*
  Helper local rendering functions
@@ -62,7 +64,7 @@ const CollectionView = ({
 }) => {
   // Load album info
   useEffect(() => {
-    loadInfo(match.params.id);
+    loadInfo(match.params.id, true);
   }, [match.params.id, loadInfo]);
 
   // Scroll up!
@@ -243,15 +245,18 @@ const CollectionView = ({
 };
 
 const mapStateToProps = (state) => ({
-  loading: state.albumcollection.loading,
-  albumData: state.albumcollection.albumData,
+  loading: selectAlbumsLoading(state),
+  albumData: selectAlbumsData(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  loadInfo: (id, detailed = true) =>
-    dispatch(gallery.album.loadAlbumInfo(id, detailed)),
-  pushPhotos: (photos) => dispatch(site_misc.pushPhotoArray(photos)),
-  setIndex: (num) => dispatch(site_misc.setSelectedId(num)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadInfo: gallery.album.loadAlbumInfo,
+      pushPhotos: site_misc.pushPhotoArray,
+      setIndex: site_misc.setSelectedId,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(CollectionView);

@@ -10,6 +10,13 @@ import { metadata, gallery, site_misc } from "../../actions";
 import { Helmet } from "react-helmet";
 import StepWizard from "react-step-wizard";
 import "./uploadPage.css";
+import { bindActionCreators } from "redux";
+import {selectUserIsAuthenticated,
+        selectUpload,
+        selectAlbumCollections,
+        selectMetaDataGeneralTagsResult,
+        selectMetaData,
+       } from "../../reducers";
 
 /**
  * Upload page
@@ -301,22 +308,25 @@ class UploadPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.user.isAuthenticated,
-  upload: state.upload,
-  album: state.albumcollection,
-  meta: state.metadata.general_tags.results,
-  metadataCreation: state.metadata,
+  isAuthenticated: selectUserIsAuthenticated(state) ,
+  upload: selectUpload(state),
+  album: selectAlbumCollections(state),
+  meta: selectMetaDataGeneralTagsResult(state),
+  metadataCreation: selectMetaData(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-  sendAlert: (message, color) => dispatch(site_misc.setAlert(message, color)),
-  uploadPhotos: (info) => dispatch(gallery.photos.uploadImages(info)),
-  recoverMetadata: (query, page, pageSize) =>
-    dispatch(metadata.searchMetadataByValueGeneral(query, page, pageSize)),
-  createAlbum: (formData) => dispatch(gallery.album.createAlbum(formData)),
-  createMultipleMetas: (name) => dispatch(metadata.createMultipleMetas(name)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setRoute: site_misc.setCurrentRoute,
+      sendAlert: site_misc.setAlert,
+      uploadPhotos: gallery.photos.uploadImages,
+      recoverMetadata: metadata.searchMetadataByValueGeneral,
+      createAlbum: gallery.album.createAlbum,
+      createMultipleMetas: metadata.createMultipleMetas,
+    },
+    dispatch
+  );
 
 // Example nav from https://github.com/jcmcneal/react-step-wizard/blob/master/app/components/nav.js
 const Nav = (props) => {

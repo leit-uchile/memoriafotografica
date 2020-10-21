@@ -107,3 +107,26 @@ export default function webadmin(state = initialState, action) {
       return state;
   }
 }
+
+export const selectWebAdminMessages = (state) => state.webadmin.messages;
+
+export const selectWebAdminUpdateMessage = (state) => state.webadmin.updatedMessage;
+
+export const selectWebAdminRequests = (state) => state.webadmin.requests;
+
+export const selectWebAdminRequestDetail = (state) => state.webadmin.requestDetail;
+
+export const selectWebAdminAllTags = (state) => state.webadmin.all_tags;
+
+export const selectWebAdminContected = (state) => state.webadmin.contacted
+
+export const selectWebAdminNewsResult = (state) => state.webadmin.news.results;
+
+export const selectWebAdminNewCount = (state) => state.webadmin.news.count;
+
+export const selectWebAdminCarousel = (state) => state.webadmin.caroussel;
+
+export const selectWebAdminRequestPhotos = (state) => state.webadmin.requestedPhotos;
+
+export const selectWebAdminRequested = (state) => state.webadmin.requested;
+

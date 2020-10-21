@@ -15,6 +15,9 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import Categories from "./Categories";
 import { connect } from "react-redux";
 import { gallery } from "../../actions";
+import { bindActionCreators } from "redux";
+import { selectCats,
+          selectSiteMiscSearchMetaIDS}  from "../../reducers"
 import "./filterPicker.css";
 
 /**
@@ -162,9 +165,7 @@ const FilterPicker = ({
             </Badge>
           ) : null}
         </DropdownToggle>
-        <DropdownMenu
-          className="filter-button"
-        >
+        <DropdownMenu className="filter-button">
           <div className="filter-triangle"></div>
           <Container fluid className="filter-cats">
             {currentCats.length > 0 ? (
@@ -303,17 +304,18 @@ const FilterPicker = ({
 };
 
 const mapStateToProps = (state) => ({
-  cats: state.categories,
-  filters: state.site_misc.searchMetaIDs,
+  cats: selectCats(state),
+  filters: selectSiteMiscSearchMetaIDS(state),
 });
 
-const mapActionstoProps = (dispatch) => ({
-  getCats: (page, pageSize) =>
-    dispatch(gallery.category.getCategories(page, pageSize)),
-  sortByField: (tag, order, page, size) =>
-    dispatch(gallery.photos.sortByField(tag, order, page, size)),
-  recoverByCats: (catIds, order, page, size) =>
-    dispatch(gallery.photos.recoverByCats(catIds, order, page, size)),
-});
+const mapActionstoProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getCats: gallery.category.getCategories,
+      sortByField: gallery.photos.sortByField,
+      recoverByCats: gallery.photos.recoverByCats,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionstoProps)(FilterPicker);

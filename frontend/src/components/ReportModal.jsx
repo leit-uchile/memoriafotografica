@@ -9,7 +9,6 @@ import {
   Form,
   FormGroup,
   Input,
-  CustomInput,
   Label,
 } from "reactstrap";
 import { connect } from "react-redux";
@@ -19,6 +18,9 @@ import { faFlag } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import "./reportModal.css";
+import { selectReportComplete, 
+          selectUserIsAuthenticated,
+          selectReportPhotoReportSent,} from "../reducers";
 
 /**
  * Report Modal for all 3 types of report
@@ -194,9 +196,9 @@ ReportModal.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  photoReportSent: state.reports.photoReportSent,
-  reportComplete: state.reports.reportComplete,
-  isAuth: state.user.isAuthenticated,
+  photoReportSent: selectReportPhotoReportSent(state),
+  reportComplete: selectReportComplete(state),
+  isAuth: selectUserIsAuthenticated(state),
 });
 
 const mapActionToProps = (dispatch) => ({

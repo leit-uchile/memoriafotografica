@@ -48,3 +48,5 @@ export default function upload(state = initialState, action) {
       return { ...state };
   }
 }
+
+export const selectUpload = (state) => state.upload;

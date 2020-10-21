@@ -19,6 +19,8 @@ import { curveCatmullRom } from "d3-shape";
 import { metrics } from "../../actions";
 import { connect } from "react-redux";
 import { userRolTranslation, userTypeTranslation } from "../User/utils";
+import { bindActionCreators } from "redux";
+import { selectMetrics } from "../../reducers";
 import "./styles.css";
 
 const PhotoCountChart = ({ rawData, data2 }) => {
@@ -344,11 +346,15 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
 };
 
 const mapStateToProps = (state) => ({
-  stats: state.metrics,
+  stats: selectMetrics(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  loadGeneralStats: () => dispatch(metrics.getGeneralStats()),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadGeneralStats: metrics.getGeneralStats,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Landing);

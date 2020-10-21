@@ -10,6 +10,8 @@ import {
   ToastHeader,
   Spinner,
 } from "reactstrap";
+import { selectWebAdminRequestPhotos,
+          selectSiteMiscCurrentRoute,} from "../../reducers";
 
 const RequestPhotoToast = ({ requestedPhotos, currentPage }) => {
   const [show, setShow] = useState(false);
@@ -60,8 +62,8 @@ const RequestPhotoToast = ({ requestedPhotos, currentPage }) => {
 };
 
 const mapStateToProps = (state) => ({
-  requestedPhotos: state.webadmin.requestedPhotos,
-  currentPage: state.site_misc.currentRoute,
+  requestedPhotos: selectWebAdminRequestPhotos(state),
+  currentPage: selectSiteMiscCurrentRoute(state),
 });
 
 export default connect(mapStateToProps, null)(RequestPhotoToast);

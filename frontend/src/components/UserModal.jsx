@@ -16,6 +16,7 @@ import { Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import "./userModal.css";
+import { selectUserData } from "../reducers";
 
 const UserModal = ({ logout, user }) => {
   const [toggle, setToggle] = useState(false);
@@ -121,7 +122,7 @@ const UserModal = ({ logout, user }) => {
 };
 
 const mapStateToProps = (state) => ({
-  user: state.user.userData,
+  user: selectUserData(state),
 });
 
 const mapActionsToProps = (dispatch) => ({

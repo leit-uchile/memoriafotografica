@@ -22,6 +22,15 @@ import {
 import { connect } from "react-redux";
 import { gallery } from "../../../actions";
 import { PhotoSelector, LeitSpinner, Pagination } from "../../../components";
+import { bindActionCreators } from "redux";
+import {
+  selectPhotos,
+  selectPhotosCount,
+  selectCategoriesError,
+  selectCategoriesDetails,
+  selectCategoriesUpdatePhotos,
+  selectSiteMiscCuradorLoading,
+} from "../../../reducers";
 
 const RemovePhotos = ({ action }) => {
   const [modal, setModal] = useState(false);
@@ -156,7 +165,7 @@ const Category_Photos = ({
   };
 
   const removePhotos = () => {
-    associate(data.pictures, catDetails.id);
+    associate(data.pictures, catDetails.id, "remove");
   };
 
   const doRedirect = () => {
@@ -247,21 +256,23 @@ const Category_Photos = ({
 };
 
 const mapStateToProps = (state) => ({
-  photos: state.photos.photos,
-  photo_count: state.photos.count,
-  loading: state.site_misc.curador.loading,
-  catError: state.categories.error,
-  catDetails: state.categories.categoryDetail,
-  updatedPhotos: state.categories.updatedPhotos,
+  photos: selectPhotos(state),
+  photo_count: selectPhotosCount(state),
+  loading: selectSiteMiscCuradorLoading(state),
+  catError: selectCategoriesError(state),
+  catDetails: selectCategoriesDetails(state),
+  updatedPhotos: selectCategoriesUpdatePhotos(state),
 });
-const mapActionsToProps = (dispatch) => ({
-  getCategory: (id) => dispatch(gallery.category.getCategory(id)),
-  updateCategory: (data) => dispatch(gallery.category.updateCategory(data)),
-  associate: (pIds, catId, action = "remove") =>
-    dispatch(gallery.photos.associateCategory(pIds, catId, action)),
-  resetErrors: () => dispatch(gallery.category.resetErrors()),
-  getPhotosAuth: (page, page_size, search = "") =>
-    dispatch(gallery.photos.getPhotosAuth(page, page_size, search)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getCategory: gallery.category.getCategory,
+      updateCategory: gallery.category.updateCategory,
+      associate: gallery.photos.associateCategory,
+      resetErrors: gallery.category.resetErrors,
+      getPhotosAuth: gallery.photos.getPhotosAuth,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Category_Photos);

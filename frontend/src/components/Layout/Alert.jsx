@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { UncontrolledAlert as BTAlert, Container, Row, Col } from "reactstrap";
 import PropTypes from "prop-types";
+import { selectSiteMiscAlerts } from "../../reducers";
 const Alert = ({ alerts }) =>
   alerts !== null && alerts.length > 0 ? (
     <Container
@@ -27,7 +28,7 @@ Alert.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  alerts: state.site_misc.alerts,
+  alerts: selectSiteMiscAlerts(state),
 });
 
 export default connect(mapStateToProps)(Alert);
