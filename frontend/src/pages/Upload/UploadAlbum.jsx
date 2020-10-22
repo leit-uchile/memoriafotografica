@@ -69,7 +69,7 @@ const CC_INFO = [
     text: "Atribución, No Comercial, Sin Derivadas",
     desc:
       "Esta licencia es la más restrictiva, permitiendo a otras sólo descargar sus obras y compartirlas con otras siempre y cuando den crédito, pero no pueden cambiarlas de forma alguna ni usarlas de forma comercial.",
-    img: "/assets/CCBYNCND.svg",
+    img: "/assets/CC/CCBYNCND.svg",
   },
 ];
 
@@ -216,8 +216,8 @@ const UploadAlbum = ({
           </div>
           <Form className="white-box form-container upload-album-section-content">
             <div className="form-title">
-              <FontAwesomeIcon icon={faBook}/>
-              <Label>{" "}Metadatos</Label>
+              <FontAwesomeIcon icon={faBook} />
+              <Label> Metadatos</Label>
             </div>
             <FormGroup>
               <Label className="form-subtitle">Fecha de las fotos:</Label>
@@ -242,10 +242,8 @@ const UploadAlbum = ({
             </FormGroup>
             <FormGroup>
               <div className="form-title">
-                <FontAwesomeIcon
-                  icon={faCreativeCommons}
-                />
-                <Label>{" "}Licencias: Permisos de acceso e intercambio</Label>
+                <FontAwesomeIcon icon={faCreativeCommons} />
+                <Label> Licencias: Permisos de acceso e intercambio</Label>
               </div>
               <div style={{ marginTop: "10px" }}>
                 <FormGroup tag="fieldset">
