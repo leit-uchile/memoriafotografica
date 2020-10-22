@@ -136,6 +136,7 @@ const CollectionView = ({
           <Row>
             <Col>
               <blockquote className="collection-view-description">
+                <h3>{`Colección: ${albumData.name}`}</h3>
                 <p>{albumData.description}</p>
               </blockquote>
             </Col>

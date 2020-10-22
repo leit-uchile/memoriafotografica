@@ -4,10 +4,15 @@
   padding: 20px;
   box-shadow: #ddd 3px 5px 10px;
 }
+
+.collection-view-description h3 {
+  text-align: center;
+}
+
 .collection-view-description p {
   color: black;
   font-style: italic;
-  font-size: 2em;
+  font-size: 1.5rem;
   line-height: 1.5;
   margin: 0;
   text-align: center;
