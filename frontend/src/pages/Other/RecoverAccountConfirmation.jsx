@@ -2,15 +2,21 @@ import React, { useState, useEffect } from "react";
 import { Button, Container, Col, Row } from "reactstrap";
 import "../Login/login.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faUnlock } from "@fortawesome/free-solid-svg-icons";
+import { faUnlock } from "@fortawesome/free-solid-svg-icons";
 import { Alert } from "reactstrap";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import { user } from "../../actions";
 
 import StepWizard from "react-step-wizard";
 
 const InvalidToken = () => (
-  <div> El token ingresado es inválido o ha expirado <br/><br/><br/></div>
+  <div>
+    {" "}
+    El token ingresado es inválido o ha expirado <br />
+    <br />
+    <br />
+  </div>
 );
 
 const SuccessfulUpdatePassword = () => (
@@ -37,15 +43,12 @@ const UpdatePasswordSent = ({
   errors,
   passwordSent,
   goToStep,
-  
 }) => {
   if (passwordSent && passwordUpdated) {
     goToStep(3);
-  } 
-  else if (passwordSent && errors && errors.password) {
+  } else if (passwordSent && errors && errors.password) {
     goToStep(1);
-  }
-  else if (passwordSent && errors && errors.updatePassword) {
+  } else if (passwordSent && errors && errors.updatePassword) {
     goToStep(4);
   }
 
@@ -70,9 +73,9 @@ const ChangePassword = ({ updatePassword, nextStep, errors }) => {
   };
 
   var totalErrors = [];
-  if(errors.password){
+  if (errors.password) {
     totalErrors = errors.password;
-  }else{
+  } else {
     totalErrors = passErrors;
   }
   return (
@@ -167,8 +170,7 @@ const RecoverAccountConfirmation = ({
       <div className="modal-dialog text-center">
         <div className="col-sm-9 main-section">
           <div className="modal-content">
-            { tokenIsValid 
-              ? (
+            {tokenIsValid ? (
               <div>
                 <h2>Recuperar Clave</h2>
                 <StepWizard
@@ -192,14 +194,14 @@ const RecoverAccountConfirmation = ({
 
                   <SuccessfulUpdatePassword />
                   <FailedUpdatePassword volver={volver} />
-                </StepWizard> </div>)
-              : (
-                <div>
-                  <h2> Recuperación Fallida </h2>
-                  <InvalidToken/>
-                </div>
-              )
-             }
+                </StepWizard>{" "}
+              </div>
+            ) : (
+              <div>
+                <h2> Recuperación Fallida </h2>
+                <InvalidToken />
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -213,11 +215,14 @@ const mapStateToProps = (state) => ({
   errors: state.user.errors,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  updatePassword: (token, password) =>
-    dispatch(user.resetPasswordConfirm(token, password)),
-  validateToken: (token) => dispatch(user.resetPasswordValidate(token)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      updatePassword: user.resetPasswordConfirm,
+      validateToken: user.resetPasswordValidate,
+    },
+    dispatch
+  );
 
 export default connect(
   mapStateToProps,

@@ -7,6 +7,8 @@ import { Link, Redirect } from "react-router-dom";
 import { Alert } from "reactstrap";
 import { connect } from "react-redux";
 import { user } from "../../actions";
+import { bindActionCreators } from "redux";
+import { selectUserIsAuthenticated, selectErrors } from "../../reducers/user";
 
 const RecoverAccount = ({ isAuthenticated, sendLink, linkSent, errors }) => {
   const [mail, setMail] = useState("");
@@ -19,18 +21,16 @@ const RecoverAccount = ({ isAuthenticated, sendLink, linkSent, errors }) => {
     <div>
       <form
         onSubmit={(e) => {
-          console.log("link sent");
           e.preventDefault();
           sendLink(mail);
         }}
       >
         <fieldset>
           {errors &&
-            errors.email &&
-            errors.email.length > 0 &&
-            errors.email.map((error, index) => (
-              <Alert key={index} color="warning">
-                {error}
+            errors.length > 0 &&
+            errors.map((error, index) => (
+              <Alert key={index} color="warning" dismissable>
+                {error.message}
               </Alert>
             ))}
           <div className="col-12 form-input">
@@ -53,7 +53,11 @@ const RecoverAccount = ({ isAuthenticated, sendLink, linkSent, errors }) => {
               </div>
             </div>
             <div className="form-group">
-              <button className="btn btn-danger" type="submit">
+              <button
+                className="btn btn-danger"
+                type="submit"
+                style={{ width: "50%" }}
+              >
                 Enviar Correo de Recuperación
               </button>
             </div>
@@ -90,12 +94,16 @@ const RecoverAccount = ({ isAuthenticated, sendLink, linkSent, errors }) => {
 
 const mapStateToProps = (state) => ({
   linkSent: state.user.resetPasswordRequest,
-  isAuthenticated: state.user.isAuthenticated,
-  errors: state.user.errors,
+  isAuthenticated: selectUserIsAuthenticated(state),
+  errors: selectErrors(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  sendLink: (mail) => dispatch(user.resetPasswordRequest(mail)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      sendLink: user.resetPasswordRequest,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(RecoverAccount);
