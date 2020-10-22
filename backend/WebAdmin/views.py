@@ -13,6 +13,11 @@ def sendEmail(emailto, case, subject, attached):
     if case == "sign_up":
         template = 'sendEmail/sign_up_email.html'
         data = 'http://memoriafotografica.cl/confirm/?code=' + attached #code
+    
+    elif case == "reset_password":
+        template = 'sendEmail/reset_password_email.html'
+        data = 'http://memoriafotografica.cl/recoveruser/confirm/?code=' + attached #code
+
     elif case == "contact_us":
         template = 'sendEmail/contact_us_response_email.html'
         data = attached #reply
