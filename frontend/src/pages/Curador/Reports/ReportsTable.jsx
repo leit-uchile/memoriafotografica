@@ -41,7 +41,7 @@ const ReportsTable = ({ reports, updateReport, censureContent }) => {
         </tr>
       </thead>
       <tbody>
-        {reports.length != 0
+        {reports.length !== 0
           ? reports.results.map((r) =>
               r.type === 1 ? (
                 <ReportRow

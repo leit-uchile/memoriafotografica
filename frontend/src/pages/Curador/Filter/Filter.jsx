@@ -83,7 +83,7 @@ class Filter extends Component {
   recoverUrl = () => {
     const { censured, since, until, approved, search } = this.state;
     let url = "&sort=updated_at-desc";
-    if (search != ""){
+    if (search !== ""){
       url = url + `&title=${search}`;
     }
     if (censured && censured !== "") {

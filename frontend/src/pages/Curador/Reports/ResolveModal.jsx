@@ -22,7 +22,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./resolveModal.css";
 import { bindActionCreators } from "redux";
-import { selectPhotosDetails } from "../../../reducers";
 
 const ResolveModal = ({
   buttonLabel,

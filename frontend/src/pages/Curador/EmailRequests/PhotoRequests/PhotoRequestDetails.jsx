@@ -13,7 +13,6 @@ import {
   Button,
   FormGroup,
   Label,
-  Input,
 } from "reactstrap";
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
