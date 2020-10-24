@@ -45,7 +45,7 @@ const EmailRequests = () => {
         <TabPane tabId="1">
           <Row>
             <Col sm="12">
-              <PhotoTable />
+              <PhotoTable active={activeTab === '1'} />
             </Col>
           </Row>
         </TabPane>

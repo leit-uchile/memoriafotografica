@@ -21,7 +21,7 @@ import { faChevronCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import uuid4 from "uuid";
 import { webadmin } from "../../../../actions";
 import { bindActionCreators } from "redux";
-import {selectWebAdminRequestDetail} from "../../../../reducers"
+import { selectWebAdminRequestDetail } from "../../../../reducers";
 
 const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
   const [rows, setRows] = useState([]);
@@ -147,16 +147,20 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
                     {c.censure ? (
                       <span style={{ color: "red" }}>Censurada</span>
                     ) : null} */}
-                    <FormGroup check>
-                      <Label check>
-                        <Input
-                          type="checkbox"
-                          name="check"
-                          defaultChecked={true}
-                          onClick={() => handleOnClick(c)}
-                        />{" "}
-                        Aprobar
+                    <FormGroup row>
+                      <Label for="approve">
+                        Aprobar{" "}
                       </Label>
+                      <Col>
+                        <input
+                          type="checkbox"
+                          class="toggle-button"
+                          id="approve"
+                          defaultChecked={true}
+                          onChange={() => handleOnClick(c)}
+                        />
+                        <label for="approve"></label>
+                      </Col>
                     </FormGroup>
                   </CardFooter>
                 </Card>

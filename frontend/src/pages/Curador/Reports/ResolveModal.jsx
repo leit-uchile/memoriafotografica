@@ -154,11 +154,12 @@ const ResolveModal = ({
   );
 };
 
-const mapActionsToProps = (dispatch) => 
-    bindActionCreators(
-      {
-        editReport: gallery.reports.updateContent,
-      }
-    );
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      editReport: gallery.reports.updateContent,
+    },
+    dispatch
+  );
 
 export default connect(null, mapActionsToProps)(ResolveModal);

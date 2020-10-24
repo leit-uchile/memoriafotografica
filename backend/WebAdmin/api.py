@@ -34,6 +34,21 @@ def filter_elements(elements, request):
         if "created_at_until" in request.query_params:
             elements = elements.filter(created_at__lte=date.fromisoformat(
                 request.query_params["created_at_until"]))
+        if "resolved" in request.query_params:
+            resolved = True
+            if request.query_params["resolved"] == "false":
+                resolved = False
+            elements = elements.filter(resolved = resolved)
+        if "approved" in request.query_params:
+            approved = True
+            if request.query_params["approved"] == "false":
+                approved = False
+            elements = elements.filter(approved = approved)
+        if "email_sent" in request.query_params:
+            email_sent = True
+            if request.query_params["email_sent"] == "false":
+                email_sent = False
+            elements = elements.filter(email_sent = email_sent)
         if "search" in request.query_params:
             elements = elements.filter(
                 Q(first_name__icontains=request.query_params["search"]) |
@@ -184,15 +199,17 @@ class PhotoRequestListAPI(generics.GenericAPIView):
     permission_classes = [IsAuthenticated | ReadOnly, ]
 
     def get(self, request, *args, **kwargs):
-        if request.user.user_type > 1:
-            photorequests = PhotoRequest.objects.all()
-            photorequests = sort_by_field(photorequests, request)
-            serializer = self.serializer_class(photorequests, many=True)
-            if "page" in request.query_params and "page_size" in request.query_params:
-                return self.get_paginated_response(self.paginate_queryset(serializer.data))
-            return Response(serializer.data)
-        else:
+        if request.user:
+            if request.user.user_type > 1:
+                photorequests = PhotoRequest.objects.all()
+                photorequests = filter_elements(photorequests, request)
+                photorequests = sort_by_field(photorequests, request)
+                serializer = self.serializer_class(photorequests, many=True)
+                if "page" in request.query_params and "page_size" in request.query_params:
+                    return self.get_paginated_response(self.paginate_queryset(serializer.data))
+                return Response(serializer.data)
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class ContactRequestListAPI(generics.GenericAPIView):
