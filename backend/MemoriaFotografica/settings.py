@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'knox',
     'multiselectfield',
     'sorl.thumbnail',
-    'corsheaders'
+    'corsheaders',
+    'django_rest_passwordreset',
 ]
 
 MIDDLEWARE = [

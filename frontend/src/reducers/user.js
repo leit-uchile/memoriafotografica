@@ -22,6 +22,12 @@ import {
   USER_PUBLIC_LOADING,
   USER_PUBLIC_LOADED,
   USER_PUBLIC_ERROR,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_FAILED,
+  RESET_PASSWORD_VALIDATE_SUCCESS,
+  RESET_PASSWORD_VALIDATE_FAILED,
+  RESET_PASSWORD_CONFIRM_SUCCESS,
+  RESET_PASSWORD_CONFIRM_FAILED,
 } from "../actions/types";
 
 /**
@@ -42,6 +48,11 @@ const baseState = {
   // account activation
   activated: false,
   registerSuccess: false,
+
+  // reset password
+  resetPasswordRequest: false,
+  resetPasswordTokenValid: false,
+  resetPasswordConfirmed: false,
 };
 
 // Compare if the token is valid (12 hours)
@@ -182,6 +193,18 @@ export default function user(state = initialState, action) {
       return { ...state, publicLoading: false, publicUser: action.data };
     case USER_PUBLIC_ERROR:
       return { ...state, publicLoading: false, publicUser: null };
+    case RESET_PASSWORD_SUCCESS:
+      return { ...state, resetPasswordRequest: true };
+    case RESET_PASSWORD_FAILED:
+      return { ...state, resetPasswordRequest: false, errors: action.data };
+    case RESET_PASSWORD_VALIDATE_SUCCESS:
+      return { ...state, resetPasswordTokenValid: true };
+    case RESET_PASSWORD_VALIDATE_FAILED:
+      return { ...state, resetPasswordTokenValid: false, errors: action.data };
+    case RESET_PASSWORD_CONFIRM_SUCCESS:
+      return { ...state, resetPasswordConfirmed: true, errors: {} };
+    case RESET_PASSWORD_CONFIRM_FAILED:
+      return { ...state, errors: action.data, resetPasswordConfirmed: false};
     default:
       return { ...state };
   }
