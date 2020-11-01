@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Col, Button, Row, Input, ButtonGroup } from "reactstrap";
+import { Container, Col, Button, Row, Input, ButtonGroup } from "reactstrap";
 import MetadataList from "./MetadataList";
 import HelpMessages from "./HelpMessages";
 import ModifyModal from "./ModifyModal";
@@ -9,9 +9,11 @@ import { Pagination } from "../../../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { bindActionCreators } from "redux";
-import {selectMetaDataAllIptcs,
-        selectMetaDataGeneralTags,
-        selectSiteMiscMetaDataHelpDiscloure} from "../../../../reducers"
+import {
+  selectMetaDataAllIptcs,
+  selectMetaDataGeneralTags,
+  selectSiteMiscMetaDataHelpDiscloure,
+} from "../../../../reducers";
 import "../styles.css";
 
 /**
@@ -77,7 +79,7 @@ const Modify = ({
   }, [metadata]);
 
   return (
-    <Fragment>
+    <Container fluid>
       <Row>
         <Col>
           <h2>Modificar Metadata</h2>
@@ -197,7 +199,7 @@ const Modify = ({
           )}
         </Col>
       </Row>
-    </Fragment>
+    </Container>
   );
 };
 

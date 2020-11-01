@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { metadata, gallery } from "../../../actions";
+import ReactTags from "react-tag-autocomplete";
 import {
   Button,
   Modal,
@@ -14,15 +17,51 @@ import {
   FormText,
 } from "reactstrap";
 import Spinner from "reactstrap/lib/Spinner";
+import { bindActionCreators } from "redux";
+import {
+  selectPhotosDetails,
+  selectMetaDataAllTags,
+  selectMetaDataCreating,
+  selectMetaDataNewIds,
+} from "../../../reducers";
 
-const FilterModal = (props) => {
-  const { buttonLabel, className, photo, editPhoto } = props;
-
+const FilterModal = ({
+  buttonLabel,
+  className,
+  photoId,
+  photoDetails,
+  getPhotoDetails,
+  editPhoto,
+  tags,
+  getTags,
+  createMultipleMetas,
+  newTagsId,
+}) => {
   const [modal, setModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [newphoto, setNewphoto] = useState({ ...photo });
+  const [newphoto, setNewphoto] = useState({});
+
+  useEffect(() => {
+    getTags(); //get tags from backend
+  }, [photoId, newTagsId]);
+
+  useEffect(() => {
+    getPhotoDetails(photoId);
+  }, [photoId]);
+
   const toggle = () => {
-    setNewphoto(photo);
+    let info = { ...photoDetails };
+    info.metadata =
+      photoDetails.metadata !== undefined
+        ? photoDetails.metadata.map((e) => ({
+            id: e.id,
+            name: e.value,
+          }))
+        : [];
+    delete info.permission;
+    delete info.comments;
+    delete info.report;
+    setNewphoto(info);
     setLoading(false);
     setModal(!modal);
   };
@@ -43,20 +82,63 @@ const FilterModal = (props) => {
     setNewphoto(editedPhoto);
   };
 
-  const saveChanges = () => {
-    setLoading(!loading);
-    //Enviar Data a backend;
-    let to_send = { ...newphoto };
+  const handleMetadata = () => {
+    let newDetails = { ...newphoto };
+
+    let newTags = newDetails.metadata.filter((el) => el.id === undefined); // New metadata unregistered
+    if (newTags.length === 0) {
+      newDetails.metadata = newDetails.metadata.map((el) => el.id);
+      saveChanges(newDetails);
+    } else {
+      let toCreate = newTags.map((el) => el.name);
+      createMultipleMetas(toCreate);
+    }
+  };
+
+  // It create array with registered metadata
+  useEffect(() => {
+    let newDetails = { ...newphoto };
+    if (newDetails.metadata) {
+      if (
+        newDetails.metadata.filter((el) => el.id === undefined).length ===
+        newTagsId.length
+      ) {
+        let oldTags = newDetails.metadata
+          .filter((el) => el.id !== undefined)
+          .map((el) => el.id);
+        let newTags = Object.values(newTagsId).map((el) => el.id);
+        newDetails.metadata = oldTags.concat(newTags);
+        saveChanges(newDetails);
+      } else {
+        console.log("Waiting for new tags ID");
+      }
+    }
+  }, [newTagsId]);
+
+  const saveChanges = (to_send) => {
     delete to_send.image;
     delete to_send.thumbnail;
-    delete to_send.permission;
-    // TODO: FIX IT!
-    delete to_send.metadata;
+    setLoading(!loading);
     editPhoto(to_send.id, to_send).then((response) => {
       setLoading(!loading);
       window.location.reload();
     });
   };
+
+  const additionTag = (tag) => {
+    const tagsList = [].concat(newphoto.metadata, tag);
+    setNewphoto({ ...newphoto, metadata: tagsList });
+  };
+
+  const deleteTag = (i) => {
+    const tagsList = newphoto.metadata.slice(0);
+    tagsList.splice(i, 1);
+    setNewphoto({ ...newphoto, metadata: tagsList });
+  };
+
+  const suggestions = tags
+    ? tags.map((e) => ({ id: e.id, name: e.value }))
+    : [];
 
   return (
     <div>
@@ -65,15 +147,21 @@ const FilterModal = (props) => {
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>
-          Curando fotografía: {photo.title}{" "}
+          Curando fotografía: {newphoto.title}{" "}
         </ModalHeader>
         <ModalBody>
           <Form>
-            <img src={photo.image} width="100%" alt="fotografia a editar" />
-            <FormText>Visibilidad de la foto</FormText>
-            <Row form>
-              <Col sm={6}>
-                <FormGroup check>
+            <Row style={{ margin: "4px 0px" }}>
+              <Col>
+                <img src={newphoto.image} width="100%" alt="Photo" />
+              </Col>
+            </Row>
+            <FormGroup>
+              <FormText>Visibilidad de la foto</FormText>
+            </FormGroup>
+            <FormGroup row>
+              <Col>
+                <FormGroup check className="center">
                   <input
                     type="checkbox"
                     name="approved"
@@ -85,7 +173,7 @@ const FilterModal = (props) => {
                   <label for="approved">Aprobada</label>
                 </FormGroup>
               </Col>
-              <Col sm={6}>
+              <Col>
                 <FormGroup check>
                   <input
                     type="checkbox"
@@ -98,32 +186,80 @@ const FilterModal = (props) => {
                   <label for="censured">Censurada</label>
                 </FormGroup>
               </Col>
-            </Row>
-            <FormText>Información de la foto</FormText>
-            <FormGroup>
-              <Label>Editar Título</Label>
-              <Input
-                type="text"
-                name="title"
-                value={newphoto.title}
-                onChange={handleChange}
-              />
             </FormGroup>
             <FormGroup>
-              <Label>Editar Descripción</Label>
-              <Input
-                type="textarea"
-                name="description"
-                value={newphoto.description}
-                onChange={handleChange}
-              />
+              <FormText>Editar información de la foto</FormText>
+            </FormGroup>
+            <FormGroup row>
+              <Label for="title" sm={3}>
+                Título{" "}
+              </Label>
+              <Col sm={9}>
+                <Input
+                  type="text"
+                  name="title"
+                  value={newphoto.title}
+                  onChange={handleChange}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label for="description" sm={3}>
+                Descripción{" "}
+              </Label>
+              <Col sm={9}>
+                <Input
+                  type="textarea"
+                  name="description"
+                  value={newphoto.description}
+                  onChange={handleChange}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label for="date" sm={3}>
+                Fecha de captura{" "}
+              </Label>
+              <Col sm={9}>
+                <Input
+                  type="date"
+                  value={`${newphoto.upload_date}`.slice(0, 10)}
+                  name="upload_date"
+                  onChange={handleChange}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label for="tags" sm={3}>
+                Etiquetas{" "}
+              </Label>
+              <Col sm={9}>
+                <ReactTags
+                  style={{ width: "auto" }}
+                  placeholder={"Añadir etiquetas"}
+                  autoresize={false}
+                  allowNew={true}
+                  tags={newphoto.metadata}
+                  suggestions={suggestions}
+                  handleDelete={deleteTag}
+                  handleAddition={additionTag}
+                />
+                <FormText color="muted">
+                  Para ingresar una nueva etiqueta debe presionar la tecla
+                  "Entrar" o "Tabulación"
+                </FormText>
+              </Col>
             </FormGroup>
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={saveChanges}>
-            {loading ? <Spinner style={{ width: "1rem", height: "1rem" }} /> : ""}
-            {" "} Guardar cambios
+          <Button color="primary" onClick={handleMetadata}>
+            {loading ? (
+              <Spinner style={{ width: "1rem", height: "1rem" }} />
+            ) : (
+              ""
+            )}{" "}
+            Guardar cambios
           </Button>{" "}
           <Button color="secondary" onClick={toggle}>
             Cancelar
@@ -134,4 +270,21 @@ const FilterModal = (props) => {
   );
 };
 
-export default FilterModal;
+const mapStateToProps = (state) => ({
+  photoDetails: selectPhotosDetails(state),
+  tags: selectMetaDataAllTags(state),
+  creating: selectMetaDataCreating(state),
+  newTagsId: selectMetaDataNewIds(state),
+});
+
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getPhotoDetails: gallery.photos.getPhoto,
+      getTags: metadata.tags,
+      createMultipleMetas: metadata.createMultipleMetas,
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapActionsToProps)(FilterModal);

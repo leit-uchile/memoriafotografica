@@ -84,6 +84,8 @@ const EditPhotosModal = ({
           : null;
       delete info.image;
       delete info.thumbnail;
+      delete info.comments;
+      delete info.report;
       setData(info);
     } else {
       setData({ metadata: [] });
@@ -114,7 +116,7 @@ const EditPhotosModal = ({
       delete newDetails.metadata; // No changes for each photo in its metadata field
       updatePhotoDetails(newDetails);
     } else {
-      // There are metadata to push
+      // There is one photo or there are metadata to push
       let newTags = newDetails.metadata.filter((el) => el.id === undefined); // New metadata unregistered
       if (newTags.length === 0) {
         newDetails.metadata = newDetails.metadata.map((el) => el.id);
@@ -134,7 +136,7 @@ const EditPhotosModal = ({
         newDetails.metadata.filter((el) => el.id === undefined).length ===
         newTagsId.length
       ) {
-        let oldTags = newDetails.metadata.filter((el) => el.id !== undefined);
+        let oldTags = newDetails.metadata.filter((el) => el.id !== undefined).map((el)=>el.id);
         let newTags = Object.values(newTagsId).map((el) => el.id);
         newDetails.metadata = oldTags.concat(newTags);
         updatePhotoDetails(newDetails);
@@ -238,16 +240,18 @@ const EditPhotosModal = ({
               style={{ width: "auto" }}
               placeholder={"Añadir etiquetas"}
               autoresize={false}
-              allowNew={true}
+              allowNew={!isCurator}
               tags={formData.metadata}
               suggestions={suggestions}
               handleDelete={deleteTag}
               handleAddition={additionTag}
             />
-            <FormText color="muted">
-              Para ingresar una nueva etiqueta debe presionar la tecla "Entrar"
-              o "Tabulación"
-            </FormText>
+            {!isCurator ? (
+              <FormText color="muted">
+                Para ingresar una nueva etiqueta debe presionar la tecla
+                "Entrar" o "Tabulación"
+              </FormText>
+            ) : null}
           </Col>
         </FormGroup>
         {!isCurator ? (

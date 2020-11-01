@@ -1,5 +1,13 @@
-import React, { Fragment, useState, useEffect } from "react";
-import { Table, ButtonGroup, Row, Col, Input, Button } from "reactstrap";
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Table,
+  ButtonGroup,
+  Row,
+  Col,
+  Input,
+  Button,
+} from "reactstrap";
 import { connect } from "react-redux";
 import { webadmin } from "../../../../actions";
 import { Pagination } from "../../../../components";
@@ -68,10 +76,7 @@ const ContactTable = ({
         url = url + `&resolved=${filter.resolved}`;
       }
       if (filter.emailSent.length !== 0) {
-        url =
-          url +
-          `&resolved=${true}` +
-          `&email_sent=${filter.emailSent}`;
+        url = url + `&resolved=${true}` + `&email_sent=${filter.emailSent}`;
       }
       getMessages(searchState, pagination.page + 1, pagination.page_size, url);
     }
@@ -96,7 +101,7 @@ const ContactTable = ({
   );
 
   return (
-    <Fragment>
+    <Container fluid>
       <Row>
         <Col>
           <h2>Mensajes Recibidos</h2>
@@ -187,7 +192,7 @@ const ContactTable = ({
           )}
         </Col>
       </Row>
-    </Fragment>
+    </Container>
   );
 };
 

@@ -147,10 +147,10 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
                       <span style={{ color: "red" }}>Censurada</span>
                     ) : null} */}
                     <FormGroup row>
-                      <Label for="approve">
+                      <Label for="approve" sm={3}>
                         Aprobar{" "}
                       </Label>
-                      <Col>
+                      <Col sm={9}>
                         <input
                           type="checkbox"
                           class="toggle-button"

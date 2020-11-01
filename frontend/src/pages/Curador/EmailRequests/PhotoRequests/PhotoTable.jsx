@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { Table, Row, Col, ButtonGroup, Button, Input } from "reactstrap";
+import { Container, Table, Row, Col, ButtonGroup, Button, Input } from "reactstrap";
 import PhotoRow from "./PhotoRow";
 import { webadmin } from "../../../../actions";
 import { Pagination } from "../../../../components";
@@ -79,7 +79,7 @@ const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
   return params.redirect ? (
     <Redirect push to={`/curador/dashboard/email/photos/${params.id}/`} />
   ) : (
-    <Fragment>
+    <Container fluid>
       <Row>
         <Col>
           <h2>Solicitudes Recibidas</h2>
@@ -181,7 +181,7 @@ const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
           )}
         </Col>
       </Row>
-    </Fragment>
+    </Container>
   );
 };
 

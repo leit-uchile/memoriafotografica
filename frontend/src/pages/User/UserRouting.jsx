@@ -65,7 +65,10 @@ const makeIcons = (rol_id) => {
 };
 
 const Dashboard = ({ match, location, setRoute, user, props }) => {
-  const [redirect, setRedirect] = useState(false);
+  const [params, setParams] = useState({
+    redirect: false,
+    url: "",
+  });
   const isPublic = location.pathname.includes("public");
 
   useEffect(() => {
@@ -73,8 +76,8 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
     // eslint-disable-next-line
   }, [setRoute]);
 
-  if (redirect !== false) {
-    return <Redirect push to={redirect} />;
+  if (params.redirect) {
+    return <Redirect push to={params.url} />;
   }
   return (
     <Container className="disable-css-transitions" fluid>
@@ -110,7 +113,7 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
                           icon={faEdit}
                           title="Editar perfil"
                           onClick={() =>
-                            setRedirect("/user/dashboard/editProfile")
+                            setParams({redirect: true, url: "/user/dashboard/editProfile"})
                           }
                         />
                       </h2>

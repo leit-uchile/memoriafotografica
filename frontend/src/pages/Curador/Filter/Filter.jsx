@@ -83,7 +83,7 @@ class Filter extends Component {
   recoverUrl = () => {
     const { censured, since, until, approved, search } = this.state;
     let url = "&sort=updated_at-desc";
-    if (search !== ""){
+    if (search !== "") {
       url = url + `&title=${search}`;
     }
     if (censured && censured !== "") {
@@ -196,17 +196,21 @@ class Filter extends Component {
             </Col>
           )}
         </Row>
-        <Row style={{ marginTop: "2em" }}>
-          <Col>
-            <Pagination
-              count={photoCount}
-              page_size={pageSize}
-              page={page}
-              setStatePage={this.setCurrentPage}
-              size="md"
-            />
-          </Col>
-        </Row>
+        {photoCount === 0 ? (
+          "No hay fotografías disponibles"
+        ) : (
+          <Row style={{ marginTop: "2em" }}>
+            <Col>
+              <Pagination
+                count={photoCount}
+                page_size={pageSize}
+                page={page}
+                setStatePage={this.setCurrentPage}
+                size="md"
+              />
+            </Col>
+          </Row>
+        )}
       </Container>
     );
   }
