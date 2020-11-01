@@ -213,7 +213,7 @@ export const updateRequest = (request) => (dispatch, getState) => {
 };
 
 export const contactUs = (formData) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     let headers = { "Content-Type": "application/json" };
     let jsonthing = JSON.stringify({
       first_name: formData.name,
@@ -221,23 +221,28 @@ export const contactUs = (formData) => {
       phone_number: formData.phone,
       email: formData.email,
       message: formData.message,
+      recaptchaToken: formData.recaptchaToken,
     });
-    return fetch(`/api/requests/contact/all/`, {
-      method: "POST",
-      headers: headers,
-      body: jsonthing,
-    }).then(function (response) {
-      const r = response;
-      if (r.status === 201) {
-        return r.json().then((data) => {
-          dispatch({ type: CONTACT_SUCCESS, data: data });
-        });
-      } else {
-        dispatch(setAlert("Hubo un error al enviar su mensaje", "warning"));
-        dispatch({ type: CONTACT_ERROR, data: r.data });
-        throw r.data;
-      }
-    });
+    if (formData.recaptchaToken) {
+      return fetch(`/api/requests/contact/all/`, {
+        method: "POST",
+        headers: headers,
+        body: jsonthing,
+      }).then(function (response) {
+        const r = response;
+        if (r.status === 201) {
+          return r.json().then((data) => {
+            dispatch({ type: CONTACT_SUCCESS, data: data });
+          });
+        } else {
+          dispatch(setAlert("Hubo un error al enviar su mensaje", "warning"));
+          dispatch({ type: CONTACT_ERROR, data: r.data });
+          throw r.data;
+        }
+      });
+    } else {
+      dispatch(setAlert("Debe rellenar el captcha", "warning"));
+    }
   };
 };
 

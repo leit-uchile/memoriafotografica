@@ -21,9 +21,6 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { connect } from "react-redux";
 import { webadmin } from "../../actions";
 
-//TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
-const captchaKey = "6LdqEM0ZAAAAAHkqSnB_dHDEjh4xy7euetQLrW7O";
-
 const UploadUnregister = ({
   cache,
   saveInfo,
@@ -35,6 +32,9 @@ const UploadUnregister = ({
   recaptchaReset,
 }) => {
   let recaptchaRef;
+  //TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
+  const captchaKey = "6LdqEM0ZAAAAAHkqSnB_dHDEjh4xy7euetQLrW7O";
+
   const [formData, setFormData] = useState(
     cache === {}
       ? {
@@ -59,14 +59,6 @@ const UploadUnregister = ({
         }
   );
 
-  useEffect(() => {
-    recaptchaRef.reset();
-    if (recaptchaState.success) {
-      nextStep();
-      return recaptchaReset();
-    }
-  }, [recaptchaState.success]);
-
   const updateForm = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -80,6 +72,15 @@ const UploadUnregister = ({
 
   const updateGeneration = (e) =>
     setInfo({ ...info, generation: e.target.value });
+
+  //Recaptcha logic
+  useEffect(() => {
+    recaptchaRef.reset();
+    if (recaptchaState.success) {
+      nextStep();
+      return recaptchaReset();
+    }
+  }, [recaptchaState.success]);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -214,7 +215,6 @@ const UploadUnregister = ({
           </Col>
         </FormGroup>
         <ReCAPTCHA
-          //size="invisible"
           sitekey={captchaKey}
           ref={(el) => {
             recaptchaRef = el;

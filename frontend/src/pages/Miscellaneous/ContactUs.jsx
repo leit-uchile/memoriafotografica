@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+
+import ReCAPTCHA from "react-google-recaptcha";
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -19,12 +21,22 @@ import {
 } from "reactstrap";
 import { webadmin } from "../../actions";
 import "./styles.css";
+import { validateRecaptcha } from "../../actions/webadmin_api";
 
 const ContactUs = ({ contacted, contactUs }) => {
   const [formData, setData] = useState({});
 
-  const updateData = (e) =>
+  const updateData = (e) => {
     setData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const updateCaptcha = () => {
+    setData({ ...formData, recaptchaToken: recaptchaRef.getValue() });
+  };
+
+  let recaptchaRef;
+  //TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
+  const captchaKey = "6LdqEM0ZAAAAAHkqSnB_dHDEjh4xy7euetQLrW7O";
 
   return (
     <Container>
@@ -94,7 +106,20 @@ const ContactUs = ({ contacted, contactUs }) => {
                 />
               </FormGroup>
               <hr />
-              <Button color="primary" tabIndex="5" onClick={() => contactUs(formData)}>
+              <ReCAPTCHA
+                sitekey={captchaKey}
+                ref={(el) => {
+                  recaptchaRef = el;
+                }}
+                onChange={updateCaptcha}
+              />
+              <Button
+                color="primary"
+                tabIndex="5"
+                onClick={() => {
+                  contactUs(formData);
+                }}
+              >
                 Enviar
               </Button>
             </Form>
