@@ -27,8 +27,10 @@ import {
   faSmileWink,
 } from "@fortawesome/free-solid-svg-icons";
 import "./header.css";
-import { selectUserIsAuthenticated,
-          selectSiteMiscCurrentRoute } from "../../reducers";
+import {
+  selectUserIsAuthenticated,
+  selectSiteMiscCurrentRoute,
+} from "../../reducers";
 
 const Header = ({ isAuth, currentRoute }) => {
   const [toggle, setToggle] = useState(false);
@@ -60,7 +62,7 @@ const Header = ({ isAuth, currentRoute }) => {
           {redirect ? <Redirect to="/" /> : null}
           <Row>
             <Col>
-              <Navbar expand={"sm"} light>
+              <Navbar expand={"md"} light>
                 <NavbarBrand
                   onClick={() => {
                     setRedirect(true);

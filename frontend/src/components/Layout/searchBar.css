@@ -67,20 +67,20 @@
 .home-search .stretch .react-autosuggest__container {
   width: 70%;
 }
-@media (max-width: 995px) and (min-width:540px){
+@media (max-width: 995px) and (min-width: 540px) {
   .home-search .react-autosuggest__container {
-    width: 35vh;
+    width: 35vw;
   }
   .home-search .stretch .react-autosuggest__container {
-    width: 35vh;
+    width: 35vw;
   }
 }
 @media (max-width: 540px) {
   .home-search .react-autosuggest__container {
-    width: 25vh;
+    width: 25vw;
   }
   .home-search .stretch .react-autosuggest__container {
-    width: 25vh;
+    width: 25vw;
   }
 }
 .home-search .react-autosuggest__suggestions-container--open {
