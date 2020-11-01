@@ -154,6 +154,7 @@ class PhotoRequestDetailAPI(generics.GenericAPIView):
             if serializer.is_valid():
                 serializer.save()
                 if request.data['approved']:
+                    print(request.data['attached'])
                     sendEmail(emailto=photo_request.email, case="photo_request_success",
                               subject='Hemos resuelto su solicitud', attached=request.data['attached'])
                 else:

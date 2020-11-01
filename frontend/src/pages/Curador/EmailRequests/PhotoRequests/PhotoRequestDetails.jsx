@@ -45,7 +45,7 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
   }, [request]);
 
   const handleOnClick = (obj) => {
-    // If its there remove it
+    // If it is there then remove it
     const newList = approved.filter((el) => el.id !== obj.id);
     if (approved.filter((el) => el.id === obj.id).length !== 0) {
       setApproved([...newList]);
@@ -55,11 +55,16 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
   };
 
   const resolve = (req, bool) => {
-    let approvedOriginal = approved.map((el) => el.image);
-    let reqUpdate = { ...req, approvedOriginal };
-    delete reqUpdate.photos;
+    let photosAndData = approved.map((el) => {
+      let tt = el.title;
+      let pm = el.permission;
+      let img = el.image.slice(6);
+      return {title: tt, permission: pm, url: img}
+    });
+    let reqUpdate = { ...req, photosAndData };
     reqUpdate.resolved = !req.resolved;
     reqUpdate.approved = bool;
+    delete reqUpdate.photos;
     updateRequest(reqUpdate);
     setTimeout(() => setRedirect(true), 1000);
   };

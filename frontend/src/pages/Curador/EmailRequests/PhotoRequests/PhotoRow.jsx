@@ -11,7 +11,9 @@ const check = <FontAwesomeIcon icon={faCheckCircle} />;
  * @param {Function} actions how to render actions
  */
 const PhotoRow = ({ request, key, actions, render }) => {
-  const onlyInfo = (req) => {
+  
+  //It takes only user details
+  const userDetails = (req) => {
     let reqCopy = { ...req };
     delete reqCopy.photos;
     delete reqCopy.resolved;
@@ -32,7 +34,7 @@ const PhotoRow = ({ request, key, actions, render }) => {
             )
           : <span style={{ color: "red" }}>Sin Resolver</span>}
       </td>
-      <td>{render(onlyInfo(request))}</td>
+      <td>{render(userDetails(request))}</td>
       <td>{request.reason}</td>
       <td>{new Date(request.created_at).toLocaleDateString("es")}</td>
       <td>{new Date(request.updated_at).toLocaleDateString("es")}</td>

@@ -156,7 +156,7 @@ export const updateRequest = (request) => (dispatch, getState) => {
     Authorization: "Token " + getState().user.token,
   };
   let jsonthing = JSON.stringify({
-    attached: request.approvedOriginal,
+    attached: request.photosAndData,
     resolved: request.resolved,
     approved: request.approved
   });
