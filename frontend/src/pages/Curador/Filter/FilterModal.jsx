@@ -45,11 +45,13 @@ const FilterModal = ({
     getTags(); //get tags from backend
   }, [photoId, newTagsId]);
 
-  useEffect(() => {
-    getPhotoDetails(photoId);
-  }, [photoId]);
+  // Not working
+  // useEffect(() => {
+  //   getPhotoDetails(photoId);
+  // }, [photoId]);
 
   const toggle = () => {
+    getPhotoDetails(photoId);
     let info = { ...photoDetails };
     info.metadata =
       photoDetails.metadata !== undefined
@@ -81,6 +83,8 @@ const FilterModal = ({
     editedPhoto[target.name] = value;
     setNewphoto(editedPhoto);
   };
+  const updateDate = (e) =>
+    setNewphoto({ ...newphoto, [e.target.name]: e.target.value + "T00:00" });
 
   const handleMetadata = () => {
     let newDetails = { ...newphoto };
@@ -225,7 +229,7 @@ const FilterModal = ({
                   type="date"
                   value={`${newphoto.upload_date}`.slice(0, 10)}
                   name="upload_date"
-                  onChange={handleChange}
+                  onChange={updateDate}
                 />
               </Col>
             </FormGroup>
