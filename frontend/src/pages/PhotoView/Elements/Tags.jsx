@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { Badge } from "reactstrap";
 import { Link } from "react-router-dom";
+import TagSuggestionModal from "./TagSuggestionModal"
 
 const Tags = ({ tags, onRedirect }) => (
   <Fragment>
@@ -20,9 +21,12 @@ const Tags = ({ tags, onRedirect }) => (
         </Badge>
       ))
     )}
-    <Link style={{ marginLeft: "0.2em" }} to="#">
+    {/* <Link style={{ marginLeft: "0.2em" }} to="#">
       Sugerir
-    </Link>
+    </Link> */}
+
+    <TagSuggestionModal/>
+    
   </Fragment>
 );
 
