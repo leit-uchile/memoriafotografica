@@ -315,8 +315,9 @@ export const mtPhoto = () => (dispatch) => {
     cc: String
   }
 */
-export const uploadImages = (data) => {
+export const uploadImages = (photos, photo_meta) => {
   return (dispatch, getState) => {
+    console.log(photos, photo_meta)
     let header = {
       Authorization: "Token " + getState().user.token,
     };
@@ -327,17 +328,15 @@ export const uploadImages = (data) => {
       currentTime.getMonth() + 1
     }-${currentTime.getFullYear()}`;
 
-    dispatch({ type: UPLOADING, data: data.photos.length });
+    dispatch({ type: UPLOADING, data: photos.length });
 
-    const funcs = data.photos.map((photo, key) => () => {
+    const funcs = photos.map((photo, key) => () => {
       let formData = new FormData();
       // If no title available create one for our date
       formData.append(
         "title",
         photo.meta.title
           ? photo.meta.title
-          : data.name !== ""
-          ? data.name + `Nº${key + 1}`
           : ""
       );
       formData.append("description", photo.meta.description);
@@ -347,10 +346,10 @@ export const uploadImages = (data) => {
       // Send our permissions
       formData.append(
         "permission",
-        photo.meta.cc !== null ? photo.meta.cc : data.cc ? data.cc : "CC BY"
+        photo.meta.cc !== null ? photo.meta.cc : photo_meta.cc ? photo_meta.cc : "CC BY"
       );
       // Date photos were taken
-      formData.append("upload_date", data.date + "T00:00");
+      formData.append("upload_date", photo_meta.date + "T00:00");
 
       // Add metadata in format 1,2,4 string
       if (photo.meta.tags.length !== 0) {

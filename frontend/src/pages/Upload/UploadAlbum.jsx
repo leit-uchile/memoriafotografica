@@ -97,10 +97,6 @@ const UploadAlbum = ({
     date: "",
     tags: [],
     cc: "",
-    onAlbum: false,
-    // Album related info
-    name: "",
-    description: "",
   });
 
   const suggestions = meta
@@ -134,9 +130,7 @@ const UploadAlbum = ({
 
   const onSubmitD = (e) => {
     e.preventDefault();
-    if (formData.onAlbum && formData.name === "") {
-      sendAlert("Debe rellenar el nombre del Album", "warning");
-    } else if (formData.date === "") {
+    if (formData.date === "") {
       sendAlert("Debe rellenar la fecha", "warning");
     } else if (formData.cc === "") {
       sendAlert("Debe seleccionar una licencia", "warning");
@@ -259,7 +253,7 @@ const UploadAlbum = ({
               </Button>
             </ButtonGroup>
           </Form>
-        </Col>
+        </Col> 
         <Col md={4} className="white-box upload-rules">
           <h4>Subida de contenido</h4>
           <ul>

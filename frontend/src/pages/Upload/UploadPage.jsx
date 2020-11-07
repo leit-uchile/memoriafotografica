@@ -3,7 +3,7 @@ import React, { Component, Fragment } from "react";
 import UnregisteredPrompt from "./UnregisterPrompt";
 import UploadUnregister from "./UploadUnregister";
 import UploadAlbum from "./UploadAlbum";
-import UploadPhoto from "./UploadPhotov2";
+import UploadPhoto from "./UploadPhotov3";
 import UploadProgress from "./UploadProgress";
 import { connect } from "react-redux";
 import { metadata, gallery, site_misc } from "../../actions";
@@ -23,7 +23,7 @@ class UploadPage extends Component {
     super(props);
     this.state = {
       userInfo: {}, // For anonymous upload
-      data: { onAlbum: false }, // All info to upload
+      data: {}, // All info to upload
       uploading: false,
       prog: 0, // May delete this later
       cacheCreatedPhotoIds: [], // In case of upload error
@@ -39,7 +39,7 @@ class UploadPage extends Component {
     });
   };
 
-  saveAlbumInfo = (info) => {
+  savePhotoInfo = (info) => {
     this.setState({ data: { ...this.state.data, ...info } });
   };
 
@@ -240,7 +240,7 @@ class UploadPage extends Component {
             />
             <UploadAlbum
               isAuth={this.props.isAuthenticated}
-              saveAll={this.saveAlbumInfo}
+              saveAll={this.savePhotoInfo}
               meta={this.props.meta}
               sendAlert={this.props.sendAlert}
               searchMeta={this.props.recoverMetadata}
@@ -263,13 +263,14 @@ class UploadPage extends Component {
           >
             <UploadAlbum
               isAuth={this.props.isAuthenticated}
-              saveAll={this.saveAlbumInfo}
+              saveAll={this.savePhotoInfo}
               meta={this.props.meta}
               sendAlert={this.props.sendAlert}
               searchMeta={this.props.recoverMetadata}
             />
             <UploadPhoto
               saveAll={this.startProcess}
+              photoInfo={this.state.data}
               meta={this.props.meta}
               doColumns={false}
               searchMeta={this.props.recoverMetadata}
