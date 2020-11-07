@@ -47,6 +47,11 @@ const LoadModal = (props) => {
     setModal(!modal);
   };
 
+  const untoggle = () => {
+    callback2();
+    setModal(!modal);
+  }
+
   return (
       <Button color="primary" onClick={toggle}>{buttonLabel}
         <FontAwesomeIcon icon={faChevronCircleRight} />
@@ -56,7 +61,7 @@ const LoadModal = (props) => {
           <UploadProgress />
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={callback2}>Finalizar</Button>{' '}
+          <Button color="primary" onClick={untoggle}>Finalizar</Button>{' '}
           <Button color="secondary" onClick={toggle}>Volver</Button>
         </ModalFooter>
         </Modal>
@@ -301,7 +306,7 @@ class UploadPhoto extends Component {
               {this.state.photos.length !== 0 ? (
                 <LoadModal buttonLabel="Finalizar" 
                   callback={() => this.props.uploadImages(this.state.photos, this.props.photoInfo)}
-                  callback2={nextStep}/>
+                  callback2={this.props.nextStep}/>
               ) : null}
             </ButtonGroup>
           </Col>
