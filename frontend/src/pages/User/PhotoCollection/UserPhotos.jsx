@@ -128,9 +128,18 @@ class UserPhotos extends Component {
                   ? "Seleccionar todas"
                   : "Deseleccionar"}
               </Button>
+              <Button
+                disabled={this.state.picturesToEdit.length === 0}
+                color="primary"
+                onClick={()=>this.setState({modalOpen: !this.state.modalOpen})}
+              >
+                Editar selección ({this.state.picturesToEdit.length})
+              </Button>
               <EditPhotosModal
-                photosID={this.state.picturesToEdit}
-                isOpen={(bool) => this.setState({ modalOpen: bool })}
+                photosId={this.state.picturesToEdit}
+                isOpen={this.state.modalOpen}
+                handleToggle={()=>this.setState({modalOpen: !this.state.modalOpen})}
+                isCurator={false}
               />
               <CreateAlbumModal photosID={this.state.picturesToEdit} isOpen={(bool) => this.setState({modalOpen: bool})}/>
             </Col>
