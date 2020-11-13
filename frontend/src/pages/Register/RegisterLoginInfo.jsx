@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserCircle,
@@ -44,8 +45,11 @@ class RegisterLoginInfo extends Component {
         cropModal: false,
         termsOfUseModal: false,
         termsOfUseAcepted: false,
+        recaptchaValue: "",
       };
     }
+    //TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
+    this.captchaKey = "6LdqEM0ZAAAAAHkqSnB_dHDEjh4xy7euetQLrW7O";
     this.checkPassword = this.checkPassword.bind(this);
     this.props = Props;
     this.genericChangeHandler = this.genericChangeHandler.bind(this);
@@ -61,10 +65,16 @@ class RegisterLoginInfo extends Component {
     this.toggleTerms = this.toggleTerms.bind(this);
     this.acceptTerms = this.acceptTerms.bind(this);
     this.toggleTermsValue = this.toggleTermsValue.bind(this);
+    this.onChangeCaptcha = this.onChangeCaptcha.bind(this);
   }
 
   toggleCropModal(e) {
     this.setState({ cropModal: !this.state.cropModal });
+  }
+
+  onChangeCaptcha() {
+    const recaptchaValue = this.recaptcharef.getValue();
+    this.setState({ recaptchaValue: recaptchaValue });
   }
 
   toggleTerms(e) {
@@ -104,10 +114,16 @@ class RegisterLoginInfo extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     if (this.checkPassword()) {
-      this.setState({ error: null });
-      this.props.saveInfo(this.state);
-      // From StepWizard
-      this.props.nextStep();
+      if (this.recaptcharef.getValue() == "") {
+        this.setState({
+          error: "Debe rellenar el recaptcha",
+        });
+      } else {
+        this.setState({ error: null });
+        this.props.saveInfo(this.state);
+        // From StepWizard
+        this.props.nextStep();
+      }
     }
   };
 
@@ -327,6 +343,11 @@ class RegisterLoginInfo extends Component {
                   acceptTerms={this.acceptTerms}
                 />
               </div>
+              <ReCAPTCHA
+                ref={(r) => (this.recaptcharef = r)}
+                sitekey={this.captchaKey}
+                onChange={this.onChangeCaptcha}
+              />
 
               <FormGroup>
                 <Button color="primary">¡Reg&iacute;strame!</Button>
