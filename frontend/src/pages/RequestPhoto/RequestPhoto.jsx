@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { Link } from "react-router-dom";
 import { webadmin, site_misc } from "../../actions";
 import { connect } from "react-redux";
@@ -97,10 +98,22 @@ class RequestPhoto extends Component {
         phone_number: "",
         email: "",
         institution: "",
+        recaptchaValue: "",
       },
     };
+    //TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
+    this.captchaKey = "6LdqEM0ZAAAAAHkqSnB_dHDEjh4xy7euetQLrW7O";
+
+    this.onChangeCaptcha = this.onChangeCaptcha.bind(this);
     this.updateData = this.updateData.bind(this);
     this.props.setRoute("/request-photo/");
+  }
+
+  onChangeCaptcha() {
+    const recaptchaValue = this.recaptcharef.getValue();
+    this.setState({
+      formData: { ...this.state.formData, recaptchaValue: recaptchaValue },
+    });
   }
 
   updateData = (e) =>
@@ -110,9 +123,12 @@ class RequestPhoto extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    const photosId = this.props.requestedPhotos.map((el) => el.id);
-    console.log(photosId);
-    this.props.sendRequest(photosId, this.state.formData);
+    if (this.recaptchaValue.getValue() == "") {
+      //TODO error message
+    } else {
+      const photosId = this.props.requestedPhotos.map((el) => el.id);
+      this.props.sendRequest(photosId, this.state.formData);
+    }
   };
 
   render() {
@@ -251,6 +267,13 @@ class RequestPhoto extends Component {
                   </Col>
                 </FormGroup>
                 <hr />
+
+                <ReCAPTCHA
+                  ref={(r) => (this.recaptcharef = r)}
+                  sitekey={this.captchaKey}
+                  onChange={this.onChangeCaptcha}
+                />
+
                 <Button color="primary" tabIndex="11" onClick={this.onSubmit}>
                   Solicitar
                 </Button>
