@@ -1,5 +1,6 @@
 import React, { Component, useState } from "react";
 import UploadDetails from "./UploadDetailsv2";
+import UploadProgress from "./UploadProgress";
 import {
   Container,
   Row,
@@ -12,7 +13,7 @@ import {
   Modal, 
   ModalHeader, 
   ModalBody, 
-  ModalFooter
+  ModalFooter,
 } from "reactstrap";
 import Dropzone from "react-dropzone";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,11 +24,50 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
+import { photos } from "../../actions/gallery_api";
+import {bindActionCreators} from "redux";
+import StepWizard from 'react-step-wizard';
 import uuid from "uuid";
 import "./styles.css";
 import "./uploadPhoto.css";
 
 const imageMaxSize = 8000000; // Bytes ~ 8MB
+
+const LoadModal = (props) => {
+  const {
+    buttonLabel,
+    callback,
+    callback2
+  } = props;
+
+  const [modal, setModal] = useState(false);
+
+  const toggle = () => {
+    callback();
+    setModal(!modal);
+  };
+
+  const untoggle = () => {
+    callback2();
+    setModal(!modal);
+  }
+
+  return (
+      <Button color="primary" onClick={toggle}>{buttonLabel}
+        <FontAwesomeIcon icon={faChevronCircleRight} />
+        <Modal isOpen={modal} toggle={toggle}>
+        <ModalHeader toggle={toggle}></ModalHeader>
+        <ModalBody>
+          <UploadProgress />
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={untoggle}>Finalizar</Button>{' '}
+          <Button color="secondary" onClick={toggle}>Volver</Button>
+        </ModalFooter>
+        </Modal>
+      </Button>
+  );
+}
 
 /**
  * UploadPhoto
@@ -186,33 +226,6 @@ class UploadPhoto extends Component {
       );
     }
 
-    const LoadModal = (props) => {
-      const {
-        buttonLabel,
-        className
-      } = props;
-    
-      const [modal, setModal] = useState(false);
-    
-      const toggle = () => setModal(!modal);
-    
-      return (
-          <Button color="primary" onClick={toggle}>{buttonLabel}
-            <FontAwesomeIcon icon={faChevronCircleRight} />
-            <Modal isOpen={modal} toggle={toggle} className={className}>
-            <ModalHeader toggle={toggle}>Modal title</ModalHeader>
-            <ModalBody>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </ModalBody>
-            <ModalFooter>
-              <Button color="primary" onClick={toggle}>Do Something</Button>{' '}
-              <Button color="secondary" onClick={toggle}>Cancel</Button>
-            </ModalFooter>
-            </Modal>
-          </Button>
-      );
-    }
-
     return (
       <Container fluid>
         <Row>
@@ -291,7 +304,9 @@ class UploadPhoto extends Component {
                 <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
               </Button>
               {this.state.photos.length !== 0 ? (
-                <LoadModal buttonLabel="Finalizar"/>
+                <LoadModal buttonLabel="Finalizar" 
+                  callback={() => this.props.uploadImages(this.state.photos, this.props.photoInfo)}
+                  callback2={this.props.nextStep}/>
               ) : null}
             </ButtonGroup>
           </Col>
@@ -305,8 +320,9 @@ const mapStateToProps = (state) => ({
   disclosed: null,
 });
 
-const mapActionsToProps = (dispatch) => ({
-  sendAlert: (message, color) => dispatch(site_misc.setAlert(message, color)),
-});
+const mapActionsToProps = (dispatch) => bindActionCreators({
+  sendAlert: site_misc.setAlert,
+  uploadImages: photos.uploadImages,
+}, dispatch);
 
 export default connect(mapStateToProps, mapActionsToProps)(UploadPhoto);

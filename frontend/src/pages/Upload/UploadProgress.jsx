@@ -104,17 +104,6 @@ const UploadProgress = ({
           </Col>
         </Row>
       ) : null}
-      {!uploading ? (
-        <Row>
-          <Col>
-            <p className="upload-progress-success">
-              Las fotos tendr&aacute;n que ser aprobadas para que la comunidad
-              las vea. Puedes ver el estado en que se encuentra accediendo a tu
-              perfil. Muchas gracias!
-            </p>
-          </Col>
-        </Row>
-      ) : null}
     </Container>
   );
 };
