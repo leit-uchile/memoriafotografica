@@ -114,6 +114,7 @@ export const sendRequest = (photos, info) => {
       phone_number: info.phone_number,
       email: info.email,
       institution: info.institution,
+      recaptchaToken: info.recaptchaToken,
     });
 
     return fetch(`/api/requests/photos/`, {
@@ -127,7 +128,13 @@ export const sendRequest = (photos, info) => {
           dispatch({ type: SEND_REQUESTPHOTO, data: data });
         });
       } else {
-        dispatch(setAlert("Hubo un error al enviar su solicitud", "warning"));
+        if (r.status === 401) {
+          dispatch(
+            setAlert("Debe logearse para solicitar una foto", "warning")
+          );
+        } else {
+          dispatch(setAlert("Hubo un error al enviar su solicitud", "warning"));
+        }
       }
     });
   };

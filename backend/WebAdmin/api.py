@@ -180,12 +180,23 @@ class PhotoRequestAPI(generics.GenericAPIView):
     ]
 
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,
+        formData = request.data
+        if "recaptchaToken" in formData.keys():
+            tokenRecaptcha = {"recaptcha": formData.pop("recaptchaToken")}
+        else:
+            tokenRecaptcha = {"recaptcha": ""}
+        serializer = self.serializer_class(data=formData,
                                            context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        recaptchaSer = ReCaptchaSerializer(data=tokenRecaptcha)
+        if recaptchaSer.is_valid():
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data,
+                                status=status.HTTP_201_CREATED)
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+        return Response(recaptchaSer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
 
 
 class PhotoRequestListAPI(generics.GenericAPIView):

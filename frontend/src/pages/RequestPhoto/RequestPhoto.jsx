@@ -98,7 +98,7 @@ class RequestPhoto extends Component {
         phone_number: "",
         email: "",
         institution: "",
-        recaptchaValue: "",
+        recaptchaToken: "",
       },
     };
     //TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
@@ -110,9 +110,9 @@ class RequestPhoto extends Component {
   }
 
   onChangeCaptcha() {
-    const recaptchaValue = this.recaptcharef.getValue();
+    const recaptchaToken = this.recaptcharef.getValue();
     this.setState({
-      formData: { ...this.state.formData, recaptchaValue: recaptchaValue },
+      formData: { ...this.state.formData, recaptchaToken: recaptchaToken },
     });
   }
 
@@ -123,8 +123,8 @@ class RequestPhoto extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    if (this.recaptchaValue.getValue() == "") {
-      //TODO error message
+    if (this.state.formData.recaptchaToken == "") {
+      this.props.sendAlert("Debe rellenar el captcha", "warning");
     } else {
       const photosId = this.props.requestedPhotos.map((el) => el.id);
       this.props.sendRequest(photosId, this.state.formData);
@@ -148,7 +148,7 @@ class RequestPhoto extends Component {
         <Row>
           <Col sm={8} className="white-box form-container">
             {!requested ? (
-              <Form>
+              <Form onSubmit={this.onSubmit}>
                 <FormGroup>
                   <div className="form-title">
                     <FontAwesomeIcon icon={faImages} />
@@ -171,7 +171,6 @@ class RequestPhoto extends Component {
                     onChange={this.updateData}
                     placeholder="Especificación"
                     required
-                    disabled={requested}
                   />
                 </FormGroup>
 
@@ -185,10 +184,10 @@ class RequestPhoto extends Component {
                       type="text"
                       name="first_name"
                       tabIndex="2"
-                      onChange={this.updateData}
                       placeholder="Nombre"
                       required
-                      disabled={requested}
+                      onChange={this.updateData}
+                      value={this.state.formData.first_name}
                     />
                     <Input
                       type="text"
@@ -197,7 +196,6 @@ class RequestPhoto extends Component {
                       onChange={this.updateData}
                       placeholder="CI"
                       required
-                      disabled={requested}
                     />
                     <Input
                       type="text"
@@ -206,7 +204,6 @@ class RequestPhoto extends Component {
                       onChange={this.updateData}
                       placeholder="Dirección"
                       required
-                      disabled={requested}
                     />
                     <Input
                       type="text"
@@ -215,7 +212,6 @@ class RequestPhoto extends Component {
                       onChange={this.updateData}
                       placeholder="Teléfono"
                       required
-                      disabled={requested}
                     />
                     <Input
                       type="text"
@@ -224,7 +220,6 @@ class RequestPhoto extends Component {
                       onChange={this.updateData}
                       placeholder="Institución"
                       required
-                      disabled={requested}
                     />
                   </Col>
                   <Col>
@@ -235,7 +230,6 @@ class RequestPhoto extends Component {
                       onChange={this.updateData}
                       placeholder="Apellidos"
                       required
-                      disabled={requested}
                     />
                     <Input
                       type="text"
@@ -244,7 +238,6 @@ class RequestPhoto extends Component {
                       onChange={this.updateData}
                       placeholder="Actividad/Profesión"
                       required
-                      disabled={requested}
                     />
                     <Input
                       type="text"
@@ -253,16 +246,14 @@ class RequestPhoto extends Component {
                       onChange={this.updateData}
                       placeholder="Comuna"
                       required
-                      disabled={requested}
                     />
                     <Input
                       type="email"
                       name="email"
                       tabIndex="9"
-                      onChange={this.updateData}
                       placeholder="Email"
                       required
-                      disabled={requested}
+                      onChange={this.updateData}
                     />
                   </Col>
                 </FormGroup>
@@ -274,7 +265,7 @@ class RequestPhoto extends Component {
                   onChange={this.onChangeCaptcha}
                 />
 
-                <Button color="primary" tabIndex="11" onClick={this.onSubmit}>
+                <Button color="primary" tabIndex="11" type="submit">
                   Solicitar
                 </Button>
               </Form>
@@ -346,6 +337,7 @@ const mapActionsToProps = (dispatch) => ({
   setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
   removeRequestPhoto: (value) => dispatch(webadmin.removeRequestPhoto(value)),
   sendRequest: (photos, info) => dispatch(webadmin.sendRequest(photos, info)),
+  sendAlert: (message, color) => dispatch(site_misc.setAlert(message, color)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(RequestPhoto);
