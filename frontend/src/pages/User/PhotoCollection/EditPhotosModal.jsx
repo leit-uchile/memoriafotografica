@@ -90,7 +90,10 @@ const EditPhotosModal = ({
     } else {
       setData({ metadata: [] });
     }
-  }, [photoDetails, photosId, isOpen]);
+  }, [photoDetails, photosId, isOpen]); 
+  // photoDetails: when new info from another photoId has been requested
+  // photosId: when there are 2+ photos it's necessary setData empty
+  // isOpen: to set original data when the user changed some field without save
 
   const updateData = (e) =>
     setData({ ...formData, [e.target.name]: e.target.value });
@@ -128,7 +131,7 @@ const EditPhotosModal = ({
     }
   };
 
-  // It create array with registered metadata
+  // It creates an array with registered metadata
   useEffect(() => {
     let newDetails = { ...formData };
     if (newDetails.metadata) {
