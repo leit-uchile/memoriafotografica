@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, Fragment } from "react";
 import Gallery from "react-photo-gallery";
 import { Button, Container, Row, Col } from "reactstrap";
+import PropTypes from "prop-types";
 
 /**
  * From documentation
@@ -150,5 +151,15 @@ const PhotoSelector = ({
     </Fragment>
   );
 };
+
+PhotoSelector.propTypes = {
+  useContainer: PropTypes.bool,
+  photos: PropTypes.arrayOf(PropTypes.shape({
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    src: PropTypes.string.isRequired,
+  })),
+  putAll: PropTypes.func,
+}
 
 export default PhotoSelector;
