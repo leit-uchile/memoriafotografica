@@ -48,16 +48,27 @@ class RegistrationAPI(generics.GenericAPIView):
     serializer_class = CreateUserSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        activation_link = RegisterLink(code=createHash(user.pk),
-                                       status=1,
-                                       user=user)
-        activation_link.save()
-        sendEmail(user.email, "sign_up", "Active su cuenta",
-                  activation_link.code)
-        return Response(status=status.HTTP_200_OK)
+        formData = request.data.copy()
+        if "recaptchaToken" in formData.keys():
+            tokenRecaptcha = {"recaptcha": formData.pop("recaptchaToken")[0]}
+        else:
+            tokenRecaptcha = {"recaptcha": ""}
+        serializer = self.serializer_class(data=formData,
+                                           context={'request': request})
+        recaptchaSer = ReCaptchaSerializer(data=tokenRecaptcha)
+
+        if recaptchaSer.is_valid():
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            activation_link = RegisterLink(code=createHash(user.pk),
+                                           status=1,
+                                           user=user)
+            activation_link.save()
+            sendEmail(user.email, "sign_up", "Active su cuenta",
+                      activation_link.code)
+            return Response(status=status.HTTP_200_OK)
+        return Response(recaptchaSer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
 
 
 class RegisterLinkAPI(generics.GenericAPIView):

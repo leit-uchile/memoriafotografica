@@ -45,7 +45,7 @@ class RegisterLoginInfo extends Component {
         cropModal: false,
         termsOfUseModal: false,
         termsOfUseAcepted: false,
-        recaptchaValue: "",
+        recaptchaToken: "",
       };
     }
     //TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
@@ -73,8 +73,8 @@ class RegisterLoginInfo extends Component {
   }
 
   onChangeCaptcha() {
-    const recaptchaValue = this.recaptcharef.getValue();
-    this.setState({ recaptchaValue: recaptchaValue });
+    const recaptchaToken = this.recaptcharef.getValue();
+    this.setState({ recaptchaToken: recaptchaToken });
   }
 
   toggleTerms(e) {
