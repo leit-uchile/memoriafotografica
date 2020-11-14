@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { Button, Row, Col, Container } from "reactstrap";
-import { user, site_misc } from "../../../actions";
+import { Button, Row, Col, Container, Badge } from "reactstrap";
+import { user, site_misc, gallery } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
 import PhotoEditor from "../../../components/PhotoEditor";
 import { Helmet } from "react-helmet";
@@ -133,9 +133,26 @@ class UserPhotos extends Component {
                   ? "Seleccionar todas"
                   : "Deseleccionar"}
               </Button>
+              <Button
+                disabled={this.state.picturesToEdit.length === 0}
+                color="primary"
+                onClick={() =>
+                  this.setState({ modalOpen: !this.state.modalOpen })
+                }
+              >
+                Editar selección ({this.state.picturesToEdit.length})
+              </Button>
               <EditPhotosModal
-                photosID={this.state.picturesToEdit}
-                isOpen={(bool) => this.setState({ modalOpen: bool })}
+                photosId={this.state.picturesToEdit}
+                isOpen={this.state.modalOpen}
+                handleToggle={() =>
+                  this.setState({ modalOpen: !this.state.modalOpen })
+                }
+                editPhoto={(id,content)=>this.props.editPhoto(id,content)}
+                deletePhoto={(id)=>this.props.deletePhoto(id)}
+                isCurator={false}
+                censurePhoto={null}
+                
               />
             </Col>
           </Row>
@@ -193,6 +210,8 @@ const mapActionsToProps = (dispatch) =>
       loadPublicUser: user.loadAUser,
       onLoadGetPhotos: user.getUserPhotos,
       onLoadGetPublicPhotos: user.loadPublicUserPhotos,
+      editPhoto: gallery.photos.editPhoto,
+      deletePhoto: gallery.photos.deletePhoto,
     },
     dispatch
   );

@@ -174,8 +174,14 @@ class UserDetailAPI(generics.GenericAPIView):
 
     def get(self, request, pk, *args, **kwargs):
         user = self.get_object(pk)
-        if not user.public_profile:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if(not user.public_profile):
+            print(request.user)
+            if(request.user.is_anonymous or request.user.user_type == 1):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)    
+        # if(request.user.is_anonymous and not user.public_profile):
+        #     return Response(status=status.HTTP_401_UNAUTHORIZED)
+        # if(request.user.user_type == 1 and not user.public_profile):
+        #     return Response(status=status.HTTP_401_UNAUTHORIZED)
         serializer = UserSerializer(user)
         return Response(serializer.data)
 

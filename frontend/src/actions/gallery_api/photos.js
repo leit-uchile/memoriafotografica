@@ -292,20 +292,6 @@ export const getPhoto = (id) => (dispatch) => {
     }
   );
 };
-
-export const mtPhoto = () => (dispatch) => {
-  dispatch({
-    type: RECOVERED_PHOTO_DETAILS,
-    data: {
-      title: "[Titulo]",
-      image: undefined,
-      desc: undefined,
-      permission: [],
-      category: [],
-      metadata: [],
-    },
-  });
-};
 /* When uploading each photo will reduce to success or error.
   In case of error the payload will contain the id for
   user feedback (and posibly relaunch)
