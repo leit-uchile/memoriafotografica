@@ -1,14 +1,45 @@
-import React, { Fragment, useState, useEffect } from "react";
-import { Table, ButtonGroup, Row, Col, Input, Button } from "reactstrap";
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Table,
+  ButtonGroup,
+  Row,
+  Col,
+  Input,
+  Button,
+} from "reactstrap";
 import { connect } from "react-redux";
 import { webadmin } from "../../../../actions";
 import { Pagination } from "../../../../components";
 import ContactRow from "./ContactRow";
 import ContactEmailModal from "./ContactEmailModal";
 import ContactPhoneModal from "./ContactPhoneModal";
+import FilterOptions from "../../FilterOptions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faFilter } from "@fortawesome/free-solid-svg-icons";
+import { bindActionCreators } from "redux";
+import {
+  selectWebAdminMessages,
+  selectWebAdminUpdateMessage,
+} from "../../../../reducers";
 import "../../styles.css";
+
+const filters = [
+  { display: "Recibidos desde", type: "date", name: "createdSince" },
+  { display: "Recibidos hasta", type: "date", name: "createdUntil" },
+  {
+    display: "Estado",
+    type: "select",
+    options: ["Respondido", "Sin responder"],
+    name: "resolved",
+  },
+  {
+    display: "Respondido por",
+    type: "select",
+    options: ["Correo", "Telefono"],
+    name: "emailSent",
+  },
+];
 
 /**
  * Define different Renders and updates for.
@@ -24,18 +55,32 @@ const ContactTable = ({
   active,
 }) => {
   const [searchState, setSearchState] = useState("");
+  const [filter, setFilter] = useState({
+    createdSince: "",
+    createdUntil: "",
+    resolved: "",
+    emailSent: "",
+  });
   const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
 
   useEffect(() => {
+    let url = "&sort=updated_at-desc";
     if (active) {
-      getMessages(
-        searchState,
-        pagination.page + 1,
-        pagination.page_size,
-        "&sort=updated_at-desc"
-      );
+      if (filter.createdSince && filter.createdSince !== "") {
+        url = url + `&created_at=${filter.createdSince}`;
+      }
+      if (filter.createdUntil && filter.createdUntil !== "") {
+        url = url + `&created_at_until=${filter.createdUntil}`;
+      }
+      if (filter.resolved && filter.resolved !== "") {
+        url = url + `&resolved=${filter.resolved}`;
+      }
+      if (filter.emailSent.length !== 0) {
+        url = url + `&resolved=${true}` + `&email_sent=${filter.emailSent}`;
+      }
+      getMessages(searchState, pagination.page + 1, pagination.page_size, url);
     }
-  }, [pagination, searchState, updatedMessage, active]);
+  }, [active, filter, searchState, pagination, updatedMessage]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
@@ -56,13 +101,13 @@ const ContactTable = ({
   );
 
   return (
-    <Fragment>
+    <Container fluid>
       <Row>
         <Col>
           <h2>Mensajes Recibidos</h2>
         </Col>
       </Row>
-      <Row>
+      <Row style={{ marginBottom: "10px" }}>
         <Col sm={6}>
           <ButtonGroup>
             <Button disabled>Filtrar</Button>
@@ -76,7 +121,7 @@ const ContactTable = ({
                 setPagination({ page: 0, page_size: Number(e.target.value) })
               }
             >
-              <option value="11">12 por p&aacute;gina</option>
+              <option value="12">12 por p&aacute;gina</option>
               <option value="25">25 por p&aacute;gina</option>
               <option value="50">50 por p&aacute;gina</option>
             </Input>
@@ -94,17 +139,22 @@ const ContactTable = ({
                 setSearchState(e.target.value);
               }}
             />
-            <Button
-              type="button"
-              color="primary"
-              onClick={() => {}} //this.swapPage}
-            >
+            <Button color="primary">
               <FontAwesomeIcon icon={faSearch} />
             </Button>
           </ButtonGroup>
         </Col>
       </Row>
-      <Row style={{ marginTop: "1em" }}>
+      <Row>
+        <Col>
+          <FilterOptions
+            id="#toggler"
+            params={filters}
+            setState={(name, value) => setFilter({ ...filter, [name]: value })}
+          />
+        </Col>
+      </Row>
+      <Row>
         <Col>
           <Table responsive striped className="statBox">
             <thead>
@@ -142,20 +192,22 @@ const ContactTable = ({
           )}
         </Col>
       </Row>
-    </Fragment>
+    </Container>
   );
 };
 
 const mapStateToProps = (state) => ({
-  messages: state.webadmin.messages,
-  updatedMessage: state.webadmin.updatedMessage,
+  messages: selectWebAdminMessages(state),
+  updatedMessage: selectWebAdminUpdateMessage(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  getMessages: (search, page, page_size, extra) =>
-    dispatch(webadmin.getMessages(search, page, page_size, extra)),
-  updateMessage: (msg, formData) =>
-    dispatch(webadmin.updateMessage(msg, formData)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getMessages: webadmin.getMessages,
+      updateMessage: webadmin.updateMessage,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(ContactTable);

@@ -85,7 +85,7 @@ const PhotoCards = ({ photos, editPhoto }) => {
                     <FilterModal
                       editPhoto={editPhoto}
                       buttonLabel="Gestionar"
-                      photo={c}
+                      photoId={c.id}
                     />
                   </CardFooter>
                 </Card>

@@ -65,7 +65,7 @@ const PhotoList = ({ photos, editPhoto }) => {
               <FilterModal
                 editPhoto={editPhoto}
                 buttonLabel="Gestionar"
-                photo={el}
+                photoId={el.id}
               />
             </td>
           </tr>

@@ -2,6 +2,8 @@ import React, { useState, useEffect, Fragment } from "react";
 import { Redirect, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { gallery, site_misc } from "../../actions";
+import {  selectPhotos,
+          selectAlbumResult } from "../../reducers";
 import { Helmet } from "react-helmet";
 import {
   Container,
@@ -14,6 +16,7 @@ import {
 } from "reactstrap";
 import NewsSlider from "../News/NewsSlider";
 import Gallery from "react-photo-gallery";
+import { bindActionCreators } from "redux";
 import "./landing.css";
 
 const LandingPage = (props) => {
@@ -21,8 +24,8 @@ const LandingPage = (props) => {
 
   useEffect(() => {
     setRoute("/Inicio");
-    loadPhotos();
-    loadCollections();
+    loadPhotos(0, 10);
+    loadCollections(0, 3, "&collections=1");
   }, [loadPhotos, loadCollections, setRoute]);
 
   var mapped = props.photos.map((el) => ({
@@ -218,15 +221,18 @@ const LandingPage = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  photos: state.photos.photos,
-  collections: state.albumcollection.albums.results,
+  photos: selectPhotos(state),
+  collections: selectAlbumResult(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  loadPhotos: () => dispatch(gallery.photos.home(0, 10)),
-  loadCollections: () =>
-    dispatch(gallery.album.getAlbums(0, 3, "&collections=1")),
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadPhotos: gallery.photos.home,
+      loadCollections: gallery.album.getAlbums,
+      setRoute: site_misc.setCurrentRoute,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(LandingPage);

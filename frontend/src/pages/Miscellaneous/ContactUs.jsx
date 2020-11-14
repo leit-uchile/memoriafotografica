@@ -18,6 +18,7 @@ import {
   Button,
 } from "reactstrap";
 import { webadmin } from "../../actions";
+import {selectWebAdminMessages} from "../../reducers";
 import "./styles.css";
 
 const ContactUs = ({ contacted, contactUs }) => {
@@ -174,7 +175,7 @@ const Map = ({ source }) => {
 };
 
 const mapStateToProps = (state) => ({
-  contacted: state.webadmin.contacted,
+  contacted: selectWebAdminMessages(state),
 });
 
 const mapActionsToProps = (dispatch) => ({

@@ -15,6 +15,11 @@ import Comment from "./Comment";
 import { LeitSpinner } from "../../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faComments } from "@fortawesome/free-solid-svg-icons";
+import { bindActionCreators } from "redux";
+import { selectComments,
+          selectUserData,
+          selectUserIsAuthenticated,
+          selectCommentsLoaded } from "../../../reducers";
 import "./styles.css";
 
 const CommentHandler = ({
@@ -105,15 +110,19 @@ const CommentHandler = ({
 };
 
 const mapStateToProps = (state) => ({
-  comments: state.comments.comments,
-  commentsLoaded: state.comments.commentsLoaded,
-  auth: state.user.isAuthenticated,
-  userData: state.user.userData,
+  comments: selectComments(state),
+  commentsLoaded: selectCommentsLoaded(state),
+  auth: selectUserIsAuthenticated(state),
+  userData: selectUserData(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  newComment: (id, comment) =>
-    dispatch(gallery.comments.putComment(id, comment)),
-  fetchComments: (id) => dispatch(gallery.comments.getComments(id)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      newComment: gallery.comments.putComment,
+      fetchComments: gallery.comments.getComments,
+    },
+    dispatch
+  );
+
 export default connect(mapStateToProps, mapActionsToProps)(CommentHandler);

@@ -40,7 +40,7 @@ export default function albumcollection(state = initialState, action) {
     case CREATED_ALBUM_ERROR:
       return { ...state, createAlbum: { sent: true, success: false } };
     case ALBUMS_LOADED:
-      return { ...state, albums: action.data, loading: false}
+      return { ...state, albums: action.data, loading: false };
     case ALBUMS_EMPTY:
       return { ...state, albums: {count: 0, results: []}, loading: false}
     case DELETE_ALBUM_SENT:
@@ -59,3 +59,19 @@ export default function albumcollection(state = initialState, action) {
       return state;
   }
 }
+
+export const selectAlbums = (state) => state.albumcollection.albums;
+
+export const selectAlbumsLoading = (state) => state.albumcollection.loading;
+
+export const selectAlbumsData = (state) => state.albumcollection.albumData;
+
+export const selectAlbumResult = (state) => state.albumcollection.albums.results;
+
+export const selectAlbumCollections = (state) => state.albumcollection;
+
+export const selectAlbumCollectionAlbumData = (state) => state.albumcollection.albumData;
+
+export const selectAlbumEdit = (state) => state.albumcollection.editAlbum;
+
+export const selectAlbumDelete = (state) => state.albumcollection.deleteAlbum;

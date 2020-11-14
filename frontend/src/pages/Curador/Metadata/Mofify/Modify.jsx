@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Col, Button, Row, Input, ButtonGroup } from "reactstrap";
+import { Container, Col, Button, Row, Input, ButtonGroup } from "reactstrap";
 import MetadataList from "./MetadataList";
 import HelpMessages from "./HelpMessages";
 import ModifyModal from "./ModifyModal";
@@ -8,6 +8,12 @@ import { metadata, site_misc } from "../../../../actions";
 import { Pagination } from "../../../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { bindActionCreators } from "redux";
+import {
+  selectMetaDataAllIptcs,
+  selectMetaDataGeneralTags,
+  selectSiteMiscMetaDataHelpDiscloure,
+} from "../../../../reducers";
 import "../styles.css";
 
 /**
@@ -69,10 +75,11 @@ const Modify = ({
       });
       setSelected(newSelected);
     }
+    // eslint-disable-next-line
   }, [metadata]);
 
   return (
-    <Fragment>
+    <Container fluid>
       <Row>
         <Col>
           <h2>Modificar Metadata</h2>
@@ -192,22 +199,23 @@ const Modify = ({
           )}
         </Col>
       </Row>
-    </Fragment>
+    </Container>
   );
 };
 
 const mapStateToProps = (state) => ({
-  metadata: state.metadata.general_tags,
-  iptcs: state.metadata.all_iptcs,
-  metadataHelp: state.site_misc.metadataHelpDisclosure,
+  metadata: selectMetaDataGeneralTags(state),
+  iptcs: selectMetaDataAllIptcs(state),
+  metadataHelp: selectSiteMiscMetaDataHelpDiscloure(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  searchMeta: (search, page, page_size, extra) =>
-    dispatch(
-      metadata.searchMetadataByValueGeneral(search, page, page_size, extra)
-    ),
-  setHelpDisclosure: (val) => dispatch(site_misc.setMetadataHelp(val)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      searchMeta: metadata.searchMetadataByValueGeneral,
+      setHelpDisclosure: site_misc.setMetadataHelp,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Modify);

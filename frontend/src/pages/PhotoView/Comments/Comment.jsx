@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { bindActionCreators } from "redux";
 import "./styles.css";
 
 const Comment = ({
@@ -127,11 +128,15 @@ const Comment = ({
   );
 };
 
-const mapActionsToProps = (dispatch) => ({
-  updateComment: (id, comment, date) =>
-    dispatch(gallery.comments.editComment(id, comment, date)),
-  deleteComment: (id) => dispatch(gallery.comments.deleteComment(id)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      updateComment: gallery.comments.editComment,
+      deleteComment: gallery.comments.deleteComment,
+    },
+    dispatch
+  );
+
 export default connect(null, mapActionsToProps)(Comment);
 
 //export default Comment;

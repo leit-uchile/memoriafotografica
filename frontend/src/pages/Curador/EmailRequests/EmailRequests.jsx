@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import ContactTable from "./ContactRequests/ContactTable";
-import PhotoTable from "./PhotoRequests/PhotoTable";
+import React, { useState } from 'react';
+import ContactTable from './ContactRequests/ContactTable';
+import PhotoTable from './PhotoRequests/PhotoTable';
 import {
   TabContent,
   TabPane,
@@ -9,22 +9,22 @@ import {
   NavLink,
   Row,
   Col,
-} from "reactstrap";
+} from 'reactstrap';
 
 const EmailRequests = () => {
-  const [activeTab, setActiveTab] = useState("1");
+  const [activeTab, setActiveTab] = useState('1');
 
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
   return (
     <div>
-      <Nav tabs style={{ marginBottom: "1em" }}>
+      <Nav tabs style={{ marginBottom: '1em' }}>
         <NavItem>
           <NavLink
-            className={activeTab === "1" ? "active" : ""}
+            className={activeTab === '1' ? 'active' : ''}
             onClick={() => {
-              toggle("1");
+              toggle('1');
             }}
           >
             Solicitud de fotos
@@ -32,9 +32,9 @@ const EmailRequests = () => {
         </NavItem>
         <NavItem>
           <NavLink
-            className={activeTab === "2" ? "active" : ""}
+            className={activeTab === '2' ? 'active' : ''}
             onClick={() => {
-              toggle("2");
+              toggle('2');
             }}
           >
             Contacto
@@ -45,14 +45,14 @@ const EmailRequests = () => {
         <TabPane tabId="1">
           <Row>
             <Col sm="12">
-              <PhotoTable />
+              <PhotoTable active={activeTab === '1'} />
             </Col>
           </Row>
         </TabPane>
         <TabPane tabId="2">
           <Row>
             <Col sm="12">
-              <ContactTable active={activeTab === "2"} />
+              <ContactTable active={activeTab === '2'} />
             </Col>
           </Row>
         </TabPane>

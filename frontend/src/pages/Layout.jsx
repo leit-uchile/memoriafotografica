@@ -25,6 +25,10 @@ import RequestPhoto from "./RequestPhoto";
 import UploadPage from "./Upload";
 import AllCollections from "./Collections";
 import RequestPhotoToast from "./RequestPhoto/RequestPhotoToast";
+import RecoverAccount from "./Other/RecoverAccount";
+import RecoverAccountConfirmation from "./Other/RecoverAccountConfirmation";
+
+
 // Separate chunks for users
 const lazyComponents = [
   {
@@ -83,6 +87,8 @@ const Layout = () => {
                     <BoundedRoute path={"/gallery"} component={Home} />
                     <BoundedRoute path={"/collections"} component={AllCollections} />
                     <BoundedRoute path={"/login"} component={Login} />
+                    <BoundedRoute path={"/recoveruser/confirm"} component={RecoverAccountConfirmation} />
+                    <BoundedRoute path={"/recoveruser"} component={RecoverAccount} />
                     <BoundedRoute path={"/misc"} component={Index} />
                     <BoundedRoute path={"/register"} component={Register} />
                     {/* The next route allows to keep the real component mounted

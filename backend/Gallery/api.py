@@ -42,6 +42,12 @@ def make_tag(metadata_id):
 
 def filter_photos(photolist, request):
     try:
+        if "created_at" in request.query_params:
+            photolist = photolist.filter(created_at__gte=date.fromisoformat(
+                request.query_params["created_at"]))
+        if "created_at_until" in request.query_params:
+            photolist = photolist.filter(created_at__lte=date.fromisoformat(
+                request.query_params["created_at_until"]))
         if "category" in request.query_params:
             q = list(filter(('').__ne__, request.query_params["category"].split(',')))
             photolist = photolist.filter(category__id__in = q).distinct()
@@ -64,12 +70,15 @@ def filter_photos(photolist, request):
             if request.query_params["approved"] == "false":
                 approved = False
             photolist = photolist.filter(approved = approved)
+        if "resolved" in request.query_params:
+            resolved = True
+            if request.query_params["resolved"] == "false":
+                resolved = False
+            photolist = photolist.filter(resolved = resolved)
+        if "type" in request.query_params:
+            photolist = photolist.filter(type = request.query_params["type"])
         if "desc" in request.query_params:
             photolist = photolist.filter(description__icontains = request.query_params["desc"])
-        if "uploaded" in request.query_params:
-            photolist = photolist.filter(created_at__gte = date.fromisoformat(request.query_params["uploaded"]))
-        if "uploaded_until" in request.query_params:
-            photolist = photolist.filter(created_at__lte = date.fromisoformat(request.query_params["uploaded_until"]))
         if "taken" in request.query_params:
             photolist = photolist.filter(upload_date__gte = date.fromisoformat(request.query_params["taken"]))
         if "user" in request.query_params:
@@ -531,20 +540,25 @@ class CategoryDetailAPI(generics.GenericAPIView):
 class ReportListAPI(generics.GenericAPIView):
     """
     List all reports, or create a new report.
+    Permits search queries using the search and limit parameter
+    Permits pagination if page_size and page are on the query parameters
     """
     serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
         # TODO: I changed it from == 3 to > 1 ... is it correct?
-        if request.user.user_type > 1:
-            report = Reporte.objects.all()
-            report = sort_by_field(report,request)
-            serializer = ReportSerializer(report, many=True)
-            serialized_data = serializer.data
-            return self.get_paginated_response(self.paginate_queryset(serialized_data))
-        else:
+        if request.user:
+            if request.user.user_type > 1:
+                report = Reporte.objects.all()
+                report = filter_photos(report,request)
+                report = sort_by_field(report,request)
+                serializer = ReportSerializer(report, many=True)
+                if "page" in request.query_params and "page_size" in request.query_params:
+                    return self.get_paginated_response(self.paginate_queryset(serializer.data))
+                return Response(serializer.data)
             return Response(status = status.HTTP_401_UNAUTHORIZED)
+        return Response(status = status.HTTP_401_UNAUTHORIZED)
 
     def post(self, request, *args, **kwargs):
         serializer = ReportSerializer(data=request.data)

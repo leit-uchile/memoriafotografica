@@ -6,7 +6,6 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  Row,
   Col,
   Modal,
   ModalHeader,
@@ -21,7 +20,15 @@ import {
 import { metadata, gallery } from "../../../actions";
 import ReactTags from "react-tag-autocomplete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { bindActionCreators } from "redux";
+import {
+  selectPhotosDetails,
+  selectPhotosUpdatedPhoto,
+  selectMetaDataAllTags,
+  selectMetaDataCreating,
+  selectMetaDataNewIds,
+} from "../../../reducers";
 
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },
@@ -45,7 +52,6 @@ const EditPhotosModal = ({
   createMultipleMetas,
   editPhoto,
   deletePhoto,
-  editReport,
   updatedPhoto,
 }) => {
   const [toggleDelete, setToggleDelete] = useState(false);
@@ -78,6 +84,8 @@ const EditPhotosModal = ({
           : null;
       delete info.image;
       delete info.thumbnail;
+      delete info.comments;
+      delete info.report;
       setData(info);
     } else {
       setData({ metadata: [] });
@@ -108,9 +116,9 @@ const EditPhotosModal = ({
       delete newDetails.metadata; // No changes for each photo in its metadata field
       updatePhotoDetails(newDetails);
     } else {
-      // There are metadata to push
+      // There is one photo or there are metadata to push
       let newTags = newDetails.metadata.filter((el) => el.id === undefined); // New metadata unregistered
-      if (newTags.length == 0) {
+      if (newTags.length === 0) {
         newDetails.metadata = newDetails.metadata.map((el) => el.id);
         updatePhotoDetails(newDetails);
       } else {
@@ -128,7 +136,7 @@ const EditPhotosModal = ({
         newDetails.metadata.filter((el) => el.id === undefined).length ===
         newTagsId.length
       ) {
-        let oldTags = newDetails.metadata.filter((el) => el.id !== undefined);
+        let oldTags = newDetails.metadata.filter((el) => el.id !== undefined).map((el)=>el.id);
         let newTags = Object.values(newTagsId).map((el) => el.id);
         newDetails.metadata = oldTags.concat(newTags);
         updatePhotoDetails(newDetails);
@@ -140,16 +148,14 @@ const EditPhotosModal = ({
 
   const updatePhotoDetails = (newDetails) => {
     {
-      !isCurator
-        ? photosId.forEach((photoIdToUpdate, index) => {
-            photosId.length > 1 && newDetails.title !== undefined // If user renames multiple photos
-              ? editPhoto(photoIdToUpdate, {
-                  ...newDetails,
-                  title: `${newDetails.title} (${index + 1})`, // Each photo gets the new title with an index
-                })
-              : editPhoto(photoIdToUpdate, newDetails);
-          })
-        : editReport();
+      photosId.forEach((photoIdToUpdate, index) => {
+        photosId.length > 1 && newDetails.title !== undefined // If user renames multiple photos
+          ? editPhoto(photoIdToUpdate, {
+              ...newDetails,
+              title: `${newDetails.title} (${index + 1})`, // Each photo gets the new title with an index
+            })
+          : editPhoto(photoIdToUpdate, newDetails);
+      });
     }
     handleToggle();
   };
@@ -165,16 +171,12 @@ const EditPhotosModal = ({
   const PhotosForm = (
     <Fragment>
       <Form>
-        <FormGroup>
-          <Row>
-            <Col>
-              {!isCurator ? (
-                <Label>Eliminar</Label>
-              ) : (
-                <Label>Descartar reporte</Label>
-              )}
-            </Col>
-            <Col>
+        {!isCurator ? (
+          <FormGroup row>
+            <Label for="delete" sm={3}>
+              Eliminar{" "}
+            </Label>
+            <Col sm={9}>
               <FontAwesomeIcon
                 icon={faTrashAlt}
                 onClick={() => setToggleDelete(!toggleDelete)}
@@ -185,122 +187,100 @@ const EditPhotosModal = ({
                 }}
               />
             </Col>
-          </Row>
+          </FormGroup>
+        ) : null}
+        <FormGroup row>
+          <Label for="title" sm={3}>
+            Título{" "}
+          </Label>
+          <Col sm={9}>
+            <Input
+              type="text"
+              value={formData.title}
+              placeholder="Nuevo título de la(s) fotografía(s)"
+              name="title"
+              onChange={updateData}
+            />
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+          <Label for="description" sm={3}>
+            Descripción{" "}
+          </Label>
 
-          {isCurator ? (
-            <Row>
-              <Col>
-                <Label>Censurar contenido</Label>
-              </Col>
-              <Col>
-                <FontAwesomeIcon
-                  icon={faEye}
-                  style={{
-                    color: "var(--leit-red)",
-                    cursor: "pointer",
-                    fontSize: "16px",
-                  }}
-                />
-              </Col>
-            </Row>
-          ) : null}
-          {isCurator ? (
-            <Row style={{ marginBottom: "0.5em" }}>
-              <Col>
-                <h4>Editar contenido</h4>
-              </Col>
-            </Row>
-          ) : null}
-          <Row style={{ marginBottom: "0.5em" }}>
-            <Col>
-              <Label>Título</Label>
-            </Col>
-            <Col>
-              <Input
-                type="text"
-                value={formData.title}
-                placeholder="Nuevo título de la(s) fotografía(s)"
-                name="title"
-                onChange={updateData}
-              />
-            </Col>
-          </Row>
-          <Row style={{ marginBottom: "0.5em" }}>
-            <Col>
-              <Label>Descripción</Label>
-            </Col>
-            <Col>
-              <Input
-                type="textarea"
-                value={formData.description}
-                placeholder="Nueva descripción de la(s) fotografía(s)"
-                name="description"
-                onChange={updateData}
-              />
-            </Col>
-          </Row>
-          <Row style={{ marginBottom: "0.5em" }}>
-            <Col>
-              <Label>Fecha de captura</Label>
-            </Col>
-            <Col>
-              <Input
-                type="date"
-                value={`${formData.upload_date}`.slice(0, 10)}
-                name="upload_date"
-                onChange={updateDate}
-              />
-            </Col>
-          </Row>
-          <Row style={{ marginBottom: "0.5em" }}>
-            <Col>
-              <Label>Etiquetas</Label>
-            </Col>
-            <Col>
-              <ReactTags
-                style={{ width: "auto" }}
-                placeholder={"Añadir etiquetas"}
-                autoresize={false}
-                allowNew={true}
-                tags={formData.metadata}
-                suggestions={suggestions}
-                handleDelete={deleteTag}
-                handleAddition={additionTag}
-              />
+          <Col sm={9}>
+            <Input
+              type="textarea"
+              value={formData.description}
+              placeholder="Nueva descripción de la(s) fotografía(s)"
+              name="description"
+              onChange={updateData}
+            />
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+          <Label for="date" sm={3}>
+            Fecha de captura{" "}
+          </Label>
+          <Col sm={9}>
+            <Input
+              type="date"
+              value={`${formData.upload_date}`.slice(0, 10)}
+              name="upload_date"
+              onChange={updateDate}
+            />
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+          <Label for="tags" sm={3}>
+            Etiquetas{" "}
+          </Label>
+          <Col sm={9}>
+            <ReactTags
+              style={{ width: "auto" }}
+              placeholder={"Añadir etiquetas"}
+              autoresize={false}
+              allowNew={!isCurator}
+              tags={formData.metadata}
+              suggestions={suggestions}
+              handleDelete={deleteTag}
+              handleAddition={additionTag}
+            />
+            {!isCurator ? (
               <FormText color="muted">
                 Para ingresar una nueva etiqueta debe presionar la tecla
                 "Entrar" o "Tabulación"
               </FormText>
-            </Col>
-          </Row>
-          {!isCurator ? (
-            <Row style={{ marginBottom: "0.5em" }}>
-              <Col>
-                <Label>Permisos de acceso e intercambio</Label>
-              </Col>
-              <Col>
-                <UncontrolledButtonDropdown>
-                  <DropdownToggle caret color="link" style={{ padding: "0" }}>
-                    {formData.permission ? formData.permission : "Seleccionar"}
-                  </DropdownToggle>
-                  <DropdownMenu>
-                    {CC_INFO.map((el, k) => (
-                      <DropdownItem
-                        name="permission"
-                        value={el.name}
-                        onClick={updateData}
-                        active={`${formData.permission}` === el.name}
-                        style={{ display: "block", width: "100%" }}
-                      >
-                        {el.name}
-                      </DropdownItem>
-                    ))}
-                  </DropdownMenu>
-                </UncontrolledButtonDropdown>
-              </Col>
-            </Row>
-          ) : null}
+            ) : null}
+          </Col>
         </FormGroup>
+        {!isCurator ? (
+          <FormGroup row>
+            <Label for="permission" sm={3}>
+              Permisos de acceso e intercambio{" "}
+            </Label>
+            <Col sm={9}>
+              <UncontrolledButtonDropdown>
+                <DropdownToggle caret color="link" style={{ padding: "0" }}>
+                  {formData.permission ? formData.permission : "Seleccionar"}
+                </DropdownToggle>
+                <DropdownMenu>
+                  {CC_INFO.map((el, k) => (
+                    <DropdownItem
+                      name="permission"
+                      value={el.name}
+                      onClick={updateData}
+                      active={`${formData.permission}` === el.name}
+                      style={{ display: "block", width: "100%" }}
+                    >
+                      {el.name}
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
+              </UncontrolledButtonDropdown>
+            </Col>
+          </FormGroup>
+        ) : null}
       </Form>
     </Fragment>
   );
@@ -308,9 +288,7 @@ const EditPhotosModal = ({
     <div>
       <Modal isOpen={isOpen} toggle={() => handleToggle()} size={"lg"}>
         <ModalHeader toggle={() => handleToggle()}>
-          {!isCurator
-            ? `Editando ${photosId.length} foto(s)`
-            : `Resolver Reporte`}
+          Editando {photosId.length} foto(s)
         </ModalHeader>
         <ModalBody>
           {PhotosForm}
@@ -318,15 +296,9 @@ const EditPhotosModal = ({
             isOpen={toggleDelete}
             toggle={() => setToggleDelete(!toggleDelete)}
           >
-            {!isCurator ? (
-              <ModalHeader toggle={() => setToggleDelete(!toggleDelete)}>
-                Eliminar fotografía(s)
-              </ModalHeader>
-            ) : (
-              <ModalHeader toggle={() => setToggleDelete(!toggleDelete)}>
-                Descartar reporte
-              </ModalHeader>
-            )}
+            <ModalHeader toggle={() => setToggleDelete(!toggleDelete)}>
+              Eliminar fotografía(s)
+            </ModalHeader>
             <ModalBody>
               Esta acción no se puede deshacer. ¿Está seguro?
             </ModalBody>
@@ -377,21 +349,21 @@ const EditPhotosModal = ({
 };
 
 const mapStateToProps = (state) => ({
-  photoDetails: state.photos.details,
-  tags: state.metadata.all_tags,
-  creating: state.metadata.creating,
-  newTagsId: state.metadata.newTagsId,
-  updatedPhoto: state.photos.updatedPhoto,
+  photoDetails: selectPhotosDetails(state),
+  tags: selectMetaDataAllTags(state),
+  creating: selectMetaDataCreating(state),
+  newTagsId: selectMetaDataNewIds(state),
+  updatedPhoto: selectPhotosUpdatedPhoto(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  getPhotoDetails: (id) => dispatch(gallery.photos.getPhoto(id)),
-  getTags: () => dispatch(metadata.tags()),
-  editPhoto: (pID, val) => dispatch(gallery.photos.editPhoto(pID, val)),
-  deletePhoto: (pID) => dispatch(gallery.photos.deletePhoto(pID)),
-  // updateReport: rep => dispatch(gallery.reports.updateReport(rep)),
-  // censureContent: rep => dispatch(gallery.reports.censureContent(rep)),
-  createMultipleMetas: (list) => dispatch(metadata.createMultipleMetas(list)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getPhotoDetails: gallery.photos.getPhoto,
+      getTags: metadata.tags,
+      createMultipleMetas: metadata.createMultipleMetas,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(EditPhotosModal);

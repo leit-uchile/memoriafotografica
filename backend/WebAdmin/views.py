@@ -13,12 +13,17 @@ def sendEmail(emailto, case, subject, attached):
     if case == "sign_up":
         template = 'sendEmail/sign_up_email.html'
         data = 'http://memoriafotografica.cl/confirm/?code=' + attached #code
+    
+    elif case == "reset_password":
+        template = 'sendEmail/reset_password_email.html'
+        data = 'http://memoriafotografica.cl/recoveruser/confirm/?code=' + attached #code
+
     elif case == "contact_us":
         template = 'sendEmail/contact_us_response_email.html'
         data = attached #reply
     elif case == "photo_request_success":
         template = 'sendEmail/photo_request_success_email.html'
-        data = '' #attached type list   
+        data = attached #array list. Each element is a dict that contains title, cc and url of the photo approved
     elif case == "photo_request_failure":
         template = 'sendEmail/photo_request_failure_email.html'
         data = '' #automessage from template
@@ -32,7 +37,7 @@ def sendEmail(emailto, case, subject, attached):
     )
     email.content_subtype = "html"
     if case == "photo_request_success":
-        for url in attached:
-            email.attach_file(settings.MEDIA_ROOT + url[6:]) #url without media
+        for element in attached:
+            email.attach_file(settings.MEDIA_ROOT + element["url"]) #url without /media/
     email.send()
     return

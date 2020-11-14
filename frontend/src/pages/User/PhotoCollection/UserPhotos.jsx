@@ -1,14 +1,20 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { Button, Row, Col, Container, Badge } from "reactstrap";
-import { user, site_misc } from "../../../actions";
+import { user, site_misc, gallery } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
 import CreateAlbumModal from "./CreateAlbumModal";
 import PhotoEditor from "../../../components/PhotoEditor";
 import { Helmet } from "react-helmet";
 import Gallery from "react-photo-gallery";
+import { bindActionCreators } from "redux";
 import "../styles.css";
+import {   selectUserPhotos,
+            selectUserData,
+            selectUserPublicUser,
+            selectPhotosUpdatedPhoto,
+            selectPhotosRefresh,} from "../../../reducers";
 
 class UserPhotos extends Component {
   constructor(props) {
@@ -131,15 +137,23 @@ class UserPhotos extends Component {
               <Button
                 disabled={this.state.picturesToEdit.length === 0}
                 color="primary"
-                onClick={()=>this.setState({modalOpen: !this.state.modalOpen})}
+                onClick={() =>
+                  this.setState({ modalOpen: !this.state.modalOpen })
+                }
               >
                 Editar selección ({this.state.picturesToEdit.length})
               </Button>
               <EditPhotosModal
                 photosId={this.state.picturesToEdit}
                 isOpen={this.state.modalOpen}
-                handleToggle={()=>this.setState({modalOpen: !this.state.modalOpen})}
+                handleToggle={() =>
+                  this.setState({ modalOpen: !this.state.modalOpen })
+                }
+                editPhoto={(id,content)=>this.props.editPhoto(id,content)}
+                deletePhoto={(id)=>this.props.deletePhoto(id)}
                 isCurator={false}
+                censurePhoto={null}
+                
               />
               <CreateAlbumModal photosID={this.state.picturesToEdit} isOpen={(bool) => this.setState({modalOpen: bool})}/>
             </Col>
@@ -183,21 +197,25 @@ class UserPhotos extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  photos: state.user.photos,
-  user: state.user.userData,
-  publicUser: state.user.publicUser,
-  updatedPhoto: state.photos.updatedPhoto,
-  refresh: state.photos.refresh,
+  photos: selectUserPhotos(state),
+  user: selectUserData(state),
+  publicUser: selectUserPublicUser(state),
+  updatedPhoto: selectPhotosUpdatedPhoto(state),
+  refresh: selectPhotosRefresh(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  setSelectedId: (id) => dispatch(site_misc.setSelectedId(id)),
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-  loadPublicUser: (id) => dispatch(user.loadAUser(id)),
-  onLoadGetPhotos: (user_id, limit, offset) =>
-    dispatch(user.getUserPhotos(user_id, limit, offset)),
-  onLoadGetPublicPhotos: (user_id, params) =>
-    dispatch(user.loadPublicUserPhotos(user_id, params)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setSelectedId: site_misc.setSelectedId,
+      setRoute: site_misc.setCurrentRoute,
+      loadPublicUser: user.loadAUser,
+      onLoadGetPhotos: user.getUserPhotos,
+      onLoadGetPublicPhotos: user.loadPublicUserPhotos,
+      editPhoto: gallery.photos.editPhoto,
+      deletePhoto: gallery.photos.deletePhoto,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(UserPhotos);

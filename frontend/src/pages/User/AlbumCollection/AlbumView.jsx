@@ -6,11 +6,20 @@ import Gallery from "react-photo-gallery";
 import { LeitSpinner } from "../../../components";
 import { Redirect, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { faArrowAltCircleLeft, faCamera, faCloudUploadAlt, faPencilAlt, faSave, faTrashAlt, faUndo } from "@fortawesome/free-solid-svg-icons";
 import "./styles.css";
 import PhotoEditor from "../../../components/PhotoEditor"
-import { album } from "../../../actions/gallery_api";
-import { deleteAlbum, editAlbum } from "../../../actions/gallery_api/album";
+
+import { bindActionCreators } from "redux";
+import {selectAlbumsLoading,
+        selectAlbumCollectionAlbumData,
+        selectAlbumEdit,
+        selectAlbumDelete,
+        selectUserData,
+        selectUserPhotos
+      } from "../../../reducers";
+
 /**
  * Display album with pagination and individual image links
  *
@@ -42,7 +51,7 @@ const AlbumView = ({
 }) => {
   // Load album info
   useEffect(() => {
-    loadInfo(match.params.id);
+    loadInfo(match.params.id, true);
   }, [match.params.id, loadInfo]);
 
   // compute one time and store here
@@ -267,23 +276,25 @@ const AlbumView = ({
 };
 
 const mapStateToProps = (state) => ({
-  loading: state.albumcollection.loading,
-  albumData: state.albumcollection.albumData,
-  deleteAlbumStatus: state.albumcollection.deleteAlbum,
-  editAlbumStatus: state.albumcollection.editAlbum,
-  user: state.user.userData,
-  userPhotos: state.user.photos,
+  loading: selectAlbumsLoading(state),
+  albumData: selectAlbumCollectionAlbumData(state),
+  deleteAlbumStatus: selectAlbumDelete(state),
+  editAlbumStatus: selectAlbumEdit(state),
+  user: selectUserData(state),
+  userPhotos: selectUserPhotos(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  loadInfo: (id, detailed = true) =>
-    dispatch(gallery.album.loadAlbumInfo(id, detailed)),
-  pushPhotos: (photos) => dispatch(site_misc.pushPhotoArray(photos)),
-  setIndex: (num) => dispatch(site_misc.setSelectedId(num)),
-  onLoadGetPhotos: (user_id, limit, offset) =>
-    dispatch(user.getUserPhotos(user_id, limit, offset)),
-  deleteAlbum: id => dispatch(gallery.album.deleteAlbum(id)),
-  editAlbum: (id,data) => dispatch(gallery.album.editAlbum(id,data))
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadInfo: gallery.album.loadAlbumInfo,
+      pushPhotos: site_misc.pushPhotoArray,
+      setIndex: site_misc.setSelectedId,
+      onLoadGetPhotos: user.getUserPhotos,
+      deleteAlbum: gallery.album.deleteAlbum,
+      editAlbum: gallery.album.editAlbum
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(AlbumView);

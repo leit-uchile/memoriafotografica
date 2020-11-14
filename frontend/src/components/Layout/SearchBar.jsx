@@ -7,6 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import Autosuggest from "react-autosuggest";
 import "./searchBar.css";
+import { selectMetaDataAllTags,
+         selectMetaDataAllIptcs,
+         selectSiteMiscCurrentRoute, } from "../../reducers";
 
 class SearchBar extends Component {
   constructor(props) {
@@ -206,9 +209,9 @@ class SearchBar extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  tags: state.metadata.all_tags,
-  iptc: state.metadata.all_iptcs,
-  currentPage: state.site_misc.currentRoute,
+  tags: selectMetaDataAllTags(state),
+  iptc: selectMetaDataAllIptcs(state),
+  currentPage: selectSiteMiscCurrentRoute(state),
 });
 
 const mapActionsToProps = (dispatch) => ({

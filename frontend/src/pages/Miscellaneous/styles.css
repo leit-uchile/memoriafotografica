@@ -31,3 +31,13 @@
     margin-top: 2em;
   }
 }
+
+.misc.container .about-card img {
+  height: 150px;
+  object-fit: cover;
+}
+
+.misc.container .about-card {
+  min-width: 150px;
+  max-width: 250px;
+}

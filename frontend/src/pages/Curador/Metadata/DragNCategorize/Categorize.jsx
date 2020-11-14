@@ -2,6 +2,7 @@ import React, { useState, Fragment, useEffect } from "react";
 import Item from "./Item";
 import DropWrapper from "./DropWrapper";
 import {
+  Container,
   Row,
   Col,
   Card,
@@ -15,6 +16,11 @@ import HighLight from "./HighlightWrapper";
 import { connect } from "react-redux";
 import { metadata } from "../../../../actions";
 import { LeitSpinner } from "../../../../components";
+import { bindActionCreators } from "redux";
+import {
+  selectMetaDataAllIptcs,
+  selectMetaDataBatch,
+} from "../../../../reducers";
 import "../styles.css";
 
 /**
@@ -94,7 +100,7 @@ const Categorize = ({
   var loadMoreCondition = batch.count > 10 && doneCount === items.length;
 
   return (
-    <Fragment>
+    <Container fluid>
       <Row>
         <Col>
           <h2>Clasificador de metadata</h2>
@@ -232,19 +238,23 @@ const Categorize = ({
           </Col>
         </Row>
       )}
-    </Fragment>
+    </Container>
   );
 };
 
 const mapStateToProps = (state) => ({
-  iptcs: state.metadata.all_iptcs,
-  batch: state.metadata.batch,
+  iptcs: selectMetaDataAllIptcs(state),
+  batch: selectMetaDataBatch(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  loadIptcs: () => dispatch(metadata.iptcs()),
-  loadBatch: (size) => dispatch(metadata.getUnapprovedMetadataBatch(size)),
-  putMeta: (meta) => dispatch(metadata.putMetadata(meta)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadIptcs: metadata.iptcs,
+      loadBatch: metadata.getUnapprovedMetadataBatch,
+      putMeta: metadata.putMetadata,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Categorize);

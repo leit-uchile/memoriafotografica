@@ -13,13 +13,14 @@ import {
   Button,
   FormGroup,
   Label,
-  Input,
 } from "reactstrap";
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import uuid4 from "uuid";
 import { webadmin } from "../../../../actions";
+import { bindActionCreators } from "redux";
+import { selectWebAdminRequestDetail } from "../../../../reducers";
 
 const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
   const [rows, setRows] = useState([]);
@@ -44,7 +45,7 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
   }, [request]);
 
   const handleOnClick = (obj) => {
-    // If its there remove it
+    // If it is there then remove it
     const newList = approved.filter((el) => el.id !== obj.id);
     if (approved.filter((el) => el.id === obj.id).length !== 0) {
       setApproved([...newList]);
@@ -54,11 +55,16 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
   };
 
   const resolve = (req, bool) => {
-    let approvedOriginal = approved.map((el) => el.image);
-    let reqUpdate = { ...req, approvedOriginal };
-    delete reqUpdate.photos;
+    let photosAndData = approved.map((el) => {
+      let tt = el.title;
+      let pm = el.permission;
+      let img = el.image.slice(6);
+      return {title: tt, permission: pm, url: img}
+    });
+    let reqUpdate = { ...req, photosAndData };
     reqUpdate.resolved = !req.resolved;
     reqUpdate.approved = bool;
+    delete reqUpdate.photos;
     updateRequest(reqUpdate);
     setTimeout(() => setRedirect(true), 1000);
   };
@@ -145,16 +151,20 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
                     {c.censure ? (
                       <span style={{ color: "red" }}>Censurada</span>
                     ) : null} */}
-                    <FormGroup check>
-                      <Label check>
-                        <Input
-                          type="checkbox"
-                          name="check"
-                          defaultChecked={true}
-                          onClick={() => handleOnClick(c)}
-                        />{" "}
-                        Aprobar
+                    <FormGroup row>
+                      <Label for="approve" sm={3}>
+                        Aprobar{" "}
                       </Label>
+                      <Col sm={9}>
+                        <input
+                          type="checkbox"
+                          class="toggle-button"
+                          id="approve"
+                          defaultChecked={true}
+                          onChange={() => handleOnClick(c)}
+                        />
+                        <label for="approve"></label>
+                      </Col>
                     </FormGroup>
                   </CardFooter>
                 </Card>
@@ -168,11 +178,15 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
 };
 
 const mapStateToProps = (state) => ({
-  request: state.webadmin.requestDetail,
+  request: selectWebAdminRequestDetail(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  updateRequest: (req) => dispatch(webadmin.updateRequest(req)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      updateRequest: webadmin.updateRequest,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(PhotoRequestDetails);

@@ -30,6 +30,9 @@ import { UserPicture } from "../../components";
 import { userRolTranslation, userTypeTranslation } from "./utils";
 import "./userRouting.css";
 import CollectionView from "../Collections/CollectionView";
+import { bindActionCreators } from "redux";
+import { selectUserData } from "../../reducers";
+
 /**
  * TODO:
  * arreglar estilo de nav
@@ -62,7 +65,10 @@ const makeIcons = (rol_id) => {
 };
 
 const Dashboard = ({ match, location, setRoute, user, props }) => {
-  const [redirect, setRedirect] = useState(false);
+  const [params, setParams] = useState({
+    redirect: false,
+    url: "",
+  });
   const isPublic = location.pathname.includes("public");
 
   useEffect(() => {
@@ -70,8 +76,8 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
     // eslint-disable-next-line
   }, [setRoute]);
 
-  if (redirect !== false) {
-    return <Redirect push to={redirect} />;
+  if (params.redirect) {
+    return <Redirect push to={params.url} />;
   }
   return (
     <Container className="disable-css-transitions" fluid>
@@ -88,7 +94,15 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
                     <UserPicture
                       user={user}
                       dims={100}
-                      render={(user) => <img height="100" width="100" style={{borderRadius:"50%"}} src={user.avatar} />}
+                      render={(user) => (
+                        <img
+                          height="100"
+                          width="100"
+                          style={{ borderRadius: "50%" }}
+                          src={user.avatar}
+                          alt="user-avatar"
+                        />
+                      )}
                     />
                   </Col>
                   <Col>
@@ -98,7 +112,9 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
                         <FontAwesomeIcon
                           icon={faEdit}
                           title="Editar perfil"
-                          onClick={() => setRedirect("/user/dashboard/editProfile")}
+                          onClick={() =>
+                            setParams({redirect: true, url: "/user/dashboard/editProfile"})
+                          }
                         />
                       </h2>
                     </Container>
@@ -236,11 +252,15 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
 };
 
 const mapStateToProps = (state) => ({
-  user: state.user.userData,
+  user: selectUserData(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setRoute: site_misc.setCurrentRoute,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Dashboard);
