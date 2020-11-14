@@ -31,6 +31,7 @@ import {
   selectUserIsAuthenticated,
   selectSiteMiscCurrentRoute,
 } from "../../reducers";
+import PropTypes from "prop-types";
 
 const Header = ({ isAuth, currentRoute }) => {
   const [toggle, setToggle] = useState(false);
@@ -145,11 +146,14 @@ const Header = ({ isAuth, currentRoute }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    isAuth: selectUserIsAuthenticated(state),
-    currentRoute: selectSiteMiscCurrentRoute(state),
-  };
+Header.propTypes = {
+  isAuth: PropTypes.bool.isRequired,
+  currentRoute: PropTypes.string.isRequired,
 };
+
+const mapStateToProps = (state) => ({
+  isAuth: selectUserIsAuthenticated(state),
+  currentRoute: selectSiteMiscCurrentRoute(state),
+});
 
 export default connect(mapStateToProps, null)(Header);

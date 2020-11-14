@@ -110,7 +110,7 @@ const colaborators_photos = [
       "https://ucampus.uchile.cl/d/r/usuario/0c/0c4d8c861f5ba6092fb87f3a1f37a5b7/perfil/239860710ecb1f95193ed0d183db3904.jpg",
     altText: "Fernando Quezada",
     caption: "Fernando Quezada",
-    employment: "Soporte y Webmaste de la Biblioteca Central",
+    employment: "Soporte y Webmaster de la Biblioteca Central",
   },
 ];
 const About = () => {
