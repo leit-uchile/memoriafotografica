@@ -48,7 +48,11 @@ const ContactUs = ({ contacted, contactUs }) => {
       <Row>
         <Col className="white-box form-container">
           {!contacted ? (
-            <Form>
+            <Form
+              onSubmit={() => {
+                contactUs(formData);
+              }}
+            >
               <div className="form-title">
                 <FontAwesomeIcon icon={faAddressCard} />
                 <Label> Identificación de contacto</Label>
@@ -113,13 +117,7 @@ const ContactUs = ({ contacted, contactUs }) => {
                 }}
                 onChange={updateCaptcha}
               />
-              <Button
-                color="primary"
-                tabIndex="5"
-                onClick={() => {
-                  contactUs(formData);
-                }}
-              >
+              <Button color="primary" tabIndex="5" type="submit">
                 Enviar
               </Button>
             </Form>
