@@ -9,39 +9,39 @@ import {
   Form,
   FormGroup,
   FormText,
-  Input,
-  Label,
+  Badge,
 } from "reactstrap";
 
-import { connect } from "react-redux";
 
 // import { connect } from "react-redux";
 // import { gallery } from "../actions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFlag } from "@fortawesome/free-solid-svg-icons";
 
 import { Link } from "react-router-dom";
-// import "../../../components/ReportModal.css";
-// import PropTypes from "prop-types";
+
 import {
   // selectReportComplete,
   // selectReportPhotoReportSent,
   selectUserIsAuthenticated,
-  selectMetaDataGeneralTagsResult
+  selectMetaDataGeneralTagsResult,
 } from "../../../reducers";
 
 import { metadata } from "../../../actions";
 import ReactTags from "react-tag-autocomplete";
+
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+
 
 const TagSuggestionModal = ({
   // style,
   // className,
   // suggestionTagSent,
   // suggestionTagComplete,
+  tags,
   isAuth,
   meta,
-  searchMeta}
-) => {
+  searchMeta,
+}) => {
   const [formData, setFormData] = useState({
     tags: [],
   });
@@ -51,16 +51,10 @@ const TagSuggestionModal = ({
 
   const suggestionTagSent = false;
   const suggestionTagComplete = false;
-  // console.log(meta);
-  // console.log(searchMeta);
-  // console.log(isAuth);
-
+  
   const suggestions = meta
     ? meta.map((e) => ({ name: e.value, id: e.id }))
     : [];
-
-  // const suggestions = [];
-  // console.log(meta);
 
   const sendSuggest = () => {};
 
@@ -90,17 +84,33 @@ const TagSuggestionModal = ({
   const suggestTagForm = (
     <Fragment>
       <p>
-        {"Puedes sugerir etiquetas que consideres adecuada para esta foto. Tus sugerencias serán revisadas por un Curador o el Dueño de la Foto."}
+        {
+          "Puedes sugerir etiquetas que consideres adecuada para esta foto. Tus sugerencias serán revisadas por un Curador o el Dueño de la Foto."
+        }
       </p>
 
       <Form className="white-box form-container upload-album-section-content">
-        <div className="form-title">
-          {/* <FontAwesomeIcon icon={faBook} /> */}
-          <Label> Sugerir Etiquetas</Label>
-        </div>
-        
         <FormGroup>
-          <Label className="form-subtitle">Etiquetas:</Label>
+          <h5 style={{ textAlign: "left" }}>Etiquetas</h5>
+          {tags.length === 0 ? (
+            <span style={{ fontStyle: "italic" }}>No hay tags asociados</span>
+          ) : (
+            tags.map((el, index) => (
+              <Badge
+                className="tags"
+                key={el.id}
+                pill
+                // onClick={(e) => onRedirect(el.id, el.value)}
+              >
+                #{el.value}
+              </Badge>
+            ))
+          )}
+        </FormGroup>
+
+        <FormGroup>
+          <h5 style={{ textAlign: "left" }}>Sugerir</h5>
+          {/* <Label className="form-subtitle">Sugerir:</Label> */}
           <ReactTags
             placeholder={"Añadir etiquetas"}
             autoresize={false}
@@ -132,16 +142,10 @@ const TagSuggestionModal = ({
         Sugerir
       </Button>
 
-      {/* <Link style={{ marginLeft: "0.2em" }} to="#">
-        Sugerir
-      </Link> */}
-
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>
-          {"Sugerir Etiqueta"}
-        </ModalHeader>
+        <ModalHeader toggle={toggle}>{"Sugerir Etiquetas"}</ModalHeader>
         <ModalBody>
-          { isAuth ? (
+          {isAuth ? (
             sent ? (
               !suggestionTagSent ? (
                 <div className="report-modal-content">
@@ -168,8 +172,7 @@ const TagSuggestionModal = ({
               style={{ padding: "100px 0" }}
             >
               <h4>
-                Debes ingresar a la plataforma para poder realizar sugerencias
-                de etiquetas
+                Debes ingresar a la plataforma para poder sugerir etiquetas
               </h4>
               <Link to="/login" className="btn bnt-block btn-primary">
                 Ingresar
@@ -201,19 +204,26 @@ const TagSuggestionModal = ({
 };
 
 
+TagSuggestionModal.propTypes = {
+  tags: PropTypes.array.isRequired,
+  isAuth: PropTypes.bool.isRequired,
+  meta: PropTypes.array.isRequired,
+  searchMeta: PropTypes.func.isRequired,
+};
+
+
 const mapStateToProps = (state) => ({
   // photoReportSent: selectReportPhotoReportSent(state),
   // reportComplete: selectReportComplete(state),
   isAuth: selectUserIsAuthenticated(state),
   meta: selectMetaDataGeneralTagsResult(state),
-
 });
 
 const mapActionToProps = (dispatch) => ({
   // reportPhoto: (data) => dispatch(gallery.reports.reportPhoto(data)),
   // resetReport: () => dispatch(gallery.reports.reportPhotoReset()),
-  searchMeta: (query) => dispatch(metadata.searchMetadataByValueGeneral(query, 1, 10)),
-
+  searchMeta: (query) =>
+    dispatch(metadata.searchMetadataByValueGeneral(query, 1, 10)),
 });
 
 export default connect(mapStateToProps, mapActionToProps)(TagSuggestionModal);

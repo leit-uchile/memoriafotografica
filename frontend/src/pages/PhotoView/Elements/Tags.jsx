@@ -25,7 +25,9 @@ const Tags = ({ tags, onRedirect }) => (
       Sugerir
     </Link> */}
 
-    <TagSuggestionModal/>
+    <TagSuggestionModal
+      tags={tags}
+    />
     
   </Fragment>
 );
