@@ -18,7 +18,7 @@ import {
   Button,
 } from "reactstrap";
 import { webadmin } from "../../actions";
-import {selectWebAdminMessages} from "../../reducers";
+import { selectWebAdminContacted } from "../../reducers";
 import "./styles.css";
 
 const ContactUs = ({ contacted, contactUs }) => {
@@ -95,7 +95,11 @@ const ContactUs = ({ contacted, contactUs }) => {
                 />
               </FormGroup>
               <hr />
-              <Button color="primary" tabIndex="5" onClick={() => contactUs(formData)}>
+              <Button
+                color="primary"
+                tabIndex="5"
+                onClick={() => contactUs(formData)}
+              >
                 Enviar
               </Button>
             </Form>
@@ -175,7 +179,7 @@ const Map = ({ source }) => {
 };
 
 const mapStateToProps = (state) => ({
-  contacted: selectWebAdminMessages(state),
+  contacted: selectWebAdminContacted(state),
 });
 
 const mapActionsToProps = (dispatch) => ({

@@ -43,6 +43,10 @@
 }
 
 /* Toggle Switch for checkboxes */
+.form-check.center{
+  text-align: center;
+}
+
 .toggle-button {
   display: none;
 }

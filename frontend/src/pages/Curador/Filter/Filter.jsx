@@ -7,11 +7,12 @@ import {
   faThLarge,
   faThList,
   faFilter,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import { LeitSpinner, Pagination } from "../../../components";
 import PhotoList from "./PhotoList";
 import PhotoCards from "./PhotoCards";
-import OptionSelector from "./OptionSelector";
+import FilterOptions from "../FilterOptions";
 import { bindActionCreators } from "redux";
 import {
   selectPhotos,
@@ -23,6 +24,23 @@ import {
   selectUserIsAuthenticated,
 } from "../../../reducers";
 
+const filters = [
+  { display: "Subida desde", type: "date", name: "since" },
+  { display: "Subida hasta", type: "date", name: "until" },
+  {
+    display: "Aprobación",
+    type: "select",
+    options: ["Aprobados", "No aprobados"],
+    name: "approved",
+  },
+  {
+    display: "Censura",
+    type: "select",
+    options: ["Censurados", "Sin cerurar"],
+    name: "censured",
+  },
+];
+
 class Filter extends Component {
   constructor(props) {
     super(props);
@@ -30,12 +48,13 @@ class Filter extends Component {
       listView: 1,
       page: 0,
       pageSize: 12,
+      search: "",
       approved: "",
       censured: "",
       since: "",
       until: "",
     };
-    this.props.getPhotosAuth(0, 12);
+    this.props.getPhotosAuth(0, 12, "&sort=updated_at-desc");
   }
 
   /**
@@ -62,16 +81,19 @@ class Filter extends Component {
   };
 
   recoverUrl = () => {
-    const { censured, since, until, approved } = this.state;
-    let url = "";
+    const { censured, since, until, approved, search } = this.state;
+    let url = "&sort=updated_at-desc";
+    if (search !== "") {
+      url = url + `&title=${search}`;
+    }
     if (censured && censured !== "") {
       url = url + `&censured=${censured}`;
     }
     if (since && since !== "") {
-      url = url + `&uploaded=${since}`;
+      url = url + `&created_at=${since}`;
     }
     if (until && until !== "") {
-      url = url + `&uploaded_until=${until}`;
+      url = url + `&created_at_until=${until}`;
     }
     if (approved.length !== 0) {
       url = url + `&approved=${approved}`;
@@ -116,6 +138,21 @@ class Filter extends Component {
                 <option value="50">50 por p&aacute;gina</option>
               </Input>
             </ButtonGroup>
+            <ButtonGroup className="mr-auto">
+              <Input
+                type="text"
+                name="search-curador"
+                placeholder="Filtrar por título"
+                value={this.state.search}
+                onChange={(e) => {
+                  this.setCurrentPage(0);
+                  this.setState({ search: e.target.value });
+                }}
+              />
+              <Button color="primary">
+                <FontAwesomeIcon icon={faSearch} />
+              </Button>
+            </ButtonGroup>
           </Col>
           <Col sm={{ offset: 2, size: 4 }}>
             <ButtonGroup>
@@ -137,7 +174,11 @@ class Filter extends Component {
         </Row>
         <Row>
           <Col>
-            <OptionSelector id="#toggler" setState={this.setFilterOption} />
+            <FilterOptions
+              id="#toggler"
+              params={filters}
+              setState={this.setFilterOption}
+            />
           </Col>
         </Row>
         <Row>
@@ -155,17 +196,21 @@ class Filter extends Component {
             </Col>
           )}
         </Row>
-        <Row style={{ marginTop: "2em" }}>
-          <Col>
-            <Pagination
-              count={photoCount}
-              page_size={pageSize}
-              page={page}
-              setStatePage={this.setCurrentPage}
-              size="md"
-            />
-          </Col>
-        </Row>
+        {photoCount === 0 ? (
+          "No hay fotografías disponibles"
+        ) : (
+          <Row style={{ marginTop: "2em" }}>
+            <Col>
+              <Pagination
+                count={photoCount}
+                page_size={pageSize}
+                page={page}
+                setStatePage={this.setCurrentPage}
+                size="md"
+              />
+            </Col>
+          </Row>
+        )}
       </Container>
     );
   }

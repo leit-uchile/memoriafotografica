@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 services:
   db:
@@ -6,10 +6,10 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: postgres
-    volumes: 
+    volumes:
       - ./db/postgresql:/var/lib/postgresql/data
   backend:
-    build: 
+    build:
       context: ./backend
       target: dev
     command: python manage.py runserver 0.0.0.0:8000
@@ -25,7 +25,7 @@ services:
       - 8000:8000
       - 5678:5678
   frontend:
-    build: 
+    build:
       context: ./frontend
       target: dev
     volumes:

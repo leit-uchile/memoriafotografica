@@ -22,7 +22,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./resolveModal.css";
 import { bindActionCreators } from "redux";
-import { selectPhotosDetails } from "../../../reducers";
 
 const ResolveModal = ({
   buttonLabel,
@@ -36,12 +35,6 @@ const ResolveModal = ({
   const [editModal, setEditModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [newreport, setNewreport] = useState({});
-
-  // const toggle = () => {
-  //   setNewreport(report);
-  //   setLoading(false);
-  //   setModal(!modal);
-  // };
 
   useEffect(() => {
     let info = { ...report };
@@ -160,11 +153,12 @@ const ResolveModal = ({
   );
 };
 
-const mapActionsToProps = (dispatch) => 
-    bindActionCreators(
-      {
-        editReport: gallery.reports.updateContent,
-      }
-    );
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      editReport: gallery.reports.updateContent,
+    },
+    dispatch
+  );
 
 export default connect(null, mapActionsToProps)(ResolveModal);

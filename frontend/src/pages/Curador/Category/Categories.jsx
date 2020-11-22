@@ -27,7 +27,7 @@ import {
   selectCategoriesError,
   selectNewCategories,
   selectSiteMiscCuradorLoading,
-  selectSiteMiscCuradorRefresh
+  selectSiteMiscCuradorRefresh,
 } from "../../../reducers";
 
 class Categories extends Component {
@@ -192,16 +192,20 @@ class Categories extends Component {
         </Row>
         <Row>
           <Col>
-            <Pagination
-              count={total}
-              page_size={this.state.page_size}
-              page={this.state.page}
-              setStatePage={this.setPage}
-              size="md"
-              label="metadata-pagination"
-              displayFirst
-              displayLast
-            />
+            {total === 0 ? (
+              "No hay categorías disponibles"
+            ) : (
+              <Pagination
+                count={total}
+                page_size={this.state.page_size}
+                page={this.state.page}
+                setStatePage={this.setPage}
+                size="md"
+                label="metadata-pagination"
+                displayFirst
+                displayLast
+              />
+            )}
           </Col>
         </Row>
       </Container>
@@ -212,7 +216,7 @@ class Categories extends Component {
 const mapStateToProps = (state) => ({
   cats: selectCategories(state),
   total: selectCategoriesTotal(state),
-  loading: selectSiteMiscCuradorLoading(state) ,
+  loading: selectSiteMiscCuradorLoading(state),
   refresh: selectSiteMiscCuradorRefresh(state),
   newCat: selectNewCategories(state),
   catError: selectCategoriesError(state),

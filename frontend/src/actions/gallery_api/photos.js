@@ -276,8 +276,15 @@ export const recoverByCats = (catIds, pair, page, pageSize = 25) => (
   });
 };
 
-export const getPhoto = (id) => (dispatch) => {
-  let headers = { "Content-Type": "application/json" };
+export const getPhoto = (id) => (dispatch, getState) => {
+  let isAuth = getState().user.isAuthenticated;
+  let headers = !isAuth
+    ? { "Content-Type": "application/json" }
+    : {
+        "Content-Type": "application/json",
+        Authorization: "Token " + getState().user.token,
+      };
+
   return fetch(`/api/photos/${id}`, { method: "GET", headers: headers }).then(
     function (response) {
       const r = response;

@@ -7,30 +7,30 @@ import {
   REPORT_SWITCH_STATE,
   REPORT_SWITCH_STATE_ERROR,
 } from "../types";
-import {setAlert} from '../site_misc'
+import { setAlert } from '../site_misc'
 
-export const getReportes = () => {
-  //GET REPORTES Y DENUNCIAS
-  return (dispatch, getState) => {
-    let headers = {
-      Authorization: "Token " + getState().user.token,
-      "Content-Type": "application/json",
-    };
-
-    return fetch("/api/reports/?sort=desc-created_at", {
-      method: "GET",
-      headers: headers,
-    }).then((res) => {
-      if (res.status === 200) {
-        return res.json().then((data) => {
-          dispatch({ type: RECOVERED_REPORT, data: data.results });
-        });
-      } else {
-        dispatch({ type: EMPTY_REPORTS, data: res.data });
-        throw res.data;
-      }
-    });
+export const getReportes = (query, page, page_size, extra) => (
+  dispatch,
+  getState
+) => {
+  let headers = {
+    Authorization: "Token " + getState().user.token,
+    "Content-Type": "application/json",
   };
+
+  return fetch(`/api/reports/?search=${query}&page=${page}&page_size=${page_size}${extra}`, {
+    method: "GET",
+    headers: headers,
+  }).then((res) => {
+    if (res.status === 200) {
+      return res.json().then((data) => {
+        dispatch({ type: RECOVERED_REPORT, data: data });
+      });
+    } else {
+      dispatch({ type: EMPTY_REPORTS, data: res.data });
+      throw res.data;
+    }
+  });
 };
 
 export const updateReport = (report) => (dispatch, getState) => {
@@ -87,7 +87,7 @@ export const updateContent = (report, content) => (dispatch, getState) => {
   return fetch(`/api/actions/reportEditContent/`, {
     method: "POST",
     headers,
-    body: JSON.stringify({report : report, newContent : content}),
+    body: JSON.stringify({ report: report, newContent: content }),
   }).then((response) => {
     console.log(response)
     const r = response;

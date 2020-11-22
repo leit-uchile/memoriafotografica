@@ -4,6 +4,7 @@ import { Container, Row, Col } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faPencilAlt, faTimes } from "@fortawesome/free-solid-svg-icons";
 import "./photoEditor.css";
+import PropTypes from "prop-types";
 
 /**
  * From documentation
@@ -97,23 +98,23 @@ const SelectedImage = ({
           isSelected ? { ...imgStyle, ...selectedImgStyle } : { ...imgStyle }
         }
         {...photo}
-        onClick={isSelected ? handleOnSelect : {}}
+        onClick={isSelected ? handleOnSelect : () => {}}
       />
 
-        {!isSelected ? (
-          <div className="icons">
-            <FontAwesomeIcon
-              icon={faEye}
-              style={{ marginRight: "0.35em" }}
-              onClick={handleOnRedirect}
-            />
-            <FontAwesomeIcon icon={faPencilAlt} onClick={handleOnSelect} />
-          </div>
-        ) : (
-          <div className="icons">
-            <FontAwesomeIcon icon={faTimes} onClick={handleOnSelect} />
-          </div>
-        )}
+      {!isSelected ? (
+        <div className="icons">
+          <FontAwesomeIcon
+            icon={faEye}
+            style={{ marginRight: "0.35em" }}
+            onClick={handleOnRedirect}
+          />
+          <FontAwesomeIcon icon={faPencilAlt} onClick={handleOnSelect} />
+        </div>
+      ) : (
+        <div className="icons">
+          <FontAwesomeIcon icon={faTimes} onClick={handleOnSelect} />
+        </div>
+      )}
 
       <style>{`.not-selected:hover{outline:2px solid #06befa}`}</style>
     </div>
@@ -163,5 +164,14 @@ const PhotoEditor = ({ photos, selectAll, ...props }) => {
     </Container>
   );
 };
+
+PhotoEditor.propTypes = {
+  photos: PropTypes.arrayOf(PropTypes.shape({
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    src: PropTypes.string.isRequired,
+  })),
+  selectAll: PropTypes.func.isRequired,
+}
 
 export default PhotoEditor;

@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import "./userModal.css";
 import { selectUserData } from "../reducers";
+import PropTypes from "prop-types";
 
 const UserModal = ({ logout, user }) => {
   const [toggle, setToggle] = useState(false);
@@ -119,6 +120,11 @@ const UserModal = ({ logout, user }) => {
       </Modal>
     </NavLink>
   );
+};
+
+UserModal.propTypes = {
+  user: PropTypes.object.isRequired,
+  logout: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

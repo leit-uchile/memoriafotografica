@@ -40,7 +40,7 @@ const PhotoCards = ({ photos, editPhoto }) => {
         <Row key={r.theKey} style={{ marginTop: "1em" }}>
           <Col>
             <CardDeck>
-              {r.map((c) => (
+              {r.map((c, key) => (
                 <Card className="curador-filter-card">
                   <CardHeader>{c.title}</CardHeader>
                   <CardBody>
@@ -83,9 +83,10 @@ const PhotoCards = ({ photos, editPhoto }) => {
                       <span style={{ color: "red" }}>Censurada</span>
                     ) : null}
                     <FilterModal
-                      editPhoto={editPhoto}
+                      key={key}
                       buttonLabel="Gestionar"
-                      photo={c}
+                      photoId={c.id}
+                      editPhoto={editPhoto}
                     />
                   </CardFooter>
                 </Card>
