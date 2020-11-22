@@ -122,7 +122,7 @@ const Footer = () => {
           </Col>
           <Col sm="4">
             <Button id="goUp" color="link" onClick={goUp}>
-              Volver al Inicio <FontAwesomeIcon icon={faArrowCircleUp} />
+              Volver arriba <FontAwesomeIcon icon={faArrowCircleUp} />
             </Button>
           </Col>
         </Row>

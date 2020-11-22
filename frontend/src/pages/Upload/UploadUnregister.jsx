@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserFriends,
@@ -20,8 +20,6 @@ import {
 import ReCAPTCHA from "react-google-recaptcha";
 import { connect } from "react-redux";
 import { webadmin } from "../../actions";
-//TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
-const captchaKey = "6LdqEM0ZAAAAAHkqSnB_dHDEjh4xy7euetQLrW7O";
 
 const UploadUnregister = ({
   cache,
@@ -30,8 +28,12 @@ const UploadUnregister = ({
   nextStep,
   sendAlert,
   recaptchaBack,
+  recaptchaState,
+  recaptchaReset,
 }) => {
-  const recaptchaRef = React.createRef();
+  let recaptchaRef;
+  //TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
+  const captchaKey = "6LdqEM0ZAAAAAHkqSnB_dHDEjh4xy7euetQLrW7O";
 
   const [formData, setFormData] = useState(
     cache === {}
@@ -71,20 +73,27 @@ const UploadUnregister = ({
   const updateGeneration = (e) =>
     setInfo({ ...info, generation: e.target.value });
 
+  //Recaptcha logic
+  useEffect(() => {
+    recaptchaRef.reset();
+    if (recaptchaState.success) {
+      nextStep();
+      return recaptchaReset();
+    }
+  }, [recaptchaState.success]);
+
   const onSubmit = (e) => {
     e.preventDefault();
     if (validateCaptcha()) {
       saveInfo({ ...formData, info: { ...info } });
-      //TODO -Joaquin get guest token, for this step backend must verify if the value of captcha is correct
-      recaptchaBack(recaptchaRef.current.getValue());
-      nextStep();
+      recaptchaBack(recaptchaRef.getValue());
     } else {
       sendAlert("Debe rellenar el captcha", "warning");
     }
   };
 
   const validateCaptcha = () => {
-    const recaptchaValue = recaptchaRef.current.getValue();
+    const recaptchaValue = recaptchaRef.getValue();
     if (recaptchaValue == null || recaptchaValue == "") {
       return false;
     } else {
@@ -205,8 +214,13 @@ const UploadUnregister = ({
             />
           </Col>
         </FormGroup>
+        <ReCAPTCHA
+          sitekey={captchaKey}
+          ref={(el) => {
+            recaptchaRef = el;
+          }}
+        />
         <ButtonGroup style={{ minWidth: "20em" }}>
-          <ReCAPTCHA sitekey={captchaKey} ref={recaptchaRef} />
           <Button onClick={previousStep}>
             <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
           </Button>
@@ -218,13 +232,13 @@ const UploadUnregister = ({
     </Container>
   );
 };
-//TODO -Joaquin Fix redux not working properly
 const mapStateToProps = (state) => ({
   recaptchaState: state.webadmin.recaptchaState,
 });
 
 const mapActionsToProps = (dispatch) => ({
   recaptchaBack: (value) => dispatch(webadmin.validateRecaptcha(value)),
+  recaptchaReset: () => dispatch(webadmin.resetValidateRecaptcha()),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(UploadUnregister);

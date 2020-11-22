@@ -3,13 +3,14 @@ import React, { Component, Fragment } from "react";
 import UnregisteredPrompt from "./UnregisterPrompt";
 import UploadUnregister from "./UploadUnregister";
 import UploadAlbum from "./UploadAlbum";
-import UploadPhoto from "./UploadPhotov2";
+import UploadPhoto from "./UploadPhotov3";
 import UploadProgress from "./UploadProgress";
 import { connect } from "react-redux";
 import { metadata, gallery, site_misc } from "../../actions";
 import { Helmet } from "react-helmet";
 import StepWizard from "react-step-wizard";
 import "./uploadPage.css";
+import UploadSuccess from "./UploadSuccess";
 
 /**
  * Upload page
@@ -22,7 +23,7 @@ class UploadPage extends Component {
     super(props);
     this.state = {
       userInfo: {}, // For anonymous upload
-      data: { onAlbum: false }, // All info to upload
+      data: {}, // All info to upload
       uploading: false,
       prog: 0, // May delete this later
       cacheCreatedPhotoIds: [], // In case of upload error
@@ -38,7 +39,7 @@ class UploadPage extends Component {
     });
   };
 
-  saveAlbumInfo = (info) => {
+  savePhotoInfo = (info) => {
     this.setState({ data: { ...this.state.data, ...info } });
   };
 
@@ -239,7 +240,7 @@ class UploadPage extends Component {
             />
             <UploadAlbum
               isAuth={this.props.isAuthenticated}
-              saveAll={this.saveAlbumInfo}
+              saveAll={this.savePhotoInfo}
               meta={this.props.meta}
               sendAlert={this.props.sendAlert}
               searchMeta={this.props.recoverMetadata}
@@ -249,17 +250,8 @@ class UploadPage extends Component {
               meta={this.props.meta}
               searchMeta={this.props.recoverMetadata}
             />
-            <UploadProgress
-              photosUploading={this.props.upload.photosUploading}
-              opsFinished={this.props.upload.opsFinished}
-              uploading={this.props.upload.uploading}
-              completed={this.props.upload.photosUploaded.length}
-              doAlbum={this.state.data.onAlbum}
-              albumInfo={this.state.data} // TODO: remove data redundancy
-              albumState={this.props.album.createAlbum}
-              retry={this.retryFailed}
-              saveAlbum={this.saveAlbum}
-            />
+            
+            <UploadSuccess />
           </StepWizard>
         ) : (
           <StepWizard
@@ -271,28 +263,19 @@ class UploadPage extends Component {
           >
             <UploadAlbum
               isAuth={this.props.isAuthenticated}
-              saveAll={this.saveAlbumInfo}
+              saveAll={this.savePhotoInfo}
               meta={this.props.meta}
               sendAlert={this.props.sendAlert}
               searchMeta={this.props.recoverMetadata}
             />
             <UploadPhoto
               saveAll={this.startProcess}
+              photoInfo={this.state.data}
               meta={this.props.meta}
               doColumns={false}
               searchMeta={this.props.recoverMetadata}
             />
-            <UploadProgress
-              photosUploading={this.props.upload.photosUploading}
-              opsFinished={this.props.upload.opsFinished}
-              uploading={this.props.upload.uploading}
-              completed={this.props.upload.photosUploaded.length}
-              doAlbum={this.state.data.onAlbum}
-              albumInfo={this.state.data}
-              albumState={this.props.album.createAlbum}
-              retry={this.retryFailed}
-              saveAlbum={this.saveAlbum}
-            />
+            <UploadSuccess />
           </StepWizard>
         )}
       </Fragment>

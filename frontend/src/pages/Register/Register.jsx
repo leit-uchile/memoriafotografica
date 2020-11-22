@@ -121,7 +121,8 @@ class Register extends Component {
       this.state.loginInfo.lastname,
       this.state.loginInfo.date,
       this.state.loginInfo.rol,
-      this.state.loginInfo.avatar
+      this.state.loginInfo.avatar,
+      this.state.loginInfo.recaptchaToken
     );
   }
 
@@ -169,9 +170,27 @@ const mapStateToProps = (state) => {
 };
 
 const mapActionsToProps = (dispatch) => ({
-  register: (username, password, name, lastname, date, rol, avatar) =>
+  register: (
+    username,
+    password,
+    name,
+    lastname,
+    date,
+    rol,
+    avatar,
+    recaptchaToken
+  ) =>
     dispatch(
-      user.register(username, password, name, lastname, date, rol, avatar)
+      user.register(
+        username,
+        password,
+        name,
+        lastname,
+        date,
+        rol,
+        avatar,
+        recaptchaToken
+      )
     ),
   cleanErrors: () => dispatch(user.cleanErrors()),
 });

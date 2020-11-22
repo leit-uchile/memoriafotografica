@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import {
   Form,
   FormGroup,
@@ -7,7 +7,6 @@ import {
   Col,
   Row,
   Container,
-  Collapse,
   UncontrolledPopover,
   PopoverBody,
   PopoverHeader,
@@ -20,7 +19,6 @@ import {
   faQuestionCircle,
   faChevronCircleLeft,
   faChevronCircleRight,
-  faPlusCircle,
   faBook,
 } from "@fortawesome/free-solid-svg-icons";
 import { faCreativeCommons } from "@fortawesome/free-brands-svg-icons";
@@ -99,10 +97,6 @@ const UploadAlbum = ({
     date: "",
     tags: [],
     cc: "",
-    onAlbum: false,
-    // Album related info
-    name: "",
-    description: "",
   });
 
   const suggestions = meta
@@ -134,18 +128,9 @@ const UploadAlbum = ({
     setFormData({ ...formData, date: e.target.value });
   };
 
-  const saveAlbum = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const isAlbum = () =>
-    setFormData({ ...formData, onAlbum: !formData.onAlbum });
-
   const onSubmitD = (e) => {
     e.preventDefault();
-    if (formData.onAlbum && formData.name === "") {
-      sendAlert("Debe rellenar el nombre del Album", "warning");
-    } else if (formData.date === "") {
+    if (formData.date === "") {
       sendAlert("Debe rellenar la fecha", "warning");
     } else if (formData.cc === "") {
       sendAlert("Debe seleccionar una licencia", "warning");
@@ -178,39 +163,6 @@ const UploadAlbum = ({
       </Row>
       <Row style={{ marginTop: "2em" }}>
         <Col md={{ size: 6, offset: 1 }}>
-          <div className="upload-album-section">
-            <Label>Crear Album</Label>
-            <FontAwesomeIcon
-              icon={faPlusCircle}
-              onClick={() => isAlbum()}
-              className="upload-album-button"
-            />
-          </div>
-          <Form
-            className={`upload-album-section-content form-container ${
-              !formData.onAlbum ? "hide" : ""
-            }`}
-          >
-            <FormGroup>
-              <Collapse isOpen={formData.onAlbum}>
-                <Fragment>
-                  <Input
-                    name="name"
-                    type="text"
-                    placeholder="Nombre del album"
-                    onChange={(info) => saveAlbum(info)}
-                    required
-                  />
-                  <Input
-                    name="description"
-                    type="textarea"
-                    placeholder="Descripcion (Opcional)"
-                    onKeyUp={(info) => saveAlbum(info)}
-                  />
-                </Fragment>
-              </Collapse>
-            </FormGroup>
-          </Form>
           <div className="upload-album-section">
             <Label>Información General</Label>
           </div>
@@ -301,7 +253,7 @@ const UploadAlbum = ({
               </Button>
             </ButtonGroup>
           </Form>
-        </Col>
+        </Col> 
         <Col md={4} className="white-box upload-rules">
           <h4>Subida de contenido</h4>
           <ul>
