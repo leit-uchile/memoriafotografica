@@ -101,8 +101,6 @@ class RequestPhoto extends Component {
         recaptchaToken: "",
       },
     };
-    //TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
-    this.captchaKey = "6LdqEM0ZAAAAAHkqSnB_dHDEjh4xy7euetQLrW7O";
 
     this.onChangeCaptcha = this.onChangeCaptcha.bind(this);
     this.updateData = this.updateData.bind(this);
@@ -128,6 +126,7 @@ class RequestPhoto extends Component {
     } else {
       const photosId = this.props.requestedPhotos.map((el) => el.id);
       this.props.sendRequest(photosId, this.state.formData);
+      this.recaptcharef.reset();
     }
   };
 
@@ -261,7 +260,7 @@ class RequestPhoto extends Component {
 
                 <ReCAPTCHA
                   ref={(r) => (this.recaptcharef = r)}
-                  sitekey={this.captchaKey}
+                  sitekey={process.env.REACT_APP_RECAPTCHA_KEY}
                   onChange={this.onChangeCaptcha}
                 />
 

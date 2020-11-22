@@ -35,8 +35,6 @@ const ContactUs = ({ contacted, contactUs }) => {
   };
 
   let recaptchaRef;
-  //TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
-  const captchaKey = "6LdqEM0ZAAAAAHkqSnB_dHDEjh4xy7euetQLrW7O";
 
   return (
     <Container>
@@ -49,8 +47,10 @@ const ContactUs = ({ contacted, contactUs }) => {
         <Col className="white-box form-container">
           {!contacted ? (
             <Form
-              onSubmit={() => {
+              onSubmit={(e) => {
+                e.preventDefault();
                 contactUs(formData);
+                recaptchaRef.reset();
               }}
             >
               <div className="form-title">
@@ -111,7 +111,7 @@ const ContactUs = ({ contacted, contactUs }) => {
               </FormGroup>
               <hr />
               <ReCAPTCHA
-                sitekey={captchaKey}
+                sitekey={process.env.REACT_APP_RECAPTCHA_KEY}
                 ref={(el) => {
                   recaptchaRef = el;
                 }}

@@ -10,64 +10,22 @@ import {
   CardDeck,
   Card,
   CardBody,
-  Modal, 
-  ModalHeader, 
-  ModalBody, 
-  ModalFooter,
 } from "reactstrap";
 import Dropzone from "react-dropzone";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronCircleLeft,
-  faChevronCircleRight,
   faCloudUploadAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
 import { photos } from "../../actions/gallery_api";
 import {bindActionCreators} from "redux";
-import StepWizard from 'react-step-wizard';
 import uuid from "uuid";
 import "./styles.css";
 import "./uploadPhoto.css";
 
 const imageMaxSize = 8000000; // Bytes ~ 8MB
-
-const LoadModal = (props) => {
-  const {
-    buttonLabel,
-    callback,
-    callback2
-  } = props;
-
-  const [modal, setModal] = useState(false);
-
-  const toggle = () => {
-    callback();
-    setModal(!modal);
-  };
-
-  const untoggle = () => {
-    callback2();
-    setModal(!modal);
-  }
-
-  return (
-      <Button color="primary" onClick={toggle}>{buttonLabel}
-        <FontAwesomeIcon icon={faChevronCircleRight} />
-        <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}></ModalHeader>
-        <ModalBody>
-          <UploadProgress />
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={untoggle}>Finalizar</Button>{' '}
-          <Button color="secondary" onClick={toggle}>Volver</Button>
-        </ModalFooter>
-        </Modal>
-      </Button>
-  );
-}
 
 /**
  * UploadPhoto
@@ -304,7 +262,8 @@ class UploadPhoto extends Component {
                 <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
               </Button>
               {this.state.photos.length !== 0 ? (
-                <LoadModal buttonLabel="Finalizar" 
+                <UploadProgress 
+                  buttonLabel="Finalizar" 
                   callback={() => this.props.uploadImages(this.state.photos, this.props.photoInfo)}
                   callback2={this.props.nextStep}/>
               ) : null}

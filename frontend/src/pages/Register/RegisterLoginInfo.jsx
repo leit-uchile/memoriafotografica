@@ -48,8 +48,6 @@ class RegisterLoginInfo extends Component {
         recaptchaToken: "",
       };
     }
-    //TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
-    this.captchaKey = "6LdqEM0ZAAAAAHkqSnB_dHDEjh4xy7euetQLrW7O";
     this.checkPassword = this.checkPassword.bind(this);
     this.props = Props;
     this.genericChangeHandler = this.genericChangeHandler.bind(this);
@@ -122,6 +120,7 @@ class RegisterLoginInfo extends Component {
         this.setState({ error: null });
         this.props.saveInfo(this.state);
         // From StepWizard
+        this.recaptcharef.reset();
         this.props.nextStep();
       }
     }
@@ -345,7 +344,7 @@ class RegisterLoginInfo extends Component {
               </div>
               <ReCAPTCHA
                 ref={(r) => (this.recaptcharef = r)}
-                sitekey={this.captchaKey}
+                sitekey={process.env.REACT_APP_RECAPTCHA_KEY}
                 onChange={this.onChangeCaptcha}
               />
 
