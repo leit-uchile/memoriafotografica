@@ -45,11 +45,13 @@ const FilterModal = ({
 
   useEffect(() => {
     getTags(); //get tags from backend
-  }, [photoId, newTagsId]);
+  }, [newTagsId]);
 
   const toggle = () => {
-    getPhotoDetails(photoId);
     setModal(!modal);
+    if (!modal) {
+      getPhotoDetails(photoId);
+    }
   };
 
   useEffect(() => {
@@ -151,7 +153,7 @@ const FilterModal = ({
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>
-          Curando fotografía: {!loading ? photoDetails.title : ""}{" "}
+          Curando fotografía: {!loading && !sending ? photoDetails.title : ""}{" "}
         </ModalHeader>
         <ModalBody>
           {!loading ? (
