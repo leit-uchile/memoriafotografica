@@ -6,6 +6,7 @@ from django.conf import settings
 from .serializers import (CreateUserSerializer, UserSerializer, LoginUserSerializer,
                           UserAlbumSerializer, UserCommentSerializer, UserPhotoSerializer, ChangePasswordSerializer)
 from .models import User, RegisterLink
+from Gallery.models import Photo
 from .permissions import *
 from WebAdmin.views import sendEmail
 from rest_framework.documentation import include_docs_urls
@@ -20,7 +21,6 @@ from django_rest_passwordreset.signals import reset_password_token_created
 def createHash(id):
     integer = str(id).encode("UTF-8")
     return str(hashlib.sha256(integer).hexdigest())
-
 
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
@@ -227,7 +227,14 @@ class UserPhotosAPI(generics.GenericAPIView):
     def get(self, request, pk, *args, **kwargs):
         try:
             user = User.objects.get(pk=pk)
-            serializer = UserPhotoSerializer(user)
+            if "approved" in request.query_params:
+                approved = True
+                if request.query_params["approved"] == "false":
+                    approved = False
+            #qs = Photo.objects.filter(approved = approved)
+            #serializer = UserPhotoSerializer(user, instance=qs ) #Error: Serializer supports 1 argument
+            #Alternative
+            serializer = UserPhotoSerializer(user, context ={'approved': approved} )
             return Response(serializer.data)
         except User.DoesNotExist:
             raise Http404

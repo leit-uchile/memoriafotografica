@@ -20,7 +20,7 @@ import { connect } from "react-redux";
 import { site_misc } from "../../actions";
 import { useEffect } from "react";
 import EditProfile from "./Profile/EditProfile";
-import Landing from "./Landing";
+import Landing from "./Landing2";
 import PublicProfile from "./Profile/PublicProfile";
 import UserPhotos from "./PhotoCollection/UserPhotos";
 import UserAlbums from "./AlbumCollection/UserAlbums";

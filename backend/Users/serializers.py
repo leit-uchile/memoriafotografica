@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate
 # Create serializers here :)
 from rest_framework import serializers
 from .models import User
+from Gallery.models import Photo
 from django.conf import settings
 from datetime import datetime
 from Gallery.serializers import AlbumSerializer, PhotoSerializer, CommentSerializer
@@ -61,6 +62,7 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 class UserPhotoSerializer(serializers.ModelSerializer):
+    #TODO: GET CONTEXT
     photos = PhotoSerializer(many = True)
 
     class Meta:
