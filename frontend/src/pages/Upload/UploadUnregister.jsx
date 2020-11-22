@@ -32,8 +32,6 @@ const UploadUnregister = ({
   recaptchaReset,
 }) => {
   let recaptchaRef;
-  //TODO change client captcha key for production add it to the store maybe , to be aviable for every that wants to use recaptcha
-  const captchaKey = "6LdqEM0ZAAAAAHkqSnB_dHDEjh4xy7euetQLrW7O";
 
   const [formData, setFormData] = useState(
     cache === {}
@@ -215,7 +213,7 @@ const UploadUnregister = ({
           </Col>
         </FormGroup>
         <ReCAPTCHA
-          sitekey={captchaKey}
+          sitekey={process.env.REACT_APP_RECAPTCHA_KEY}
           ref={(el) => {
             recaptchaRef = el;
           }}
