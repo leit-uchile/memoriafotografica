@@ -29,7 +29,6 @@ class Login extends Component {
   componentWillMount() {
     this.props.setRoute("/login");
     this.props.setLoginSuccessRoute();
-    console.log("ahora la ruta guardada es "+this.props.loginRoute);
   }
 
 
