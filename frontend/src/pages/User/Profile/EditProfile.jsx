@@ -24,7 +24,7 @@ import {
 } from "reactstrap";
 import UserPicture from "../../../components/UserPicture";
 import CropPhoto from "../../../components/CropPhoto";
-import "./styles.css";
+import "../styles.css";
 import { bindActionCreators } from "redux";
 import { selectUserData} from "../../../reducers";
 

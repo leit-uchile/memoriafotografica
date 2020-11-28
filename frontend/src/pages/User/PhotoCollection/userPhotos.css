@@ -1,0 +1,7 @@
+.user-dashboard-buttons {
+  display: flex;
+  align-items: center;
+}
+.user-dashboard-buttons > button {
+  margin-right: 4px;
+}

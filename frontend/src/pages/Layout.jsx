@@ -27,6 +27,7 @@ import AllCollections from "./Collections";
 import RequestPhotoToast from "./RequestPhoto/RequestPhotoToast";
 import RecoverAccount from "./Other/RecoverAccount";
 import RecoverAccountConfirmation from "./Other/RecoverAccountConfirmation";
+import DashboardRouting from "./User/DashboardRouting";
 
 
 // Separate chunks for users
@@ -39,7 +40,7 @@ const lazyComponents = [
   },
   {
     component: lazy(() => import("./User")),
-    path: "/user/",
+    path: "/user/dashboard",
     route: BoundedRoute,
     message: "Cargando herramientas de usuario...",
   },
@@ -91,6 +92,7 @@ const Layout = () => {
                     <BoundedRoute path={"/recoveruser"} component={RecoverAccount} />
                     <BoundedRoute path={"/misc"} component={Index} />
                     <BoundedRoute path={"/register"} component={Register} />
+                    <BoundedRoute exact path={"/user/public/:id"} component={DashboardRouting} />
                     {/* The next route allows to keep the real component mounted
                       with a persistent state; see outside transition */}
                     <BoundedRoute path={"/photo/:id/"} component={Empty} />

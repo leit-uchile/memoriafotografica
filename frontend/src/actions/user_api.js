@@ -150,7 +150,7 @@ export const getRegisterLink = (code) => (dispatch) => {
   });
 };
 
-export const getUserPhotos = (user_id, limit, offset, approved) => (
+export const getUserPhotos = (user_id, limit, offset, extra) => (
   dispatch,
   getState
 ) => {
@@ -159,13 +159,13 @@ export const getUserPhotos = (user_id, limit, offset, approved) => (
     Authorization: "Token " + getState().user.token,
   };
   return fetch(
-    `/api/users/photos/${user_id}/?limit=${limit}&offset=${offset}&approved=${approved}`,
+    `/api/users/photos/${user_id}/?limit=${limit}&offset=${offset}${extra}`,
     { method: "GET", headers: headers }
   ).then(function (response) {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_PHOTO, data: data.photos });
+        dispatch({ type: USER_RECOVERED_PHOTO, data: data });
       });
     } else {
       dispatch({ type: USER_RECOVERED_PHOTO_ERROR, data: r.data });

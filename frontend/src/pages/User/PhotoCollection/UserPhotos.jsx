@@ -8,7 +8,7 @@ import PhotoEditor from "../../../components/PhotoEditor";
 import { Helmet } from "react-helmet";
 import Gallery from "react-photo-gallery";
 import { bindActionCreators } from "redux";
-import "../styles.css";
+import "./userPhotos.css";
 import {   selectUserPhotos,
             selectUserData,
             selectUserPublicUser,
@@ -33,7 +33,7 @@ class UserPhotos extends Component {
         "&page=1&page_size=100"
       );
     } else {
-      props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
+      props.onLoadGetPhotos(props.user.id, 100, 0, "&approved=true"); //no poner limite
     }
   }
 
