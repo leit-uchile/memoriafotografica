@@ -7,6 +7,7 @@ from .serializers import (CreateUserSerializer, UserSerializer, LoginUserSeriali
                           UserAlbumSerializer, UserCommentSerializer, UserPhotoSerializer, ChangePasswordSerializer)
 from .models import User, RegisterLink
 from Gallery.models import Photo
+from Gallery.serializers import PhotoSerializer
 from .permissions import *
 from WebAdmin.views import sendEmail
 from rest_framework.documentation import include_docs_urls
@@ -227,14 +228,15 @@ class UserPhotosAPI(generics.GenericAPIView):
     def get(self, request, pk, *args, **kwargs):
         try:
             user = User.objects.get(pk=pk)
+            filters = {}
             if "approved" in request.query_params:
                 approved = True
                 if request.query_params["approved"] == "false":
                     approved = False
-            #qs = Photo.objects.filter(approved = approved)
-            #serializer = UserPhotoSerializer(user, instance=qs ) #Error: Serializer supports 1 argument
-            #Alternative
-            serializer = UserPhotoSerializer(user, context ={'approved': approved} )
+                filters['approved'] = approved
+    
+            user_pics = user.photos.filter(**filters)
+            serializer = PhotoSerializer(user_pics, many=True)
             return Response(serializer.data)
         except User.DoesNotExist:
             raise Http404
