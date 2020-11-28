@@ -20,7 +20,7 @@ import {
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
 import { photos } from "../../actions/gallery_api";
-import {bindActionCreators} from "redux";
+import { bindActionCreators } from "redux";
 import uuid from "uuid";
 import "./styles.css";
 import "./uploadPhoto.css";
@@ -109,6 +109,23 @@ class UploadPhoto extends Component {
     }
   };
 
+  uploadPhotos = () => {
+    // Filtrar fotos
+    let index = this.props.upload.error;
+    let filtered = this.state.photos.filter((_,k) => index.includes(k))
+    filtered = filtered.length === 0 ? [...this.state.photos] : filtered
+
+    console.log(filtered)
+    // Actualizar estado con un callback
+    this.setState({photos: filtered},
+      () => 
+      this.props.uploadImages(
+        filtered,
+        this.props.photoInfo
+      )
+    )
+  }
+
   onSubmit = (e) => {
     e.preventDefault();
     if (this.state.photos.length === 0) {
@@ -174,13 +191,13 @@ class UploadPhoto extends Component {
           />
         );
       }
-     
+
       rows.push(
-          <Row style={{ marginTop: "1em" }}>
+        <Row style={{ marginTop: "1em" }}>
           <Col>
-              <CardDeck>{row}</CardDeck>
+            <CardDeck>{row}</CardDeck>
           </Col>
-          </Row>
+        </Row>
       );
     }
 
@@ -198,29 +215,27 @@ class UploadPhoto extends Component {
             <Container fluid>
               <Row>
                 <Col>
-                    <CardDeck>
-                      <Card className="upload-photo-dropzone">
-                        <CardBody>
-                          <Dropzone onDrop={this.handleOnDrop}>
-                            {({ getRootProps, getInputProps }) => (
-                              <div
-                                {...getRootProps()}
-                              >
-                                <input {...getInputProps()} />
-                                <p>
-                                  Arrastra y suelta una imagen o haz click aqui
-                                </p>
-                                <FontAwesomeIcon
-                                  icon={faCloudUploadAlt}
-                                  size="3x"
-                                />
-                              </div>
-                            )}
-                          </Dropzone>
-                        </CardBody>
-                      </Card>
-                      {first}
-                    </CardDeck>
+                  <CardDeck>
+                    <Card className="upload-photo-dropzone">
+                      <CardBody>
+                        <Dropzone onDrop={this.handleOnDrop}>
+                          {({ getRootProps, getInputProps }) => (
+                            <div {...getRootProps()}>
+                              <input {...getInputProps()} />
+                              <p>
+                                Arrastra y suelta una imagen o haz click aqui
+                              </p>
+                              <FontAwesomeIcon
+                                icon={faCloudUploadAlt}
+                                size="3x"
+                              />
+                            </div>
+                          )}
+                        </Dropzone>
+                      </CardBody>
+                    </Card>
+                    {first}
+                  </CardDeck>
                 </Col>
               </Row>
               {rows}
@@ -235,9 +250,7 @@ class UploadPhoto extends Component {
                   historia asociada.
                 </li>
               </ul>
-              <h4>
-                Informaci&oacute;n por fotograf&iacute;a
-              </h4>
+              <h4>Informaci&oacute;n por fotograf&iacute;a</h4>
               <ul>
                 <li>
                   Se puede asignar informaci&oacute;n separada como
@@ -262,10 +275,13 @@ class UploadPhoto extends Component {
                 <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
               </Button>
               {this.state.photos.length !== 0 ? (
-                <UploadProgress 
-                  buttonLabel="Finalizar" 
-                  callback={() => this.props.uploadImages(this.state.photos, this.props.photoInfo)}
-                  callback2={this.props.nextStep}/>
+                <UploadProgress
+                  buttonLabel="Finalizar"
+                  callback={() =>
+                    this.uploadPhotos()
+                  }
+                  callback2={this.props.nextStep}
+                />
               ) : null}
             </ButtonGroup>
           </Col>
@@ -277,11 +293,16 @@ class UploadPhoto extends Component {
 
 const mapStateToProps = (state) => ({
   disclosed: null,
+  upload: state.upload,
 });
 
-const mapActionsToProps = (dispatch) => bindActionCreators({
-  sendAlert: site_misc.setAlert,
-  uploadImages: photos.uploadImages,
-}, dispatch);
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      sendAlert: site_misc.setAlert,
+      uploadImages: photos.uploadImages,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(UploadPhoto);

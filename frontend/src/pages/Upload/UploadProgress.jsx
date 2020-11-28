@@ -6,9 +6,9 @@ import {
   Col,
   Progress,
   Alert,
-  Modal, 
-  ModalHeader, 
-  ModalBody, 
+  Modal,
+  ModalHeader,
+  ModalBody,
   ModalFooter,
 } from "reactstrap";
 import { connect } from "react-redux";
@@ -36,8 +36,8 @@ const UploadProgress = ({
     error,
   },
   buttonLabel,
-  callback,
-  callback2
+  callback, // Retry
+  callback2, // go to next step
 }) => {
   /**
    * 3 possible states.
@@ -49,58 +49,71 @@ const UploadProgress = ({
   const [modal, setModal] = useState(false);
 
   const toggle = () => {
-    callback();
     setModal(!modal);
   };
 
-  const untoggle = () => {
+  const close = () => {
     callback2();
-    setModal(!modal);
-  }
+    setModal(!modal); // Close modal
+  };
 
   return (
-    <Button color="primary" onClick={toggle}>{buttonLabel}
-    <FontAwesomeIcon icon={faChevronCircleRight} />
-    <Modal isOpen={modal} toggle={toggle}>
-    <ModalHeader toggle={toggle}>Subir Fotograf&iacute;a</ModalHeader>
-    <ModalBody>
-    <Container>
-      <Row>
-        <Col>
-          <h2 className="page-title">
-            {uploading ? "Enviando aporte..." : "¡Operación completada!"}
-          </h2>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          {uploading ? (
-            <Progress animated value={(opsFinished * 100) / photosUploading} />
+    <Button color="primary" onClick={() => {
+      callback();
+      toggle()
+    }}>
+      {buttonLabel}
+      <FontAwesomeIcon icon={faChevronCircleRight} />
+      <Modal isOpen={modal} toggle={toggle}>
+        <ModalHeader toggle={toggle}>Subir Fotograf&iacute;a</ModalHeader>
+        <ModalBody>
+          <Container>
+            <Row>
+              <Col>
+                <h2 className="page-title">
+                  {uploading ? "Enviando aporte..." : "¡Operación completada!"}
+                </h2>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                {uploading ? (
+                  <Progress
+                    animated
+                    value={(opsFinished * 100) / photosUploading}
+                  />
+                ) : (
+                  <Progress value={100} color="success" />
+                )}
+              </Col>
+            </Row>
+            {!uploading ? (
+              error.length > 0 ? (
+                <Row>
+                  <Col>
+                    <Alert color="warning">
+                      Algunas fotografias no pudieron ser agregadas con exito.
+                      Por favor intenta subirlas de nuevo.
+                    </Alert>
+                  </Col>
+                </Row>
+              ) : null
+            ) : null}
+          </Container>
+        </ModalBody>
+        <ModalFooter>
+          {!uploading && error.length > 0 ? (
+            <Button color="primary" onClick={() => callback()}>
+              Reintentar
+            </Button>
           ) : (
-            <Progress value={100} color="success" />
+            <Button color="primary" onClick={close}>
+              Finalizar
+            </Button>
           )}
-        </Col>
-      </Row>
-      {!uploading ? (
-        error.length > 0 ? (
-          <Row>
-            <Col>
-              <Alert color="warning">
-                Algunas fotografias no pudieron ser agregadas con exito. Por
-                favor intenta subirlas de nuevo.
-              </Alert>
-            </Col>
-          </Row>
-        ) : null
-      ) : null}
-    </Container>
-    </ModalBody>
-    <ModalFooter>
-      <Button color="primary" onClick={untoggle}>Finalizar</Button>{' '}
-      <Button color="secondary" onClick={toggle}>Volver</Button>
-    </ModalFooter>
-    </Modal>
-  </Button>
+        </ModalFooter>
+      </Modal>
+    </Button>
   );
 };
 
