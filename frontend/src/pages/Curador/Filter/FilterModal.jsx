@@ -17,6 +17,7 @@ import {
   FormText,
 } from "reactstrap";
 import Spinner from "reactstrap/lib/Spinner";
+import { LeitSpinner } from "../../../components/index";
 import { bindActionCreators } from "redux";
 import {
   selectPhotosDetails,
@@ -38,20 +39,22 @@ const FilterModal = ({
   newTagsId,
 }) => {
   const [modal, setModal] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [newphoto, setNewphoto] = useState({});
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     getTags(); //get tags from backend
-  }, [photoId, newTagsId]);
-
-  // Not working
-  // useEffect(() => {
-  //   getPhotoDetails(photoId);
-  // }, [photoId]);
+  }, [newTagsId]);
 
   const toggle = () => {
-    getPhotoDetails(photoId);
+    setModal(!modal);
+    if (!modal) {
+      getPhotoDetails(photoId);
+    }
+  };
+
+  useEffect(() => {
     let info = { ...photoDetails };
     info.metadata =
       photoDetails.metadata !== undefined
@@ -65,8 +68,7 @@ const FilterModal = ({
     delete info.report;
     setNewphoto(info);
     setLoading(false);
-    setModal(!modal);
-  };
+  }, [photoDetails]);
 
   const handleCheckboxChange = (event) => {
     const target = event.target;
@@ -122,9 +124,9 @@ const FilterModal = ({
   const saveChanges = (to_send) => {
     delete to_send.image;
     delete to_send.thumbnail;
-    setLoading(!loading);
+    setSending(!sending);
     editPhoto(to_send.id, to_send).then((response) => {
-      setLoading(!loading);
+      setSending(!sending);
       window.location.reload();
     });
   };
@@ -151,114 +153,118 @@ const FilterModal = ({
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>
-          Curando fotografía: {newphoto.title}{" "}
+          Curando fotografía: {!loading && !sending ? photoDetails.title : ""}{" "}
         </ModalHeader>
         <ModalBody>
-          <Form>
-            <Row style={{ margin: "4px 0px" }}>
-              <Col>
-                <img src={newphoto.image} width="100%" alt="Photo" />
-              </Col>
-            </Row>
-            <FormGroup>
-              <FormText>Visibilidad de la foto</FormText>
-            </FormGroup>
-            <FormGroup row>
-              <Col>
-                <FormGroup check className="center">
-                  <input
-                    type="checkbox"
-                    name="approved"
-                    checked={newphoto.approved}
-                    onChange={handleCheckboxChange}
-                    id="approved"
-                    class="toggle-button"
+          {!loading ? (
+            <Form>
+              <Row style={{ margin: "4px 0px" }}>
+                <Col>
+                  <img src={newphoto.image} width="100%" alt="Photo" />
+                </Col>
+              </Row>
+              <FormGroup>
+                <FormText>Visibilidad de la foto</FormText>
+              </FormGroup>
+              <FormGroup row>
+                <Col>
+                  <FormGroup check className="center">
+                    <input
+                      type="checkbox"
+                      name="approved"
+                      checked={newphoto.approved}
+                      onChange={handleCheckboxChange}
+                      id="approved"
+                      class="toggle-button"
+                    />
+                    <label for="approved">Aprobada</label>
+                  </FormGroup>
+                </Col>
+                <Col>
+                  <FormGroup check>
+                    <input
+                      type="checkbox"
+                      name="censure"
+                      checked={newphoto.censure}
+                      onChange={handleCheckboxChange}
+                      id="censured"
+                      class="toggle-button"
+                    />
+                    <label for="censured">Censurada</label>
+                  </FormGroup>
+                </Col>
+              </FormGroup>
+              <FormGroup>
+                <FormText>Editar información de la foto</FormText>
+              </FormGroup>
+              <FormGroup row>
+                <Label for="title" sm={3}>
+                  Título{" "}
+                </Label>
+                <Col sm={9}>
+                  <Input
+                    type="text"
+                    name="title"
+                    value={newphoto.title}
+                    onChange={handleChange}
                   />
-                  <label for="approved">Aprobada</label>
-                </FormGroup>
-              </Col>
-              <Col>
-                <FormGroup check>
-                  <input
-                    type="checkbox"
-                    name="censure"
-                    checked={newphoto.censure}
-                    onChange={handleCheckboxChange}
-                    id="censured"
-                    class="toggle-button"
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label for="description" sm={3}>
+                  Descripción{" "}
+                </Label>
+                <Col sm={9}>
+                  <Input
+                    type="textarea"
+                    name="description"
+                    value={newphoto.description}
+                    onChange={handleChange}
                   />
-                  <label for="censured">Censurada</label>
-                </FormGroup>
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <FormText>Editar información de la foto</FormText>
-            </FormGroup>
-            <FormGroup row>
-              <Label for="title" sm={3}>
-                Título{" "}
-              </Label>
-              <Col sm={9}>
-                <Input
-                  type="text"
-                  name="title"
-                  value={newphoto.title}
-                  onChange={handleChange}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Label for="description" sm={3}>
-                Descripción{" "}
-              </Label>
-              <Col sm={9}>
-                <Input
-                  type="textarea"
-                  name="description"
-                  value={newphoto.description}
-                  onChange={handleChange}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Label for="date" sm={3}>
-                Fecha de captura{" "}
-              </Label>
-              <Col sm={9}>
-                <Input
-                  type="date"
-                  value={`${newphoto.upload_date}`.slice(0, 10)}
-                  name="upload_date"
-                  onChange={updateDate}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Label for="tags" sm={3}>
-                Etiquetas{" "}
-              </Label>
-              <Col sm={9}>
-                <ReactTags
-                  style={{ width: "auto" }}
-                  placeholder={"Añadir etiquetas"}
-                  autoresize={false}
-                  allowNew={true}
-                  tags={newphoto.metadata}
-                  suggestions={suggestions}
-                  handleDelete={deleteTag}
-                  handleAddition={additionTag}
-                />
-                <FormText color="muted">
-                  Para ingresar una nueva etiqueta debe presionar la tecla
-                  "Entrar" o "Tabulación"
-                </FormText>
-              </Col>
-            </FormGroup>
-          </Form>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label for="date" sm={3}>
+                  Fecha de captura{" "}
+                </Label>
+                <Col sm={9}>
+                  <Input
+                    type="date"
+                    value={`${newphoto.upload_date}`.slice(0, 10)}
+                    name="upload_date"
+                    onChange={updateDate}
+                  />
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label for="tags" sm={3}>
+                  Etiquetas{" "}
+                </Label>
+                <Col sm={9}>
+                  <ReactTags
+                    style={{ width: "auto" }}
+                    placeholder={"Añadir etiquetas"}
+                    autoresize={false}
+                    allowNew={true}
+                    tags={newphoto.metadata}
+                    suggestions={suggestions}
+                    handleDelete={deleteTag}
+                    handleAddition={additionTag}
+                  />
+                  <FormText color="muted">
+                    Para ingresar una nueva etiqueta debe presionar la tecla
+                    "Entrar" o "Tabulación"
+                  </FormText>
+                </Col>
+              </FormGroup>
+            </Form>
+          ) : (
+            <LeitSpinner />
+          )}
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={handleMetadata}>
-            {loading ? (
+            {sending ? (
               <Spinner style={{ width: "1rem", height: "1rem" }} />
             ) : (
               ""

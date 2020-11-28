@@ -1,11 +1,11 @@
-.home-background .react-photo-gallery--gallery{
+.home-background .react-photo-gallery--gallery {
   background-color: white;
 }
 
-.home-background{
+.home-background {
   background-image: url(/assets/frontis_blur.jpg);
-  background-color: var(--leit-modal-bg);
-  background-blend-mode: luminosity;
+  /* background-color: var(--leit-modal-bg); */
+  /* background-blend-mode: luminosity; */
   position: relative;
   min-height: 75vh;
   background-attachment: fixed;
@@ -16,7 +16,7 @@
 
 .home-gallery-menu {
   margin: 0 auto;
-  border-bottom: 1px solid rgb(210,214,218);
+  border-bottom: 1px solid rgb(210, 214, 218);
   background: white;
   position: sticky;
   top: calc(1em + 40px + 25px);
@@ -37,8 +37,8 @@
   flex-direction: row;
 }
 
-@media (min-width: 768px){
-  .home-category-filter{
+@media (min-width: 768px) {
+  .home-category-filter {
     width: 30em;
-  } 
+  }
 }

@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faEye, faPencilAlt, faTimes } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from 'prop-types';
 import "./photoEditor.css";
+import PropTypes from "prop-types";
 
 /**
  * From documentation
@@ -191,7 +192,13 @@ const PhotoEditor = ({ photos, selectAll, ...props }) => {
 PhotoEditor.propTypes = {
   viewLink : PropTypes.bool,
   selectIcon : PropTypes.oneOf(['pen', 'check']),
-  selectAllBtn : PropTypes.bool
-};
+  selectAllBtn : PropTypes.bool,
+  photos: PropTypes.arrayOf(PropTypes.shape({
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    src: PropTypes.string.isRequired,
+  })),
+  selectAll: PropTypes.func.isRequired,
+}
 
 export default PhotoEditor;
