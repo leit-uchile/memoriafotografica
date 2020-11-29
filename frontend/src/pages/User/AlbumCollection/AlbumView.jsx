@@ -91,7 +91,7 @@ const AlbumView = ({
                   to={
                     location.pathname.includes("public")
                       ? `/gallery`
-                      : "/user/dashboard"
+                      : "/user/dashboard/albums"
                   }
                   style={{ height: "30px" }}
                 >

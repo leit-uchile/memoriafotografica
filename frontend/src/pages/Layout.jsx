@@ -92,7 +92,6 @@ const Layout = () => {
                     <BoundedRoute path={"/recoveruser"} component={RecoverAccount} />
                     <BoundedRoute path={"/misc"} component={Index} />
                     <BoundedRoute path={"/register"} component={Register} />
-                    <BoundedRoute exact path={"/user/public/:id"} component={DashboardRouting} />
                     {/* The next route allows to keep the real component mounted
                       with a persistent state; see outside transition */}
                     <BoundedRoute path={"/photo/:id/"} component={Empty} />

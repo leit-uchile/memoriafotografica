@@ -54,7 +54,7 @@ const UserAlbums = ({
       ...display,
       redirectUrl: isPublic
         ? `/user/public/albums/${id}`
-        : `/user/albums/${id}`,
+        : `/user/dashboard/albums/${id}`,
     });
   };
 

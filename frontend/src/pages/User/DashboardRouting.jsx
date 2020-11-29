@@ -113,7 +113,10 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
                           icon={faEdit}
                           title="Editar perfil"
                           onClick={() =>
-                            setParams({redirect: true, url: "/user/dashboard/editProfile"})
+                            setParams({
+                              redirect: true,
+                              url: "/user/dashboard/editProfile",
+                            })
                           }
                         />
                       </h2>
@@ -174,7 +177,40 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
           }}
         >
           <Switch>
-            {/* <BoundedRoute path={"/user/"} component={DashboardRouting} /> */}
+            <PrivateComponent
+              exact
+              path={match.path + "/"}
+              component={Landing}
+              location={location}
+              {...props}
+            />
+            <PrivateComponent
+              path={match.path + "/editProfile"}
+              component={EditProfile}
+              location={location}
+              {...props}
+            />
+            <PrivateComponent
+              exact
+              path={match.path + "/photos"}
+              component={UserPhotos}
+              location={location}
+              {...props}
+            />
+            <PrivateComponent
+              exact
+              path={match.path + "/albums"}
+              component={UserAlbums}
+              location={location}
+              {...props}
+            />
+            <PrivateComponent
+              exact
+              path={match.path + "/albums/:id"}
+              component={AlbumView}
+              location={location}
+              {...props}
+            />
             <BoundedRoute
               exact
               path={"/user/public/:id"}
@@ -189,10 +225,10 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
               location={location}
               {...props}
             />
-            <PrivateComponent
+            <BoundedRoute
               exact
               path={"/user/public/:id/photos"}
-              component={UserPhotos} //cambiar
+              component={UserPhotos}
               location={location}
               {...props}
             />
@@ -207,40 +243,6 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
               exact
               path={"/user/public/collections/:id"}
               component={CollectionView}
-              location={location}
-              {...props}
-            />
-            <PrivateComponent
-              exact
-              path={"/user/dashboard/"}
-              component={Landing}
-              location={location}
-              {...props}
-            />
-            <PrivateComponent
-              path={"/user/dashboard/editProfile"}
-              component={EditProfile}
-              location={location}
-              {...props}
-            />
-            <PrivateComponent
-              exact
-              path={"/user/dashboard/photos"}
-              component={UserPhotos}
-              location={location}
-              {...props}
-            />
-            <PrivateComponent
-              exact
-              path={"/user/dashboard/albums"}
-              component={UserAlbums}
-              location={location}
-              {...props}
-            />
-            <PrivateComponent
-              exact
-              path={"/user/albums/:id"}
-              component={AlbumView}
               location={location}
               {...props}
             />

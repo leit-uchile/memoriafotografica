@@ -3,7 +3,7 @@ import { user } from "../../actions";
 import { connect } from "react-redux";
 import { Container, Row, Col } from "reactstrap";
 import { LeitSpinner } from "../../components";
-import PublicProfile from "./PublicProfile";
+import PublicProfile from "./PublicProfile2";
 import { bindActionCreators } from "redux";
 import "./styles.css";
 import { selectUserPublicUser,
@@ -55,7 +55,7 @@ const UserRouting = ({
     <PublicProfile
       location={location}
       match={match}
-      publicUser={publicUser}
+      user={publicUser}
       {...rest}
     />
   );
