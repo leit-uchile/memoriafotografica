@@ -44,6 +44,12 @@ const lazyComponents = [
     route: BoundedRoute,
     message: "Cargando herramientas de usuario...",
   },
+  {
+    component: lazy(() => import("./User")),
+    path: "/user/",
+    route: BoundedRoute,
+    message: "Cargando usuario...",
+  },
 ];
 
 const Empty = (props) => {

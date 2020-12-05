@@ -34,7 +34,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
   var commentRows = mappedComments.map((el, key) => (
     <Row key={"Comment" + key}>
       <Col style={{ padding: "0.2em" }}>
-        <Comment element={el} viewerId={1} />
+        <Comment element={el} viewerId={user.id} />
       </Col>
     </Row>
   ));
@@ -83,7 +83,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
             <Col>
               <div className="stat-box">
                 <Container fluid className="stat-box-header">
-                  <h2>Fotograf&iacute;as esperando aprobación {addMore}</h2>
+                  <h2>Fotograf&iacute;as sin aprobación {addMore}</h2>
                 </Container>
                 <hr />
                 <Container fluid>

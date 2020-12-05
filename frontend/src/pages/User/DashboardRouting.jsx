@@ -168,13 +168,20 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
         ) : null}
         <Col
           sm={!isPublic ? "10" : "12"}
-          style={{
-            backgroundColor: "#f4f6f8",
-            minHeight: "75vh",
-            borderLeft: "1px solid rgb(210, 214, 218)",
-            paddingTop: "2em",
-            paddingLeft: "20px",
-          }}
+          style={
+            !isPublic
+              ? {
+                  backgroundColor: "#f4f6f8",
+                  minHeight: "75vh",
+                  borderLeft: "1px solid rgb(210, 214, 218)",
+                  paddingTop: "2em",
+                  paddingLeft: "20px",
+                }
+              : {
+                  minHeight: "75vh",
+                  paddingTop: "2em",
+                }
+          }
         >
           <Switch>
             <PrivateComponent
