@@ -25,11 +25,11 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
     id: el.id,
   }));
   var mappedComments = comments.map((el) => ({
-      content: el.content,
-      usuario: user,
-      id: el.id,
-      created_at: el.created_at,
-      updated_at: el.updated_at,
+    content: el.content,
+    usuario: user,
+    id: el.id,
+    created_at: el.created_at,
+    updated_at: el.updated_at,
   }));
   var commentRows = mappedComments.map((el, key) => (
     <Row key={"Comment" + key}>
@@ -88,7 +88,13 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
                 <hr />
                 <Container fluid>
                   <Row>
-                    <Col>
+                    <Col
+                      sm={
+                        mappedPhotos.length === 1
+                          ? { size: 4, offset: 4 }
+                          : { size: 12 }
+                      }
+                    >
                       {photos.length !== 0 ? (
                         <Gallery photos={mappedPhotos} targetRowHeight={250} />
                       ) : (
@@ -105,7 +111,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
                   <h2>Mis comentarios</h2>
                 </Container>
                 <hr />
-                <Container fluid>
+                <Container>
                   <Row>
                     <Col style={{ paddingTop: "0", paddingBottom: "0" }}>
                       {comments.length !== 0

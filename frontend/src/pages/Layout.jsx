@@ -27,7 +27,6 @@ import AllCollections from "./Collections";
 import RequestPhotoToast from "./RequestPhoto/RequestPhotoToast";
 import RecoverAccount from "./Other/RecoverAccount";
 import RecoverAccountConfirmation from "./Other/RecoverAccountConfirmation";
-import DashboardRouting from "./User/DashboardRouting";
 
 
 // Separate chunks for users
@@ -41,7 +40,7 @@ const lazyComponents = [
   {
     component: lazy(() => import("./User")),
     path: "/user/dashboard",
-    route: BoundedRoute,
+    route: PrivateComponent,
     message: "Cargando herramientas de usuario...",
   },
   {

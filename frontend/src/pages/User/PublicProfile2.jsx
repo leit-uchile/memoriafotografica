@@ -19,8 +19,8 @@ import {
 import Gallery from "react-photo-gallery";
 import { ReportModal, UserPicture } from "../../components";
 import { userRolTranslation, userTypeTranslation } from "./utils";
-import uuid4 from "uuid";
 import moment from "moment";
+import AlbumGallery from "../../components/AlbumGallery";
 
 const makeIcons = (rol_id) => {
   switch (rol_id) {
@@ -49,33 +49,22 @@ const PublicProfile = ({
     url: "",
   });
 
-  const [rows, setRows] = useState([]);
-
   useEffect(() => {
     getPublicPhotos(user.id);
     getPublicAlbums(user.id);
-  }, [location.pathname]);
+  }, [user]);
 
-  useEffect(() => {
-    let list = [];
-    for (let index = 0; index < albums.length; index = index + 3) {
-      let cols = [];
-      if (albums[index]) cols.push(albums[index]);
-      if (albums[index + 1]) cols.push(albums[index + 1]);
-      if (albums[index + 2]) cols.push(albums[index + 2]);
-      cols.theKey = uuid4();
-      list.push(cols);
-    }
-    setRows(list);
-  }, [albums]);
+  var mappedPhotos = photos
+    .slice(photos.length - 3, photos.length)
+    .map((el) => ({
+      src: el.thumbnail,
+      height: el.aspect_h,
+      width: el.aspect_w,
+      id: el.id,
+    }));
 
-  var mappedPhotos = photos.map((el) => ({
-    src: el.thumbnail,
-    height: el.aspect_h,
-    width: el.aspect_w,
-    id: el.id,
-  }));
-
+  var mappedAlbums = albums.slice(albums.length - 3, albums.length);
+  
   if (params.redirect) {
     return <Redirect push to={params.url} />;
   }
@@ -111,7 +100,10 @@ const PublicProfile = ({
                 >
                   Perfil de {user.first_name + " " + user.last_name}
                 </h2>
-                <p>Usuario desde el {moment(user.created_at).format("DD/MM/YYYY")}</p>
+                <p>
+                  Usuario desde el{" "}
+                  {moment(user.created_at).format("DD/MM/YYYY")}
+                </p>
                 <p>
                   {userTypeTranslation(user.user_type)}{" "}
                   {makeIcons(user.user_type)}
@@ -142,29 +134,27 @@ const PublicProfile = ({
             </Container>
             <hr />
             <Container fluid>
-              {rows.length !== 0 ? rows.map((r) => (
-                <Row key={r.key} style={{ marginTop: "1em" }}>
-                  {r.map((c) => (
-                    <Col key={c.name}>
-                      <div
-                        style={{
-                          backgroundImage: `url("${c.thumbnail}")`,
-                          cursor: "pointer",
-                        }}
-                        className="user-albums-background"
-                        onClick={() => {
-                          setParams({
-                            redirect: true,
-                            url: "/user/public/albums/" + c.id,
-                          });
-                        }}
-                      >
-                        <h4>{c.name}</h4>
-                      </div>
-                    </Col>
-                  ))}
-                </Row>
-              )): "Este usuario no tiene álbums"}
+              <Row>
+                <Col
+                  sm={
+                    mappedAlbums.length === 1 ? { size: 4, offset: 4 } : { size: 12 }
+                  }
+                >
+                  {mappedAlbums.length !== 0 ? (
+                    <AlbumGallery
+                      albums={mappedAlbums}
+                      onClick={(e, index) => {
+                        setParams({
+                          redirect: true,
+                          url: "/user/public/albums/" + mappedAlbums[index.index].id,
+                        });
+                      }}
+                    />
+                  ) : (
+                    "Este usuario no tiene álbums"
+                  )}
+                </Col>
+              </Row>
             </Container>
           </div>
         </Col>
@@ -174,30 +164,40 @@ const PublicProfile = ({
           <div className="stat-box">
             <Container fluid className="stat-box-header">
               <h2>Fotograf&iacute;as </h2>
-              {photos.length !== 0 ? (
+              {mappedPhotos.length !== 0 ? (
                 <Link to={`/user/public/${user.id}/photos`}> Ver Todas</Link>
               ) : null}
             </Container>
             <hr />
             <Container fluid>
-              {photos.length !== 0 ? (
-                <Gallery
-                  photos={mappedPhotos}
-                  targetRowHeight={250}
-                  onClick={(e, index) =>
-                    setParams({
-                      redirect: true,
-                      url:
-                        "/photo/" +
-                        mappedPhotos[index.index].id +
-                        "/?user=" +
-                        user.id,
-                    })
+              <Row>
+                <Col
+                  sm={
+                    mappedPhotos.length === 1
+                      ? { size: 4, offset: 4 }
+                      : { size: 12 }
                   }
-                />
-              ) : (
-                "Este usuario aún no ha publicado fotografías"
-              )}
+                >
+                  {photos.length !== 0 ? (
+                    <Gallery
+                      photos={mappedPhotos}
+                      targetRowHeight={250}
+                      onClick={(e, index) =>
+                        setParams({
+                          redirect: true,
+                          url:
+                            "/photo/" +
+                            mappedPhotos[index.index].id +
+                            "/?user=" +
+                            user.id,
+                        })
+                      }
+                    />
+                  ) : (
+                    "Este usuario no tiene fotografías"
+                  )}
+                </Col>
+              </Row>
             </Container>
           </div>
         </Col>

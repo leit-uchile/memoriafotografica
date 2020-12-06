@@ -73,7 +73,6 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
 
   useEffect(() => {
     setRoute(location.pathname);
-    // eslint-disable-next-line
   }, [setRoute]);
 
   if (params.redirect) {

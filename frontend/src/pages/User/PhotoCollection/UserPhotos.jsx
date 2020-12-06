@@ -9,11 +9,13 @@ import { Helmet } from "react-helmet";
 import Gallery from "react-photo-gallery";
 import { bindActionCreators } from "redux";
 import "./userPhotos.css";
-import {   selectUserPhotos,
-            selectUserData,
-            selectUserPublicUser,
-            selectPhotosUpdatedPhoto,
-            selectPhotosRefresh,} from "../../../reducers";
+import {
+  selectUserPhotos,
+  selectUserData,
+  selectUserPublicUser,
+  selectPhotosUpdatedPhoto,
+  selectPhotosRefresh,
+} from "../../../reducers";
 
 class UserPhotos extends Component {
   constructor(props) {
@@ -117,9 +119,9 @@ class UserPhotos extends Component {
             >
               {this.state.isPublic
                 ? `Fotos de ${this.props.publicUser.first_name}`
-                : "Mis fotos"}
+                : "Mis fotos"}{" "}
+              <Badge color="primary">{mapped.length}</Badge>
             </h2>
-            {/* <Badge color="primary">{mapped.length}</Badge> */}
           </Col>
         </Row>
         {this.state.isPublic ? null : (
@@ -148,11 +150,10 @@ class UserPhotos extends Component {
                 handleToggle={() =>
                   this.setState({ modalOpen: !this.state.modalOpen })
                 }
-                editPhoto={(id,content)=>this.props.editPhoto(id,content)}
-                deletePhoto={(id)=>this.props.deletePhoto(id)}
+                editPhoto={(id, content) => this.props.editPhoto(id, content)}
+                deletePhoto={(id) => this.props.deletePhoto(id)}
                 isCurator={false}
                 censurePhoto={null}
-                
               />
             </Col>
           </Row>
