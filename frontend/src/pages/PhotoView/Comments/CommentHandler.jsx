@@ -28,7 +28,7 @@ const CommentHandler = ({
   commentsLoaded,
   newComment,
   fetchComments,
-  userData,
+  loggedUser,
   auth,
   style,
   fluid,
@@ -46,7 +46,7 @@ const CommentHandler = ({
         <Comment
           element={el}
           modal={auth}
-          viewerId={userData == null ? -1 : userData.id}
+          editable={loggedUser !== null ? el.usuario.id === loggedUser.id : false}
         />
       </Col>
     </Row>
@@ -113,7 +113,7 @@ const mapStateToProps = (state) => ({
   comments: selectComments(state),
   commentsLoaded: selectCommentsLoaded(state),
   auth: selectUserIsAuthenticated(state),
-  userData: selectUserData(state),
+  loggedUser: selectUserData(state),
 });
 
 const mapActionsToProps = (dispatch) =>

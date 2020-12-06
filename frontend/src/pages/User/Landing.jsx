@@ -34,7 +34,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
   var commentRows = mappedComments.map((el, key) => (
     <Row key={"Comment" + key}>
       <Col style={{ padding: "0.2em" }}>
-        <Comment element={el} viewerId={user.id} />
+        <Comment element={el} />
       </Col>
     </Row>
   ));

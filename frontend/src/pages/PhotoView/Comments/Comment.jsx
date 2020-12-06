@@ -12,7 +12,7 @@ import "./styles.css";
 
 const Comment = ({
   element: { content, censure, usuario, id, created_at, updated_at },
-  viewerId,
+  editable=false,
   updateComment,
   deleteComment,
 }) => {
@@ -57,7 +57,7 @@ const Comment = ({
           ) : (
             <div className="comment-date">Cargando...</div>
           )}
-          {usuario.id === viewerId ? (
+          {editable ? (
             !editing ? (
               <div className="comment-user-options">
                 <FontAwesomeIcon
@@ -138,5 +138,3 @@ const mapActionsToProps = (dispatch) =>
   );
 
 export default connect(null, mapActionsToProps)(Comment);
-
-//export default Comment;
