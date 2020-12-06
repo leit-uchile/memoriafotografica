@@ -55,7 +55,7 @@ const UserAlbums = ({
         </title>
       </Helmet>
       <Row>
-        <Col>
+        <Col className="dashboard-col">
           <h2
             style={{
               textAlign: `${isPublic ? "center" : "left"}`,
@@ -67,7 +67,7 @@ const UserAlbums = ({
         </Col>
       </Row>
       <Row>
-        <Col>
+        <Col className="dashboard-col">
           <Container fluid>
             <Row>
               <Col>

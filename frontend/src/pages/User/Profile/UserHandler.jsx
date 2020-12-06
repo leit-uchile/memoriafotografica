@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
-import { user } from "../../actions";
+import { user } from "../../../actions";
 import { connect } from "react-redux";
 import { Container, Row, Col } from "reactstrap";
-import { LeitSpinner } from "../../components";
+import { LeitSpinner } from "../../../components";
 import PublicProfile from "./PublicProfile2";
 import { bindActionCreators } from "redux";
-import "./styles.css";
+import "../styles.css";
 import { selectUserPublicUser,
-         selectUserPublicLoading} from "../../reducers";
+         selectUserPublicLoading} from "../../../reducers";
 
-const UserRouting = ({
+const UserHandler= ({
   match,
   location,
   loadPublicUser,
@@ -74,4 +74,4 @@ const mapActionsToProps = (dispatch) =>
     dispatch
   );
 
-export default connect(mapStateToProps, mapActionsToProps)(UserRouting);
+export default connect(mapStateToProps, mapActionsToProps)(UserHandler);

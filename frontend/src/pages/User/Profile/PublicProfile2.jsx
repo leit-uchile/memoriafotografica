@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "reactstrap";
 import { connect } from "react-redux";
-import { user } from "../../actions";
+import { user } from "../../../actions";
 import { Link, Redirect } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { bindActionCreators } from "redux";
@@ -9,7 +9,7 @@ import {
   selectUserPhotos,
   selectUserComments,
   selectUserAlbums,
-} from "../../reducers";
+} from "../../../reducers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSuitcase,
@@ -17,10 +17,10 @@ import {
   faAddressCard,
 } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
-import { ReportModal, UserPicture } from "../../components";
-import { userRolTranslation, userTypeTranslation } from "./utils";
+import { ReportModal, UserPicture } from "../../../components";
+import { userRolTranslation, userTypeTranslation } from "../utils";
 import moment from "moment";
-import AlbumGallery from "../../components/AlbumGallery";
+import AlbumGallery from "../../../components/AlbumGallery";
 
 const makeIcons = (rol_id) => {
   switch (rol_id) {
@@ -64,7 +64,7 @@ const PublicProfile = ({
     }));
 
   var mappedAlbums = albums.slice(albums.length - 3, albums.length);
-  
+
   if (params.redirect) {
     return <Redirect push to={params.url} />;
   }
@@ -74,10 +74,10 @@ const PublicProfile = ({
         <title>{`Perfil de ${user.first_name} ${user.last_name}`}</title>
       </Helmet>
       <Row>
-        <Col>
+        <Col className="dashboard-col">
           <Container fluid>
             <Row>
-              <Col sm={4}>
+              <Col sm={4} style={{ textAlign: "center" }}>
                 <UserPicture
                   user={user}
                   dims={100}
@@ -92,14 +92,14 @@ const PublicProfile = ({
                   )}
                 />
               </Col>
-              <Col sm={8}>
-                <h2
-                  style={{
-                    textAlign: "left",
-                  }}
-                >
-                  Perfil de {user.first_name + " " + user.last_name}
-                </h2>
+              <Col
+                sm={8}
+                style={{
+                  textAlign: "left",
+                  lineHeight: "50%",
+                }}
+              >
+                <h2>Perfil de {user.first_name + " " + user.last_name}</h2>
                 <p>
                   Usuario desde el{" "}
                   {moment(user.created_at).format("DD/MM/YYYY")}
@@ -124,10 +124,10 @@ const PublicProfile = ({
             </Row>
           </Container>
         </Col>
-        <Col>
+        <Col className="dashboard-col">
           <div className="stat-box">
             <Container fluid className="stat-box-header">
-              <h2>Álbums</h2>
+              <h2>&Aacute;lbumes</h2>
               {albums.length !== 0 ? (
                 <Link to={`/user/public/${user.id}/albums`}> Ver Todos</Link>
               ) : null}
@@ -137,7 +137,9 @@ const PublicProfile = ({
               <Row>
                 <Col
                   sm={
-                    mappedAlbums.length === 1 ? { size: 4, offset: 4 } : { size: 12 }
+                    mappedAlbums.length === 1
+                      ? { size: 4, offset: 4 }
+                      : { size: 12 }
                   }
                 >
                   {mappedAlbums.length !== 0 ? (
@@ -146,12 +148,14 @@ const PublicProfile = ({
                       onClick={(e, index) => {
                         setParams({
                           redirect: true,
-                          url: "/user/public/albums/" + mappedAlbums[index.index].id,
+                          url:
+                            "/user/public/albums/" +
+                            mappedAlbums[index.index].id,
                         });
                       }}
                     />
                   ) : (
-                    "Este usuario no tiene álbums"
+                    "Este usuario no tiene &aacute;lbumes"
                   )}
                 </Col>
               </Row>
@@ -160,7 +164,7 @@ const PublicProfile = ({
         </Col>
       </Row>
       <Row>
-        <Col>
+        <Col className="dashboard-col">
           <div className="stat-box">
             <Container fluid className="stat-box-header">
               <h2>Fotograf&iacute;as </h2>
@@ -210,7 +214,6 @@ const mapStateToProps = (state) => ({
   photos: selectUserPhotos(state),
   comments: selectUserComments(state),
   albums: selectUserAlbums(state),
-  user: state.user.userData,
 });
 
 const mapActionsToProps = (dispatch) =>

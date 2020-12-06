@@ -30,6 +30,8 @@ const CommentHandler = ({
   fetchComments,
   loggedUser,
   auth,
+  editable,
+  reportable,
   style,
   fluid,
 }) => {
@@ -39,14 +41,15 @@ const CommentHandler = ({
 
   const [comment, setComment] = useState("");
 
-  // If is auth then allow reports
+  // Comment is editable if logged is the owner
+  // and Reportable if is not the owner
   var commentRows = comments.map((el, key) => (
     <Row key={"Comment" + key}>
       <Col style={{ padding: "0.2em" }}>
         <Comment
           element={el}
-          modal={auth}
           editable={loggedUser !== null ? el.usuario.id === loggedUser.id : false}
+          reportable={loggedUser !== null ? el.usuario.id !== loggedUser.id : false}
         />
       </Col>
     </Row>
@@ -73,7 +76,7 @@ const CommentHandler = ({
         <Row>
           <Col className="commentDiv">
             {" "}
-            A&uacute;n no hay comentarios. ¡Se el primero!
+            A&uacute;n no hay comentarios. ¡S&eacute; el primero!
           </Col>
         </Row>
       )}

@@ -157,7 +157,7 @@ class EditProfile extends Component {
     return (
       <Container fluid className="dashboard">
         <Row>
-          <Col>
+          <Col className="dashboard-col">
             <h2
               style={{
                 textAlign: "left",
@@ -168,10 +168,10 @@ class EditProfile extends Component {
           </Col>
         </Row>
         <Row>
-          <Col md="3" style={{ padding: "0" }}>
+          <Col md="3">
             <Container fluid>
               <Row>
-                <Col>
+                <Col className="dashboard-col">
                   <div className="stat-box">
                     <Container fluid>
                       <Card className="user-dashboard-card">
@@ -246,7 +246,7 @@ class EditProfile extends Component {
                 </Col>
               </Row>
               <Row>
-                <Col>
+                <Col className="dashboard-col">
                   <div className="stat-box">
                     <Container fluid className="stat-box-header">
                       <h2>Seguridad</h2>
@@ -266,7 +266,7 @@ class EditProfile extends Component {
               </Row>
             </Container>
           </Col>
-          <Col>
+          <Col className="dashboard-col">
             <div className="stat-box">
               <Container fluid className="stat-box-header">
                 <h2>Mis datos</h2>
@@ -376,7 +376,6 @@ class EditProfile extends Component {
                           </Row>
                         </Col>
                       </FormGroup>
-                      <hr />
                       <Button color="primary">Guardar cambios</Button>
                     </Form>
                   </Col>

@@ -187,12 +187,12 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
   return (
     <Container fluid className="dashboard" style={{ textAlign: "center" }}>
       <Row>
-        <Col>
+        <Col className="dashboard-col">
           <h2>Estad&iacute;sticas del sitio</h2>
         </Col>
       </Row>
       <Row>
-        <Col>
+        <Col className="dashboard-col">
           <div className="stat-box">
             <Statistic.Group
               style={{
@@ -236,7 +236,7 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
         </Col>
       </Row>
       <Row>
-        <Col>
+        <Col className="dashboard-col">
           <div className="stat-box">
             <Container fluid className="stat-box-header">
               <h2>Fotos y Comentarios subidos por día</h2>
@@ -252,7 +252,7 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
         </Col>
       </Row>
       <Row>
-        <Col>
+        <Col className="dashboard-col">
           <div className="stat-box">
             <Container fluid className="stat-box-header">
               <h2>Caracter&iacute;sticas de usuarios</h2>
@@ -274,7 +274,7 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
             </Container>
           </div>
         </Col>
-        <Col>
+        <Col className="dashboard-col">
           <div className="stat-box">
             <Container fluid className="stat-box-header">
               <h2>Tipos de usuarios</h2>
@@ -298,7 +298,7 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
         </Col>
       </Row>
       <Row>
-        <Col>
+        <Col className="dashboard-col">
           <div className="stat-box">
             <Container fluid className="stat-box-header">
               <h2>Categorías con más fotos</h2>
@@ -320,7 +320,7 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
             </Container>
           </div>
         </Col>
-        <Col>
+        <Col className="dashboard-col">
           <div className="stat-box">
             <Container fluid className="stat-box-header">
               <h2>Metadata con más fotos</h2>

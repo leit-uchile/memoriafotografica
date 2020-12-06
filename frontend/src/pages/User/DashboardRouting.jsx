@@ -21,7 +21,7 @@ import { site_misc } from "../../actions";
 import { useEffect } from "react";
 import EditProfile from "./Profile/EditProfile";
 import Landing from "./Landing";
-import UserRouting from "./UserRouting";
+import UserHandler from "./Profile/UserHandler";
 import UserPhotos from "./PhotoCollection/UserPhotos";
 import UserAlbums from "./AlbumCollection/UserAlbums";
 import AlbumView from "./AlbumCollection/AlbumView";
@@ -32,6 +32,7 @@ import "./dashboardRouting.css";
 import CollectionView from "../Collections/CollectionView";
 import { bindActionCreators } from "redux";
 import { selectUserData } from "../../reducers";
+
 
 /**
  * TODO:
@@ -220,7 +221,7 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
             <BoundedRoute
               exact
               path={"/user/public/:id"}
-              component={UserRouting}
+              component={UserHandler}
               location={location}
               {...props}
             />

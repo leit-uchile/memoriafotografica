@@ -36,7 +36,10 @@ import {
  */
 const baseState = {
   photos: [],
-  comments: [],
+  comments: {
+    results: [],
+    count: 0,
+  },
   albums: [],
   userData: null,
   publicLoading: false,
@@ -65,7 +68,7 @@ const initialState =
     ? baseState
     : {
         photos: [],
-        comments: [],
+        comments: {},
         albums: [],
         userData: JSON.parse(localStorage.getItem("user")),
         publicLoading: false,

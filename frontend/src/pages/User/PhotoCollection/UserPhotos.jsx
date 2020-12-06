@@ -111,7 +111,7 @@ class UserPhotos extends Component {
           </title>
         </Helmet>
         <Row>
-          <Col>
+          <Col className="dashboard-col">
             <h2
               style={{
                 textAlign: `${this.state.isPublic ? "center" : "left"}`,
@@ -159,7 +159,7 @@ class UserPhotos extends Component {
           </Row>
         )}
         <Row>
-          <Col>
+          <Col className="dashboard-col">
             <Container fluid>
               <Row>
                 <Col

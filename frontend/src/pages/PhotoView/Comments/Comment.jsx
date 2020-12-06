@@ -12,7 +12,8 @@ import "./styles.css";
 
 const Comment = ({
   element: { content, censure, usuario, id, created_at, updated_at },
-  editable=false,
+  editable = false,
+  reportable = false,
   updateComment,
   deleteComment,
 }) => {
@@ -95,7 +96,8 @@ const Comment = ({
                 </Button>
               </div>
             )
-          ) : (
+          ) : null}
+          {reportable ? (
             <ReportModal
               style={{ display: "inline-block" }}
               className="float-right"
@@ -112,7 +114,7 @@ const Comment = ({
               reportType={3}
               buttonTitle={"Comentario inapropiado"}
             />
-          )}
+          ) : null}
           {editing ? (
             <Input
               type="text"

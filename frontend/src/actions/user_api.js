@@ -198,7 +198,7 @@ export const getUserAlbums = (user_id, limit, offset) => (
   });
 };
 
-export const getUserComments = (user_id, limit, offset) => (
+export const getUserComments = (user_id, page, page_size) => (
   dispatch,
   getState
 ) => {
@@ -207,13 +207,13 @@ export const getUserComments = (user_id, limit, offset) => (
     Authorization: "Token " + getState().user.token,
   };
   return fetch(
-    `/api/users/comments/${user_id}/?limit=${limit}&offset=${offset}`,
+    `/api/users/comments/${user_id}/?page=${page}&page_size=${page_size}`,
     { method: "GET", headers: headers }
   ).then(function (response) {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_COMMENTS, data: data.comments });
+        dispatch({ type: USER_RECOVERED_COMMENTS, data: data });
       });
     } else {
       dispatch({ type: USER_RECOVERED_COMMENTS_ERROR, data: r.data });
@@ -226,10 +226,13 @@ export const getUserComments = (user_id, limit, offset) => (
  * Load a user by ID if it is public
  */
 export const loadAUser = (id) => (dispatch, getState) => {
-  let headers = {
-    "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token,
-  };
+  let headers = {};
+  if (getState().user.isAuthenticated) {
+    headers = {
+      "Content-Type": "application/json",
+      Authorization: "Token " + getState().user.token,
+    };
+  }
   dispatch({ type: USER_PUBLIC_LOADING });
   return fetch(`/api/users/${id}/`, { method: "GET", headers: headers })
     .then((res) => {
@@ -434,7 +437,7 @@ export const updatePassword = (old_password, new_password) => (
     });
 };
 
-export const uploadUserPicture = (avatar) => (dispatch, getState) => {};
+export const uploadUserPicture = (avatar) => (dispatch, getState) => { };
 
 export const resetPasswordRequest = (email) => (dispatch) => {
   let headers = { "Content-Type": "application/json" };
@@ -512,7 +515,7 @@ export const resetPasswordConfirm = (token, password) => (dispatch) => {
         dispatch({ type: RESET_PASSWORD_CONFIRM_SUCCESS, data: null });
         return { status: res.status, data: null };
       } else {
-         dispatch({ type: RESET_PASSWORD_CONFIRM_FAILED, data: res.data });
+        dispatch({ type: RESET_PASSWORD_CONFIRM_FAILED, data: res.data });
       }
     });
 };

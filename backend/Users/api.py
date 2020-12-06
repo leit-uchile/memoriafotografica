@@ -4,7 +4,7 @@ from rest_framework import status
 from knox.models import AuthToken
 from django.conf import settings
 from .serializers import (CreateUserSerializer, UserSerializer, LoginUserSerializer,
-                          UserAlbumSerializer, UserCommentSerializer, UserPhotoSerializer, ChangePasswordSerializer)
+                          UserAlbumSerializer, UserCommentSerializer, ChangePasswordSerializer)
 from .models import User, RegisterLink
 from Gallery.models import Photo
 from Gallery.serializers import PhotoSerializer
@@ -191,9 +191,9 @@ class UserDetailAPI(generics.GenericAPIView):
 
     def get(self, request, pk, *args, **kwargs):
         user = self.get_object(pk)
-        if(request.user.is_anonymous and not user.public_profile):
+        if request.user.is_anonymous and not user.public_profile:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if(request.user.user_type == 1 and not user.public_profile):
+        if ((not request.user.is_anonymous) and request.user.user_type == 1) and not user.public_profile:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         serializer = UserSerializer(user)
         return Response(serializer.data)
@@ -223,7 +223,7 @@ class UserPhotosAPI(generics.GenericAPIView):
        Get photos of a *user*.
        """
     permission_classes = [IsAuthenticated | ReadOnly, ]
-    serializer_class = UserPhotoSerializer
+    serializer_class = PhotoSerializer
 
     def get(self, request, pk, *args, **kwargs):
         try:
@@ -264,6 +264,7 @@ class UserCommentsAPI(generics.GenericAPIView):
     """
        get:
        Get comments of a *user*.
+       Permits pagination if page_size and page are on the query parameters
 
        TODO delete:
        Delete an comment asociated to a *user*.
@@ -274,7 +275,9 @@ class UserCommentsAPI(generics.GenericAPIView):
     def get(self, request, pk, *args, **kwargs):
         try:
             user = User.objects.get(pk=pk)
-            serializer = UserCommentSerializer(user)
+            serializer = self.serializer_class(user)
+            if "page" in request.query_params and "page_size" in request.query_params:
+                return self.get_paginated_response(self.paginate_queryset(serializer.data["comments"]))
             return Response(serializer.data)
         except User.DoesNotExist:
             raise Http404
