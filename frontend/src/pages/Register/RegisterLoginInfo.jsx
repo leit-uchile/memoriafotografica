@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserCircle, faCropAlt, faUser, faUserTag } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserCircle,
+  faUser,
+  faUserTag,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   Form,
   FormGroup,
@@ -14,9 +18,8 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  Container
+  Container,
 } from "reactstrap";
-import CropPhoto from "../../components/CropPhoto";
 
 class RegisterLoginInfo extends Component {
   constructor(Props) {
@@ -24,7 +27,7 @@ class RegisterLoginInfo extends Component {
     if (Props.cache != null) {
       this.state = {
         ...Props.cache,
-        error: null
+        error: null,
       };
     } else {
       this.state = {
@@ -40,15 +43,15 @@ class RegisterLoginInfo extends Component {
         difusion: "",
         cropModal: false,
         termsOfUseModal: false,
-        termsOfUseAcepted: false
+        termsOfUseAcepted: false,
       };
     }
     this.checkPassword = this.checkPassword.bind(this);
     this.props = Props;
     this.genericChangeHandler = this.genericChangeHandler.bind(this);
     this.fr = new FileReader();
-    this.fr.onload = (function(theFile) {
-      return function(e) {
+    this.fr.onload = (function (theFile) {
+      return function (e) {
         // Render thumbnail.
         this.setState({ avatarPreview: e.target.result });
       };
@@ -78,7 +81,7 @@ class RegisterLoginInfo extends Component {
   }
 
   genericChangeHandler(event) {
-    this.setState({ [event.target.id]: event.target.value });
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   checkPassword() {
@@ -90,7 +93,7 @@ class RegisterLoginInfo extends Component {
       return false;
     } else if (this.state.password.length < 8) {
       this.setState({
-        error: "La contraseña es demasiado corta. Minimo 8 caracteres"
+        error: "La contraseña es demasiado corta. Minimo 8 caracteres",
       });
       return false;
     } else {
@@ -98,7 +101,7 @@ class RegisterLoginInfo extends Component {
     }
   }
 
-  onSubmit = e => {
+  onSubmit = (e) => {
     e.preventDefault();
     if (this.checkPassword()) {
       this.setState({ error: null });
@@ -138,7 +141,7 @@ class RegisterLoginInfo extends Component {
     var avatarPreview =
       this.state.avatarPreview === "" ? null : (
         <img
-          alt='avatar preview'
+          alt="avatar preview"
           src={this.state.avatarPreview}
           width="200px"
           height="200px"
@@ -146,7 +149,7 @@ class RegisterLoginInfo extends Component {
             borderRadius: "50%",
             margin: "0 auto",
             display: "block",
-            objectFit: "cover"
+            objectFit: "cover",
           }}
         />
       );
@@ -155,120 +158,130 @@ class RegisterLoginInfo extends Component {
       <Container>
         <Row>
           <Col>
-            <h2 style={styles.title}>Subir Fotograf&iacute;a / Sesi&oacute;n </h2>
+            <h2 className="page-title">
+              Subir Fotograf&iacute;a / Datos del usuario{" "}
+            </h2>
           </Col>
         </Row>
         <Row>
           <Col>
-            <Form onSubmit={this.onSubmit} style={styles.form} className="white-box">
-              <div style={styles.formTitle}>
-                <FontAwesomeIcon icon={faUserCircle} style={{marginRight: '1em'}}/>
-                <Label for='avatar'>Avatar</Label>
+            <Form onSubmit={this.onSubmit} className="white-box form-container">
+              <div className="form-title">
+                <FontAwesomeIcon icon={faUserCircle} />
+                <Label for="avatar"> Avatar</Label>
               </div>
               {errorMessage}
               {avatarPreview}
-              {this.state.avatar !== ''
-                ?(<Button onClick={this.toggleCropModal} style={{margin: "0 auto", display: "block"}}>
-                    <FontAwesomeIcon icon={faCropAlt}/>
-                    {' '}Editar foto
-                  </Button>)
-                :(<span></span>)
-              }
-              <CropPhoto src={this.state.avatar} isOpen={this.state.cropModal} handleToggle={this.toggleCropModal}/>
+              {this.state.avatar !== "" ? (
+                <h4
+                  className="form-subtitle"
+                  style={{ textAlign: "center", marginTop: "4px" }}
+                >
+                  Podrás editarla en tu perfil
+                </h4>
+              ) : (
+                <span></span>
+              )}
               <FormGroup>
                 <Input
-                  id="avatar"
                   type="file"
+                  name="avatar"
                   multiple={false}
-                  onChange={this.handleFileSelect}>
+                  onChange={this.handleFileSelect}
+                >
                   Subir imagen
                 </Input>
               </FormGroup>
               <Row>
                 <Col>
-                  <div style={styles.formTitle}>
-                      <FontAwesomeIcon icon={faUser} style={{marginRight: '1em'}}/>
-                      <Label>Datos personales</Label>
+                  <div className="form-title">
+                    <FontAwesomeIcon icon={faUser} />
+                    <Label> Datos personales</Label>
                   </div>
                 </Col>
               </Row>
               <Row form>
                 <Col sm={6}>
                   <FormGroup>
-                    <Label for="name">Nombre: </Label>
                     <Input
-                      id="name"
                       type="text"
-                      placeholder="Jose"
+                      name="name"
+                      placeholder="Nombre"
                       onChange={this.genericChangeHandler}
                       required
-                      value={this.state.name}></Input>
+                      value={this.state.name}
+                    ></Input>
                   </FormGroup>
                 </Col>
                 <Col sm={6}>
                   <FormGroup>
-                    <Label for="lastname">Apellido: </Label>
                     <Input
-                      id="lastname"
                       type="text"
-                      placeholder="Aguirre"
+                      name="lastname"
+                      placeholder="Apellido"
                       onChange={this.genericChangeHandler}
                       required
-                      value={this.state.lastname}></Input>
+                      value={this.state.lastname}
+                    ></Input>
                   </FormGroup>
                 </Col>
               </Row>
               <FormGroup>
                 <Label for="date">Fecha de nacimiento</Label>
                 <Input
-                  id="date"
                   type="date"
+                  name="date"
                   onChange={this.genericChangeHandler}
                   required
-                  value={this.state.date}></Input>
+                  value={this.state.date}
+                ></Input>
               </FormGroup>
               <Row>
                 <Col>
-                  <div style={styles.formTitle}>
-                      <FontAwesomeIcon icon={faUserTag} style={{marginRight: '1em'}}/>
-                      <Label>Datos de usuario</Label>
+                  <div className="form-title">
+                    <FontAwesomeIcon icon={faUserTag} />
+                    <Label> Datos de usuario</Label>
                   </div>
                 </Col>
               </Row>
               <FormGroup>
                 <Label for="email">Correo electronico</Label>
                 <Input
-                  id="email"
                   type="email"
-                  placeholder="jose.medina@memoria-uchile.cl"
+                  name="email"
+                  placeholder="ejemplo@leit.cl"
                   onChange={this.genericChangeHandler}
                   value={this.state.email}
-                  required></Input>
+                  required
+                ></Input>
               </FormGroup>
               <FormGroup>
                 <Label for="password">Contraseña</Label>
                 <Input
-                  id="password"
                   type="password"
+                  name="password"
                   onChange={this.genericChangeHandler}
-                  required></Input>
+                  required
+                ></Input>
               </FormGroup>
               <FormGroup>
                 <Label for="passwordCheck">Repetir Contraseña</Label>
                 <Input
-                  id="passwordCheck"
                   type="password"
+                  name="passwordCheck"
                   onChange={this.genericChangeHandler}
-                  required></Input>
+                  required
+                ></Input>
               </FormGroup>
               <FormGroup>
                 <Label for="rol">Rol en la facultad</Label>
                 <Input
-                  id="rol"
                   type="select"
+                  name="rol"
                   onChange={this.genericChangeHandler}
                   value={this.state.rol}
-                  required>
+                  required
+                >
                   <option value="1">Alumno</option>
                   <option value="2">Ex-Alumno</option>
                   <option value="3">Acad&eacute;mico</option>
@@ -280,11 +293,12 @@ class RegisterLoginInfo extends Component {
               <FormGroup>
                 <Label for="difusion">¿Como te enteraste de esta página?</Label>
                 <Input
-                  id="difusion"
                   type="select"
+                  name="difusion"
                   onChange={this.updateDif}
                   value={this.state.difusion}
-                  required>
+                  required
+                >
                   <option>internet</option>
                   <option>poster</option>
                   <option value="Correo">correo electrónico</option>
@@ -294,27 +308,28 @@ class RegisterLoginInfo extends Component {
               <FormGroup check>
                 <Input
                   type="checkbox"
-                  name="check"
-                  id="termsOfUse"
+                  name="termsOfUse"
                   checked={this.state.termsOfUseAcepted}
                   onClick={this.toggleTermsValue}
                   required
                 />
                 <Label for="termsOfUse" check onClick={this.toggleTerms}>
                   Acepto los{" "}
-                  <span style={{ color: "blue", cursor:'pointer' }}>terminos de uso</span>
+                  <span style={{ color: "blue", cursor: "pointer" }}>
+                    terminos de uso
+                  </span>
                 </Label>
               </FormGroup>
-              <div style={{marginTop: "2em", marginBottom: "2em"}}>
+              <div style={{ marginTop: "2em", marginBottom: "2em" }}>
                 <TermsOfUseModal
                   isOpen={this.state.termsOfUseModal}
                   toggleFunc={this.toggleTerms}
                   acceptTerms={this.acceptTerms}
                 />
               </div>
-              
+
               <FormGroup>
-                <Button color="success">¡Reg&iacute;strame!</Button>
+                <Button color="primary">¡Reg&iacute;strame!</Button>
               </FormGroup>
             </Form>
           </Col>
@@ -373,33 +388,15 @@ const TermsOfUseModal = ({
     <ModalFooter>
       <Button
         color="primary"
-        onClick={e => {
+        onClick={(e) => {
           acceptTerms();
           toggleFunc(e);
-        }}>
+        }}
+      >
         Acepto los t&eacute;rminos de uso de la plataforma
       </Button>{" "}
     </ModalFooter>
   </Modal>
 );
-
-const styles = {
-  form:{
-    padding:'2em', 
-    marginBottom:'2em',
-    border:'1px solid rgb(210,214,218)'
-  },
-  title:{
-    textAlign:'center',
-    margin:'1em'
-  },
-  formTitle: {
-    fontSize:'14px',
-    fontWeight:'bold',
-    padding:'0.5em',
-    borderBottom: '1px solid rgb(210,214,218)',
-    marginBottom: '10px',
-  },
-}
 
 export default RegisterLoginInfo;

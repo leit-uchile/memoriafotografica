@@ -1,90 +1,103 @@
-html{
-    font-family: 'Lato', sans-serif;
-    font-weight: 400;
-    font-size: 12px;
+/* CSS Variable declaration */
+:root {
+  --leit-pink: #ff5a60;
+  --leit-pink-disabled: #f39c9f;
+  --leit-pink-hover: #e15454f0;
+  --leit-gray: #777777;
+  --leit-gray-disabled: #cfcccc;
+  --leit-gray-hover: #616161;
+  --leit-red: #eb2932;
+  --leit-red-hover: #be1f27;
+  --leit-yellow: #ffc107;
+  --leit-yellow-hover: #e9b004;
+  --leit-bg-gray: #e9ecef;
+  --leit-modal-bg: #efefef;
 }
-
+html {
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+}
 body {
   margin: 0;
   padding: 0;
 }
-
-.centering {
-    margin: 0 auto;
+hr {
+  border: none;
+  height: 1px;
+  margin: 0;
+  background-color: rgb(210, 214, 218);
 }
-
-.checkbox-album{
-  display: inline;
+[class*="primary"] {
+  color: #fff;
+  background-color: var(--leit-pink);
+  border-color: var(--leit-pink);
 }
-
-.doHoverPhoto{
-  opacity: 0;
+[class*="secondary"] {
+  color: #fff;
+  background-color: var(--leit-gray);
+  border-color: var(--leit-gray);
 }
-
-.doHoverPhoto:hover{
-  opacity: 0.7;
+[class*="tertiary"] {
+  color: #000;
+  border-color: var(--leit-gray);
 }
-
-.CCName {
-  margin-left: 0.5em;
+[class*="danger"] {
+  color: #fff;
+  background-color: var(--leit-red);
+  border-color: var(--leit-red);
 }
-
 .progress-bar.progress-bar-animated.progress-bar-striped {
-  background-color: #ff5a60;
+  background-color: var(--leit-pink);
 }
-
-.btn-primary {
-  background-color: #ff5a60;
-  border-color: #ff5a60;
+.white-box {
+  background-color: #fff;
+  box-shadow: #ddd 3px 5px 10px;
+  margin-bottom: 1.5em;
 }
-
-.btn-primary:hover {
-  background-color: #e15454f0;
-  border-color: #e15454f0;
+.dashboard .col {
+  padding: 12px; /* Dos Rows en un Col -> Col padre {{padding: "0"}} */
 }
-
-.page-item .page-link{
-  color: #ff5a60;
-  font-weight: 600;
+.stat-box {
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  box-shadow: 0 0.46875rem 2.1875rem rgba(59, 62, 102, 0.03),
+    0 0.9375rem 1.40625rem rgba(59, 62, 102, 0.03),
+    0 0.25rem 0.53125rem rgba(59, 62, 102, 0.05),
+    0 0.125rem 0.1875rem rgba(59, 62, 102, 0.03);
+  background-color: #fff;
 }
-
-.children-margin > div{
-  margin-bottom: 2em;
+.stat-box > h2 {
+  text-align: left;
 }
-
-.curador-donut-chart {
-  display: inline-block;
+.stat-box > .container-fluid {
+  padding: 16px;
 }
-
-a {
+.stat-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.stat-box-header > h2 {
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+}
+.stat-box-header > h2 > svg {
   color: rgb(255, 90, 96);
+  cursor: pointer;
 }
-
-.btn-link {
-  color: rgb(255, 90, 96);
+.stat-box-header > .link {
+  flex: 0 0 auto;
+  align-self: flex-start;
 }
-
-.user-modal .modal-header, .modal-footer{
-  background-color: #efefef;
-}
-
-footer {
-  background-color: #e9ecef;
-}
-
 .parallax {
   /* The image used */
   /* Loaded on the other class */
-  
+
   /* Create the parallax scrolling effect */
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-}
-
-.white-box {
-  background-color: white;
-  box-shadow: #ddd 3px 5px 10px;
-  margin-bottom: 1.5em;
 }

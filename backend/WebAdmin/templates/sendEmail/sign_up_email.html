@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head> </head>
+  <body
+    style="
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #f3f3f3;
+    "
+  >
+    <img
+      src="{{ request.get_host }}/assets/logo01.svg"
+      alt="logo"
+      style="text-align: left;"
+    />
+    <div
+      id="body"
+      style="
+        width: 80%;
+        margin: auto;
+        background-color: white;
+        align-self: center;
+        border: 2px solid #eaeaea;
+      "
+    >
+      <div id="banner" style="border-bottom: 1px solid #eaeaea;">
+        <h1>Imagen</h1>
+      </div>
+      <div id="content" style="text-align: center; margin: 3em; color: black;">
+        <h2 style="font-weight: normal; font-size: 30px;">
+          Active su cuenta
+        </h2>
+        <p>
+          Buen día, vemos que te has registrado en el repositorio Memoria
+          Fotográfica. Para activar tu cuenta, pulsa el siguiente botón:
+        </p>
+        <a href={{ data }}>
+          <button
+            style="
+              color: white;
+              font-weight: bold;
+              background-color: #ff5a60;
+              padding: 1em 2em;
+              border-color: #ff5a60;
+              border-radius: 5px;
+            "
+          >
+            Completar registro
+          </button>
+        </a>
+        <p>
+          o también puedes copiar y pegar el siguiente link en tu navegador:
+        </p>
+        {{ data }}
+      </div>
+    </div>
+  </body>
+  <footer>
+    <p style="font-size: 12px; color: #9fa4a5; text-align: center;">
+      Todos los derechos reservados. Biblioteca Central - Facultad de Ciencias
+      Fisicas y Matematicas - Universidad de Chile
+    </p>
+  </footer>
+</html>

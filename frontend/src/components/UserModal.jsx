@@ -8,11 +8,16 @@ import {
   Container,
   Row,
   Col,
-  ModalFooter
+  ModalFooter,
 } from "reactstrap";
 import { connect } from "react-redux";
-import { auth } from "../actions";
+import { site_misc, user } from "../actions";
 import { Redirect } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import "./userModal.css";
+import { selectUserData } from "../reducers";
+import PropTypes from "prop-types";
 
 const UserModal = ({ logout, user }) => {
   const [toggle, setToggle] = useState(false);
@@ -29,11 +34,12 @@ const UserModal = ({ logout, user }) => {
 
   return (
     <NavLink href="#" onClick={doToggle}>
+      <FontAwesomeIcon icon={faUser} />{" "}
       {`${first_name ? first_name : "Nombre"} ${
         last_name ? last_name : "Apellido"
       }`}
-      {redirect ? <Redirect to={redirect} /> : null}
-      <Modal isOpen={toggle} toggle={doToggle} className="user-modal">
+      {redirect ? <Redirect push to={redirect} /> : null}
+      <Modal isOpen={toggle} toggle={doToggle}>
         <ModalHeader toggle={doToggle}>
           {`${first_name ? first_name : "Nombre"} ${
             last_name ? last_name : "Apellido"
@@ -41,33 +47,34 @@ const UserModal = ({ logout, user }) => {
         </ModalHeader>
         <ModalBody>
           <Container fluid>
-            <Row>
+            <Row className="user-modal-interfaces">
               {user_type > 2 ? (
                 <Col>
-                  <h4 style={styles.headers}>Interfaz de Administrador</h4>
+                  <h4>Interfaz de Administrador</h4>
                 </Col>
               ) : null}
               {user_type > 1 ? (
                 <Col>
-                  <h4 style={styles.headers}>Interfaz de curador</h4>
+                  <h4>Interfaz de curador</h4>
                 </Col>
               ) : null}
 
               <Col>
-                <h4 style={styles.headers}>Gestionar perfil</h4>
+                <h4>Gestionar perfil</h4>
               </Col>
             </Row>
-            <Row style={{marginTop: "0.5em"}}>
+            <Row style={{ marginTop: "0.5em" }}>
               {user_type > 2 ? (
                 <Col>
                   <Button
                     block
-                    color="warning"
+                    color="primary"
                     onClick={() => {
                       doToggle();
                       window.location.assign("http://localhost:8000/admin");
                       setTimeout(() => setRedirect(false), 1000);
-                    }}>
+                    }}
+                  >
                     Administrar Sitio
                   </Button>
                 </Col>
@@ -76,17 +83,20 @@ const UserModal = ({ logout, user }) => {
                 <Col>
                   <Button
                     block
-                    color="primary"
+                    color="secondary"
                     onClick={() => {
                       doToggle();
                       setRedirect("/curador/dashboard/");
                       setTimeout(() => setRedirect(false), 1000);
-                    }}>
+                    }}
+                  >
                     Dashboard
                   </Button>
                 </Col>
               ) : null}
-              <Col sm={user_type === 1 ? {size: "4", offset: "4"} : undefined}>
+              <Col
+                sm={user_type === 1 ? { size: "4", offset: "4" } : undefined}
+              >
                 <Button
                   block
                   color="primary"
@@ -94,7 +104,8 @@ const UserModal = ({ logout, user }) => {
                     doToggle();
                     setRedirect("/user/dashboard/");
                     setTimeout(() => setRedirect(false), 1000);
-                  }}>
+                  }}
+                >
                   Ir a Perfil
                 </Button>
               </Col>
@@ -102,7 +113,7 @@ const UserModal = ({ logout, user }) => {
           </Container>
         </ModalBody>
         <ModalFooter>
-          <Button color="warning" onClick={doLogout}>
+          <Button color="tertiary" onClick={doLogout}>
             Cerrar sesi&oacute;n
           </Button>
         </ModalFooter>
@@ -111,28 +122,18 @@ const UserModal = ({ logout, user }) => {
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    user: state.user.userData
-  };
+UserModal.propTypes = {
+  user: PropTypes.object.isRequired,
+  logout: PropTypes.func.isRequired,
 };
 
-const mapActionsToProps = dispatch => {
-  return {
-    logout: () => {
-      return dispatch(auth.logout());
-    }
-  };
-};
+const mapStateToProps = (state) => ({
+  user: selectUserData(state),
+});
 
-const styles = {
-  headers: {
-    fontSize: "1.2em",
-    textAlign: "center",
-  }
-};
+const mapActionsToProps = (dispatch) => ({
+  logout: () => dispatch(user.logout()),
+  setLoginSuccessRoute: (route) => dispatch(site_misc.addLoginRoute(route)),
+});
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(UserModal);
+export default connect(mapStateToProps, mapActionsToProps)(UserModal);

@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 from datetime import timedelta
-
+#from Gallery.paginators import GalleryPagination
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -21,13 +21,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ic8ub6c3x@1!%*-+tan#n@t+c6lr=gu=po5j5cl3ytodjwxs0r'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', False)
 
 ALLOWED_HOSTS = ["backend", "localhost"]
-
 
 AUTH_USER_MODEL = 'Users.User'
 
@@ -48,11 +47,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'knox',
     'multiselectfield',
-    'sorl.thumbnail'
-
+    'sorl.thumbnail',
+    'corsheaders',
+    'django_rest_passwordreset',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -95,7 +96,7 @@ if DOCKER:
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'postgres',
             'USER': 'postgres',
-            'PASSWORD': 'postgres',
+            'PASSWORD': os.getenv('DJANGO_DB_PASSWORD', 'postgres'),
             'HOST': 'db',
             'PORT': 5432,
         }
@@ -130,7 +131,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'es_cl'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'America/Santiago'
 
@@ -164,8 +165,7 @@ REST_FRAMEWORK = {
     #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     # ],
     'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 25
+    'DEFAULT_PAGINATION_CLASS': 'Gallery.paginators.GalleryPagination',
 }
 
 # Knox configuration
@@ -173,3 +173,15 @@ REST_FRAMEWORK = {
 REST_KNOX = {
   'TOKEN_TTL': timedelta(hours=12),
 }
+
+# Email configuration
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'isaiasvenegasalmonacid@gmail.com'
+EMAIL_HOST_PASSWORD = 'lmzopvjdjwayaujy'
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost',
+)

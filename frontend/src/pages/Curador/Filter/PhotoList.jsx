@@ -3,12 +3,14 @@ import { Table } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import FilterModal from './FilterModal'
+import FilterModal from "./FilterModal";
+import "../styles.css";
+
 const check = <FontAwesomeIcon icon={faCheckCircle} />;
 
-const PhotoList = ({ photos, editPhoto}) => {
+const PhotoList = ({ photos, editPhoto }) => {
   return (
-    <Table responsive striped>
+    <Table responsive striped className="statBox">
       <thead>
         <tr>
           {/* <th>
@@ -33,9 +35,11 @@ const PhotoList = ({ photos, editPhoto}) => {
             <td>
               {el.approved ? (
                 <span style={{ color: "green" }}>Aprobada{check}</span>
-              ) : <span style={{ color: "red" }}>No Aprobada</span>}
+              ) : (
+                <span style={{ color: "red" }}>No Aprobada</span>
+              )}
               <br></br>
-              {el.censured ? (
+              {el.censure ? (
                 <span style={{ color: "red" }}>Censurada</span>
               ) : null}
             </td>
@@ -50,13 +54,20 @@ const PhotoList = ({ photos, editPhoto}) => {
               </Link>
             </td>
             <td>
-              {el.metadata.map(m => (
-                <span style={{ display: "block" }}>{m}</span>
+              {el.metadata.map((m) => (
+                <span key={m} style={{ display: "block" }}>
+                  {m}
+                </span>
               ))}
             </td>
             <td>{new Date(el.created_at).toLocaleDateString("es")}</td>
             <td>
-              <FilterModal editPhoto={editPhoto} buttonLabel="Gestionar" photo={el}/>
+              <FilterModal
+                key={key}
+                buttonLabel="Gestionar"
+                photoId={el.id}
+                editPhoto={editPhoto}
+              />
             </td>
           </tr>
         ))}

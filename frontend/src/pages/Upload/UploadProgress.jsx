@@ -6,8 +6,9 @@ import {
   Col,
   Progress,
   Alert,
-  ButtonGroup
+  ButtonGroup,
 } from "reactstrap";
+import "./uploadProgress.css";
 
 /**
  * Upload progess
@@ -35,7 +36,7 @@ const UploadProgress = ({
   doAlbum,
   albumInfo,
   albumState,
-  saveAlbum
+  saveAlbum,
 }) => {
   // TODO: include button to create albums
   const [retryAlbum, setRetryAlbum] = useState(false);
@@ -47,7 +48,7 @@ const UploadProgress = ({
    * can be asociated to an album
    */
   useEffect(() => {
-    if (doAlbum && photosUploading === completed) {
+    if (doAlbum && photosUploading === completed && photosUploading !== 0) {
       saveAlbum(albumInfo);
     }
   }, [completed, doAlbum, saveAlbum]);
@@ -71,7 +72,7 @@ const UploadProgress = ({
     <Container>
       <Row>
         <Col>
-          <h2 className="upload-title">
+          <h2 className="page-title">
             Subir Fotograf&iacute;a /
             {uploading ? "Enviando aporte..." : "¡Operación completada!"}
           </h2>
@@ -106,14 +107,7 @@ const UploadProgress = ({
       {!uploading ? (
         <Row>
           <Col>
-            <p
-              style={{
-                textAlign: "center",
-                display: "block",
-                margin: "auto 1em auto 1em",
-                padding: "2em"
-              }}
-            >
+            <p className="upload-progress-success">
               Las fotos tendr&aacute;n que ser aprobadas para que la comunidad
               las vea. Puedes ver el estado en que se encuentra accediendo a tu
               perfil. Muchas gracias!

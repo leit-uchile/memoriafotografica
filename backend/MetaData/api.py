@@ -22,11 +22,25 @@ from django.http import Http404, QueryDict
 from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
 from rest_framework.documentation import include_docs_urls
 
+def sort_by_field(element_list, request):
+    sort_type = {"asc":"", "desc":"-"}
+    try:
+        if request.query_params["sort"]:
+            splitted_param = request.query_params["sort"].split("-")
+            query = sort_type[splitted_param[1]]+splitted_param[0]
+            element_list = element_list.order_by(query)
+    except KeyError:
+        # Default to sorting by asc creation
+        element_list = element_list.order_by("created_at")
+    return element_list
+
 def search_meta(elements, request):
     try:
-        if request.query_params["search"]:
+        if "iptc" in request.query_params and  request.query_params["iptc"] != "0":
+            elements = elements.filter(metadata__pk=int(request.query_params["iptc"]))
+        if "search" in request.query_params:
             elements = elements.filter(value__icontains=request.query_params["search"])
-        if request.query_params["limit"]:
+        if "limit" in request.query_params:
             elements = elements[0:int(request.query_params["limit"])]
     except KeyError:
         pass
@@ -77,7 +91,7 @@ class IPTCKeywordDetailAPI(generics.GenericAPIView):
     delete:
     Delete a IPTCKeyword
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get_object(self, pk):
         try:
@@ -114,7 +128,7 @@ class IPTCKeywordMetadataListAPI(generics.GenericAPIView):
     """
     List all metadata from a IPTCKeyword.
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
     def get_object(self,pk):
         try:
             return IPTCKeyword.objects.get(pk=pk)
@@ -136,6 +150,8 @@ class MetadataListAPI(generics.GenericAPIView):
     """
     get:
     Get a list of ALL metadata.
+    Permits search queries using the search and limit parameter
+    Permits pagination if page_size and page are on the query parameters
 
     post:
     Create a new metadata.
@@ -148,11 +164,13 @@ class MetadataListAPI(generics.GenericAPIView):
             if request.user.user_type != 1:
                 metadata_admin = Metadata.objects.all()
                 metadata_admin = search_meta(metadata_admin, request)
+                metadata_admin = sort_by_field(metadata_admin,request)
                 serializer_class = MetadataAdminSerializer
                 serializer = MetadataAdminSerializer(metadata_admin, many=True)
             else:
                 metadata = Metadata.objects.filter(approved=True)
                 metadata = search_meta(metadata, request)
+                metadata = sort_by_field(metadata,request)
                 serializer_class = MetadataSerializer
                 serializer = MetadataSerializer(metadata, many=True)
         except Exception:
@@ -168,6 +186,8 @@ class MetadataListAPI(generics.GenericAPIView):
             serializer_class = MetadataSerializer
             serializer = MetadataSerializer(metadata, many=True)
         
+        if "page" in request.query_params and "page_size" in request.query_params:
+            return self.get_paginated_response(self.paginate_queryset(serializer.data))
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
@@ -220,15 +240,6 @@ class MetadataDetailAPI(generics.GenericAPIView):
         return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
-        """
-        if request.user.user_type == 1:
-            metadata = self.get_object(pk, False)
-            if metadata in request.user.metadata.all():
-                serializer_class = MetadataSerializer
-                serializer = MetadataSerializer(metadata, data=request.data, partial = True)
-            else:
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-                """
         if request.user.user_type != 1:
             metadata = self.get_object(pk,True)
             serializer_class = MetadataAdminSerializer
@@ -257,7 +268,7 @@ class MetadataPhotoListAPI(generics.GenericAPIView):
     """
     List all photos from a metadata.
     """
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
     def get_object(self, pk, admin):
         try:
             metadata = Metadata.objects.get(pk=pk)
@@ -278,3 +289,62 @@ class MetadataPhotoListAPI(generics.GenericAPIView):
             pictures = md.photo_set.all()
             serializer = PhotoAdminSerializer(pictures, many=True)
         return Response(serializer.data)
+
+class MetadataBatchAPI(generics.GenericAPIView):
+    """
+    get:
+    Get a batch of a given size of metadata. i.e. 10 metadata
+    """
+    permission_classes = [IsAuthenticated|ReadOnly,]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            if request.user.user_type > 1:
+                metadata_admin = Metadata.objects.filter(approved=False)
+                serializer_class = MetadataAdminSerializer
+                serializer = MetadataAdminSerializer(metadata_admin, many=True)
+                return self.get_paginated_response(self.paginate_queryset(serializer.data))
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        except Exception:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class MetadataMergeAPI(generics.GenericAPIView):
+    """
+    post:
+    Get a batch of a given size of metadata. i.e. 10 metadata
+    """
+    permission_classes = [IsAuthenticated|ReadOnly,]
+
+    def post(self, request, *args, **kwargs):
+        try:
+            if request.user.user_type > 1:
+                metadata_admin = Metadata.objects.filter(pk__in=request.data["ids"])
+                # Get recipient
+                recipient = metadata_admin[0]
+                # For each get the photo pk set
+                photo_pks = set()
+                for metadata in metadata_admin:
+                    photos = metadata.photo_set.all()
+                    for photo in photos:
+                        photo_pks.add(photo.pk)
+                    
+                # Update photos adding the recipient
+                for pk in photo_pks:
+                    photo = Photo.objects.get(pk=pk)
+                    photo.metadata.add(recipient)
+                    photo.save()
+                
+                # Delete other metadata
+                for m in metadata_admin:
+                    if m.pk != recipient.pk:
+                        m.delete()
+
+                serializer_class = MetadataAdminSerializer
+                serializer = MetadataAdminSerializer(recipient)
+                return Response(serializer.data)
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            print(e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)

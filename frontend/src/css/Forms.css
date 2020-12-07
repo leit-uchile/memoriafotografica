@@ -1,0 +1,78 @@
+.stepContainer {
+  margin-bottom: 2em;
+}
+.stepContainer .card img {
+  max-height: 200px;
+}
+.page-title {
+  /* color: var(--leit-pink); */
+  text-align: center;
+  margin: 1em auto;
+}
+.form-container {
+  padding: 2em;
+  border: 1px solid rgb(210, 214, 218);
+}
+.form-title {
+  font-size: 14px;
+  font-weight: bold;
+  padding: 0.5em;
+  border-bottom: 1px solid rgb(210, 214, 218);
+  margin-bottom: 10px;
+}
+.form-title > svg {
+  margin-right: 1em;
+}
+.form-subtitle {
+  color: #848687;
+}
+.form-control {
+  height: 30px;
+  line-height: 15px;
+}
+.form-control:focus {
+  border-color: var(--leit-pink-disabled);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  box-shadow: 0 0 0 0.1rem var(--leit-pink-disabled) !important;
+}
+.form-container .form-control{
+  margin: 8px 0;
+}
+.form-container button{
+  margin: 8px 0;
+}
+
+/* Toggle Switch for checkboxes */
+.form-check.center{
+  text-align: center;
+}
+
+.toggle-button {
+  display: none;
+}
+.toggle-button + label {
+  width: 36px;
+  height: 18px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+  background: var(--leit-gray-disabled);
+  border-radius: 3rem;
+  box-shadow: 0 0 0 2px rgba(238, 238, 238, 0.5);
+  transition: all 0.3s;
+}
+.toggle-button + label:before {
+  content: "";
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--leit-gray);
+  position: relative;
+  left: 0;
+  transition: all 0.3s;
+}
+.toggle-button:checked + label:before {
+  left: 18px;
+  background: var(--leit-pink);
+}

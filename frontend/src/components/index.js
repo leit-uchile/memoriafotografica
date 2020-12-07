@@ -8,6 +8,7 @@ import ReportModal from './ReportModal';
 import SearchBar from './Layout/SearchBar';
 import UserModal from './UserModal';
 import UserPicture from './UserPicture';
+import Pagination from './Pagination';
 
 // utils
 import BoundedRoute from './Routes/BoundedRoute';
@@ -33,5 +34,6 @@ export {
   PrivateComponent,
   SuspenseFallback,
   LazyRoutedComponent,
-  NoMatch
+  NoMatch,
+  Pagination
 };

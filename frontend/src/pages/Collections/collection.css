@@ -1,0 +1,54 @@
+.album-title-row {
+  padding-top: 1.25em;
+  padding-bottom: 1.25em;
+  background-color: white;
+  text-align: center;
+  border-bottom: 1px solid rgb(210, 214, 218);
+  margin-bottom: 2em;
+  position: sticky;
+  z-index: 3;
+  top: calc(1em + 65px);
+}
+
+.collections-help {
+  font-size: 1em;
+  padding: 1em;
+  border: 1px solid #e9ecef;
+  margin: 1em 0;
+}
+
+.collection-container .card-body {
+  background-position-x: center;
+  background-position-y: top;
+  background-size: cover;
+  min-height: 200px;
+  -o-transition: color 0.2s ease-out, background 0.5s ease-in;
+  -ms-transition: color 0.2s ease-out, background 0.5s ease-in;
+  -moz-transition: color 0.2s ease-out, background 0.5s ease-in;
+  -webkit-transition: color 0.2s ease-out, background 0.5s ease-in;
+  /* ...and now override with proper CSS property */
+  transition: color 0.2s ease-out, background 0.5s ease-in;
+}
+
+.collection-container .card-body:hover {
+  background-color: #d2d6da;
+  background-blend-mode: soft-light;
+  cursor: pointer;
+}
+
+.collection-container .card-title {
+  font-size: 1.3em;
+  background-color: white;
+  padding: 0.2em 1em;
+}
+
+.collection-container .card-text {
+  font-size: 1em;
+}
+
+.collection-container .card-date {
+  position: absolute;
+  bottom: 1em;
+  background-color: white;
+  padding: 0.2em 1em;
+}

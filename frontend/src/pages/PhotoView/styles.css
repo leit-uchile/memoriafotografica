@@ -1,0 +1,69 @@
+.photoPanelView {
+  background-color: #212124;
+  color: white;
+  padding: 3em 0;
+  position: relative;
+  min-height: 40vh;
+}
+
+.photoDetailNavigation {
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  position: relative;
+  color: white;
+  display: inline-block;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+.photoDetailNavigation:hover {
+  color: gray;
+}
+
+.photoDetailNavigation:after {
+  background: var(--leit-pink);
+  content: "";
+  display: block;
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  top: 0;
+  border-radius: 12px;
+  opacity: 0;
+  transition: all 0.8s;
+}
+.photoDetailNavigation:active:after {
+  padding: 0;
+  margin: 0;
+  opacity: 1;
+  transition: 0s;
+}
+.photoDetailNavigation svg{
+  font-size: 25px;
+}
+.photo-display {
+  display: inline-block;
+  margin: 0 auto;
+  max-height: 60vh;
+  max-width: 75%;
+}
+
+.suggestionPhoto {
+  margin-left: 2px;
+  display: inline-block;
+}
+
+.thisPhoto {
+  background-blend-mode: lighten;
+  background-color: var(--leit-pink);
+}
+
+.photoDetailAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  float: left;
+  margin-bottom: 0.5em;
+}

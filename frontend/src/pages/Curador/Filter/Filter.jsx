@@ -1,133 +1,184 @@
 import React, { Component } from "react";
-import {
-  Row,
-  Col,
-  Button,
-  Container,
-  ButtonGroup,
-  Pagination,
-  PaginationItem,
-  PaginationLink
-} from "reactstrap";
+import { Row, Col, Button, Container, ButtonGroup, Input } from "reactstrap";
 import { connect } from "react-redux";
-import { curador } from "../../../actions";
+import { gallery } from "../../../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faThLarge,
   faThList,
-  faFilter
+  faFilter,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
-import { LeitSpinner } from "../../../components";
+import { LeitSpinner, Pagination } from "../../../components";
 import PhotoList from "./PhotoList";
 import PhotoCards from "./PhotoCards";
+import FilterOptions from "../FilterOptions";
+import { bindActionCreators } from "redux";
+import {
+  selectPhotos,
+  selectPhotosCount,
+  selectErrors,
+  selectSiteMiscCuradorRefresh,
+  selectSiteMiscCuradorLoading,
+  selectWebAdminAllTags,
+  selectUserIsAuthenticated,
+} from "../../../reducers";
+
+const filters = [
+  { display: "Subida desde", type: "date", name: "since" },
+  { display: "Subida hasta", type: "date", name: "until" },
+  {
+    display: "Aprobación",
+    type: "select",
+    options: ["Aprobados", "No aprobados"],
+    name: "approved",
+  },
+  {
+    display: "Censura",
+    type: "select",
+    options: ["Censurados", "Sin cerurar"],
+    name: "censured",
+  },
+];
 
 class Filter extends Component {
   constructor(props) {
     super(props);
     this.state = {
       listView: 1,
-      currentPage: 0,
-      pageSize: 25,
-      pages: 0,
-      list: []
+      page: 0,
+      pageSize: 12,
+      search: "",
+      approved: "",
+      censured: "",
+      since: "",
+      until: "",
     };
-    //Computes pages:
-    this.props.getPhotos().then(() => {
-      let totalDocs = this.props.photos.count;
-      console.log(this.props)
-      let pages = Math.ceil(totalDocs / this.state.pageSize);
-      this.setState({
-        list: [...this.props.photos.results],
-        pages: pages
-      });
-    });
+    this.props.getPhotosAuth(0, 12, "&sort=updated_at-desc");
   }
-
-  updateElementState = () => {
-    // Send update to API
-    // Update
-    // remove
-    this.removeElement();
-    // getLatestElements
-  };
-
-  removeElement = () => {
-    // Fake call to API
-    const largo = this.state.list.length;
-    var list = [...this.state.list.slice(1, largo)];
-    console.log(list);
-    this.setState({
-      list: [...list]
-    });
-  };
 
   /**
    * 0 for list
    * 1 for cards
    */
-  swapView = num => {
+  swapView = (num) => {
     this.setState({ listView: num });
   };
 
-  setCurrentPage = (e, p) => {
-    this.setState({
-      currentPage: p
+  setCurrentPage = (number) => {
+    console.log("Page set:", number);
+    this.setState(
+      {
+        page: number,
+      },
+      () =>
+        this.props.getPhotosAuth(
+          this.state.page,
+          this.state.pageSize,
+          this.recoverUrl()
+        )
+    );
+  };
+
+  recoverUrl = () => {
+    const { censured, since, until, approved, search } = this.state;
+    let url = "&sort=updated_at-desc";
+    if (search !== "") {
+      url = url + `&title=${search}`;
+    }
+    if (censured && censured !== "") {
+      url = url + `&censured=${censured}`;
+    }
+    if (since && since !== "") {
+      url = url + `&created_at=${since}`;
+    }
+    if (until && until !== "") {
+      url = url + `&created_at_until=${until}`;
+    }
+    if (approved.length !== 0) {
+      url = url + `&approved=${approved}`;
+    }
+    return url;
+  };
+
+  setFilterOption = (name, value) => {
+    this.setState({ [name]: value }, () => {
+      let url = this.recoverUrl();
+      this.props.getPhotosAuth(this.state.page, this.state.pageSize, url);
     });
   };
 
-  approvePhoto = (pid, val) => {
-    this.props.switchPhotoApproval(pid, val).then(() => {
-      window.location.reload();
-    });
-  };
   render() {
-    let pageLowerBound = this.state.currentPage * this.state.pageSize;
-    let pageUpperBound = Math.min(
-      pageLowerBound + this.state.pageSize,
-      this.state.list.length
-    );
-
-    let paginators = Array.from(Array(this.state.pages)).map(
-      (arg, index) => index
-    );
-    paginators = paginators.map(ind => (
-      <PaginationItem active={ind === this.state.currentPage ? true : false}>
-        <PaginationLink onClick={e => this.setCurrentPage(e, ind)}>
-          {ind + 1}
-        </PaginationLink>
-      </PaginationItem>
-    ));
+    const { photos, photoCount } = this.props;
+    const { pageSize, page } = this.state;
     return (
       <Container fluid>
         <h2>Filtrar Fotografías</h2>
-        <Row style={{marginBottom:"10px"}}>
-          <Col xs="2">
-            {/* <ButtonGroup>
+        <Row style={{ marginBottom: "10px" }}>
+          <Col sm="6">
+            <ButtonGroup>
               <Button disabled>Filtrar</Button>
-              <Button>
+              <Button color="primary" id="toggler">
                 <FontAwesomeIcon icon={faFilter} />
               </Button>
-            </ButtonGroup> */}
+              <Input
+                type="select"
+                className="btn btn-secondary"
+                onChange={(e) =>
+                  this.setState(
+                    { page: 0, pageSize: Number(e.target.value) },
+                    () => {
+                      this.props.getPhotosAuth(0, this.state.pageSize);
+                    }
+                  )
+                }
+              >
+                <option value="12">12 por p&aacute;gina</option>
+                <option value="25">25 por p&aacute;gina</option>
+                <option value="50">50 por p&aacute;gina</option>
+              </Input>
+            </ButtonGroup>
+            <ButtonGroup className="mr-auto">
+              <Input
+                type="text"
+                name="search-curador"
+                placeholder="Filtrar por título"
+                value={this.state.search}
+                onChange={(e) => {
+                  this.setCurrentPage(0);
+                  this.setState({ search: e.target.value });
+                }}
+              />
+              <Button color="primary">
+                <FontAwesomeIcon icon={faSearch} />
+              </Button>
+            </ButtonGroup>
           </Col>
-          <Col xs="7"></Col>
-          <Col xs="3">
+          <Col sm={{ offset: 2, size: 4 }}>
             <ButtonGroup>
               <Button disabled>Ver como</Button>
               <Button
-                outline={this.state.listView ? true : false}
                 disabled={this.state.listView ? true : false}
                 onClick={() => this.swapView(1)}
               >
                 <FontAwesomeIcon icon={faThList} />
               </Button>
               <Button
-                outline={this.state.listView ? false : true}
                 disabled={this.state.listView ? false : true}
                 onClick={() => this.swapView(0)}
               >
                 <FontAwesomeIcon icon={faThLarge} />
               </Button>
             </ButtonGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FilterOptions
+              id="#toggler"
+              params={filters}
+              setState={this.setFilterOption}
+            />
           </Col>
         </Row>
         <Row>
@@ -138,60 +189,50 @@ class Filter extends Component {
           ) : (
             <Col>
               {this.state.listView ? (
-                <PhotoList
-                  photos={this.state.list.slice(pageLowerBound, pageUpperBound)}
-                  editPhoto={this.props.editPhoto}
-                />
+                <PhotoList photos={photos} editPhoto={this.props.editPhoto} />
               ) : (
-                <PhotoCards
-                  photos={this.state.list.slice(pageLowerBound, pageUpperBound)}
-                  editPhoto={this.props.switchPhotoApproval}
-                />
+                <PhotoCards photos={photos} editPhoto={this.props.editPhoto} />
               )}
             </Col>
           )}
         </Row>
-        <Row>
-          <Pagination aria-label="Page navigation example">
-            <PaginationItem disabled>
-              <PaginationLink first href="#" />
-            </PaginationItem>
-            <PaginationItem disabled>
-              <PaginationLink previous href="#" />
-            </PaginationItem>
-            {paginators}
-            <PaginationItem>
-              <PaginationLink next href="#" />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink last href="#" />
-            </PaginationItem>
-          </Pagination>
-        </Row>
+        {photoCount === 0 ? (
+          "No hay fotografías disponibles"
+        ) : (
+          <Row style={{ marginTop: "2em" }}>
+            <Col>
+              <Pagination
+                count={photoCount}
+                page_size={pageSize}
+                page={page}
+                setStatePage={this.setCurrentPage}
+                size="md"
+              />
+            </Col>
+          </Row>
+        )}
       </Container>
     );
   }
 }
 
-const mapStateToProps = state => {
-  let errors = [];
-  if (state.auth.errors) {
-    errors = Object.keys(state.auth.errors).map(field => {
-      return { field, message: state.auth.errors[field] };
-    });
-  }
-  return {
-    errors,
-    isAuthenticated: state.auth.isAuthenticated,
-    meta: state.home.all_tags,
-    photos: state.curador.photos,
-    loading: state.curador.loading,
-    refresh: state.curador.refresh
-  };
-};
-const mapActionsToProps = dispatch => ({
-  getPhotos: () => dispatch(curador.getPhotos()),
-  editPhoto: (photoID, data) => dispatch(curador.editPhoto(photoID, data)),
+const mapStateToProps = (state) => ({
+  errors: selectErrors(state),
+  isAuthenticated: selectUserIsAuthenticated(state),
+  meta: selectWebAdminAllTags(state),
+  photos: selectPhotos(state),
+  photoCount: selectPhotosCount(state),
+  loading: selectSiteMiscCuradorLoading(state),
+  refresh: selectSiteMiscCuradorRefresh(state),
 });
+
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getPhotosAuth: gallery.photos.getPhotosAuth,
+      editPhoto: gallery.photos.editPhoto,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Filter);

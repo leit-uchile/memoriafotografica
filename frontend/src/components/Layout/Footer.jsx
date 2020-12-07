@@ -7,106 +7,121 @@ import {
   Button,
   Nav,
   NavItem,
-  NavLink
+  NavLink,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faArrowCircleUp} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowCircleUp } from "@fortawesome/free-solid-svg-icons";
+import "./footer.css";
 
 const Footer = () => {
-  const componentDidMount = () =>
+  const goUp = () =>
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: "smooth"
+      behavior: "smooth",
     });
 
   return (
-    <footer style={styles.contenedor}>
-      <Container style={styles.contenido}>
-        <Row style={{ paddingBottom: "50px" }}>
-          <Col>
-            <img src={"/assets/logoExt.svg"} alt={"logo"} height="40px" style={{maxWidth: "100%"}}/>
+    <footer>
+      <Container>
+        <Row id="footer-logos">
+          <Col sm="4">
+            <img
+              src={"/assets/logo01.svg"}
+              alt={"logo"}
+              height="60px"
+              style={{ marginTop: "2em" }}
+            />
+          </Col>
+          <Col sm="4">
+            <img
+              src={"/assets/bcentral.svg"}
+              alt={"logobcentral"}
+              height="100px"
+            />
+          </Col>
+          <Col sm="4">
+            <img src={"/fcfm_header.png"} alt={"logofcfm"} height="100px" />
           </Col>
         </Row>
         <Row>
           <Col md="3">
-            <h5 style={{ fontSize: "12px" }}>
+            <h2>
               <b>Biblioteca Central FCFM</b>
-            </h5>
-            <p style={{ margin: "0px", paddingBottom: "0px" }}>Beauchef 850</p>
-            <p style={{ margin: "0px", paddingBottom: "0px" }}>Santiago</p>
+            </h2>
+            <p>Beauchef 850</p>
+            <p>Santiago</p>
             <p>Chile</p>
             <p>+56 22 978 4074</p>
           </Col>
           <Col md="3">
-            <p style={{ fontSize: "12px" }}>
+            <p>
               <b>Acerca de</b>
             </p>
             <Nav vertical>
               <NavItem>
-                <NavLink tag={Link} to={"/misc/about"} active>
+                <NavLink tag={Link} to={"/misc/about"}>
                   El Proyecto
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} to={"/misc/about"} active>
+                <NavLink tag={Link} to={"/misc/about"}>
                   LEIT
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} to={"/misc/about"} active>
+                <NavLink tag={Link} to={"/misc/about"}>
                   Intégrate
                 </NavLink>
               </NavItem>
             </Nav>
           </Col>
           <Col md="3">
-            <p style={{ fontSize: "12px" }}>
+            <p>
               <b>Enlaces</b>
             </p>
             <Nav vertical>
               <NavItem>
-                <NavLink tag={Link} to={"/misc/resources/faq"} active>
+                <NavLink tag={Link} to={"/misc/resources/faq"}>
                   Preguntas frecuentes
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} to={"/misc/resources/contact-us"} active>
+                <NavLink tag={Link} to={"/misc/resources/contact-us"}>
                   Contáctenos
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} to={"/misc/resources/sitemap"} active>
+                <NavLink tag={Link} to={"/misc/resources/sitemap"}>
                   Mapa del sitio
                 </NavLink>
               </NavItem>
             </Nav>
           </Col>
           <Col md="3">
-            <h5 style={{ fontSize: "12px" }}>
+            <h2>
               <b>Suscripciones</b>
-            </h5>
-            <ul>
-              <li>
-                Para obtener novedades puede registrarse en nuestro Newsletter
-              </li>
-              <Input type="email" placeholder="Ingrese su correo" />
-            </ul>
+            </h2>
+            <p>
+              Para obtener novedades puede registrarse en nuestro Newsletter
+            </p>
+            <Input
+              id="newsletter"
+              type="email"
+              placeholder="Ingrese su correo"
+            />
           </Col>
         </Row>
-        <Row style={{ paddingTop: "100px", paddingBottom: "100px" }}>
-          <Col
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              color: "#9fa4a5"
-            }}>
-            <p style={{ marginLeft: "auto", marginRight: "auto" }}>
+        <Row>
+          <Col sm="8" id="copyright">
+            <p>
               Todos los derechos reservados. Biblioteca Central - Facultad de
-              Ciencias Fisicas y Matematicas - Universidad de Chile
+              Ciencias Fisicas y Matematicas - Universidad de Chile - 2020
             </p>
-            <Button color="link" onClick={componentDidMount}>
+          </Col>
+          <Col sm="4">
+            <Button id="goUp" color="link" onClick={goUp}>
               Volver al Inicio <FontAwesomeIcon icon={faArrowCircleUp} />
             </Button>
           </Col>
@@ -116,15 +131,4 @@ const Footer = () => {
   );
 };
 
-const styles = {
-  contenedor: {
-    borderTop: "1px solid rgb(210,214,218)",
-    background:
-      "linear-gradient(top, #fbfcfc 0%, #dee1e2 100%), -moz-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%) -webkit-linear-gradient(top, #fbfcfc 0%, #dee1e2 100%)"
-  },
-  contenido: {
-    fontSize: "12px",
-    paddingTop: "50px"
-  }
-};
 export default Footer;

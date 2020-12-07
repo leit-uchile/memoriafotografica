@@ -1,20 +1,24 @@
 import React, { Component } from "react";
 import RegisterLoginInfo from "./RegisterLoginInfo";
 import { connect } from "react-redux";
-import { auth } from "../../actions";
+import { user } from "../../actions";
 import { Button, Container, Row, Col } from "reactstrap";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import StepWizard from "react-step-wizard";
-import {LeitSpinner} from "../../components";
+import { LeitSpinner } from "../../components";
+import { bindActionCreators } from "redux";
+import { selectErrors,
+          selectUserIsAuthenticated,
+          selectUserRegisterSucces, } from "../../reducers";
 
-const FailedRegistration = props => (
-  <Container style={{ textAlign: "center", marginTop: "2em" }}>
+const FailedRegistration = (props) => (
+  <Container>
     <Row>
       <Col>
-        <h2> No pudimos realizar tu registro </h2>
+        <h2 className="page-title"> No pudimos realizar tu registro </h2>
       </Col>
     </Row>
-    <Row>
+    <Row className="white-box form-container" style={{ textAlign: "center" }}>
       <Col>
         <p style={{ marginTop: "2em" }}>
           Si esto persiste por favor informanos a{" "}
@@ -22,10 +26,13 @@ const FailedRegistration = props => (
             soporte&#64;leit.cl
           </a>
         </p>
-        <Button color="warning" onClick={() => {
-          props.back()
-          props.goToStep(1)
-          }}>
+        <Button
+          color="secondary"
+          onClick={() => {
+            props.back();
+            props.goToStep(1);
+          }}
+        >
           Volver
         </Button>
       </Col>
@@ -33,21 +40,21 @@ const FailedRegistration = props => (
   </Container>
 );
 
-const RegisterSent = ({ isAuthenticated, goToStep, errors }) => {
-  if (isAuthenticated) {
+const RegisterSent = ({ registerSuccess, goToStep, errors }) => {
+  if (registerSuccess) {
     goToStep(4);
   }
   if (errors.length !== 0) {
     goToStep(3);
   }
   return (
-    <Container style={{ textAlign: "center", marginTop: "2em" }}>
+    <Container>
       <Row>
         <Col>
-          <h2>Completando registro</h2>
+          <h2 className="page-title">Completando registro</h2>
         </Col>
       </Row>
-      <Row>
+      <Row className="white-box form-container" style={{ textAlign: "center" }}>
         <Col style={{ marginTop: "2em" }}>
           <LeitSpinner />
         </Col>
@@ -56,18 +63,21 @@ const RegisterSent = ({ isAuthenticated, goToStep, errors }) => {
   );
 };
 
-const SuccessfulRegistration = props => (
-  <Container style={{ textAlign: "center", marginTop: "2em" }}>
+const SuccessfulRegistration = () => (
+  <Container>
     <Row>
       <Col>
-        <h2>¡Registro con éxito!</h2>
+        <h2 className="page-title">¡Registro con éxito!</h2>
       </Col>
     </Row>
-    <Row>
+    <Row className="white-box form-container" style={{ textAlign: "center" }}>
       <Col>
         <p style={{ marginTop: "2em" }}>
           Por favor confirma tu correo electronico
         </p>
+        <Button tag={Link} to="/" color="primary">
+          Volver a inicio
+        </Button>
       </Col>
     </Row>
   </Container>
@@ -90,7 +100,7 @@ class Register extends Component {
     // Clear errors
     this.props.cleanErrors();
     this.setState({
-      calledResgister: false
+      calledResgister: false,
     });
   }
 
@@ -131,13 +141,14 @@ class Register extends Component {
         onStepChange={() => {
           window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
         }}
-        initialStep={1}>
+        initialStep={1}
+      >
         <RegisterLoginInfo
           saveInfo={this.saveUserLogin}
           cache={this.state.loginInfo}
         />
         <RegisterSent
-          isAuthenticated={this.props.isAuthenticated}
+          registerSuccess={this.props.registerSuccess}
           errors={this.props.errors}
         />
         <FailedRegistration back={this.volver} />
@@ -147,33 +158,19 @@ class Register extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  let errors = [];
-  if (state.auth.errors) {
-    errors = Object.keys(state.auth.errors).map(field => {
-      return { field, message: state.auth.errors[field] };
-    });
-  }
-  return {
-    errors,
-    isAuthenticated: state.auth.isAuthenticated
-  };
-};
+const mapStateToProps = (state) => ({
+  errors: selectErrors(state),
+  isAuthenticated: selectUserIsAuthenticated(state),
+  registerSuccess: selectUserRegisterSucces(state),
+});
 
-const mapActionsToProps = dispatch => {
-  return {
-    register: (username, password, name, lastname, date, rol, avatar) => {
-      return dispatch(
-        auth.register(username, password, name, lastname, date, rol, avatar)
-      );
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      register: user.register,
+      cleanErrors: user.cleanErrors,
     },
-    cleanErrors: () => {
-      return dispatch(auth.cleanErrors());
-    }
-  };
-};
+    dispatch
+  );
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(Register);
+export default connect(mapStateToProps, mapActionsToProps)(Register);

@@ -11,10 +11,11 @@ from rest_framework.exceptions import NotFound
 from MetaData.models import *
 from Users.permissions import *
 from .permissions import *
-from django.http import Http404, QueryDict
+from django.http import Http404, QueryDict, JsonResponse
 from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
 from rest_condition import ConditionalPermission, C, And, Or, Not
 from rest_framework.documentation import include_docs_urls
+from datetime import date
 
 def get_user(photoPair):
     try:
@@ -40,28 +41,53 @@ def make_tag(metadata_id):
     return m.metadata.name + " : " + m.value
 
 def filter_photos(photolist, request):
-    sort_type = {"asc":"", "desc":"-"}
     try:
-        if request.query_params["category"]:
+        if "created_at" in request.query_params:
+            photolist = photolist.filter(created_at__gte=date.fromisoformat(
+                request.query_params["created_at"]))
+        if "created_at_until" in request.query_params:
+            photolist = photolist.filter(created_at__lte=date.fromisoformat(
+                request.query_params["created_at_until"]))
+        if "category" in request.query_params:
             q = list(filter(('').__ne__, request.query_params["category"].split(',')))
             photolist = photolist.filter(category__id__in = q).distinct()
             photolist = photolist.order_by("-created_at")
-    except KeyError:
-        pass
-
-    try:
-        if request.query_params["metadata"]:
+        if "ncategory" in request.query_params:
+            q = list(filter(('').__ne__, request.query_params["ncategory"].split(',')))
+            photolist = photolist.exclude(category__id__in = q)
+        if "metadata" in request.query_params:
             meta_query = list(filter(('').__ne__, request.query_params["metadata"].split(',')))
             photolist = photolist.filter(metadata__id__in = meta_query)
-    except KeyError:
-        pass
-
-    try:
-        if request.query_params["user"]:
+        if "title" in request.query_params:
+            photolist = photolist.filter(title__icontains = request.query_params["title"])
+        if "censured" in request.query_params:
+            censure = True
+            if request.query_params["censured"] == "false":
+                censure = False
+            photolist = photolist.filter(censure = censure)
+        if "approved" in request.query_params:
+            approved = True
+            if request.query_params["approved"] == "false":
+                approved = False
+            photolist = photolist.filter(approved = approved)
+        if "resolved" in request.query_params:
+            resolved = True
+            if request.query_params["resolved"] == "false":
+                resolved = False
+            photolist = photolist.filter(resolved = resolved)
+        if "type" in request.query_params:
+            photolist = photolist.filter(type = request.query_params["type"])
+        if "desc" in request.query_params:
+            photolist = photolist.filter(description__icontains = request.query_params["desc"])
+        if "taken" in request.query_params:
+            photolist = photolist.filter(upload_date__gte = date.fromisoformat(request.query_params["taken"]))
+        if "user" in request.query_params:
             photolist = photolist.filter(user=request.query_params["user"])
-    except KeyError:
+        if "album" in request.query_params:
+            photolist = photolist.filter(album=request.query_params["album"])
+    except Exception as e:
+        print("Error filtering photos",e)
         pass
-
     return photolist
 
 def sort_by_field(element_list, request):
@@ -75,6 +101,25 @@ def sort_by_field(element_list, request):
         # Default to sorting by asc creation
         element_list = element_list.order_by("created_at")
     return element_list
+
+def get_user_from_userset(element):
+    ROL_TYPE_CHOICES = (
+        (1, 'Alumno'),
+        (2, 'Ex-Alumno'),
+        (3, 'Académico'),
+        (4, 'Ex-Académico'),
+        (5, 'Funcionario'),
+        (6, 'Externo')
+    )
+    u = element.user_set.first()
+    u_dict = {}
+    u_dict['id'] = u.pk
+    u_dict['first_name'] = u.first_name
+    u_dict['last_name'] = u.last_name
+    u_dict['generation'] = u.generation
+    u_dict['avatar'] = u.avatar.url if u.avatar else None
+    u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
+    return u_dict
 
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
@@ -90,6 +135,8 @@ class PhotoListAPI(generics.GenericAPIView):
     """
     permission_classes = [IsAuthenticated|ReadOnly,]
 
+    # General purpose list query
+    # We can return also the page number of a specific photo based on the query
     def get(self, request, *args, **kwargs):
         photo = ""
         if request.user.is_anonymous or request.user.user_type == 1:
@@ -104,14 +151,33 @@ class PhotoListAPI(generics.GenericAPIView):
             serializer_class = PhotoAdminSerializer
             serializer = PhotoAdminSerializer(photo, many = True)
             serialized_data = serializer.data
+        
+        # This does the magic fot PhotoDetails suggestions
+        # If we just need the page number
+        if "get_page" in request.query_params:
+            photo_id = int(request.query_params["get_page"])
+            size = int(request.query_params["page_size"])
+            results = len(serialized_data)
+            # Get the positions
+            position = -1 # On the entire array
+            prev_p = -1
+            next_p = -1
+            for i in range(results):
+                if serialized_data[i]['id'] == photo_id:
+                    if i != 0:
+                        prev_p = serialized_data[i-1]["id"]
+                    position = i
+                    if i != results - 1:
+                        next_p = serialized_data[i+1]["id"]
+                    break
+            page = (position)//size
+            return JsonResponse({"position": position, "page": page, "nextId": next_p, "prevId": prev_p, "total": results})
+
         for aPhoto in serialized_data:
             aPhoto['metadata'] = list(filter(lambda x: check_approval(x), aPhoto['metadata']))
             aPhoto['metadata'] = list(map(lambda x: make_tag(x), aPhoto['metadata']))
         photos_to_map = list(map(get_user,zip(photo, serialized_data)))
-        # serialized_data = list(map(get_user, serialized_data))
-        # print(serialized_data)
-        self.paginate_queryset(serialized_data)
-        return self.get_paginated_response(serialized_data)
+        return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
     def post(self, request, *args, **kwargs):
         serializer = CreatePhotoSerializer(data=request.data)
@@ -170,14 +236,6 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
 
     def get(self, request, pk, *args, **kwargs):
 
-        ROL_TYPE_CHOICES = (
-            (1, 'Alumno'),
-            (2, 'Ex-Alumno'),
-            (3, 'Académico'),
-            (4, 'Ex-Académico'),
-            (5, 'Funcionario'),
-            (6, 'Externo')
-        )
         if request.user.is_anonymous or request.user.user_type == 1:
             photo = self.get_object(pk,False)
             serializer_class = PhotoDetailSerializer
@@ -191,14 +249,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
         serialized_data['metadata'] = list(filter(lambda x: x['approved'], serialized_data['metadata']))
         #serialized_data['metadata'] = list(map(lambda x: x['metadata']['name'] + " : " + x['value'], serialized_data['metadata']))
         try:
-            u = photo.user_set.first()
-            u_dict = {}
-            u_dict['first_name'] = u.first_name
-            u_dict['last_name'] = u.last_name
-            u_dict['generation'] = u.generation
-            u_dict['avatar'] = u.avatar.url if u.avatar else None
-            u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
-            u_dict['id'] = u.pk
+            u_dict = get_user_from_userset(photo)
             serialized_data['user'] = u_dict
         except:
             pass
@@ -230,13 +281,38 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
             adm = True
         else:
             adm = False
-            photo = self.get_object(pk, adm)
+        photo = self.get_object(pk, adm)
         if request.user.user_type != 1 or photo in request.user.photos.all():
             photo.delete()
             return Response(status = status.HTTP_204_NO_CONTENT)
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
 
+class PhotoCategoryActions(generics.GenericAPIView):
+    """
+    Add or remove a category from the selected photos
+    """
+    permission_classes = [IsAuthenticated|ReadOnly,]
+    def get_object(self, pk):
+        return Category.objects.get(pk=pk)
+
+    def post(self, request, pk, *args, **wargs):
+        if request.user.is_anonymous or request.user.user_type == 1:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        cat = self.get_object(pk)
+        photos = Photo.objects.filter(pk__in=request.data["ids"])
+        action = request.data["action"]
+        if action == "add":
+            for p in photos:
+                p.category.add(cat)
+                p.save()
+        elif action == "remove":
+            for p in photos:
+                p.category.remove(cat)
+                p.save()
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_200_OK)
 class CommentListAPI(generics.GenericAPIView):
     """
     get:
@@ -254,8 +330,7 @@ class CommentListAPI(generics.GenericAPIView):
             serializer = CommentAdminSerializer(comments, many = True)
         
         serialized_data = serializer.data
-        self.paginate_queryset(serialized_data)
-        return self.get_paginated_response(serialized_data)
+        return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
 class CommentDetailAPI(generics.GenericAPIView):
     """
@@ -285,13 +360,23 @@ class CommentDetailAPI(generics.GenericAPIView):
             comment = self.get_object(pk, False)
             serializer_class = CommentSerializer
             serializer = CommentSerializer(comment)
+
+            serialized_data = serializer.data
+            u_dict = get_user_from_userset(comment.get(pk=serialized_data['id']))
+            serialized_data['usuario'] = u_dict
         else:
             comment = self.get_object(pk, True)
             serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comment)
-        return Response(serializer.data)
+
+            serialized_data = serializer.data
+            u_dict = get_user_from_userset(comment.get(pk=serialized_data['id']))
+            serialized_data['usuario'] = u_dict
+
+        return Response(serialized_data)
 
     def put(self, request, pk, *args, **kwargs):
+        comment = self.get_object(pk, True)
         if request.user.user_type == 1 and comment in request.user.comments.all():
             comment = self.get_object(pk, False)
             serializer_class = CommentSerializer
@@ -308,13 +393,12 @@ class CommentDetailAPI(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, *args, **kwargs):
-        if comment in request.user.comments.all():
-            c = self.get_object(pk, False)
-            c.delete()
+        comment = self.get_object(pk, True)
+        if comment in request.user.comments.all():            
+            comment.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        elif request.user.user_type == 3:
-            c = self.get_object(pk, True)
-            c.detele()
+        elif request.user.user_type == 3:            
+            comment.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status= status.HTTP_401_UNAUTHORIZED)
@@ -336,54 +420,34 @@ class PhotoCommentListAPI(generics.GenericAPIView):
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
-        ROL_TYPE_CHOICES = (
-            (1, 'Alumno'),
-            (2, 'Ex-Alumno'),
-            (3, 'Académico'),
-            (4, 'Ex-Académico'),
-            (5, 'Funcionario'),
-            (6, 'Externo')
-        )
         if request.user.is_anonymous or request.user.user_type == 1:
             p = self.get_object(pk, False)
             comments = p.comments.filter(censure=False)
+            comments = comments.order_by("created_at")
             serialized_class = CommentSerializer
             serializer = CommentSerializer(comments, many = True)
             serialized_data = serializer.data
             for c in serialized_data:
                 try:
-                    u = comments.get(pk=c['id']).user_set.first()
-                    u_dict = {}
-                    u_dict['first_name'] = u.first_name
-                    u_dict['last_name'] = u.last_name
-                    u_dict['generation'] = u.generation
-                    u_dict['avatar'] = u.avatar.url if u.avatar else None
-                    u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
+                    u_dict = get_user_from_userset(comments.get(pk=c['id']))
                     c['usuario'] = u_dict
-                except:
-                    pass
+                except Exception as e:
+                    print(e)
         else:
             p = self.get_object(pk, True)
             comments = p.comments.all()
+            comments = comments.order_by("created_at")
             #serializer_class = CommentAdminSerializer
             serializer = CommentAdminSerializer(comments, many = True)
             serialized_data = serializer.data
             for c in serialized_data:
                 try:
-                    u = comments.get(pk=c['id']).user_set.first()
-                    u_dict = {}
-                    u_dict['first_name'] = u.first_name
-                    u_dict['last_name'] = u.last_name
-                    u_dict['generation'] = u.generation
-                    u_dict['avatar'] = u.avatar.url if u.avatar else None
-                    u_dict['rol_type'] = ROL_TYPE_CHOICES[u.rol_type-1][1]
-                    u_dict['id'] = u.pk
+                    u_dict = get_user_from_userset(comments.get(pk=c['id']))
                     c['usuario'] = u_dict
-                except:
-                    pass
+                except Exception as e:
+                    print(e)
                     
-        self.paginate_queryset(serialized_data)
-        return self.get_paginated_response(serialized_data)
+        return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
     def post(self, request, pk, *args, **kwargs):
         photo = self.get_object(pk, False)
@@ -417,8 +481,7 @@ class CategoryListAPI(generics.GenericAPIView):
                 for c in serialized_data:
                     if(c['id']==photocat.id):
                         c['count'] += 1
-        self.paginate_queryset(serialized_data)
-        return self.get_paginated_response(serialized_data)
+        return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
     # TODO: test it out!
     def post(self, request, *args, **kwargs):
@@ -477,21 +540,25 @@ class CategoryDetailAPI(generics.GenericAPIView):
 class ReportListAPI(generics.GenericAPIView):
     """
     List all reports, or create a new report.
+    Permits search queries using the search and limit parameter
+    Permits pagination if page_size and page are on the query parameters
     """
     serializer_class = ReportSerializer
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):
         # TODO: I changed it from == 3 to > 1 ... is it correct?
-        if request.user.user_type > 1:
-            report = Reporte.objects.all()
-            report = sort_by_field(report,request)
-            serializer = ReportSerializer(report, many=True)
-            serialized_data = serializer.data
-            self.paginate_queryset(serialized_data)
-            return self.get_paginated_response(serialized_data)
-        else:
+        if request.user:
+            if request.user.user_type > 1:
+                report = Reporte.objects.all()
+                report = filter_photos(report,request)
+                report = sort_by_field(report,request)
+                serializer = ReportSerializer(report, many=True)
+                if "page" in request.query_params and "page_size" in request.query_params:
+                    return self.get_paginated_response(self.paginate_queryset(serializer.data))
+                return Response(serializer.data)
             return Response(status = status.HTTP_401_UNAUTHORIZED)
+        return Response(status = status.HTTP_401_UNAUTHORIZED)
 
     def post(self, request, *args, **kwargs):
         serializer = ReportSerializer(data=request.data)
@@ -519,25 +586,25 @@ class ReportDetailAPI(generics.GenericAPIView):
     Retrieve, update or delete a report instance.
     """
     serializer_class = ReportSerializer
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated|ReadOnly,]
     def get_object(self, pk):
         try:
             return Reporte.objects.get(pk=pk)
-        except User.DoesNotExist:
+        except Reporte.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, *args, **kwargs):
         if request.user.user_type == 3:
-            user = self.get_object(pk)
-            serializer = ReportSerializer(user)
+            report = self.get_object(pk)
+            serializer = ReportSerializer(report)
             return Response(serializer.data)
         else:
             return Response(status = status.HTTP_401_UNAUTHORIZED)
 
     def put(self, request, pk, *args, **kwargs):
         if request.user.user_type == 3:
-            user = self.get_object(pk)
-            serializer = ReportSerializer(user, data=request.data)
+            report = self.get_object(pk)
+            serializer = ReportSerializer(report, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -562,17 +629,17 @@ class AlbumListAPI(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         
-        try:
-            if request.query_params["user"]:
-                album = Album.objects.filter(user=request.query_params["user"])
-        except KeyError:
-            album = Album.objects.all()
+        album = Album.objects.all()
+        if "user" in request.query_params:
+            album = album.filter(user=request.query_params["user"])
+        if "collections" in request.query_params:
+            album = album.filter(collection=True)
+        if "name" in request.query_params:
+            album = album.filter(name__icontains=request.query_params["name"])
         album = sort_by_field(album,request)
         serializer = AlbumSerializer(album, many=True)
-        
         serialized_data = serializer.data
-        self.paginate_queryset(serialized_data)
-        return self.get_paginated_response(serialized_data)
+        return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
     def post(self, request, *args, **kwargs):
         serializer = AlbumSerializer(data=request.data, context={'request': request})
@@ -648,8 +715,7 @@ class CategoryPhotoListAPI(generics.GenericAPIView):
             serializer = PhotoAdminSerializer(pictures, many=True)
 
         serialized_data = serializer.data
-        self.paginate_queryset(serialized_data)
-        return self.get_paginated_response(serialized_data)        
+        return self.get_paginated_response(self.paginate_queryset(serialized_data))     
 
     def put(self, request, pk, *args, **kwargs):
         category = self.get_object(pk)

@@ -37,14 +37,13 @@ class PhotoRequest(models.Model):
   identity_document = models.CharField(max_length=30)
   profession = models.CharField(max_length=40)
   address = models.CharField(max_length=50)
-  # TODO: fix Spanglish here
-  comuna = models.CharField(max_length=40)
+  district = models.CharField(max_length=40)
   phone_number = models.CharField(max_length=12)
   email = models.EmailField(unique=False)
   institution = models.CharField(max_length=40)
 
   resolved = models.BooleanField(default=False)
-  email_sent = models.BooleanField(default=False)
+  approved = models.BooleanField(default=False)
   created_at = models.DateTimeField(default=datetime.now)
   updated_at = models.DateTimeField(default=datetime.now)
 
@@ -56,11 +55,12 @@ class ContactRequest(models.Model):
   last_name = models.CharField(max_length=30)
   phone_number = models.IntegerField()
   email = models.EmailField(unique=False)
-  message = models.TextField();
+  message = models.TextField()
+  reply = models.TextField(blank=True)
 
   resolved = models.BooleanField(default=False)
   email_sent = models.BooleanField(default=False)
   created_at = models.DateTimeField(default=datetime.now)
-  
+  updated_at = models.DateTimeField(default=datetime.now)
   def __str__(self):
     return "Mensaje de "+self.first_name+" sobre: "+self.message[:10]+"..."

@@ -1,8 +1,7 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import UserModal from "../UserModal";
-import "../../css/header.css";
 import SearchBar from "./SearchBar";
 import {
   Navbar,
@@ -14,53 +13,67 @@ import {
   NavItem,
   NavLink,
   Row,
-  NavbarBrand
+  NavbarBrand,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { faImage, faHome, faSmileWink } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faImage,
+  faHome,
+  faSmileWink,
+} from "@fortawesome/free-solid-svg-icons";
+import "./header.css";
+import {
+  selectUserIsAuthenticated,
+  selectSiteMiscCurrentRoute,
+} from "../../reducers";
+import PropTypes from "prop-types";
 
 const Header = ({ isAuth, currentRoute }) => {
   const [toggle, setToggle] = useState(false);
 
   var doLoginNav = isAuth ? (
     <NavLink tag={UserModal}></NavLink>
-  ) : currentRoute === "/login" ? (
-    <NavLink tag={Link} to="/login" active style={styles.activeLink}>
-      <FontAwesomeIcon icon={faUser} />
-      {" "}Ingresar
-    </NavLink>
   ) : (
-        <NavLink tag={Link} to="/login">
-          <FontAwesomeIcon icon={faUser} />
-          {" "}Ingresar
+    <NavLink tag={Link} to="/login" active={currentRoute === "/login"}>
+      <FontAwesomeIcon icon={faUser} /> Ingresar
     </NavLink>
-      );
+  );
+  // Change the style of the search bar as we scroll
+  const [display, setDisplay] = useState(true);
+  const yourElement = React.useRef();
+  const isInViewport = (offset = 0) => {
+    if (!yourElement) return false;
+    const bottom = yourElement.current.getBoundingClientRect().bottom;
+    setDisplay(bottom + offset >= 0 && bottom - offset <= window.innerHeight);
+  };
+  useEffect(() => {
+    window.addEventListener("scroll", () => isInViewport());
+  }, []);
 
   const [redirect, setRedirect] = useState(false);
-
   return (
     <Fragment>
-      <header
-        className="jumbotron"
-        style={{ marginBottom: "0", paddingBottom: "1rem", paddingTop: "1rem" }}
-      >
+      <header ref={yourElement}>
         <Container>
           {redirect ? <Redirect to="/" /> : null}
           <Row>
             <Col>
-              <Navbar expand={"sm"} light>
+              <Navbar expand={"md"} light>
                 <NavbarBrand
                   onClick={() => {
                     setRedirect(true);
                     setTimeout(() => setRedirect(false), 1000);
                   }}
                   tag={"div"}
-                  style={{ maxWidth: "50%" }}
                 >
                   <h1>Memoria fotográfica</h1>
-                  <p style={{ fontSize: "0.8em", whiteSpace: "normal" }}>
-                    Facultad de Ciencias Fisicas y Matematicas <br></br> Universidad de
+                  <p>
+                    Facultad de Ciencias Fisicas y Matematicas - Universidad de
                     Chile
                   </p>
                 </NavbarBrand>
@@ -68,64 +81,57 @@ const Header = ({ isAuth, currentRoute }) => {
                 <Collapse isOpen={toggle} navbar>
                   <Nav className="ml-auto" navbar>
                     <NavItem>
-                      {currentRoute === "/Inicio" ? (
-                        <NavLink
-                          tag={Link}
-                          to={"/"}
-                          active
-                          style={styles.activeLink}
-                        >
-                          <FontAwesomeIcon icon={faHome} />
-                          {" "}
-                          Inicio
-                        </NavLink>
-                      ) : (
-                          <NavLink tag={Link} to={"/"}>
-                            <FontAwesomeIcon icon={faHome} />
-                            {" "}
-                            Inicio
-                        </NavLink>
-                        )}
+                      <NavLink
+                        tag={Link}
+                        to={"/"}
+                        active={currentRoute === "/Inicio"}
+                      >
+                        <FontAwesomeIcon icon={faHome} /> Inicio
+                      </NavLink>
                     </NavItem>
-                    <NavItem>
-                      {currentRoute === "/gallery/" ? (
-                        <NavLink
-                          tag={Link}
-                          to={"/gallery"}
-                          active
-                          style={styles.activeLink}
-                        >
-                          <FontAwesomeIcon icon={faImage} />
-                          {" "}
+                    <UncontrolledDropdown nav inNavbar>
+                      <DropdownToggle
+                        nav
+                        className={
+                          currentRoute === "/gallery" ||
+                          currentRoute === "/photo" ||
+                          currentRoute === "/collections" ||
+                          currentRoute === "/news"
+                            ? "active"
+                            : ""
+                        }
+                      >
+                        <FontAwesomeIcon icon={faImage} /> Explorar
+                      </DropdownToggle>
+                      <DropdownMenu>
+                        <DropdownItem tag={Link} to={"/gallery"}>
                           Galer&iacute;a
-                        </NavLink>
-                      ) : (
-                          <NavLink tag={Link} to={"/gallery"}>
-                            <FontAwesomeIcon icon={faImage} />
-                            {" "}
-                            Galer&iacute;a
-                        </NavLink>
-                        )}
+                        </DropdownItem>
+                        <DropdownItem tag={Link} to={"/collections"}>
+                          Colecciones
+                        </DropdownItem>
+                        <DropdownItem tag={Link} to={"/news"}>
+                          Noticias
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </UncontrolledDropdown>
+                    <NavItem>
+                      <NavLink
+                        tag={Link}
+                        to={"/upload"}
+                        active={currentRoute === "/upload"}
+                      >
+                        <FontAwesomeIcon icon={faSmileWink} /> Participa
+                      </NavLink>
                     </NavItem>
                     <NavItem>
-                      {currentRoute === "/upload" ? (
-                        <NavLink
-                          tag={Link}
-                          to={"/upload"}
-                          active
-                          style={styles.activeLink}
-                        >
-                          <FontAwesomeIcon icon={faSmileWink} />
-                          {" "}Ingresar
-                          Participa
-                        </NavLink>
-                      ) : (
-                          <NavLink tag={Link} to={"/upload"}>
-                            <FontAwesomeIcon icon={faSmileWink} />
-                            {" "}
-                            Participa
-                        </NavLink>
-                        )}{" "}
+                      <NavLink
+                        tag={Link}
+                        to={"/misc/about"}
+                        active={currentRoute.includes("/misc/")}
+                      >
+                        <FontAwesomeIcon icon={faInfoCircle} /> Sobre Nosotros
+                      </NavLink>
                     </NavItem>
                     <NavItem>{doLoginNav}</NavItem>
                   </Nav>
@@ -135,43 +141,19 @@ const Header = ({ isAuth, currentRoute }) => {
           </Row>
         </Container>
       </header>
-      <div
-        style={
-          currentRoute === "/gallery/"
-            ? {
-              position: "sticky",
-              top: "0",
-              backgroundColor: "#e9ecef",
-              height: "4em",
-              padding: "1em 0",
-              borderBottom: "1px solid rgb(210,214,218)",
-              zIndex: "4"
-            }
-            : {
-              backgroundColor: "#e9ecef",
-              borderBottom: "1px solid rgb(210,214,218)",
-              height: "4em",
-              padding: "1em 0"
-            }
-        }
-      >
-        <SearchBar />
-      </div>
+      <SearchBar stickyClass={!display} />
     </Fragment>
   );
 };
 
-const styles = {
-  activeLink: {
-    color: "#FF5A60"
-  }
+Header.propTypes = {
+  isAuth: PropTypes.bool.isRequired,
+  currentRoute: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = state => {
-  return {
-    isAuth: state.auth.isAuthenticated,
-    currentRoute: state.misc.currentRoute
-  };
-};
+const mapStateToProps = (state) => ({
+  isAuth: selectUserIsAuthenticated(state),
+  currentRoute: selectSiteMiscCurrentRoute(state),
+});
 
 export default connect(mapStateToProps, null)(Header);

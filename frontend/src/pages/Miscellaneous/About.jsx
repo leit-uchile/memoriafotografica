@@ -1,75 +1,117 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Photo from "../../components/Photo";
-import { Container, Row, Col } from "reactstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  CardText,
+  CardBody,
+  CardDeck,
+  CardHeader,
+} from "reactstrap";
 
-const photos = [
-  {
-    source: "http://www.unfv.edu.pe/facultades/fiei/images/cono_a.png",
-    altText: "Foto de perfil Nicolás Varas",
-    caption: "Nicolás Varas",
-    employment: "Ingeniero en Computación"
-  },
+const active_members = [
   {
     source:
-      "https://static.u-cursos.cl/r/usuario/27/27f2a6553b5e61f03459368cf07eba7f/datos_usuario/av_5c91a9bcd72a0.jpg",
-    altText: "Foto de perfil Victoria Bollo",
-    caption: "Victoria Bollo",
-    employment: "Estudiante de Astronomía"
-  },
-  {
-    source: "https://avatars2.githubusercontent.com/u/7097907?s=400&v=4",
+      "/assets/profiles/20248254_1604088656270906_1312142107271353514_o.jpg",
     altText: "Foto de perfil Darío Palma",
     caption: "Darío Palma",
-    employment: "Estudiante de Ingeniería en Computación"
+    employment: "Egresado de Doble título e Ingeniería Civil en Computación",
   },
   {
     source:
       "https://avatars1.githubusercontent.com/u/26554728?s=400&u=30a71e6019159edbd3f720b234796319064bef95&v=4",
     altText: "Foto de perfil Darío Cáceres",
     caption: "Darío Cáceres",
-    employment: "Estudiante de Ingeniería en Computación"
+    employment: "Estudiante de Ingeniería Civil en Computación",
   },
   {
-    source: "http://www.unfv.edu.pe/facultades/fiei/images/cono_a.png",
-    altText: "Foto de perfil Fernanda Carvajal",
-    caption: "Fernanda Carvajal",
-    employment: "Abogada"
-  },
-  {
-    source: "http://www.unfv.edu.pe/facultades/fiei/images/cono_a.png",
-    altText: "Foto de perfil Natalia Durán",
-    caption: "Natalia Durán",
-    employment: "Estudiante de Enfermería"
-  },
-  {
-    source:
-      "https://static.u-cursos.cl/r/usuario/e1/e16c6bc0ec3ad08209c24ea04f33e26f/datos_usuario/av_5b8f24c2e022d.jpg",
+    source: "/assets/profiles/isaias.jpg",
     altText: "Foto de perfil Isaías Venegas",
     caption: "Isaías Venegas",
-    employment: "Estudiante de Ingeniería en Computación"
-  }
+    employment: "Estudiante de Doble título e Ingeniería Civil en Computación",
+  },
+  {
+    source: "/assets/profiles/jastorga.png",
+    altText: "Foto de perfil José Astorga",
+    caption: "José Astorga",
+    employment: "Estudiante de Ingeniería Civil en Computación",
+  },
+  {
+    source: "/assets/profiles/photo_2020-10-24_11-41-25.jpg",
+    altText: "Foto de perfil Alejandra Alarcón",
+    caption: "Alejandra Alarcón",
+    employment: "Estudiante de Ingeniería Civil en Computación",
+  },
+  {
+    source: "/assets/profiles/joaquin.jpg",
+    altText: "Foto de perfil Joaquín Díaz",
+    caption: "Joaquín Díaz",
+    employment: "Estudiante de Ingeniería Civil en Computación",
+  },
+  {
+    source: "/assets/profiles/vicente.jpg",
+    altText: "Foto de perfil Vicente Díaz",
+    caption: "Vicente Díaz",
+    employment: "Estudiante de Ingeniería Civil en Computación",
+  },
 ];
 
-const former_photos = [
+const former_members = [
   {
-    source: "http://www.unfv.edu.pe/facultades/fiei/images/cono_a.png",
-    altText: "Foto de perfil Rosa Leal",
-    caption: "Rosa Leal",
-    employment: "Directora de la Biblioteca Central FCFM"
+    source: "/assets/profiles/victoria.jpg",
+    altText: "Foto de perfil Victoria Bollo",
+    caption: "Victoria Bollo",
+    employment: "Estudiante de  Magíster en Astronomía",
   },
   {
-    source: "http://www.unfv.edu.pe/facultades/fiei/images/cono_a.png",
-    altText: "Foto de perfil -",
-    caption: "1",
-    employment: "Bibliotecaria de la Biblioteca Central FCFM"
+    source: "/assets/profiles/fefa.jpg",
+    altText: "Foto de perfil Fernanda Carvajal",
+    caption: "Fernanda Carvajal",
+    employment: "Egresada de Derecho, Licenciada en leyes",
   },
   {
-    source: "http://www.unfv.edu.pe/facultades/fiei/images/cono_a.png",
-    altText: "Foto de perfil -",
-    caption: "2",
-    employment: "Bibliotecaria de la Biblioteca Central FCFM"
-  }
+    source: "/assets/profiles/natalia.jpg",
+    altText: "Foto de perfil Natalia Durán",
+    caption: "Natalia Durán",
+    employment: "Estudiante de Enfermería, Ex estudiante de Ingeniería",
+  },
+];
+
+const colaborators_photos = [
+  {
+    header: "Organización",
+    source: "/assets/profiles/badas.jpg",
+    altText: "Foto de perfil Nicolás Varas",
+    caption: "Nicolás Varas",
+    employment: "Ingeniero Civil en Computación, Ex miembro CEI",
+  },
+  {
+    header: "Diseño",
+    source: "/assets/profiles/rafael.jpg",
+    altText: "Foto de perfil Rafael Castillo",
+    caption: "Rafael Castillo",
+    employment:
+      "Diseñador y Coordinador de Servicios Bibliográficos Electrónicos",
+  },
+  {
+    header: "Sistemas",
+    source:
+      "https://ucampus.uchile.cl/d/r/usuario/71/71c114dba2c0fe52dbf6ae0d6ab8c077/perfil/cb871295eba79e33262194660f10d537.jpg",
+    altText: "Jorge Concha",
+    caption: "Jorge Concha",
+    employment: "Ingeniero de Sistemas del Centro de Computación CEC.",
+  },
+  {
+    header: "Sistemas",
+    source:
+      "https://ucampus.uchile.cl/d/r/usuario/0c/0c4d8c861f5ba6092fb87f3a1f37a5b7/perfil/239860710ecb1f95193ed0d183db3904.jpg",
+    altText: "Fernando Quezada",
+    caption: "Fernando Quezada",
+    employment: "Soporte y Webmaster de la Biblioteca Central",
+  },
 ];
 const About = () => {
   let project = React.createRef();
@@ -80,47 +122,58 @@ const About = () => {
     if (joinUs.current !== null) {
       joinUs.current.focus({
         block: "start",
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   }, [joinUs]);
 
-  const team = photos.map(el => {
-    return (
-      <Col key={el.caption}>
-        <img
-          src={el.source}
-          alt={el.altText}
-          style={{ textAlign: "center" }}
-          width="100px"
-          height="100px"
-        />
-        <p style={{ textAlign: "center" }}>{el.caption}</p>
-        <p style={{ textAlign: "center", color: "rgb(151, 135, 143)" }}>
-          {el.employment}
-        </p>
-      </Col>
-    );
-  });
-  const formerteam = former_photos.map(el => {
-    return (
-      <Col key={el.caption}>
-        <img
-          src={el.source}
-          alt={el.altText}
-          style={{ textAlign: "center" }}
-          width="100px"
-          height="100px"
-        />
-        <p style={{ textAlign: "center" }}>{el.caption}</p>
-        <p style={{ textAlign: "center", color: "rgb(151, 135, 143)" }}>
-          {el.employment}
-        </p>
-      </Col>
-    );
-  });
+  const mapToCard = (ar, doHead = false) => {
+    return ar.map((el) => {
+      return (
+        <Card key={el.caption} className="about-card">
+          {doHead ? (
+            <CardHeader style={el.headColor}>{el.header}</CardHeader>
+          ) : null}
+          <img
+            src={el.source}
+            alt={el.altText}
+            style={{ textAlign: "center" }}
+          />
+          <CardBody style={{ textAlign: "center" }}>
+            <CardText>
+              {el.caption}
+
+              <p style={{ textAlign: "center", color: "rgb(151, 135, 143)" }}>
+                {el.employment}
+              </p>
+            </CardText>
+          </CardBody>
+        </Card>
+      );
+    });
+  };
+
+  const team_1 = mapToCard(active_members.slice(0, 5));
+  const team_2 = mapToCard([
+    ...active_members.slice(5, active_members.length),
+    ...former_members,
+  ]);
+  const rosita = {
+    header: "Sostenedora",
+    headColor: {
+      backgroundColor: "var(--leit-pink)",
+      color: "white",
+      fontWeight: "700",
+    },
+    source:
+      "https://ucampus.uchile.cl/d/r/usuario/9d/9d4438c4ec735ef3b745b3b369a43216/perfil/3ee573197dde61aad94aa26359acb3d6.jpg",
+    altText: "Foto de perfil Rosa Leal",
+    caption: "Rosa Leal",
+    employment: "Directora de la Biblioteca Central FCFM",
+  };
+  const formerteam = mapToCard([...colaborators_photos, rosita], true);
   return (
-    <Container>
+    <Container fluid className="add-rows-mtop">
       <Row forwardref={project}>
         <Col>
           <h2>Acerca del Proyecto</h2>
@@ -143,7 +196,7 @@ const About = () => {
                 style={{
                   textAlign: "justify",
                   textJustify: "inter-word",
-                  marginTop: "2em"
+                  marginTop: "2em",
                 }}
               >
                 El proyecto Memoria Fotográfica busca acercar y mejorar el
@@ -174,10 +227,21 @@ const About = () => {
             distintas personas pertenecientes a la facultad de Ciencias Físicas
             y Matemáticas de la Universidad de Chile.{" "}
           </p>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
           <h3>Integrantes del equipo LEIT</h3>
-          {<Row>{team}</Row>}
-          <h3>Colaboradores</h3>
-          <Row>{formerteam}</Row>
+          <CardDeck>
+            {team_1}
+            {team_2}
+          </CardDeck>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <h3>Gestión y Colaboradores</h3>
+          <CardDeck>{formerteam}</CardDeck>
         </Col>
       </Row>
 

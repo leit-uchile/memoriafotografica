@@ -36,7 +36,9 @@ class ReportSerializer(serializers.ModelSerializer):
         return reporte
 
     def update(self, instance, validated_data):
+        print(instance)
         instance.resolved = validated_data.get('resolved', instance.resolved)
+        instance.resolution_details = validated_data.get('resolution_details', instance.resolution_details)
         instance.updated_at = datetime.now()
         instance.save()
         return instance
@@ -61,7 +63,7 @@ class CommentAdminSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('id', 'content')
+        fields = ('id', 'content', 'created_at', 'updated_at')
         read_only_fields = ('id',)
     def create(self, validated_data):
         return Comment.objects.create(**validated_data)

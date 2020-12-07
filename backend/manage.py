@@ -4,6 +4,15 @@ import sys
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "MemoriaFotografica.settings")
+
+    from django.conf import settings
+
+    if settings.DEBUG:
+        if os.environ.get('RUN_MAIN'):
+            import ptvsd
+
+            ptvsd.enable_attach(address=('0.0.0.0', 5678))
+            print("Attached")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

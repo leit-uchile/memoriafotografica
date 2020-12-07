@@ -6,6 +6,7 @@ urlpatterns = [
     re_path('^photos/$', PhotoListAPI.as_view()),
     re_path('^photos/(?P<pk>[0-9]+)/$', PhotoDetailAPI.as_view()),
     re_path('^photos/(?P<pk>[0-9]+)/comments/$', PhotoCommentListAPI.as_view()),
+    re_path('^photos/category/(?P<pk>[0-9]+)/$', PhotoCategoryActions.as_view()),
     re_path('^comments/$', CommentListAPI.as_view()),
     re_path('^comments/(?P<pk>[0-9]+)/$', CommentDetailAPI.as_view()),
     re_path('^categories/$', CategoryListAPI.as_view()),

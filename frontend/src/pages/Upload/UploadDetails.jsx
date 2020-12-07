@@ -10,7 +10,7 @@ import {
   FormGroup,
   Label,
   Input,
-  Collapse
+  Collapse,
 } from "reactstrap";
 
 const CC_INFO = [
@@ -19,32 +19,32 @@ const CC_INFO = [
   { name: "CC BY-ND", text: "Atribución, Sin Derivadas" },
   { name: "CC BY-NC", text: "Atribución, No Comercial" },
   { name: "CC BY-NC-SA", text: "Atribución, No Comercial, Compartir Igual" },
-  { name: "CC BY-NC-ND", text: "Atribución, No Comercial, Sin Derivadas" }
+  { name: "CC BY-NC-ND", text: "Atribución, No Comercial, Sin Derivadas" },
 ];
 
 const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
 
 class UploadDetails extends Component {
-  constructor(Props) {
-    super(Props);
+  constructor(props) {
+    super(props);
     this.state = {
-      ...Props.meta,
-      collapse: false
+      ...props.meta,
+      collapse: false,
     };
 
     // Prepare File Reader for preview management
     this.fr = new FileReader();
-    this.fr.onload = (function(theFile) {
-      return function(e) {
+    this.fr.onload = (function (theFile) {
+      return function (e) {
         // Get data from image
         let img = new Image();
-        img.onload = function() {
+        img.onload = function () {
           var gcd_value = gcd(img.height, img.width);
           this.setState({
             height: img.height,
             width: img.width,
             aspect_h: img.height / gcd_value,
-            aspect_w: img.width / gcd_value
+            aspect_w: img.width / gcd_value,
           });
         }.bind(this);
         img.src = e.target.result;
@@ -52,46 +52,46 @@ class UploadDetails extends Component {
         // Render thumbnail.
         this.setState({ src: e.target.result });
       };
-    })(Props.photo).bind(this);
+    })(props.photo).bind(this);
     this.fr.readAsDataURL(this.props.photo);
   }
 
-  updateData = e => this.setState({ [e.target.name]: e.target.value });
+  updateData = (e) => this.setState({ [e.target.name]: e.target.value });
 
-  updateDesc = e => {
+  updateDesc = (e) => {
     this.setState({ description: e.target.value }, () =>
       this.props.save(this.state)
     );
   };
 
   toggle = () => {
-    this.setState(state => ({ collapse: !state.collapse }));
+    this.setState((state) => ({ collapse: !state.collapse }));
   };
 
-  additionTag = tag => {
+  additionTag = (tag) => {
     const tags = [].concat(this.state.tags, tag);
     this.setState({ tags: tags });
   };
 
-  deleteTag = i => {
+  deleteTag = (i) => {
     const tags = this.state.tags.slice(0);
     tags.splice(i, 1);
     this.setState({ tags });
   };
 
-  onSubmit = e => {
+  onSubmit = (e) => {
     e.preventDefault();
     if (this.state.collapse === true) {
       this.toggle();
     }
-    let mapped_tags = this.state.tags.map(tag => ({
+    let mapped_tags = this.state.tags.map((tag) => ({
       value: tag.name.trim(),
-      id: tag.id
+      id: tag.id,
     }));
     this.props.save({ ...this.state, tags: mapped_tags });
   };
 
-  onDelete = e => {
+  onDelete = (e) => {
     this.props.delete(this.state);
   };
 
@@ -101,40 +101,29 @@ class UploadDetails extends Component {
         style={{
           marginTop: "20px",
           border: "1px solid rgb(210,214,218)",
-          boxShadow: "2px 2px 4px rgb(156,158,159)"
         }}
         fluid
+        className="white-box"
       >
         <Row>
-          <Col md="3" style={{textAlign:'center'}}>
-            <img style={styles.thumb} src={this.state.src} alt="Thumbnail"/>
+          <Col md="3" style={{ textAlign: "center" }}>
+            <img style={styles.thumb} src={this.state.src} alt="Thumbnail" />
             {/* <CropPhoto src={this.state.src} key={uuidv1()}/> */}
           </Col>
           <Col md="9" style={{ padding: "20px" }}>
             <Form>
               <FormGroup>
-                <Label style={{ color: "#848687" }}>Descripcion:</Label>
-                {this.state.description.length > 8 ? (
-                  <Input
-                    type="textarea"
-                    placeholder="Historia asociada a la foto"
-                    name="description"
-                    onChange={this.updateDesc}
-                    value={this.state.description}
-                    required
-                    valid
-                  />
-                ) : (
-                  <Input
-                    type="textarea"
-                    placeholder="Historia asociada a la foto"
-                    name="description"
-                    onChange={this.updateDesc}
-                    value={this.state.description}
-                    required
-                    invalid
-                  />
-                )}
+                <Label className="form-subtitle">Descripcion:</Label>
+                <Input
+                  type="textarea"
+                  placeholder="Historia asociada a la foto"
+                  name="description"
+                  onChange={this.updateDesc}
+                  value={this.state.description}
+                  required
+                  valid={this.state.description.length > 8}
+                  invalid={this.state.description.length < 8}
+                />
               </FormGroup>
               <ButtonGroup>
                 <Button color="danger" onClick={this.onDelete}>
@@ -163,7 +152,7 @@ class UploadDetails extends Component {
               <Row>
                 <Col sm="12" md="4">
                   <div style={styles.hr}>
-                    <Label style={{ color: "#848687" }}>
+                    <Label className="form-subtitle">
                       Informaci&oacute;n adicional
                     </Label>
                   </div>
@@ -176,12 +165,13 @@ class UploadDetails extends Component {
                     suggestions={this.props.suggestions}
                     handleDelete={this.deleteTag}
                     handleAddition={this.additionTag}
+                    handleInputChange={this.props.search}
                   />
                 </Col>
                 <Col sm="6" md="4">
                   <FormGroup>
                     <div style={styles.hr}>
-                      <Label style={{ color: "#848687" }} for="CreativeCommons">
+                      <Label className="form-subtitle" for="CreativeCommons">
                         Permisos de acceso e intercambio
                       </Label>
                     </div>
@@ -203,7 +193,7 @@ class UploadDetails extends Component {
                 </Col>
                 <Col sm="6" md="4">
                   <div style={styles.hr}>
-                    <Label style={{ color: "#848687" }} for="title">
+                    <Label className="form-subtitle" for="title">
                       Titulo de la fotograf&iacute;a
                     </Label>
                   </div>
@@ -229,12 +219,12 @@ const styles = {
     marginTop: "20px",
     marginLeft: "auto",
     marginRight: "auto",
-    boxShadow: "5px 5px 5px #3c4145"
+    boxShadow: "5px 5px 5px #3c4145",
   },
   hr: {
     borderBottom: "1px solid rgb(156,158,159)",
-    marginBottom: "10px"
-  }
+    marginBottom: "10px",
+  },
 };
 
 export default UploadDetails;

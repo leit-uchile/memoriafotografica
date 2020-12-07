@@ -1,30 +1,45 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Redirect, Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { home, misc } from "../../actions";
+import { gallery, site_misc } from "../../actions";
+import { selectPhotos, selectAlbumResult } from "../../reducers";
 import { Helmet } from "react-helmet";
-import { Container, Row, Col } from "reactstrap";
-import NewsSlider from "../News/NewsSlider"
-import "./landing.css";
+import {
+  Container,
+  Row,
+  Col,
+  CardDeck,
+  Card,
+  CardTitle,
+  CardBody,
+} from "reactstrap";
+import NewsSlider from "../News/NewsSlider";
 import Gallery from "react-photo-gallery";
+import { bindActionCreators } from "redux";
+import "./landing.css";
 
-const LandingPage = props => {
-  const { setRoute, loadPhotos, loadCaroussel, loadNews } = props;
+const LandingPage = (props) => {
+  const { setRoute, loadPhotos, loadCollections } = props;
 
   useEffect(() => {
     setRoute("/Inicio");
-    loadPhotos();
-  }, [loadPhotos, setRoute]);
+    loadPhotos(0, 10);
+    loadCollections(0, 3, "&collections=1");
+  }, [loadPhotos, loadCollections, setRoute]);
 
-  var mapped = props.photos.slice(0, 10).map(el => ({
+  var mapped = props.photos.map((el) => ({
     src: el.thumbnail,
     height: el.aspect_h,
     width: el.aspect_w,
-    id: el.id
+    id: el.id,
   }));
 
-  var onClickPhoto = o => {
-    setRedirect(`/photo/${mapped[o.index].id}`);
+  var onClickPhoto = (o) => {
+    setRedirect(`/photo/${mapped[o.index].id}/?sort=created_at-desc`);
+  };
+
+  var onClickCollection = (o) => {
+    setRedirect(`/user/public/collections/${o}`);
   };
 
   const [redirect, setRedirect] = useState(false);
@@ -65,7 +80,7 @@ const LandingPage = props => {
       </div>
       <Container className="landing-container">
         <Row className="missionDiv">
-          <Col sm={3}>
+          <Col md={3}>
             <h2 className="colTitle">Nuestra misi&oacute;n</h2>
             <p className="detailText">
               Nuestra misi&oacute;n consiste en recuperar la historia y memoria
@@ -73,7 +88,7 @@ const LandingPage = props => {
               matem&aacute;ticas de forma transparente y colaborativa.
             </p>
           </Col>
-          <Col xs={4} sm={3}>
+          <Col xs={4} md={3}>
             <img
               src="/assets/photoSave.svg"
               width="100px"
@@ -82,11 +97,11 @@ const LandingPage = props => {
             />
             <h3>Recuperar</h3>
           </Col>
-          <Col xs={4} sm={3}>
+          <Col xs={4} md={3}>
             <img src="/assets/server.svg" width="100px" height="100px" alt="" />
             <h3>Preservar</h3>
           </Col>
-          <Col xs={4} sm={3}>
+          <Col xs={4} md={3}>
             <img
               src="/assets/speech-bubble.svg"
               width="100px"
@@ -97,23 +112,15 @@ const LandingPage = props => {
           </Col>
         </Row>
       </Container>
-      <div
-        style={{
-          backgroundColor: "#e9ecef",
-          paddingTop: "2em",
-          paddingBottom: "2em"
-        }}
-      >
+      <div className="landing-news">
         <Container>
           <Row>
             <Col>
               <h2 className="colTitle">Noticias recientes</h2>
             </Col>
             <Col>
-              <div style={{ textAlign: "right", padding: "1em" }}>
-                <Link to="/news" style={{ fontSize: "1.5em" }}>
-                  Ver todas
-                </Link>
+              <div className="landing-see-more">
+                <Link to="/news">Ver todas</Link>
               </div>
             </Col>
           </Row>
@@ -123,13 +130,11 @@ const LandingPage = props => {
       <Container className="landing-container">
         <Row>
           <Col>
-            <h2 className="colTitle">Fotograf&iacute;as destacadas</h2>
+            <h2 className="colTitle">&Uacute;ltimas Fotograf&iacute;as</h2>
           </Col>
           <Col>
-            <div style={{ textAlign: "right", padding: "1em" }}>
-              <Link to="/gallery" style={{ fontSize: "1.5em" }}>
-                Ver galeria
-              </Link>
+            <div className="landing-see-more">
+              <Link to="/gallery">Ver galeria</Link>
             </div>
           </Col>
         </Row>
@@ -146,35 +151,87 @@ const LandingPage = props => {
       <div className="landing-background-2 parallax">
         <Container>
           <Row>
-            <Col sm={{ size: "4", offset: "2" }}>
-              <h2 className="colTitle" data-aos="fade-up">¿Quieres participar?</h2>
+            <Col md={{ size: "4", offset: "2" }}>
+              <h2 className="colTitle" data-aos="fade-up">
+                ¿Quieres participar?
+              </h2>
             </Col>
-            <Col sm={{ size: "4" }}>
+            <Col md={{ size: "4" }}>
               <p className="detailText">
                 Estamos en b&uacute;squeda de contenido hist&oacute;rico tales
                 como fotograf&iacute;as de eventos, lugares, personajes,
                 actividades, entre otros. Si tienes material puedes subirlo{" "}
-                <Link to="/upload" className="btn btn-primary btn-lg">aqu&iacute;</Link>.
+                <Link to="/upload" className="btn btn-primary btn-lg">
+                  aqu&iacute;
+                </Link>
+                .
               </p>
             </Col>
           </Row>
         </Container>
       </div>
+      {props.collections.length !== 0 ? (
+        <Container className="landing-container">
+          <Row>
+            <Col>
+              <h2 className="colTitle">Explora Nuestras Colecciones</h2>
+            </Col>
+            <Col>
+              <div className="landing-see-more">
+                <Link to="/collections">Ver colecciones</Link>
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={3}>
+              <p className="detailText">
+                Nuestros editores suben colecciones de fotos oficiales con
+                contenido hist&oacute;rico particular.
+              </p>
+
+              <p className="detailText">
+                Tambi&eacute;n recibimos donaciones de contenido y las
+                publicamos aqu&iacute;.
+              </p>
+            </Col>
+            <Col md={9}>
+              <CardDeck>
+                {props.collections.slice(0, 3).map((c) => (
+                  <Card
+                    key={c.name}
+                    onClick={() => {
+                      onClickCollection(c.id);
+                    }}
+                    className="white-box"
+                  >
+                    <CardTitle>{c.name}</CardTitle>
+                    <CardBody
+                      style={{ backgroundImage: `url("${c.thumbnail}")` }}
+                    ></CardBody>
+                  </Card>
+                ))}
+              </CardDeck>
+            </Col>
+          </Row>
+        </Container>
+      ) : null}
     </Fragment>
   );
 };
 
-const mapStateToProps = state => ({
-  photos: state.home.photos,
-  // caroussel: state.landing.caroussel,
-  // news: state.landing.news
+const mapStateToProps = (state) => ({
+  photos: selectPhotos(state),
+  collections: selectAlbumResult(state),
 });
 
-const mapActionsToProps = dispatch => ({
-  loadPhotos: () => dispatch(home.home()),
-  setRoute: route => dispatch(misc.setCurrentRoute(route)),
-  // loadCaroussel: () => dispatch(landing.getCaroussel()),
-  // loadNews: () => dispatch(landing.getNews())
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadPhotos: gallery.photos.home,
+      loadCollections: gallery.album.getAlbums,
+      setRoute: site_misc.setCurrentRoute,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(LandingPage);

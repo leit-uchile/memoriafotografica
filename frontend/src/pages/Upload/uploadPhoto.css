@@ -1,35 +1,14 @@
 #thumb {
-    height: 150px;
-    border: 1px solid #000;
-    margin: 4px;
+  height: 150px;
+  border: 1px solid #000;
+  margin: 4px;
 }
-
-.upload-title{
-    /* color: #ff5a60; */
-    text-align: center;
-    margin-bottom: 2em;
+.upload-photo-dropzone {
+  background-color: #f7f7f7;
+  text-align: center;
+  border: 3px dashed var(--leit-pink);
+  box-shadow: #ddd 3px 5px 10px;
 }
-
-.upload-form-title{
-    font-size: 14px;
-    font-weight: bold;
-    padding: 0.5em;
-    border-bottom: 1px solid rgb(210,214,218);
-    margin-bottom: 10px
-}
-
-.stepContainer{
-    margin-bottom: 2em;
-}
-
-.upload-unregister-container{
-    padding: 2em;
-    margin-bottom: 2em;
-    border: 1px solid rgb(210,214,218);
-}
-
-.upload-rules{
-    padding: 2em;
-    border: 1px solid rgb(210,214,218);
-    height: fit-content;
+.upload-photo-dropzone div {
+  height: 100%;
 }

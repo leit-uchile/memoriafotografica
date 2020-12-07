@@ -9,18 +9,19 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter
+  ModalFooter,
 } from "reactstrap";
 import Dropzone from "react-dropzone";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronCircleLeft,
   faChevronCircleRight,
-  faCloudUploadAlt
+  faCloudUploadAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import "../../css/search.css";
 import { connect } from "react-redux";
-import { upload, alert } from "../../actions";
+import { site_misc } from "../../actions";
+import { selectSiteMiscUploadDisclosureSet } from "../../reducers";
 
 const imageMaxSize = 8000000; // Bytes ~ 8MB
 
@@ -50,13 +51,13 @@ class UploadPhoto extends Component {
   constructor(Props) {
     super(Props);
     this.state = {
-      photosList: [],
-      length: 0
+      photos: [],
+      length: 0,
     };
     this.handleErase = this.handleErase.bind(this);
   }
 
-  handleOnDrop = files => {
+  handleOnDrop = (files) => {
     var images = [];
     if (files && files.length > 0) {
       for (var i = 0, f; (f = files[i]); i++) {
@@ -74,7 +75,7 @@ class UploadPhoto extends Component {
   };
 
   handleUpload(file) {
-    var f = file.map(el => {
+    var f = file.map((el) => {
       const uuidv4 = require("uuid/v4");
       return {
         id: uuidv4(),
@@ -84,49 +85,55 @@ class UploadPhoto extends Component {
           tags: [],
           cc: null,
           previewCalled: false,
-          collapse: false
-        }
+          collapse: false,
+        },
       };
     });
     this.setState({
-      photosList: [...this.state.photosList, ...f],
-      length: this.state.photosList.length + 1
+      photos: [...this.state.photos, ...f],
+      length: this.state.photos.length + 1,
     });
   }
 
   saveMeta(info, key) {
-    var newPhotosList = [];
-    for (var i = 0; i < this.state.photosList.length; i++) {
+    var newphotos = [];
+    for (var i = 0; i < this.state.photos.length; i++) {
       var el;
       if (i === key) {
         el = {
-          id: this.state.photosList[key].id,
-          photo: this.state.photosList[key].photo,
-          meta: { ...info }
+          id: this.state.photos[key].id,
+          photo: this.state.photos[key].photo,
+          meta: { ...info },
         };
-        newPhotosList = newPhotosList.concat(el);
+        newphotos = newphotos.concat(el);
       } else {
-        newPhotosList = newPhotosList.concat(this.state.photosList[i]);
+        newphotos = newphotos.concat(this.state.photos[i]);
       }
     }
-    this.setState({ photosList: newPhotosList, length: newPhotosList.length });
+    this.setState({ photos: newphotos, length: newphotos.length });
   }
 
   handleErase(key) {
-    var newPhotosList = [];
-    for (var i = 0; i < this.state.photosList.length; i++) {
+    var newphotos = [];
+    for (var i = 0; i < this.state.photos.length; i++) {
       if (i !== key) {
-        newPhotosList = newPhotosList.concat(this.state.photosList[i]);
+        newphotos = newphotos.concat(this.state.photos[i]);
       }
     }
-    this.setState({ photosList: newPhotosList, length: newPhotosList.length });
+    this.setState({ photos: newphotos, length: newphotos.length });
   }
 
-  onSubmit = e => {
+  handleInputChange = (query) => {
+    if (query.length >= 2) {
+      this.props.searchMeta(query, 1, 10);
+    }
+  };
+
+  onSubmit = (e) => {
     e.preventDefault();
-    if (this.state.photosList.length === 0) {
+    if (this.state.photos.length === 0) {
       this.props.sendAlert("Debe enviar al menos una foto", "warning");
-    } else if (this.state.photosList.some(el => el.meta.description === "")) {
+    } else if (this.state.photos.some((el) => el.meta.description === "")) {
       this.props.sendAlert(
         "Debe rellenar la descripción de todas las fotos",
         "warning"
@@ -135,8 +142,8 @@ class UploadPhoto extends Component {
       // Create additional meta from photos
       // Using a dictionnary
       let additional_metadata = {};
-      this.state.photosList.forEach(current_photo => {
-        current_photo.meta.tags.forEach(tag => {
+      this.state.photos.forEach((current_photo) => {
+        current_photo.meta.tags.forEach((tag) => {
           additional_metadata[tag.name] = { ...tag };
         });
       });
@@ -151,18 +158,19 @@ class UploadPhoto extends Component {
   render() {
     const { meta } = this.props;
     const suggestions = meta
-      ? meta.map(el => ({ id: el.id, name: el.value }))
+      ? meta.map((el) => ({ id: el.id, name: el.value }))
       : [];
 
-    var details = this.state.photosList.map((el, key) => (
+    var details = this.state.photos.map((el, key) => (
       <UploadDetails
         key={el.id}
         id={el.id}
         photo={el.photo}
-        save={info => this.saveMeta(info, key)}
+        save={(info) => this.saveMeta(info, key)}
         delete={() => this.handleErase(key)}
         meta={el.meta}
         suggestions={suggestions}
+        search={this.handleInputChange}
       />
     ));
 
@@ -196,38 +204,37 @@ class UploadPhoto extends Component {
             <h4 style={{ fontWeight: "600" }}>Metadatos</h4>
             <ul>
               <li>
-                Cada foto <b>requiere</b> una descripci&oacute;n o breve historia asociada.
+                Cada foto <b>requiere</b> una descripci&oacute;n o breve
+                historia asociada.
               </li>
             </ul>
-            <h4 style={{ fontWeight: "600" }}>Informaci&oacute;n por fotograf&iacute;a</h4>
+            <h4 style={{ fontWeight: "600" }}>
+              Informaci&oacute;n por fotograf&iacute;a
+            </h4>
             <ul>
               <li>
-                Se puede asignar informaci&oacute;n separada como t&iacute;tulo, licencias, etiquetas.
+                Se puede asignar informaci&oacute;n separada como t&iacute;tulo,
+                licencias, etiquetas.
               </li>
               <li>
-                En caso de no asignar nada se considera la informaci&oacute;n general ya ingresada.
+                En caso de no asignar nada se considera la informaci&oacute;n
+                general ya ingresada.
               </li>
             </ul>
           </Col>
         </Row>
         <Row>
           <Col style={{ textAlign: "center" }}>
-            {this.state.photosList.length !== 0 ? (
-              <ButtonGroup style={{ marginTop: "20px", width: "20em" }}>
-                <Button onClick={this.props.previousStep}>
-                  <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
-                </Button>
+            <ButtonGroup style={{ marginTop: "20px", width: "20em" }}>
+              <Button onClick={this.props.previousStep}>
+                <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
+              </Button>
+              {this.state.photos.length !== 0 ? (
                 <Button color="success" onClick={this.onSubmit}>
                   Finalizar <FontAwesomeIcon icon={faChevronCircleRight} />
                 </Button>
-              </ButtonGroup>
-            ) : (
-              <ButtonGroup style={{ marginTop: "20px", width: "10em" }}>
-                <Button onClick={this.props.previousStep}>
-                  <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
-                </Button>
-              </ButtonGroup>
-            )}
+              ) : null}
+            </ButtonGroup>
           </Col>
         </Row>
       </Container>
@@ -243,17 +250,17 @@ const styles = {
     width: "100%",
     height: "auto",
     border: "1px dashed rgb(156,158,159)",
-    boxShadow: "2px 2px 4px rgb(156,158,159)"
-  }
+    boxShadow: "#ddd 3px 5px 10px",
+  },
 };
 
-const mapStateToProps = state => ({
-  disclosed: state.upload.disclosureSet
+const mapStateToProps = (state) => ({
+  disclosed: selectSiteMiscUploadDisclosureSet(state),
 });
 
-const mapActionsToProps = dispatch => ({
-  readDisclosure: () => dispatch(upload.readDisclosure()),
-  sendAlert: (message, color) => dispatch(alert.setAlert(message, color))
+const mapActionsToProps = (dispatch) => ({
+  readDisclosure: () => dispatch(site_misc.readDisclosure()),
+  sendAlert: (message, color) => dispatch(site_misc.setAlert(message, color)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(UploadPhoto);

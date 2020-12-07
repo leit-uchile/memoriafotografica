@@ -1,173 +1,236 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import {
   Col,
   Row,
   Container,
   Button,
   ButtonGroup,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Spinner
+  Card,
+  CardBody,
+  Input,
+  Collapse,
+  Form,
+  FormGroup,
+  Label,
+  Spinner,
 } from "reactstrap";
-import { Table } from "reactstrap";
 import { connect } from "react-redux";
-import { curador } from "../../../actions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { gallery } from "../../../actions";
+import { Pagination } from "../../../components";
+import { CategoryTable } from "./CategoryTable";
+import { ModifyModal } from "./ModifyModal";
+import { bindActionCreators } from "redux";
+import {
+  selectCategories,
+  selectCategoriesTotal,
+  selectCategoriesError,
+  selectNewCategories,
+  selectSiteMiscCuradorLoading,
+  selectSiteMiscCuradorRefresh,
+} from "../../../reducers";
 
 class Categories extends Component {
   constructor(props) {
     super(props);
     this.state = {
       toDelete: [],
-      deleteModal: false
+      page: 0,
+      page_size: 10,
+      isOpen: false,
+      creating: false,
     };
-    this.props.getCategories();
+    this.props.getCategories(
+      this.state.page,
+      this.state.page_size,
+      "&sort=updated_at-desc"
+    );
   }
 
-  componentWillUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.refresh) {
-      window.location.reload();
+      setTimeout(() => window.location.reload(), 1000);
+    }
+    if (
+      prevProps.newCat.id !== this.props.newCat.id ||
+      prevProps.catError !== this.props.catError
+    ) {
+      this.setState({ creating: false });
+      this.props.resetErrors();
     }
   }
+
+  handleChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.setState({ creating: true });
+    this.props.createCategory({
+      pictures: [],
+      title: this.state.title,
+    });
+  };
 
   updateToDelete = (i, isCheck) => {
     // Send update to API
-    console.log("updated checkbox " + i);
     if (isCheck) {
       this.setState({ toDelete: [...this.state.toDelete, i] });
     } else {
-      this.setState({ toDelete: this.state.toDelete.filter(el => el != i) });
+      this.setState({ toDelete: this.state.toDelete.filter((el) => el !== i) });
     }
-    // Update
   };
 
   removeCategories = () => {
-    this.props.deleteCategories(this.props.token, this.state.toDelete);
+    this.props.deleteCategories(this.state.toDelete);
   };
 
-  toggleRemoveConfirmation = () => {
-    this.setState({ deleteModal: !this.state.deleteModal });
+  setPage = (p) => {
+    this.setState({ page: p });
+    this.props.getCategories(p, this.state.page_size, "&sort=updated_at-desc");
+  };
+
+  doRedirect = (id) => {
+    this.setState({ redirect: id });
   };
 
   render() {
-    const { match, cats } = this.props;
+    const { cats, total } = this.props;
 
-    // Put 3 per row
-    var latest = cats.map(el => (
-      <tr>
-        <th>
-          <input
-            type="checkbox"
-            aria-label="Checkbox for delete Categories"
-            onClick={e => this.updateToDelete(el.id, e.target.checked)}
-            checked={this.state.toDelete.includes(el.id)}
-          ></input>
-        </th>
-        <th>{el.title}</th>
-        <td>{new Date(el.created_at).toLocaleString()}</td>
-        <td>{new Date(el.updated_at).toLocaleString()}</td>
-        <td>{el.count}</td>
-        <td>
-          <Button>
-            <FontAwesomeIcon icon={faEdit} />
-          </Button>
-        </td>
-      </tr>
-    ));
-
-    if (latest.length < 1) {
-      latest = <span>No existen categorias</span>;
+    if (this.state.redirect) {
+      return (
+        <Redirect
+          push
+          to={`/curador/dashboard/categories/${this.state.redirect}/add`}
+        />
+      );
     }
+
     return (
-      <Container>
+      <Container fluid>
         <h2>Administrar Categorías</h2>
         <Row>
-          <Col xs="12">
+          <Col xs="8">
             <ButtonGroup>
-              <Button tag={Link} to={match.url + "/new-category"}>
+              <Button
+                color="primary"
+                onClick={() => this.setState({ isOpen: !this.state.isOpen })}
+              >
                 Crear categorias
               </Button>
-              <Button
-                onClick={this.toggleRemoveConfirmation}
-                color={this.state.toDelete.length ? "danger" : "secondary"}
-                disabled={!this.state.toDelete.length}
+              <ModifyModal
+                toDelete={this.state.toDelete}
+                loading={this.props.loading}
+                removeCategories={this.removeCategories}
+              />
+              <select
+                className="btn-secondary btn"
+                onChange={(e) => {
+                  this.setState({ page: 0, page_size: Number(e.target.value) });
+                  this.props.getCategories(
+                    0,
+                    Number(e.target.value),
+                    "&sort=updated_at-desc"
+                  );
+                }}
               >
-                Eliminar ({this.state.toDelete.length}) Categorías
-              </Button>
-              <Modal
-                isOpen={this.state.deleteModal}
-                toggle={this.toggleRemoveConfirmation}
-              >
-                <ModalHeader>
-                  ¿Est&aacute;s seguro(a) que quieres eliminar la(s)
-                  categoría(s)?
-                </ModalHeader>
-                <ModalBody>
-                  No se eliminar&aacute;n las fotos asociadas, sólo la
-                  categoría. Esta acción no se puede deshacer.
-                </ModalBody>
-                <ModalFooter>
-                  <Button color="danger" onClick={this.removeCategories}>
-                    {" "}
-                    Eliminar{" "}
-                    <Spinner
-                      size="sm"
-                      color="light"
-                      style={{
-                        display: this.props.loading ? "inline-block" : "none"
-                      }}
-                    />{" "}
-                  </Button>
-                  <Button onClick={this.toggleRemoveConfirmation}>
-                    Volver
-                  </Button>
-                </ModalFooter>
-              </Modal>
+                <option value="10">10 por p&aacute;gina</option>
+                <option value="20">20 por p&aacute;gina</option>
+                <option value="40">40 por p&aacute;gina</option>
+              </select>
             </ButtonGroup>
           </Col>
         </Row>
+        <Row>
+          <Col>
+            <Collapse isOpen={this.state.isOpen}>
+              <Card>
+                <CardBody>
+                  <Form onSubmit={this.handleSubmit} inline>
+                    <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                      <Label for="catName" className="mr-sm-2">
+                        Nombre
+                      </Label>
+                      <Input
+                        onChange={this.handleChange}
+                        id="catName"
+                        type="text"
+                        placeholder="Categoria Nueva"
+                        name="title"
+                        maxLength="30"
+                      />
+                    </FormGroup>
+                    <Button color="primary" type="submit">
+                      <Spinner
+                        size="sm"
+                        color="light"
+                        style={{
+                          display: this.state.creating
+                            ? "inline-block"
+                            : "none",
+                        }}
+                      />{" "}
+                      Crear
+                    </Button>
+                  </Form>
+                </CardBody>
+              </Card>
+            </Collapse>
+          </Col>
+        </Row>
         <br />
-        <Table>
-          <thead>
-            <th></th>
-            <th>Nombre</th>
-            <th>Fecha Creación</th>
-            <th>Fecha Actualización</th>
-            <th># Fotos</th>
-            <th>Editar</th>
-          </thead>
-          <tbody>{latest}</tbody>
-        </Table>
+        <Row>
+          <Col>
+            <CategoryTable
+              cats={cats}
+              updateToDelete={this.updateToDelete}
+              toDelete={this.state.toDelete}
+              onAdd={this.doRedirect}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            {total === 0 ? (
+              "No hay categorías disponibles"
+            ) : (
+              <Pagination
+                count={total}
+                page_size={this.state.page_size}
+                page={this.state.page}
+                setStatePage={this.setPage}
+                size="md"
+                label="metadata-pagination"
+                displayFirst
+                displayLast
+              />
+            )}
+          </Col>
+        </Row>
       </Container>
     );
   }
 }
 
-const mapStateToProps = state => {
-  let errors = [];
-  if (state.auth.errors) {
-    errors = Object.keys(state.auth.errors).map(field => {
-      return { field, message: state.auth.errors[field] };
-    });
-  }
-  return {
-    errors,
-    isAuthenticated: state.auth.isAuthenticated,
-    token: state.auth.token,
-    meta: state.home.all_tags,
-    cats: state.curador.categories,
-    loading: state.curador.loading,
-    refresh: state.curador.refresh
-  };
-};
-const mapActionsToProps = dispatch => ({
-  getCategories: route => dispatch(curador.getCategories(route)),
-  deleteCategories: (auth, catArray) =>
-    dispatch(curador.deleteCategories(auth, catArray))
+const mapStateToProps = (state) => ({
+  cats: selectCategories(state),
+  total: selectCategoriesTotal(state),
+  loading: selectSiteMiscCuradorLoading(state),
+  refresh: selectSiteMiscCuradorRefresh(state),
+  newCat: selectNewCategories(state),
+  catError: selectCategoriesError(state),
 });
+
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getCategories: gallery.category.getCategories,
+      deleteCategories: gallery.category.deleteCategories,
+      createCategory: gallery.category.createCategory,
+      resetErrors: gallery.category.resetErrors,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Categories);

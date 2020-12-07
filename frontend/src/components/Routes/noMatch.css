@@ -1,0 +1,27 @@
+.page404 {
+  padding-top: 20vh;
+}
+
+.page404 h2{
+  color: var(--leit-pink);
+  font-family: monospace;
+  font-weight: 800;
+  font-size: 20vh;
+}
+
+.page404 h4{
+  font-weight: 700;
+  font-size: 3em;
+}
+
+.page404 p{
+  font-size: 2em;
+}
+
+@media (min-width: 576px){
+  .page404-right{
+  }
+  .page404-left{
+    text-align: left;
+  }
+}

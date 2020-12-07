@@ -1,32 +1,38 @@
 import React, { Component } from "react";
-import { Link, Redirect } from "react-router-dom";
-import { auth, misc } from "../../actions";
+import { Link, Redirect} from "react-router-dom";
+import { user, site_misc } from "../../actions";
 import { connect } from "react-redux";
 import { Alert } from "reactstrap";
-import "./login.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUnlock } from "@fortawesome/free-solid-svg-icons";
+import "./login.css";
+import { bindActionCreators } from "redux";
+import { selectErrors,
+        selectUserIsAuthenticated,
+        selectSiteMiscLoginSuccesRoute,} from "../../reducers";
 
 class Login extends Component {
   state = {
     email: "",
-    password: ""
+    password: "",
   };
 
-  genericChangeHandler = event => {
+  genericChangeHandler = (event) => {
     this.setState({ [event.target.id]: event.target.value });
   };
 
-  onSubmit = e => {
+  onSubmit = (e) => {
     e.preventDefault();
     this.props.login(this.state.email, this.state.password);
   };
 
   componentWillMount() {
     this.props.setRoute("/login");
+    this.props.setLoginSuccessRoute();
   }
 
-  translateError = error => {
+
+  translateError = (error) => {
     var errorMessage;
     var firstError = error.length ? error[0] : error;
     switch (firstError) {
@@ -44,10 +50,9 @@ class Login extends Component {
     if (this.props.isAuthenticated) {
       if (this.props.loginRoute !== null) {
         const newRoute = this.props.loginRoute;
-        this.props.setLoginSuccessRoute();
-        return <Redirect to={newRoute} />;
+        return <Redirect push to={newRoute} />;
       } else {
-        return <Redirect to="/" />;
+        return <Redirect to={"/"} />;
       }
     }
     return (
@@ -59,7 +64,7 @@ class Login extends Component {
               <form onSubmit={this.onSubmit}>
                 <fieldset>
                   {this.props.errors.length > 0 &&
-                    this.props.errors.map(error => (
+                    this.props.errors.map((error) => (
                       <Alert key={error.field} color="warning">
                         {this.translateError(error.message)}
                       </Alert>
@@ -76,6 +81,7 @@ class Login extends Component {
                           id="email"
                           type="text"
                           className="form-control"
+                          style={{ paddingLeft: "1em" }}
                           onChange={this.genericChangeHandler}
                           placeholder="Correo Electronico"
                         />
@@ -92,6 +98,7 @@ class Login extends Component {
                           id="password"
                           type="password"
                           className="form-control"
+                          style={{ paddingLeft: "1em" }}
                           onChange={this.genericChangeHandler}
                           placeholder="Contraseña"
                         />
@@ -108,6 +115,8 @@ class Login extends Component {
 
               <div className="col-12 forgot">
                 <Link to={"/register"}>¿No tienes cuenta? Regístrate</Link>
+                {" / "}
+                <Link to={"/recoveruser"}>¿Olvidaste tu clave?</Link>
               </div>
             </div>
           </div>
@@ -117,24 +126,20 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  let errors = [];
-  if (state.auth.errors) {
-    errors = Object.keys(state.auth.errors).map(field => {
-      return { field, message: state.auth.errors[field] };
-    });
-  }
-  return {
-    errors,
-    isAuthenticated: state.auth.isAuthenticated,
-    loginRoute: state.misc.loginSuccessRoute
-  };
-};
-
-const mapActionsToProps = dispatch => ({
-  login: (email, password) => dispatch(auth.login(email, password)),
-  setRoute: route => dispatch(misc.setCurrentRoute(route)),
-  setLoginSuccessRoute: () => dispatch(misc.addLoginRoute(""))
+const mapStateToProps = (state) => ({
+  errors: selectErrors(state),
+  isAuthenticated: selectUserIsAuthenticated(state),
+  loginRoute: selectSiteMiscLoginSuccesRoute(state),
 });
+
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      login: user.login,
+      setRoute: site_misc.setCurrentRoute,
+      setLoginSuccessRoute: site_misc.addLoginRoute,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Login);

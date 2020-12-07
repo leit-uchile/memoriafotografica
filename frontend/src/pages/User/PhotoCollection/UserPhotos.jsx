@@ -1,20 +1,19 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
-import {
-  Button,
-  Row,
-  Col,
-  UncontrolledButtonDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
-} from "reactstrap";
-import { user, home, misc } from "../../../actions";
+import { Redirect } from "react-router-dom";
+import { Button, Row, Col, Container, Badge } from "reactstrap";
+import { user, site_misc, gallery } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
 import PhotoEditor from "../../../components/PhotoEditor";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import { Helmet } from "react-helmet";
+import Gallery from "react-photo-gallery";
+import { bindActionCreators } from "redux";
+import "../styles.css";
+import {   selectUserPhotos,
+            selectUserData,
+            selectUserPublicUser,
+            selectPhotosUpdatedPhoto,
+            selectPhotosRefresh,} from "../../../reducers";
 
 class UserPhotos extends Component {
   constructor(props) {
@@ -24,27 +23,39 @@ class UserPhotos extends Component {
       chosenPhotoIndex: 0,
       picturesToEdit: [],
       selectedAll: false,
-      searchOrder: { field: "created_at", order: "desc" }
+      modalOpen: false,
+      isPublic: props.location.pathname.includes("public"),
     };
-    this.props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
+    if (props.location.pathname.includes("public")) {
+      props.loadPublicUser(props.match.params.id);
+      props.onLoadGetPublicPhotos(
+        props.match.params.id,
+        "&page=1&page_size=100"
+      );
+    } else {
+      props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
+    }
   }
 
-  setSortingOrder(order) {
-    this.setState({...this.state, searchOrder: order})
-    this.props.sortByField(this.state.searchOrder.field, this.state.searchOrder.order)
+  componentDidUpdate() {
+    if (
+      (this.props.updatedPhoto || this.props.refresh) &&
+      !this.state.modalOpen
+    ) {
+      setTimeout(() => window.location.reload(), 1000);
+    }
   }
-  
-  handleOnRedirect = obj =>{
-    console.log(obj)
+
+  handleOnRedirect = (obj) => {
     this.setState({
       redirect: true,
-      chosenPhotoIndex: obj.index
+      chosenPhotoIndex: obj.index,
     });
-  }
+  };
 
-  handleOnSelect = obj => {
+  handleOnSelect = (obj) => {
     const id = obj.photo.id;
-    const newList = this.state.picturesToEdit.filter(el => el !== id);
+    const newList = this.state.picturesToEdit.filter((el) => el !== id);
     if (newList.length === this.state.picturesToEdit.length) {
       // si el objeto no estaba
       this.setState({ picturesToEdit: [...newList, id] }); //lo agregamos
@@ -56,175 +67,153 @@ class UserPhotos extends Component {
     // : (this.setState({selectedAll: false}))}
   };
 
-  putAllToEdit(mapped, state) {
-    state
+  putAllToEdit(mapped) {
+    !this.state.selectedAll
       ? this.setState({
-          picturesToEdit: mapped.map(el => el.id),
-          selectedAll: state
+          picturesToEdit: mapped.map((el) => el.id),
+          selectedAll: true,
         })
-      : 
-      this.setState({
-        picturesToEdit: [],
-        selectedAll: state
-      })
-        
+      : this.setState({
+          picturesToEdit: [],
+          selectedAll: false,
+        });
   }
 
   render() {
-    var mapped = this.props.photos.map(el => ({
+    var mapped = this.props.photos.map((el) => ({
       src: el.thumbnail,
       height: el.aspect_h,
       width: el.aspect_w,
-      id: el.id
+      id: el.id,
     }));
-    
+
     if (this.state.redirect) {
-      this.props.setRoute("/photo/"); // For NavLink in Navbar
+      this.props.setRoute("/photo"); // For NavLink in Navbar
       this.props.setSelectedId(this.state.chosenPhotoIndex); // For in photo navigation
       return (
         <Redirect
           push
-          to={`/photo/${mapped[this.state.chosenPhotoIndex].id}`}
+          to={`/photo/${mapped[this.state.chosenPhotoIndex].id}/?user=${
+            this.state.isPublic ? this.props.publicUser.id : this.props.user.id
+          }`}
         />
       );
     }
     return (
-      <div>
-        <Row style={styles.titleContainer}>
-          <Col style={styles.title}>
-            <Button color="secondary" tag={Link} to="./dashboard">
-              <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}
-            </Button>
-            <h2 style={{ marginLeft: "10px" }}>Mis fotos</h2>
+      <Container fluid className="dashboard">
+        <Helmet>
+          <title>
+            {this.state.isPublic && this.props.publicUser
+              ? "Fotos de " + this.props.publicUser.first_name
+              : "Mis fotos"}
+          </title>
+        </Helmet>
+        <Row>
+          <Col>
+            <h2
+              style={{
+                textAlign: `${this.state.isPublic ? "center" : "left"}`,
+              }}
+            >
+              {this.state.isPublic
+                ? `Fotos de ${this.props.publicUser.first_name}`
+                : "Mis fotos"}
+            </h2>
+            {/* <Badge color="primary">{mapped.length}</Badge> */}
           </Col>
         </Row>
-        <div style={styles.photosContainer}>
+        {this.state.isPublic ? null : (
           <Row>
-            <Col md={10}>
-              <PhotoEditor
-                photos={mapped}
-                targetRowHeight={250}
-                onClick={(e,index) => this.handleOnSelect(index)}
-                // putAll={(state) => this.putAllToEdit(mapped,state)}
-                selectAll={this.state.selectedAll}
-                onRedirect={(e, index) => this.handleOnRedirect(index)}
-              />
-            </Col>
-            <Col md={2} style={styles.filterMenu}>
-            {/* <UncontrolledButtonDropdown className="home-button">
-              <DropdownToggle caret style={styles.dropdownButton}>
-                Ordenar
-              </DropdownToggle>
-              <DropdownMenu style={{ boxShadow: "0 0 15px 0 rgba(0,0,0,.20)" }}>
-                <div style={styles.triangulo}></div>
-                <DropdownItem header>Por orden cronológico</DropdownItem>
-                <DropdownItem
-                  onClick={() =>
-                    this.setSortingOrder({ field: "upload_date", order: "asc" })
-                  }
-                >
-                  Más antiguas primero
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() =>
-                    this.setSortingOrder({ field: "upload_date", order: "desc" })
-                  }
-                >
-                  Más nuevas primero
-                </DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem header>Por fecha de subida</DropdownItem>
-                <DropdownItem
-                  onClick={() =>
-                    this.setSortingOrder({ field: "created_at", order: "asc" })
-                  }
-                >
-                  Más antiguas primero
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() =>
-                    this.setSortingOrder({ field: "created_at", order: "desc" })
-                  }
-                >
-                  Más nuevas primero
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledButtonDropdown> */}
-              <Button onClick={() => this.putAllToEdit(mapped, true)}>
-                Seleccionar todas
+            <Col className="user-dashboard-buttons">
+              <Button
+                color="secondary"
+                onClick={() => this.putAllToEdit(mapped)}
+              >
+                {!this.state.selectedAll
+                  ? "Seleccionar todas"
+                  : "Deseleccionar"}
               </Button>
-              <EditPhotosModal photos={this.state.picturesToEdit} />
               <Button
                 disabled={this.state.picturesToEdit.length === 0}
-                color="danger"
-                onClick={() => this.putAllToEdit(mapped, false)}
+                color="primary"
+                onClick={() =>
+                  this.setState({ modalOpen: !this.state.modalOpen })
+                }
               >
-                Deseleccionar
+                Editar selección ({this.state.picturesToEdit.length})
               </Button>
+              <EditPhotosModal
+                photosId={this.state.picturesToEdit}
+                isOpen={this.state.modalOpen}
+                handleToggle={() =>
+                  this.setState({ modalOpen: !this.state.modalOpen })
+                }
+                editPhoto={(id,content)=>this.props.editPhoto(id,content)}
+                deletePhoto={(id)=>this.props.deletePhoto(id)}
+                isCurator={false}
+                censurePhoto={null}
+                
+              />
             </Col>
           </Row>
-        </div>
-      </div>
+        )}
+        <Row>
+          <Col>
+            <Container fluid>
+              <Row>
+                <Col
+                  sm={
+                    mapped.length === 1 ? { size: 4, offset: 4 } : { size: 12 }
+                  }
+                >
+                  <div className="stat-box rounded">
+                    {this.state.isPublic ? (
+                      <Gallery
+                        photos={mapped}
+                        targetRowHeight={250}
+                        onClick={(e, index) => this.handleOnRedirect(index)}
+                      />
+                    ) : (
+                      <PhotoEditor
+                        photos={mapped}
+                        targetRowHeight={250}
+                        onClick={(e, index) => this.handleOnSelect(index)}
+                        // putAll={(state) => this.putAllToEdit(mapped,state)}
+                        selectAll={this.state.selectedAll}
+                        onRedirect={(e, index) => this.handleOnRedirect(index)}
+                      />
+                    )}
+                  </div>
+                </Col>
+              </Row>
+            </Container>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
 
-const styles = {
-  titleContainer: {
-    paddingTop: "1em",
-    paddingLeft: "6em",
-    paddingBottom: "1em",
-    borderBottom: "1px solid rgb(210,214,218)",
-    background: "white"
-  },
-  title: {
-    textAlign: "left",
-    display: "flex"
-    //verticalAlign: "middle",
-    //flexDirection: "row",
-  },
-  filterMenu: {
-    position: "sticky",
-    top: "0",
-    height: "4em",
-    padding: "1em 0",
-    zIndex: "4"
-  },
-  triangulo: {
-    position: "absolute",
-    width: "20px",
-    height: "20px",
-    borderTop: "1px solid rgb(210,214,218)",
-    borderRight: "0px solid rgb(210,214,218)",
-    borderBottom: "0px solid rgb(210,214,218)",
-    borderLeft: "1px solid rgb(210,214,218)",
-    top: "0",
-    left: "8em",
-    marginLeft: "-45px",
-    content: "",
-    transform: "rotate(45deg)",
-    marginTop: "-10px",
-    background: "#ffff"
-  },
-  photosContainer: {
-    width: "100%",
-    minHeight: "70vh",
-    paddingTop: "1.25em",
-    paddingBottom: "1.25em",
-    backgroundColor: "#f7f8fa",
-    textAlign: "center"
-  }
-};
-const mapStateToProps = state => ({
-  photos: state.user.photos,
-  user: state.user.userData
+const mapStateToProps = (state) => ({
+  photos: selectUserPhotos(state),
+  user: selectUserData(state),
+  publicUser: selectUserPublicUser(state),
+  updatedPhoto: selectPhotosUpdatedPhoto(state),
+  refresh: selectPhotosRefresh(state),
 });
-const mapActionsToProps = dispatch => ({
-  setSelectedId: id => dispatch(home.setSelectedId(id)),
-  setRoute: route => dispatch(misc.setCurrentRoute(route)),
-  sortByField: (tag, order) => dispatch(home.sortByField(tag, order)),
-  onLoadGetPhotos: (user_id, limit, offset) =>
-    dispatch(user.getUserPhotos(user_id, limit, offset))
-});
+
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setSelectedId: site_misc.setSelectedId,
+      setRoute: site_misc.setCurrentRoute,
+      loadPublicUser: user.loadAUser,
+      onLoadGetPhotos: user.getUserPhotos,
+      onLoadGetPublicPhotos: user.loadPublicUserPhotos,
+      editPhoto: gallery.photos.editPhoto,
+      deletePhoto: gallery.photos.deletePhoto,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(UserPhotos);

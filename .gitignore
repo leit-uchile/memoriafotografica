@@ -12,7 +12,7 @@ db.sqlite3
 backend/media/*
 
 # ========== Visual Studio Code ========
-.vscode/
+.vscode
 
 venv
 *.orig
@@ -41,3 +41,5 @@ static.yarn-error.log*
 
 static.package-lock.json
 static.yarn.lock
+
+db

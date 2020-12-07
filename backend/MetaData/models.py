@@ -1,17 +1,6 @@
 from django.db import models
 from datetime import datetime
-#from Gallery.models import Photo
 # Create your models here.
-"""
-class MetadataTitle(models.Model):
-    title = models.CharField(max_length=40)
-    description = models.TextField()
-    photo = models.OneToOneField(Photo, on_delete=models.CASCADE)
-
-class MetadataDescription(models.Model):
-    description = models.TextField()
-    photo = models.OneToOneField(Photo, on_delete=models.CASCADE)
-"""
 
 class IPTCKeyword(models.Model):
     name = models.TextField()
@@ -33,3 +22,6 @@ class Metadata(models.Model):
 
     def __str__(self):
         return "Metadata ["+self.metadata.name+":"+self.value+"]"
+    def as_dict(self):
+        return {"id": self.id, "value": self.value, "approved": self.approved}
+

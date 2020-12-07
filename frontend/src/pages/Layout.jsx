@@ -9,7 +9,7 @@ import {
   Footer,
   PrivateComponent,
   BoundedRoute,
-  LazyRoutedComponent
+  LazyRoutedComponent,
 } from "../components";
 // Main application chunk
 import Home from "./Home";
@@ -17,33 +17,44 @@ import LandingPage from "./Landing";
 import NewsPage from "./News/NewsPage";
 import Login from "./Login";
 import Register from "./Register";
+import EmailConfirmation from "./Register/EmailConfirmation";
 import NoMatch from "../components/Routes/NoMatch";
 import PhotoDetails from "./PhotoView";
 import Index from "./Miscellaneous";
 import RequestPhoto from "./RequestPhoto";
 import UploadPage from "./Upload";
+import AllCollections from "./Collections";
+import RequestPhotoToast from "./RequestPhoto/RequestPhotoToast";
+import RecoverAccount from "./Other/RecoverAccount";
+import RecoverAccountConfirmation from "./Other/RecoverAccountConfirmation";
+
+
 // Separate chunks for users
 const lazyComponents = [
   {
     component: lazy(() => import("./Curador")),
     path: "/curador/dashboard",
     route: PrivateComponent,
-    message: "Cargando herramientas de curador..."
+    message: "Cargando herramientas de curador...",
   },
   {
     component: lazy(() => import("./User")),
     path: "/user/",
     route: BoundedRoute,
-    message: "Cargando herramientas de usuario..."
-  }
+    message: "Cargando herramientas de usuario...",
+  },
 ];
+
+const Empty = (props) => {
+  return <div></div>;
+};
 
 /**
  * Layout
- * 
+ *
  * Composes the components together to display a page.
  * Contains all the major routes available
- * 
+ *
  * Addons:
  * - React Transition Group: animate route changes using CSS3
  * - React ErrorBoundaries: display an error page instead of crashing
@@ -58,6 +69,9 @@ const Layout = () => {
         <Header />
         <div style={styles.body}>
           <Alert />
+          <RequestPhotoToast />
+          {/* This Route allows us to add transition animations
+            at the cost of mounting everytime the location changes */}
           <Route
             render={({ location }) => (
               <TransitionGroup>
@@ -71,22 +85,29 @@ const Layout = () => {
                     <BoundedRoute exact path={"/"} component={LandingPage} />
                     <BoundedRoute path={"/news"} component={NewsPage} />
                     <BoundedRoute path={"/gallery"} component={Home} />
+                    <BoundedRoute path={"/collections"} component={AllCollections} />
                     <BoundedRoute path={"/login"} component={Login} />
-                    <BoundedRoute
-                      path={"/photo/:id"}
-                      component={PhotoDetails}
-                    />
+                    <BoundedRoute path={"/recoveruser/confirm"} component={RecoverAccountConfirmation} />
+                    <BoundedRoute path={"/recoveruser"} component={RecoverAccount} />
                     <BoundedRoute path={"/misc"} component={Index} />
                     <BoundedRoute path={"/register"} component={Register} />
+                    {/* The next route allows to keep the real component mounted
+                      with a persistent state; see outside transition */}
+                    <BoundedRoute path={"/photo/:id/"} component={Empty} />
+                    <BoundedRoute
+                      path={"/confirm"}
+                      component={EmailConfirmation}
+                    />
                     <BoundedRoute
                       path={"/request-photo"}
                       component={RequestPhoto}
                     />
                     <BoundedRoute path={"/upload"} component={UploadPage} />
-                    {lazyComponents.map(el => (
+                    {lazyComponents.map((el) => (
                       <el.route
+                        key={"lazy" + el.path}
                         path={el.path}
-                        component={props => (
+                        component={(props) => (
                           <LazyRoutedComponent
                             component={el.component}
                             message={el.message}
@@ -101,6 +122,8 @@ const Layout = () => {
               </TransitionGroup>
             )}
           />
+          {/* These are the persistent routes that do not unmount on id change*/}
+          <BoundedRoute path={"/photo/:id/"} component={PhotoDetails} />
         </div>
       </div>
       <Footer />
@@ -109,11 +132,10 @@ const Layout = () => {
 };
 
 const styles = {
-  background: {
-  },
+  background: {},
   body: {
-    minHeight: "75vh"
-  }
+    minHeight: "75vh",
+  },
 };
 
 export default Layout;

@@ -1,26 +1,35 @@
-version: '3'
+version: "3.4"
 
 services:
   db:
-    image: postgres
-    restart: always
+    image: postgres:12.4
+    restart: unless-stopped
     environment:
-      - POSTGRES_PASSWORD=postgres
-    volumes: 
+      POSTGRES_PASSWORD: postgres
+    volumes:
       - ./db/postgresql:/var/lib/postgresql/data
   backend:
-    build: ./backend
-    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-    restart: always
+    build:
+      context: ./backend
+      target: dev
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      DJANGO_SECRET_KEY: "ic8ub6c3x@1!%*-+tan#n@t+c6lr=gu=po5j5cl3ytodjwxs0r"
+      DJANGO_DEBUG: "True"
+    restart: unless-stopped
     volumes:
       - ./backend:/app
-    ports:
-      - "8000:8000"
     depends_on:
       - db
+    ports:
+      - 8000:8000
+      - 5678:5678
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      target: dev
     volumes:
       - ./frontend:/app/frontend:rw
     ports:
-      - '3000:3000'
+      - "3001:3000"
+    stdin_open: true

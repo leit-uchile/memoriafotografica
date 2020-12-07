@@ -1,15 +1,20 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import { home, misc, search } from "../../actions";
-import { Container, Row, Col } from "reactstrap";
+import { site_misc } from "../../actions";
+import { Container, Row, Col, Badge } from "reactstrap";
 import { Redirect } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
-import {LeitSpinner} from "../../components";
+import { LeitSpinner, Pagination } from "../../components";
 import FilterPicker from "./FilterPicker";
-import HomePagination from "./HomePagination";
+import { bindActionCreators } from "redux";
+import {  selectPhotos, 
+          selectPhotosCount,
+          selectSiteMiscSearchMetaIDS,
+          selectSiteMiscHomeLoading,
+          selectUserToken } from "../../reducers";
 import "./home.css";
 
 /**
@@ -25,20 +30,26 @@ class Home extends Component {
     this.state = {
       photoPagination: {
         page: 0,
-        maxAllowed: 10
+        maxAllowed: 25, // MASTER CONFIG
       },
       maxAllowedCategories: 4,
       sortOpen: false,
       chosenPhotoIndex: 0, // For redirect
       redirect: false,
-      link: ""
+      link: "",
+      catIds: [],
+      sorting: "",
     };
 
     // componentWillLoad
-    this.props.setRoute("/gallery/");
+    this.props.setRoute("/gallery");
   }
 
-  handleOnClick = obj => {
+  putFilterInfo = (o) => {
+    this.setState({ catIds: o.cats, sorting: o.sorting });
+  };
+
+  handleOnClick = (obj) => {
     this.setState({ redirect: true, chosenPhotoIndex: obj.index });
   };
 
@@ -46,46 +57,57 @@ class Home extends Component {
     this.setState({
       photoPagination: {
         maxAllowed: this.state.photoPagination.maxAllowed,
-        page: 0
-      }
+        page: 0,
+      },
     });
   };
 
   /**
    * Method for HomePagination
    */
-  setPage = number => {
+  setPage = (number) => {
     this.setState({
       photoPagination: {
         maxAllowed: this.state.photoPagination.maxAllowed,
-        page: number
-      }
+        page: number,
+      },
     });
   };
 
   render() {
-    const { photos, filters, loadingPhotos } = this.props;
-    const { maxAllowed, page } = this.state.photoPagination;
-    const pageLimit = Math.floor(photos.length / maxAllowed);
+    const { photos, filters, loadingPhotos, count } = this.props;
+    const { maxAllowed } = this.state.photoPagination;
 
     // For gallery
-    var mapped = photos
-      .slice(page * maxAllowed, (page + 1) * maxAllowed)
-      .map(el => ({
-        src: el.thumbnail,
-        height: el.aspect_h,
-        width: el.aspect_w,
-        id: el.id
-      }));
+    var mapped = photos.map((el) => ({
+      src: el.thumbnail,
+      height: el.aspect_h,
+      width: el.aspect_w,
+      id: el.id,
+    }));
 
     if (this.state.redirect) {
-      this.props.setRoute("/photo/"); // For NavLink in Navbar
+      this.props.setRoute("/photo"); // For NavLink in Navbar
       this.props.setSelectedId(this.state.chosenPhotoIndex); // For in photo navigation
       this.props.setPhotoPagination(this.state.photoPagination);
+
+      var url = "?";
+      url = url + "sort=" + this.state.sorting;
+      url =
+        this.state.catIds.length === 0
+          ? url
+          : url + "&category=" + this.state.catIds.join(",");
+      url =
+        this.props.filters.length === 0
+          ? url
+          : url +
+            "&metadata=" +
+            this.props.filters.map((el) => el.metaID).join(",");
+      this.setState({ redirect: false });
       return (
         <Redirect
           push
-          to={`/photo/${mapped[this.state.chosenPhotoIndex].id}`}
+          to={`/photo/${mapped[this.state.chosenPhotoIndex].id}/${url}`}
         />
       );
     }
@@ -109,18 +131,22 @@ class Home extends Component {
               <Col md="7" lg="9">
                 <div className="home-filters-containers">
                   {filters.length !== 0 ? (
-                    filters.map(el => (
-                      <span
+                    filters.map((el) => (
+                      <Badge
+                        className="tags"
                         key={el.metaID}
-                        className="home-tags"
+                        style={{ cursor: "default" }}
+                        pill
                       >
-                        #{el.value} 
-                        <FontAwesomeIcon 
-                        icon={faTimesCircle} 
-                        style={{cursor: 'pointer'}} 
-                        onClick={() => this.props.removeSearch(el.metaID, el.value)}
+                        #{el.value}
+                        <FontAwesomeIcon
+                          icon={faTimesCircle}
+                          style={{ marginLeft: "4px", cursor: "pointer" }}
+                          onClick={() =>
+                            this.props.removeSearch(el.metaID, el.value)
+                          }
                         />
-                      </span>
+                      </Badge>
                     ))
                   ) : (
                     <h2> Todas las fotograf&iacute;as</h2>
@@ -131,6 +157,9 @@ class Home extends Component {
                 <FilterPicker
                   resetHomePagination={this.resetHomePagination}
                   defaultMaxAllowed={this.state.maxAllowedCategories}
+                  page={this.state.photoPagination.page}
+                  maxPerPage={this.state.photoPagination.maxAllowed}
+                  putInfo={this.putFilterInfo}
                 />
               </Col>
             </Row>
@@ -139,7 +168,9 @@ class Home extends Component {
         <div className="home-background parallax">
           <Container className="home-gallery-container">
             <Row>
-              <Col sm={mapped.length == 1 ? {size: 4, offset: 4} : {size: 12}}>
+              <Col
+                sm={mapped.length === 1 ? { size: 4, offset: 4 } : { size: 12 }}
+              >
                 {loadingPhotos ? (
                   <LeitSpinner />
                 ) : (
@@ -155,12 +186,12 @@ class Home extends Component {
             <Row style={{ marginTop: "2em" }}>
               <Col>
                 {loadingPhotos ? null : (
-                  <HomePagination
-                    pageLimit={pageLimit}
+                  <Pagination
+                    count={count}
+                    page_size={maxAllowed}
                     page={this.state.photoPagination.page}
                     setStatePage={this.setPage}
-                    nbPhotos={this.props.photos.length}
-                    maxAllowed={this.state.photoPagination.maxAllowed}
+                    size="lg"
                   />
                 )}
               </Col>
@@ -172,21 +203,25 @@ class Home extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  photos: state.home.photos,
-  filters: state.search.metaIDs,
-  auth: state.auth.token,
-  loadingPhotos: state.home.loading
+const mapStateToProps = (state) => ({
+  photos: selectPhotos(state),
+  count: selectPhotosCount(state),
+  filters: selectSiteMiscSearchMetaIDS(state),
+  auth: selectUserToken(state),
+  loadingPhotos: selectSiteMiscHomeLoading(state),
 });
 
-const mapActionsToProps = dispatch => ({
-  onLoadGetPhotos: () => dispatch(home.home()),
-  setRoute: route => dispatch(misc.setCurrentRoute(route)),
-  removeSearch: (id, value) => dispatch(search.removeSearchItem(id, value)),
-  // TODO: use it!
-  // eslint-disable-next-line
-  setSelectedId: id => dispatch(home.setSelectedId(id)),
-  setPhotoPagination: obj => dispatch(home.setPhotoPagination(obj))
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setRoute: site_misc.setCurrentRoute,
+      removeSearch: site_misc.removeSearchItem,
+      // TODO: use it!
+      // eslint-disable-next-line
+      setSelectedId: site_misc.setSelectedId,
+      setPhotoPagination: site_misc.setPhotoPagination,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Home);

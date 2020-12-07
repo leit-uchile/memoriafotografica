@@ -1,5 +1,5 @@
 # Import models here
-from .models import News, LandingCaroussel, PhotoRequest
+from .models import News, LandingCaroussel, PhotoRequest, ContactRequest
 
 from rest_framework import serializers
 from Gallery.serializers import PhotoSerializer
@@ -25,14 +25,27 @@ class PhotoRequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PhotoRequest
-        fields = ('reason','photos','first_name','last_name',
-            'identity_document','profession','address','comuna',
-            'phone_number','email','institution','resolved','email_sent','created_at','updated_at')
+        fields ='__all__'
 
 class PhotoRequestNewSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = PhotoRequest
         fields = ('reason','photos','first_name','last_name',
-            'identity_document','profession','address','comuna',
-            'phone_number','email','institution','resolved','email_sent','created_at','updated_at')
+            'identity_document','profession','address','district',
+            'phone_number','email','institution','resolved','approved','created_at','updated_at')
+
+
+class ContactRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactRequest
+        fields = '__all__'
+
+    def update(self, instance, validated_data):
+        print(instance)
+        print(validated_data)
+        instance.resolved = validated_data.get('resolved', instance.resolved)
+        instance.email_sent = validated_data.get('email_sent', instance.email_sent)
+        instance.reply = validated_data.get('reply', instance.reply)
+        instance.save()
+        return instance

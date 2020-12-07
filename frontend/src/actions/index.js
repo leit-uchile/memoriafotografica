@@ -1,29 +1,21 @@
-import * as alert from "./alert";
-import * as auth from "./auth";
-import * as curador from "./curador";
-import * as home from "./home";
-import * as misc from "./misc";
-import * as photoDetails from "./photodetails";
-import * as requestPhoto from "./requestPhoto";
-import * as search from "./search";
-import * as upload from "./upload";
-import * as user from "./user";
-import * as metadata from "./metadata";
-import * as landing from "./landing";
-import * as albumcollection from "./albumcollection";
+/**
+ * Actions are asociated with their respective API and models
+ * so that it is easier to find them.
+ * 
+ * Page Specific actions should go towards site_misc
+ */
+import * as gallery from "./gallery_api/";
+import * as metadata from "./metadata_api";
+import * as metrics from "./metrics_api";
+import * as site_misc from "./site_misc";
+import * as user from "./user_api";
+import * as webadmin from "./webadmin_api";
 
 export {
-  alert,
-  auth,
-  upload,
-  home,
-  photoDetails,
-  requestPhoto,
-  misc,
-  search,
-  curador,
-  user,
+  gallery,
   metadata,
-  landing,
-  albumcollection,
+  metrics,
+  site_misc,
+  user,
+  webadmin
 };

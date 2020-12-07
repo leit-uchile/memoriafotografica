@@ -1,0 +1,108 @@
+.collection-view-description {
+  max-width: 800px;
+  margin: 10px auto;
+  padding: 20px;
+  box-shadow: #ddd 3px 5px 10px;
+}
+
+.collection-view-description h3 {
+  text-align: center;
+}
+
+.collection-view-description p {
+  color: black;
+  font-style: italic;
+  font-size: 1.5rem;
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+}
+.collection-view-description::before {
+  content: "\201c";
+  font-size: 100px;
+  color: gray;
+  display: block;
+  margin-bottom: -80px;
+  margin-top: -20px;
+  text-align: left;
+}
+/* STUFF */
+
+.collection-view-element:nth-child(even) .collection-view-info::before,
+.collection-view-element:nth-child(odd) .collection-view-photo::before {
+  content: "";
+  position: absolute;
+  top: 50%; /*24px -> 50%*/
+  width: 10px;
+  height: 10px;
+  background-color: var(--leit-pink);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px var(--leit-pink-disabled);
+}
+
+.collection-view-line {
+  padding-bottom: 3rem;
+  position: relative;
+  border-left: 2px solid #c5c5c5;
+}
+
+.collection-view-info {
+  border-radius: 5px;
+  border: 2px solid #c5c5c5;
+  padding: 1rem;
+}
+
+.collection-view-photo {
+  margin-bottom: 3rem;
+}
+
+.collection-view-element:nth-child(even) .collection-view-info::before {
+  left: -5.5px;
+}
+
+.collection-view-element:nth-child(odd) .collection-view-photo::before {
+  left: -5.5px;
+}
+
+/* Small screens */
+
+@media only screen and (max-width: 480px) {
+  .collection-view-element {
+    border-left: 2px solid #c5c5c5;
+  }
+  .collection-view-line {
+    border-left: none;
+  }
+  .collection-view-element .collection-view-photo::before {
+    left: -5.5px;
+    content: "";
+    position: absolute;
+    top: 50%; /*24px -> 50%*/
+    width: 10px;
+    height: 10px;
+    background-color: var(--leit-pink);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--leit-pink-disabled);
+  }
+  .collection-view-element .collection-view-info::before {
+    content: "";
+    display: none;
+  }
+}
+
+/* CSS Transition Animations */
+
+.timeline-enter {
+  opacity: 0;
+}
+.timeline-enter-active {
+  opacity: 1;
+  transition: opacity 1000ms;
+}
+.timeline-exit {
+  opacity: 1;
+}
+.timeline-exit-active {
+  opacity: 0;
+  transition: opacity 400ms;
+}

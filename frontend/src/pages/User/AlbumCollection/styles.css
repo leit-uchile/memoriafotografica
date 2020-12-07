@@ -1,0 +1,61 @@
+.album-white-box {
+  background-color: white;
+  margin-bottom: 1.5em;
+  padding: 2em 1em;
+}
+
+.album-sticky-element{
+  position: sticky;
+  z-index: 2;
+  top: 6.5em;
+  height: fit-content;
+}
+
+.album-container{
+  text-align: center;
+}
+
+.album-title-row{
+  padding-top: 1.25em;
+  padding-bottom: 1.25em;
+  background-color: white;
+  text-align: center;
+  border-bottom: 1px solid rgb(210,214,218);
+  margin-bottom: 2em;
+  position: sticky;
+  z-index: 3;
+  top: calc(1em + 65px);
+}
+
+.album-container .album-white-box .album-desc{
+  font-size: 1.5em;
+}
+
+.album-container .album-white-box .album-photo-count{
+  font-size: 2em;
+  font-weight: 700;
+}
+
+.album-container .album-white-box .album-meta {
+  display: block;
+  color: grey;
+}
+
+/* User albums background*/
+
+.user-albums-background {
+  height: 200px;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+}
+
+.user-albums-background h4 {
+  text-align: center;
+  background-color: rgba(233, 236, 239, 0.8);
+  position: absolute;
+  width: 100%;
+  top: calc(40% - 1em);
+  padding: 1em 0;
+  vertical-align: middle;
+}

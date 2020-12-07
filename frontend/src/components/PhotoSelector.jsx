@@ -1,10 +1,11 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, Fragment } from "react";
 import Gallery from "react-photo-gallery";
-import {Button, Container, Row, Col} from 'reactstrap';
+import { Button, Container, Row, Col } from "reactstrap";
+import PropTypes from "prop-types";
 
 /**
  * From documentation
- * Credits to https://codesandbox.io/s/o7o241q09?from-embed 
+ * Credits to https://codesandbox.io/s/o7o241q09?from-embed
  */
 
 const Checkmark = ({ selected }) => (
@@ -23,7 +24,7 @@ const Checkmark = ({ selected }) => (
       <circle cx="12.5" cy="12.2" r="8.292" />
     </svg>
     <svg
-      style={{ fill: "#ff5a60", position: "absolute" }}
+      style={{ fill: "var(--leit-pink)", position: "absolute" }}
       width="24px"
       height="24px"
     >
@@ -33,17 +34,17 @@ const Checkmark = ({ selected }) => (
 );
 
 const imgStyle = {
-  transition: "transform .135s cubic-bezier(0.0,0.0,0.2,1),opacity linear .15s"
+  transition: "transform .135s cubic-bezier(0.0,0.0,0.2,1),opacity linear .15s",
 };
 const selectedImgStyle = {
   transform: "translateZ(0px) scale3d(0.9, 0.9, 1)",
-  transition: "transform .135s cubic-bezier(0.0,0.0,0.2,1),opacity linear .15s"
+  transition: "transform .135s cubic-bezier(0.0,0.0,0.2,1),opacity linear .15s",
 };
 const cont = {
   backgroundColor: "#eee",
   cursor: "pointer",
   overflow: "hidden",
-  position: "relative"
+  position: "relative",
 };
 
 const SelectedImage = ({
@@ -54,7 +55,7 @@ const SelectedImage = ({
   top,
   left,
   selected,
-  onClick
+  onClick,
 }) => {
   const [isSelected, setIsSelected] = useState(selected);
   //calculate x,y scale
@@ -68,9 +69,9 @@ const SelectedImage = ({
     cont.top = top;
   }
 
-  const handleOnClick = e => {
+  const handleOnClick = (e) => {
     setIsSelected(!isSelected);
-    onClick(e, {index});
+    onClick(e, { index });
   };
 
   useEffect(() => {
@@ -96,12 +97,17 @@ const SelectedImage = ({
   );
 };
 
-const PhotoSelector = ({photos, putAll=e => {},...props}) => {
+const PhotoSelector = ({
+  useContainer = true,
+  photos,
+  putAll = (e) => {},
+  ...props
+}) => {
   const [selectAll, setSelectAll] = useState(false);
 
   const toggleSelectAll = () => {
     setSelectAll(!selectAll);
-    putAll(!selectAll)
+    putAll(!selectAll);
   };
 
   const imageRenderer = useCallback(
@@ -120,20 +126,40 @@ const PhotoSelector = ({photos, putAll=e => {},...props}) => {
     [selectAll]
   );
 
+  if (useContainer) {
+    return (
+      <Container fluid>
+        <Row>
+          <Col>
+            <Button color="tertiary" onClick={toggleSelectAll}>Seleccionar todas</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Gallery photos={photos} renderImage={imageRenderer} {...props} />
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
   return (
-    <Container fluid>
-      <Row>
-        <Col>
-          <Button onClick={toggleSelectAll}>Seleccionar todas</Button>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Gallery photos={photos} renderImage={imageRenderer} {...props} />
-        </Col>
-      </Row>
-    </Container>
+    <Fragment>
+      <Button color="tertiary" onClick={toggleSelectAll}>Seleccionar todas</Button>
+      <br />
+      <br />
+      <Gallery photos={photos} renderImage={imageRenderer} {...props} />
+    </Fragment>
   );
+};
+
+PhotoSelector.propTypes = {
+  useContainer: PropTypes.bool,
+  photos: PropTypes.arrayOf(PropTypes.shape({
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    src: PropTypes.string.isRequired,
+  })),
+  putAll: PropTypes.func,
 }
 
 export default PhotoSelector;

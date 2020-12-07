@@ -1,21 +1,26 @@
-.home-background .react-photo-gallery--gallery{
+.home-background .react-photo-gallery--gallery {
   background-color: white;
 }
 
-.home-background{
-  background-image: url("/assets/frontis_background.jpg");
-  background-color: #efefef;
-  background-blend-mode: luminosity;
+.home-background {
+  background-image: url(/assets/frontis_blur.jpg);
+  /* background-color: var(--leit-modal-bg); */
+  /* background-blend-mode: luminosity; */
+  position: relative;
   min-height: 75vh;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .home-gallery-menu {
   margin: 0 auto;
-  border-bottom: 1px solid rgb(210,214,218);
+  border-bottom: 1px solid rgb(210, 214, 218);
   background: white;
   position: sticky;
-  top: 4em;
-  z-index: 2;
+  top: calc(1em + 40px + 25px);
+  z-index: 4;
 }
 
 .home-gallery-container {
@@ -32,20 +37,8 @@
   flex-direction: row;
 }
 
-.home-category-filter{
-  width: 38em;
-}
-
-.home-tags {
-  color: white;
-  border-radius: 10px;
-  background-color: #9a9e9d;
-  margin: 2px;
-  padding: 4px 12px 4px 12px;
-}
-
-@media (min-width: 768px){
-  .home-category-filter{
+@media (min-width: 768px) {
+  .home-category-filter {
     width: 30em;
-  } 
+  }
 }

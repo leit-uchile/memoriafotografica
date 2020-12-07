@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      table, th, td {border: 1px solid black; border-collapse: collapse;}
+      tr:nth-child(odd){background-color: #f3f3f3;}
+    </style>
+  </head>
+  <body
+    style="
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #f3f3f3;
+    "
+  >
+    <img
+      src="{{ request.get_host }}/assets/logo01.svg"
+      alt="logo"
+      style="text-align: left;"
+    />
+    <div
+      id="body"
+      style="
+        width: 80%;
+        margin: auto;
+        background-color: white;
+        align-self: center;
+        border: 2px solid #eaeaea;
+      "
+    >
+      <div id="banner" style="border-bottom: 1px solid #eaeaea;">
+        <h1>Imagen</h1>
+      </div>
+      <div id="content" style="text-align: center; margin: 3em; color: black;">
+        <h2 style="font-weight: normal; font-size: 30px;">
+        	Solicitud de fotografías
+        </h2>
+        <p>
+          Buen día, tenemos el agrado de informarle que su solicitud ha sido aprobada. Las fotografías se encuentran adjuntas en este correo y podrá descargarlas bajo su formato y calidad original.
+        </p>
+        <table style="width:100%;">
+          <tr>
+            <th>Título</th>
+            <th>Nombre del archivo</th> 
+            <th>Permisos de intercambio</th>
+          </tr>
+          {% for element in data %}
+          <tr>
+            <td>{{ element.title }}</td>
+            <td>{{ element.url }}</td>
+            <td>
+            {% for perm in element.permission %}
+              {{ perm }}
+            {% endfor %}
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+        
+      </div>
+    </div>
+  </body>
+  <footer>
+    <p style="font-size: 12px; color: #9fa4a5; text-align: center;">
+      Todos los derechos reservados. Biblioteca Central - Facultad de Ciencias
+      Fisicas y Matematicas - Universidad de Chile
+    </p>
+  </footer>
+</html>

@@ -8,15 +8,21 @@ import {
   ModalFooter,
   Form,
   FormGroup,
-  CustomInput,
-  Label
+  Input,
+  Label,
 } from "reactstrap";
 import { connect } from "react-redux";
-import { photoDetails } from "../actions";
+import { gallery } from "../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFlag } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import "./reportModal.css";
+import {
+  selectReportComplete,
+  selectUserIsAuthenticated,
+  selectReportPhotoReportSent,
+} from "../reducers";
 
 /**
  * Report Modal for all 3 types of report
@@ -38,34 +44,34 @@ class ReportModal extends Component {
       formData: {
         id: props.elementId,
         type: String(props.reportType),
-        content: []
-      }
+        content: [],
+      },
     };
   }
 
   toggle = () => {
     this.setState({
       modal: !this.state.modal,
-      sent: false
+      sent: false,
     });
     setTimeout(this.props.resetReport, 1000);
   };
 
-  updateReport = e => {
+  updateReport = (e) => {
     var arr;
     if (e.target.checked) {
       arr = this.state.formData.content.slice();
       arr.push(e.target.value);
       this.setState({ formData: { ...this.state.formData, content: arr } });
     } else {
-      arr = this.state.formData.content.filter(el => el !== e.target.value);
+      arr = this.state.formData.content.filter((el) => el !== e.target.value);
       this.setState({ formData: { ...this.state.formData, content: arr } });
     }
   };
 
   sendReport = () => {
     this.setState({ sent: true });
-    var form = { ...this.state.formData };
+    var form = { ...this.state.formData, id: this.props.elementId };
     form.content = form.content.join(", ");
     this.props.reportPhoto(form);
   };
@@ -78,7 +84,7 @@ class ReportModal extends Component {
       reportComplete,
       reportTitle,
       helpText,
-      options
+      options,
     } = this.props;
 
     var ReportForm = (
@@ -90,19 +96,21 @@ class ReportModal extends Component {
         </p>
         <Form>
           <FormGroup>
-            <Label for="exampleCheckbox">Problemas</Label>
-            <div>
-              {options.map((opt, key) => (
-                <CustomInput
-                  key={`option-${key}`}
-                  type="checkbox"
-                  id={`option-${key}`}
-                  value={opt}
-                  label={opt}
-                  onClick={this.updateReport}
-                />
-              ))}
-            </div>
+            <Label>Problemas</Label>
+            {options.map((opt, key) => (
+              <FormGroup check key={`formgroup-${key}`}>
+                <Label check>
+                  <Input
+                    key={`option-${key}`}
+                    type="checkbox"
+                    id={`option-${key}`}
+                    value={opt}
+                    onClick={this.updateReport}
+                  />{" "}
+                  {opt}
+                </Label>
+              </FormGroup>
+            ))}
           </FormGroup>
         </Form>
       </Fragment>
@@ -110,7 +118,12 @@ class ReportModal extends Component {
 
     return (
       <Fragment>
-        <Button className={className} onClick={this.toggle} style={style}>
+        <Button
+          className={className}
+          onClick={this.toggle}
+          style={style}
+          color="danger"
+        >
           <FontAwesomeIcon icon={faFlag} />
         </Button>
         <Modal isOpen={this.state.modal} toggle={this.toggle}>
@@ -121,16 +134,16 @@ class ReportModal extends Component {
             {this.props.isAuth ? (
               this.state.sent ? (
                 !photoReportSent ? (
-                  <div style={{ textAlign: "center" }}>
+                  <div className="report-modal-content">
                     <h5>Enviando reporte</h5>
                     <LeitSpinner />
                   </div>
                 ) : reportComplete ? (
-                  <div style={{ textAlign: "center" }}>
+                  <div className="report-modal-content">
                     <h5>¡Reporte enviado!</h5>
                   </div>
                 ) : (
-                  <div style={{ textAlign: "center" }}>
+                  <div className="report-modal-content">
                     <h5>Hubo un problema al hacer el reporte</h5>
                     <p>Intentalo nuevamente</p>
                     <Button>Reiniciar</Button>
@@ -140,7 +153,10 @@ class ReportModal extends Component {
                 ReportForm
               )
             ) : (
-              <div style={{ textAlign: "center", padding: "100px 0" }}>
+              <div
+                className="report-modal-content"
+                style={{ padding: "100px 0" }}
+              >
                 <h4>Debes ingresar a la plataforma para poder reportar</h4>
                 <Link to="/login" className="btn bnt-block btn-primary">
                   Ingresar
@@ -178,18 +194,18 @@ ReportModal.propTypes = {
   reportTitle: PropTypes.string,
   options: PropTypes.arrayOf(PropTypes.string).isRequired,
   helpText: PropTypes.string.isRequired,
-  style: PropTypes.object // Optional
+  style: PropTypes.object, // Optional
 };
 
-const mapStateToProps = state => ({
-  photoReportSent: state.photoDetails.photoReportSent,
-  reportComplete: state.photoDetails.reportComplete,
-  isAuth: state.auth.isAuthenticated
+const mapStateToProps = (state) => ({
+  photoReportSent: selectReportPhotoReportSent(state),
+  reportComplete: selectReportComplete(state),
+  isAuth: selectUserIsAuthenticated(state),
 });
 
-const mapActionToProps = dispatch => ({
-  reportPhoto: data => dispatch(photoDetails.reportPhoto(data)),
-  resetReport: () => dispatch(photoDetails.reportPhotoReset())
+const mapActionToProps = (dispatch) => ({
+  reportPhoto: (data) => dispatch(gallery.reports.reportPhoto(data)),
+  resetReport: () => dispatch(gallery.reports.reportPhotoReset()),
 });
 
 export default connect(mapStateToProps, mapActionToProps)(ReportModal);

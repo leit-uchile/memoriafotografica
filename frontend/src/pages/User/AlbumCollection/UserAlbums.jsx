@@ -4,8 +4,11 @@ import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { user } from "../../../actions";
 import uuid4 from "uuid";
-import "./albumcollection.css";
-import { Redirect } from "react-router";
+import { Redirect } from "react-router-dom";
+import { bindActionCreators } from "redux";
+import "../styles.css";
+import { selectUserData,
+         selectUserAlbums,} from "../../../reducers";
 
 const UserAlbums = ({
   isPublic,
@@ -13,21 +16,21 @@ const UserAlbums = ({
   albums,
   publicUser,
   loadPublicAlbums,
-  loadAlbums
+  loadAlbums,
 }) => {
   const [display, setDisplay] = useState({
     user: { first_name: "usuario" },
-    redirectUrl: false
+    redirectUrl: false,
   });
 
   // Set user info and load the albums accordingly
   useEffect(() => {
     if (isPublic && publicUser !== undefined) {
-      setDisplay(d => ({ ...d, user: publicUser }));
+      setDisplay((d) => ({ ...d, user: publicUser }));
       loadPublicAlbums(publicUser.id);
     } else if (!isPublic) {
-      loadAlbums(user.id);
-      setDisplay(d => ({ ...d, user: user }));
+      loadAlbums(user.id, -1, -1);
+      setDisplay((d) => ({ ...d, user: user }));
     }
   }, [isPublic, publicUser, loadPublicAlbums, loadAlbums, user]);
 
@@ -46,35 +49,50 @@ const UserAlbums = ({
     setRows(list);
   }, [albums]);
 
-  const setRedirect = id => {
+  const setRedirect = (id) => {
     setDisplay({
       ...display,
-      redirectUrl: isPublic ? `/user/public/albums/${id}` : `/user/albums/${id}`
+      redirectUrl: isPublic
+        ? `/user/public/albums/${id}`
+        : `/user/albums/${id}`,
     });
   };
 
   return display.redirectUrl ? (
     <Redirect push to={display.redirectUrl} />
   ) : (
-    <Container fluid>
+    <Container fluid className="dashboard">
       <Helmet>
-        <title>Albums de {display.user.first_name}</title>
+        <title>
+          {isPublic && publicUser
+            ? "Albums de" + display.user.first_name
+            : "Mis albumes"}
+        </title>
       </Helmet>
-      <Row className="album-title-row">
+      <Row>
         <Col>
-          <h2>Albums de {display.user.first_name}</h2>
-          <h5>Total: {albums.length}</h5>
+          <h2
+            style={{
+              textAlign: `${isPublic ? "center" : "left"}`,
+            }}
+          >
+            {isPublic ? `Albums de ${display.user.first_name}` : "Mis albumes"}
+          </h2>
+          {/* <Badge color="primary">{mapped.length}</Badge> */}
         </Col>
       </Row>
       <Row>
         <Col>
-          <Container>
-            {rows.map(r => (
-              <Row key={r.key}>
-                {r.map(c => (
+          <Container fluid>
+            {rows.map((r) => (
+              <Row key={r.key} style={{ marginTop: "1em" }}>
+                {r.map((c) => (
                   <Col key={c.name}>
                     <div
-                      style={{ backgroundImage: `url("${c.thumbnail}")`, cursor: "pointer" }}
+                      style={{
+                        backgroundImage: `url("${c.thumbnail}")`,
+                        cursor: "pointer",
+                      }}
                       className="user-albums-background"
                       onClick={() => {
                         setRedirect(c.id);
@@ -93,14 +111,18 @@ const UserAlbums = ({
   );
 };
 
-const mapStateToProps = state => ({
-  user: state.user.userData,
-  albums: state.user.albums
+const mapStateToProps = (state) => ({
+  user: selectUserData(state),
+  albums: selectUserAlbums(state),
 });
 
-const mapActionsToProps = dispatch => ({
-  loadPublicAlbums: user_id => dispatch(user.loadPublicUserAlbums(user_id)),
-  loadAlbums: user_id => dispatch(user.getUserAlbums(user_id, -1, -1))
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadPublicAlbums: user.loadPublicUserAlbums,
+      loadAlbums: user.getUserAlbums,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(UserAlbums);
