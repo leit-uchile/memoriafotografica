@@ -317,7 +317,6 @@ export const mtPhoto = () => (dispatch) => {
 */
 export const uploadImages = (photos, photo_meta) => {
   return (dispatch, getState) => {
-    console.log(photos, photo_meta)
     let header = {
       Authorization: "Token " + getState().user.token,
     };
