@@ -8,7 +8,7 @@ coreapi==2.3.3
 markdown==3.0.1 
 pygments==2.3.0
 rest_condition==1.0.3
-Pillow==6.2.0
+Pillow==7.1.0
 sorl-thumbnail==12.5.0
 django-cors-headers==3.4.0
 ptvsd==4.3.2
