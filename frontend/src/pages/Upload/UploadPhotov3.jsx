@@ -111,11 +111,10 @@ class UploadPhoto extends Component {
 
   uploadPhotos = () => {
     // Filtrar fotos
-    let index = this.props.upload.error;
+    let index = this.props.upload.error.map(e => e.photo_index);
     let filtered = this.state.photos.filter((_,k) => index.includes(k))
     filtered = filtered.length === 0 ? [...this.state.photos] : filtered
 
-    console.log(filtered)
     // Actualizar estado con un callback
     this.setState({photos: filtered},
       () => 
@@ -124,6 +123,16 @@ class UploadPhoto extends Component {
         this.props.photoInfo
       )
     )
+  }
+
+  showFailed = () => {
+    // Filtrar fotos
+    let index = this.props.upload.error.map(e => e.photo_index);
+    let filtered = this.state.photos.filter((_,k) => index.includes(k))
+    filtered = filtered.length === 0 ? [...this.state.photos] : filtered
+
+    // Actualizar estado con un callback
+    this.setState({photos: filtered})
   }
 
   onSubmit = (e) => {
@@ -277,10 +286,11 @@ class UploadPhoto extends Component {
               {this.state.photos.length !== 0 ? (
                 <UploadProgress
                   buttonLabel="Finalizar"
-                  callback={() =>
+                  retry={() =>
                     this.uploadPhotos()
                   }
-                  callback2={this.props.nextStep}
+                  goToNextStep={this.props.nextStep}
+                  edit={() => this.showFailed()}
                 />
               ) : null}
             </ButtonGroup>

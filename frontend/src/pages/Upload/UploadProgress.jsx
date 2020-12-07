@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import {
   Container,
   Button,
@@ -14,9 +14,7 @@ import {
 import { connect } from "react-redux";
 import "./uploadProgress.css";
 import PropTypes from "prop-types";
-import {
-  faChevronCircleRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faChevronCircleRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /**
@@ -36,8 +34,9 @@ const UploadProgress = ({
     error,
   },
   buttonLabel,
-  callback, // Retry
-  callback2, // go to next step
+  retry, // Retry
+  goToNextStep, // go to next step
+  edit, // edit failed photo details
 }) => {
   /**
    * 3 possible states.
@@ -53,19 +52,22 @@ const UploadProgress = ({
   };
 
   const close = () => {
-    callback2();
+    goToNextStep();
     setModal(!modal); // Close modal
   };
 
   return (
-    <Button color="primary" onClick={() => {
-      callback();
-      toggle()
-    }}>
+    <Button
+      color="primary"
+      onClick={() => {
+        retry();
+        toggle();
+      }}
+    >
       {buttonLabel}
       <FontAwesomeIcon icon={faChevronCircleRight} />
-      <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Subir Fotograf&iacute;a</ModalHeader>
+      <Modal isOpen={modal}>
+        <ModalHeader >Subir Fotograf&iacute;a</ModalHeader>
         <ModalBody>
           <Container>
             <Row>
@@ -103,14 +105,25 @@ const UploadProgress = ({
         </ModalBody>
         <ModalFooter>
           {!uploading && error.length > 0 ? (
-            <Button color="primary" onClick={() => callback()}>
-              Reintentar
-            </Button>
-          ) : (
+            <Fragment>
+              <Button color="primary" onClick={() => retry()}>
+                Reintentar
+              </Button>
+              <Button
+                color="secondary"
+                onClick={() => {
+                  toggle();
+                  edit();
+                }}
+              >
+                Editar fotos fallidas
+              </Button>
+            </Fragment>
+          ) : !uploading ? (
             <Button color="primary" onClick={close}>
               Finalizar
             </Button>
-          )}
+          ) : null}
         </ModalFooter>
       </Modal>
     </Button>
@@ -120,8 +133,9 @@ const UploadProgress = ({
 UploadProgress.propTypes = {
   upload: PropTypes.object.isRequired,
   buttonLabel: PropTypes.string.isRequired,
-  callback: PropTypes.func.isRequired,
-  callback2: PropTypes.func.isRequired,
+  retry: PropTypes.func.isRequired,
+  goToNextStep: PropTypes.func.isRequired,
+  edit: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
