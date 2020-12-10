@@ -143,13 +143,16 @@ export const sendRequest = (photos, info) => {
 /**
  * Recover all Photo Request
  */
-export const getRequests = (page, page_size, extra) => (dispatch, getState) => {
+export const getRequests = (query, page, page_size, extra) => (
+  dispatch,
+  getState
+) => {
   let headers = {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
   return fetch(
-    `/api/requests/photos/all/?page=${page}&page_size=${page_size}${extra}`,
+    `/api/requests/photos/all/?search=${query}&page=${page}&page_size=${page_size}${extra}`,
     {
       method: "GET",
       headers: headers,
@@ -196,7 +199,7 @@ export const updateRequest = (request) => (dispatch, getState) => {
     Authorization: "Token " + getState().user.token,
   };
   let jsonthing = JSON.stringify({
-    attached: request.approvedOriginal,
+    attached: request.photosAndData,
     resolved: request.resolved,
     approved: request.approved,
   });

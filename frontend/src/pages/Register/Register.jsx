@@ -6,6 +6,12 @@ import { Button, Container, Row, Col } from "reactstrap";
 import { Redirect, Link } from "react-router-dom";
 import StepWizard from "react-step-wizard";
 import { LeitSpinner } from "../../components";
+import { bindActionCreators } from "redux";
+import {
+  selectErrors,
+  selectUserIsAuthenticated,
+  selectUserRegisterSucces,
+} from "../../reducers";
 
 const FailedRegistration = (props) => (
   <Container>
@@ -155,44 +161,19 @@ class Register extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  let errors = [];
-  if (state.user.errors) {
-    errors = Object.keys(state.user.errors).map((field) => {
-      return { field, message: state.user.errors[field] };
-    });
-  }
-  return {
-    errors,
-    isAuthenticated: state.user.isAuthenticated,
-    registerSuccess: state.user.registerSuccess,
-  };
-};
-
-const mapActionsToProps = (dispatch) => ({
-  register: (
-    username,
-    password,
-    name,
-    lastname,
-    date,
-    rol,
-    avatar,
-    recaptchaToken
-  ) =>
-    dispatch(
-      user.register(
-        username,
-        password,
-        name,
-        lastname,
-        date,
-        rol,
-        avatar,
-        recaptchaToken
-      )
-    ),
-  cleanErrors: () => dispatch(user.cleanErrors()),
+const mapStateToProps = (state) => ({
+  errors: selectErrors(state),
+  isAuthenticated: selectUserIsAuthenticated(state),
+  registerSuccess: selectUserRegisterSucces(state),
 });
+
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      register: user.register,
+      cleanErrors: user.cleanErrors,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Register);

@@ -4,6 +4,7 @@ import {
   PaginationItem,
   PaginationLink,
 } from "reactstrap";
+import PropTypes from "prop-types";
 
 /**
  * Generic pagination
@@ -147,5 +148,18 @@ const goTop = () =>
     left: 0,
     behavior: "smooth",
   });
+
+Pagination.propTypes = {
+  maxPageProp: PropTypes.number.isRequired,
+  page: PropTypes.number.isRequired,
+  count: PropTypes.number,
+  page_size: PropTypes.number,
+  setStatePage: PropTypes.func.isRequired,
+  size: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  displayFirst: PropTypes.bool,
+  displayLast: PropTypes.bool,
+  displayRange: PropTypes.number,
+};
 
 export default Pagination;

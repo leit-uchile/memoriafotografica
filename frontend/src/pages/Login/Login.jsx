@@ -1,11 +1,15 @@
 import React, { Component } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Redirect} from "react-router-dom";
 import { user, site_misc } from "../../actions";
 import { connect } from "react-redux";
 import { Alert } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUnlock } from "@fortawesome/free-solid-svg-icons";
 import "./login.css";
+import { bindActionCreators } from "redux";
+import { selectErrors,
+        selectUserIsAuthenticated,
+        selectSiteMiscLoginSuccesRoute,} from "../../reducers";
 
 class Login extends Component {
   state = {
@@ -24,7 +28,9 @@ class Login extends Component {
 
   componentWillMount() {
     this.props.setRoute("/login");
+    this.props.setLoginSuccessRoute();
   }
+
 
   translateError = (error) => {
     var errorMessage;
@@ -44,10 +50,9 @@ class Login extends Component {
     if (this.props.isAuthenticated) {
       if (this.props.loginRoute !== null) {
         const newRoute = this.props.loginRoute;
-        this.props.setLoginSuccessRoute();
-        return <Redirect to={newRoute} />;
+        return <Redirect push to={newRoute} />;
       } else {
-        return <Redirect to="/" />;
+        return <Redirect to={"/"} />;
       }
     }
     return (
@@ -121,24 +126,20 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  let errors = [];
-  if (state.user.errors) {
-    errors = Object.keys(state.user.errors).map((field) => {
-      return { field, message: state.user.errors[field] };
-    });
-  }
-  return {
-    errors,
-    isAuthenticated: state.user.isAuthenticated,
-    loginRoute: state.site_misc.loginSuccessRoute,
-  };
-};
-
-const mapActionsToProps = (dispatch) => ({
-  login: (email, password) => dispatch(user.login(email, password)),
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-  setLoginSuccessRoute: () => dispatch(site_misc.addLoginRoute("")),
+const mapStateToProps = (state) => ({
+  errors: selectErrors(state),
+  isAuthenticated: selectUserIsAuthenticated(state),
+  loginRoute: selectSiteMiscLoginSuccesRoute(state),
 });
+
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      login: user.login,
+      setRoute: site_misc.setCurrentRoute,
+      setLoginSuccessRoute: site_misc.addLoginRoute,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(Login);

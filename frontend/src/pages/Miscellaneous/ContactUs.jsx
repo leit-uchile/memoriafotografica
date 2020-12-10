@@ -20,6 +20,7 @@ import {
   Button,
 } from "reactstrap";
 import { webadmin } from "../../actions";
+import { selectWebAdminContacted } from "../../reducers";
 import "./styles.css";
 import { validateRecaptcha } from "../../actions/webadmin_api";
 
@@ -197,7 +198,7 @@ const Map = ({ source }) => {
 };
 
 const mapStateToProps = (state) => ({
-  contacted: state.webadmin.contacted,
+  contacted: selectWebAdminContacted(state),
 });
 
 const mapActionsToProps = (dispatch) => ({

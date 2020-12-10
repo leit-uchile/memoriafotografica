@@ -32,15 +32,26 @@ AUTH_USER_MODEL = 'Users.User'
 # Application definition
 
 INSTALLED_APPS = [
-    'Users', 'Gallery', 'MetaData', 'WebAdmin', 'django.contrib.admin',
-    'django.contrib.auth', 'django.contrib.contenttypes',
-    'django.contrib.sessions', 'django.contrib.messages',
-    'django.contrib.staticfiles', 'rest_framework_swagger', 'rest_framework',
-    'knox', 'multiselectfield', 'sorl.thumbnail', 'corsheaders',
-    'rest_framework_recaptcha'
+    'Users',
+    'Gallery',
+    'MetaData',
+    'WebAdmin',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework_swagger',
+    'rest_framework',
+    'knox',
+    'multiselectfield',
+    'sorl.thumbnail',
+    'corsheaders',
+    'django_rest_passwordreset',
 ]
 
-#TODO change secret KEY for production
+# TODO change secret KEY for production
 DRF_RECAPTCHA_SECRET_KEY = "6LdqEM0ZAAAAAIClslUTdWYpZdZQZqdRwupjTTIN"
 
 MIDDLEWARE = [

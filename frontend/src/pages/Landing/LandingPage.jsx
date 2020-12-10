@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import { Redirect, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { gallery, site_misc } from "../../actions";
+import { selectPhotos, selectAlbumResult } from "../../reducers";
 import { Helmet } from "react-helmet";
 import {
   Container,
@@ -14,6 +15,7 @@ import {
 } from "reactstrap";
 import NewsSlider from "../News/NewsSlider";
 import Gallery from "react-photo-gallery";
+import { bindActionCreators } from "redux";
 import "./landing.css";
 
 const LandingPage = (props) => {
@@ -21,8 +23,8 @@ const LandingPage = (props) => {
 
   useEffect(() => {
     setRoute("/Inicio");
-    loadPhotos();
-    loadCollections();
+    loadPhotos(0, 10);
+    loadCollections(0, 3, "&collections=1");
   }, [loadPhotos, loadCollections, setRoute]);
 
   var mapped = props.photos.map((el) => ({
@@ -78,7 +80,7 @@ const LandingPage = (props) => {
       </div>
       <Container className="landing-container">
         <Row className="missionDiv">
-          <Col sm={3}>
+          <Col md={3}>
             <h2 className="colTitle">Nuestra misi&oacute;n</h2>
             <p className="detailText">
               Nuestra misi&oacute;n consiste en recuperar la historia y memoria
@@ -86,7 +88,7 @@ const LandingPage = (props) => {
               matem&aacute;ticas de forma transparente y colaborativa.
             </p>
           </Col>
-          <Col xs={4} sm={3}>
+          <Col xs={4} md={3}>
             <img
               src="/assets/photoSave.svg"
               width="100px"
@@ -95,11 +97,11 @@ const LandingPage = (props) => {
             />
             <h3>Recuperar</h3>
           </Col>
-          <Col xs={4} sm={3}>
+          <Col xs={4} md={3}>
             <img src="/assets/server.svg" width="100px" height="100px" alt="" />
             <h3>Preservar</h3>
           </Col>
-          <Col xs={4} sm={3}>
+          <Col xs={4} md={3}>
             <img
               src="/assets/speech-bubble.svg"
               width="100px"
@@ -149,12 +151,12 @@ const LandingPage = (props) => {
       <div className="landing-background-2 parallax">
         <Container>
           <Row>
-            <Col sm={{ size: "4", offset: "2" }}>
+            <Col md={{ size: "4", offset: "2" }}>
               <h2 className="colTitle" data-aos="fade-up">
                 ¿Quieres participar?
               </h2>
             </Col>
-            <Col sm={{ size: "4" }}>
+            <Col md={{ size: "4" }}>
               <p className="detailText">
                 Estamos en b&uacute;squeda de contenido hist&oacute;rico tales
                 como fotograf&iacute;as de eventos, lugares, personajes,
@@ -181,7 +183,7 @@ const LandingPage = (props) => {
             </Col>
           </Row>
           <Row>
-            <Col sm={3}>
+            <Col md={3}>
               <p className="detailText">
                 Nuestros editores suben colecciones de fotos oficiales con
                 contenido hist&oacute;rico particular.
@@ -192,7 +194,7 @@ const LandingPage = (props) => {
                 publicamos aqu&iacute;.
               </p>
             </Col>
-            <Col sm={9}>
+            <Col md={9}>
               <CardDeck>
                 {props.collections.slice(0, 3).map((c) => (
                   <Card
@@ -218,15 +220,18 @@ const LandingPage = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  photos: state.photos.photos,
-  collections: state.albumcollection.albums.results,
+  photos: selectPhotos(state),
+  collections: selectAlbumResult(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  loadPhotos: () => dispatch(gallery.photos.home(0, 10)),
-  loadCollections: () =>
-    dispatch(gallery.album.getAlbums(0, 3, "&collections=1")),
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      loadPhotos: gallery.photos.home,
+      loadCollections: gallery.album.getAlbums,
+      setRoute: site_misc.setCurrentRoute,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(LandingPage);

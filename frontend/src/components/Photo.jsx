@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./photo.css";
+import PropTypes from "prop-types";
 
 const Photo = ({
   className,
@@ -63,5 +64,20 @@ const Photo = ({
       }}
     ></div>
   );
+
+Photo.propTypes = {
+  className: PropTypes.string,
+  url: PropTypes.string,
+  name: PropTypes.string,
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  onClick: PropTypes.func,
+  style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  useLink: PropTypes.bool.isRequired,
+  redirectUrl: PropTypes.string,
+  hover: PropTypes.bool,
+  hoverText: PropTypes.string,
+  hoverStyle: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+};
 
 export default Photo;

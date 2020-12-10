@@ -12,9 +12,16 @@ import {
 } from "reactstrap";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import { base64StringtoFile, extractImageFileExtensionFromBase64 } from './ResuableUtils'
+import {
+  base64StringtoFile,
+  extractImageFileExtensionFromBase64,
+} from "./ResuableUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVectorSquare, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faVectorSquare,
+  faCircleNotch,
+} from "@fortawesome/free-solid-svg-icons";
+import PropTypes from "prop-types";
 
 const dimensions = {
   aspect4_3: {
@@ -46,8 +53,6 @@ class CropPhoto extends Component {
       crop: dimensions.default.crop,
       angle: dimensions.default.angle,
     };
-    this.toggle = this.toggle.bind(this);
-    this.rotate = this.rotate.bind(this);
   }
 
   toggle = () => {
@@ -57,20 +62,25 @@ class CropPhoto extends Component {
     this.props.handleToggle(); // evita que se cierre junto al DropdownButton
   };
 
-  rotate(){
+  rotate = () => {
     let newAngle = this.state.angle - 90;
-    if(newAngle <= -360){
+    if (newAngle <= -360) {
       newAngle = 360;
     }
     this.setState({
       angle: newAngle,
-    })
-  }
+    });
+  };
 
   onSave = () => {
     let image = new Image();
     image.src = this.state.src;
-    let newAvatar = this.getCroppedImg(image, this.state.crop, "avatarCropped", false);
+    let newAvatar = this.getCroppedImg(
+      image,
+      this.state.crop,
+      "avatarCropped",
+      false
+    );
     this.props.saveAvatar(newAvatar);
     this.toggle();
   };
@@ -130,7 +140,7 @@ class CropPhoto extends Component {
       crop.width,
       crop.height
     );
-    if(isPreview){
+    if (isPreview) {
       // As Blob
       return new Promise((resolve, reject) => {
         canvas.toBlob((blob) => {
@@ -147,9 +157,10 @@ class CropPhoto extends Component {
     } else {
       // As Base64 string
       const base64Image = canvas.toDataURL();
-      let finalName = fileName + '.' + extractImageFileExtensionFromBase64(base64Image)
-      return base64StringtoFile(base64Image, finalName)
-    } 
+      let finalName =
+        fileName + "." + extractImageFileExtensionFromBase64(base64Image);
+      return base64StringtoFile(base64Image, finalName);
+    }
   }
 
   render() {
@@ -157,9 +168,7 @@ class CropPhoto extends Component {
 
     return (
       <Modal isOpen={this.state.modal} size={"lg"}>
-        <ModalHeader toggle={this.toggle}>
-          Recortando foto
-        </ModalHeader>
+        <ModalHeader toggle={this.toggle}>Recortando foto</ModalHeader>
         <ModalBody style={{ textAlign: "center" }}>
           <Row>
             <Col>
@@ -167,7 +176,7 @@ class CropPhoto extends Component {
                 <ReactCrop
                   src={src}
                   crop={crop}
-                  imageStyle={{transform: `rotate(${angle}deg)`}}
+                  imageStyle={{ transform: `rotate(${angle}deg)` }}
                   ruleOfThirds
                   onImageLoaded={this.onImageLoaded}
                   onComplete={this.onCropComplete}
@@ -178,7 +187,7 @@ class CropPhoto extends Component {
           </Row>
           <Row>
             <Col>
-            <h4>
+              <h4>
                 {" "}
                 <FontAwesomeIcon icon={faCircleNotch} /> Ángulo
               </h4>
@@ -230,10 +239,7 @@ class CropPhoto extends Component {
               {croppedImageUrl && (
                 <div>
                   <h4>Vista previa</h4>
-                  <img
-                    alt="Crop"
-                    src={croppedImageUrl}
-                  />
+                  <img alt="Crop" src={croppedImageUrl} />
                 </div>
               )}
             </Col>
@@ -252,5 +258,12 @@ class CropPhoto extends Component {
     );
   }
 }
+
+CropPhoto.propTypes = {
+  isOpen: PropTypes.bool,
+  src: PropTypes.string.isRequired,
+  handleToggle: PropTypes.func.isRequired,
+  saveAvatar: PropTypes.func.isRequired,
+};
 
 export default CropPhoto;

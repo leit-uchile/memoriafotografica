@@ -20,6 +20,8 @@ import { site_misc, gallery } from "../../actions";
 import uuid4 from "uuid";
 import "./collection.css";
 import { Redirect } from "react-router";
+import { bindActionCreators } from "redux";
+import { selectAlbums } from "../../reducers";
 
 const AllCollections = ({ setRoute, albums, loadCollections }) => {
   const [params, setParams] = useState({
@@ -176,13 +178,16 @@ const AllCollections = ({ setRoute, albums, loadCollections }) => {
 };
 
 const mapStateToProps = (state) => ({
-  albums: state.albumcollection.albums,
+  albums: selectAlbums(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-  loadCollections: (page, size, params = "") =>
-    dispatch(gallery.album.getAlbums(page, size, params)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setRoute: site_misc.setCurrentRoute,
+      loadCollections: gallery.album.getAlbums,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(AllCollections);

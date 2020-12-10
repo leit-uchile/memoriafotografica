@@ -7,6 +7,12 @@ import {
   AUTH_CLEAR_ERRORS,
   REGISTRATION_LINK_SUCCESS,
   REGISTRATION_LINK_FAILED,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_FAILED,
+  RESET_PASSWORD_VALIDATE_SUCCESS,
+  RESET_PASSWORD_VALIDATE_FAILED,
+  RESET_PASSWORD_CONFIRM_SUCCESS,
+  RESET_PASSWORD_CONFIRM_FAILED,
   LOGOUT_SUCCESS,
   USER_LOADED,
   USER_RECOVERED_PHOTO,
@@ -221,9 +227,13 @@ export const getUserComments = (user_id, limit, offset) => (
 /**
  * Load a user by ID if it is public
  */
-export const loadAUser = (id) => (dispatch) => {
+export const loadAUser = (id) => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
   dispatch({ type: USER_PUBLIC_LOADING });
-  return fetch(`/api/users/${id}/`)
+  return fetch(`/api/users/${id}/`, { method: "GET", headers: headers })
     .then((res) => {
       const response = res;
       if (res.status < 400) {
@@ -427,3 +437,85 @@ export const updatePassword = (old_password, new_password) => (
 };
 
 export const uploadUserPicture = (avatar) => (dispatch, getState) => {};
+
+export const resetPasswordRequest = (email) => (dispatch) => {
+  let headers = { "Content-Type": "application/json" };
+  let body = JSON.stringify({ email });
+
+  return fetch("/api/auth/password_reset/", {
+    headers,
+    body,
+    method: "POST",
+  })
+    .then((res) => {
+      if (res.status < 500) {
+        return res.json().then((data) => {
+          return { status: res.status, data: data };
+        });
+      } else {
+        console.log("Server Error!");
+        throw res;
+        // return { status: res.status, res.data };
+      }
+    })
+    .then((res) => {
+      if (res.status === 200) {
+        dispatch({ type: RESET_PASSWORD_SUCCESS, data: null });
+      } else {
+        dispatch({ type: RESET_PASSWORD_FAILED, data: res.data });
+        // throw res.data;
+      }
+    });
+};
+
+export const resetPasswordValidate = (token) => (dispatch) => {
+  let headers = { "Content-Type": "application/json" };
+  let body = JSON.stringify({ token });
+
+  return fetch("/api/auth/password_reset/validate_token/", {
+    headers,
+    body,
+    method: "POST",
+  }).then((res) => {
+    if (res.status === 200) {
+      return res.json().then((data) => {
+        dispatch({ type: RESET_PASSWORD_VALIDATE_SUCCESS, data: null });
+        return { status: res.status, data: null };
+      });
+    } else {
+      dispatch({ type: RESET_PASSWORD_VALIDATE_FAILED, data: res.data });
+      // throw res.data;
+    }
+  });
+};
+
+export const resetPasswordConfirm = (token, password) => (dispatch) => {
+  let headers = { "Content-Type": "application/json" };
+  let body = JSON.stringify({ token, password });
+
+  return fetch("/api/auth/password_reset/confirm/", {
+    headers,
+    body,
+    method: "POST",
+  })
+    .then((res) => {
+      if (res.status < 500) {
+        return res.json().then((data) => {
+          return { status: res.status, data };
+        });
+      } else {
+        console.log("Server Error!");
+        throw res;
+      }
+      // throw res.data;
+    })
+    .then((res) => {
+      if (res.status === 200) {
+        dispatch({ type: RESET_PASSWORD_CONFIRM_SUCCESS, data: null });
+        return { status: res.status, data: null };
+      } else {
+         dispatch({ type: RESET_PASSWORD_CONFIRM_FAILED, data: res.data });
+      }
+    });
+};
+

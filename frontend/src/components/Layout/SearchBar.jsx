@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Container, Button, Row, Col, Input } from "reactstrap";
 import { Redirect } from "react-router-dom";
@@ -7,6 +8,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import Autosuggest from "react-autosuggest";
 import "./searchBar.css";
+import {
+  selectMetaDataAllTags,
+  selectMetaDataAllIptcs,
+  selectSiteMiscCurrentRoute,
+} from "../../reducers";
+import PropTypes from "prop-types";
 
 class SearchBar extends Component {
   constructor(props) {
@@ -205,18 +212,31 @@ class SearchBar extends Component {
   }
 }
 
+SearchBar.propTypes = {
+  tags: PropTypes.array.isRequired,
+  iptc: PropTypes.array.isRequired,
+  currentPage: PropTypes.string.isRequired,
+  onLoadGetIPTC: PropTypes.func.isRequired,
+  setRoute: PropTypes.func.isRequired,
+  putSearch: PropTypes.func.isRequired,
+  search: PropTypes.func.isRequired,
+};
+
 const mapStateToProps = (state) => ({
-  tags: state.metadata.all_tags,
-  iptc: state.metadata.all_iptcs,
-  currentPage: state.site_misc.currentRoute,
+  tags: selectMetaDataAllTags(state),
+  iptc: selectMetaDataAllIptcs(state),
+  currentPage: selectSiteMiscCurrentRoute(state),
 });
 
-const mapActionsToProps = (dispatch) => ({
-  onLoadGetIPTC: () => dispatch(metadata.iptcs()),
-  setRoute: (route) => dispatch(site_misc.setCurrentRoute(route)),
-  putSearch: (id, value) => dispatch(site_misc.putSearchItem(id, value)),
-  search: (query, limit, iptc) =>
-    dispatch(metadata.searchMetadataByValueSB(query, limit, iptc)),
-});
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      onLoadGetIPTC: metadata.iptcs,
+      setRoute: site_misc.setCurrentRoute,
+      putSearch: site_misc.putSearchItem,
+      search: metadata.searchMetadataByValueSB,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapActionsToProps)(SearchBar);

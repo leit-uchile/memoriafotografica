@@ -63,9 +63,10 @@ const PhotoList = ({ photos, editPhoto }) => {
             <td>{new Date(el.created_at).toLocaleDateString("es")}</td>
             <td>
               <FilterModal
-                editPhoto={editPhoto}
+                key={key}
                 buttonLabel="Gestionar"
-                photo={el}
+                photoId={el.id}
+                editPhoto={editPhoto}
               />
             </td>
           </tr>

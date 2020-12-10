@@ -168,8 +168,8 @@ const UploadAlbum = ({
           </div>
           <Form className="white-box form-container upload-album-section-content">
             <div className="form-title">
-              <FontAwesomeIcon icon={faBook}/>
-              <Label>{" "}Metadatos</Label>
+              <FontAwesomeIcon icon={faBook} />
+              <Label> Metadatos</Label>
             </div>
             <FormGroup>
               <Label className="form-subtitle">Fecha de las fotos:</Label>
@@ -194,10 +194,8 @@ const UploadAlbum = ({
             </FormGroup>
             <FormGroup>
               <div className="form-title">
-                <FontAwesomeIcon
-                  icon={faCreativeCommons}
-                />
-                <Label>{" "}Licencias: Permisos de acceso e intercambio</Label>
+                <FontAwesomeIcon icon={faCreativeCommons} />
+                <Label> Licencias: Permisos de acceso e intercambio</Label>
               </div>
               <div style={{ marginTop: "10px" }}>
                 <FormGroup tag="fieldset">
