@@ -18,9 +18,9 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
     redirect: false,
     url: "",
   });
-  const [loadingPhotos, setLoadingPhotos] = useState(true);
-  const [loadingComments, setLoadingComments] = useState(true);
-  const [pagination, setPagination] = useState({ page: 0, page_size: 5 });
+
+  const [pagPhotos, setPagPhotos] = useState({ page: 0, page_size: 4 });
+  const [pagComments, setPagComments] = useState({ page: 0, page_size: 5 });
 
   const addMore = (
     <FontAwesomeIcon
@@ -30,32 +30,18 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
     />
   );
 
-  var mappedPhotos = photos.map((el) => ({
-    src: el.thumbnail,
-    height: el.aspect_h,
-    width: el.aspect_w,
-    id: el.id,
-  }));
-
-  var mappedComments = [];
+  useEffect(() => {
+    getPhotos(
+      user.id,
+      pagPhotos.page + 1,
+      pagPhotos.page_size,
+      "&approved=false"
+    );
+  }, [pagPhotos]);
 
   useEffect(() => {
-    getPhotos(user.id, 100, 0, "&approved=false");
-    if (photos !== undefined) {
-      setLoadingPhotos(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    getComments(user.id, pagination.page + 1, pagination.page_size);
-    if (comments !== {}) {
-      setLoadingComments(false);
-    }
-  }, [pagination]);
-
-  const setPage = (p) => {
-    setPagination((pag) => ({ ...pag, page: p }));
-  };
+    getComments(user.id, pagComments.page + 1, pagComments.page_size);
+  }, [pagComments]);
 
   if (params.redirect) {
     return <Redirect push to={params.url} />;
@@ -85,23 +71,47 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
               </Container>
               <hr />
               <Container fluid>
-                <Row>
-                  <Col
-                    sm={
-                      mappedPhotos.length === 1
-                        ? { size: 4, offset: 4 }
-                        : { size: 12 }
+                {photos.results ? (
+                  photos.results.length !== 0 ? (
+                    <Row>
+                      <Col
+                        sm={
+                          photos.results.length === 1
+                            ? { size: 4, offset: 4 }
+                            : { size: 12 }
+                        }
+                      >
+                        <Gallery
+                          photos={photos.results.map((el) => ({
+                            src: el.thumbnail,
+                            height: el.aspect_h,
+                            width: el.aspect_w,
+                            id: el.id,
+                          }))}
+                          targetRowHeight={250}
+                        />
+                      </Col>
+                    </Row>
+                  ) : null
+                ) : (
+                  <Spinner />
+                )}
+                {photos.count === 0 ? (
+                  "No tienes fotografías pendientes"
+                ) : (
+                  <Pagination
+                    count={photos.count}
+                    page_size={pagPhotos.page_size}
+                    page={pagPhotos.page}
+                    setStatePage={(p) =>
+                      setPagPhotos((pag) => ({ ...pag, page: p }))
                     }
-                  >
-                    {loadingPhotos ? (
-                      <Spinner />
-                    ) : photos.length !== 0 ? (
-                      <Gallery photos={mappedPhotos} targetRowHeight={250} />
-                    ) : (
-                      "No tienes fotografías pendientes"
-                    )}
-                  </Col>
-                </Row>
+                    size="md"
+                    label="photos"
+                    displayFirst
+                    displayLast
+                  />
+                )}
               </Container>
             </div>
           </Col>
@@ -115,11 +125,11 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
                 <Row>
                   <Col className="dashboard-col">
                     {comments.results ? (
-                      comments.length !== 0 ? (
+                      comments.results.length !== 0 ? (
                         <Container>
                           {comments.results.map((el, key) => (
                             <Row key={"Comment" + key}>
-                              <Col style={{paddingBottom: "8px"}}>
+                              <Col style={{ paddingBottom: "8px" }}>
                                 <Comment
                                   element={{
                                     content: el.content,
@@ -142,11 +152,13 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
                     ) : (
                       <Pagination
                         count={comments.count}
-                        page_size={pagination.page_size}
-                        page={pagination.page}
-                        setStatePage={setPage}
+                        page_size={pagComments.page_size}
+                        page={pagComments.page}
+                        setStatePage={(p) =>
+                          setPagComments((pag) => ({ ...pag, page: p }))
+                        }
                         size="md"
-                        label="comments-pagination"
+                        label="comments"
                         displayFirst
                         displayLast
                       />

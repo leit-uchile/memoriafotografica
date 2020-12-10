@@ -73,8 +73,8 @@ const UserAlbums = ({
               <Col>
                 <AlbumGallery
                   albums={albums}
-                  onClick={(e, index) => {
-                    setRedirect(albums[index.index].id);
+                  onClick={(e, obj) => {
+                    setRedirect(albums[obj.index].id);
                   }}
                 />
               </Col>

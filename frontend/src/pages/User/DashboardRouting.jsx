@@ -22,7 +22,7 @@ import { useEffect } from "react";
 import EditProfile from "./Profile/EditProfile";
 import Landing from "./Landing";
 import UserHandler from "./Profile/UserHandler";
-import UserPhotos from "./PhotoCollection/UserPhotos";
+import UserPhotos from "./PhotoCollection/UserPhotos2";
 import UserAlbums from "./AlbumCollection/UserAlbums";
 import AlbumView from "./AlbumCollection/AlbumView";
 import PublicAlbums from "./AlbumCollection/PublicAlbums";

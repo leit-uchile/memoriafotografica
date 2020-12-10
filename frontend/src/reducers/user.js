@@ -35,7 +35,10 @@ import {
  * User deletion is done as a logout is successful
  */
 const baseState = {
-  photos: [],
+  photos: {
+    results: [],
+    count: 0,
+  },
   comments: {
     results: [],
     count: 0,
@@ -63,11 +66,11 @@ const initialState =
   localStorage.getItem("isAuth") === null
     ? baseState
     : new Date().getTime() -
-        JSON.parse(localStorage.getItem("isAuth")).timeSet >
+      JSON.parse(localStorage.getItem("isAuth")).timeSet >
       43200000
-    ? baseState
-    : {
-        photos: [],
+      ? baseState
+      : {
+        photos: {},
         comments: {},
         albums: [],
         userData: JSON.parse(localStorage.getItem("user")),
@@ -163,7 +166,7 @@ export default function user(state = initialState, action) {
     case USER_RECOVERED_PHOTO_ERROR:
       return {
         ...state,
-        photos: [],
+        photos: {},
         error: action.data,
       };
     case USER_RECOVERED_ALBUM_ERROR:
@@ -175,7 +178,7 @@ export default function user(state = initialState, action) {
     case USER_RECOVERED_COMMENTS_ERROR:
       return {
         ...state,
-        comments: [],
+        comments: {},
         error: action.data,
       };
     case USER_UPDATE_SUCCESS:
@@ -207,7 +210,7 @@ export default function user(state = initialState, action) {
     case RESET_PASSWORD_CONFIRM_SUCCESS:
       return { ...state, resetPasswordConfirmed: true, errors: {} };
     case RESET_PASSWORD_CONFIRM_FAILED:
-      return { ...state, errors: action.data, resetPasswordConfirmed: false};
+      return { ...state, errors: action.data, resetPasswordConfirmed: false };
     default:
       return { ...state };
   }

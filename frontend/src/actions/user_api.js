@@ -150,7 +150,7 @@ export const getRegisterLink = (code) => (dispatch) => {
   });
 };
 
-export const getUserPhotos = (user_id, limit, offset, extra) => (
+export const getUserPhotos = (user_id, page, page_size, extra) => (
   dispatch,
   getState
 ) => {
@@ -159,7 +159,7 @@ export const getUserPhotos = (user_id, limit, offset, extra) => (
     Authorization: "Token " + getState().user.token,
   };
   return fetch(
-    `/api/users/photos/${user_id}/?limit=${limit}&offset=${offset}${extra}`,
+    `/api/users/photos/${user_id}/?page=${page}&page_size=${page_size}${extra}`,
     { method: "GET", headers: headers }
   ).then(function (response) {
     const r = response;
@@ -284,11 +284,11 @@ export const loadPublicUserAlbums = (user_id) => (dispatch) =>
  * @param {String} extra params for sorting and pagination, filtering, etc
  */
 export const loadPublicUserPhotos = (user_id, extra = "") => (dispatch) =>
-  fetch(`/api/photos/?user=${user_id}${extra}`).then(function (response) {
+fetch(`/api/photos/?user=${user_id}${extra}`).then(function (response) {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_PHOTO, data: data.results });
+        dispatch({ type: USER_RECOVERED_PHOTO, data: data });
       });
     } else {
       dispatch({ type: USER_RECOVERED_PHOTO_ERROR, data: r.data });

@@ -19,9 +19,11 @@ import hashlib
 from django.dispatch import receiver
 from django_rest_passwordreset.signals import reset_password_token_created
 
+
 def createHash(id):
     integer = str(id).encode("UTF-8")
     return str(hashlib.sha256(integer).hexdigest())
+
 
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
@@ -237,6 +239,8 @@ class UserPhotosAPI(generics.GenericAPIView):
     
             user_pics = user.photos.filter(**filters)
             serializer = PhotoSerializer(user_pics, many=True)
+            if "page" in request.query_params and "page_size" in request.query_params:
+                return self.get_paginated_response(self.paginate_queryset(serializer.data))
             return Response(serializer.data)
         except User.DoesNotExist:
             raise Http404

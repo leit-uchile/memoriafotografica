@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col } from "reactstrap";
+import { Container, Row, Col, Spinner } from "reactstrap";
 import { connect } from "react-redux";
 import { user } from "../../../actions";
 import { Link, Redirect } from "react-router-dom";
@@ -50,18 +50,9 @@ const PublicProfile = ({
   });
 
   useEffect(() => {
-    getPublicPhotos(user.id);
+    getPublicPhotos(user.id, "&page=1&page_size=4");
     getPublicAlbums(user.id);
   }, [user]);
-
-  var mappedPhotos = photos
-    .slice(photos.length - 3, photos.length)
-    .map((el) => ({
-      src: el.thumbnail,
-      height: el.aspect_h,
-      width: el.aspect_w,
-      id: el.id,
-    }));
 
   var mappedAlbums = albums.slice(albums.length - 3, albums.length);
 
@@ -134,31 +125,30 @@ const PublicProfile = ({
             </Container>
             <hr />
             <Container fluid>
-              <Row>
-                <Col
-                  sm={
-                    mappedAlbums.length === 1
-                      ? { size: 4, offset: 4 }
-                      : { size: 12 }
-                  }
-                >
-                  {mappedAlbums.length !== 0 ? (
+              {mappedAlbums.length !== 0 ? (
+                <Row>
+                  <Col
+                    sm={
+                      mappedAlbums.length === 1
+                        ? { size: 4, offset: 4 }
+                        : { size: 12 }
+                    }
+                  >
                     <AlbumGallery
                       albums={mappedAlbums}
-                      onClick={(e, index) => {
+                      onClick={(e, obj) => {
                         setParams({
                           redirect: true,
                           url:
-                            "/user/public/albums/" +
-                            mappedAlbums[index.index].id,
+                            "/user/public/albums/" + mappedAlbums[obj.index].id,
                         });
                       }}
                     />
-                  ) : (
-                    "Este usuario no tiene &aacute;lbumes"
-                  )}
-                </Col>
-              </Row>
+                  </Col>
+                </Row>
+              ) : (
+                "Este usuario no tiene &aacute;lbumes"
+              )}
             </Container>
           </div>
         </Col>
@@ -168,40 +158,49 @@ const PublicProfile = ({
           <div className="stat-box">
             <Container fluid className="stat-box-header">
               <h2>Fotograf&iacute;as </h2>
-              {mappedPhotos.length !== 0 ? (
+              {photos.count !== 0 ? (
                 <Link to={`/user/public/${user.id}/photos`}> Ver Todas</Link>
               ) : null}
             </Container>
             <hr />
             <Container fluid>
-              <Row>
-                <Col
-                  sm={
-                    mappedPhotos.length === 1
-                      ? { size: 4, offset: 4 }
-                      : { size: 12 }
-                  }
-                >
-                  {photos.length !== 0 ? (
-                    <Gallery
-                      photos={mappedPhotos}
-                      targetRowHeight={250}
-                      onClick={(e, index) =>
-                        setParams({
-                          redirect: true,
-                          url:
-                            "/photo/" +
-                            mappedPhotos[index.index].id +
-                            "/?user=" +
-                            user.id,
-                        })
+              {photos.results ? (
+                photos.results.length !== 0 ? (
+                  <Row>
+                    <Col
+                      sm={
+                        photos.results.length === 1
+                          ? { size: 4, offset: 4 }
+                          : { size: 12 }
                       }
-                    />
-                  ) : (
-                    "Este usuario no tiene fotografías"
-                  )}
-                </Col>
-              </Row>
+                    >
+                      <Gallery
+                        photos={photos.results.map((el) => ({
+                          src: el.thumbnail,
+                          height: el.aspect_h,
+                          width: el.aspect_w,
+                          id: el.id,
+                        }))}
+                        targetRowHeight={250}
+                        onClick={(e, obj) =>
+                          setParams({
+                            redirect: true,
+                            url:
+                              "/photo/" +
+                              photos.results[obj.index].id +
+                              "/?user=" +
+                              user.id,
+                          })
+                        }
+                      />
+                    </Col>
+                  </Row>
+                ) : (
+                  "No tiene fotografías"
+                )
+              ) : (
+                <Spinner />
+              )}
             </Container>
           </div>
         </Col>
