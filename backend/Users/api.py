@@ -259,6 +259,8 @@ class UserAlbumsAPI(generics.GenericAPIView):
         try:
             user = User.objects.get(pk=pk)
             serializer = UserAlbumSerializer(user)
+            if "page" in request.query_params and "page_size" in request.query_params:
+                return self.get_paginated_response(self.paginate_queryset(serializer.data["albums"]))
             return Response(serializer.data)
         except User.DoesNotExist:
             raise Http404

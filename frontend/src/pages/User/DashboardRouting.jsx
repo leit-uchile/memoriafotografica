@@ -70,7 +70,7 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
     redirect: false,
     url: "",
   });
-  const isPublic = location.pathname.includes("public");
+  const publicView = location.pathname.includes("public");
 
   useEffect(() => {
     setRoute(location.pathname);
@@ -85,7 +85,7 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
         <title>Interfaz de usuario</title>
       </Helmet>
       <Row>
-        {!isPublic ? (
+        {!publicView ? (
           <Col sm="2" className="leftcol">
             <Row>
               <Container fluid>
@@ -167,9 +167,9 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
           </Col>
         ) : null}
         <Col
-          sm={!isPublic ? "10" : "12"}
+          sm={!publicView ? "10" : "12"}
           style={
-            !isPublic
+            !publicView
               ? {
                   backgroundColor: "#f4f6f8",
                   minHeight: "75vh",

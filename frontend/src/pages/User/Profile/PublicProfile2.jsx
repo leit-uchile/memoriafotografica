@@ -15,6 +15,7 @@ import {
   faSuitcase,
   faCameraRetro,
   faAddressCard,
+  faAngleRight,
 } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
 import { ReportModal, UserPicture } from "../../../components";
@@ -51,10 +52,8 @@ const PublicProfile = ({
 
   useEffect(() => {
     getPublicPhotos(user.id, "&page=1&page_size=4");
-    getPublicAlbums(user.id);
+    getPublicAlbums(user.id, "&page=1&page_size=3");
   }, [user]);
-
-  var mappedAlbums = albums.slice(albums.length - 3, albums.length);
 
   if (params.redirect) {
     return <Redirect push to={params.url} />;
@@ -119,35 +118,42 @@ const PublicProfile = ({
           <div className="stat-box">
             <Container fluid className="stat-box-header">
               <h2>&Aacute;lbumes</h2>
-              {albums.length !== 0 ? (
-                <Link to={`/user/public/${user.id}/albums`}> Ver Todos</Link>
+              {albums.count !== 0 ? (
+                <Link to={`/user/public/${user.id}/albums`}>
+                  <FontAwesomeIcon icon={faAngleRight} size={"lg"} />
+                </Link>
               ) : null}
             </Container>
             <hr />
             <Container fluid>
-              {mappedAlbums.length !== 0 ? (
-                <Row>
-                  <Col
-                    sm={
-                      mappedAlbums.length === 1
-                        ? { size: 4, offset: 4 }
-                        : { size: 12 }
-                    }
-                  >
-                    <AlbumGallery
-                      albums={mappedAlbums}
-                      onClick={(e, obj) => {
-                        setParams({
-                          redirect: true,
-                          url:
-                            "/user/public/albums/" + mappedAlbums[obj.index].id,
-                        });
-                      }}
-                    />
-                  </Col>
-                </Row>
+              {albums.results ? (
+                albums.results.length !== 0 ? (
+                  <Row>
+                    <Col
+                      sm={
+                        albums.results.length === 1
+                          ? { size: 4, offset: 4 }
+                          : { size: 12 }
+                      }
+                    >
+                      <AlbumGallery
+                        albums={albums.results}
+                        onClick={(e, obj) => {
+                          setParams({
+                            redirect: true,
+                            url:
+                              "/user/public/albums/" +
+                              albums.results[obj.index].id,
+                          });
+                        }}
+                      />
+                    </Col>
+                  </Row>
+                ) : (
+                  "Este usuario no tiene &aacute;lbumes"
+                )
               ) : (
-                "Este usuario no tiene &aacute;lbumes"
+                <Spinner />
               )}
             </Container>
           </div>
@@ -159,7 +165,9 @@ const PublicProfile = ({
             <Container fluid className="stat-box-header">
               <h2>Fotograf&iacute;as </h2>
               {photos.count !== 0 ? (
-                <Link to={`/user/public/${user.id}/photos`}> Ver Todas</Link>
+                <Link to={`/user/public/${user.id}/photos`}>
+                  <FontAwesomeIcon icon={faAngleRight} size={"lg"} />
+                </Link>
               ) : null}
             </Container>
             <hr />
@@ -196,7 +204,7 @@ const PublicProfile = ({
                     </Col>
                   </Row>
                 ) : (
-                  "No tiene fotografías"
+                  "Este usuario no tiene fotograf&iacute;as"
                 )
               ) : (
                 <Spinner />

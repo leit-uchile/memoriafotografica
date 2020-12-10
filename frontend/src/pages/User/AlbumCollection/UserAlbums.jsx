@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Badge } from "reactstrap";
+import { Container, Row, Col, Badge, Spinner } from "reactstrap";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { user } from "../../../actions";
@@ -11,7 +11,7 @@ import { selectUserData, selectUserAlbums } from "../../../reducers";
 import AlbumGallery from "../../../components/AlbumGallery";
 
 const UserAlbums = ({
-  isPublic,
+  publicView,
   user,
   albums,
   publicUser,
@@ -25,19 +25,19 @@ const UserAlbums = ({
 
   // Set user info and load the albums accordingly
   useEffect(() => {
-    if (isPublic && publicUser !== undefined) {
+    if (publicView && publicUser !== undefined) {
       setDisplay((d) => ({ ...d, user: publicUser }));
-      loadPublicAlbums(publicUser.id);
-    } else if (!isPublic) {
-      loadAlbums(user.id, -1, -1);
+      loadPublicAlbums(publicUser.id, "&page=1&page_size=100");
+    } else if (!publicView) {
+      loadAlbums(user.id, 1, 100);
       setDisplay((d) => ({ ...d, user: user }));
     }
-  }, [isPublic, publicUser, loadPublicAlbums, loadAlbums, user]);
+  }, [publicView, publicUser, loadPublicAlbums, loadAlbums, user]);
 
   const setRedirect = (id) => {
     setDisplay({
       ...display,
-      redirectUrl: isPublic
+      redirectUrl: publicView
         ? `/user/public/albums/${id}`
         : `/user/dashboard/albums/${id}`,
     });
@@ -49,7 +49,7 @@ const UserAlbums = ({
     <Container fluid className="dashboard">
       <Helmet>
         <title>
-          {isPublic && publicUser
+          {publicView && publicUser
             ? "Albums de " + display.user.first_name
             : "Mis albumes"}
         </title>
@@ -58,27 +58,43 @@ const UserAlbums = ({
         <Col className="dashboard-col">
           <h2
             style={{
-              textAlign: `${isPublic ? "center" : "left"}`,
+              textAlign: `${publicView ? "center" : "left"}`,
             }}
           >
-            {isPublic ? `Albums de ${display.user.first_name}` : "Mis albumes"}{" "}
-            <Badge color="primary">{albums.length}</Badge>
+            {publicView
+              ? `Albums de ${display.user.first_name}`
+              : "Mis albumes"}{" "}
+            {albums.results ? (
+              <Badge color="primary">{albums.results.length}</Badge>
+            ) : null}
           </h2>
         </Col>
       </Row>
       <Row>
         <Col className="dashboard-col">
           <Container fluid>
-            <Row>
-              <Col>
-                <AlbumGallery
-                  albums={albums}
-                  onClick={(e, obj) => {
-                    setRedirect(albums[obj.index].id);
-                  }}
-                />
-              </Col>
-            </Row>
+            <div className="stat-box rounded">
+              {albums.results ? (
+                <Row>
+                  <Col
+                    sm={
+                      albums.results.length === 1
+                        ? { size: 4, offset: 4 }
+                        : { size: 12 }
+                    }
+                  >
+                    <AlbumGallery
+                      albums={albums.results}
+                      onClick={(e, obj) => {
+                        setRedirect(albums.results[obj.index].id);
+                      }}
+                    />
+                  </Col>
+                </Row>
+              ) : (
+                <Spinner />
+              )}
+            </div>
           </Container>
         </Col>
       </Row>

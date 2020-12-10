@@ -49,7 +49,7 @@ const UserPhotos = ({
     } else {
       onLoadGetPhotos(user.id, 1, 100, "&approved=true");
     }
-  }, []);
+  }, [publicView, user]);
 
   useEffect(() => {
     if ((updatedPhoto || refresh) && !modal) {
@@ -95,7 +95,9 @@ const UserPhotos = ({
               textAlign: `${publicView ? "center" : "left"}`,
             }}
           >
-            {publicView && publicUser? `Fotos de ${publicUser.first_name}` : "Mis fotos"}{" "}
+            {publicView && publicUser
+              ? `Fotos de ${publicUser.first_name}`
+              : "Mis fotos"}{" "}
             {photos.results ? (
               <Badge color="primary">{photos.results.length}</Badge>
             ) : null}
@@ -166,25 +168,37 @@ const UserPhotos = ({
                     </Col>
                   </Row>
                 ) : (
-                  <PhotoEditor
-                    photos={photos.results.map((el) => ({
-                      src: el.thumbnail,
-                      height: el.aspect_h,
-                      width: el.aspect_w,
-                      id: el.id,
-                    }))}
-                    targetRowHeight={250}
-                    onClick={(e, obj) => handleOnSelect(obj)}
-                    selectAll={allSelected}
-                    onRedirect={(e, obj) =>
-                      setParams({
-                        redirect: true,
-                        index: obj.index,
-                      })
-                    }
-                  />
+                  <Row>
+                    <Col
+                      sm={
+                        photos.results.length === 1
+                          ? { size: 4, offset: 4 }
+                          : { size: 12 }
+                      }
+                    >
+                      <PhotoEditor
+                        photos={photos.results.map((el) => ({
+                          src: el.thumbnail,
+                          height: el.aspect_h,
+                          width: el.aspect_w,
+                          id: el.id,
+                        }))}
+                        targetRowHeight={250}
+                        onClick={(e, obj) => handleOnSelect(obj)}
+                        selectAll={allSelected}
+                        onRedirect={(e, obj) =>
+                          setParams({
+                            redirect: true,
+                            index: obj.index,
+                          })
+                        }
+                      />
+                    </Col>
+                  </Row>
                 )
-              ) : <Spinner/>}
+              ) : (
+                <Spinner />
+              )}
             </div>
           </Container>
         </Col>

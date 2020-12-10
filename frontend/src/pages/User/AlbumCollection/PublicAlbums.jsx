@@ -25,7 +25,7 @@ const PublicAlbums = ({ match, publicLoading, publicUser, loadPublicUser }) => {
       </Row>
     </Container>
   ) : (
-    <UserAlbums isPublic publicUser={publicUser} />
+    <UserAlbums publicView publicUser={publicUser} />
   );
 };
 

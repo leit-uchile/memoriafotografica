@@ -43,7 +43,10 @@ const baseState = {
     results: [],
     count: 0,
   },
-  albums: [],
+  albums: {
+    results: [],
+    count: 0,
+  },
   userData: null,
   publicLoading: false,
   // auth
@@ -72,7 +75,7 @@ const initialState =
       : {
         photos: {},
         comments: {},
-        albums: [],
+        albums: {},
         userData: JSON.parse(localStorage.getItem("user")),
         publicLoading: false,
         token: localStorage.getItem("token"),
@@ -172,7 +175,7 @@ export default function user(state = initialState, action) {
     case USER_RECOVERED_ALBUM_ERROR:
       return {
         ...state,
-        albmus: [],
+        albums: [],
         error: action.data,
       };
     case USER_RECOVERED_COMMENTS_ERROR:

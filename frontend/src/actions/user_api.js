@@ -150,7 +150,7 @@ export const getRegisterLink = (code) => (dispatch) => {
   });
 };
 
-export const getUserPhotos = (user_id, page, page_size, extra) => (
+export const getUserPhotos = (user_id, page, page_size, extra = "") => (
   dispatch,
   getState
 ) => {
@@ -174,7 +174,7 @@ export const getUserPhotos = (user_id, page, page_size, extra) => (
   });
 };
 
-export const getUserAlbums = (user_id, limit, offset) => (
+export const getUserAlbums = (user_id, page, page_size, extra = "") => (
   dispatch,
   getState
 ) => {
@@ -183,13 +183,13 @@ export const getUserAlbums = (user_id, limit, offset) => (
     Authorization: "Token " + getState().user.token,
   };
   return fetch(
-    `/api/users/albums/${user_id}/?limit=${limit}&offset=${offset}`,
+    `/api/users/albums/${user_id}/?page=${page}&page_size=${page_size}${extra}`,
     { method: "GET", headers: headers }
   ).then(function (response) {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_ALBUM, data: data.albums });
+        dispatch({ type: USER_RECOVERED_ALBUM, data: data });
       });
     } else {
       dispatch({ type: USER_RECOVERED_ALBUM_ERROR, data: r.data });
@@ -260,15 +260,16 @@ export const loadAUser = (id) => (dispatch, getState) => {
 /**
  * Load all albums from a specific public user
  * @param {String|Number} user_id
+ * @param {String} extra params for sorting and pagination, filtering, etc
  */
-export const loadPublicUserAlbums = (user_id) => (dispatch) =>
-  fetch(`/api/albums/?user=${user_id}`).then((res) => {
-    const response = res;
-    if (response.status === 200) {
-      return response
+export const loadPublicUserAlbums = (user_id, extra = "") => (dispatch) =>
+  fetch(`/api/albums/?user=${user_id}${extra}`).then(function (response) {
+    const r = response;
+    if (r.status === 200) {
+      return r
         .json()
-        .then((parsed) =>
-          dispatch({ type: USER_RECOVERED_ALBUM, data: parsed.results })
+        .then((data) =>
+          dispatch({ type: USER_RECOVERED_ALBUM, data: data })
         );
     } else {
       dispatch(
@@ -284,7 +285,7 @@ export const loadPublicUserAlbums = (user_id) => (dispatch) =>
  * @param {String} extra params for sorting and pagination, filtering, etc
  */
 export const loadPublicUserPhotos = (user_id, extra = "") => (dispatch) =>
-fetch(`/api/photos/?user=${user_id}${extra}`).then(function (response) {
+  fetch(`/api/photos/?user=${user_id}${extra}`).then(function (response) {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
