@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Redirect} from "react-router-dom";
 import { user, site_misc } from "../../actions";
 import { connect } from "react-redux";
 import { Alert } from "reactstrap";
@@ -28,7 +28,9 @@ class Login extends Component {
 
   componentWillMount() {
     this.props.setRoute("/login");
+    this.props.setLoginSuccessRoute();
   }
+
 
   translateError = (error) => {
     var errorMessage;
@@ -48,10 +50,9 @@ class Login extends Component {
     if (this.props.isAuthenticated) {
       if (this.props.loginRoute !== null) {
         const newRoute = this.props.loginRoute;
-        this.props.setLoginSuccessRoute();
-        return <Redirect to={newRoute} />;
+        return <Redirect push to={newRoute} />;
       } else {
-        return <Redirect to="/" />;
+        return <Redirect to={"/"} />;
       }
     }
     return (
