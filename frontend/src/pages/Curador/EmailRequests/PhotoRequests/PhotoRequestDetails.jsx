@@ -68,7 +68,7 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
     reqUpdate.approved = bool;
     delete reqUpdate.photos;
     setSending(true);
-    updateRequest(reqUpdate).then((response) => {
+    updateRequest(reqUpdate).then((r) => {
       setSending(false);
       setRedirect(true);
     });

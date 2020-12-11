@@ -28,7 +28,7 @@ const ContactPhoneModal = ({ buttonLabel, className, message, send }) => {
     msgUpdate.resolved = true;
     msgUpdate.email_sent = false;
     setSending(true);
-    send(msgUpdate, formData).then((response) => {
+    send(msgUpdate, formData).then((r) => {
       setSending(false);
       setModal(!modal);
     });

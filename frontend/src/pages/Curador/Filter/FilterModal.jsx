@@ -120,7 +120,7 @@ const FilterModal = ({
     delete to_send.image;
     delete to_send.thumbnail;
     setSending(true);
-    editPhoto(to_send.id, to_send).then((response) => {
+    editPhoto(to_send.id, to_send).then((r) => {
       setSending(false);
       setModal(!modal);
       window.location.reload();
