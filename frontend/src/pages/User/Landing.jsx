@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Spinner } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import { connect } from "react-redux";
 import { user } from "../../actions";
 import { Redirect } from "react-router-dom";
@@ -9,7 +9,7 @@ import { Helmet } from "react-helmet";
 import { bindActionCreators } from "redux";
 import { selectUserPhotos, selectUserComments } from "../../reducers";
 import Gallery from "react-photo-gallery";
-import { Pagination } from "../../components";
+import { LeitSpinner, Pagination } from "../../components";
 import "./styles.css";
 import Comment from "../PhotoView/Comments/Comment";
 
@@ -94,7 +94,11 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
                     </Row>
                   ) : null
                 ) : (
-                  <Spinner />
+                  <Row>
+                    <Col style={{ textAlign: "center" }}>
+                      <LeitSpinner />
+                    </Col>
+                  </Row>
                 )}
                 {photos.count === 0 ? (
                   "No tienes fotografías pendientes"
@@ -145,7 +149,11 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
                         </Container>
                       ) : null
                     ) : (
-                      <Spinner />
+                      <Row>
+                        <Col style={{ textAlign: "center" }}>
+                          <LeitSpinner />
+                        </Col>
+                      </Row>
                     )}
                     {comments.count === 0 ? (
                       "No tienes comentarios"

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { Button, Row, Col, Container, Badge, Spinner } from "reactstrap";
+import { Button, Row, Col, Container, Badge } from "reactstrap";
 import { user, site_misc, gallery } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
 import PhotoEditor from "../../../components/PhotoEditor";
@@ -16,6 +16,7 @@ import {
   selectPhotosUpdatedPhoto,
   selectPhotosRefresh,
 } from "../../../reducers";
+import { LeitSpinner } from "../../../components";
 
 const UserPhotos = ({
   location,
@@ -197,7 +198,11 @@ const UserPhotos = ({
                   </Row>
                 )
               ) : (
-                <Spinner />
+                <Row>
+                  <Col style={{ textAlign: "center" }}>
+                    <LeitSpinner />
+                  </Col>
+                </Row>
               )}
             </div>
           </Container>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Spinner } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import { connect } from "react-redux";
 import { user } from "../../../actions";
 import { Link, Redirect } from "react-router-dom";
@@ -18,7 +18,7 @@ import {
   faAngleRight,
 } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
-import { ReportModal, UserPicture } from "../../../components";
+import { LeitSpinner, ReportModal, UserPicture } from "../../../components";
 import { userRolTranslation, userTypeTranslation } from "../utils";
 import moment from "moment";
 import AlbumGallery from "../../../components/AlbumGallery";
@@ -120,7 +120,11 @@ const PublicProfile = ({
               <h2>&Aacute;lbumes</h2>
               {albums.count !== 0 ? (
                 <Link to={`/user/public/${user.id}/albums`}>
-                  <FontAwesomeIcon icon={faAngleRight} size={"lg"} title={"Ver todos"} />
+                  <FontAwesomeIcon
+                    icon={faAngleRight}
+                    size={"lg"}
+                    title={"Ver todos"}
+                  />
                 </Link>
               ) : null}
             </Container>
@@ -153,7 +157,11 @@ const PublicProfile = ({
                   "Este usuario no tiene álbumes"
                 )
               ) : (
-                <Spinner />
+                <Row>
+                  <Col style={{ textAlign: "center" }}>
+                    <LeitSpinner />
+                  </Col>
+                </Row>
               )}
             </Container>
           </div>
@@ -166,7 +174,11 @@ const PublicProfile = ({
               <h2>Fotograf&iacute;as </h2>
               {photos.count !== 0 ? (
                 <Link to={`/user/public/${user.id}/photos`}>
-                  <FontAwesomeIcon icon={faAngleRight} size={"lg"} title={"Ver todas"} />
+                  <FontAwesomeIcon
+                    icon={faAngleRight}
+                    size={"lg"}
+                    title={"Ver todas"}
+                  />
                 </Link>
               ) : null}
             </Container>
@@ -207,7 +219,11 @@ const PublicProfile = ({
                   "Este usuario no tiene fotografías"
                 )
               ) : (
-                <Spinner />
+                <Row>
+                  <Col style={{ textAlign: "center" }}>
+                    <LeitSpinner />
+                  </Col>
+                </Row>
               )}
             </Container>
           </div>

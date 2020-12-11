@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Badge, Spinner } from "reactstrap";
+import { Container, Row, Col, Badge } from "reactstrap";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { user } from "../../../actions";
@@ -9,6 +9,7 @@ import { bindActionCreators } from "redux";
 import "../styles.css";
 import { selectUserData, selectUserAlbums } from "../../../reducers";
 import AlbumGallery from "../../../components/AlbumGallery";
+import { LeitSpinner } from "../../../components";
 
 const UserAlbums = ({
   publicView,
@@ -92,7 +93,11 @@ const UserAlbums = ({
                   </Col>
                 </Row>
               ) : (
-                <Spinner />
+                <Row>
+                  <Col style={{ textAlign: "center" }}>
+                    <LeitSpinner />
+                  </Col>
+                </Row>
               )}
             </div>
           </Container>
