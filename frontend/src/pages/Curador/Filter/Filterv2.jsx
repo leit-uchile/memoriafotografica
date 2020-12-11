@@ -105,7 +105,7 @@ const Filter = ({ photos, photoCount, loading, getPhotosAuth, editPhoto, updated
               type="text"
               name="search-curador"
               placeholder="Filtrar por título"
-              value={filter.search}
+              value={searchState}
               onChange={(e) => {
                 setPagination((p) => ({ ...p, page: 0 }));
                 setSearchState(e.target.value);

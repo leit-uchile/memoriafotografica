@@ -32,7 +32,6 @@ const initialState = {
     refresh: false,
   },
   uploadDisclosureSet: localStorage.getItem("upload_disclosed") === "true" ? true : false,
-  metadataHelpDisclosure: localStorage.getItem("metadata_help_disclosed") === "true" ? true : false,
 };
 
 export default function site_misc(state = initialState, action) {
@@ -79,9 +78,6 @@ export default function site_misc(state = initialState, action) {
     case READ_UPLOAD_DISCLOSURE:
       localStorage.setItem("upload_disclosed", true);
       return { ...state, uploadDisclosureSet: true };
-    case SET_METADATA_HELP_DISCLOSURE:
-      localStorage.setItem("metadata_help_disclosed", action.data);
-      return { ...state, metadataHelpDisclosure: action.data };
     default:
       return { ...state };
   }
@@ -93,8 +89,6 @@ export const selectSiteMiscCuradorLoading = (state) => state.site_misc.curador.l
 export const selectSiteMiscHomeLoading = (state) => state.site_misc.home.loading;
 
 export const selectSiteMiscCuradorRefresh = (state) => state.site_misc.curador.refresh;
-
-export const selectSiteMiscMetaDataHelpDiscloure = (state) => state.site_misc.metadataHelpDisclosure;
 
 export const selectSiteMiscSearchMetaIDS = (state) => state.site_misc.searchMetaIDs;
 

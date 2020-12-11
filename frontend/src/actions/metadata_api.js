@@ -21,6 +21,7 @@ import {
   METADATA_MERGE,
   METADATA_MERGE_ERROR,
 } from "./types";
+import { setAlert } from "./site_misc";
 
 /**
  * Creates one metadata by name and associates it to the default
@@ -245,10 +246,13 @@ export const putMetadata = (metadata) => (dispatch, getState) => {
   }).then(function (response) {
     const r = response;
     if (r.status === 206 || r.status === 200) {
-      r.json().then((data) =>
+      r.json().then((data) => {
+        dispatch(setAlert("Metadata actualizada con éxito", "success"));
         dispatch({ type: UPDATED_METADATA, data: metadata.id })
+      }
       );
     } else {
+      dispatch(setAlert("Error actualizando Metadata. Intente nuevamente", "warning"));
       dispatch({ type: UPDATED_METADATA_ERROR, data: metadata.id });
     }
   });
@@ -304,8 +308,10 @@ export const deleteMetadata = (id) => (dispatch, getState) => {
     (response) => {
       const r = response;
       if (r.status === 204) {
+        dispatch(setAlert("Metadata eliminada exitosamente", "success"));
         dispatch({ type: DELETED_METADATA, data: id });
       } else {
+        dispatch(setAlert("Error eliminando Metadata. Intente nuevamente", "warning"));
         dispatch({ type: DELETED_METADATA_ERROR, data: id });
       }
     }
@@ -338,8 +344,9 @@ export const mergeMetadata = (ids) => (dispatch, getState) => {
   }).then(function (response) {
     const r = response;
     if (r.status === 200) {
-      r.json().then((data) => dispatch({ type: METADATA_MERGE, data: data }));
+      r.json().then((data) => { dispatch(setAlert("Metadata unida con éxito", "success")); dispatch({ type: METADATA_MERGE, data: data }) });
     } else {
+      dispatch(setAlert("Error uniendo Metadata. Intente nuevamente", "warning"));
       dispatch({ type: METADATA_MERGE_ERROR, data: ids.join(",") });
     }
   });

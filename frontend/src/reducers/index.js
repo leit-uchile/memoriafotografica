@@ -99,8 +99,11 @@ export const selectMetaDataBatch = (state) =>
 export const selectMetaDataOpsCompleted = (state) =>
   fromMetaData.selectMetaDataOpsCompleted(state);
 
+export const selectMetaDataUpdated = (state) =>
+  fromMetaData.selectMetaDataUpdated(state);
+
 export const selectMetaDataOpsErrors = (state) =>
-  fromMetaData.selectMetaDataOpsErrors(state);
+    fromMetaData.selectMetaDataOpsErrors(state);
 
 export const selectMetaDataGeneralTagsResult = (state) =>
   fromMetaData.selectMetaDataGeneralTagsResult(state);
@@ -125,9 +128,6 @@ export const selectSiteMiscHomeLoading = (state) =>
 
 export const selectSiteMiscCuradorRefresh = (state) =>
   fromSiteMisc.selectSiteMiscCuradorRefresh(state);
-
-export const selectSiteMiscMetaDataHelpDiscloure = (state) =>
-  fromSiteMisc.selectSiteMiscMetaDataHelpDiscloure(state);
 
 export const selectSiteMiscSearchMetaIDS = (state) =>
   fromSiteMisc.selectSiteMiscSearchMetaIDS(state);
