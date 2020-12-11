@@ -120,7 +120,7 @@ const PublicProfile = ({
               <h2>&Aacute;lbumes</h2>
               {albums.count !== 0 ? (
                 <Link to={`/user/public/${user.id}/albums`}>
-                  <FontAwesomeIcon icon={faAngleRight} size={"lg"} />
+                  <FontAwesomeIcon icon={faAngleRight} size={"lg"} title={"Ver todos"} />
                 </Link>
               ) : null}
             </Container>
@@ -150,7 +150,7 @@ const PublicProfile = ({
                     </Col>
                   </Row>
                 ) : (
-                  "Este usuario no tiene &aacute;lbumes"
+                  "Este usuario no tiene álbumes"
                 )
               ) : (
                 <Spinner />
@@ -166,7 +166,7 @@ const PublicProfile = ({
               <h2>Fotograf&iacute;as </h2>
               {photos.count !== 0 ? (
                 <Link to={`/user/public/${user.id}/photos`}>
-                  <FontAwesomeIcon icon={faAngleRight} size={"lg"} />
+                  <FontAwesomeIcon icon={faAngleRight} size={"lg"} title={"Ver todas"} />
                 </Link>
               ) : null}
             </Container>
@@ -204,7 +204,7 @@ const PublicProfile = ({
                     </Col>
                   </Row>
                 ) : (
-                  "Este usuario no tiene fotograf&iacute;as"
+                  "Este usuario no tiene fotografías"
                 )
               ) : (
                 <Spinner />

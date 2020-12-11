@@ -14,6 +14,7 @@ import {
   faSuitcase,
   faCameraRetro,
   faAddressCard,
+  faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
@@ -32,7 +33,6 @@ import "./dashboardRouting.css";
 import CollectionView from "../Collections/CollectionView";
 import { bindActionCreators } from "redux";
 import { selectUserData } from "../../reducers";
-
 
 /**
  * TODO:
@@ -107,26 +107,36 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
                   </Col>
                   <Col>
                     <Container className="info">
-                      <h2>
-                        {`${user.first_name} ${user.last_name}`}{" "}
-                        <FontAwesomeIcon
-                          icon={faEdit}
-                          title="Editar perfil"
-                          onClick={() =>
-                            setParams({
-                              redirect: true,
-                              url: "/user/dashboard/editProfile",
-                            })
-                          }
-                        />
-                      </h2>
+                      <h2>{`${user.first_name} ${user.last_name}`} </h2>
                     </Container>
-                    <Container fluid>
+                    <Container>
                       <p>
                         {userTypeTranslation(user.user_type)}{" "}
                         {makeIcons(user.user_type)}
                       </p>
                       <p>{userRolTranslation(user.rol_type)}</p>
+                    </Container>
+                    <Container className="buttons">
+                      <FontAwesomeIcon
+                        icon={faEdit}
+                        title="Editar perfil"
+                        onClick={() =>
+                          setParams({
+                            redirect: true,
+                            url: "/user/dashboard/editProfile",
+                          })
+                        }
+                      />
+                      <FontAwesomeIcon
+                        icon={faEye}
+                        title="Ver perfil"
+                        onClick={() =>
+                          setParams({
+                            redirect: true,
+                            url: `/user/public/${user.id}`,
+                          })
+                        }
+                      />
                     </Container>
                   </Col>
                 </Row>
