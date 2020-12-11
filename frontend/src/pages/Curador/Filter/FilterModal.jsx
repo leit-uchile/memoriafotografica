@@ -123,7 +123,6 @@ const FilterModal = ({
     editPhoto(to_send.id, to_send).then((r) => {
       setSending(false);
       setModal(!modal);
-      window.location.reload();
     });
   };
 
