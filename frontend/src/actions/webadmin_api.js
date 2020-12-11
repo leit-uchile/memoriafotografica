@@ -248,7 +248,7 @@ export const updateMessage = (messageUpdate, formData) => (dispatch, getState) =
   });
   return fetch(`/api/requests/contact/${messageUpdate.id}/`, {
     method: "PUT",
-    headers,
+    headers: headers,
     body: jsonthing,
   }).then((response) => {
     const r = response;

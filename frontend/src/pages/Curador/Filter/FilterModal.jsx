@@ -39,18 +39,14 @@ const FilterModal = ({
   newTagsId,
 }) => {
   const [modal, setModal] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [newphoto, setNewphoto] = useState({});
   const [sending, setSending] = useState(false);
-
-  useEffect(() => {
-    getTags(); //get tags from backend
-  }, [newTagsId]);
 
   const toggle = () => {
     setModal(!modal);
     if (!modal) {
       getPhotoDetails(photoId);
+      getTags(); //get tags from backend
     }
   };
 
@@ -67,7 +63,6 @@ const FilterModal = ({
     delete info.comments;
     delete info.report;
     setNewphoto(info);
-    setLoading(false);
   }, [photoDetails]);
 
   const handleCheckboxChange = (event) => {
@@ -124,9 +119,10 @@ const FilterModal = ({
   const saveChanges = (to_send) => {
     delete to_send.image;
     delete to_send.thumbnail;
-    setSending(!sending);
+    setSending(true);
     editPhoto(to_send.id, to_send).then((response) => {
-      setSending(!sending);
+      setSending(false);
+      setModal(!modal);
       window.location.reload();
     });
   };
@@ -153,10 +149,11 @@ const FilterModal = ({
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>
-          Curando fotografía: {!loading && !sending ? photoDetails.title : ""}{" "}
+          Curando fotografía:{" "}
+          {photoDetails && !sending ? photoDetails.title : ""}{" "}
         </ModalHeader>
         <ModalBody>
-          {!loading ? (
+          {photoDetails ? (
             <Form>
               <Row style={{ margin: "4px 0px" }}>
                 <Col>

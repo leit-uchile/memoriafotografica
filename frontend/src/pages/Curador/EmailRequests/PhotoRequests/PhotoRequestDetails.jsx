@@ -13,6 +13,7 @@ import {
   Button,
   FormGroup,
   Label,
+  Spinner,
 } from "reactstrap";
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,6 +27,7 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
   const [rows, setRows] = useState([]);
   const [approved, setApproved] = useState([]);
   const [redirect, setRedirect] = useState(false);
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     if (request.photos) {
@@ -59,14 +61,17 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
       let tt = el.title;
       let pm = el.permission;
       let img = el.image.slice(6);
-      return {title: tt, permission: pm, url: img}
+      return { title: tt, permission: pm, url: img };
     });
     let reqUpdate = { ...req, photosAndData };
     reqUpdate.resolved = !req.resolved;
     reqUpdate.approved = bool;
     delete reqUpdate.photos;
-    updateRequest(reqUpdate);
-    setTimeout(() => setRedirect(true), 1000);
+    setSending(true);
+    updateRequest(reqUpdate).then((response) => {
+      setSending(false);
+      setRedirect(true);
+    });
   };
 
   if (redirect) {
@@ -86,6 +91,11 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
               color={approved.length > 0 ? "primary" : "danger"}
               onClick={() => resolve(request, approved.length > 0)}
             >
+              {sending ? (
+                <Spinner style={{ width: "1rem", height: "1rem" }} />
+              ) : (
+                ""
+              )}{" "}
               {approved.length > 0
                 ? `Aprobar (${approved.length})`
                 : "Rechazar solicitud"}

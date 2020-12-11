@@ -86,17 +86,10 @@ const ContactTable = ({
     setPagination((pag) => ({ ...pag, page: p }));
   };
 
-  const resolve = (msg, formData, bool) => {
-    let msgUpdate = { ...msg };
-    msgUpdate.resolved = true;
-    msgUpdate.email_sent = bool;
-    updateMessage(msgUpdate, formData);
-  };
-
   const resolveButton = (msg) => (
     <ButtonGroup>
-      <ContactEmailModal buttonLabel="Correo" message={msg} send={resolve} />
-      <ContactPhoneModal buttonLabel="Teléfono" message={msg} send={resolve} />
+      <ContactEmailModal buttonLabel="Correo" message={msg} send={updateMessage} />
+      <ContactPhoneModal buttonLabel="Teléfono" message={msg} send={updateMessage} />
     </ButtonGroup>
   );
 
