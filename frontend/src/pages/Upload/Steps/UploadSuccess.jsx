@@ -1,14 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Container,
-  Button,
   Row,
   Col,
-  Progress,
-  Alert,
-  ButtonGroup,
 } from "reactstrap";
-import "./styles.css";
 import "./uploadProgress.css";
 
 const UploadSuccess = () => {

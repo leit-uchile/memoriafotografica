@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserFriends,
@@ -19,7 +19,7 @@ import {
 } from "reactstrap";
 import ReCAPTCHA from "react-google-recaptcha";
 import { connect } from "react-redux";
-import { webadmin } from "../../actions";
+import { webadmin } from "../../../actions";
 
 const UploadUnregister = ({
   cache,

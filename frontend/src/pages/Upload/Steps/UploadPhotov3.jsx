@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import UploadDetails from "./UploadDetailsv2";
 import UploadProgress from "./UploadProgress";
 import {
@@ -18,11 +18,9 @@ import {
   faCloudUploadAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { connect } from "react-redux";
-import { site_misc } from "../../actions";
-import { photos } from "../../actions/gallery_api";
+import { site_misc, gallery } from "../../../actions";
 import { bindActionCreators } from "redux";
 import uuid from "uuid";
-import "./styles.css";
 import "./uploadPhoto.css";
 
 const imageMaxSize = 8000000; // Bytes ~ 8MB
@@ -310,7 +308,7 @@ const mapActionsToProps = (dispatch) =>
   bindActionCreators(
     {
       sendAlert: site_misc.setAlert,
-      uploadImages: photos.uploadImages,
+      uploadImages: gallery.photos.uploadImages,
     },
     dispatch
   );

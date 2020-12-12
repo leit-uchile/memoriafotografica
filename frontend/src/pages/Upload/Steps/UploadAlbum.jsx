@@ -23,7 +23,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faCreativeCommons } from "@fortawesome/free-brands-svg-icons";
 import ReactTags from "react-tag-autocomplete";
-import "./styles.css";
 import "./uploadAlbum.css";
 
 const CC_INFO = [
