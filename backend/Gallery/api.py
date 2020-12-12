@@ -791,7 +791,7 @@ class TagSuggestionAPI(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         print(request.data)
         serializer = TagSuggestionSerializer(
-            data=request.data, context={'request': request})
+            data=request.data, context={'request': request}, many=True)
 
         if serializer.is_valid():
             serializer.save()
