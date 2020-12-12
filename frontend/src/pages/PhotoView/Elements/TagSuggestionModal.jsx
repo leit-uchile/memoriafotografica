@@ -66,9 +66,14 @@ const TagSuggestionModal = ({
       setSuggestionTagSent(true);
     } else if (
       !metadataCreation.creating &&
-      metadataCreation.failedCreations.length === 0
+      metadataCreation.failedCreations.length === 0 &&
+      metadataCreation.newIds.length !== 0
     ) {
-      let newMetaIds = metadataCreation.newIds.map((tag) => tag.id);
+      console.log(metadataCreation.newIds);
+
+      let newMetaIds = metadataCreation.newIds[
+        metadataCreation.newIds.length - 1
+      ].map((tag) => tag.id);
 
       formData.tags.forEach((tag) => {
         metadata[tag.name] = { ...tag };
@@ -78,7 +83,6 @@ const TagSuggestionModal = ({
       let meta_ids = formData.tags
         .filter((el) => el.id !== undefined)
         .map((el) => el.id);
-
       setSuggestionsToCreate(meta_ids.concat(newMetaIds));
     } else {
       setSuggestionTagErrors(true);
@@ -87,7 +91,8 @@ const TagSuggestionModal = ({
 
   // Crear Sugerencias de Tags
   useEffect(() => {
-    if (suggestionsToCreate !== []) {
+    console.log(suggestionsToCreate);
+    if (suggestionsToCreate.length !== 0) {
       createTagSuggestions(photoId, suggestionsToCreate);
     }
   }, [suggestionsToCreate]);
