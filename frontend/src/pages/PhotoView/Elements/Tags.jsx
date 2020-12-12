@@ -3,7 +3,7 @@ import { Badge } from "reactstrap";
 import { Link } from "react-router-dom";
 import TagSuggestionModal from "./TagSuggestionModal"
 
-const Tags = ({ tags, onRedirect }) => (
+const Tags = ({ photoId, tags, onRedirect }) => (
   <Fragment>
     <br />
     <h5 style={{ textAlign: "left" }}>Etiquetas</h5>
@@ -26,6 +26,7 @@ const Tags = ({ tags, onRedirect }) => (
     </Link> */}
 
     <TagSuggestionModal
+      photoId={photoId}
       tags={tags}
     />
     

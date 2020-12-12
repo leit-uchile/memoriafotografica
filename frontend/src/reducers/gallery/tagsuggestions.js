@@ -18,14 +18,15 @@ export default function tagsuggestions(state = initialState, action) {
   switch (type) {
     case CREATING_TAGSUGGESTION:
       return {
-        ...state,
+        newIds: [],
         creating: true,
+        failed: false,
       };
     case CREATED_TAGSUGGESTION:
       return {
-        ...state,
+        failed: false,
         creating: false,
-        newIds: [...state.newIds, data],
+        newIds: data,
       };
     case CREATED_TAGSUGGESTION_ERROR:
       return {

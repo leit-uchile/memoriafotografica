@@ -1,12 +1,11 @@
-import { metadata } from "..";
 import {
   CREATED_TAGSUGGESTION,
   CREATING_TAGSUGGESTION,
   CREATED_TAGSUGGESTION_ERROR
-} from "./types";
+} from "../types";
 
 
-export const createTagSuggestion = (photo, metadataList) => (dispatch, getState) => {
+export const createTagSuggestions = (photo, metadataList) => (dispatch, getState) => {
   // Failsafe
   if (metadataList.length === 0) {
     return;
@@ -20,7 +19,7 @@ export const createTagSuggestion = (photo, metadataList) => (dispatch, getState)
     Authorization: "Token " + getState().user.token,
   };
 
-  data = metadata.map((meta) => ({metadata: meta, photo: photo}));
+  let data = metadataList.map((meta) => ({metadata: meta, photo: photo}));
 
   // NOTE: metadata defaults to 1
   fetch("/api/tagsuggestion/", {

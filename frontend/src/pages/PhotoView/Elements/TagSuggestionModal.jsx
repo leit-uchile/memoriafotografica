@@ -18,9 +18,13 @@ import {
   selectUserIsAuthenticated,
   selectMetaDataGeneralTagsResult,
   selectMetaData,
+  selectMetaDataNewIds,
+  selectTagSuggestionsCreating,
+  selectTagSuggestionsNewIds,
+  selectTagSuggestionsFailed,
 } from "../../../reducers";
 
-import { metadata } from "../../../actions";
+import { metadata, gallery } from "../../../actions";
 import ReactTags from "react-tag-autocomplete";
 
 import { bindActionCreators } from "redux";
@@ -33,48 +37,82 @@ const TagSuggestionModal = ({
   // className,
   // suggestionTagSent,
   // suggestionTagComplete,
+  photoId,
   tags,
   isAuth,
   meta,
   searchMeta,
   createMultipleMetas,
+  createTagSuggestions,
   metadataCreation,
+  tagsuggestionsCreating,
+  tagSuggestionsFailed,
+  tagSuggestionsNewIds,
 }) => {
   const [formData, setFormData] = useState({
     tags: [],
   });
 
   const [modal, setModal] = useState(false);
+
+  const [suggestionsToCreate, setSuggestionsToCreate] = useState([]);
   const [suggestionTagSent, setSuggestionTagSent] = useState(false);
   const [suggestionTagErrors, setSuggestionTagErrors] = useState(false);
   const [suggestionTagComplete, setSuggestionTagComplete] = useState(false);
 
+  // Reaccionar a la  creacion de nueva Id para el metada
   useEffect(() => {
-    console.log(metadataCreation);
-
     if (metadataCreation.creating) {
       setSuggestionTagSent(true);
     } else if (
       !metadataCreation.creating &&
       metadataCreation.failedCreations.length === 0
     ) {
-      setSuggestionTagComplete(true);
+      let newMetaIds = metadataCreation.newIds.map((tag) => tag.id);
+
+      formData.tags.forEach((tag) => {
+        metadata[tag.name] = { ...tag };
+      });
+
+      // filtrar metadatas ids (ya creados)
+      let meta_ids = formData.tags
+        .filter((el) => el.id !== undefined)
+        .map((el) => el.id);
+
+      setSuggestionsToCreate(meta_ids.concat(newMetaIds));
     } else {
       setSuggestionTagErrors(true);
     }
   }, [metadataCreation.creating]);
 
+  // Crear Sugerencias de Tags
+  useEffect(() => {
+    if (suggestionsToCreate !== []) {
+      createTagSuggestions(photoId, suggestionsToCreate);
+    }
+  }, [suggestionsToCreate]);
+
+  // Reaccionar a sugerencias de tags creadas!
+  useEffect(() => {
+    if (tagsuggestionsCreating) {
+      setSuggestionTagSent(true);
+    } else {
+      if (tagSuggestionsFailed) {
+        setSuggestionTagComplete(false);
+        setSuggestionTagErrors(true);
+      } else if (tagSuggestionsNewIds.length !== 0) {
+        setSuggestionTagComplete(true);
+      }
+    }
+  }, [tagsuggestionsCreating]);
+
   const suggestions = meta
     ? meta.map((e) => ({ name: e.value, id: e.id }))
     : [];
 
-  // const sendSuggest = () => {};
-
   const reset = () => {
     setFormData({ tags: [] });
     setSuggestionTagSent(false);
-    setSuggestionTagErrors(false);
-    setSuggestionTagComplete(false);
   };
 
   const deleteTag = (i) => {
@@ -107,13 +145,21 @@ const TagSuggestionModal = ({
       metadata[tag.name] = { ...tag };
     });
 
+    // filtrar metadatas nuevos!
     let new_metas = formData.tags
       .filter((el) => el.id === undefined)
       .map((el) => el.name);
 
+    // filtrar metadatas ids (ya creados)
+    let meta_ids = formData.tags
+      .filter((el) => el.id !== undefined)
+      .map((el) => el.id);
+
+    // crear metadatas nuevos
     if (new_metas.length !== 0) {
-      setSuggestionTagSent(true);
       createMultipleMetas(new_metas);
+    } else {
+      setSuggestionsToCreate(meta_ids);
     }
   };
 
@@ -250,12 +296,16 @@ const mapStateToProps = (state) => ({
   isAuth: selectUserIsAuthenticated(state),
   meta: selectMetaDataGeneralTagsResult(state),
   metadataCreation: selectMetaData(state),
+  tagsuggestionsCreating: selectTagSuggestionsCreating(state),
+  tagSuggestionsFailed: selectTagSuggestionsFailed(state),
+  tagSuggestionsNewIds: selectTagSuggestionsNewIds(state),
 });
 
 const mapActionToProps = (dispatch) =>
   bindActionCreators(
     {
       createMultipleMetas: metadata.createMultipleMetas,
+      createTagSuggestions: gallery.tagsuggestions.createTagSuggestions,
       searchMeta: (query) =>
         metadata.searchMetadataByValueGeneral(query, 1, 10),
     },
