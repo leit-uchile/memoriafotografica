@@ -16,6 +16,7 @@ import {
   Input,
   Form,
   FormText,
+  Spinner,
 } from "reactstrap";
 import { metadata, gallery } from "../../../actions";
 import ReactTags from "react-tag-autocomplete";
@@ -52,10 +53,10 @@ const EditPhotosModal = ({
   createMultipleMetas,
   editPhoto,
   deletePhoto,
-  updatedPhoto,
 }) => {
   const [toggleDelete, setToggleDelete] = useState(false);
   const [formData, setData] = useState({}); //nuevos datos
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     getTags(); //get tags from backend
@@ -84,11 +85,16 @@ const EditPhotosModal = ({
           : null;
       delete info.image;
       delete info.thumbnail;
+      delete info.comments;
+      delete info.report;
       setData(info);
     } else {
       setData({ metadata: [] });
     }
   }, [photoDetails, photosId, isOpen]);
+  // photoDetails: when new info from another photoId has been requested
+  // photosId: when there are 2+ photos it's necessary setData empty
+  // isOpen: to set original data when the user changed some field without save
 
   const updateData = (e) =>
     setData({ ...formData, [e.target.name]: e.target.value });
@@ -109,12 +115,13 @@ const EditPhotosModal = ({
 
   // It checks if there are new tags with no ID
   const handleMetadata = () => {
+    setSending(true);
     let newDetails = { ...formData };
     if (photosId.length > 1 && newDetails.metadata.length === 0) {
       delete newDetails.metadata; // No changes for each photo in its metadata field
       updatePhotoDetails(newDetails);
     } else {
-      // There are metadata to push
+      // There is one photo or there are metadata to push
       let newTags = newDetails.metadata.filter((el) => el.id === undefined); // New metadata unregistered
       if (newTags.length === 0) {
         newDetails.metadata = newDetails.metadata.map((el) => el.id);
@@ -126,7 +133,7 @@ const EditPhotosModal = ({
     }
   };
 
-  // It create array with registered metadata
+  // It creates an array with registered metadata
   useEffect(() => {
     let newDetails = { ...formData };
     if (newDetails.metadata) {
@@ -134,7 +141,9 @@ const EditPhotosModal = ({
         newDetails.metadata.filter((el) => el.id === undefined).length ===
         newTagsId.length
       ) {
-        let oldTags = newDetails.metadata.filter((el) => el.id !== undefined);
+        let oldTags = newDetails.metadata
+          .filter((el) => el.id !== undefined)
+          .map((el) => el.id);
         let newTags = Object.values(newTagsId).map((el) => el.id);
         newDetails.metadata = oldTags.concat(newTags);
         updatePhotoDetails(newDetails);
@@ -151,11 +160,16 @@ const EditPhotosModal = ({
           ? editPhoto(photoIdToUpdate, {
               ...newDetails,
               title: `${newDetails.title} (${index + 1})`, // Each photo gets the new title with an index
+            }).then((r) => {
+              setSending(false);
+              handleToggle();
             })
-          : editPhoto(photoIdToUpdate, newDetails);
+          : editPhoto(photoIdToUpdate, newDetails).then((r) => {
+              setSending(false);
+              handleToggle();
+            });
       });
     }
-    handleToggle();
   };
 
   const onDelete = (ids) => {
@@ -238,16 +252,18 @@ const EditPhotosModal = ({
               style={{ width: "auto" }}
               placeholder={"Añadir etiquetas"}
               autoresize={false}
-              allowNew={true}
+              allowNew={!isCurator}
               tags={formData.metadata}
               suggestions={suggestions}
               handleDelete={deleteTag}
               handleAddition={additionTag}
             />
-            <FormText color="muted">
-              Para ingresar una nueva etiqueta debe presionar la tecla "Entrar"
-              o "Tabulación"
-            </FormText>
+            {!isCurator ? (
+              <FormText color="muted">
+                Para ingresar una nueva etiqueta debe presionar la tecla
+                "Entrar" o "Tabulación"
+              </FormText>
+            ) : null}
           </Col>
         </FormGroup>
         {!isCurator ? (
@@ -318,26 +334,24 @@ const EditPhotosModal = ({
           </Modal>
         </ModalBody>
         <ModalFooter>
-          {!updatedPhoto ? (
-            <Fragment>
-              {!isCurator ? (
-                <FormText color="muted">
-                  Los cambios estarán sujetos a aprobación
-                </FormText>
-              ) : null}
-
-              <Button color="primary" onClick={() => handleMetadata()}>
-                Guardar cambios
-              </Button>
-              <Button color="secondary" onClick={() => handleToggle()}>
-                Cancelar
-              </Button>
-            </Fragment>
-          ) : (
-            <Button color="secondary" onClick={() => handleToggle()}>
-              Cerrar
+          <Fragment>
+            {!isCurator ? (
+              <FormText color="muted">
+                Los cambios estarán sujetos a aprobación
+              </FormText>
+            ) : null}
+            <Button color="primary" onClick={() => handleMetadata()}>
+              {sending ? (
+                <Spinner style={{ width: "1rem", height: "1rem" }} />
+              ) : (
+                ""
+              )}{" "}
+              Guardar cambios
             </Button>
-          )}
+            <Button color="secondary" onClick={() => handleToggle()}>
+              Cancelar
+            </Button>
+          </Fragment>
         </ModalFooter>
       </Modal>
     </div>
@@ -349,7 +363,6 @@ const mapStateToProps = (state) => ({
   tags: selectMetaDataAllTags(state),
   creating: selectMetaDataCreating(state),
   newTagsId: selectMetaDataNewIds(state),
-  updatedPhoto: selectPhotosUpdatedPhoto(state),
 });
 
 const mapActionsToProps = (dispatch) =>

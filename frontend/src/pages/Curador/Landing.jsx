@@ -215,10 +215,13 @@ const Landing = ({ stats: { general }, loadGeneralStats }) => {
               </Statistic>
               <Statistic>
                 <Statistic.Value>
-                  {general && general.count_photo_approved.length > 0
-                    ? general.count_photo_approved[0].approved
-                      ? general.count_photo_approved[0].total
-                      : general.count_photo_approved[1].total
+                  {console.log(general)}
+                  {general
+                    ? general.count_photo_approved.length > 0
+                      ? general.count_photo_approved[0].approved
+                        ? general.count_photo_approved[0].total
+                        : 0 //general.count_photo_approved[1].total
+                      : 0
                     : 0}
                 </Statistic.Value>
                 <Statistic.Label>Fotos p&uacute;blicas</Statistic.Label>

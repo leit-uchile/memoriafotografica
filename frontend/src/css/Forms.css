@@ -1,5 +1,6 @@
 .stepContainer {
   margin-bottom: 2em;
+  overflow-y: hidden;
 }
 .stepContainer .card img {
   max-height: 200px;
@@ -43,6 +44,10 @@
 }
 
 /* Toggle Switch for checkboxes */
+.form-check.center{
+  text-align: center;
+}
+
 .toggle-button {
   display: none;
 }

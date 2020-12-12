@@ -91,6 +91,3 @@ export const pushPhotoArray = (photos) => (dispatch) =>
 
 export const readDisclosure = () => (dispatch) =>
   dispatch({ type: READ_UPLOAD_DISCLOSURE, data: null });
-
-export const setMetadataHelp = (value) => (dispatch) =>
-  dispatch({ type: SET_METADATA_HELP_DISCLOSURE, data: value });

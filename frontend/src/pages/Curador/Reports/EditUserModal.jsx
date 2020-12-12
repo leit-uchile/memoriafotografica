@@ -11,6 +11,7 @@ import {
   FormGroup,
   Input,
   Form,
+  Spinner,
 } from "reactstrap";
 import { user } from "../../../actions";
 import moment from "moment";
@@ -24,6 +25,7 @@ const EditUserModal = ({
   getUser,
 }) => {
   const [formData, setData] = useState({});
+  const [sending, setSending] = useState(false);
   const [deletePhoto, setDelete] = useState(false);
 
   useEffect(() => {
@@ -41,7 +43,11 @@ const EditUserModal = ({
   const onSend = () => {
     let info = { ...formData };
     deletePhoto ? (info.avatar = null) : delete info.avatar;
-    editUser(info);
+    setSending(true);
+    editUser(info).then((r) => {
+      setSending(false);
+      handleToggle();
+    });
   };
   return (
     <div>
@@ -119,20 +125,17 @@ const EditUserModal = ({
           </Form>
         </ModalBody>
         <ModalFooter>
-          {true ? (
-            <Fragment>
-              <Button color="primary" onClick={() => onSend()}>
-                Guardar cambios
-              </Button>
-              <Button color="secondary" onClick={() => handleToggle()}>
-                Cancelar
-              </Button>
-            </Fragment>
-          ) : (
-            <Button color="secondary" onClick={() => handleToggle()}>
-              Cerrar
-            </Button>
-          )}
+          <Button color="primary" onClick={() => onSend()}>
+            {sending ? (
+              <Spinner style={{ width: "1rem", height: "1rem" }} />
+            ) : (
+              ""
+            )}{" "}
+            Guardar cambios
+          </Button>
+          <Button color="secondary" onClick={() => handleToggle()}>
+            Cancelar
+          </Button>
         </ModalFooter>
       </Modal>
     </div>

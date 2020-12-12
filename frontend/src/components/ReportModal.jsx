@@ -18,9 +18,11 @@ import { faFlag } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import "./reportModal.css";
-import { selectReportComplete, 
-          selectUserIsAuthenticated,
-          selectReportPhotoReportSent,} from "../reducers";
+import {
+  selectReportComplete,
+  selectUserIsAuthenticated,
+  selectReportPhotoReportSent,
+} from "../reducers";
 
 /**
  * Report Modal for all 3 types of report
@@ -96,7 +98,7 @@ class ReportModal extends Component {
           <FormGroup>
             <Label>Problemas</Label>
             {options.map((opt, key) => (
-              <FormGroup check>
+              <FormGroup check key={`formgroup-${key}`}>
                 <Label check>
                   <Input
                     key={`option-${key}`}

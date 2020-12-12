@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 import { Button, Row, Col, Container, Badge } from "reactstrap";
 import { user, site_misc, gallery } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
+import CreateAlbumModal from "./CreateAlbumModal";
 import PhotoEditor from "../../../components/PhotoEditor";
 import { Helmet } from "react-helmet";
 import Gallery from "react-photo-gallery";
@@ -154,6 +155,7 @@ class UserPhotos extends Component {
                 censurePhoto={null}
                 
               />
+              <CreateAlbumModal photosID={this.state.picturesToEdit} isOpen={(bool) => this.setState({modalOpen: bool})}/>
             </Col>
           </Row>
         )}

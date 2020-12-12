@@ -1,10 +1,13 @@
+import hashlib
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
 from rest_framework import status
 from knox.models import AuthToken
 from django.conf import settings
-from .serializers import (CreateUserSerializer, UserSerializer, LoginUserSerializer,
-                          UserAlbumSerializer, UserCommentSerializer, UserPhotoSerializer, ChangePasswordSerializer)
+from .serializers import (CreateUserSerializer, UserSerializer,
+                          LoginUserSerializer, UserAlbumSerializer,
+                          UserCommentSerializer, UserPhotoSerializer,
+                          ChangePasswordSerializer, ReCaptchaSerializer)
 from .models import User, RegisterLink
 from .permissions import *
 from WebAdmin.views import sendEmail
@@ -17,9 +20,22 @@ import hashlib
 from django.dispatch import receiver
 from django_rest_passwordreset.signals import reset_password_token_created
 
+
 def createHash(id):
     integer = str(id).encode("UTF-8")
     return str(hashlib.sha256(integer).hexdigest())
+
+
+class VerifyTokenAPI(generics.GenericAPIView):
+    serializer_class = ReCaptchaSerializer
+
+    allowed_methods = ["POST"]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            return Response({'success': True}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ReadOnly(BasePermission):
@@ -35,15 +51,27 @@ class RegistrationAPI(generics.GenericAPIView):
     serializer_class = CreateUserSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        activation_link = RegisterLink(
-            code=createHash(user.pk), status=1, user=user)
-        activation_link.save()
-        sendEmail(user.email, "sign_up",
-                  "Active su cuenta", activation_link.code)
-        return Response(status=status.HTTP_200_OK)
+        formData = request.data.copy()
+        if "recaptchaToken" in formData.keys():
+            tokenRecaptcha = {"recaptcha": formData.pop("recaptchaToken")[0]}
+        else:
+            tokenRecaptcha = {"recaptcha": ""}
+        serializer = self.serializer_class(data=formData,
+                                           context={'request': request})
+        recaptchaSer = ReCaptchaSerializer(data=tokenRecaptcha)
+
+        if recaptchaSer.is_valid():
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            activation_link = RegisterLink(code=createHash(user.pk),
+                                           status=1,
+                                           user=user)
+            activation_link.save()
+            sendEmail(user.email, "sign_up", "Active su cuenta",
+                      activation_link.code)
+            return Response(status=status.HTTP_200_OK)
+        return Response(recaptchaSer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
 
 
 class RegisterLinkAPI(generics.GenericAPIView):
@@ -69,12 +97,12 @@ class RegisterLinkAPI(generics.GenericAPIView):
                     user.save()
                     register_link.status = 0
                     register_link.save()
-                    return Response({
-                        "user": UserSerializer(user).data,
-                        "token": AuthToken.objects.create(user)
-                    },
-                        status=status.HTTP_200_OK
-                    )
+                    return Response(
+                        {
+                            "user": UserSerializer(user).data,
+                            "token": AuthToken.objects.create(user)
+                        },
+                        status=status.HTTP_200_OK)
                 return Response(status=status.HTTP_304_NOT_MODIFIED)
             else:
                 raise Exception
@@ -106,7 +134,7 @@ class PasswordAPI(generics.GenericAPIView):
     put:
     Change user password
     """
-    permission_classes = [permissions.IsAuthenticated, ]
+    permission_classes = [IsAuthenticated, ]
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -134,7 +162,9 @@ class UserTokenAPI(generics.RetrieveAPIView):
     get:
     Get details of the user 
     """
-    permission_classes = [permissions.IsAuthenticated, ]
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
     serializer_class = UserSerializer
 
     def get_object(self):
@@ -201,12 +231,16 @@ class UserDetailAPI(generics.GenericAPIView):
         user = self.get_object(pk)
 
         if str(request.user.id) == pk or request.user.user_type != 1:
-            serializer = UserSerializer(user, data=request.data, context={
-                                        'user_type': request.user.user_type}, partial=True)
+            serializer = UserSerializer(
+                user,
+                data=request.data,
+                context={'user_type': request.user.user_type},
+                partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
@@ -279,5 +313,5 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
         When a token is created, an  e-mail needs to be sent to the user
     """
     sendEmail(reset_password_token.user.email, "reset_password",
-        'Reinicia tu contraseña', reset_password_token.key)
+              'Reinicia tu contraseña', reset_password_token.key)
     return Response(status=status.HTTP_200_OK)

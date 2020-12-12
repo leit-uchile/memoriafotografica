@@ -13,7 +13,7 @@ import {
   Button,
   FormGroup,
   Label,
-  Input,
+  Spinner,
 } from "reactstrap";
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,12 +21,13 @@ import { faChevronCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import uuid4 from "uuid";
 import { webadmin } from "../../../../actions";
 import { bindActionCreators } from "redux";
-import {selectWebAdminRequestDetail} from "../../../../reducers"
+import { selectWebAdminRequestDetail } from "../../../../reducers";
 
 const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
   const [rows, setRows] = useState([]);
   const [approved, setApproved] = useState([]);
   const [redirect, setRedirect] = useState(false);
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     if (request.photos) {
@@ -46,7 +47,7 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
   }, [request]);
 
   const handleOnClick = (obj) => {
-    // If its there remove it
+    // If it is there then remove it
     const newList = approved.filter((el) => el.id !== obj.id);
     if (approved.filter((el) => el.id === obj.id).length !== 0) {
       setApproved([...newList]);
@@ -56,13 +57,21 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
   };
 
   const resolve = (req, bool) => {
-    let approvedOriginal = approved.map((el) => el.image);
-    let reqUpdate = { ...req, approvedOriginal };
-    delete reqUpdate.photos;
+    let photosAndData = approved.map((el) => {
+      let tt = el.title;
+      let pm = el.permission;
+      let img = el.image.slice(6);
+      return { title: tt, permission: pm, url: img };
+    });
+    let reqUpdate = { ...req, photosAndData };
     reqUpdate.resolved = !req.resolved;
     reqUpdate.approved = bool;
-    updateRequest(reqUpdate);
-    setTimeout(() => setRedirect(true), 1000);
+    delete reqUpdate.photos;
+    setSending(true);
+    updateRequest(reqUpdate).then((r) => {
+      setSending(false);
+      setRedirect(true);
+    });
   };
 
   if (redirect) {
@@ -82,6 +91,11 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
               color={approved.length > 0 ? "primary" : "danger"}
               onClick={() => resolve(request, approved.length > 0)}
             >
+              {sending ? (
+                <Spinner style={{ width: "1rem", height: "1rem" }} />
+              ) : (
+                ""
+              )}{" "}
               {approved.length > 0
                 ? `Aprobar (${approved.length})`
                 : "Rechazar solicitud"}
@@ -147,16 +161,20 @@ const PhotoRequestDetails = ({ request, updateRequest, requestUpdate }) => {
                     {c.censure ? (
                       <span style={{ color: "red" }}>Censurada</span>
                     ) : null} */}
-                    <FormGroup check>
-                      <Label check>
-                        <Input
-                          type="checkbox"
-                          name="check"
-                          defaultChecked={true}
-                          onClick={() => handleOnClick(c)}
-                        />{" "}
-                        Aprobar
+                    <FormGroup row>
+                      <Label for="approve" sm={3}>
+                        Aprobar{" "}
                       </Label>
+                      <Col sm={9}>
+                        <input
+                          type="checkbox"
+                          class="toggle-button"
+                          id="approve"
+                          defaultChecked={true}
+                          onChange={() => handleOnClick(c)}
+                        />
+                        <label for="approve"></label>
+                      </Col>
                     </FormGroup>
                   </CardFooter>
                 </Card>

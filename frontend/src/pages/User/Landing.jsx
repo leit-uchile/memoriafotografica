@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { user } from "../../actions";
 import { Link, Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faPlusCircle, faSuitcase, faCameraRetro, faAddressCard} from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet";
 import { bindActionCreators } from "redux";
 import { selectUserPhotos,
@@ -134,6 +134,20 @@ class Landing extends Component {
     );
   }
 }
+
+
+const makeIcons = (rol_id) => {
+  switch (rol_id) {
+    case 1:
+      return <FontAwesomeIcon icon={faCameraRetro} />;
+    case 2:
+      return <FontAwesomeIcon icon={faAddressCard} />;
+    case 3:
+      return <FontAwesomeIcon icon={faSuitcase} />;
+    default:
+      return "Failed";
+  }
+};
 
 const mapStateToProps = (state) => ({
   data: {

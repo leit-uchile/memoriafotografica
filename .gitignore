@@ -43,3 +43,7 @@ static.package-lock.json
 static.yarn.lock
 
 db
+cocola
+cocola.pub
+docker-compose.yml
+backend/Users/models.py

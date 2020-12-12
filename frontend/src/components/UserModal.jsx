@@ -11,12 +11,13 @@ import {
   ModalFooter,
 } from "reactstrap";
 import { connect } from "react-redux";
-import { user } from "../actions";
+import { site_misc, user } from "../actions";
 import { Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import "./userModal.css";
 import { selectUserData } from "../reducers";
+import PropTypes from "prop-types";
 
 const UserModal = ({ logout, user }) => {
   const [toggle, setToggle] = useState(false);
@@ -121,12 +122,18 @@ const UserModal = ({ logout, user }) => {
   );
 };
 
+UserModal.propTypes = {
+  user: PropTypes.object.isRequired,
+  logout: PropTypes.func.isRequired,
+};
+
 const mapStateToProps = (state) => ({
   user: selectUserData(state),
 });
 
 const mapActionsToProps = (dispatch) => ({
   logout: () => dispatch(user.logout()),
+  setLoginSuccessRoute: (route) => dispatch(site_misc.addLoginRoute(route)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(UserModal);
