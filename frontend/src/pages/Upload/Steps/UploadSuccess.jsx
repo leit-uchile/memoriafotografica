@@ -4,6 +4,7 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import { Link } from "react-router-dom";
 import "./uploadProgress.css";
 
 const UploadSuccess = () => {
@@ -35,8 +36,10 @@ const UploadSuccess = () => {
             <h3>Editar fotos</h3>
           </Col>
           <Col className="text-center">
+            <Link to="/user/dashboard/albums">
             <img src="/assets/photo-album.svg" width="30%"/>
             <h3>Crear album</h3>
+            </Link>
           </Col>
           <Col className="text-center">
           <img src="/assets/image-file.svg" width="30%"/>
