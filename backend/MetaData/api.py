@@ -191,11 +191,13 @@ class MetadataListAPI(generics.GenericAPIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
+        """
+        The endpoint accepts a list of metadata
+        """
         if request.user.user_type != 1:
-            serializer = MetadataAdminSerializer(data=request.data, partial=True)
-
+            serializer = MetadataAdminSerializer(data=request.data, partial=True, many=True)
         elif request.user.user_type == 1:
-            serializer = MetadataSerializer(data = request.data)
+            serializer = MetadataSerializer(data = request.data, many=True)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         if serializer.is_valid():

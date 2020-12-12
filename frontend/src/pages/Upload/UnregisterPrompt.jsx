@@ -32,8 +32,10 @@ const UnregisteredPrompt = ({ nextStep }) => (
             <Button color="primary" tag={Link} to="/register">
               Registrarme
             </Button>
+          </Row>
+          <Row className="unregister-prompt-item">
             <Button color="link" onClick={nextStep}>
-              Continuar sin registrar
+                Continuar sin registrar
             </Button>
           </Row>
           <Row className="unregister-prompt-item">

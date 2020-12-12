@@ -28,21 +28,29 @@ import { setAlert } from "./site_misc";
  * IPTC tag (Keywords)
  *
  * @param {string} name
+ * @param {boolean} list if multiple names are sent
  *
  * On success saves the metadata on store.metadata.newIDs
  * On failure saves reason and name on store.metadata.failedCreations
  */
-export const createMetadataByName = (name) => (dispatch, getState) => {
+export const createMetadataByName = (name, list = false) => (
+  dispatch,
+  getState
+) => {
   let headers = {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
 
+  let newMetadata = list
+    ? name.map((el) => ({ value: el, metadata: 1 }))
+    : [{ value: name, metadata: 1 }];
+
   // NOTE: metadata defaults to 1
   fetch("/api/metadata/", {
     method: "POST",
     headers: headers,
-    body: JSON.stringify({ value: name, metadata: 1 }),
+    body: JSON.stringify(newMetadata),
   }).then(function (response) {
     const r = response;
     if (r.status === 201) {
@@ -57,7 +65,6 @@ export const createMetadataByName = (name) => (dispatch, getState) => {
 
 /**
  * Creates multiple metadata from a list of names
- * doing multiple calls to the API
  * @param {Array} nameList
  */
 export const createMultipleMetas = (nameList) => (dispatch, getState) => {
@@ -68,18 +75,7 @@ export const createMultipleMetas = (nameList) => (dispatch, getState) => {
   // Set process in motion
   dispatch({ type: CREATING_METADATA, data: nameList.length });
 
-  const funcs = nameList.map((name) => () =>
-    createMetadataByName(name)(dispatch, getState)
-  );
-
-  const callWithTimeout = (id, list) => {
-    if (id !== list.length) {
-      list[id]();
-      setTimeout(() => callWithTimeout(id + 1, list), 200);
-    }
-  };
-
-  callWithTimeout(0, funcs);
+  createMetadataByName(nameList, true)(dispatch, getState)
 };
 
 /**
