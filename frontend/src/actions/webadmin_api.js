@@ -18,15 +18,45 @@ import {
   CONTACTMESSAGES_RECOVERED,
   CONTACTMESSAGES_ERROR,
   CONTACTMESSAGE_SWITCH_STATE,
-  CONTACTMESSAGE_SWITCH_STATE_ERROR
+  CONTACTMESSAGE_SWITCH_STATE_ERROR,
+  VALIDATE_RECAPTCHA,
+  VALIDATE_RECAPTCHA_ERROR,
+  RESET_RECAPTCHA,
 } from "./types";
 import { setAlert } from "./site_misc";
+
+export const validateRecaptcha = (valueRecaptcha) => (dispatch) => {
+  {
+    let header = { "Content-Type": "application/json" };
+    let data = { recaptcha: valueRecaptcha };
+    fetch("/api/users/recaptcha/", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: header,
+    }).then(function (response) {
+      if (response.status == 200) {
+        return response
+          .json()
+          .then((data) => dispatch({ type: VALIDATE_RECAPTCHA, data: data }));
+      } else {
+        dispatch({ type: VALIDATE_RECAPTCHA_ERROR, data: response.data });
+        throw response.data;
+      }
+    });
+  }
+};
+
+export const resetValidateRecaptcha = () => (dispatch) => {
+  dispatch({ type: RESET_RECAPTCHA, data: null });
+};
 
 export const landingLoading = () => (dispatch) =>
   dispatch({ type: LANDING_LOADING, data: null });
 
-export const getNews = (page=0, page_size=4, params="") => (dispatch) => {
-  return fetch(`/api/news/?page=${page+1}&page_size=${page_size}${params}`).then((response) => {
+export const getNews = (page = 0, page_size = 4, params = "") => (dispatch) => {
+  return fetch(
+    `/api/news/?page=${page + 1}&page_size=${page_size}${params}`
+  ).then((response) => {
     const r = response;
     if (r.status === 200) {
       return r
@@ -45,9 +75,7 @@ export const getCaroussel = () => (dispatch) => {
     if (r.status === 200) {
       return r
         .json()
-        .then((data) =>
-          dispatch({ type: CAROUSSEL_RECOVERED, data: data })
-        );
+        .then((data) => dispatch({ type: CAROUSSEL_RECOVERED, data: data }));
     } else {
       dispatch({ type: CAROUSSEL_ERROR, data: r.data });
       throw r.data;
@@ -69,8 +97,10 @@ export const removeRequestPhoto = (value) => {
 
 export const sendRequest = (photos, info) => {
   return (dispatch, getState) => {
-    let headers = { "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token};
+    let headers = {
+      "Content-Type": "application/json",
+      Authorization: "Token " + getState().user.token,
+    };
 
     let jsonthing = JSON.stringify({
       reason: info.reason,
@@ -84,6 +114,7 @@ export const sendRequest = (photos, info) => {
       phone_number: info.phone_number,
       email: info.email,
       institution: info.institution,
+      recaptchaToken: info.recaptchaToken,
     });
 
     return fetch(`/api/requests/photos/`, {
@@ -97,7 +128,13 @@ export const sendRequest = (photos, info) => {
           dispatch({ type: SEND_REQUESTPHOTO, data: data });
         });
       } else {
-        dispatch(setAlert("Hubo un error al enviar su solicitud", "warning"));
+        if (r.status === 401) {
+          dispatch(
+            setAlert("Debe logearse para solicitar una foto", "warning")
+          );
+        } else {
+          dispatch(setAlert("Hubo un error al enviar su solicitud", "warning"));
+        }
       }
     });
   };
@@ -106,18 +143,24 @@ export const sendRequest = (photos, info) => {
 /**
  * Recover all Photo Request
  */
-export const getRequests = (query, page, page_size, extra) => (dispatch, getState) => {
+export const getRequests = (query, page, page_size, extra) => (
+  dispatch,
+  getState
+) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token
+    Authorization: "Token " + getState().user.token,
   };
-  return fetch(`/api/requests/photos/all/?search=${query}&page=${page}&page_size=${page_size}${extra}`, {
-    method: "GET",
-    headers: headers
-  }).then(function(response) {
+  return fetch(
+    `/api/requests/photos/all/?search=${query}&page=${page}&page_size=${page_size}${extra}`,
+    {
+      method: "GET",
+      headers: headers,
+    }
+  ).then(function (response) {
     const r = response;
     if (r.status === 200) {
-      return r.json().then(data => {
+      return r.json().then((data) => {
         dispatch({ type: PHOTOREQUESTS_RECOVERED, data: data });
       });
     } else {
@@ -129,18 +172,18 @@ export const getRequests = (query, page, page_size, extra) => (dispatch, getStat
 
 /**
  * Get Request Details
- * @param {*} id 
+ * @param {*} id
  */
 export const getRequest = (id) => (dispatch, getState) => {
   let headers = {
-    Authorization: "Token " + getState().user.token
+    Authorization: "Token " + getState().user.token,
   };
   fetch(`/api/requests/photos/${id}/`, {
-    headers: headers
-  }).then(function(response) {
+    headers: headers,
+  }).then(function (response) {
     const r = response;
     if (r.status === 200) {
-      return r.json().then(data => {
+      return r.json().then((data) => {
         dispatch({ type: PHOTOREQUEST_RECOVERED, data: data });
       });
     } else {
@@ -158,9 +201,9 @@ export const updateRequest = (request) => (dispatch, getState) => {
   let jsonthing = JSON.stringify({
     attached: request.photosAndData,
     resolved: request.resolved,
-    approved: request.approved
+    approved: request.approved,
   });
-  
+
   return fetch(`/api/requests/photos/${request.id}/`, {
     method: "PUT",
     headers,
@@ -180,7 +223,7 @@ export const updateRequest = (request) => (dispatch, getState) => {
 };
 
 export const contactUs = (formData) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     let headers = { "Content-Type": "application/json" };
     let jsonthing = JSON.stringify({
       first_name: formData.name,
@@ -188,44 +231,52 @@ export const contactUs = (formData) => {
       phone_number: formData.phone,
       email: formData.email,
       message: formData.message,
+      recaptchaToken: formData.recaptchaToken,
     });
-    return fetch(`/api/requests/contact/all/`, {
-      method: "POST",
-      headers: headers,
-      body: jsonthing,
-    }).then(function (response) {
-      const r = response;
-      if (r.status === 201) {
-        return r.json().then((data) => {
-            dispatch({ type: CONTACT_SUCCESS, data: data })
-        });
-      } else {
-        dispatch(setAlert("Hubo un error al enviar su mensaje", "warning"));
-        dispatch({ type: CONTACT_ERROR, data: r.data });
-        throw r.data;
-      }
-    });
+    if (formData.recaptchaToken) {
+      return fetch(`/api/requests/contact/all/`, {
+        method: "POST",
+        headers: headers,
+        body: jsonthing,
+      }).then(function (response) {
+        const r = response;
+        if (r.status === 201) {
+          return r.json().then((data) => {
+            dispatch({ type: CONTACT_SUCCESS, data: data });
+          });
+        } else {
+          dispatch(setAlert("Hubo un error al enviar su mensaje", "warning"));
+          dispatch({ type: CONTACT_ERROR, data: r.data });
+          throw r.data;
+        }
+      });
+    } else {
+      dispatch(setAlert("Debe rellenar el captcha", "warning"));
+    }
   };
-}
+};
 
 /**
  * Recover all Messages from Contact Us
  */
 export const getMessages = (query, page, page_size, extra) => (
-  dispatch, 
+  dispatch,
   getState
-  ) => {
+) => {
   let headers = {
     "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token
+    Authorization: "Token " + getState().user.token,
   };
-  return fetch(`/api/requests/contact/all/?search=${query}&page=${page}&page_size=${page_size}${extra}`, {
-    method: "GET",
-    headers: headers
-  }).then(function(response) {
+  return fetch(
+    `/api/requests/contact/all/?search=${query}&page=${page}&page_size=${page_size}${extra}`,
+    {
+      method: "GET",
+      headers: headers,
+    }
+  ).then(function (response) {
     const r = response;
     if (r.status === 200) {
-      return r.json().then(data => {
+      return r.json().then((data) => {
         dispatch({ type: CONTACTMESSAGES_RECOVERED, data: data });
       });
     } else {
@@ -235,7 +286,10 @@ export const getMessages = (query, page, page_size, extra) => (
   });
 };
 
-export const updateMessage = (messageUpdate, formData) => (dispatch, getState) => {
+export const updateMessage = (messageUpdate, formData) => (
+  dispatch,
+  getState
+) => {
   let headers = {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
