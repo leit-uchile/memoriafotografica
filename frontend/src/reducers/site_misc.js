@@ -10,11 +10,7 @@ import {
   HOME_LOADED,
   HOME_SET_SELECTED_INDEX,
   HOME_PHOTO_PAGINATION,
-  CURADOR_LOADING,
-  CURADOR_COMPLETED,
-  CURADOR_REFRESH,
   READ_UPLOAD_DISCLOSURE,
-  SET_METADATA_HELP_DISCLOSURE,
 } from "../actions/types";
 
 const initialState = {
@@ -26,10 +22,6 @@ const initialState = {
     loading: false,
     selectedIndex: -1,
     photoPagination: {},
-  },
-  curador: {
-    loading: false,
-    refresh: false,
   },
   uploadDisclosureSet: localStorage.getItem("upload_disclosed") === "true" ? true : false,
 };
@@ -69,12 +61,6 @@ export default function site_misc(state = initialState, action) {
         ...state,
         home: { ...state.home, photoPagination: action.data },
       };
-    case CURADOR_LOADING:
-      return { ...state, curador: { ...state.curador, loading: true } };
-    case CURADOR_COMPLETED:
-      return { ...state, curador: { ...state.curador, loading: false } };
-    case CURADOR_REFRESH:
-      return { ...state, curador: { ...state.curador, refresh: true } };
     case READ_UPLOAD_DISCLOSURE:
       localStorage.setItem("upload_disclosed", true);
       return { ...state, uploadDisclosureSet: true };
@@ -84,11 +70,7 @@ export default function site_misc(state = initialState, action) {
 }
 
 
-export const selectSiteMiscCuradorLoading = (state) => state.site_misc.curador.loading;
-
 export const selectSiteMiscHomeLoading = (state) => state.site_misc.home.loading;
-
-export const selectSiteMiscCuradorRefresh = (state) => state.site_misc.curador.refresh;
 
 export const selectSiteMiscSearchMetaIDS = (state) => state.site_misc.searchMetaIDs;
 

@@ -18,8 +18,6 @@ import {
   selectPhotos,
   selectPhotosCount,
   selectErrors,
-  selectSiteMiscCuradorRefresh,
-  selectSiteMiscCuradorLoading,
   selectWebAdminAllTags,
   selectUserIsAuthenticated,
   selectPhotosUpdatedPhoto,
@@ -42,7 +40,13 @@ const filters = [
   },
 ];
 
-const Filter = ({ photos, photoCount, loading, getPhotosAuth, editPhoto, updatedPhoto }) => {
+const Filter = ({
+  photos,
+  photoCount,
+  getPhotosAuth,
+  editPhoto,
+  updatedPhoto,
+}) => {
   const [searchState, setSearchState] = useState("");
   const [filter, setFilter] = useState({
     censured: "",
@@ -72,7 +76,7 @@ const Filter = ({ photos, photoCount, loading, getPhotosAuth, editPhoto, updated
       url = url + `&approved=${filter.approved}`;
     }
     getPhotosAuth(pagination.page + 0, pagination.page_size, url);
-  }, [filter, pagination, updatedPhoto]);
+  }, [searchState, filter, pagination, getPhotosAuth, updatedPhoto]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
@@ -143,36 +147,38 @@ const Filter = ({ photos, photoCount, loading, getPhotosAuth, editPhoto, updated
           />
         </Col>
       </Row>
-      <Row>
-        {loading ? (
-          <Col style={{ textAlign: "center" }}>
-            <LeitSpinner />
-          </Col>
+      <div>
+        {photos ? (
+          photos.length !== 0 ? (
+            <Row>
+              <Col>
+                {!cardsView ? (
+                  <PhotoList photos={photos} editPhoto={editPhoto} />
+                ) : (
+                  <PhotoCards photos={photos} editPhoto={editPhoto} />
+                )}
+              </Col>
+            </Row>
+          ) : null
         ) : (
-          <Col>
-            {!cardsView ? (
-              <PhotoList photos={photos} editPhoto={editPhoto} />
-            ) : (
-              <PhotoCards photos={photos} editPhoto={editPhoto} />
-            )}
-          </Col>
+          <Row>
+            <Col style={{ textAlign: "center" }}>
+              <LeitSpinner />
+            </Col>
+          </Row>
         )}
-      </Row>
-      {photoCount === 0 ? (
-        "No hay fotografías disponibles"
-      ) : (
-        <Row style={{ marginTop: "2em" }}>
-          <Col>
-            <Pagination
-              count={photoCount}
-              page_size={pagination.page_size}
-              page={pagination.page}
-              setStatePage={setPage}
-              size="md"
-            />
-          </Col>
-        </Row>
-      )}
+        {photoCount === 0 ? (
+          "No hay fotografías disponibles"
+        ) : (
+          <Pagination
+            count={photoCount}
+            page_size={pagination.page_size}
+            page={pagination.page}
+            setStatePage={setPage}
+            size="md"
+          />
+        )}
+      </div>
     </Container>
   );
 };
@@ -183,8 +189,6 @@ const mapStateToProps = (state) => ({
   meta: selectWebAdminAllTags(state),
   photos: selectPhotos(state),
   photoCount: selectPhotosCount(state),
-  loading: selectSiteMiscCuradorLoading(state),
-  refresh: selectSiteMiscCuradorRefresh(state),
   updatedPhoto: selectPhotosUpdatedPhoto(state),
 });
 

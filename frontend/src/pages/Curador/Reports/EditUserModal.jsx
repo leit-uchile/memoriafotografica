@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import {
   Button,
@@ -30,6 +30,7 @@ const EditUserModal = ({
 
   useEffect(() => {
     getUser(report.content_id.id);
+    // eslint-disable-next-line
   }, [isOpen]);
 
   useEffect(() => {

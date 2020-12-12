@@ -31,8 +31,8 @@ const initialState = {
   update_status: "",
   // Used in curador
   general_tags: { count: 0, results: [] },
-  opsCompleted: 0,
   nbOperations: 0,
+  opsCompleted: 0,
   opsErrors: [],
   updated: false,
 };
@@ -101,7 +101,11 @@ export default function metadata(state = initialState, action) {
         updated: false,
       };
     case DELETED_METADATA:
-      return { ...state, opsCompleted: state.opsCompleted + 1, updated: state.nbOperations === state.opsCompleted + 1, };
+      return { 
+        ...state, 
+        opsCompleted: state.opsCompleted + 1, 
+        updated: state.nbOperations === state.opsCompleted + 1, 
+      };
     case DELETED_METADATA_ERROR:
       return { ...state, opsErrors: [...state.opsErrors, action.data] };
     case METADATA_MERGE:

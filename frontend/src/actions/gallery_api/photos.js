@@ -9,8 +9,6 @@ import {
   UPLOADED_PHOTO,
   ERROR_UPLOADING_PHOTO,
   UPLOADING,
-  CURADOR_LOADING,
-  CURADOR_COMPLETED,
   HOME_LOADING,
   HOME_LOADED,
   HOME_PHOTO_PAGINATION,
@@ -62,14 +60,10 @@ export const getPhotosAuth = (page = 0, pageSize = 25, search = "") => (
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
-
-  dispatch({ type: CURADOR_LOADING });
-
   let url = `/api/photos/?page=${page + 1}&page_size=${pageSize}`;
   if (search !== "") {
     url = url + search;
   }
-
   return fetch(url, {
     method: "GET",
     headers: headers,
@@ -78,11 +72,9 @@ export const getPhotosAuth = (page = 0, pageSize = 25, search = "") => (
     if (r.status === 200) {
       return r.json().then((data) => {
         dispatch({ type: RECOVERED_PHOTOS, data: data });
-        dispatch({ type: CURADOR_COMPLETED });
       });
     } else {
       dispatch({ type: EMPTY_PHOTOS, data: r.data });
-      dispatch({ type: CURADOR_COMPLETED });
       throw r.data;
     }
   });

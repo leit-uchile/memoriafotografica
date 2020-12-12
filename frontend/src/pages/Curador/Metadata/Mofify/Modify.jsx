@@ -5,7 +5,7 @@ import HelpMessages from "../../HelpMessages";
 import ModifyModal from "./ModifyModal";
 import { connect } from "react-redux";
 import { metadata } from "../../../../actions";
-import { Pagination } from "../../../../components";
+import { LeitSpinner, Pagination } from "../../../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { bindActionCreators } from "redux";
@@ -62,7 +62,7 @@ const Modify = ({ metadata, iptcs, searchMeta, active, updated }) => {
           <h2>Modificar Metadata</h2>
         </Col>
       </Row>
-      <Row>
+      <Row style={{ marginBottom: "10px" }}>
         <Col sm={6}>
           <ButtonGroup>
             <Button onClick={() => setShowHelp(true)}>¿Ayuda?</Button>
@@ -142,35 +142,47 @@ const Modify = ({ metadata, iptcs, searchMeta, active, updated }) => {
           </Row>
         </Fragment>
       ) : null}
-      <Row style={{ marginTop: "1em" }}>
-        <Col>
-          <MetadataList
-            metadata={metadata.results}
-            iptcs={iptcs ? iptcs : []}
-            getSelection={(v) => {
-              var keys = Object.keys(v)
-                .filter((el) => el.includes("nb-"))
-                .map((el) => el.substr(3));
-              setSelected(keys.map((el) => metadata.results[Number(el)]));
-            }}
-            update={updated}
+      <div>
+        {metadata.results ? (
+          metadata.results.length !== 0 ? (
+            <Row>
+              <Col>
+                <MetadataList
+                  metadata={metadata.results}
+                  iptcs={iptcs ? iptcs : []}
+                  getSelection={(v) => {
+                    var keys = Object.keys(v)
+                      .filter((el) => el.includes("nb-"))
+                      .map((el) => el.substr(3));
+                    setSelected(keys.map((el) => metadata.results[Number(el)]));
+                  }}
+                  update={updated}
+                />
+              </Col>
+            </Row>
+          ) : null
+        ) : (
+          <Row>
+            <Col style={{ textAlign: "center" }}>
+              <LeitSpinner />
+            </Col>
+          </Row>
+        )}
+        {metadata.count === 0 ? (
+          "No hay resultados disponibles"
+        ) : (
+          <Pagination
+            count={metadata.count}
+            page_size={pagination.page_size}
+            page={pagination.page}
+            setStatePage={setPage}
+            size="md"
+            label="metadata-pagination"
+            displayFirst
+            displayLast
           />
-          {metadata.count === 0 ? (
-            "No hay resultados disponibles"
-          ) : (
-            <Pagination
-              count={metadata.count}
-              page_size={pagination.page_size}
-              page={pagination.page}
-              setStatePage={setPage}
-              size="md"
-              label="metadata-pagination"
-              displayFirst
-              displayLast
-            />
-          )}
-        </Col>
-      </Row>
+        )}
+      </div>
     </Container>
   );
 };

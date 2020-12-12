@@ -15,7 +15,7 @@ import {
   faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 import Filter from "./Filter/Filterv2";
-import Categories from "./Category/Categories";
+import Categories from "./Category/Categoriesv2";
 import Category_Photos from "./Category/Category_Photos";
 import Category_Add from "./Category/Category_Add";
 import Landing from "./Landing";

@@ -6,6 +6,8 @@ import {
   CATEGORY_RESET_ERRORS,
   UPDATED_CATEGORY_ERROR,
   UPDATED_CATEGORY,
+  DELETED_CATEGORY,
+  DELETED_CATEGORY_ERROR,
   RECOVERED_CATEGORY,
   RECOVERED_CATEGORY_ERROR,
   UPDATED_CATEGORY_PHOTOS,
@@ -19,6 +21,9 @@ const initialState = {
   newCat: {},
   categoryDetail: {},
   updatedPhotos: false,
+  updatedCat: false,
+  nbOperations: 0,
+  opsCompleted: 0,
 };
 
 export default function categories(state = initialState, action) {
@@ -31,20 +36,40 @@ export default function categories(state = initialState, action) {
       };
     case EMPTY_CATEGORIES:
       return { ...state, categories: [], count: 0 };
+    case CATEGORY_RESET_ERRORS:
+      return {
+        ...state,
+        error: "",
+        nbOperations: action.data,
+        opsCompleted: 0,
+        updatedPhotos: false,
+        updatedCat: false,
+      };
+    case CREATED_CATEGORY:
+      return { ...state, newCat: action.data, updatedCat: true };
     case CREATED_CATEGORY_ERROR:
       return {
         ...state,
-        loading: false,
         error: "Hubo un error creando la categoría.",
         newCat: {},
+        updatedCat: false,
       };
-    case CREATED_CATEGORY:
-      return { ...state, loading: false, newCat: action.data };
-    case CATEGORY_RESET_ERRORS:
-      return { ...state, error: "", updatedPhotos: false };
     case UPDATED_CATEGORY:
-      return { ...state, error: "", categoryDetail: action.data };
+      return {
+        ...state,
+        error: "",
+        categoryDetail: action.data,
+        updatedCat: true,
+      };
     case UPDATED_CATEGORY_ERROR:
+      return { ...state, error: action.data, updatedCat: false };
+    case DELETED_CATEGORY:
+      return {
+        ...state,
+        opsCompleted: state.opsCompleted + 1,
+        updatedCat: state.nbOperations === state.opsCompleted + 1,
+      };
+    case DELETED_CATEGORY_ERROR:
       return { ...state, error: action.data };
     case RECOVERED_CATEGORY:
       return { ...state, categoryDetail: action.data };
@@ -74,6 +99,12 @@ export const selectCategoriesDetails = (state) =>
 
 export const selectCategoriesUpdatePhotos = (state) =>
   state.categories.updatedPhotos;
+  
+export const selectCategoriesOpsCompleted = (state) =>
+  state.categories.opsCompleted;
+
+export const selectCategoriesUpdatedCat = (state) =>
+  state.categories.updatedCat;
 
 export const selectCategoriesTotal = (state) => state.categories.total;
 

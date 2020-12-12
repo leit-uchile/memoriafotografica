@@ -3,14 +3,13 @@ import {
   EMPTY_CATEGORIES,
   CREATED_CATEGORY,
   CREATED_CATEGORY_ERROR,
-  CURADOR_LOADING,
-  CURADOR_REFRESH,
-  CURADOR_COMPLETED,
   CATEGORY_RESET_ERRORS,
   UPDATED_CATEGORY,
   UPDATED_CATEGORY_ERROR,
   RECOVERED_CATEGORY,
   RECOVERED_CATEGORY_ERROR,
+  DELETED_CATEGORY,
+  DELETED_CATEGORY_ERROR,
 } from "../types";
 import { setAlert } from "../site_misc";
 
@@ -26,8 +25,7 @@ export const getCategories = (page = 0, pageSize = 6, extra = "") => (
   let headers = { "Content-Type": "application/json" };
 
   return fetch(
-    `/api/categories/?page=${
-      page + 1
+    `/api/categories/?page=${page + 1
     }&page_size=${pageSize}&sort=updated_at-desc${extra}`,
     {
       method: "GET",
@@ -52,15 +50,15 @@ export const createCategory = (data) => (dispatch, getState) => {
     "Content-Type": "application/json",
   };
   let sent_data = JSON.stringify(data);
-  fetch("/api/categories/", {
+  return fetch("/api/categories/", {
     method: "POST",
     headers: headers,
     body: sent_data,
   }).then(function (response) {
     const r = response;
     if (r.status === 201) {
-      dispatch(setAlert("Categoria creada", "success"));
       return r.json().then((data) => {
+        dispatch(setAlert("Categoria creada", "success"));
         dispatch({ type: CREATED_CATEGORY, data: data });
       });
     } else {
@@ -107,7 +105,7 @@ export const updateCategory = (data) => (dispatch, getState) => {
     "Content-Type": "application/json",
   };
   let sent_data = JSON.stringify(data);
-  fetch(`/api/categories/${data.id}/`, {
+  return fetch(`/api/categories/${data.id}/`, {
     method: "PUT",
     headers: headers,
     body: sent_data,
@@ -126,30 +124,29 @@ export const updateCategory = (data) => (dispatch, getState) => {
   });
 };
 
-export const deleteCategories = (catArray) => (dispatch, getState) => {
-  const to_send = catArray.length;
-  var completed_ok = 0;
-  var completed_err = 0;
-  dispatch({ type: CURADOR_LOADING, data: "" });
-  catArray.forEach((e) => {
-    let headers = {
-      Authorization: "Token " + getState().user.token,
-      "Content-Type": "application/json",
-    };
-    fetch(`/api/categories/${e}`, {
-      method: "DELETE",
-      headers: headers,
-    }).then((response) => {
-      if (response.status === 204) {
-        ++completed_ok;
-      } else {
-        ++completed_err;
-      }
-      if (completed_err + completed_ok === to_send) {
-        dispatch(setAlert("Categoria(s) eliminada(s)", "success"));
-        dispatch({ type: CURADOR_COMPLETED, data: "" });
-        dispatch({ type: CURADOR_REFRESH, data: "" });
-      }
-    });
+export const deleteCategories = (id) => (dispatch, getState) => {
+  let headers = {
+    Authorization: "Token " + getState().user.token,
+    "Content-Type": "application/json",
+  };
+  return fetch(`/api/categories/${id}`, {
+    method: "DELETE",
+    headers: headers,
+  }).then((response) => {
+    const r = response;
+    if (r.status === 204) {
+      dispatch(setAlert("Categoria(s) eliminada(s)", "success"));
+      dispatch({ type: DELETED_CATEGORY, data: id });
+    } else {
+      dispatch(setAlert("Error eliminando categoria(s). Intente nuevamente", "warning"));
+      dispatch({ type: DELETED_CATEGORY_ERROR, data: id });
+    }
   });
 };
+
+/**
+ * When doing multiple operations set number of ops
+ * for completion checking and error catching
+ */
+export const setNBOps = (num) => (dispatch) =>
+  dispatch({ type: CATEGORY_RESET_ERRORS, data: num });

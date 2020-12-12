@@ -10,7 +10,7 @@ import {
 } from "reactstrap";
 import { connect } from "react-redux";
 import { webadmin } from "../../../../actions";
-import { Pagination } from "../../../../components";
+import { LeitSpinner, Pagination } from "../../../../components";
 import ContactRow from "./ContactRow";
 import ContactEmailModal from "./ContactEmailModal";
 import ContactPhoneModal from "./ContactPhoneModal";
@@ -76,11 +76,11 @@ const ContactTable = ({
         url = url + `&resolved=${filter.resolved}`;
       }
       if (filter.emailSent.length !== 0) {
-        url = url + `&resolved=${true}` + `&email_sent=${filter.emailSent}`;
+        url = url + `&resolved=${true}&email_sent=${filter.emailSent}`;
       }
       getMessages(searchState, pagination.page + 1, pagination.page_size, url);
     }
-  }, [active, filter, searchState, pagination, updatedMessage]);
+  }, [active, filter, searchState, pagination, updatedMessage, getMessages]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
@@ -88,8 +88,16 @@ const ContactTable = ({
 
   const resolveButton = (msg) => (
     <ButtonGroup>
-      <ContactEmailModal buttonLabel="Correo" message={msg} send={updateMessage} />
-      <ContactPhoneModal buttonLabel="Teléfono" message={msg} send={updateMessage} />
+      <ContactEmailModal
+        buttonLabel="Correo"
+        message={msg}
+        send={updateMessage}
+      />
+      <ContactPhoneModal
+        buttonLabel="Teléfono"
+        message={msg}
+        send={updateMessage}
+      />
     </ButtonGroup>
   );
 
@@ -147,44 +155,54 @@ const ContactTable = ({
           />
         </Col>
       </Row>
-      <Row>
-        <Col>
-          <Table responsive striped className="statBox">
-            <thead>
-              <tr>
-                <th>Estado</th>
-                <th>Nombre</th>
-                <th>Mensaje</th>
-                <th>Respuesta</th>
-                <th>Recibido el</th>
-                <th>Respondido el</th>
-                <th>Responder por</th>
-              </tr>
-            </thead>
-            <tbody>
-              {messages.length !== 0
-                ? messages.results.map((e) => (
-                    <ContactRow message={e} actions={resolveButton} />
-                  ))
-                : null}
-            </tbody>
-          </Table>
-          {messages.count === 0 ? (
-            "No hay mensajes disponibles"
-          ) : (
-            <Pagination
-              count={messages.count}
-              page_size={pagination.page_size}
-              page={pagination.page}
-              setStatePage={setPage}
-              size="md"
-              label="messages-pagination"
-              displayFirst
-              displayLast
-            />
-          )}
-        </Col>
-      </Row>
+      <div>
+        {messages.results ? (
+          messages.results.length !== 0 ? (
+            <Row>
+              <Col>
+                <Table responsive striped className="statBox">
+                  <thead>
+                    <tr>
+                      <th>Estado</th>
+                      <th>Nombre</th>
+                      <th>Mensaje</th>
+                      <th>Respuesta</th>
+                      <th>Recibido el</th>
+                      <th>Respondido el</th>
+                      <th>Responder por</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {messages.results.map((e) => (
+                      <ContactRow message={e} actions={resolveButton} />
+                    ))}
+                  </tbody>
+                </Table>
+              </Col>
+            </Row>
+          ) : null
+        ) : (
+          <Row>
+            <Col style={{ textAlign: "center" }}>
+              <LeitSpinner />
+            </Col>
+          </Row>
+        )}
+        {messages.count === 0 ? (
+          "No hay mensajes disponibles"
+        ) : (
+          <Pagination
+            count={messages.count}
+            page_size={pagination.page_size}
+            page={pagination.page}
+            setStatePage={setPage}
+            size="md"
+            label="messages-pagination"
+            displayFirst
+            displayLast
+          />
+        )}
+      </div>
     </Container>
   );
 };

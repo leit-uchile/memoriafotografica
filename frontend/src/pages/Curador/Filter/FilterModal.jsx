@@ -114,6 +114,7 @@ const FilterModal = ({
         console.log("Waiting for new tags ID");
       }
     }
+    // eslint-disable-next-line
   }, [newTagsId]);
 
   const saveChanges = (to_send) => {

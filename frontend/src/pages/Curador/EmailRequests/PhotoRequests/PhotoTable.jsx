@@ -1,10 +1,18 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { Container, Table, Row, Col, ButtonGroup, Button, Input } from "reactstrap";
+import {
+  Container,
+  Table,
+  Row,
+  Col,
+  ButtonGroup,
+  Button,
+  Input,
+} from "reactstrap";
 import PhotoRow from "./PhotoRow";
 import { webadmin } from "../../../../actions";
-import { Pagination } from "../../../../components";
+import { LeitSpinner, Pagination } from "../../../../components";
 import PhotoRequesterModal from "./PhotoRequesterModal";
 import FilterOptions from "../../FilterOptions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -61,7 +69,7 @@ const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
       }
       getRequests(searchState, pagination.page + 1, pagination.page_size, url);
     }
-  }, [active, filter, searchState, pagination]);
+  }, [active, filter, searchState, pagination, getRequests]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
@@ -132,55 +140,65 @@ const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
           />
         </Col>
       </Row>
-      <Row>
-        <Col>
-          <Table responsive striped className="statBox">
-            <thead>
-              <tr>
-                <th>Estado</th>
-                <th>Solicitante</th>
-                <th>Finalidad</th>
-                <th>Solicitado el</th>
-                <th>&Uacute;ltima actualizaci&oacute;n</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {requests.length !== 0
-                ? requests.results.map((e, k) => (
-                    <PhotoRow
-                      request={e}
-                      key={k}
-                      actions={(id) => handleRedirect(id)}
-                      render={(info) => (
-                        <Fragment>
-                          <PhotoRequesterModal
-                            buttonLabel="Ver detalles"
-                            request={info}
-                          />
-                        </Fragment>
-                      )}
-                    />
-                  ))
-                : null}
-            </tbody>
-          </Table>
-          {requests.count === 0 ? (
-            "No hay solicitudes disponibles"
-          ) : (
-            <Pagination
-              count={requests.count}
-              page_size={pagination.page_size}
-              page={pagination.page}
-              setStatePage={setPage}
-              size="md"
-              label="requests-pagination"
-              displayFirst
-              displayLast
-            />
-          )}
-        </Col>
-      </Row>
+      <div>
+        {requests.results ? (
+          requests.results.length !== 0 ? (
+            <Row>
+              <Col>
+                <Table responsive striped className="statBox">
+                  <thead>
+                    <tr>
+                      <th>Estado</th>
+                      <th>Solicitante</th>
+                      <th>Finalidad</th>
+                      <th>Solicitado el</th>
+                      <th>&Uacute;ltima actualizaci&oacute;n</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {requests.results.map((e, k) => (
+                      <PhotoRow
+                        request={e}
+                        key={k}
+                        actions={(id) => handleRedirect(id)}
+                        render={(info) => (
+                          <Fragment>
+                            <PhotoRequesterModal
+                              buttonLabel="Ver detalles"
+                              request={info}
+                            />
+                          </Fragment>
+                        )}
+                      />
+                    ))}
+                  </tbody>
+                </Table>
+              </Col>
+            </Row>
+          ) : null
+        ) : (
+          <Row>
+            <Col style={{ textAlign: "center" }}>
+              <LeitSpinner />
+            </Col>
+          </Row>
+        )}
+        {requests.count === 0 ? (
+          "No hay solicitudes disponibles"
+        ) : (
+          <Pagination
+            count={requests.count}
+            page_size={pagination.page_size}
+            page={pagination.page}
+            setStatePage={setPage}
+            size="md"
+            label="requests-pagination"
+            displayFirst
+            displayLast
+          />
+        )}
+      </div>
     </Container>
   );
 };

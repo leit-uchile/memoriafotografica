@@ -58,6 +58,12 @@ export const selectCategoriesDetails = (state) =>
 export const selectCategoriesUpdatePhotos = (state) =>
   fromCategories.selectCategoriesUpdatePhotos(state);
 
+export const selectCategoriesOpsCompleted = (state) =>
+  fromCategories.selectCategoriesOpsCompleted(state);
+
+export const selectCategoriesUpdatedCat = (state) =>
+  fromCategories.selectCategoriesUpdatedCat(state);
+
 export const selectCategoriesTotal = (state) =>
   fromCategories.selectCategoriesTotal(state);
 
@@ -106,7 +112,7 @@ export const selectMetaDataUpdated = (state) =>
   fromMetaData.selectMetaDataUpdated(state);
 
 export const selectMetaDataOpsErrors = (state) =>
-    fromMetaData.selectMetaDataOpsErrors(state);
+  fromMetaData.selectMetaDataOpsErrors(state);
 
 export const selectMetaDataGeneralTagsResult = (state) =>
   fromMetaData.selectMetaDataGeneralTagsResult(state);
@@ -123,14 +129,8 @@ export const selectMetaDataNewIds = (state) =>
   fromMetaData.selectMetaDataNewIds(state);
 
 //SiteMisc
-export const selectSiteMiscCuradorLoading = (state) =>
-  fromSiteMisc.selectSiteMiscCuradorLoading(state);
-
 export const selectSiteMiscHomeLoading = (state) =>
   fromSiteMisc.selectSiteMiscHomeLoading(state);
-
-export const selectSiteMiscCuradorRefresh = (state) =>
-  fromSiteMisc.selectSiteMiscCuradorRefresh(state);
 
 export const selectSiteMiscSearchMetaIDS = (state) =>
   fromSiteMisc.selectSiteMiscSearchMetaIDS(state);
