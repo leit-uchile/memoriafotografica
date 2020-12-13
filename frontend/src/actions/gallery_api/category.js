@@ -49,20 +49,19 @@ export const createCategory = (data) => (dispatch, getState) => {
     Authorization: "Token " + getState().user.token,
     "Content-Type": "application/json",
   };
-  let sent_data = JSON.stringify(data);
   return fetch("/api/categories/", {
     method: "POST",
     headers: headers,
-    body: sent_data,
-  }).then(function (response) {
+    body: JSON.stringify(data),
+  }).then((response) => {
     const r = response;
     if (r.status === 201) {
       return r.json().then((data) => {
-        dispatch(setAlert("Categoria creada", "success"));
+        dispatch(setAlert("Categoria creada exitosamente", "success"));
         dispatch({ type: CREATED_CATEGORY, data: data });
       });
     } else {
-      dispatch(setAlert("Error al crear categoria", "danger"));
+      dispatch(setAlert("Error creando categoria. Intente nuevamente", "warning"));
       dispatch({ type: CREATED_CATEGORY_ERROR, data: r.data });
       throw r.data;
     }
@@ -104,20 +103,19 @@ export const updateCategory = (data) => (dispatch, getState) => {
     Authorization: "Token " + getState().user.token,
     "Content-Type": "application/json",
   };
-  let sent_data = JSON.stringify(data);
   return fetch(`/api/categories/${data.id}/`, {
     method: "PUT",
     headers: headers,
-    body: sent_data,
-  }).then(function (response) {
+    body: JSON.stringify(data),
+  }).then((response) => {
     const r = response;
     if (r.status === 200) {
-      dispatch(setAlert("Categoria modificada", "success"));
       return r.json().then((data) => {
+        dispatch(setAlert("Categoria modificada exitosamente", "success"));
         dispatch({ type: UPDATED_CATEGORY, data: data });
       });
     } else {
-      dispatch(setAlert("Error al modificar la categoria", "warning"));
+      dispatch(setAlert("Error modificando categoria. Intente nuevamente", "warning"));
       dispatch({ type: UPDATED_CATEGORY_ERROR, data: r.data });
       throw r.data;
     }
@@ -135,10 +133,10 @@ export const deleteCategories = (id) => (dispatch, getState) => {
   }).then((response) => {
     const r = response;
     if (r.status === 204) {
-      dispatch(setAlert("Categoria(s) eliminada(s)", "success"));
+      dispatch(setAlert("Categoria eliminada exitosamente", "success"));
       dispatch({ type: DELETED_CATEGORY, data: id });
     } else {
-      dispatch(setAlert("Error eliminando categoria(s). Intente nuevamente", "warning"));
+      dispatch(setAlert("Error eliminando categoria. Intente nuevamente", "warning"));
       dispatch({ type: DELETED_CATEGORY_ERROR, data: id });
     }
   });

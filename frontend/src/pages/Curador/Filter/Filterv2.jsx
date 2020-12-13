@@ -20,7 +20,7 @@ import {
   selectErrors,
   selectWebAdminAllTags,
   selectUserIsAuthenticated,
-  selectPhotosUpdatedPhoto,
+  selectPhotosPhotoUpdate,
 } from "../../../reducers";
 
 const filters = [
@@ -189,7 +189,7 @@ const mapStateToProps = (state) => ({
   meta: selectWebAdminAllTags(state),
   photos: selectPhotos(state),
   photoCount: selectPhotosCount(state),
-  updatedPhoto: selectPhotosUpdatedPhoto(state),
+  updatedPhoto: selectPhotosPhotoUpdate(state),
 });
 
 const mapActionsToProps = (dispatch) =>

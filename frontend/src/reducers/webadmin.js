@@ -34,10 +34,10 @@ const initialState = {
   //Used in curador
   loading: false,
   messages: [],
-  updatedMessage: false,
+  messageUpdate: {},
   requests: [],
   requestDetail: {},
-  updatedRequest: false,
+  requestUpdate: {},
   recaptchaState: false,
 };
 
@@ -90,9 +90,9 @@ export default function webadmin(state = initialState, action) {
     case PHOTOREQUEST_ERROR:
       return { ...state, requestDetail: {}, error: action.data };
     case PHOTOREQUEST_SWITCH_STATE:
-      return { ...state, updatedRequest: true };
+      return { ...state, requestUpdate: action.data };
     case PHOTOREQUEST_SWITCH_STATE_ERROR:
-      return { ...state, updatedRequest: false };
+      return { ...state, requestUpdate: {} };
     case CONTACT_SUCCESS:
       return { ...state, contacted: true };
     case CONTACT_ERROR:
@@ -102,9 +102,9 @@ export default function webadmin(state = initialState, action) {
     case CONTACTMESSAGES_ERROR:
       return { ...state, errors: data };
     case CONTACTMESSAGE_SWITCH_STATE:
-      return { ...state, updatedMessage: true };
+      return { ...state, messageUpdate: action.data };
     case CONTACTMESSAGE_SWITCH_STATE_ERROR:
-      return { ...state, updatedMessage: false };
+      return { ...state, messageUpdate: {} };
     default:
       return state;
   }
@@ -112,8 +112,8 @@ export default function webadmin(state = initialState, action) {
 
 export const selectWebAdminMessages = (state) => state.webadmin.messages;
 
-export const selectWebAdminUpdateMessage = (state) =>
-  state.webadmin.updatedMessage;
+export const selectWebAdminMessageUpdate = (state) =>
+  state.webadmin.messageUpdate;
 
 export const selectWebAdminRequests = (state) => state.webadmin.requests;
 

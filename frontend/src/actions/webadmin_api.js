@@ -308,10 +308,11 @@ export const updateMessage = (messageUpdate, formData) => (
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
+        dispatch(setAlert("Solicitud actualizada exitosamente", "success"));
         dispatch({ type: CONTACTMESSAGE_SWITCH_STATE, data: data });
       });
     } else {
-      dispatch(setAlert("Hubo un error al actualizar la solicitud", "warning"));
+      dispatch(setAlert("Error actualizando solicitud. Intente nuevamente", "warning"));
       dispatch({ type: CONTACTMESSAGE_SWITCH_STATE_ERROR, data: r.data });
       throw r.data;
     }

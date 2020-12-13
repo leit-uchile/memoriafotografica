@@ -104,8 +104,7 @@ export const associateCategory = (photoIds, catId, action = "add") => (
     if (r.status === 200) {
       dispatch(
         setAlert(
-          `Fotos ${
-            action === "add" ? "agregadas a" : "eliminadas de la "
+          `Fotos ${action === "add" ? "agregadas a" : "eliminadas de la "
           } categoria`,
           "success"
         )
@@ -129,25 +128,19 @@ export const editPhoto = (photoID, newData) => (dispatch, getState) => {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
-  let sent_data = JSON.stringify(newData);
   return fetch("/api/photos/" + photoID + "/", {
     method: "PUT",
     headers: headers,
-    body: sent_data,
-  }).then(function (response) {
+    body: JSON.stringify(newData),
+  }).then((response) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch(setAlert("Se ha(n) editado con éxito", "success"));
+        dispatch(setAlert("Fotografía actualizada con éxito", "success"));
         dispatch({ type: EDIT_PHOTO, data: data });
       });
     } else {
-      dispatch(
-        setAlert(
-          "Hubo un error al editar la(s) fotografia(s). Intente nuevamente",
-          "warning"
-        )
-      );
+      dispatch(setAlert("Error actualizando fotografía. Intente nuevamente", "warning"));
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
       throw r.data;
     }
@@ -205,8 +198,7 @@ export const sortByField = (field, order, page, pageSize = 25) => (
       : `metadata=${selected_meta.map((m) => m.metaID).join()}&`;
 
   fetch(
-    `/api/photos/?${meta_text}sort=${field}-${order}&page=${
-      page + 1
+    `/api/photos/?${meta_text}sort=${field}-${order}&page=${page + 1
     }&page_size=${pageSize}`,
     {
       method: "GET",
@@ -247,8 +239,7 @@ export const recoverByCats = (catIds, pair, page, pageSize = 25) => (
       : `metadata=${selected_meta.map((m) => m.metaID).join()}&`;
 
   fetch(
-    `/api/photos/?${meta_text}category=${catIds.join(",")}&sort=${pair.field}-${
-      pair.order
+    `/api/photos/?${meta_text}category=${catIds.join(",")}&sort=${pair.field}-${pair.order
     }&page=${page + 1}&page_size=${pageSize}`,
     {
       method: "GET",
@@ -273,9 +264,9 @@ export const getPhoto = (id) => (dispatch, getState) => {
   let headers = !isAuth
     ? { "Content-Type": "application/json" }
     : {
-        "Content-Type": "application/json",
-        Authorization: "Token " + getState().user.token,
-      };
+      "Content-Type": "application/json",
+      Authorization: "Token " + getState().user.token,
+    };
 
   return fetch(`/api/photos/${id}`, { method: "GET", headers: headers }).then(
     function (response) {

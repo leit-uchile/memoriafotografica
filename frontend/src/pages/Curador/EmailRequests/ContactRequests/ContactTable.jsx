@@ -20,7 +20,7 @@ import { faSearch, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { bindActionCreators } from "redux";
 import {
   selectWebAdminMessages,
-  selectWebAdminUpdateMessage,
+  selectWebAdminMessageUpdate,
 } from "../../../../reducers";
 import "../../styles.css";
 
@@ -209,7 +209,7 @@ const ContactTable = ({
 
 const mapStateToProps = (state) => ({
   messages: selectWebAdminMessages(state),
-  updatedMessage: selectWebAdminUpdateMessage(state),
+  updatedMessage: selectWebAdminMessageUpdate(state),
 });
 
 const mapActionsToProps = (dispatch) =>

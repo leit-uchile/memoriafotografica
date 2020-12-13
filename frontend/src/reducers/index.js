@@ -35,10 +35,11 @@ export const selectPhotosCount = (state) => fromPhotos.selectPhotosCount(state);
 export const selectPhotosDetails = (state) =>
   fromPhotos.selectPhotosDetails(state);
 
-export const selectPhotosError = (state) => fromPhotos.selectPhotosError(state);
+export const selectPhotosError = (state) => 
+  fromPhotos.selectPhotosError(state);
 
-export const selectPhotosUpdatedPhoto = (state) =>
-  fromPhotos.selectPhotosUpdatedPhoto(state);
+export const selectPhotosPhotoUpdate = (state) =>
+  fromPhotos.selectPhotosPhotoUpdate(state);
 
 export const selectPhotosRefresh = (state) =>
   fromPhotos.selectPhotosRefresh(state);
@@ -157,8 +158,8 @@ export const selectSiteMiscAlerts = (state) =>
 export const selectWebAdminMessages = (state) =>
   fromWebAdmin.selectWebAdminMessages(state);
 
-export const selectWebAdminUpdateMessage = (state) =>
-  fromWebAdmin.selectWebAdminUpdateMessage(state);
+export const selectWebAdminMessageUpdate = (state) =>
+  fromWebAdmin.selectWebAdminMessageUpdate(state);
 
 export const selectWebAdminRequests = (state) =>
   fromWebAdmin.selectWebAdminRequests(state);

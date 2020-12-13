@@ -33,7 +33,7 @@ const filters = [
  * @param {Array} reports
  * @param {Function} getReports
  */
-const Reports = ({ reports, getReports, updatedReports }) => {
+const Reports = ({ reports, getReports, updatedReport }) => {
   const [filter, setFilter] = useState({
     createdSince: "",
     createdUntil: "",
@@ -58,7 +58,7 @@ const Reports = ({ reports, getReports, updatedReports }) => {
       url = url + `&resolved=${filter.resolved}`;
     }
     getReports("", pagination.page + 1, pagination.page_size, url);
-  }, [filter, pagination, getReports, updatedReports]);
+  }, [filter, pagination, getReports, updatedReport]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
@@ -134,7 +134,7 @@ const Reports = ({ reports, getReports, updatedReports }) => {
 
 const mapStateToProps = (state) => ({
   reports: selectReportReport(state),
-  updatedReports: selectReportUpdate(state),
+  updatedReport: selectReportUpdate(state),
 });
 
 const mapActionsToProps = (dispatch) =>

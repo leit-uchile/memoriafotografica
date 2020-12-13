@@ -13,7 +13,7 @@ import "../styles.css";
 import {   selectUserPhotos,
             selectUserData,
             selectUserPublicUser,
-            selectPhotosUpdatedPhoto,
+            selectPhotosPhotoUpdate,
             selectPhotosRefresh,} from "../../../reducers";
 
 class UserPhotos extends Component {
@@ -200,7 +200,7 @@ const mapStateToProps = (state) => ({
   photos: selectUserPhotos(state),
   user: selectUserData(state),
   publicUser: selectUserPublicUser(state),
-  updatedPhoto: selectPhotosUpdatedPhoto(state),
+  updatedPhoto: selectPhotosPhotoUpdate(state),
   refresh: selectPhotosRefresh(state),
 });
 
