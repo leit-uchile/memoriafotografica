@@ -9,8 +9,6 @@ import {
   UPLOADED_PHOTO,
   ERROR_UPLOADING_PHOTO,
   UPLOADING,
-  CURADOR_LOADING,
-  CURADOR_COMPLETED,
   HOME_LOADING,
   HOME_LOADED,
   HOME_PHOTO_PAGINATION,
@@ -62,14 +60,10 @@ export const getPhotosAuth = (page = 0, pageSize = 25, search = "") => (
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
-
-  dispatch({ type: CURADOR_LOADING });
-
   let url = `/api/photos/?page=${page + 1}&page_size=${pageSize}`;
   if (search !== "") {
     url = url + search;
   }
-
   return fetch(url, {
     method: "GET",
     headers: headers,
@@ -78,11 +72,9 @@ export const getPhotosAuth = (page = 0, pageSize = 25, search = "") => (
     if (r.status === 200) {
       return r.json().then((data) => {
         dispatch({ type: RECOVERED_PHOTOS, data: data });
-        dispatch({ type: CURADOR_COMPLETED });
       });
     } else {
       dispatch({ type: EMPTY_PHOTOS, data: r.data });
-      dispatch({ type: CURADOR_COMPLETED });
       throw r.data;
     }
   });
@@ -112,8 +104,7 @@ export const associateCategory = (photoIds, catId, action = "add") => (
     if (r.status === 200) {
       dispatch(
         setAlert(
-          `Fotos ${
-            action === "add" ? "agregadas a" : "eliminadas de la "
+          `Fotos ${action === "add" ? "agregadas a" : "eliminadas de la "
           } categoria`,
           "success"
         )
@@ -137,25 +128,19 @@ export const editPhoto = (photoID, newData) => (dispatch, getState) => {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
-  let sent_data = JSON.stringify(newData);
   return fetch("/api/photos/" + photoID + "/", {
     method: "PUT",
     headers: headers,
-    body: sent_data,
-  }).then(function (response) {
+    body: JSON.stringify(newData),
+  }).then((response) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch(setAlert("Se ha(n) editado con éxito", "success"));
+        dispatch(setAlert("Fotografía actualizada con éxito", "success"));
         dispatch({ type: EDIT_PHOTO, data: data });
       });
     } else {
-      dispatch(
-        setAlert(
-          "Hubo un error al editar la(s) fotografia(s). Intente nuevamente",
-          "warning"
-        )
-      );
+      dispatch(setAlert("Error actualizando fotografía. Intente nuevamente", "warning"));
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
       throw r.data;
     }
@@ -213,8 +198,7 @@ export const sortByField = (field, order, page, pageSize = 25) => (
       : `metadata=${selected_meta.map((m) => m.metaID).join()}&`;
 
   fetch(
-    `/api/photos/?${meta_text}sort=${field}-${order}&page=${
-      page + 1
+    `/api/photos/?${meta_text}sort=${field}-${order}&page=${page + 1
     }&page_size=${pageSize}`,
     {
       method: "GET",
@@ -255,8 +239,7 @@ export const recoverByCats = (catIds, pair, page, pageSize = 25) => (
       : `metadata=${selected_meta.map((m) => m.metaID).join()}&`;
 
   fetch(
-    `/api/photos/?${meta_text}category=${catIds.join(",")}&sort=${pair.field}-${
-      pair.order
+    `/api/photos/?${meta_text}category=${catIds.join(",")}&sort=${pair.field}-${pair.order
     }&page=${page + 1}&page_size=${pageSize}`,
     {
       method: "GET",
@@ -281,9 +264,9 @@ export const getPhoto = (id) => (dispatch, getState) => {
   let headers = !isAuth
     ? { "Content-Type": "application/json" }
     : {
-        "Content-Type": "application/json",
-        Authorization: "Token " + getState().user.token,
-      };
+      "Content-Type": "application/json",
+      Authorization: "Token " + getState().user.token,
+    };
 
   return fetch(`/api/photos/${id}`, { method: "GET", headers: headers }).then(
     function (response) {
@@ -308,7 +291,7 @@ export const getPhoto = (id) => (dispatch, getState) => {
     cc: String
   }
 */
-export const uploadImages = (data) => {
+export const uploadImages = (photos, photo_meta) => {
   return (dispatch, getState) => {
     let header = {
       Authorization: "Token " + getState().user.token,
@@ -320,17 +303,15 @@ export const uploadImages = (data) => {
     //   currentTime.getMonth() + 1
     // }-${currentTime.getFullYear()}`;
 
-    dispatch({ type: UPLOADING, data: data.photos.length });
+    dispatch({ type: UPLOADING, data: photos.length });
 
-    const funcs = data.photos.map((photo, key) => () => {
+    const funcs = photos.map((photo, key) => () => {
       let formData = new FormData();
       // If no title available create one for our date
       formData.append(
         "title",
         photo.meta.title
           ? photo.meta.title
-          : data.name !== ""
-          ? data.name + `Nº${key + 1}`
           : ""
       );
       formData.append("description", photo.meta.description);
@@ -340,10 +321,10 @@ export const uploadImages = (data) => {
       // Send our permissions
       formData.append(
         "permission",
-        photo.meta.cc !== null ? photo.meta.cc : data.cc ? data.cc : "CC BY"
+        photo.meta.cc !== null ? photo.meta.cc : photo_meta.cc ? photo_meta.cc : "CC BY"
       );
       // Date photos were taken
-      formData.append("upload_date", data.date + "T00:00");
+      formData.append("upload_date", photo_meta.date + "T00:00");
 
       // Add metadata in format 1,2,4 string
       if (photo.meta.tags.length !== 0) {

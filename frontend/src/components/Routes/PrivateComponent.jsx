@@ -9,7 +9,7 @@ const PrivateComponent = ({ component: Component, setLoginSuccessRoute, ...rest 
   if ((rest.isAuthenticated === null || rest.isAuthenticated === false) && rest.location.pathname.includes(rest.path)) {
     console.log("Doing redirect on private route: ",rest.location,rest.match,rest.path)
     setLoginSuccessRoute(rest.location.pathname);
-    return <Redirect to="/login" />;
+    return <Redirect push to={"/login"} />;
   }
 
   return <Route {...rest} render={props => <Component {...props} />} />;

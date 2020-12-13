@@ -1,39 +1,43 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Container, Col, Button, Row, Input, ButtonGroup } from "reactstrap";
 import MetadataList from "./MetadataList";
-import HelpMessages from "./HelpMessages";
+import HelpMessages from "../../HelpMessages";
 import ModifyModal from "./ModifyModal";
 import { connect } from "react-redux";
-import { metadata, site_misc } from "../../../../actions";
-import { Pagination } from "../../../../components";
+import { metadata } from "../../../../actions";
+import { LeitSpinner, Pagination } from "../../../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { bindActionCreators } from "redux";
 import {
   selectMetaDataAllIptcs,
   selectMetaDataGeneralTags,
-  selectSiteMiscMetaDataHelpDiscloure,
+  selectMetaDataUpdated,
 } from "../../../../reducers";
 import "../styles.css";
 
+const messages = [
+  {
+    action: `Modificar contenido`,
+    helpMessage: `Para modificar individualmente seleccione un tag. Para cambiar la aprobación de varios tag seleccione más de uno y aprete en modificar. Para eliminar uno o varios seleccione y luego elimine.`,
+  },
+  {
+    action: `Consolidar tags`,
+    helpMessage: `Seleccione dos o más tags y aprete consolidar para que se unan en uno solo. Por ejemplo: consolidar "fcfm" de 3 fotos y "facultad de ingenieria" de 100 fotos resulta en "fcfm" con 103 fotos.`,
+  },
+];
 /**
  * Modify metadata
  *
  * Search metadata and narrow the list
  * Select elements and make modifications
  */
-const Modify = ({
-  metadata,
-  iptcs,
-  searchMeta,
-  metadataHelp,
-  setHelpDisclosure,
-  active,
-}) => {
+const Modify = ({ metadata, iptcs, searchMeta, active, updated }) => {
   const [searchState, setSearchState] = useState("");
   const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
-  const [dismiss, setDismiss] = useState(metadataHelp);
-  const [operation, setOperation] = useState({ op: "0", open: false });
+  const [showHelp, setShowHelp] = useState(false);
+  const [operation, setOperation] = useState("0");
+  const [modal, setModal] = useState(false);
   const [selected, setSelected] = useState([]);
 
   useEffect(() => {
@@ -45,38 +49,11 @@ const Modify = ({
         "&sort=updated_at-desc"
       );
     }
-  }, [pagination, searchState, searchMeta, active]);
+  }, [pagination, searchState, searchMeta, active, updated]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
   };
-
-  const toggleModal = () => {
-    if (operation.op !== "0") {
-      setOperation((o) => ({ ...o, open: !o.open }));
-    }
-  };
-
-  // Force effect reload by updating the pagination state
-  const doReload = (randomValue) => {
-    setPagination((p) => ({ ...p, r: randomValue }));
-  };
-
-  // Check that the selected elements are on the list
-  // otherwise remove the selection
-  useEffect(() => {
-    if (metadata && selected.length > 0) {
-      let newSelected = [];
-      // If they are still here keep them
-      selected.forEach((element) => {
-        if (metadata.results.filter((e) => e.id === element.id).length !== 0) {
-          newSelected.push(element);
-        }
-      });
-      setSelected(newSelected);
-    }
-    // eslint-disable-next-line
-  }, [metadata]);
 
   return (
     <Container fluid>
@@ -85,19 +62,16 @@ const Modify = ({
           <h2>Modificar Metadata</h2>
         </Col>
       </Row>
-      <Row>
+      <Row style={{ marginBottom: "10px" }}>
         <Col sm={6}>
           <ButtonGroup>
-            <Button onClick={() => setDismiss(false)}>¿Ayuda?</Button>
+            <Button onClick={() => setShowHelp(true)}>¿Ayuda?</Button>
             <Input
               type="select"
               name="selectOp"
               id="selectOperation"
               onChange={(e) => {
-                // TODO: it crashes unexpectedly
-                // when target or currentTarget is null (for some reason)
-                let copy = e.currentTarget.value;
-                setOperation((o) => ({ ...o, op: copy }));
+                setOperation(e.currentTarget.value);
               }}
             >
               <option value="0">Seleccionar operacion</option>
@@ -105,16 +79,18 @@ const Modify = ({
               <option value="Modificar Selección">Modificar</option>
               <option value="Unir/Consolidar">Unir/Consolidar</option>
             </Input>
-            <Button onClick={toggleModal} disabled={operation.op === "0"}>
+            <Button
+              onClick={() => setModal(!modal)}
+              disabled={operation === "0" || selected.length === 0}
+            >
               Ir
             </Button>
             <ModifyModal
-              op={operation.op}
+              op={operation}
               selected={selected}
               iptcs={iptcs}
-              open={operation.open}
-              toggle={toggleModal}
-              doReload={doReload}
+              open={modal}
+              toggle={() => setModal(!modal)}
             />
           </ButtonGroup>
         </Col>
@@ -141,27 +117,22 @@ const Modify = ({
                 setSearchState(e.target.value);
               }}
             />
-            <Button
-              type="button"
-              color="primary"
-              onClick={() => {}} //this.swapPage}
-            >
+            <Button color="primary">
               <FontAwesomeIcon icon={faSearch} />
             </Button>
           </ButtonGroup>
         </Col>
       </Row>
-      {!dismiss ? (
+      {showHelp ? (
         <Fragment>
           <Row style={{ marginTop: "1em" }}>
-            <HelpMessages />
+            <HelpMessages messages={messages} />
           </Row>
           <Row style={{ marginTop: "1em" }}>
             <Col sm={{ offset: 3, size: 6 }}>
               <Button
                 onClick={() => {
-                  setHelpDisclosure(true);
-                  setDismiss(true);
+                  setShowHelp(false);
                 }}
                 block
               >
@@ -171,34 +142,47 @@ const Modify = ({
           </Row>
         </Fragment>
       ) : null}
-      <Row style={{ marginTop: "1em" }}>
-        <Col>
-          <MetadataList
-            metadata={metadata.results}
-            iptcs={iptcs ? iptcs : []}
-            getSelection={(v) => {
-              var keys = Object.keys(v)
-                .filter((el) => el.includes("nb-"))
-                .map((el) => el.substr(3));
-              setSelected(keys.map((el) => metadata.results[Number(el)]));
-            }}
+      <div>
+        {metadata.results ? (
+          metadata.results.length !== 0 ? (
+            <Row>
+              <Col>
+                <MetadataList
+                  metadata={metadata.results}
+                  iptcs={iptcs ? iptcs : []}
+                  getSelection={(v) => {
+                    var keys = Object.keys(v)
+                      .filter((el) => el.includes("nb-"))
+                      .map((el) => el.substr(3));
+                    setSelected(keys.map((el) => metadata.results[Number(el)]));
+                  }}
+                  update={updated}
+                />
+              </Col>
+            </Row>
+          ) : null
+        ) : (
+          <Row>
+            <Col style={{ textAlign: "center" }}>
+              <LeitSpinner />
+            </Col>
+          </Row>
+        )}
+        {metadata.count === 0 ? (
+          "No hay resultados disponibles"
+        ) : (
+          <Pagination
+            count={metadata.count}
+            page_size={pagination.page_size}
+            page={pagination.page}
+            setStatePage={setPage}
+            size="md"
+            label="metadata-pagination"
+            displayFirst
+            displayLast
           />
-          {metadata.count === 0 ? (
-            "No hay resultados disponibles"
-          ) : (
-            <Pagination
-              count={metadata.count}
-              page_size={pagination.page_size}
-              page={pagination.page}
-              setStatePage={setPage}
-              size="md"
-              label="metadata-pagination"
-              displayFirst
-              displayLast
-            />
-          )}
-        </Col>
-      </Row>
+        )}
+      </div>
     </Container>
   );
 };
@@ -206,14 +190,13 @@ const Modify = ({
 const mapStateToProps = (state) => ({
   metadata: selectMetaDataGeneralTags(state),
   iptcs: selectMetaDataAllIptcs(state),
-  metadataHelp: selectSiteMiscMetaDataHelpDiscloure(state),
+  updated: selectMetaDataUpdated(state),
 });
 
 const mapActionsToProps = (dispatch) =>
   bindActionCreators(
     {
       searchMeta: metadata.searchMetadataByValueGeneral,
-      setHelpDisclosure: site_misc.setMetadataHelp,
     },
     dispatch
   );

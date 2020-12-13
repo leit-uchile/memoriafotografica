@@ -12,7 +12,7 @@ const initialState = {
   photos: [],
   errors: null,
   refresh: false,
-  updatedPhoto: false,
+  updatedPhoto: {},
   details: {
     title: "[Titulo]",
     image: undefined,
@@ -36,14 +36,17 @@ export default function photos(state = initialState, action) {
     case EDIT_PHOTO:
       return {
         ...state,
-        details: { ...state.details, ...action.data },
-        updatedPhoto: true,
+        updatedPhoto: action.data,
       };
     case EDIT_PHOTO_ERROR:
       return { ...state, edit_photo_errors: action.data };
     case DELETED_PHOTO:
       let newList = state.photos.filter((photo) => photo.id !== action.data.id);
-      return { ...state, photos: [newList], updatedPhoto: true, refresh: true };
+      return { 
+        ...state, 
+        photos: [newList], 
+        updatedPhoto: action.data, 
+        refresh: true };
     case RECOVERED_PHOTO_DETAILS:
       return { ...state, details: action.data, errors: null };
     case PHOTO_DETAILS_ERROR:
@@ -79,6 +82,6 @@ export const selectPhotosDetails = (state) => state.photos.details;
 
 export const selectPhotosError = (state) => state.photos.errors;
 
-export const selectPhotosUpdatedPhoto = (state) => state.photos.updatedPhoto;
+export const selectPhotosPhotoUpdate = (state) => state.photos.updatedPhoto;
 
 export const selectPhotosRefresh = (state) => state.photos.refresh;

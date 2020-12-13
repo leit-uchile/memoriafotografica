@@ -4,18 +4,17 @@ import { Redirect } from "react-router-dom";
 import { Button, Row, Col, Container, Badge } from "reactstrap";
 import { user, site_misc, gallery } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
+import CreateAlbumModal from "./CreateAlbumModal";
 import PhotoEditor from "../../../components/PhotoEditor";
 import { Helmet } from "react-helmet";
 import Gallery from "react-photo-gallery";
 import { bindActionCreators } from "redux";
-import "./userPhotos.css";
-import {
-  selectUserPhotos,
-  selectUserData,
-  selectUserPublicUser,
-  selectPhotosUpdatedPhoto,
-  selectPhotosRefresh,
-} from "../../../reducers";
+import "../styles.css";
+import {   selectUserPhotos,
+            selectUserData,
+            selectUserPublicUser,
+            selectPhotosPhotoUpdate,
+            selectPhotosRefresh,} from "../../../reducers";
 
 class UserPhotos extends Component {
   constructor(props) {
@@ -41,7 +40,7 @@ class UserPhotos extends Component {
 
   componentDidUpdate() {
     if (
-      (this.props.updatedPhoto || this.props.refresh) &&
+      (this.props.refresh) &&
       !this.state.modalOpen
     ) {
       setTimeout(() => window.location.reload(), 1000);
@@ -155,6 +154,7 @@ class UserPhotos extends Component {
                 isCurator={false}
                 censurePhoto={null}
               />
+              <CreateAlbumModal photosID={this.state.picturesToEdit} isOpen={(bool) => this.setState({modalOpen: bool})}/>
             </Col>
           </Row>
         )}
@@ -199,7 +199,7 @@ const mapStateToProps = (state) => ({
   photos: selectUserPhotos(state),
   user: selectUserData(state),
   publicUser: selectUserPublicUser(state),
-  updatedPhoto: selectPhotosUpdatedPhoto(state),
+  updatedPhoto: selectPhotosPhotoUpdate(state),
   refresh: selectPhotosRefresh(state),
 });
 

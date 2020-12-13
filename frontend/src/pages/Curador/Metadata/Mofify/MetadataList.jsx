@@ -17,34 +17,34 @@ const check = <FontAwesomeIcon icon={faCheckCircle} />;
  * @param {Array} iptcs for name mapping
  * @param {Function} getSelection recovers the position of the metadata that's selected
  */
-const MetadataList = ({ metadata, iptcs, getSelection }) => {
-  // When the lists changes reset selection
+const MetadataList = ({ metadata, iptcs, getSelection, update }) => {
+  const [state, setState] = useState({});
+  const [checkAll, setCheckAll] = useState(false);
+  const mapNames = (id) => iptcs.filter((el) => el.id === id)[0].name;
+
+  // Useful to init and reset when user changes page or elements
   useEffect(() => {
     // List changed ?
-    if (metadata[0] && state[metadata[0].value] === undefined) {
+    if ((metadata[0] && state[metadata[0].value] === undefined) || update) {
       let selected = {};
       metadata.forEach((element, key) => {
         selected[element.value] = false;
       });
-      selected.checked = false;
       setState(selected);
+      getSelection(selected);
     }
-    //eslint-disable-next-line
+    // eslint-disable-next-line
   }, [metadata]);
-
-  const [state, setState] = useState({ checked: false });
-
-  const mapNames = (id) => iptcs.filter((el) => el.id === id)[0].name;
 
   const selectAll = () => {
     let selected = {};
     metadata.forEach((element, key) => {
-      selected[element.value] = !state.checked;
-      if (!state.checked) {
-        selected["nb-" + key] = !state.checked;
+      selected[element.value] = !checkAll;
+      if (!checkAll) {
+        selected["nb-" + key] = !checkAll;
       }
     });
-    selected.checked = !state.checked;
+    setCheckAll(!checkAll);
     setState(selected);
     getSelection(selected);
   };
@@ -69,7 +69,7 @@ const MetadataList = ({ metadata, iptcs, getSelection }) => {
             <input
               type="checkbox"
               onChange={() => selectAll()}
-              value={state.checked}
+              value={checkAll}
             ></input>
           </th>
           <th>Estado</th>

@@ -70,7 +70,8 @@ export const register = (
   last_name,
   birth_date,
   rol_type,
-  avatar
+  avatar,
+  recaptchaToken
 ) => {
   return (dispatch) => {
     var formData = new FormData();
@@ -81,6 +82,7 @@ export const register = (
     formData.append("birth_date", birth_date);
     formData.append("rol_type", parseInt(rol_type));
     formData.append("avatar", avatar);
+    formData.append("recaptchaToken", recaptchaToken);
 
     return fetch("/api/auth/register/", { body: formData, method: "POST" })
       .then((res) => {

@@ -39,17 +39,15 @@ const FilterModal = ({
   newTagsId,
 }) => {
   const [modal, setModal] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [newphoto, setNewphoto] = useState({});
   const [sending, setSending] = useState(false);
 
-  useEffect(() => {
-    getTags(); //get tags from backend
-  }, [photoId, newTagsId]);
-
   const toggle = () => {
-    getPhotoDetails(photoId);
     setModal(!modal);
+    if (!modal) {
+      getPhotoDetails(photoId);
+      getTags(); //get tags from backend
+    }
   };
 
   useEffect(() => {
@@ -65,7 +63,6 @@ const FilterModal = ({
     delete info.comments;
     delete info.report;
     setNewphoto(info);
-    setLoading(false);
   }, [photoDetails]);
 
   const handleCheckboxChange = (event) => {
@@ -117,15 +114,16 @@ const FilterModal = ({
         console.log("Waiting for new tags ID");
       }
     }
+    // eslint-disable-next-line
   }, [newTagsId]);
 
   const saveChanges = (to_send) => {
     delete to_send.image;
     delete to_send.thumbnail;
-    setSending(!sending);
-    editPhoto(to_send.id, to_send).then((response) => {
-      setSending(!sending);
-      window.location.reload();
+    setSending(true);
+    editPhoto(to_send.id, to_send).then((r) => {
+      setSending(false);
+      setModal(!modal);
     });
   };
 
@@ -151,10 +149,11 @@ const FilterModal = ({
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>
-          Curando fotografía: {!loading ? photoDetails.title : ""}{" "}
+          Curando fotografía:{" "}
+          {photoDetails && !sending ? photoDetails.title : ""}{" "}
         </ModalHeader>
         <ModalBody>
-          {!loading ? (
+          {photoDetails ? (
             <Form>
               <Row style={{ margin: "4px 0px" }}>
                 <Col>

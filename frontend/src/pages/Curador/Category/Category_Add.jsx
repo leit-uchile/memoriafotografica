@@ -26,14 +26,12 @@ import {
   selectCategoriesDetails,
   selectCategoriesUpdatePhotos,
   selectMetaDataGeneralTags,
-  selectSiteMiscCuradorLoading,
 } from "../../../reducers";
 
 const Category_Add = ({
   photos,
   photo_count,
   match,
-  loading,
   catDetails,
   tags,
   updatedPhotos,
@@ -178,7 +176,7 @@ const Category_Add = ({
         <Col>
           <h2>
             <Link
-              to="/curador/dashboard/categories"
+              to={`/curador/dashboard/categories/${catDetails.id}`}
               className="btn btn-secondary"
             >
               <FontAwesomeIcon icon={faChevronCircleLeft} />
@@ -278,7 +276,7 @@ const Category_Add = ({
           <Button color="primary" onClick={addPhotos}>
             Agregar fotos nuevas
           </Button>{" "}
-          {loading ? (
+          {!photos ? (
             <Fragment>
               <br />
               <LeitSpinner />
@@ -317,7 +315,6 @@ const Category_Add = ({
 const mapStateToProps = (state) => ({
   photos: selectPhotos(state),
   photo_count: selectPhotosCount(state),
-  loading: selectSiteMiscCuradorLoading(state),
   catError: selectCategoriesError(state),
   catDetails: selectCategoriesDetails(state),
   updatedPhotos: selectCategoriesUpdatePhotos(state),

@@ -31,9 +31,10 @@ const initialState = {
   update_status: "",
   // Used in curador
   general_tags: { count: 0, results: [] },
-  opsCompleted: 0,
   nbOperations: 0,
+  opsCompleted: 0,
   opsErrors: [],
+  updated: false,
 };
 
 export default function metadata(state = initialState, action) {
@@ -79,6 +80,7 @@ export default function metadata(state = initialState, action) {
         ...state,
         update_status: "success " + action.data,
         opsCompleted: state.opsCompleted + 1,
+        updated: state.nbOperations === state.opsCompleted + 1,
       };
     case UPDATED_METADATA_ERROR:
       return {
@@ -96,13 +98,18 @@ export default function metadata(state = initialState, action) {
         nbOperations: action.data,
         opsCompleted: 0,
         opsErrors: [],
+        updated: false,
       };
     case DELETED_METADATA:
-      return { ...state, opsCompleted: state.opsCompleted + 1 };
+      return { 
+        ...state, 
+        opsCompleted: state.opsCompleted + 1, 
+        updated: state.nbOperations === state.opsCompleted + 1, 
+      };
     case DELETED_METADATA_ERROR:
       return { ...state, opsErrors: [...state.opsErrors, action.data] };
     case METADATA_MERGE:
-      return {...state, opsCompleted: state.opsCompleted + 1};
+      return { ...state, opsCompleted: state.opsCompleted + 1, updated: true, };
     case METADATA_MERGE_ERROR:
       return { ...state, opsErrors: [...state.opsErrors, action.data] };
     default:
@@ -119,6 +126,8 @@ export const selectMetaDataBatch = (state) => state.metadata.batch;
 export const selectMetaDataOpsCompleted = (state) => state.metadata.opsCompleted;
 
 export const selectMetaDataOpsErrors = (state) => state.metadata.opsErrors;
+
+export const selectMetaDataUpdated = (state) => state.metadata.updated;
 
 export const selectMetaDataGeneralTagsResult = (state) => state.metadata.general_tags.results;
 

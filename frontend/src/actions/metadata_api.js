@@ -21,27 +21,36 @@ import {
   METADATA_MERGE,
   METADATA_MERGE_ERROR,
 } from "./types";
+import { setAlert } from "./site_misc";
 
 /**
  * Creates one metadata by name and associates it to the default
  * IPTC tag (Keywords)
  *
  * @param {string} name
+ * @param {boolean} list if multiple names are sent
  *
  * On success saves the metadata on store.metadata.newIDs
  * On failure saves reason and name on store.metadata.failedCreations
  */
-export const createMetadataByName = (name) => (dispatch, getState) => {
+export const createMetadataByName = (name, list = false) => (
+  dispatch,
+  getState
+) => {
   let headers = {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
 
+  let newMetadata = list
+    ? name.map((el) => ({ value: el, metadata: 1 }))
+    : [{ value: name, metadata: 1 }];
+
   // NOTE: metadata defaults to 1
   fetch("/api/metadata/", {
     method: "POST",
     headers: headers,
-    body: JSON.stringify({ value: name, metadata: 1 }),
+    body: JSON.stringify(newMetadata),
   }).then(function (response) {
     const r = response;
     if (r.status === 201) {
@@ -56,7 +65,6 @@ export const createMetadataByName = (name) => (dispatch, getState) => {
 
 /**
  * Creates multiple metadata from a list of names
- * doing multiple calls to the API
  * @param {Array} nameList
  */
 export const createMultipleMetas = (nameList) => (dispatch, getState) => {
@@ -67,18 +75,7 @@ export const createMultipleMetas = (nameList) => (dispatch, getState) => {
   // Set process in motion
   dispatch({ type: CREATING_METADATA, data: nameList.length });
 
-  const funcs = nameList.map((name) => () =>
-    createMetadataByName(name)(dispatch, getState)
-  );
-
-  const callWithTimeout = (id, list) => {
-    if (id !== list.length) {
-      list[id]();
-      setTimeout(() => callWithTimeout(id + 1, list), 200);
-    }
-  };
-
-  callWithTimeout(0, funcs);
+  createMetadataByName(nameList, true)(dispatch, getState)
 };
 
 /**
@@ -242,13 +239,15 @@ export const putMetadata = (metadata) => (dispatch, getState) => {
     method: "PUT",
     headers: headers,
     body: JSON.stringify(metadata),
-  }).then(function (response) {
+  }).then((response) => {
     const r = response;
     if (r.status === 206 || r.status === 200) {
-      r.json().then((data) =>
+      return r.json().then((data) => {
+        dispatch(setAlert("Metadata actualizada exitosamente", "success"));
         dispatch({ type: UPDATED_METADATA, data: metadata.id })
-      );
+      });
     } else {
+      dispatch(setAlert("Error actualizando metadata. Intente nuevamente", "warning"));
       dispatch({ type: UPDATED_METADATA_ERROR, data: metadata.id });
     }
   });
@@ -300,15 +299,19 @@ export const searchMetadataByValueGeneral = (query, page, page_size, extra) => (
  */
 export const deleteMetadata = (id) => (dispatch, getState) => {
   let headers = { Authorization: "Token " + getState().user.token };
-  fetch(`/api/metadata/${id}/`, { headers, method: "DELETE" }).then(
-    (response) => {
-      const r = response;
-      if (r.status === 204) {
-        dispatch({ type: DELETED_METADATA, data: id });
-      } else {
-        dispatch({ type: DELETED_METADATA_ERROR, data: id });
-      }
+  return fetch(`/api/metadata/${id}/`, {
+    method: "DELETE",
+    headers: headers,
+  }).then((response) => {
+    const r = response;
+    if (r.status === 204) {
+      dispatch(setAlert("Metadata eliminada exitosamente", "success"));
+      dispatch({ type: DELETED_METADATA, data: id });
+    } else {
+      dispatch(setAlert("Error eliminando metadata. Intente nuevamente", "warning"));
+      dispatch({ type: DELETED_METADATA_ERROR, data: id });
     }
+  }
   );
 };
 
@@ -330,16 +333,19 @@ export const mergeMetadata = (ids) => (dispatch, getState) => {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
-
-  fetch("/api/metadata/merge/", {
+  return fetch("/api/metadata/merge/", {
     method: "POST",
     headers: headers,
     body: JSON.stringify({ ids: ids }),
-  }).then(function (response) {
+  }).then((response) => {
     const r = response;
     if (r.status === 200) {
-      r.json().then((data) => dispatch({ type: METADATA_MERGE, data: data }));
+      return r.json().then((data) => {
+        dispatch(setAlert("Metadata unida exitosamente", "success"));
+        dispatch({ type: METADATA_MERGE, data: data })
+      });
     } else {
+      dispatch(setAlert("Error uniendo metadata. Intente nuevamente", "warning"));
       dispatch({ type: METADATA_MERGE_ERROR, data: ids.join(",") });
     }
   });

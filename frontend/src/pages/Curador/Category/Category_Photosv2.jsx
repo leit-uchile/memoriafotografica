@@ -87,7 +87,11 @@ const Category_Photos = ({
   match,
 }) => {
   const [page, setPage] = useState({ page: 0, page_size: 10 });
-  const [data, setData] = useState({ title: "", pictures: [] });
+  const [pictures, setPictures] = useState([]);
+  const [params, setParams] = useState({
+    redirect: false,
+    id: "",
+  });
 
   // Initial load and on photos update
   useEffect(() => {
@@ -100,10 +104,6 @@ const Category_Photos = ({
     // eslint-disable-next-line
   }, [updatedPhotos, getCategory, getPhotosAuth, resetErrors]);
 
-  useEffect(() => {
-    setData((d) => ({ ...d, title: catDetails.title }));
-  }, [catDetails]);
-
   var mapped = photos.map((el) => ({
     src: el.thumbnail,
     height: el.aspect_h,
@@ -113,33 +113,25 @@ const Category_Photos = ({
 
   const setDaPage = (p) => {
     setPage((s) => ({ ...s, page: p }));
-    let params = "&category=" + match.params.id;
-    getPhotosAuth(p, page.page_size, params);
-  };
-
-  const addTitle = (e) => {
-    let target = e.target; // REACT BUG: e.target is not persistent over state update
-    setData((d) => ({ ...d, title: target.value }));
-  };
-
-  const update = () => {
-    updateCategory({ ...catDetails, title: data.title });
+    let url = "&category=" + match.params.id;
+    getPhotosAuth(p, page.page_size, url);
   };
 
   const handleOnClick = (obj) => {
-    const { id } = obj.photo;
+    const { id } = photos[obj.index];
+    console.log(id);
     // If its there remove it
-    const newList = data.pictures.filter((el) => el !== id);
-    if (data.pictures.filter((el) => el === id).length !== 0) {
-      setData((d) => ({ ...d, pictures: [...newList] }));
+    const newList = pictures.filter((el) => el !== id);
+    if (pictures.filter((el) => el === id).length === 0) {
+      setPictures([...newList, id]);
     } else {
-      setData((d) => ({ ...d, pictures: [...newList, id] }));
+      setPictures(newList);
     }
   };
 
   const selectAll = (add) => {
     if (add) {
-      let filter = data.pictures.filter((el) => {
+      let filter = pictures.filter((el) => {
         for (let index = 0; index < photos.length; index++) {
           if (photos[index].id === el) {
             return false;
@@ -148,9 +140,9 @@ const Category_Photos = ({
         return true;
       });
       let mappedIds = photos.map((el) => el.id);
-      setData((d) => ({ ...d, pictures: [...filter, ...mappedIds] }));
+      setPictures([...filter, ...mappedIds]);
     } else {
-      let filter = data.pictures.filter((el) => {
+      let filter = pictures.filter((el) => {
         for (let index = 0; index < photos.length; index++) {
           if (photos[index].id === el) {
             return false;
@@ -158,77 +150,44 @@ const Category_Photos = ({
         }
         return true;
       });
-      setData((d) => ({ ...d, pictures: [...filter] }));
+      setPictures([...filter]);
     }
   };
 
   const removePhotos = () => {
-    associate(data.pictures, catDetails.id, "remove");
+    associate(pictures, catDetails.id, "remove");
   };
 
   const doRedirect = () => {
-    setData((d) => ({ ...d, redirect: catDetails.id }));
+    setParams({ redirect: true, id: catDetails.id });
   };
 
-  if (data.redirect) {
+  if (params.redirect) {
     return (
-      <Redirect
-        push
-        to={`/curador/dashboard/categories/${data.redirect}/add`}
-      />
+      <Redirect push to={`/curador/dashboard/categories/${params.id}/add`} />
     );
   }
 
   return (
     <Container fluid>
-      <Row>
-        <Col>
-          <h2>
-            <Link
-              to="/curador/dashboard/categories"
-              className="btn btn-secondary"
-            >
-              <FontAwesomeIcon icon={faChevronCircleLeft} />
-            </Link>{" "}
-            Ver/Modificar Categoria: {catDetails.title}
-          </h2>
-        </Col>
-      </Row>
-      <Row>
-        <Label for="exampleEmail" sm={2}>
-          Editar Nombre
-        </Label>
-        <Col sm={10}>
-          <InputGroup>
-            <Input
-              placeholder={"Nombre"}
-              defaultValue={data.title}
-              onChange={addTitle}
-              maxLength="30"
-            />
-            <InputGroupAddon addonType="append">
-              <Button color="primary" onClick={update}>
-                Modificar Nombre
-              </Button>
-            </InputGroupAddon>
-          </InputGroup>
-        </Col>
-      </Row>
       <Row style={{ marginTop: "1em" }}>
         <Col style={{ textAlign: "center" }}>
           <Button color="primary" onClick={doRedirect}>
             Agregar fotos nuevas <FontAwesomeIcon icon={faExternalLinkAlt} />
           </Button>{" "}
-          <RemovePhotos action={removePhotos} disabled={data.pictures.length === 0}/>{" "}
+          <RemovePhotos
+            action={removePhotos}
+            disabled={pictures.length === 0}
+          />{" "}
           {!photos ? (
             <LeitSpinner />
           ) : (
             <Fragment>
               <PhotoSelector
-                useContainer={false}
+                useContainer={true}
                 photos={mapped}
                 targetRowHeight={200}
-                onClick={(e, index) => handleOnClick(index)}
+                onClick={(e, obj) => handleOnClick(obj)}
                 putAll={(add) => selectAll(add)}
               />
             </Fragment>
