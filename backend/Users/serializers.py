@@ -76,8 +76,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserPhotoSerializer(serializers.ModelSerializer):
-    photos = PhotoSerializer(many=True)
-
+    photos = PhotoSerializer(many = True)
     class Meta:
         model = User
         fields = ('photos', )

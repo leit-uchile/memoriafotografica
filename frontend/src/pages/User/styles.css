@@ -1,7 +1,42 @@
-.user-dashboard-buttons {
-  display: flex;
-  align-items: center;
+.card.user-dashboard-card {
+  border: none;
 }
-.user-dashboard-buttons > button {
-  margin-right: 4px;
+.user-dashboard-card img {
+  border-radius: 50%;
+  width: 100%;
+}
+.edit-profile-dropdown .dropdown-item {
+  display: inline-block;
+}
+.edit-profile-dropdown .dropdown-item:hover {
+  background-color: var(--leit-gray-disabled);
+}
+.edit-profile label{
+  text-align: left;
+}
+
+/* User not available */
+
+.userNotAvailable {
+  min-height: 75vh;
+  text-align: center;
+}
+
+.userNotAvailable.container {
+  padding-top: 25vh;
+}
+
+.userNotAvailable h2 {
+  color: var(--leit-pink);
+  font-size: 3em;
+}
+
+.userNotAvailable p {
+  font-size: 1.5em;
+}
+
+@media (min-width: 576px) {
+  .userNotAvailable .row .col-sm-6:last-child {
+    text-align: left;
+  }
 }

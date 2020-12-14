@@ -9,6 +9,8 @@ from .serializers import (CreateUserSerializer, UserSerializer,
                           UserCommentSerializer, UserPhotoSerializer,
                           ChangePasswordSerializer, ReCaptchaSerializer)
 from .models import User, RegisterLink
+from Gallery.models import Photo
+from Gallery.serializers import PhotoSerializer
 from .permissions import *
 from WebAdmin.views import sendEmail
 from rest_framework.documentation import include_docs_urls
@@ -220,9 +222,9 @@ class UserDetailAPI(generics.GenericAPIView):
 
     def get(self, request, pk, *args, **kwargs):
         user = self.get_object(pk)
-        if(request.user.is_anonymous and not user.public_profile):
+        if request.user.is_anonymous and not user.public_profile:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if(request.user.user_type == 1 and not user.public_profile):
+        if ((not request.user.is_anonymous) and request.user.user_type == 1) and not user.public_profile:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         serializer = UserSerializer(user)
         return Response(serializer.data)
@@ -256,12 +258,22 @@ class UserPhotosAPI(generics.GenericAPIView):
        Get photos of a *user*.
        """
     permission_classes = [IsAuthenticated | ReadOnly, ]
-    serializer_class = UserPhotoSerializer
+    serializer_class = PhotoSerializer
 
     def get(self, request, pk, *args, **kwargs):
         try:
             user = User.objects.get(pk=pk)
-            serializer = UserPhotoSerializer(user)
+            filters = {}
+            if "approved" in request.query_params:
+                approved = True
+                if request.query_params["approved"] == "false":
+                    approved = False
+                filters['approved'] = approved
+    
+            user_pics = user.photos.filter(**filters)
+            serializer = PhotoSerializer(user_pics, many=True)
+            if "page" in request.query_params and "page_size" in request.query_params:
+                return self.get_paginated_response(self.paginate_queryset(serializer.data))
             return Response(serializer.data)
         except User.DoesNotExist:
             raise Http404
@@ -280,6 +292,8 @@ class UserAlbumsAPI(generics.GenericAPIView):
         try:
             user = User.objects.get(pk=pk)
             serializer = UserAlbumSerializer(user)
+            if "page" in request.query_params and "page_size" in request.query_params:
+                return self.get_paginated_response(self.paginate_queryset(serializer.data["albums"]))
             return Response(serializer.data)
         except User.DoesNotExist:
             raise Http404
@@ -289,6 +303,7 @@ class UserCommentsAPI(generics.GenericAPIView):
     """
        get:
        Get comments of a *user*.
+       Permits pagination if page_size and page are on the query parameters
 
        TODO delete:
        Delete an comment asociated to a *user*.
@@ -299,7 +314,9 @@ class UserCommentsAPI(generics.GenericAPIView):
     def get(self, request, pk, *args, **kwargs):
         try:
             user = User.objects.get(pk=pk)
-            serializer = UserCommentSerializer(user)
+            serializer = self.serializer_class(user)
+            if "page" in request.query_params and "page_size" in request.query_params:
+                return self.get_paginated_response(self.paginate_queryset(serializer.data["comments"]))
             return Response(serializer.data)
         except User.DoesNotExist:
             raise Http404

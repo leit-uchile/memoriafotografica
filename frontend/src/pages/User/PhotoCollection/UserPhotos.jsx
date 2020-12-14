@@ -34,13 +34,13 @@ class UserPhotos extends Component {
         "&page=1&page_size=100"
       );
     } else {
-      props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
+      props.onLoadGetPhotos(props.user.id, 100, 0, "&approved=true"); //no poner limite
     }
   }
 
   componentDidUpdate() {
     if (
-      (this.props.updatedPhoto || this.props.refresh) &&
+      (this.props.refresh) &&
       !this.state.modalOpen
     ) {
       setTimeout(() => window.location.reload(), 1000);
@@ -118,9 +118,9 @@ class UserPhotos extends Component {
             >
               {this.state.isPublic
                 ? `Fotos de ${this.props.publicUser.first_name}`
-                : "Mis fotos"}
+                : "Mis fotos"}{" "}
+              <Badge color="primary">{mapped.length}</Badge>
             </h2>
-            {/* <Badge color="primary">{mapped.length}</Badge> */}
           </Col>
         </Row>
         {this.state.isPublic ? null : (
@@ -149,11 +149,10 @@ class UserPhotos extends Component {
                 handleToggle={() =>
                   this.setState({ modalOpen: !this.state.modalOpen })
                 }
-                editPhoto={(id,content)=>this.props.editPhoto(id,content)}
-                deletePhoto={(id)=>this.props.deletePhoto(id)}
+                editPhoto={(id, content) => this.props.editPhoto(id, content)}
+                deletePhoto={(id) => this.props.deletePhoto(id)}
                 isCurator={false}
                 censurePhoto={null}
-                
               />
               <CreateAlbumModal photosID={this.state.picturesToEdit} isOpen={(bool) => this.setState({modalOpen: bool})}/>
             </Col>

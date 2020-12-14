@@ -152,7 +152,7 @@ export const getRegisterLink = (code) => (dispatch) => {
   });
 };
 
-export const getUserPhotos = (user_id, limit, offset) => (
+export const getUserPhotos = (user_id, page, page_size, extra = "") => (
   dispatch,
   getState
 ) => {
@@ -161,13 +161,13 @@ export const getUserPhotos = (user_id, limit, offset) => (
     Authorization: "Token " + getState().user.token,
   };
   return fetch(
-    `/api/users/photos/${user_id}/?limit=${limit}&offset=${offset}`,
+    `/api/users/photos/${user_id}/?page=${page}&page_size=${page_size}${extra}`,
     { method: "GET", headers: headers }
   ).then(function (response) {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_PHOTO, data: data.photos });
+        dispatch({ type: USER_RECOVERED_PHOTO, data: data });
       });
     } else {
       dispatch({ type: USER_RECOVERED_PHOTO_ERROR, data: r.data });
@@ -176,7 +176,7 @@ export const getUserPhotos = (user_id, limit, offset) => (
   });
 };
 
-export const getUserAlbums = (user_id, limit, offset) => (
+export const getUserAlbums = (user_id, page, page_size, extra = "") => (
   dispatch,
   getState
 ) => {
@@ -185,13 +185,13 @@ export const getUserAlbums = (user_id, limit, offset) => (
     Authorization: "Token " + getState().user.token,
   };
   return fetch(
-    `/api/users/albums/${user_id}/?limit=${limit}&offset=${offset}`,
+    `/api/users/albums/${user_id}/?page=${page}&page_size=${page_size}${extra}`,
     { method: "GET", headers: headers }
   ).then(function (response) {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_ALBUM, data: data.albums });
+        dispatch({ type: USER_RECOVERED_ALBUM, data: data });
       });
     } else {
       dispatch({ type: USER_RECOVERED_ALBUM_ERROR, data: r.data });
@@ -200,7 +200,7 @@ export const getUserAlbums = (user_id, limit, offset) => (
   });
 };
 
-export const getUserComments = (user_id, limit, offset) => (
+export const getUserComments = (user_id, page, page_size) => (
   dispatch,
   getState
 ) => {
@@ -209,13 +209,13 @@ export const getUserComments = (user_id, limit, offset) => (
     Authorization: "Token " + getState().user.token,
   };
   return fetch(
-    `/api/users/comments/${user_id}/?limit=${limit}&offset=${offset}`,
+    `/api/users/comments/${user_id}/?page=${page}&page_size=${page_size}`,
     { method: "GET", headers: headers }
   ).then(function (response) {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_COMMENTS, data: data.comments });
+        dispatch({ type: USER_RECOVERED_COMMENTS, data: data });
       });
     } else {
       dispatch({ type: USER_RECOVERED_COMMENTS_ERROR, data: r.data });
@@ -228,10 +228,13 @@ export const getUserComments = (user_id, limit, offset) => (
  * Load a user by ID if it is public
  */
 export const loadAUser = (id) => (dispatch, getState) => {
-  let headers = {
-    "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token,
-  };
+  let headers = {};
+  if (getState().user.isAuthenticated) {
+    headers = {
+      "Content-Type": "application/json",
+      Authorization: "Token " + getState().user.token,
+    };
+  }
   dispatch({ type: USER_PUBLIC_LOADING });
   return fetch(`/api/users/${id}/`, { method: "GET", headers: headers })
     .then((res) => {
@@ -259,15 +262,16 @@ export const loadAUser = (id) => (dispatch, getState) => {
 /**
  * Load all albums from a specific public user
  * @param {String|Number} user_id
+ * @param {String} extra params for sorting and pagination, filtering, etc
  */
-export const loadPublicUserAlbums = (user_id) => (dispatch) =>
-  fetch(`/api/albums/?user=${user_id}`).then((res) => {
-    const response = res;
-    if (response.status === 200) {
-      return response
+export const loadPublicUserAlbums = (user_id, extra = "") => (dispatch) =>
+  fetch(`/api/albums/?user=${user_id}${extra}`).then(function (response) {
+    const r = response;
+    if (r.status === 200) {
+      return r
         .json()
-        .then((parsed) =>
-          dispatch({ type: USER_RECOVERED_ALBUM, data: parsed.results })
+        .then((data) =>
+          dispatch({ type: USER_RECOVERED_ALBUM, data: data })
         );
     } else {
       dispatch(
@@ -287,7 +291,7 @@ export const loadPublicUserPhotos = (user_id, extra = "") => (dispatch) =>
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_PHOTO, data: data.results });
+        dispatch({ type: USER_RECOVERED_PHOTO, data: data });
       });
     } else {
       dispatch({ type: USER_RECOVERED_PHOTO_ERROR, data: r.data });
@@ -436,7 +440,7 @@ export const updatePassword = (old_password, new_password) => (
     });
 };
 
-export const uploadUserPicture = (avatar) => (dispatch, getState) => {};
+export const uploadUserPicture = (avatar) => (dispatch, getState) => { };
 
 export const resetPasswordRequest = (email) => (dispatch) => {
   let headers = { "Content-Type": "application/json" };
@@ -514,7 +518,7 @@ export const resetPasswordConfirm = (token, password) => (dispatch) => {
         dispatch({ type: RESET_PASSWORD_CONFIRM_SUCCESS, data: null });
         return { status: res.status, data: null };
       } else {
-         dispatch({ type: RESET_PASSWORD_CONFIRM_FAILED, data: res.data });
+        dispatch({ type: RESET_PASSWORD_CONFIRM_FAILED, data: res.data });
       }
     });
 };

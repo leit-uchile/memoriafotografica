@@ -24,7 +24,7 @@ import {
 } from "reactstrap";
 import UserPicture from "../../../components/UserPicture";
 import CropPhoto from "../../../components/CropPhoto";
-import "./styles.css";
+import "../styles.css";
 import { bindActionCreators } from "redux";
 import { selectUserData} from "../../../reducers";
 
@@ -168,7 +168,7 @@ class EditProfile extends Component {
           </Col>
         </Row>
         <Row>
-          <Col md="3" style={{ padding: "0" }}>
+          <Col md="3">
             <Container fluid>
               <Row>
                 <Col>
@@ -376,7 +376,6 @@ class EditProfile extends Component {
                           </Row>
                         </Col>
                       </FormGroup>
-                      <hr />
                       <Button color="primary">Guardar cambios</Button>
                     </Form>
                   </Col>
