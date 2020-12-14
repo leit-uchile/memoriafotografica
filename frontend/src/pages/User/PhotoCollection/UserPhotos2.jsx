@@ -90,7 +90,7 @@ const UserPhotos = ({
         </title>
       </Helmet>
       <Row>
-        <Col className="dashboard-col">
+        <Col>
           <h2
             style={{
               textAlign: `${publicView ? "center" : "left"}`,
@@ -138,7 +138,7 @@ const UserPhotos = ({
         </Row>
       )}
       <Row>
-        <Col className="dashboard-col">
+        <Col>
           <Container fluid>
             <div className="stat-box rounded">
               {photos.results ? (
