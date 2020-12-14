@@ -56,7 +56,7 @@ const UserAlbums = ({
         </title>
       </Helmet>
       <Row>
-        <Col className="dashboard-col">
+        <Col>
           <h2
             style={{
               textAlign: `${publicView ? "center" : "left"}`,
@@ -72,7 +72,7 @@ const UserAlbums = ({
         </Col>
       </Row>
       <Row>
-        <Col className="dashboard-col">
+        <Col>
           <Container fluid>
             <div className="stat-box rounded">
               {albums.results ? (
