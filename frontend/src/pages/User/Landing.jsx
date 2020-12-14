@@ -53,7 +53,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
       </Helmet>
       <div>
         <Row>
-          <Col className="dashboard-col">
+          <Col>
             <h2
               style={{
                 textAlign: "left",
@@ -64,7 +64,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
           </Col>
         </Row>
         <Row>
-          <Col className="dashboard-col">
+          <Col>
             <div className="stat-box">
               <Container fluid className="stat-box-header">
                 <h2>Fotograf&iacute;as sin aprobación {addMore}</h2>
@@ -119,7 +119,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
               </Container>
             </div>
           </Col>
-          <Col className="dashboard-col">
+          <Col>
             <div className="stat-box">
               <Container fluid className="stat-box-header">
                 <h2>Mis comentarios</h2>
@@ -127,13 +127,13 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
               <hr />
               <Container>
                 <Row>
-                  <Col className="dashboard-col">
+                  <Col>
                     {comments.results ? (
                       comments.results.length !== 0 ? (
                         <Container>
                           {comments.results.map((el, key) => (
                             <Row key={"Comment" + key}>
-                              <Col style={{ paddingBottom: "8px" }}>
+                              <Col>
                                 <Comment
                                   element={{
                                     content: el.content,
@@ -178,7 +178,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
           </Col>
         </Row>
         <Row>
-          <Col className="dashboard-col">
+          <Col>
             <div className="stat-box">
               <Container fluid className="stat-box-header">
                 <h2>Notificaciones</h2>
