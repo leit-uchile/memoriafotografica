@@ -55,7 +55,7 @@ hr {
   box-shadow: #ddd 3px 5px 10px;
   margin-bottom: 1.5em;
 }
-.dashboard-col {
+.dashboard .col {
   padding: 12px;
 }
 .stat-box {
