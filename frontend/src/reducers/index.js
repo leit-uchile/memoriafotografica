@@ -41,9 +41,6 @@ export const selectPhotosError = (state) =>
 export const selectPhotosPhotoUpdate = (state) =>
   fromPhotos.selectPhotosPhotoUpdate(state);
 
-export const selectPhotosRefresh = (state) =>
-  fromPhotos.selectPhotosRefresh(state);
-
 // Categories
 export const selectCats = (state) => fromCategories.selectCats(state);
 

@@ -1,5 +1,4 @@
 import {
-  LANDING_LOADING,
   NEWS_RECOVERED,
   NEWS_EMPTY,
   CAROUSSEL_RECOVERED,
@@ -49,9 +48,6 @@ export const validateRecaptcha = (valueRecaptcha) => (dispatch) => {
 export const resetValidateRecaptcha = () => (dispatch) => {
   dispatch({ type: RESET_RECAPTCHA, data: null });
 };
-
-export const landingLoading = () => (dispatch) =>
-  dispatch({ type: LANDING_LOADING, data: null });
 
 export const getNews = (page = 0, page_size = 4, params = "") => (dispatch) => {
   return fetch(

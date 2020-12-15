@@ -11,7 +11,6 @@ import {
 const initialState = {
   photos: [],
   errors: null,
-  refresh: false,
   updatedPhoto: {},
   details: {
     title: "[Titulo]",
@@ -42,11 +41,11 @@ export default function photos(state = initialState, action) {
       return { ...state, edit_photo_errors: action.data };
     case DELETED_PHOTO:
       let newList = state.photos.filter((photo) => photo.id !== action.data.id);
-      return { 
-        ...state, 
-        photos: [newList], 
-        updatedPhoto: action.data, 
-        refresh: true };
+      return {
+        ...state,
+        photos: [newList],
+        updatedPhoto: action.data,
+      };
     case RECOVERED_PHOTO_DETAILS:
       return { ...state, details: action.data, errors: null };
     case PHOTO_DETAILS_ERROR:
@@ -83,5 +82,3 @@ export const selectPhotosDetails = (state) => state.photos.details;
 export const selectPhotosError = (state) => state.photos.errors;
 
 export const selectPhotosPhotoUpdate = (state) => state.photos.updatedPhoto;
-
-export const selectPhotosRefresh = (state) => state.photos.refresh;

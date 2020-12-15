@@ -1,5 +1,4 @@
 import {
-  LANDING_LOADING,
   NEWS_RECOVERED,
   NEWS_EMPTY,
   CAROUSSEL_RECOVERED,
@@ -50,8 +49,6 @@ export default function webadmin(state = initialState, action) {
       return { ...state, recaptchaState: false };
     case RESET_RECAPTCHA:
       return { ...state, recaptchaState: false };
-    case LANDING_LOADING:
-      return { ...state, loading: true };
     case NEWS_RECOVERED:
       return { ...state, loading: false, news: data };
     case NEWS_EMPTY:
