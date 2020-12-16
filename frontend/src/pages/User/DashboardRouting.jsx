@@ -74,7 +74,7 @@ const Dashboard = ({ match, location, setRoute, user, props }) => {
 
   useEffect(() => {
     setRoute(location.pathname);
-  }, [setRoute]);
+  }, [location, setRoute]);
 
   if (params.redirect) {
     return <Redirect push to={params.url} />;

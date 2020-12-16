@@ -269,7 +269,7 @@ export const getMessages = (query, page, page_size, extra) => (
       method: "GET",
       headers: headers,
     }
-  ).then(function (response) {
+  ).then((response) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {

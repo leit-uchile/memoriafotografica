@@ -64,7 +64,7 @@ const DeleteModal = ({
           {sending ? <Spinner style={{ width: "1rem", height: "1rem" }} /> : ""}{" "}
           Eliminar
         </Button>
-        <Button onClick={() => setToggle(!toggle)}>Volver</Button>
+        <Button onClick={() => setToggle(!toggle)}>Cancelar</Button>
       </ModalFooter>
     </Modal>
   );
