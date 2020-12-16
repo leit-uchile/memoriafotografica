@@ -17,7 +17,7 @@ import {
 const initialState = {
   categories: [],
   error: "",
-  total: -1,
+  total: 0,
   categoryDetail: {},
   updatedPhotos: false,
   catUpdate: {},
@@ -34,7 +34,7 @@ export default function categories(state = initialState, action) {
         total: action.data.count,
       };
     case EMPTY_CATEGORIES:
-      return { ...state, categories: [], total: -1 };
+      return { ...state, categories: [], total: 0 };
     case CATEGORY_RESET_ERRORS:
       return {
         ...state,
