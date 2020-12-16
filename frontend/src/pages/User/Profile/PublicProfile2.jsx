@@ -45,14 +45,22 @@ const PublicProfile = ({
   albums,
   getPublicAlbums,
 }) => {
+  const [loadingPhotos, setLoadingPhotos] = useState(true);
+  const [loadingAlbums, setLoadingAlbums] = useState(true);
   const [params, setParams] = useState({
     redirect: false,
     url: "",
   });
 
   useEffect(() => {
-    getPublicPhotos(user.id, "&page=1&page_size=4");
-    getPublicAlbums(user.id, "&page=1&page_size=3");
+    setLoadingPhotos(true);
+    setLoadingAlbums(true);
+    getPublicPhotos(user.id, "&page=1&page_size=4").then((r) =>
+      setLoadingPhotos(false)
+    );
+    getPublicAlbums(user.id, "&page=1&page_size=3").then((r) =>
+      setLoadingAlbums(false)
+    );
   }, [user]);
 
   if (params.redirect) {
@@ -130,7 +138,7 @@ const PublicProfile = ({
             </Container>
             <hr />
             <Container fluid>
-              {albums.results ? (
+              {!loadingAlbums ? (
                 albums.results.length !== 0 ? (
                   <Row>
                     <Col
@@ -184,7 +192,7 @@ const PublicProfile = ({
             </Container>
             <hr />
             <Container fluid>
-              {photos.results ? (
+              {!loadingPhotos ? (
                 photos.results.length !== 0 ? (
                   <Row>
                     <Col

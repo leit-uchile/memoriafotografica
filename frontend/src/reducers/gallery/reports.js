@@ -9,7 +9,7 @@ import {
 } from "../../actions/types";
 
 const initialState = {
-  reports: [],
+  reports: { results: [], count: 0, },
   error: "",
   reportUpdate: {},
   photoReportSent: false,
@@ -21,7 +21,7 @@ export default function curador(state = initialState, action) {
     case RECOVERED_REPORT:
       return { ...state, reports: action.data };
     case EMPTY_REPORTS:
-      return { ...state, reports: [] };
+      return { ...state, reports: { results: [], count: 0, }, };
     case REPORT_SWITCH_STATE:
       return { ...state, reportUpdate: action.data };
     case REPORT_SWITCH_STATE_ERROR:

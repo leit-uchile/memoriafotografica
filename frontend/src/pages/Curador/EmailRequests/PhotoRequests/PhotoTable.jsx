@@ -18,7 +18,10 @@ import FilterOptions from "../../FilterOptions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { bindActionCreators } from "redux";
-import { selectWebAdminRequests } from "../../../../reducers";
+import {
+  selectWebAdminRequests,
+  selectWebAdminRequestUpdate,
+} from "../../../../reducers";
 import "../../styles.css";
 
 const filters = [
@@ -38,7 +41,13 @@ const filters = [
   },
 ];
 
-const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
+const PhotoTable = ({
+  requests,
+  updatedRequest,
+  getRequests,
+  getPhotosToApprove,
+  active,
+}) => {
   const [searchState, setSearchState] = useState("");
   const [filter, setFilter] = useState({
     createdSince: "",
@@ -46,13 +55,18 @@ const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
     resolved: "",
     approved: "",
   });
-  const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
+  const [pagination, setPagination] = useState({
+    page: 0,
+    page_size: 12,
+    loading: true,
+  });
   const [params, setParams] = useState({
     redirect: false,
     id: "",
   });
 
   useEffect(() => {
+    setPagination((pag) => ({ ...pag, loading: true }));
     let url = "&sort=updated_at-desc";
     if (active) {
       if (filter.createdSince && filter.createdSince !== "") {
@@ -67,16 +81,31 @@ const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
       if (filter.approved.length !== 0) {
         url = url + `&approved=${filter.approved}`;
       }
-      getRequests(searchState, pagination.page + 1, pagination.page_size, url);
+      getRequests(
+        searchState,
+        pagination.page + 1,
+        pagination.page_size,
+        url
+      ).then((r) => {
+        setPagination((pag) => ({ ...pag, loading: false }));
+      });
     }
-  }, [active, filter, searchState, pagination, getRequests]);
+  }, [
+    active,
+    filter,
+    searchState,
+    pagination.page,
+    pagination.page_size,
+    updatedRequest,
+    getRequests,
+  ]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
   };
 
   const handleRedirect = (id) => {
-    getPhotosToApprove(id); // is it necessary give timeout or useEffect ?
+    getPhotosToApprove(id);
     setParams({
       ...params,
       redirect: true,
@@ -141,7 +170,7 @@ const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
         </Col>
       </Row>
       <div>
-        {requests.results ? (
+        {!pagination.loading ? (
           requests.results.length !== 0 ? (
             <Row>
               <Col>
@@ -176,7 +205,9 @@ const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
                 </Table>
               </Col>
             </Row>
-          ) : null
+          ) : (
+            "No hay solicitudes disponibles"
+          )
         ) : (
           <Row>
             <Col style={{ textAlign: "center" }}>
@@ -184,9 +215,7 @@ const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
             </Col>
           </Row>
         )}
-        {requests.count === 0 ? (
-          "No hay solicitudes disponibles"
-        ) : (
+        {requests.count !== 0 ? (
           <Pagination
             count={requests.count}
             page_size={pagination.page_size}
@@ -197,7 +226,7 @@ const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
             displayFirst
             displayLast
           />
-        )}
+        ) : null}
       </div>
     </Container>
   );
@@ -205,6 +234,7 @@ const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
 
 const mapStateToProps = (state) => ({
   requests: selectWebAdminRequests(state),
+  updatedRequest: selectWebAdminRequestUpdate(state),
 });
 
 const mapActionsToProps = (dispatch) =>

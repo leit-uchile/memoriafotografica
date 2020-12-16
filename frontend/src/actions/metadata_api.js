@@ -279,14 +279,14 @@ export const searchMetadataByValueGeneral = (query, page, page_size, extra) => (
   let user = getState().user;
   if (user.isAuthenticated) {
     let headers = { Authorization: "Token " + user.token };
-    fetch(
+    return fetch(
       `/api/metadata/?search=${query}&page=${page}&page_size=${page_size}${extra}`,
       {
         headers,
       }
     ).then(success_func);
   } else {
-    fetch(
+    return fetch(
       `/api/metadata/?search=${query}&page=${page}&page_size=${page_size}${extra}`
     ).then(success_func);
   }

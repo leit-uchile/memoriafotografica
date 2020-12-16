@@ -1,6 +1,7 @@
 import {
   RECOVERED_PHOTOS,
   EMPTY_PHOTOS,
+  PHOTO_RESET_NB_OPS,
   EDIT_PHOTO,
   DELETED_PHOTO,
   EDIT_PHOTO_ERROR,
@@ -123,6 +124,13 @@ export const associateCategory = (photoIds, catId, action = "add") => (
   });
 };
 
+/**
+ * When doing multiple operations set number of ops
+ * for completion checking and error catching
+ */
+export const setNBOps = (num) => (dispatch) =>
+  dispatch({ type: PHOTO_RESET_NB_OPS, data: num });
+
 export const editPhoto = (photoID, newData) => (dispatch, getState) => {
   let headers = {
     "Content-Type": "application/json",
@@ -136,7 +144,7 @@ export const editPhoto = (photoID, newData) => (dispatch, getState) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch(setAlert("Fotografía actualizada con éxito", "success"));
+        dispatch(setAlert("Fotografía actualizada exitosamente", "success"));
         dispatch({ type: EDIT_PHOTO, data: data });
       });
     } else {
@@ -152,22 +160,16 @@ export const deletePhoto = (photoID) => (dispatch, getState) => {
     Authorization: "Token " + getState().user.token,
     "Content-Type": "application/json",
   };
-
   return fetch("/api/photos/" + photoID + "/", {
     method: "DELETE",
     headers: headers,
-  }).then(function (response) {
+  }).then((response) => {
     const r = response;
     if (r.status === 204) {
-      dispatch(setAlert("Se ha(n) borrado con éxito", "success"));
+      dispatch(setAlert("Fotografía eliminada exitosamente", "success"));
       dispatch({ type: DELETED_PHOTO, data: photoID });
     } else {
-      dispatch(
-        setAlert(
-          "Hubo un error al borrar la(s) fotografia(s). Intente nuevamente",
-          "warning"
-        )
-      );
+      dispatch(setAlert("Error eliminando fotografía. Intente nuevamente", "warning"));
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
       throw r.data;
     }

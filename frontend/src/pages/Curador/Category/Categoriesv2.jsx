@@ -26,8 +26,7 @@ import {
   selectCategories,
   selectCategoriesTotal,
   selectCategoriesError,
-  selectNewCategories,
-  selectCategoriesUpdatedCat,
+  selectCategoriesCatUpdate,
 } from "../../../reducers";
 import DeleteModal from "./DeleteModal";
 
@@ -35,7 +34,6 @@ const Categories = ({
   cats,
   getCategories,
   total,
-  newCat,
   setOps,
   createCategory,
   deleteCategories,
@@ -43,7 +41,11 @@ const Categories = ({
   catError,
   resetErrors,
 }) => {
-  const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
+  const [pagination, setPagination] = useState({
+    page: 0,
+    page_size: 12,
+    loading: true,
+  });
   const [creating, setCreating] = useState(false);
   const [title, setTitle] = useState("");
   const [sending, setSending] = useState(false);
@@ -55,23 +57,19 @@ const Categories = ({
   });
 
   useEffect(() => {
+    setPagination((pag) => ({ ...pag, loading: true }));
     getCategories(
       pagination.page + 0,
       pagination.page_size,
       "&sort=updated_at-desc"
-    );
-  }, [pagination, updatedCat, getCategories]);
+    ).then((r) => {
+      setPagination((pag) => ({ ...pag, loading: false }));
+    });
+  }, [pagination.page, pagination.page_size, updatedCat, getCategories]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
   };
-
-  useEffect(() => {
-    if (creating) {
-      setOps(1); //Set 1 operation. Also set updatedCat to false
-    }
-    // eslint-disable-next-line
-  }, [creating]);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -168,7 +166,7 @@ const Categories = ({
         </Col>
       </Row>
       <div>
-        {cats ? (
+        {!pagination.loading ? (
           cats.length !== 0 ? (
             <Row>
               <Col>
@@ -180,7 +178,9 @@ const Categories = ({
                 />
               </Col>
             </Row>
-          ) : null
+          ) : (
+            "No hay categorías disponibles"
+          )
         ) : (
           <Row>
             <Col style={{ textAlign: "center" }}>
@@ -188,9 +188,7 @@ const Categories = ({
             </Col>
           </Row>
         )}
-        {total === 0 ? (
-          "No hay categorías disponibles"
-        ) : (
+        {total !== 0 ? (
           <Pagination
             count={total}
             page_size={pagination.page_size}
@@ -201,7 +199,7 @@ const Categories = ({
             displayFirst
             displayLast
           />
-        )}
+        ) : null}
       </div>
     </Container>
   );
@@ -210,9 +208,8 @@ const Categories = ({
 const mapStateToProps = (state) => ({
   cats: selectCategories(state),
   total: selectCategoriesTotal(state),
-  newCat: selectNewCategories(state),
   catError: selectCategoriesError(state),
-  updatedCat: selectCategoriesUpdatedCat(state),
+  updatedCat: selectCategoriesCatUpdate(state),
 });
 
 const mapActionsToProps = (dispatch) =>

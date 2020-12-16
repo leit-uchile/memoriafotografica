@@ -24,17 +24,16 @@ import {
 } from "../actions/types";
 
 const initialState = {
-  news: { count: 0, results: [] },
+  news: { results: [], count: 0, },
   caroussel: [],
   errors: [],
   requestedPhotos: [],
   requested: false,
   contacted: false,
   //Used in curador
-  loading: false,
-  messages: [],
+  messages: { results: [], count: 0, },
   messageUpdate: {},
-  requests: [],
+  requests: { results: [], count: 0, },
   requestDetail: {},
   requestUpdate: {},
   recaptchaState: false,
@@ -50,18 +49,17 @@ export default function webadmin(state = initialState, action) {
     case RESET_RECAPTCHA:
       return { ...state, recaptchaState: false };
     case NEWS_RECOVERED:
-      return { ...state, loading: false, news: data };
+      return { ...state, news: data };
     case NEWS_EMPTY:
       return {
         ...state,
-        loading: false,
         news: { count: 0, results: [] },
         errors: data,
       };
     case CAROUSSEL_RECOVERED:
-      return { ...state, loading: false, caroussel: data[0].news };
+      return { ...state, caroussel: data[0].news };
     case CAROUSSEL_ERROR:
-      return { ...state, loading: false, caroussel: [], errors: data };
+      return { ...state, caroussel: [], errors: data };
     case REQUESTPHOTO:
       let filtered = state.requestedPhotos.filter(
         (el) => el.id !== action.data.id
@@ -107,27 +105,38 @@ export default function webadmin(state = initialState, action) {
   }
 }
 
-export const selectWebAdminMessages = (state) => state.webadmin.messages;
+export const selectWebAdminMessages = (state) => 
+  state.webadmin.messages;
 
 export const selectWebAdminMessageUpdate = (state) =>
   state.webadmin.messageUpdate;
 
-export const selectWebAdminRequests = (state) => state.webadmin.requests;
+export const selectWebAdminRequests = (state) => 
+  state.webadmin.requests;
+
+export const selectWebAdminRequestUpdate = (state) =>
+  state.webadmin.requestUpdate;
 
 export const selectWebAdminRequestDetail = (state) =>
   state.webadmin.requestDetail;
 
-export const selectWebAdminAllTags = (state) => state.webadmin.all_tags;
+export const selectWebAdminAllTags = (state) => 
+  state.webadmin.all_tags;
 
-export const selectWebAdminContacted = (state) => state.webadmin.contacted;
+export const selectWebAdminContacted = (state) => 
+  state.webadmin.contacted;
 
-export const selectWebAdminNewsResult = (state) => state.webadmin.news.results;
+export const selectWebAdminNewsResult = (state) => 
+  state.webadmin.news.results;
 
-export const selectWebAdminNewCount = (state) => state.webadmin.news.count;
+export const selectWebAdminNewCount = (state) => 
+  state.webadmin.news.count;
 
-export const selectWebAdminCarousel = (state) => state.webadmin.caroussel;
+export const selectWebAdminCarousel = (state) => 
+  state.webadmin.caroussel;
 
 export const selectWebAdminRequestPhotos = (state) =>
   state.webadmin.requestedPhotos;
 
-export const selectWebAdminRequested = (state) => state.webadmin.requested;
+export const selectWebAdminRequested = (state) => 
+  state.webadmin.requested;

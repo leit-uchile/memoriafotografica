@@ -4,7 +4,12 @@ import { connect } from "react-redux";
 import { user } from "../../actions";
 import { Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusCircle, faSuitcase, faCameraRetro, faAddressCard} from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlusCircle,
+  faSuitcase,
+  faCameraRetro,
+  faAddressCard,
+} from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet";
 import { bindActionCreators } from "redux";
 import { selectUserPhotos, selectUserComments } from "../../reducers";
@@ -19,8 +24,16 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
     url: "",
   });
 
-  const [pagPhotos, setPagPhotos] = useState({ page: 0, page_size: 4 });
-  const [pagComments, setPagComments] = useState({ page: 0, page_size: 5 });
+  const [pagPhotos, setPagPhotos] = useState({
+    page: 0,
+    page_size: 4,
+    loading: true,
+  });
+  const [pagComments, setPagComments] = useState({
+    page: 0,
+    page_size: 5,
+    loading: true,
+  });
 
   const addMore = (
     <FontAwesomeIcon
@@ -31,17 +44,25 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
   );
 
   useEffect(() => {
+    setPagPhotos((pag) => ({ ...pag, loading: true }));
     getPhotos(
       user.id,
       pagPhotos.page + 1,
       pagPhotos.page_size,
       "&approved=false"
-    );
-  }, [pagPhotos]);
+    ).then((r) => {
+      setPagPhotos((pag) => ({ ...pag, loading: false }));
+    });
+  }, [pagPhotos.page]);
 
   useEffect(() => {
-    getComments(user.id, pagComments.page + 1, pagComments.page_size);
-  }, [pagComments]);
+    setPagComments((pag) => ({ ...pag, loading: true }));
+    getComments(user.id, pagComments.page + 1, pagComments.page_size).then(
+      (r) => {
+        setPagComments((pag) => ({ ...pag, loading: false }));
+      }
+    );
+  }, [pagComments.page]);
 
   if (params.redirect) {
     return <Redirect push to={params.url} />;
@@ -71,7 +92,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
               </Container>
               <hr />
               <Container fluid>
-                {photos.results ? (
+                {!pagPhotos.loading ? (
                   photos.results.length !== 0 ? (
                     <Row>
                       <Col
@@ -92,7 +113,9 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
                         />
                       </Col>
                     </Row>
-                  ) : null
+                  ) : (
+                    "No tienes fotografías pendientes"
+                  )
                 ) : (
                   <Row>
                     <Col style={{ textAlign: "center" }}>
@@ -100,9 +123,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
                     </Col>
                   </Row>
                 )}
-                {photos.count === 0 ? (
-                  "No tienes fotografías pendientes"
-                ) : (
+                {photos.count !== 0 ? (
                   <Pagination
                     count={photos.count}
                     page_size={pagPhotos.page_size}
@@ -115,7 +136,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
                     displayFirst
                     displayLast
                   />
-                )}
+                ) : null}
               </Container>
             </div>
           </Col>
@@ -128,7 +149,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
               <Container>
                 <Row>
                   <Col>
-                    {comments.results ? (
+                    {!pagComments.loading ? (
                       comments.results.length !== 0 ? (
                         <Container>
                           {comments.results.map((el, key) => (
@@ -147,7 +168,9 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
                             </Row>
                           ))}
                         </Container>
-                      ) : null
+                      ) : (
+                        "No tienes comentarios"
+                      )
                     ) : (
                       <Row>
                         <Col style={{ textAlign: "center" }}>
@@ -155,9 +178,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
                         </Col>
                       </Row>
                     )}
-                    {comments.count === 0 ? (
-                      "No tienes comentarios"
-                    ) : (
+                    {comments.count !== 0 ? (
                       <Pagination
                         count={comments.count}
                         page_size={pagComments.page_size}
@@ -170,7 +191,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
                         displayFirst
                         displayLast
                       />
-                    )}
+                    ) : null}
                   </Col>
                 </Row>
               </Container>
@@ -194,7 +215,6 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
     </Container>
   );
 };
-
 
 const makeIcons = (rol_id) => {
   switch (rol_id) {

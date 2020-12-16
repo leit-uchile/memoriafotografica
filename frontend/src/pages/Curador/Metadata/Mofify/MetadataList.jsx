@@ -25,7 +25,7 @@ const MetadataList = ({ metadata, iptcs, getSelection, update }) => {
   // Useful to init and reset when user changes page or elements
   useEffect(() => {
     // List changed ?
-    if ((metadata[0] && state[metadata[0].value] === undefined) || update) {
+    if ((metadata[0] && state[metadata[0].value] === undefined)) {
       let selected = {};
       metadata.forEach((element, key) => {
         selected[element.value] = false;
@@ -34,7 +34,7 @@ const MetadataList = ({ metadata, iptcs, getSelection, update }) => {
       getSelection(selected);
     }
     // eslint-disable-next-line
-  }, [metadata]);
+  }, [metadata, update]);
 
   const selectAll = () => {
     let selected = {};

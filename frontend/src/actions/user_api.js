@@ -264,40 +264,45 @@ export const loadAUser = (id) => (dispatch, getState) => {
  * @param {String|Number} user_id
  * @param {String} extra params for sorting and pagination, filtering, etc
  */
-export const loadPublicUserAlbums = (user_id, extra = "") => (dispatch) =>
-  fetch(`/api/albums/?user=${user_id}${extra}`).then(function (response) {
+export const loadPublicUserAlbums = (user_id, extra = "") => (
+  dispatch
+) => {
+  return fetch(`/api/albums/?user=${user_id}${extra}`
+  ).then((response) => {
     const r = response;
     if (r.status === 200) {
-      return r
-        .json()
-        .then((data) =>
-          dispatch({ type: USER_RECOVERED_ALBUM, data: data })
-        );
+      return r.json().then((data) => {
+        dispatch({ type: USER_RECOVERED_ALBUM, data: data })
+      });
     } else {
-      dispatch(
-        setAlert("Hubo un error al cargar los albumes del usuario", "warning")
-      );
+      dispatch(setAlert("Error cargando álbumes. Intente nuevamente", "warning"));
       dispatch({ type: USER_RECOVERED_ALBUM_ERROR });
     }
   });
+}
 
 /**
  * Load all photos from a specific public user
  * @param {String|Number} user_id
  * @param {String} extra params for sorting and pagination, filtering, etc
  */
-export const loadPublicUserPhotos = (user_id, extra = "") => (dispatch) =>
-  fetch(`/api/photos/?user=${user_id}${extra}`).then(function (response) {
+export const loadPublicUserPhotos = (user_id, extra = "") => (
+  dispatch
+) => {
+  return fetch(`/api/photos/?user=${user_id}${extra}`
+  ).then((response) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
         dispatch({ type: USER_RECOVERED_PHOTO, data: data });
       });
     } else {
+      dispatch(setAlert("Error cargando fotografías. Intente nuevamente", "warning"));
       dispatch({ type: USER_RECOVERED_PHOTO_ERROR, data: r.data });
       throw r.data;
     }
   });
+}
 
 /**
  * Load current user

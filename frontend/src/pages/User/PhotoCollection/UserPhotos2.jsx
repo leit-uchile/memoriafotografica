@@ -13,10 +13,10 @@ import {
   selectUserPhotos,
   selectUserData,
   selectUserPublicUser,
-  selectPhotosUpdatedPhoto,
-  selectPhotosRefresh,
+  selectPhotosPhotoUpdate,
 } from "../../../reducers";
 import { LeitSpinner } from "../../../components";
+import CreateAlbumModal from "./CreateAlbumModal";
 
 const UserPhotos = ({
   location,
@@ -27,47 +27,44 @@ const UserPhotos = ({
   photos,
   onLoadGetPhotos,
   onLoadGetPublicPhotos,
+  setOps,
   editPhoto,
   deletePhoto,
   updatedPhoto,
-  refresh,
   setSelectedId,
 }) => {
+  const [loading, setLoading] = useState(true);
   const [params, setParams] = useState({
     redirect: false,
     index: "",
   });
-  const [allSelected, setAll] = useState(false);
   const [modal, setModal] = useState(false);
-  const [photosToEdit, setPhotosToEdit] = useState([]);
+  const [selected, setSelected] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
 
   const publicView = location.pathname.includes("public");
 
   useEffect(() => {
+    setLoading(true);
     if (publicView) {
       loadPublicUser(match.params.id);
-      onLoadGetPublicPhotos(match.params.id, "&page=1&page_size=100");
+      onLoadGetPublicPhotos(match.params.id, "&page=1&page_size=100").then(
+        (r) => {
+          setLoading(false);
+        }
+      );
     } else {
-      onLoadGetPhotos(user.id, 1, 100, "&approved=true");
+      onLoadGetPhotos(user.id, 1, 100, "&approved=true").then((r) => {
+        setLoading(false);
+      });
     }
-  }, [publicView, user]);
+    // eslint-disable-next-line
+  }, [publicView, user, updatedPhoto]);
 
   useEffect(() => {
-    if ((updatedPhoto || refresh) && !modal) {
-      setTimeout(() => window.location.reload(), 1000);
-    }
-  }, [updatedPhoto]);
-
-  const handleOnSelect = (obj) => {
-    const id = obj.photo.id;
-    const newList = photosToEdit.filter((el) => el !== id);
-    if (newList.length === photosToEdit.length) {
-      // si el objeto no estaba
-      setPhotosToEdit([...newList, id]); //lo agregamos
-    } else {
-      setPhotosToEdit([...newList]); //si estaba, asi que lo eliminamos
-    }
-  };
+    setOps(selected.length);
+    // eslint-disable-next-line
+  }, [selected]);
 
   if (params.redirect) {
     setSelectedId(params.index);
@@ -99,7 +96,7 @@ const UserPhotos = ({
             {publicView && publicUser
               ? `Fotos de ${publicUser.first_name}`
               : "Mis fotos"}{" "}
-            {photos.results ? (
+            {!loading ? (
               <Badge color="primary">{photos.results.length}</Badge>
             ) : null}
           </h2>
@@ -108,32 +105,25 @@ const UserPhotos = ({
       {publicView ? null : (
         <Row>
           <Col className="user-dashboard-buttons">
-            <Button
-              color="secondary"
-              onClick={() =>
-                !allSelected
-                  ? (setPhotosToEdit(photos.results.map((el) => el.id)),
-                    setAll(true))
-                  : (setPhotosToEdit([]), setAll(false))
-              }
-            >
-              {!allSelected ? "Seleccionar todas" : "Deseleccionar"}
+            <Button color="tertiary" onClick={() => setSelectAll(!selectAll)}>
+              {!selectAll ? "Seleccionar todas" : "Deseleccionar"}
             </Button>
             <Button
-              disabled={photosToEdit.length === 0}
+              disabled={selected.length === 0}
               color="primary"
               onClick={() => setModal(!modal)}
             >
-              Editar selección ({photosToEdit.length})
+              Editar selección ({selected.length})
             </Button>
             <EditPhotosModal
-              photosId={photosToEdit}
+              photosId={selected}
               isOpen={modal}
               handleToggle={() => setModal(!modal)}
               editPhoto={(id, content) => editPhoto(id, content)}
               deletePhoto={(id) => deletePhoto(id)}
               isCurator={false}
             />
+            <CreateAlbumModal photosID={selected} />
           </Col>
         </Row>
       )}
@@ -141,7 +131,7 @@ const UserPhotos = ({
         <Col>
           <Container fluid>
             <div className="stat-box rounded">
-              {photos.results ? (
+              {!loading ? (
                 publicView ? (
                   <Row>
                     <Col
@@ -185,8 +175,16 @@ const UserPhotos = ({
                           id: el.id,
                         }))}
                         targetRowHeight={250}
-                        onClick={(e, obj) => handleOnSelect(obj)}
-                        selectAll={allSelected}
+                        allSelected={selectAll}
+                        getSelection={(v) => {
+                          var keys = Object.keys(v)
+                            .filter((el) => el.includes("nb-"))
+                            .map((el) => el.substr(3));
+                          setSelected(
+                            keys.map((el) => photos.results[Number(el)].id)
+                          );
+                        }}
+                        update={updatedPhoto}
                         onRedirect={(e, obj) =>
                           setParams({
                             redirect: true,
@@ -216,8 +214,7 @@ const mapStateToProps = (state) => ({
   photos: selectUserPhotos(state),
   user: selectUserData(state),
   publicUser: selectUserPublicUser(state),
-  updatedPhoto: selectPhotosUpdatedPhoto(state),
-  refresh: selectPhotosRefresh(state),
+  updatedPhoto: selectPhotosPhotoUpdate(state),
 });
 
 const mapActionsToProps = (dispatch) =>
@@ -227,6 +224,7 @@ const mapActionsToProps = (dispatch) =>
       loadPublicUser: user.loadAUser,
       onLoadGetPhotos: user.getUserPhotos,
       onLoadGetPublicPhotos: user.loadPublicUserPhotos,
+      setOps: gallery.photos.setNBOps,
       editPhoto: gallery.photos.editPhoto,
       deletePhoto: gallery.photos.deletePhoto,
     },

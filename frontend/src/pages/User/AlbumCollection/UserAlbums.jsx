@@ -19,6 +19,7 @@ const UserAlbums = ({
   loadPublicAlbums,
   loadAlbums,
 }) => {
+  const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState({
     user: { first_name: "usuario" },
     redirectUrl: false,
@@ -26,12 +27,17 @@ const UserAlbums = ({
 
   // Set user info and load the albums accordingly
   useEffect(() => {
+    setLoading(true);
     if (publicView && publicUser !== undefined) {
       setDisplay((d) => ({ ...d, user: publicUser }));
-      loadPublicAlbums(publicUser.id, "&page=1&page_size=100");
+      loadPublicAlbums(publicUser.id, "&page=1&page_size=100").then((r) => {
+        setLoading(false);
+      });
     } else if (!publicView) {
-      loadAlbums(user.id, 1, 100);
       setDisplay((d) => ({ ...d, user: user }));
+      loadAlbums(user.id, 1, 100).then((r) => {
+        setLoading(false);
+      });
     }
   }, [publicView, publicUser, loadPublicAlbums, loadAlbums, user]);
 
@@ -65,7 +71,7 @@ const UserAlbums = ({
             {publicView
               ? `Albums de ${display.user.first_name}`
               : "Mis albumes"}{" "}
-            {albums.results ? (
+            {!loading ? (
               <Badge color="primary">{albums.results.length}</Badge>
             ) : null}
           </h2>
@@ -75,7 +81,7 @@ const UserAlbums = ({
         <Col>
           <Container fluid>
             <div className="stat-box rounded">
-              {albums.results ? (
+              {!loading ? (
                 <Row>
                   <Col
                     sm={

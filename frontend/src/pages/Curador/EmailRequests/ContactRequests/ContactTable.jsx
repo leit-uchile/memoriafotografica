@@ -61,9 +61,14 @@ const ContactTable = ({
     resolved: "",
     emailSent: "",
   });
-  const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
+  const [pagination, setPagination] = useState({
+    page: 0,
+    page_size: 12,
+    loading: true,
+  });
 
   useEffect(() => {
+    setPagination((pag) => ({ ...pag, loading: true }));
     let url = "&sort=updated_at-desc";
     if (active) {
       if (filter.createdSince && filter.createdSince !== "") {
@@ -78,9 +83,22 @@ const ContactTable = ({
       if (filter.emailSent.length !== 0) {
         url = url + `&resolved=${true}&email_sent=${filter.emailSent}`;
       }
-      getMessages(searchState, pagination.page + 1, pagination.page_size, url);
+      getMessages(
+        searchState,
+        pagination.page + 1,
+        pagination.page_size,
+        url
+      ).then((r) => setPagination((pag) => ({ ...pag, loading: false })));
     }
-  }, [active, filter, searchState, pagination, updatedMessage, getMessages]);
+  }, [
+    active,
+    filter,
+    searchState,
+    pagination.page,
+    pagination.page_size,
+    updatedMessage,
+    getMessages,
+  ]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
@@ -156,7 +174,7 @@ const ContactTable = ({
         </Col>
       </Row>
       <div>
-        {messages.results ? (
+        {!pagination.loading ? (
           messages.results.length !== 0 ? (
             <Row>
               <Col>
@@ -180,7 +198,9 @@ const ContactTable = ({
                 </Table>
               </Col>
             </Row>
-          ) : null
+          ) : (
+            "No hay mensajes disponibles"
+          )
         ) : (
           <Row>
             <Col style={{ textAlign: "center" }}>
@@ -188,9 +208,7 @@ const ContactTable = ({
             </Col>
           </Row>
         )}
-        {messages.count === 0 ? (
-          "No hay mensajes disponibles"
-        ) : (
+        {messages.count !== 0 ? (
           <Pagination
             count={messages.count}
             page_size={pagination.page_size}
@@ -201,7 +219,7 @@ const ContactTable = ({
             displayFirst
             displayLast
           />
-        )}
+        ) : null}
       </div>
     </Container>
   );

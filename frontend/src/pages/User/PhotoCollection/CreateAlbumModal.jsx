@@ -13,6 +13,8 @@ import {
   FormGroup,
   Input,
   Form,
+  Spinner,
+  FormText,
 } from "reactstrap";
 
 import { gallery } from "../../../actions";
@@ -28,6 +30,7 @@ const CC_INFO = [
 
 function CreateAlbumModal(props) {
   const [toggle, setToggle] = useState(false);
+  const [sending, setSending] = useState(false);
   const handleToggle = () => {
     setToggle(!toggle);
   };
@@ -45,9 +48,12 @@ function CreateAlbumModal(props) {
 
   const createAlbum = (event) => {
     event.preventDefault();
+    setSending(true);
     props
       .newAlbum({ name, description, collection, pictures: props.photosID })
       .then((r) => {
+        setSending(false);
+        handleToggle();
         setShouldRedirect(true);
       });
   };
@@ -60,50 +66,76 @@ function CreateAlbumModal(props) {
         color="secondary"
         onClick={handleToggle}
       >
-        Crear Nuevo Álbum ({props.photosID.length})
+        Crear álbum
       </Button>
       <Modal isOpen={toggle} toggle={handleToggle}>
-        <ModalHeader toggle={handleToggle}>
-          Creando {collection ? "Colección" : "Álbum"}{" "}
-        </ModalHeader>
+        <ModalHeader toggle={handleToggle}>Creando álbum</ModalHeader>
         <Form onSubmit={createAlbum}>
           <ModalBody>
-            <FormGroup>
-              <Label>Nombre del Álbum</Label>
-              <Input
-                name="name"
-                onChange={(e) => setName(e.target.value)}
-                required="true"
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label>Descripción del Álbum</Label>
-              <Input
-                type="text"
-                name="description"
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </FormGroup>
-            <FormGroup check>
-              <Label check>
-                <Input
-                  type="checkbox"
-                  checked={collection}
-                  name="collection"
-                  onChange={(e) => setCollection(!collection)}
-                />{" "}
-                Crear como Colección
+            <FormGroup row>
+              <Label for="size" sm={4}>
+                Cantidad de fotos por añadir
               </Label>
+              <Col sm={8}>
+                <Input
+                  name="size"
+                  disabled
+                  value={props.photosID.length}
+                ></Input>
+              </Col>
             </FormGroup>
-
-            {/* <Row>
-                            <Col>
-                                El álbum incluirá las siguientes fotos:
-                            </Col>
-                        </Row> */}
+            <FormGroup row>
+              <Label for="name" sm={4}>
+                Nombre del álbum
+              </Label>
+              <Col sm={8}>
+                <Input
+                  name="name"
+                  onChange={(e) => setName(e.target.value)}
+                  required="true"
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label for="description" sm={4}>
+                Descripción del álbum
+              </Label>
+              <Col sm={8}>
+                <Input
+                  type="textarea"
+                  name="description"
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label for="collection" sm={4}>
+                Crear como colección
+              </Label>
+              <Col sm={8}>
+                <input
+                  type="checkbox"
+                  onClick={() => setCollection(!collection)}
+                  id="collection"
+                  class="toggle-button"
+                />
+                <label for="collection"></label>
+              </Col>
+            </FormGroup>
           </ModalBody>
           <ModalFooter>
-            <Button>Crear {collection ? "Colección" : "Álbum"}</Button>
+            <FormText color="muted">Podrá editarlo en Mis albumes</FormText>
+            <Button color="primary">
+              {sending ? (
+                <Spinner style={{ width: "1rem", height: "1rem" }} />
+              ) : (
+                ""
+              )}{" "}
+              Crear
+            </Button>
+            <Button color="secondary" onClick={handleToggle}>
+              Cancelar
+            </Button>
           </ModalFooter>
         </Form>
       </Modal>

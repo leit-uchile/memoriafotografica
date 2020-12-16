@@ -12,7 +12,7 @@ import { bindActionCreators } from "redux";
 import {
   selectMetaDataAllIptcs,
   selectMetaDataGeneralTags,
-  selectMetaDataUpdated,
+  selectMetaDataUpdate,
 } from "../../../../reducers";
 import "../styles.css";
 
@@ -32,9 +32,13 @@ const messages = [
  * Search metadata and narrow the list
  * Select elements and make modifications
  */
-const Modify = ({ metadata, iptcs, searchMeta, active, updated }) => {
+const Modify = ({ metadata, iptcs, searchMeta, active, updatedMeta }) => {
   const [searchState, setSearchState] = useState("");
-  const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
+  const [pagination, setPagination] = useState({
+    page: 0,
+    page_size: 12,
+    loading: true,
+  });
   const [showHelp, setShowHelp] = useState(false);
   const [operation, setOperation] = useState("0");
   const [modal, setModal] = useState(false);
@@ -42,14 +46,22 @@ const Modify = ({ metadata, iptcs, searchMeta, active, updated }) => {
 
   useEffect(() => {
     if (active) {
+      setPagination((pag) => ({ ...pag, loading: true }));
       searchMeta(
         searchState,
         pagination.page + 1,
         pagination.page_size,
         "&sort=updated_at-desc"
-      );
+      ).then((r) => setPagination((pag) => ({ ...pag, loading: false })));
     }
-  }, [pagination, searchState, searchMeta, active, updated]);
+  }, [
+    pagination.page,
+    pagination.page_size,
+    searchState,
+    searchMeta,
+    active,
+    updatedMeta,
+  ]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
@@ -143,7 +155,7 @@ const Modify = ({ metadata, iptcs, searchMeta, active, updated }) => {
         </Fragment>
       ) : null}
       <div>
-        {metadata.results ? (
+        {!pagination.loading ? (
           metadata.results.length !== 0 ? (
             <Row>
               <Col>
@@ -156,11 +168,13 @@ const Modify = ({ metadata, iptcs, searchMeta, active, updated }) => {
                       .map((el) => el.substr(3));
                     setSelected(keys.map((el) => metadata.results[Number(el)]));
                   }}
-                  update={updated}
+                  update={updatedMeta}
                 />
               </Col>
             </Row>
-          ) : null
+          ) : (
+            "No hay resultados disponibles"
+          )
         ) : (
           <Row>
             <Col style={{ textAlign: "center" }}>
@@ -168,9 +182,7 @@ const Modify = ({ metadata, iptcs, searchMeta, active, updated }) => {
             </Col>
           </Row>
         )}
-        {metadata.count === 0 ? (
-          "No hay resultados disponibles"
-        ) : (
+        {metadata.count !== 0 ? (
           <Pagination
             count={metadata.count}
             page_size={pagination.page_size}
@@ -181,7 +193,7 @@ const Modify = ({ metadata, iptcs, searchMeta, active, updated }) => {
             displayFirst
             displayLast
           />
-        )}
+        ) : null}
       </div>
     </Container>
   );
@@ -190,7 +202,7 @@ const Modify = ({ metadata, iptcs, searchMeta, active, updated }) => {
 const mapStateToProps = (state) => ({
   metadata: selectMetaDataGeneralTags(state),
   iptcs: selectMetaDataAllIptcs(state),
-  updated: selectMetaDataUpdated(state),
+  updatedMeta: selectMetaDataUpdate(state),
 });
 
 const mapActionsToProps = (dispatch) =>

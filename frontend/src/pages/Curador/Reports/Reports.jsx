@@ -41,9 +41,14 @@ const Reports = ({ reports, getReports, updatedReport }) => {
     resolved: "",
   });
 
-  const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
+  const [pagination, setPagination] = useState({
+    page: 0,
+    page_size: 12,
+    loading: true,
+  });
 
   useEffect(() => {
+    setPagination((pag) => ({ ...pag, loading: true }));
     let url = "&sort=updated_at-desc";
     if (filter.createdSince && filter.createdSince !== "") {
       url = url + `&created_at=${filter.createdSince}`;
@@ -57,8 +62,16 @@ const Reports = ({ reports, getReports, updatedReport }) => {
     if (filter.resolved && filter.resolved !== "") {
       url = url + `&resolved=${filter.resolved}`;
     }
-    getReports("", pagination.page + 1, pagination.page_size, url);
-  }, [filter, pagination, getReports, updatedReport]);
+    getReports("", pagination.page + 1, pagination.page_size, url).then((r) => {
+      setPagination((pag) => ({ ...pag, loading: false }));
+    });
+  }, [
+    filter,
+    pagination.page,
+    pagination.page_size,
+    getReports,
+    updatedReport,
+  ]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
@@ -98,14 +111,16 @@ const Reports = ({ reports, getReports, updatedReport }) => {
         </Col>
       </Row>
       <div>
-        {reports.results ? (
+        {!pagination.loading ? (
           reports.results.length !== 0 ? (
             <Row>
               <Col>
                 <ReportsTable reports={reports} />
               </Col>
             </Row>
-          ) : null
+          ) : (
+            "No hay reportes disponibles"
+          )
         ) : (
           <Row>
             <Col style={{ textAlign: "center" }}>
@@ -113,9 +128,7 @@ const Reports = ({ reports, getReports, updatedReport }) => {
             </Col>
           </Row>
         )}
-        {reports.count === 0 ? (
-          "No hay reportes disponibles"
-        ) : (
+        {reports.count !== 0 ? (
           <Pagination
             count={reports.count}
             page_size={pagination.page_size}
@@ -126,7 +139,7 @@ const Reports = ({ reports, getReports, updatedReport }) => {
             displayFirst
             displayLast
           />
-        )}
+        ) : null}
       </div>
     </Container>
   );

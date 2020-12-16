@@ -24,6 +24,8 @@ import {
   selectMetaDataAllTags,
   selectMetaDataCreating,
   selectMetaDataNewIds,
+  selectPhotosOpsCompleted,
+  selectPhotosOpsErrors,
 } from "../../../reducers";
 
 const FilterModal = ({
@@ -32,11 +34,14 @@ const FilterModal = ({
   photoId,
   photoDetails,
   getPhotoDetails,
+  setOps,
   editPhoto,
   tags,
   getTags,
   createMultipleMetas,
   newTagsId,
+  completed,
+  errors,
 }) => {
   const [modal, setModal] = useState(false);
   const [newphoto, setNewphoto] = useState({});
@@ -47,6 +52,7 @@ const FilterModal = ({
     if (!modal) {
       getPhotoDetails(photoId);
       getTags(); //get tags from backend
+      setOps(1); //required for change updatedPhoto status and reload Filter
     }
   };
 
@@ -62,6 +68,7 @@ const FilterModal = ({
     delete info.permission;
     delete info.comments;
     delete info.report;
+    delete info.category;
     setNewphoto(info);
   }, [photoDetails]);
 
@@ -121,11 +128,16 @@ const FilterModal = ({
     delete to_send.image;
     delete to_send.thumbnail;
     setSending(true);
-    editPhoto(to_send.id, to_send).then((r) => {
-      setSending(false);
-      setModal(!modal);
-    });
+    editPhoto(to_send.id, to_send);
   };
+
+  useEffect(() => {
+    if (errors.length === 0 && sending) {
+      setSending(false);
+      toggle();
+    }
+    // eslint-disable-next-line
+  }, [completed, errors]);
 
   const additionTag = (tag) => {
     const tagsList = [].concat(newphoto.metadata, tag);
@@ -282,6 +294,8 @@ const mapStateToProps = (state) => ({
   tags: selectMetaDataAllTags(state),
   creating: selectMetaDataCreating(state),
   newTagsId: selectMetaDataNewIds(state),
+  completed: selectPhotosOpsCompleted(state),
+  errors: selectPhotosOpsErrors(state),
 });
 
 const mapActionsToProps = (dispatch) =>
@@ -289,6 +303,7 @@ const mapActionsToProps = (dispatch) =>
     {
       getPhotoDetails: gallery.photos.getPhoto,
       getTags: metadata.tags,
+      setOps: gallery.photos.setNBOps,
       createMultipleMetas: metadata.createMultipleMetas,
     },
     dispatch

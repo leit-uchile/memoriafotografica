@@ -35,8 +35,11 @@ export const selectPhotosCount = (state) => fromPhotos.selectPhotosCount(state);
 export const selectPhotosDetails = (state) =>
   fromPhotos.selectPhotosDetails(state);
 
-export const selectPhotosError = (state) => 
-  fromPhotos.selectPhotosError(state);
+export const selectPhotosOpsCompleted = (state) => 
+  fromPhotos.selectPhotosOpsCompleted(state);
+
+export const selectPhotosOpsErrors = (state) => 
+  fromPhotos.selectPhotosOpsErrors(state);
 
 export const selectPhotosPhotoUpdate = (state) =>
   fromPhotos.selectPhotosPhotoUpdate(state);
@@ -59,14 +62,11 @@ export const selectCategoriesUpdatePhotos = (state) =>
 export const selectCategoriesOpsCompleted = (state) =>
   fromCategories.selectCategoriesOpsCompleted(state);
 
-export const selectCategoriesUpdatedCat = (state) =>
-  fromCategories.selectCategoriesUpdatedCat(state);
+export const selectCategoriesCatUpdate = (state) =>
+  fromCategories.selectCategoriesCatUpdate(state);
 
 export const selectCategoriesTotal = (state) =>
   fromCategories.selectCategoriesTotal(state);
-
-export const selectNewCategories = (state) =>
-  fromCategories.selectNewCategories(state);
 
 // Albums
 export const selectAlbums = (state) => fromAlbum.selectAlbums(state);
@@ -106,8 +106,8 @@ export const selectMetaDataBatch = (state) =>
 export const selectMetaDataOpsCompleted = (state) =>
   fromMetaData.selectMetaDataOpsCompleted(state);
 
-export const selectMetaDataUpdated = (state) =>
-  fromMetaData.selectMetaDataUpdated(state);
+export const selectMetaDataUpdate = (state) =>
+  fromMetaData.selectMetaDataUpdate(state);
 
 export const selectMetaDataOpsErrors = (state) =>
   fromMetaData.selectMetaDataOpsErrors(state);
@@ -160,6 +160,9 @@ export const selectWebAdminMessageUpdate = (state) =>
 
 export const selectWebAdminRequests = (state) =>
   fromWebAdmin.selectWebAdminRequests(state);
+
+  export const selectWebAdminRequestUpdate = (state) =>
+  fromWebAdmin.selectWebAdminRequestUpdate(state);
 
 export const selectWebAdminRequestDetail = (state) =>
   fromWebAdmin.selectWebAdminRequestDetail(state);

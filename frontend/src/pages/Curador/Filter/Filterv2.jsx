@@ -40,13 +40,7 @@ const filters = [
   },
 ];
 
-const Filter = ({
-  photos,
-  photoCount,
-  getPhotosAuth,
-  editPhoto,
-  updatedPhoto,
-}) => {
+const Filter = ({ photos, photoCount, getPhotosAuth, editPhoto, updatedPhoto }) => {
   const [searchState, setSearchState] = useState("");
   const [filter, setFilter] = useState({
     censured: "",
@@ -56,9 +50,14 @@ const Filter = ({
   });
 
   const [cardsView, setCardsView] = useState(false);
-  const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
+  const [pagination, setPagination] = useState({
+    page: 0,
+    page_size: 12,
+    loading: true,
+  });
 
   useEffect(() => {
+    setPagination((pag) => ({ ...pag, loading: true }));
     let url = "&sort=updated_at-desc";
     if (searchState !== "") {
       url = url + `&title=${searchState}`;
@@ -75,8 +74,17 @@ const Filter = ({
     if (filter.approved.length !== 0) {
       url = url + `&approved=${filter.approved}`;
     }
-    getPhotosAuth(pagination.page + 0, pagination.page_size, url);
-  }, [searchState, filter, pagination, getPhotosAuth, updatedPhoto]);
+    getPhotosAuth(pagination.page + 0, pagination.page_size, url).then((r) => {
+      setPagination((pag) => ({ ...pag, loading: false }));
+    });
+  }, [
+    searchState,
+    filter,
+    pagination.page,
+    pagination.page_size,
+    getPhotosAuth,
+    updatedPhoto,
+  ]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
@@ -148,7 +156,7 @@ const Filter = ({
         </Col>
       </Row>
       <div>
-        {photos ? (
+        {!pagination.loading ? (
           photos.length !== 0 ? (
             <Row>
               <Col>
@@ -159,7 +167,9 @@ const Filter = ({
                 )}
               </Col>
             </Row>
-          ) : null
+          ) : (
+            "No hay fotografías disponibles"
+          )
         ) : (
           <Row>
             <Col style={{ textAlign: "center" }}>
@@ -167,9 +177,7 @@ const Filter = ({
             </Col>
           </Row>
         )}
-        {photoCount === 0 ? (
-          "No hay fotografías disponibles"
-        ) : (
+        {photoCount !== 0 ? (
           <Pagination
             count={photoCount}
             page_size={pagination.page_size}
@@ -177,7 +185,7 @@ const Filter = ({
             setStatePage={setPage}
             size="md"
           />
-        )}
+        ) : null}
       </div>
     </Container>
   );

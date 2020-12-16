@@ -25,10 +25,11 @@ import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { bindActionCreators } from "redux";
 import {
   selectPhotosDetails,
-  selectPhotosUpdatedPhoto,
   selectMetaDataAllTags,
   selectMetaDataCreating,
   selectMetaDataNewIds,
+  selectPhotosOpsCompleted,
+  selectPhotosOpsErrors,
 } from "../../../reducers";
 
 const CC_INFO = [
@@ -53,19 +54,30 @@ const EditPhotosModal = ({
   createMultipleMetas,
   editPhoto,
   deletePhoto,
+  completed,
+  errors,
 }) => {
   const [toggleDelete, setToggleDelete] = useState(false);
-  const [formData, setData] = useState({}); //nuevos datos
+  const [suggestions, setSuggestions] = useState([]);
+  const [formData, setData] = useState({}); //new values
   const [sending, setSending] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     getTags(); //get tags from backend
+    // eslint-disable-next-line
   }, [newTagsId]);
+
+  useEffect(() => {
+    setSuggestions(tags.map((e) => ({ id: e.id, name: e.value })));
+    // eslint-disable-next-line
+  }, [tags]);
 
   useEffect(() => {
     if (photosId.length === 1) {
       getPhotoDetails(photosId); //if user is editing only one photo, then get its details
     }
+    // eslint-disable-next-line
   }, [photosId]);
 
   // It fills formData with actual details to show it on screen later
@@ -83,10 +95,11 @@ const EditPhotosModal = ({
         photoDetails.permission !== undefined
           ? info.permission.toString()
           : null;
-      delete info.image;
-      delete info.thumbnail;
       delete info.comments;
       delete info.report;
+      delete info.category;
+      delete info.image;
+      delete info.thumbnail;
       setData(info);
     } else {
       setData({ metadata: [] });
@@ -160,142 +173,64 @@ const EditPhotosModal = ({
           ? editPhoto(photoIdToUpdate, {
               ...newDetails,
               title: `${newDetails.title} (${index + 1})`, // Each photo gets the new title with an index
-            }).then((r) => {
-              setSending(false);
-              handleToggle();
             })
-          : editPhoto(photoIdToUpdate, newDetails).then((r) => {
-              setSending(false);
-              handleToggle();
-            });
+          : editPhoto(photoIdToUpdate, newDetails);
       });
     }
   };
 
   const onDelete = (ids) => {
+    setDeleting(true);
     ids.forEach((id) => deletePhoto(id));
-    handleToggle();
   };
 
-  const suggestions = tags
-    ? tags.map((e) => ({ id: e.id, name: e.value }))
-    : [];
-  const PhotosForm = (
-    <Fragment>
-      <Form>
-        {!isCurator ? (
-          <FormGroup row>
-            <Label for="delete" sm={3}>
-              Eliminar{" "}
-            </Label>
-            <Col sm={9}>
-              <FontAwesomeIcon
-                icon={faTrashAlt}
-                onClick={() => setToggleDelete(!toggleDelete)}
-                style={{
-                  color: "var(--leit-red)",
-                  cursor: "pointer",
-                  fontSize: "16px",
-                }}
-              />
-            </Col>
-          </FormGroup>
-        ) : null}
-        <FormGroup row>
-          <Label for="title" sm={3}>
-            Título{" "}
-          </Label>
-          <Col sm={9}>
-            <Input
-              type="text"
-              value={formData.title}
-              placeholder="Nuevo título de la(s) fotografía(s)"
-              name="title"
-              onChange={updateData}
-            />
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <Label for="description" sm={3}>
-            Descripción{" "}
-          </Label>
+  useEffect(() => {
+    if (errors.length === 0 && sending) {
+      setSending(false);
+      handleToggle();
+    } else if (errors.length === 0 && deleting) {
+      setDeleting(false);
+      handleToggle();
+    }
+    // eslint-disable-next-line
+  }, [completed, errors]);
 
-          <Col sm={9}>
-            <Input
-              type="textarea"
-              value={formData.description}
-              placeholder="Nueva descripción de la(s) fotografía(s)"
-              name="description"
-              onChange={updateData}
-            />
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <Label for="date" sm={3}>
-            Fecha de captura{" "}
-          </Label>
-          <Col sm={9}>
-            <Input
-              type="date"
-              value={`${formData.upload_date}`.slice(0, 10)}
-              name="upload_date"
-              onChange={updateDate}
-            />
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <Label for="tags" sm={3}>
-            Etiquetas{" "}
-          </Label>
-          <Col sm={9}>
-            <ReactTags
-              style={{ width: "auto" }}
-              placeholder={"Añadir etiquetas"}
-              autoresize={false}
-              allowNew={!isCurator}
-              tags={formData.metadata}
-              suggestions={suggestions}
-              handleDelete={deleteTag}
-              handleAddition={additionTag}
-            />
-            {!isCurator ? (
-              <FormText color="muted">
-                Para ingresar una nueva etiqueta debe presionar la tecla
-                "Entrar" o "Tabulación"
-              </FormText>
-            ) : null}
-          </Col>
-        </FormGroup>
-        {!isCurator ? (
-          <FormGroup row>
-            <Label for="permission" sm={3}>
-              Permisos de acceso e intercambio{" "}
-            </Label>
-            <Col sm={9}>
-              <UncontrolledButtonDropdown>
-                <DropdownToggle caret color="link" style={{ padding: "0" }}>
-                  {formData.permission ? formData.permission : "Seleccionar"}
-                </DropdownToggle>
-                <DropdownMenu>
-                  {CC_INFO.map((el, k) => (
-                    <DropdownItem
-                      name="permission"
-                      value={el.name}
-                      onClick={updateData}
-                      active={`${formData.permission}` === el.name}
-                      style={{ display: "block", width: "100%" }}
-                    >
-                      {el.name}
-                    </DropdownItem>
-                  ))}
-                </DropdownMenu>
-              </UncontrolledButtonDropdown>
-            </Col>
-          </FormGroup>
-        ) : null}
-      </Form>
+  const DeleteModal = (
+    <Fragment>
+      <Modal
+        isOpen={toggleDelete}
+        toggle={() => setToggleDelete(!toggleDelete)}
+      >
+        <ModalHeader toggle={() => setToggleDelete(!toggleDelete)}>
+          Eliminar fotografía(s)
+        </ModalHeader>
+        <ModalBody>Esta acción no se puede deshacer. ¿Está seguro?</ModalBody>
+        <ModalFooter>
+          <Button
+            color="danger"
+            onClick={() => {
+              onDelete(photosId);
+              setToggleDelete(!toggleDelete);
+            }}
+          >
+            {deleting ? (
+              <Spinner style={{ width: "1rem", height: "1rem" }} />
+            ) : (
+              ""
+            )}{" "}
+            Eliminar
+          </Button>
+          <Button
+            color="secondary"
+            onClick={() => setToggleDelete(!toggleDelete)}
+          >
+            Cancelar
+          </Button>
+        </ModalFooter>
+      </Modal>
     </Fragment>
   );
+
   return (
     <div>
       <Modal isOpen={isOpen} toggle={() => handleToggle()} size={"lg"}>
@@ -303,35 +238,121 @@ const EditPhotosModal = ({
           Editando {photosId.length} foto(s)
         </ModalHeader>
         <ModalBody>
-          {PhotosForm}
-          <Modal
-            isOpen={toggleDelete}
-            toggle={() => setToggleDelete(!toggleDelete)}
-          >
-            <ModalHeader toggle={() => setToggleDelete(!toggleDelete)}>
-              Eliminar fotografía(s)
-            </ModalHeader>
-            <ModalBody>
-              Esta acción no se puede deshacer. ¿Está seguro?
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                color="danger"
-                onClick={() => {
-                  onDelete(photosId);
-                  setToggleDelete(!toggleDelete);
-                }}
-              >
-                Eliminar
-              </Button>
-              <Button
-                color="secondary"
-                onClick={() => setToggleDelete(!toggleDelete)}
-              >
-                Cancelar
-              </Button>
-            </ModalFooter>
-          </Modal>
+          <Form>
+            {!isCurator ? (
+              <FormGroup row>
+                <Label for="delete" sm={3}>
+                  Eliminar{" "}
+                </Label>
+                <Col sm={9}>
+                  <FontAwesomeIcon
+                    icon={faTrashAlt}
+                    onClick={() => setToggleDelete(!toggleDelete)}
+                    style={{
+                      color: "var(--leit-red)",
+                      cursor: "pointer",
+                      fontSize: "16px",
+                    }}
+                  />
+                </Col>
+              </FormGroup>
+            ) : null}
+            <FormGroup row>
+              <Label for="title" sm={3}>
+                Título{" "}
+              </Label>
+              <Col sm={9}>
+                <Input
+                  type="text"
+                  value={formData.title}
+                  placeholder="Nuevo título de la(s) fotografía(s)"
+                  name="title"
+                  onChange={updateData}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label for="description" sm={3}>
+                Descripción{" "}
+              </Label>
+
+              <Col sm={9}>
+                <Input
+                  type="textarea"
+                  value={formData.description}
+                  placeholder="Nueva descripción de la(s) fotografía(s)"
+                  name="description"
+                  onChange={updateData}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label for="date" sm={3}>
+                Fecha de captura{" "}
+              </Label>
+              <Col sm={9}>
+                <Input
+                  type="date"
+                  value={`${formData.upload_date}`.slice(0, 10)}
+                  name="upload_date"
+                  onChange={updateDate}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label for="tags" sm={3}>
+                Etiquetas{" "}
+              </Label>
+              <Col sm={9}>
+                <ReactTags
+                  style={{ width: "auto" }}
+                  placeholder={"Añadir etiquetas"}
+                  autoresize={false}
+                  allowNew={!isCurator}
+                  tags={formData.metadata}
+                  suggestions={suggestions}
+                  handleDelete={deleteTag}
+                  handleAddition={additionTag}
+                />
+                {!isCurator ? (
+                  <FormText color="muted">
+                    Para ingresar una nueva etiqueta debe presionar la tecla
+                    "Entrar" o "Tabulación"
+                  </FormText>
+                ) : null}
+              </Col>
+            </FormGroup>
+            {!isCurator ? (
+              <FormGroup row>
+                <Label for="permission" sm={3}>
+                  Permisos de acceso e intercambio{" "}
+                </Label>
+                <Col sm={9}>
+                  <UncontrolledButtonDropdown>
+                    <DropdownToggle caret color="link" style={{ padding: "0" }}>
+                      {formData.permission
+                        ? formData.permission
+                        : "Seleccionar"}
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      {CC_INFO.map((el, k) => (
+                        <DropdownItem
+                          name="permission"
+                          value={el.name}
+                          onClick={updateData}
+                          active={`${formData.permission}` === el.name}
+                          style={{ display: "block", width: "100%" }}
+                        >
+                          {el.name}
+                        </DropdownItem>
+                      ))}
+                    </DropdownMenu>
+                  </UncontrolledButtonDropdown>
+                </Col>
+              </FormGroup>
+            ) : null}
+          </Form>
+          {DeleteModal}
         </ModalBody>
         <ModalFooter>
           <Fragment>
@@ -363,6 +384,8 @@ const mapStateToProps = (state) => ({
   tags: selectMetaDataAllTags(state),
   creating: selectMetaDataCreating(state),
   newTagsId: selectMetaDataNewIds(state),
+  completed: selectPhotosOpsCompleted(state),
+  errors: selectPhotosOpsErrors(state),
 });
 
 const mapActionsToProps = (dispatch) =>
