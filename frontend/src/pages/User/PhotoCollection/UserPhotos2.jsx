@@ -175,7 +175,8 @@ const UserPhotos = ({
                           id: el.id,
                         }))}
                         targetRowHeight={250}
-                        allSelected={selectAll}
+                        checkAll={selectAll}
+                        selectIcon="pen"
                         getSelection={(v) => {
                           var keys = Object.keys(v)
                             .filter((el) => el.includes("nb-"))

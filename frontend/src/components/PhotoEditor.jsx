@@ -103,11 +103,14 @@ const SelectedImage = ({
 
       {!selected ? (
         <div className="icons">
-          <FontAwesomeIcon
-            icon={faEye}
-            style={{ marginRight: "0.35em" }}
-            onClick={handleOnRedirect}
-          />
+          {onRedirect !== null ? (
+            <FontAwesomeIcon
+              icon={faEye}
+              style={{ marginRight: "0.35em" }}
+              onClick={handleOnRedirect}
+            />
+          ) : null}
+
           <FontAwesomeIcon
             icon={selectIcon}
             style={{ marginRight: "0.35em" }}
@@ -125,7 +128,12 @@ const SelectedImage = ({
   );
 };
 
-const PhotoEditor = ({ photos, allSelected, ...props }) => {
+const PhotoEditor = ({
+  photos,
+  onRedirect = null,
+  checkAll = false,
+  ...props
+}) => {
   const validIcons = ["pen", "check"];
   const iconsDict = {
     pen: faPencilAlt,
@@ -154,7 +162,7 @@ const PhotoEditor = ({ photos, allSelected, ...props }) => {
         photo={photo}
         left={left}
         top={top}
-        onRedirect={props.onRedirect}
+        onRedirect={onRedirect}
         selectIcon={iconsDict[selectIcon]}
       />
     ),
@@ -163,11 +171,11 @@ const PhotoEditor = ({ photos, allSelected, ...props }) => {
 
   useEffect(() => {
     selectAll();
-  }, [allSelected]);
+  }, [checkAll]);
 
   useEffect(() => {
     // List changed ?
-    if ((photos[0] && state[photos[0].id] === undefined)) {
+    if (photos[0] && state[photos[0].id] === undefined) {
       let selected = {};
       photos.forEach((element, key) => {
         selected[element.id] = false;
@@ -194,9 +202,9 @@ const PhotoEditor = ({ photos, allSelected, ...props }) => {
   const selectAll = () => {
     let selected = {};
     photos.forEach((element, key) => {
-      selected[element.id] = allSelected;
-      if (allSelected) {
-        selected["nb-" + key] = allSelected;
+      selected[element.id] = checkAll;
+      if (checkAll) {
+        selected["nb-" + key] = checkAll;
       }
     });
     setState(selected);

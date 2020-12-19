@@ -8,10 +8,8 @@ import {
   CREATED_ALBUM,
   CREATED_ALBUM_ERROR,
   DELETED_ALBUM,
-  DELETE_ALBUM_SENT,
   DELETED_ALBUM_ERROR,
   EDITED_ALBUM,
-  EDIT_ALBUM_SENT,
   EDITED_ALBUM_ERROR,
 } from '../types'
 import { setAlert } from "../site_misc"
@@ -99,12 +97,11 @@ export const createAlbum = formData => (dispatch, getState) => {
 
 
 export const deleteAlbum = albumId => (dispatch, getState) => {
-  dispatch({ type: DELETE_ALBUM_SENT, data: null })
   let header = {
     Authorization: "Token " + getState().user.token,
     "Content-Type": "application/json"
   };
-  fetch("/api/albums/" + albumId, {
+  return fetch("/api/albums/" + albumId, {
     method: "DELETE",
     headers: header,
     body: {}
@@ -127,29 +124,25 @@ export const deleteAlbum = albumId => (dispatch, getState) => {
 }
 
 export const editAlbum = (albumId, formData) => (dispatch, getState) => {
-  dispatch({ type: EDIT_ALBUM_SENT, data: null })
   let header = {
     Authorization: "Token " + getState().user.token,
     "Content-Type": "application/json"
   };
-  fetch("/api/albums/" + albumId + "/", {
+  return fetch("/api/albums/" + albumId + "/", {
     method: "PUT",
     headers: header,
     body: JSON.stringify(formData)
-  }).then(res => {
-    if (res.status === 200) {
-      dispatch({
-        type: EDITED_ALBUM,
-        data: null
-      })
-    } else {
-      dispatch(setAlert("Error al crear album", "warning"));
-      res.json().then(payload => {
-        dispatch({
-          type: EDITED_ALBUM_ERROR,
-          error: payload
-        });
+  }).then((response) => {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch(setAlert("Álbum actualizado exitosamente", "success"));
+        dispatch({ type: EDITED_ALBUM, data: data });
       });
+    } else {
+      dispatch(setAlert("Error actualizando álbum. Intente nuevamente", "warning"));
+      dispatch({ type: EDITED_ALBUM_ERROR, data: r.data });
+      throw r.data;
     }
   })
 }

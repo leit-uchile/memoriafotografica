@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   Container,
   Row,
@@ -9,7 +9,10 @@ import {
   ModalHeader,
   ModalFooter,
   Input,
+  Spinner,
+  FormText,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import { gallery, user, site_misc } from "../../../actions";
 import { connect } from "react-redux";
 import Gallery from "react-photo-gallery";
@@ -21,22 +24,16 @@ import {
   faArrowAltCircleLeft,
   faCamera,
   faCloudUploadAlt,
-  faPencilAlt,
-  faSave,
-  faTrashAlt,
-  faUndo,
 } from "@fortawesome/free-solid-svg-icons";
 import "./styles.css";
 import PhotoEditor from "../../../components/PhotoEditor";
 
 import { bindActionCreators } from "redux";
 import {
-  selectAlbumsLoading,
   selectAlbumCollectionAlbumData,
-  selectAlbumEdit,
-  selectAlbumDelete,
-  selectUserData,
+  selectAlbumAlbumUpdate,
   selectUserPhotos,
+  selectAlbumDelete,
 } from "../../../reducers";
 
 /**
@@ -45,165 +42,112 @@ import {
  * TODO: finish pagination
  *
  * @param {Object} match
- * @param {Object} albumData
+ * @param {Object} albumDetails
  * @param {Boolean} loading
- * @param {Function} loadInfo
+ * @param {Function} loadAlbum
  * @param {Function} setIndex
  * @param {Function} pushPhotos
  */
 
 const AlbumView = ({
-  match,
-  albumData,
-  loadInfo,
-  loading,
-  setIndex,
-  pushPhotos,
   location,
-  onLoadGetPhotos,
-  user,
-  userPhotos,
-  deleteAlbum,
-  deleteAlbumStatus,
+  match,
+  albumDetails,
+  loadAlbum,
   editAlbum,
-  editAlbumStatus,
+  deleteAlbum,
+  updatedAlbum,
+  albumDeleted,
+  setSelectedId,
 }) => {
+  const [loading, setLoading] = useState(true);
+  const [params, setParams] = useState({
+    redirect: false,
+    url: "",
+  });
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [albumData, setAlbumData] = useState({});
+  const [selected, setSelected] = useState([]);
+  const [sending, setSending] = useState(false);
+
+  const publicView = location.pathname.includes("public");
+
   // Load album info
   useEffect(() => {
-    loadInfo(match.params.id, true);
-  }, [match.params.id, loadInfo]);
+    setLoading(true);
+    loadAlbum(match.params.id, true).then((r) => setLoading(false));
+    // eslint-disable-next-line
+  }, [publicView, match.params.id, updatedAlbum]);
 
-  // compute one time and store here
-  const [display, setDisplay] = useState({
-    photos: [],
-    uploaded: "",
-    redirect: false,
-  });
+  useEffect(() => {
+    let info = {
+      ...albumDetails,
+      uploaded: new Date(albumDetails.created_at).toLocaleDateString("es"),
+    };
 
-  const [editing, setEditing] = useState(false);
-  const [description, setDescription] = useState("");
-  const [name, setName] = useState("");
-  const [pictures, setPictures] = useState([]);
-  const [action, setAction] = useState(false);
-  const [deleteLoader, setDeleteLoader] = useState(false);
-  const [editLoader, setEditLoader] = useState(false);
+    setAlbumData(info);
+  }, [albumDetails, match.params.id]);
 
-  const editButton = () => {
-    if (editing) {
-      let newPhotoIds = pictures.filter((e) => e.selected).map((e) => e.id);
-      console.log(newPhotoIds);
+  const updateData = (e) =>
+    setAlbumData({ ...albumData, [e.target.name]: e.target.value });
+
+  const onSend = () => {
+    if (!editing) {
+      setEditing(true);
+    } else {
+      setSending(true);
+      let newPhotoIds = selected;
       let data = {
         pictures: newPhotoIds,
-        name,
-        description,
+        name: albumData.name !== "" ? albumData.name : albumDetails.name,
+        description: albumData.description,
       };
-      editAlbum(albumData.id, data);
-      setEditLoader(true);
-    } else {
-      setEditing(true);
+      editAlbum(albumData.id, data).then((r) => setEditing(false));
     }
   };
-
-  const deleteButton = () => {
-    deleteAlbum(albumData.id);
-    setDeleteLoader(true);
-  };
-
-  useEffect(() => {
-    if (deleteAlbumStatus.sent && deleteAlbumStatus.success) setAction(true);
-    if (editAlbumStatus.sent && editAlbumStatus.success) setAction(true);
-  }, [deleteAlbumStatus, editAlbumStatus]);
-
-  useEffect(() => setAction(false), [action]);
-
-  const handleOnSelect = (selectedPhoto) => {
-    let pics = pictures.map((p) => {
-      if (p.id === selectedPhoto.id) {
-        p.selected = !p.selected;
-      }
-      return p;
-    });
-    setPictures(pics);
-  };
-  useEffect(() => {
-    if (albumData !== null && albumData.pictures) {
-      setDisplay({
-        photos: albumData.pictures.map((el) => ({
-          src: el.thumbnail,
-          height: el.aspect_h,
-          width: el.aspect_w,
-          id: el.id,
-        })),
-        uploaded: new Date(albumData.created_at).toLocaleDateString("es"),
-        redirect: false,
-      });
-    }
-    if (albumData) setDescription(albumData.description);
-  }, [albumData]);
-
-  useEffect(() => {
-    onLoadGetPhotos(user.id, 0, 0);
-  }, []);
-
-  useEffect(() => {
-    if (editing) {
-      let albIds = display.photos.map((e) => e.id);
-      let selectedpics = userPhotos.map((e) => {
-        let newP = {};
-        newP.id = e.id;
-        newP.selected = albIds.includes(e.id);
-        newP.src = e.thumbnail;
-        newP.height = e.aspect_h;
-        newP.width = e.aspect_w;
-        return newP;
-      });
-      setPictures(selectedpics);
-      setDescription(albumData.description);
-      setName(albumData.name);
-    }
-  }, [editing]);
-  const handleOnClick = (obj) => {
-    setIndex(obj.index);
-    setDisplay({ ...display, redirect: obj.index });
-  };
-
-  if (display.redirect !== false) {
-    // TODO: change this push photos to url use
-    pushPhotos(albumData.pictures);
-    return (
-      <Redirect
-        push
-        to={`/photo/${display.photos[display.redirect].id}/?album=${
-          albumData.id
-        }`}
-      />
-    );
-  }
 
   const DeleteAlbumModal = (props) => {
-    const { buttonLabel, className, deleteButton, loading } = props;
+    const {
+      buttonLabel,
+      className,
+      albumId,
+      modal,
+      toggle,
+      deleteAlbum,
+      setRedirect,
+    } = props;
+    const [deleting, setDeleting] = useState(false);
 
-    const [modal, setModal] = useState(false);
-
-    const toggle = () => setModal(!modal);
+    const onDelete = () => {
+      setDeleting(true);
+      deleteAlbum(albumId).then((r) => {
+        setDeleting(false);
+        toggle();
+        setRedirect({
+          redirect: true,
+          url: "/user/dashboard/albums",
+        });
+      });
+    };
 
     return (
       <div>
         <Button color="danger" onClick={toggle}>
           {buttonLabel}
-          <FontAwesomeIcon icon={faTrashAlt} />
         </Button>
         <Modal isOpen={modal} toggle={toggle} className={className}>
           <ModalHeader toggle={toggle}>Eliminar álbum</ModalHeader>
           <ModalBody>Esta acción no se puede deshacer. ¿Está seguro?</ModalBody>
           <ModalFooter>
-            {loading ? (
-              <LeitSpinner />
-            ) : (
-              <Button color="primary" onClick={deleteButton}>
-                Eliminar
-              </Button>
-            )}
+            <Button color="primary" onClick={onDelete}>
+              {deleting ? (
+                <Spinner style={{ width: "1rem", height: "1rem" }} />
+              ) : (
+                ""
+              )}{" "}
+              Eliminar
+            </Button>
             <Button color="secondary" onClick={toggle}>
               Cancelar
             </Button>
@@ -213,46 +157,53 @@ const AlbumView = ({
     );
   };
 
-  return action ? (
-    <Redirect to="/user/dashboard/albums"></Redirect>
-  ) : albumData !== {} ? (
-    <Container fluid className="album-container home-background parallax">
+  if (params.redirect) {
+    return <Redirect push to={params.url} />;
+  }
+  return (
+    <Container fluid className={publicView ? "home-background parallax" : ""}>
+      <Helmet>
+        <title>{albumDetails ? "Album " + albumDetails.name : ""}</title>
+      </Helmet>
       <Row className="album-title-row">
         <Col>
           <Container>
             <Row>
               <Col xs={2}>
-                <Button
-                  color="secondary"
-                  tag={Link}
-                  to={
-                    location.pathname.includes("public")
-                      ? `/gallery`
-                      : "/user/dashboard/albums"
-                  }
-                  style={{ height: "30px" }}
-                >
-                  <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}
-                  {location.pathname.includes("public") ? "Galeria" : "Volver"}
-                </Button>
-              </Col>
-              <Col xs={9}>
-                {loading ? (
-                  <LeitSpinner />
+                {!editing ? (
+                  <Button
+                    color="secondary"
+                    tag={Link}
+                    to={publicView ? `/gallery` : "/user/dashboard/albums"}
+                    style={{ height: "30px" }}
+                  >
+                    <FontAwesomeIcon icon={faArrowAltCircleLeft} />{" "}
+                    {publicView ? "Galería" : "Volver"}
+                  </Button>
                 ) : (
-                  <h2>
-                    {albumData.collection ? "Colección" : "Album"} :{" "}
-                    {editing ? (
-                      <Input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                      />
-                    ) : (
-                      albumData.name
-                    )}
-                  </h2>
+                  <h3>Título</h3>
                 )}
+              </Col>
+              <Col>
+                {!loading ? (
+                  !editing ? (
+                    <h2
+                      style={{
+                        textAlign: "center",
+                      }}
+                    >
+                      Álbum: {albumData.name}
+                    </h2>
+                  ) : (
+                    <Input
+                      type="text"
+                      value={albumData.name}
+                      placeholder="Nuevo título"
+                      name="name"
+                      onChange={updateData}
+                    />
+                  )
+                ) : null}
               </Col>
             </Row>
           </Container>
@@ -260,111 +211,177 @@ const AlbumView = ({
       </Row>
       <Row>
         <Col>
-          <Container>
-            {loading ? (
-              <LeitSpinner />
-            ) : (
+          <Container fluid>
+            {!loading ? (
               <div>
                 {" "}
                 {/* Do not remove this div, it allows for sticky behavior*/}
                 <Row>
-                  <Col sm={9}>
-                    {editing ? (
+                  <Col
+                    sm={
+                      albumData.pictures.length === 1
+                        ? { size: 4, offset: 4 }
+                        : { size: 9 }
+                    }
+                  >
+                    {editing && !publicView ? (
                       <PhotoEditor
-                        viewLink={false}
-                        selectAllBtn={false}
+                        photos={albumData.pictures.map((el) => ({
+                          src: el.thumbnail,
+                          height: el.aspect_h,
+                          width: el.aspect_w,
+                          id: el.id,
+                        }))}
+                        targetRowHeight={250}
                         selectIcon="check"
-                        photos={pictures}
-                        onClick={(e, index) => handleOnSelect(index.photo)}
+                        getSelection={(v) => {
+                          var keys = Object.keys(v)
+                            .filter((el) => el.includes("nb-"))
+                            .map((el) => el.substr(3));
+                          setSelected(
+                            keys.map((el) => albumData.pictures[Number(el)].id)
+                          );
+                        }}
+                        update={updatedAlbum}
                       />
                     ) : (
                       <Gallery
-                        photos={display.photos}
-                        targetRowHeight={200}
-                        onClick={(e, index) => {
-                          handleOnClick(index);
+                        photos={albumData.pictures.map((el) => ({
+                          src: el.thumbnail,
+                          height: el.aspect_h,
+                          width: el.aspect_w,
+                          id: el.id,
+                        }))}
+                        targetRowHeight={250}
+                        onClick={(e, obj) => {
+                          setSelectedId(obj.index);
+                          setParams({
+                            redirect: true,
+                            url: `/photo/${
+                              albumData.pictures[obj.index].id
+                            }/?album=${albumData.id}`,
+                          });
                         }}
                       />
                     )}
                   </Col>
                   <Col sm={3} className="album-sticky-element">
-                    <div className="album-white-box">
-                      <span className="album-photo-count">
-                        {albumData.pictures ? albumData.pictures.length : "0"}{" "}
-                        <FontAwesomeIcon icon={faCamera} />
-                      </span>
-                      <span className="album-meta">
-                        {display.uploaded}{" "}
-                        <FontAwesomeIcon icon={faCloudUploadAlt} />
-                      </span>
-                      {editing ? (
-                        <Input
-                          type="textarea"
-                          className="album-textarea"
-                          rows="7"
-                          value={description}
-                          onChange={(e) => setDescription(e.target.value)}
-                        ></Input>
-                      ) : (
-                        <p className="album-desc">{albumData.description}</p>
-                      )}
+                    <Container className="album-white-box">
                       <Row>
                         <Col>
-                          <Button color="primary" onClick={editButton}>
-                            {editing ? "Confirmar Cambios " : "Editar"}{" "}
-                            <FontAwesomeIcon
-                              icon={editing ? faSave : faPencilAlt}
-                            />
-                          </Button>
+                          <h5 style={{ color: "#999" }}>
+                            <FontAwesomeIcon icon={faCamera} /> Contiene{" "}
+                            {albumData.pictures
+                              ? albumData.pictures.length
+                              : "0"}{" "}
+                            foto(s)
+                          </h5>
                         </Col>
+                      </Row>
+                      <Row>
                         <Col>
-                          {editing ? (
-                            <Button
-                              color="danger"
-                              onClick={() => setEditing(!editing)}
-                            >
-                              Cancelar <FontAwesomeIcon icon={faUndo} />
-                            </Button>
+                          <h5 style={{ color: "#999" }}>
+                            <FontAwesomeIcon icon={faCloudUploadAlt} /> Creado
+                            el {albumData.uploaded}
+                          </h5>
+                        </Col>
+                      </Row>
+                      <Row style={{ marginBottom: "4px" }}>
+                        <Col>
+                          {!editing ? (
+                            <p className="album-desc">
+                              {albumData.description}
+                            </p>
                           ) : (
-                            <DeleteAlbumModal
-                              loading={deleteLoader}
-                              deleteButton={deleteButton}
-                              buttonLabel="Eliminar"
-                            />
+                            <Input
+                              type="textarea"
+                              placeholder="Nueva descripción"
+                              rows="7"
+                              name="description"
+                              value={albumData.description}
+                              onChange={updateData}
+                            ></Input>
                           )}
                         </Col>
                       </Row>
-                    </div>
+                      {!publicView ? (
+                        <Row>
+                          <Col>
+                            {!editing ? (
+                              <Button color="primary" onClick={onSend}>
+                                Editar
+                              </Button>
+                            ) : (
+                              <Fragment>
+                                <FormText color="muted">
+                                  Se mantendrán sólo las fotos seleccionadas
+                                </FormText>
+                                <Button color="primary" onClick={onSend}>
+                                  {sending ? (
+                                    <Spinner
+                                      style={{ width: "1rem", height: "1rem" }}
+                                    />
+                                  ) : (
+                                    ""
+                                  )}{" "}
+                                  Guardar cambios
+                                </Button>
+                              </Fragment>
+                            )}
+                            {!editing ? (
+                              <DeleteAlbumModal
+                                buttonLabel="Eliminar"
+                                albumId={albumData.id}
+                                modal={deleteModal}
+                                toggle={() => setDeleteModal(!deleteModal)}
+                                deleteAlbum={deleteAlbum}
+                                setRedirect={(newp) => setParams(newp)}
+                              />
+                            ) : (
+                              <Button
+                                color="secondary"
+                                onClick={() => setEditing(!editing)}
+                              >
+                                Cancelar
+                              </Button>
+                            )}
+                          </Col>
+                        </Row>
+                      ) : null}
+                    </Container>
                   </Col>
                 </Row>
               </div>
+            ) : (
+              <Row>
+                <Col style={{ textAlign: "center" }}>
+                  <LeitSpinner />
+                </Col>
+              </Row>
             )}
           </Container>
         </Col>
       </Row>
       <Row></Row>
     </Container>
-  ) : null;
+  );
 };
 
 const mapStateToProps = (state) => ({
-  loading: selectAlbumsLoading(state),
-  albumData: selectAlbumCollectionAlbumData(state),
-  deleteAlbumStatus: selectAlbumDelete(state),
-  editAlbumStatus: selectAlbumEdit(state),
-  user: selectUserData(state),
-  userPhotos: selectUserPhotos(state),
+  photos: selectUserPhotos(state),
+  albumDetails: selectAlbumCollectionAlbumData(state),
+  updatedAlbum: selectAlbumAlbumUpdate(state),
+  albumDeleted: selectAlbumDelete(state),
 });
 
 const mapActionsToProps = (dispatch) =>
   bindActionCreators(
     {
-      loadInfo: gallery.album.loadAlbumInfo,
+      loadAlbum: gallery.album.loadAlbumInfo,
       pushPhotos: site_misc.pushPhotoArray,
-      setIndex: site_misc.setSelectedId,
-      onLoadGetPhotos: user.getUserPhotos,
-      deleteAlbum: gallery.album.deleteAlbum,
       editAlbum: gallery.album.editAlbum,
+      deleteAlbum: gallery.album.deleteAlbum,
+      setSelectedId: site_misc.setSelectedId,
     },
     dispatch
   );

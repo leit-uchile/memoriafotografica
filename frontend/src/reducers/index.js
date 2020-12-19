@@ -81,9 +81,12 @@ export const selectAlbumResult = (state) => fromAlbum.selectAlbumResult(state);
 export const selectAlbumCollections = (state) =>
   fromAlbum.selectAlbumCollections(state);
 
-export const selectAlbumEdit = (state) => fromAlbum.selectAlbumEdit(state);
+export const selectAlbumAlbumUpdate = (state) => 
+  fromAlbum.selectAlbumAlbumUpdate(state);
 
-export const selectAlbumDelete = (state) => fromAlbum.selectAlbumDelete(state);
+  export const selectAlbumDelete = (state) => 
+  fromAlbum.selectAlbumDelete(state);
+
 export const selectAlbumCollectionAlbumData = (state) =>
   fromAlbum.selectAlbumCollectionAlbumData(state);
 
