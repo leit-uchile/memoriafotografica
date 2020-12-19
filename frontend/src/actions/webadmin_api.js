@@ -25,11 +25,10 @@ import {
 } from "./types";
 import { setAlert } from "./site_misc";
 
-export const validateRecaptcha = (valueRecaptcha) => (dispatch) => {
+export const validateRecaptcha = (data) => (dispatch) => {
   {
     let header = { "Content-Type": "application/json" };
-    let data = { recaptcha: valueRecaptcha };
-    fetch("/api/users/recaptcha/", {
+    fetch("/api/users/guest/", {
       method: "POST",
       body: JSON.stringify(data),
       headers: header,

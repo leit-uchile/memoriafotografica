@@ -1,4 +1,6 @@
 import hashlib
+from django.dispatch import receiver
+from django_rest_passwordreset.signals import reset_password_token_created
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
 from rest_framework import status
@@ -16,9 +18,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_condition import ConditionalPermission, C, And, Or, Not
 from django.http import Http404
-import hashlib
-from django.dispatch import receiver
-from django_rest_passwordreset.signals import reset_password_token_created
 
 
 def createHash(id):
@@ -26,7 +25,15 @@ def createHash(id):
     return str(hashlib.sha256(integer).hexdigest())
 
 
-class VerifyTokenAPI(generics.GenericAPIView):
+class GuestVerifyTokenAPI(generics.GenericAPIView):
+    """
+    Check that user email exists in DB, 
+        if user is active respond 403 Forbidden + error message
+        else Recover registerlink for that user
+            if link exists user has already registered but not finished
+            TODO TODO VERY IMPORTANT: else no link, thus get token 
+    If user is new, create, send email, respond with token
+    """
     serializer_class = ReCaptchaSerializer
 
     allowed_methods = ["POST"]
@@ -55,12 +62,19 @@ class RegistrationAPI(generics.GenericAPIView):
         if "recaptchaToken" in formData.keys():
             tokenRecaptcha = {"recaptcha": formData.pop("recaptchaToken")[0]}
         else:
-            tokenRecaptcha = {"recaptcha": ""}
+            return Response("No recaptcha token",
+                            status=status.HTTP_400_BAD_REQUEST)
         serializer = self.serializer_class(data=formData,
                                            context={'request': request})
         recaptchaSer = ReCaptchaSerializer(data=tokenRecaptcha)
 
         if recaptchaSer.is_valid():
+            """
+            TODO: check if user has already register but hasn't clicked
+            the register link.
+            TODO: check if user has registered as guest
+            """
+
             serializer.is_valid(raise_exception=True)
             user = serializer.save()
             activation_link = RegisterLink(code=createHash(user.pk),
@@ -79,7 +93,9 @@ class RegisterLinkAPI(generics.GenericAPIView):
     get:
     Get code status and user to activate
     """
-    permission_classes = [IsAuthenticated | ReadOnly, ]
+    permission_classes = [
+        IsAuthenticated | ReadOnly,
+    ]
 
     def get_object(self, code):
         return RegisterLink.objects.filter(code=code)
@@ -123,8 +139,8 @@ class LoginAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
         return Response({
-            # NOTE: context adds the base url and we dont need it here context=self.get_serializer_context()).data,
-            "user": UserSerializer(user).data,
+            "user": UserSerializer(user).
+            data,  # NOTE: context adds the base url and we dont need it here context=self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user)
         })
 
@@ -134,7 +150,9 @@ class PasswordAPI(generics.GenericAPIView):
     put:
     Change user password
     """
-    permission_classes = [IsAuthenticated, ]
+    permission_classes = [
+        IsAuthenticated,
+    ]
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -180,7 +198,9 @@ class UserListAPI(generics.GenericAPIView):
     Create a new user instance.
     """
 
-    permission_classes = [IsAuthenticated | ReadOnly, ]
+    permission_classes = [
+        IsAuthenticated | ReadOnly,
+    ]
 
     serializer_class = UserSerializer
 
@@ -209,7 +229,9 @@ class UserDetailAPI(generics.GenericAPIView):
        delete:
        Delete an user.
        """
-    permission_classes = [IsAuthenticated | ReadOnly, ]
+    permission_classes = [
+        IsAuthenticated | ReadOnly,
+    ]
     serializer_class = UserSerializer
 
     def get_object(self, pk):
@@ -220,9 +242,9 @@ class UserDetailAPI(generics.GenericAPIView):
 
     def get(self, request, pk, *args, **kwargs):
         user = self.get_object(pk)
-        if(request.user.is_anonymous and not user.public_profile):
+        if (request.user.is_anonymous and not user.public_profile):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if(request.user.user_type == 1 and not user.public_profile):
+        if (request.user.user_type == 1 and not user.public_profile):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         serializer = UserSerializer(user)
         return Response(serializer.data)
@@ -255,7 +277,9 @@ class UserPhotosAPI(generics.GenericAPIView):
        get:
        Get photos of a *user*.
        """
-    permission_classes = [IsAuthenticated | ReadOnly, ]
+    permission_classes = [
+        IsAuthenticated | ReadOnly,
+    ]
     serializer_class = UserPhotoSerializer
 
     def get(self, request, pk, *args, **kwargs):
@@ -273,7 +297,9 @@ class UserAlbumsAPI(generics.GenericAPIView):
        Get albums of a *user*.
 
        """
-    permission_classes = [IsAuthenticated | ReadOnly, ]
+    permission_classes = [
+        IsAuthenticated | ReadOnly,
+    ]
     serializer_class = UserAlbumSerializer
 
     def get(self, request, pk, *args, **kwargs):
@@ -293,7 +319,9 @@ class UserCommentsAPI(generics.GenericAPIView):
        TODO delete:
        Delete an comment asociated to a *user*.
        """
-    permission_classes = [IsAuthenticated | ReadOnly, ]
+    permission_classes = [
+        IsAuthenticated | ReadOnly,
+    ]
     serializer_class = UserCommentSerializer
 
     def get(self, request, pk, *args, **kwargs):
@@ -306,7 +334,8 @@ class UserCommentsAPI(generics.GenericAPIView):
 
 
 @receiver(reset_password_token_created)
-def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+def password_reset_token_created(sender, instance, reset_password_token, *args,
+                                 **kwargs):
     """
     get:
         Handles password reset tokens
