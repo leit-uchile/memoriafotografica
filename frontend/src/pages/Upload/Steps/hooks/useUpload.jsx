@@ -8,12 +8,18 @@ import { useState, useEffect } from "react";
  *
  * They are called in order as follows
  */
-const useUpload = (createMultipleMetas, uploadImages, metadataCreation, metadata = [], uploadPhotos = () => {}) => {
+const useUpload = (
+  createMultipleMetas,
+  uploadImages,
+  metadataCreation,
+  metadata = [],
+  uploadPhotos = () => {}
+) => {
   const [state, setState] = useState({
-    data: {}, // All info to upload
+    data: { photos: [], meta: {} }, // All info to upload
     uploading: false,
-    cacheCreatedPhotoIds: [], // In case of upload error
-    metadata: [], // Used during metadata creation
+    newMetadata: [],
+    waitForMeta: false,
   });
 
   /**
@@ -23,69 +29,57 @@ const useUpload = (createMultipleMetas, uploadImages, metadataCreation, metadata
   const startProcess = (photos, meta) => {
     // Manage metadata creation:
     // Merge tags in one array
-    let metadata = {};
-    state.data.tags.forEach((tag) => {
-      metadata[tag.value] = { ...tag };
+    let newMetadata = [];
+    photos.forEach((photo) => {
+      photo.meta.tags.forEach((tag) => {
+        if (tag.id === undefined) {
+          newMetadata.push(tag.value);
+        }
+      });
     });
     meta.forEach((tag) => {
-      metadata[tag.value] = { ...tag };
+      if (tag.id === undefined) {
+        newMetadata.push(tag.value);
+      }
     });
 
-    setState({ ...state, data: { ...state.data, ...photos } });
-    createMetadata(Object.values(metadata));
-  };
-
-  // On success componentDidUpdate will call
-  // associateMeta()
-  const createMetadata = (meta) => {
-
-    // Filtrar fotos
-    // // Create additional meta from photos
-    // // Using a dictionnary
-    // let additional_metadata = {};
-    // this.state.photos.forEach((current_photo) => {
-    //   current_photo.meta.tags.forEach((tag) => {
-    //     additional_metadata[tag.name] = { ...tag };
-    //   });
-    // });
-
-    let new_metas = meta
-      .filter((el) => el.id === undefined)
-      .map((el) => el.value);
-    let id_metas = meta.filter((el) => el.id !== undefined);
-
     // If API call isn't necessary
-    if (new_metas.length === 0) {
-      setState(
-        {
-          metadata: id_metas,
-        },
-        () => associateMeta()
-      );
-    } else {
-      // Save partial metadata state
-      // New metadata will be populated later
+    if (newMetadata.length !== 0) {
+      createMultipleMetas(newMetadata);
       setState({
         ...state,
-        metadata: id_metas,
+        data: { photos: [...photos], meta },
+        uploading: true,
+        waitForMeta: true,
       });
-
-      createMultipleMetas(new_metas);
+    } else {
+      setState({
+        ...state,
+        data: { photos: [...photos], meta },
+        uploading: true,
+        waitForMeta: false,
+      });
     }
   };
 
-  // Call method associateMeta if needed
   useEffect(() => {
-    if (metadataCreation && !metadataCreation.uploading) {
+    if (metadataCreation && !metadataCreation.uploading && state.uploading) {
       // Update metadata from props info
       setState({
         ...state,
-        metadata: [...metadata, ...metadataCreation.newIds],
+        newMetadata: [metadataCreation.newIds],
+        waitForMeta: false,
       });
-      // Call AssociateMeta after state update
-      //associateMeta();
     }
   }, [metadataCreation]);
+
+  // Call method associateMeta if needed
+  useEffect(() => {
+    if (!state.waitForMeta && state.data.photos.length !== 0) {
+      // Call AssociateMeta after state update
+      associateMeta();
+    }
+  }, [state]);
 
   const associateMeta = () => {
     let meta_mapped = {};
@@ -95,7 +89,7 @@ const useUpload = (createMultipleMetas, uploadImages, metadataCreation, metadata
 
     // get default metadata
     // As an array of IDs as 1,2,3
-    let default_metadata = state.data.tags
+    let default_metadata = state.data.meta
       .map((t) => {
         return meta_mapped[t.value];
       })
