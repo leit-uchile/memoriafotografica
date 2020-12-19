@@ -74,7 +74,7 @@ export const createMultipleMetas = (nameList) => (dispatch, getState) => {
   // Set process in motion
   dispatch({ type: CREATING_METADATA, data: nameList.length });
 
-  createMetadataByName(nameList, true)(dispatch, getState)
+  createMetadataByName(nameList, true)(dispatch, getState);
 };
 
 /**
