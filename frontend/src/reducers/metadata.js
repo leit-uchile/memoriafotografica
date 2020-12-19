@@ -51,7 +51,7 @@ export default function metadata(state = initialState, action) {
     case CREATED_METADATA:
       return {
         ...state,
-        newIds: [...state.newIds, data],
+        newIds: [...state.newIds, ...data],
         creating: !(state.nbMetaCreating === total + 1),
       };
     case CREATED_METADATA_ERROR:
@@ -102,7 +102,7 @@ export default function metadata(state = initialState, action) {
     case DELETED_METADATA_ERROR:
       return { ...state, opsErrors: [...state.opsErrors, action.data] };
     case METADATA_MERGE:
-      return {...state, opsCompleted: state.opsCompleted + 1};
+      return { ...state, opsCompleted: state.opsCompleted + 1 };
     case METADATA_MERGE_ERROR:
       return { ...state, opsErrors: [...state.opsErrors, action.data] };
     default:
@@ -116,11 +116,13 @@ export const selectMetaDataAllIptcs = (state) => state.metadata.all_iptcs;
 
 export const selectMetaDataBatch = (state) => state.metadata.batch;
 
-export const selectMetaDataOpsCompleted = (state) => state.metadata.opsCompleted;
+export const selectMetaDataOpsCompleted = (state) =>
+  state.metadata.opsCompleted;
 
 export const selectMetaDataOpsErrors = (state) => state.metadata.opsErrors;
 
-export const selectMetaDataGeneralTagsResult = (state) => state.metadata.general_tags.results;
+export const selectMetaDataGeneralTagsResult = (state) =>
+  state.metadata.general_tags.results;
 
 export const selectMetaData = (state) => state.metadata;
 

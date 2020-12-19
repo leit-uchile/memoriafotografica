@@ -137,7 +137,15 @@ export const editPhoto = (photoID, newData) => (dispatch, getState) => {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
-  let sent_data = JSON.stringify(newData);
+
+  // Verify that category is an id
+  let updatedData = { ...newData };
+  if (newData.category.length !== 0 && newData.category[0].id) {
+    // TODO: find all bad updates and remove this
+    updatedData.category = newData.map((el) => el.id);
+  }
+
+  let sent_data = JSON.stringify(updatedData);
   return fetch("/api/photos/" + photoID + "/", {
     method: "PUT",
     headers: headers,
@@ -325,12 +333,7 @@ export const uploadImages = (photos, photo_meta) => {
     const funcs = photos.map((photo, key) => () => {
       let formData = new FormData();
       // If no title available create one for our date
-      formData.append(
-        "title",
-        photo.meta.title
-          ? photo.meta.title
-          : ""
-      );
+      formData.append("title", photo.meta.title ? photo.meta.title : "");
       formData.append("description", photo.meta.description);
       formData.append("aspect_h", photo.meta.aspect_h);
       formData.append("aspect_w", photo.meta.aspect_w);
@@ -338,7 +341,11 @@ export const uploadImages = (photos, photo_meta) => {
       // Send our permissions
       formData.append(
         "permission",
-        photo.meta.cc !== null ? photo.meta.cc : photo_meta.cc ? photo_meta.cc : "CC BY"
+        photo.meta.cc !== null
+          ? photo.meta.cc
+          : photo_meta.cc
+          ? photo_meta.cc
+          : "CC BY"
       );
       // Date photos were taken
       formData.append("upload_date", photo_meta.date + "T00:00");
