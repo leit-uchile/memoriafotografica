@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Table } from "reactstrap";
+import { Table, Button, Badge } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckCircle,
+  faPencilAlt,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import "../../styles.css";
 
 const check = <FontAwesomeIcon icon={faCheckCircle} />;
@@ -25,7 +29,7 @@ const MetadataList = ({ metadata, iptcs, getSelection, update }) => {
   // Useful to init and reset when user changes page or elements
   useEffect(() => {
     // List changed ?
-    if ((metadata[0] && state[metadata[0].value] === undefined)) {
+    if (metadata[0] && state[metadata[0].value] === undefined) {
       let selected = {};
       metadata.forEach((element, key) => {
         selected[element.value] = false;
@@ -72,11 +76,12 @@ const MetadataList = ({ metadata, iptcs, getSelection, update }) => {
               value={checkAll}
             ></input>
           </th>
-          <th>Estado</th>
           <th>Valor</th>
           <th>Tipo</th>
-          <th>Fecha de subida</th>
-          <th>Fecha de Modificaci&oacute;n</th>
+          <th>Estado</th>
+          <th>Creada el</th>
+          <th>Ultima actualizaci&oacute;n</th>
+          <th>Acci&oacute;n</th>
         </tr>
       </thead>
       <tbody>
@@ -89,21 +94,29 @@ const MetadataList = ({ metadata, iptcs, getSelection, update }) => {
                 onChange={() => toggleElement(el.value, key)}
               ></input>
             </td>
-            <td>
-              {el.approved ? (
-                <span style={{ color: "green" }}>Aprobada{check}</span>
-              ) : (
-                <span style={{ color: "red" }}>No Aprobada</span>
-              )}
-              <br></br>
-              {el.censured ? (
-                <span style={{ color: "red" }}>Censurada</span>
-              ) : null}
-            </td>
             <td>{el.value}</td>
             <td>{mapNames(el.metadata)}</td>
+            <td style={{ fontSize: "1.2em" }}>
+              {el.approved ? (
+                <Badge pill color="success">
+                  Aprobada {check}
+                </Badge>
+              ) : (
+                <Badge pill color="danger">
+                  No aprobada
+                </Badge>
+              )}
+            </td>
             <td>{new Date(el.created_at).toLocaleDateString("es")}</td>
             <td>{new Date(el.updated_at).toLocaleDateString("es")}</td>
+            <td>
+              {/* <Button color="secondary">
+                <FontAwesomeIcon icon={faPencilAlt} />
+              </Button>
+              <Button color="danger">
+                <FontAwesomeIcon icon={faTrash} />
+              </Button> */}
+            </td>
           </tr>
         ))}
       </tbody>

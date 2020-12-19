@@ -76,7 +76,7 @@ const CommentHandler = ({
         <Row>
           <Col className="commentDiv">
             {" "}
-            A&uacute;n no hay comentarios. ¡S&eacute; el primero!
+            A&uacute;n no hay comentarios. ¡Se el primero!
           </Col>
         </Row>
       )}

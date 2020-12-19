@@ -20,7 +20,7 @@ import { gallery } from "../../../actions";
 import { LeitSpinner, Pagination } from "../../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { CategoryTable } from "./CategoryTable";
+import CategoryTable from "./CategoryTable";
 import { bindActionCreators } from "redux";
 import {
   selectCategories,

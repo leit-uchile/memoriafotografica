@@ -52,7 +52,7 @@ export default function metadata(state = initialState, action) {
     case CREATED_METADATA:
       return {
         ...state,
-        newIds: [...state.newIds, data],
+        newIds: [...state.newIds, ...data],
         creating: !(state.nbMetaCreating === total + 1),
       };
     case CREATED_METADATA_ERROR:
@@ -78,14 +78,14 @@ export default function metadata(state = initialState, action) {
     case UPDATED_METADATA:
       return {
         ...state,
-        update_status: "success " + action.data,
+        update_status: "success " + action.data.id,
         opsCompleted: state.opsCompleted + 1,
         metaUpdate: state.nbOperations === state.opsCompleted + 1 ? action.data : state.metaUpdate,
       };
     case UPDATED_METADATA_ERROR:
       return {
         ...state,
-        update_status: "failed " + action.data,
+        update_status: "failed " + action.data.id,
         opsErrors: [...state.opsErrors, action.data],
       };
     case RECOVERED_CURADOR_TAGS:

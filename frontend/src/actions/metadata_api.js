@@ -244,11 +244,11 @@ export const putMetadata = (metadata) => (dispatch, getState) => {
     if (r.status === 206 || r.status === 200) {
       return r.json().then((data) => {
         dispatch(setAlert("Metadata actualizada exitosamente", "success"));
-        dispatch({ type: UPDATED_METADATA, data: metadata.id })
+        dispatch({ type: UPDATED_METADATA, data: metadata })
       });
     } else {
       dispatch(setAlert("Error actualizando metadata. Intente nuevamente", "warning"));
-      dispatch({ type: UPDATED_METADATA_ERROR, data: metadata.id });
+      dispatch({ type: UPDATED_METADATA_ERROR, data: metadata });
     }
   });
 };

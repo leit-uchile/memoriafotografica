@@ -17,6 +17,8 @@ import {
   FormText,
 } from "reactstrap";
 import Spinner from "reactstrap/lib/Spinner";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import { LeitSpinner } from "../../../components/index";
 import { bindActionCreators } from "redux";
 import {
@@ -29,7 +31,6 @@ import {
 } from "../../../reducers";
 
 const FilterModal = ({
-  buttonLabel,
   className,
   photoId,
   photoDetails,
@@ -156,8 +157,8 @@ const FilterModal = ({
 
   return (
     <div>
-      <Button color="danger" onClick={toggle}>
-        {buttonLabel}
+      <Button color="secondary" onClick={toggle}>
+        <FontAwesomeIcon icon={faPencilAlt} />
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>

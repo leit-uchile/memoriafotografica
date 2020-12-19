@@ -177,12 +177,12 @@ const PhotoTable = ({
                 <Table responsive striped className="statBox">
                   <thead>
                     <tr>
-                      <th>Estado</th>
                       <th>Solicitante</th>
                       <th>Finalidad</th>
+                      <th>Estado</th>
                       <th>Solicitado el</th>
                       <th>&Uacute;ltima actualizaci&oacute;n</th>
-                      <th></th>
+                      <th>Acci&oacute;n</th>
                     </tr>
                   </thead>
                   <tbody>

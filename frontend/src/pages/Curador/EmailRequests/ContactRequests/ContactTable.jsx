@@ -107,12 +107,10 @@ const ContactTable = ({
   const resolveButton = (msg) => (
     <ButtonGroup>
       <ContactEmailModal
-        buttonLabel="Correo"
         message={msg}
         send={updateMessage}
       />
       <ContactPhoneModal
-        buttonLabel="Teléfono"
         message={msg}
         send={updateMessage}
       />
@@ -181,13 +179,13 @@ const ContactTable = ({
                 <Table responsive striped className="statBox">
                   <thead>
                     <tr>
-                      <th>Estado</th>
-                      <th>Nombre</th>
+                      <th>Contacto</th>
                       <th>Mensaje</th>
+                      <th>Estado</th>
                       <th>Respuesta</th>
                       <th>Recibido el</th>
                       <th>Respondido el</th>
-                      <th>Responder por</th>
+                      <th>Acci&oacute;n</th>
                     </tr>
                   </thead>
                   <tbody>

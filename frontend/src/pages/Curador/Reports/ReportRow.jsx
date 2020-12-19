@@ -1,4 +1,5 @@
 import React from "react";
+import { Badge } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
@@ -26,18 +27,22 @@ const ReportRow = ({ report, render, actions }) => {
   return (
     <tr>
       <td>{typeToText(report.type)}</td>
-      <td>{actions(report)}</td>
-      <td>
+      <td>{render(report.content_id)}</td>
+      <td>{report.content}</td>
+      <td style={{ fontSize: "1.2em" }}>
         {report.resolved ? (
-          <span style={{ color: "green" }}>Resuelto{check}</span>
+          <Badge pill color="success">
+            Resuelto {check}
+          </Badge>
         ) : (
-          <span style={{ color: "red" }}>Pendiente{check}</span>
+          <Badge pill color="warning">
+            Pendiente
+          </Badge>
         )}
       </td>
       <td>{new Date(report.created_at).toLocaleDateString("es")}</td>
       <td>{new Date(report.updated_at).toLocaleDateString("es")}</td>
-      <td>{report.content}</td>
-      <td>{render(report.content_id)}</td>
+      <td>{actions(report)}</td>
     </tr>
   );
 };

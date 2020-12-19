@@ -25,7 +25,6 @@ import "./resolveModal.css";
 import { bindActionCreators } from "redux";
 
 const ResolveModal = ({
-  buttonLabel,
   className,
   report,
   censureContent,
@@ -89,10 +88,10 @@ const ResolveModal = ({
 
   return (
     <div>
-      <Button color="danger" onClick={setModal}>
-        {buttonLabel}
+      <Button color="secondary" onClick={setModal}>
+        <FontAwesomeIcon icon={faPencilAlt} />
       </Button>
-      <Modal isOpen={modal} toggle={() => setModal()} size={"lg"}>
+      <Modal isOpen={modal} toggle={() => setModal()} size={"lg"} className={className}>
         <ModalHeader toggle={() => setModal()}>Resolver Reporte</ModalHeader>
         <ModalBody>
           <Form>
