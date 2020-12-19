@@ -169,5 +169,6 @@ class TagSuggestion(models.Model):
     # users = models.ForeignKey(
     #     Metadata, blank=False, null=False, on_delete=models.CASCADE, related_name='tagsuggestion_metadata')
 
+    votes = models.IntegerField(default=1)
     resolved = models.BooleanField(default=False)
     resolution = models.BooleanField(default=False)

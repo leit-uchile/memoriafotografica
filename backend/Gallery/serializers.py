@@ -274,15 +274,22 @@ class TagSuggestionSerializer(serializers.ModelSerializer):
 
     photo = serializers.PrimaryKeyRelatedField(
         queryset=Photo.objects.all(), many=False)
+
     metadata = serializers.PrimaryKeyRelatedField(
         queryset=Metadata.objects.all(), many=False)
 
     class Meta:
         model = TagSuggestion
-        fields = ['photo', 'metadata']
+        fields = ['photo', 'metadata', 'votes']
 
     def create(self, validated_data):
-        tag_suggest = TagSuggestion.objects.create(**validated_data)
+        tag_suggest, created = TagSuggestion.objects.get_or_create(
+            **validated_data)
+
+        if not created:
+            tag_suggest.votes = tag_suggest.votes + 1
+            tag_suggest.save()
+
         return tag_suggest
 
     def update(self, instance, validated_data):
