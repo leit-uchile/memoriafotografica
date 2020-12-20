@@ -47,7 +47,7 @@ const PhotoRow = ({ request, key, actions, render }) => {
             <b>No Aprobada</b>
           )
         ) : (
-          <Button color="secondary" onClick={() => actions(request.id)}>
+          <Button className="actions" onClick={() => actions(request.id)}>
             <FontAwesomeIcon icon={faEye} />
           </Button>
         )}

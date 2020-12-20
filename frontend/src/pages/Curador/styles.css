@@ -36,6 +36,19 @@
   background-position: center;
 }
 
+.actions {
+  padding: 0.5em 1.2em;
+  text-decoration: none;
+  text-align: center;
+  vertical-align: middle;
+  min-height: 30px;
+  line-height: 15px;
+  color: #555;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  margin: 0 6px 6px 0;
+}
+
 @media (min-width: 576px) {
   .leftcol.col-sm-2 {
     position: sticky;

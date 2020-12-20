@@ -43,13 +43,13 @@ const CategoryTable = ({ cats, updateToDelete, toDelete, redirect }) => {
                 onClick={() =>
                   redirect(`/curador/dashboard/categories/${el.id}/`)
                 }
-                color="secondary"
+                className="actions"
               >
                 <FontAwesomeIcon icon={faPencilAlt} />
               </Button>
-              {/* <Button color="danger">
+              <Button className="actions">
                 <FontAwesomeIcon icon={faTrash} />
-              </Button> */}
+              </Button>
             </td>
           </tr>
         ))}

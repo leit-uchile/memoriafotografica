@@ -110,12 +110,12 @@ const MetadataList = ({ metadata, iptcs, getSelection, update }) => {
             <td>{new Date(el.created_at).toLocaleDateString("es")}</td>
             <td>{new Date(el.updated_at).toLocaleDateString("es")}</td>
             <td>
-              {/* <Button color="secondary">
+              <Button className="actions">
                 <FontAwesomeIcon icon={faPencilAlt} />
               </Button>
-              <Button color="danger">
+              <Button className="actions">
                 <FontAwesomeIcon icon={faTrash} />
-              </Button> */}
+              </Button>
             </td>
           </tr>
         ))}
