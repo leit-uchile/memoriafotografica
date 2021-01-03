@@ -49,7 +49,7 @@ const Categories = ({
   const [creating, setCreating] = useState(false);
   const [title, setTitle] = useState("");
   const [sending, setSending] = useState(false);
-  const [toDelete, setToDelete] = useState([]);
+  const [arrayToDelete, setToDelete] = useState([]);
   const [toggleDelete, setToggleDelete] = useState(false);
   const [params, setParams] = useState({
     redirect: false,
@@ -84,15 +84,6 @@ const Categories = ({
     });
   };
 
-  const updateToDelete = (i, isCheck) => {
-    // Send update to API
-    if (isCheck) {
-      setToDelete([...toDelete, i]);
-    } else {
-      setToDelete(toDelete.filter((el) => el !== i));
-    }
-  };
-
   return params.redirect ? (
     <Redirect push to={params.url} />
   ) : (
@@ -106,8 +97,8 @@ const Categories = ({
             </Button>
             <Button
               onClick={() => setToggleDelete(!toggleDelete)}
-              color={toDelete.length !== 0 ? "danger" : "secondary"}
-              disabled={toDelete.length === 0}
+              color="danger"
+              disabled={arrayToDelete.length === 0}
             >
               <FontAwesomeIcon icon={faTrash} />
             </Button>
@@ -126,9 +117,8 @@ const Categories = ({
           <DeleteModal
             toggle={toggleDelete}
             setToggle={setToggleDelete}
-            toDelete={toDelete}
+            toDelete={arrayToDelete}
             removeCategories={deleteCategories}
-            setToDelete={setToDelete}
           />
         </Col>
       </Row>
@@ -172,9 +162,15 @@ const Categories = ({
               <Col>
                 <CategoryTable
                   cats={cats}
-                  updateToDelete={updateToDelete}
-                  toDelete={toDelete}
+                  getSelection={(v) => {
+                    var keys = Object.keys(v)
+                      .filter((el) => el.includes("nb-"))
+                      .map((el) => el.substr(3));
+                    setToDelete(keys.map((el) => cats[Number(el)].id));
+                  }}
                   redirect={(url) => setParams({ redirect: true, url: url })}
+                  removeCategories={deleteCategories}
+                  update={updatedCat}
                 />
               </Col>
             </Row>

@@ -40,7 +40,7 @@ const ContactModal = ({ className, message, send }) => {
 
   return (
     <div>
-      <Button className="actions" onClick={toggle}>
+      <Button className="action" onClick={toggle}>
         <FontAwesomeIcon icon={faEnvelope} />
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>

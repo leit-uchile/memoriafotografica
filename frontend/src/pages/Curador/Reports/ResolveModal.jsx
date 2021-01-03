@@ -88,7 +88,7 @@ const ResolveModal = ({
 
   return (
     <div>
-      <Button className="actions" onClick={setModal}>
+      <Button className="action" onClick={setModal}>
         <FontAwesomeIcon icon={faPencilAlt} />
       </Button>
       <Modal isOpen={modal} toggle={() => setModal()} size={"lg"} className={className}>

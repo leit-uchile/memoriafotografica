@@ -23,7 +23,6 @@ const DeleteModal = ({
   setOps,
   completed,
   errors,
-  setToDelete,
 }) => {
   const [sending, setSending] = useState(false);
 
@@ -45,7 +44,6 @@ const DeleteModal = ({
     if (errors === "" && sending) {
       setSending(false);
       setToggle(!toggle);
-      setToDelete([]);
     }
     // eslint-disable-next-line
   }, [completed, errors]);

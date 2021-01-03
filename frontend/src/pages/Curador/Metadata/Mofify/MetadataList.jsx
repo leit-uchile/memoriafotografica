@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Table, Button, Badge } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,6 +7,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import "../../styles.css";
+import ModifyModal from "./ModifyModal";
 
 const check = <FontAwesomeIcon icon={faCheckCircle} />;
 
@@ -25,6 +26,9 @@ const MetadataList = ({ metadata, iptcs, getSelection, update }) => {
   const [state, setState] = useState({});
   const [checkAll, setCheckAll] = useState(false);
   const mapNames = (id) => iptcs.filter((el) => el.id === id)[0].name;
+  const [operation, setOperation] = useState("0");
+  const [modify, setToModify] = useState([]);
+  const [toggleModify, setToggleModify] = useState(false);
 
   // Useful to init and reset when user changes page or elements
   useEffect(() => {
@@ -66,61 +70,84 @@ const MetadataList = ({ metadata, iptcs, getSelection, update }) => {
   };
 
   return (
-    <Table responsive striped className="statBox">
-      <thead>
-        <tr>
-          <th>
-            <input
-              type="checkbox"
-              onChange={() => selectAll()}
-              value={checkAll}
-            ></input>
-          </th>
-          <th>Valor</th>
-          <th>Tipo</th>
-          <th>Estado</th>
-          <th>Creada el</th>
-          <th>Ultima actualizaci&oacute;n</th>
-          <th>Acci&oacute;n</th>
-        </tr>
-      </thead>
-      <tbody>
-        {metadata.map((el, key) => (
-          <tr key={el.id}>
-            <td>
+    <Fragment>
+      <ModifyModal
+        op={operation}
+        selected={modify}
+        iptcs={iptcs}
+        open={toggleModify}
+        toggle={() => setToggleModify(!toggleModify)}
+      />
+      <Table responsive striped className="statBox">
+        <thead>
+          <tr>
+            <th>
               <input
                 type="checkbox"
-                checked={state[el.value]}
-                onChange={() => toggleElement(el.value, key)}
+                onChange={() => selectAll()}
+                value={checkAll}
               ></input>
-            </td>
-            <td>{el.value}</td>
-            <td>{mapNames(el.metadata)}</td>
-            <td style={{ fontSize: "1.2em" }}>
-              {el.approved ? (
-                <Badge pill color="success">
-                  Aprobada {check}
-                </Badge>
-              ) : (
-                <Badge pill color="danger">
-                  No aprobada
-                </Badge>
-              )}
-            </td>
-            <td>{new Date(el.created_at).toLocaleDateString("es")}</td>
-            <td>{new Date(el.updated_at).toLocaleDateString("es")}</td>
-            <td>
-              <Button className="actions">
-                <FontAwesomeIcon icon={faPencilAlt} />
-              </Button>
-              <Button className="actions">
-                <FontAwesomeIcon icon={faTrash} />
-              </Button>
-            </td>
+            </th>
+            <th>Valor</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>Creada el</th>
+            <th>Ultima actualizaci&oacute;n</th>
+            <th>Acci&oacute;n</th>
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {metadata.map((el, key) => (
+            <tr key={key}>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={state[el.value]}
+                  onChange={() => toggleElement(el.value, key)}
+                ></input>
+              </td>
+              <td>{el.value}</td>
+              <td>{mapNames(el.metadata)}</td>
+              <td style={{ fontSize: "1.2em" }}>
+                {el.approved ? (
+                  <Badge pill color="success">
+                    Aprobada {check}
+                  </Badge>
+                ) : (
+                  <Badge pill color="danger">
+                    No aprobada
+                  </Badge>
+                )}
+              </td>
+              <td>{new Date(el.created_at).toLocaleDateString("es")}</td>
+              <td>{new Date(el.updated_at).toLocaleDateString("es")}</td>
+              <td>
+                <Button
+                  className="action"
+                  onClick={() => {
+                    setToModify([el]);
+                    setOperation("Modificar Selección");
+                    setToggleModify(!toggleModify);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faPencilAlt} />
+                </Button>
+                <Button
+                  className="action"
+                  onClick={() => {
+                    setToModify([el]);
+                    setOperation("Eliminar");
+                    setToggleModify(!toggleModify);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </Fragment>
   );
 };
 

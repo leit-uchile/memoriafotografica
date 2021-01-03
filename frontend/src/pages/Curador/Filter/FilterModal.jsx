@@ -157,7 +157,7 @@ const FilterModal = ({
 
   return (
     <div>
-      <Button className="actions" onClick={toggle}>
+      <Button className="action" onClick={toggle}>
         <FontAwesomeIcon icon={faPencilAlt} />
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>
