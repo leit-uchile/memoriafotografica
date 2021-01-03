@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { Fragment } from "react";
 import { Container, Row, Col, Button, ButtonGroup } from "reactstrap";
 import { LeitSpinner } from "../../components";
 import { Redirect, Link } from "react-router-dom";
@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { gallery } from "../../actions";
 import { selectAlbumsLoading, selectAlbumsData } from "../../reducers";
+import useAlbumDetails from "./hooks/useAlbumDetails";
 import PropTypes from "prop-types";
 
 import "./collectionView.css";
@@ -55,45 +56,15 @@ const RenderData = ({ photo, handle }) => (
  * @param {Function} loadInfo
  */
 const CollectionView = ({ match, albumData, loadInfo, loading }) => {
-  // Load album info
-  useEffect(() => {
-    loadInfo(match.params.id, true);
-  }, [match.params.id, loadInfo]);
-
-  // Scroll up!
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-    });
-  });
+  const [display, setDisplay, handleOnClick, mapped] = useAlbumDetails(
+    match,
+    loadInfo,
+    albumData
+  );
 
   const isTabletOrMobileDevice = useMediaQuery({
     query: "(max-device-width: 480px)",
   });
-
-  // compute one time and store here
-  const [display, setDisplay] = useState({
-    photos: [],
-    uploaded: "",
-    redirect: false,
-    timeline: true,
-  });
-
-  useEffect(() => {
-    if (albumData !== null && albumData.pictures) {
-      setDisplay({
-        ...display,
-        photos: albumData.pictures,
-        uploaded: new Date(albumData.created_at).toLocaleDateString("es"),
-        redirect: false,
-      });
-    }
-  }, [albumData]);
-
-  const handleOnClick = (id) => {
-    setDisplay({ ...display, redirect: id });
-  };
 
   if (display.redirect !== false) {
     return (
@@ -105,13 +76,6 @@ const CollectionView = ({ match, albumData, loadInfo, loading }) => {
       />
     );
   }
-
-  const mapped = display.photos.map((el) => ({
-    src: el.thumbnail,
-    height: el.aspect_h,
-    width: el.aspect_w,
-    id: el.id,
-  }));
 
   return Object.entries(albumData).length !== 0 ? (
     <Container fluid style={{ padding: "0", margin: "0", marginTop: "-2em" }}>

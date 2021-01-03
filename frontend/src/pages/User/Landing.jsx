@@ -4,12 +4,19 @@ import { connect } from "react-redux";
 import { user } from "../../actions";
 import { Link, Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusCircle, faSuitcase, faCameraRetro, faAddressCard} from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlusCircle,
+  faSuitcase,
+  faCameraRetro,
+  faAddressCard,
+} from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet";
 import { bindActionCreators } from "redux";
-import { selectUserPhotos,
-         selectUserComments,
-         selectUserAlbums,} from "../../reducers";
+import {
+  selectUserPhotos,
+  selectUserComments,
+  selectUserAlbums,
+} from "../../reducers";
 import { ReportModal } from "../../components";
 
 class Landing extends Component {
@@ -64,19 +71,16 @@ class Landing extends Component {
             </h2>
           </Col>
           <ReportModal
-              style={{ display: "inline-block" }}
-              className="float-right"
-              elementId={this.state.user.id}
-              reportTitle={"Reportar Usuario"}
-              options={[
-                "Finge ser otra persona",
-                "Fotografía inadecuada",
-              ]}
-              helpText={
-                "Si consideras que hay un problema con esta usuario por favor envíamos un reporte mediante este formulario."
-              }
-              reportType={1}
-            />
+            style={{ display: "inline-block" }}
+            className="float-right"
+            elementId={this.state.user.id}
+            reportTitle={"Reportar Usuario"}
+            options={["Finge ser otra persona", "Fotografía inadecuada"]}
+            helpText={
+              "Si consideras que hay un problema con esta usuario por favor envíamos un reporte mediante este formulario."
+            }
+            reportType={1}
+          />
         </Row>
         <Row>
           <Col>
@@ -135,7 +139,6 @@ class Landing extends Component {
   }
 }
 
-
 const makeIcons = (rol_id) => {
   switch (rol_id) {
     case 1:
@@ -153,7 +156,7 @@ const mapStateToProps = (state) => ({
   data: {
     photos: selectUserPhotos(state),
     comments: selectUserComments(state),
-    albums:  selectUserAlbums(state),
+    albums: selectUserAlbums(state),
   },
   user: state.user.userData,
 });

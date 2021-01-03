@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Container, Col, Row } from "reactstrap";
 import "../Login/login.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
