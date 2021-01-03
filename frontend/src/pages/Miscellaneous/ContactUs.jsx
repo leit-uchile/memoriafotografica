@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+
+import ReCAPTCHA from "react-google-recaptcha";
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,12 +22,20 @@ import {
 import { webadmin } from "../../actions";
 import { selectWebAdminContacted } from "../../reducers";
 import "./styles.css";
+import { validateRecaptcha } from "../../actions/webadmin_api";
 
 const ContactUs = ({ contacted, contactUs }) => {
   const [formData, setData] = useState({});
 
-  const updateData = (e) =>
+  const updateData = (e) => {
     setData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const updateCaptcha = () => {
+    setData({ ...formData, recaptchaToken: recaptchaRef.getValue() });
+  };
+
+  let recaptchaRef;
 
   return (
     <Container>
@@ -37,7 +47,13 @@ const ContactUs = ({ contacted, contactUs }) => {
       <Row>
         <Col className="white-box form-container">
           {!contacted ? (
-            <Form>
+            <Form
+              onSubmit={(e) => {
+                e.preventDefault();
+                contactUs(formData);
+                recaptchaRef.reset();
+              }}
+            >
               <div className="form-title">
                 <FontAwesomeIcon icon={faAddressCard} />
                 <Label> Identificación de contacto</Label>
@@ -95,11 +111,14 @@ const ContactUs = ({ contacted, contactUs }) => {
                 />
               </FormGroup>
               <hr />
-              <Button
-                color="primary"
-                tabIndex="5"
-                onClick={() => contactUs(formData)}
-              >
+              <ReCAPTCHA
+                sitekey={process.env.REACT_APP_RECAPTCHA_KEY}
+                ref={(el) => {
+                  recaptchaRef = el;
+                }}
+                onChange={updateCaptcha}
+              />
+              <Button color="primary" tabIndex="5" type="submit">
                 Enviar
               </Button>
             </Form>

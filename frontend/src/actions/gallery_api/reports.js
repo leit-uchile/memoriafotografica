@@ -40,16 +40,17 @@ export const updateReport = (report) => (dispatch, getState) => {
   };
   return fetch(`/api/reports/${report.id}/`, {
     method: "PUT",
-    headers,
+    headers: headers,
     body: JSON.stringify(report),
   }).then((response) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
+        dispatch(setAlert("Reporte descartado exitosamente", "success"));
         dispatch({ type: REPORT_SWITCH_STATE, data: data });
       });
     } else {
-      dispatch(setAlert("Hubo un error al actualizar el reporte", "warning"));
+      dispatch(setAlert("Error descartando reporte. Intente nuevamente", "warning"));
       dispatch({ type: REPORT_SWITCH_STATE_ERROR, data: r.data });
       throw r.data;
     }
@@ -69,10 +70,11 @@ export const censureContent = (report) => (dispatch, getState) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
+        dispatch(setAlert("Contenido censurado exitosamente", "success"));
         dispatch({ type: REPORT_SWITCH_STATE, data: data });
       });
     } else {
-      dispatch(setAlert("Hubo un error al censurar el contenido solicitado.", "warning"));
+      dispatch(setAlert("Error censurando contenido. Intente nuevamente", "warning"));
       dispatch({ type: REPORT_SWITCH_STATE_ERROR, data: r.data });
       throw r.data;
     }
@@ -89,14 +91,14 @@ export const updateContent = (report, content) => (dispatch, getState) => {
     headers,
     body: JSON.stringify({ report: report, newContent: content }),
   }).then((response) => {
-    console.log(response)
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
+        dispatch(setAlert("Contenido actualizado exitosamente", "success"));
         dispatch({ type: REPORT_SWITCH_STATE, data: data });
       });
     } else {
-      dispatch(setAlert("Hubo un error al editar el contenido solicitado.", "warning"));
+      dispatch(setAlert("Error actualizando contenido. Intente nuevamente", "warning"));
       dispatch({ type: REPORT_SWITCH_STATE_ERROR, data: r.data });
       throw r.data;
     }

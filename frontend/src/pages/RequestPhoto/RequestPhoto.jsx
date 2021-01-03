@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { Link } from "react-router-dom";
 import { webadmin, site_misc } from "../../actions";
 import { connect } from "react-redux";
@@ -28,8 +29,10 @@ import {
 import { getPermissionLogo } from "../../utils";
 import { bindActionCreators } from "redux";
 import "./requestPhoto.css";
-import {selectWebAdminRequestPhotos,
-        selectWebAdminRequested,} from "../../reducers";
+import {
+  selectWebAdminRequestPhotos,
+  selectWebAdminRequested,
+} from "../../reducers";
 
 var Requested = ({ list, removeRequestPhoto }) => (
   <ListGroup>
@@ -100,10 +103,20 @@ class RequestPhoto extends Component {
         phone_number: "",
         email: "",
         institution: "",
+        recaptchaToken: "",
       },
     };
+
+    this.onChangeCaptcha = this.onChangeCaptcha.bind(this);
     this.updateData = this.updateData.bind(this);
     this.props.setRoute("/request-photo/");
+  }
+
+  onChangeCaptcha() {
+    const recaptchaToken = this.recaptcharef.getValue();
+    this.setState({
+      formData: { ...this.state.formData, recaptchaToken: recaptchaToken },
+    });
   }
 
   updateData = (e) =>
@@ -113,9 +126,13 @@ class RequestPhoto extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    const photosId = this.props.requestedPhotos.map((el) => el.id);
-    console.log(photosId);
-    this.props.sendRequest(photosId, this.state.formData);
+    if (this.state.formData.recaptchaToken == "") {
+      this.props.sendAlert("Debe rellenar el captcha", "warning");
+    } else {
+      const photosId = this.props.requestedPhotos.map((el) => el.id);
+      this.props.sendRequest(photosId, this.state.formData);
+      this.recaptcharef.reset();
+    }
   };
 
   render() {
@@ -135,7 +152,7 @@ class RequestPhoto extends Component {
         <Row>
           <Col sm={8} className="white-box form-container">
             {!requested ? (
-              <Form>
+              <Form onSubmit={this.onSubmit}>
                 <FormGroup>
                   <div className="form-title">
                     <FontAwesomeIcon icon={faImages} />
@@ -158,7 +175,6 @@ class RequestPhoto extends Component {
                     onChange={this.updateData}
                     placeholder="Especificación"
                     required
-                    disabled={requested}
                   />
                 </FormGroup>
 
@@ -172,10 +188,10 @@ class RequestPhoto extends Component {
                       type="text"
                       name="first_name"
                       tabIndex="2"
-                      onChange={this.updateData}
                       placeholder="Nombre"
                       required
-                      disabled={requested}
+                      onChange={this.updateData}
+                      value={this.state.formData.first_name}
                     />
                     <Input
                       type="text"
@@ -184,7 +200,6 @@ class RequestPhoto extends Component {
                       onChange={this.updateData}
                       placeholder="CI"
                       required
-                      disabled={requested}
                     />
                     <Input
                       type="text"
@@ -193,7 +208,6 @@ class RequestPhoto extends Component {
                       onChange={this.updateData}
                       placeholder="Dirección"
                       required
-                      disabled={requested}
                     />
                     <Input
                       type="text"
@@ -202,7 +216,6 @@ class RequestPhoto extends Component {
                       onChange={this.updateData}
                       placeholder="Teléfono"
                       required
-                      disabled={requested}
                     />
                     <Input
                       type="text"
@@ -211,7 +224,6 @@ class RequestPhoto extends Component {
                       onChange={this.updateData}
                       placeholder="Institución"
                       required
-                      disabled={requested}
                     />
                   </Col>
                   <Col>
@@ -222,7 +234,6 @@ class RequestPhoto extends Component {
                       onChange={this.updateData}
                       placeholder="Apellidos"
                       required
-                      disabled={requested}
                     />
                     <Input
                       type="text"
@@ -231,7 +242,6 @@ class RequestPhoto extends Component {
                       onChange={this.updateData}
                       placeholder="Actividad/Profesión"
                       required
-                      disabled={requested}
                     />
                     <Input
                       type="text"
@@ -240,21 +250,26 @@ class RequestPhoto extends Component {
                       onChange={this.updateData}
                       placeholder="Comuna"
                       required
-                      disabled={requested}
                     />
                     <Input
                       type="email"
                       name="email"
                       tabIndex="9"
-                      onChange={this.updateData}
                       placeholder="Email"
                       required
-                      disabled={requested}
+                      onChange={this.updateData}
                     />
                   </Col>
                 </FormGroup>
                 <hr />
-                <Button color="primary" tabIndex="11" onClick={this.onSubmit}>
+
+                <ReCAPTCHA
+                  ref={(r) => (this.recaptcharef = r)}
+                  sitekey={process.env.REACT_APP_RECAPTCHA_KEY}
+                  onChange={this.onChangeCaptcha}
+                />
+
+                <Button color="primary" tabIndex="11" type="submit">
                   Solicitar
                 </Button>
               </Form>
@@ -328,6 +343,7 @@ const mapActionsToProps = (dispatch) =>
       setRoute: site_misc.setCurrentRoute,
       removeRequestPhoto: webadmin.removeRequestPhoto,
       sendRequest: webadmin.sendRequest,
+      sendAlert: site_misc.sendAlert,
     },
     dispatch
   );

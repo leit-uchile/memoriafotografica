@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Table } from "reactstrap";
+import React, { useState, useEffect, Fragment } from "react";
+import { Table, Button, Badge } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckCircle,
+  faPencilAlt,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import "../../styles.css";
+import ModifyModal from "./ModifyModal";
 
 const check = <FontAwesomeIcon icon={faCheckCircle} />;
 
@@ -17,8 +22,15 @@ const check = <FontAwesomeIcon icon={faCheckCircle} />;
  * @param {Array} iptcs for name mapping
  * @param {Function} getSelection recovers the position of the metadata that's selected
  */
-const MetadataList = ({ metadata, iptcs, getSelection }) => {
-  // When the lists changes reset selection
+const MetadataList = ({ metadata, iptcs, getSelection, update }) => {
+  const [state, setState] = useState({});
+  const [checkAll, setCheckAll] = useState(false);
+  const mapNames = (id) => iptcs.filter((el) => el.id === id)[0].name;
+  const [operation, setOperation] = useState("0");
+  const [modify, setToModify] = useState([]);
+  const [toggleModify, setToggleModify] = useState(false);
+
+  // Useful to init and reset when user changes page or elements
   useEffect(() => {
     // List changed ?
     if (metadata[0] && state[metadata[0].value] === undefined) {
@@ -26,25 +38,21 @@ const MetadataList = ({ metadata, iptcs, getSelection }) => {
       metadata.forEach((element, key) => {
         selected[element.value] = false;
       });
-      selected.checked = false;
       setState(selected);
+      getSelection(selected);
     }
-    //eslint-disable-next-line
-  }, [metadata]);
-
-  const [state, setState] = useState({ checked: false });
-
-  const mapNames = (id) => iptcs.filter((el) => el.id === id)[0].name;
+    // eslint-disable-next-line
+  }, [metadata, update]);
 
   const selectAll = () => {
     let selected = {};
     metadata.forEach((element, key) => {
-      selected[element.value] = !state.checked;
-      if (!state.checked) {
-        selected["nb-" + key] = !state.checked;
+      selected[element.value] = !checkAll;
+      if (!checkAll) {
+        selected["nb-" + key] = !checkAll;
       }
     });
-    selected.checked = !state.checked;
+    setCheckAll(!checkAll);
     setState(selected);
     getSelection(selected);
   };
@@ -62,52 +70,84 @@ const MetadataList = ({ metadata, iptcs, getSelection }) => {
   };
 
   return (
-    <Table responsive striped className="statBox">
-      <thead>
-        <tr>
-          <th>
-            <input
-              type="checkbox"
-              onChange={() => selectAll()}
-              value={state.checked}
-            ></input>
-          </th>
-          <th>Estado</th>
-          <th>Valor</th>
-          <th>Tipo</th>
-          <th>Fecha de subida</th>
-          <th>Fecha de Modificaci&oacute;n</th>
-        </tr>
-      </thead>
-      <tbody>
-        {metadata.map((el, key) => (
-          <tr key={el.id}>
-            <td>
+    <Fragment>
+      <ModifyModal
+        op={operation}
+        selected={modify}
+        iptcs={iptcs}
+        open={toggleModify}
+        toggle={() => setToggleModify(!toggleModify)}
+      />
+      <Table responsive striped className="statBox">
+        <thead>
+          <tr>
+            <th>
               <input
                 type="checkbox"
-                checked={state[el.value]}
-                onChange={() => toggleElement(el.value, key)}
+                onChange={() => selectAll()}
+                value={checkAll}
               ></input>
-            </td>
-            <td>
-              {el.approved ? (
-                <span style={{ color: "green" }}>Aprobada{check}</span>
-              ) : (
-                <span style={{ color: "red" }}>No Aprobada</span>
-              )}
-              <br></br>
-              {el.censured ? (
-                <span style={{ color: "red" }}>Censurada</span>
-              ) : null}
-            </td>
-            <td>{el.value}</td>
-            <td>{mapNames(el.metadata)}</td>
-            <td>{new Date(el.created_at).toLocaleDateString("es")}</td>
-            <td>{new Date(el.updated_at).toLocaleDateString("es")}</td>
+            </th>
+            <th>Valor</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>Creada el</th>
+            <th>Ultima actualizaci&oacute;n</th>
+            <th>Acci&oacute;n</th>
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {metadata.map((el, key) => (
+            <tr key={key}>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={state[el.value]}
+                  onChange={() => toggleElement(el.value, key)}
+                ></input>
+              </td>
+              <td>{el.value}</td>
+              <td>{mapNames(el.metadata)}</td>
+              <td style={{ fontSize: "1.2em" }}>
+                {el.approved ? (
+                  <Badge pill color="success">
+                    Aprobada {check}
+                  </Badge>
+                ) : (
+                  <Badge pill color="danger">
+                    No aprobada
+                  </Badge>
+                )}
+              </td>
+              <td>{new Date(el.created_at).toLocaleDateString("es")}</td>
+              <td>{new Date(el.updated_at).toLocaleDateString("es")}</td>
+              <td>
+                <Button
+                  className="action"
+                  onClick={() => {
+                    setToModify([el]);
+                    setOperation("Modificar Selección");
+                    setToggleModify(!toggleModify);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faPencilAlt} />
+                </Button>
+                <Button
+                  className="action"
+                  onClick={() => {
+                    setToModify([el]);
+                    setOperation("Eliminar");
+                    setToggleModify(!toggleModify);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </Fragment>
   );
 };
 

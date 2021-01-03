@@ -1,7 +1,8 @@
 import React from "react";
-import { Button } from "reactstrap";
+import { Button, Badge } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faEye } from "@fortawesome/free-solid-svg-icons";
+
 const check = <FontAwesomeIcon icon={faCheckCircle} />;
 
 /**
@@ -11,7 +12,6 @@ const check = <FontAwesomeIcon icon={faCheckCircle} />;
  * @param {Function} actions how to render actions
  */
 const PhotoRow = ({ request, key, actions, render }) => {
-  
   //It takes only user details
   const userDetails = (req) => {
     let reqCopy = { ...req };
@@ -24,28 +24,33 @@ const PhotoRow = ({ request, key, actions, render }) => {
   };
   return (
     <tr>
-      <td>
-        {request.resolved
-          ? request.approved 
-            ? (
-            <span style={{ color: "green" }}>Aprobada{check}</span>
-            )  : (
-            <span style={{ color: "red" }}>No Aprobada</span>
-            )
-          : <span style={{ color: "red" }}>Sin Resolver</span>}
-      </td>
       <td>{render(userDetails(request))}</td>
       <td>{request.reason}</td>
+      <td style={{ fontSize: "1.2em" }}>
+        {request.resolved ? (
+          <Badge pill color="success">
+            Resuelto {check}
+          </Badge>
+        ) : (
+          <Badge pill color="warning">
+            Pendiente
+          </Badge>
+        )}
+      </td>
       <td>{new Date(request.created_at).toLocaleDateString("es")}</td>
       <td>{new Date(request.updated_at).toLocaleDateString("es")}</td>
       <td>
-        <Button
-          color="danger"
-          disabled={request.resolved}
-          onClick={() => actions(request.id)}
-        >
-          Gestionar
-        </Button>
+        {request.resolved ? (
+          request.approved ? (
+            <b>Aprobada</b>
+          ) : (
+            <b>No Aprobada</b>
+          )
+        ) : (
+          <Button className="action" onClick={() => actions(request.id)}>
+            <FontAwesomeIcon icon={faEye} />
+          </Button>
+        )}
       </td>
     </tr>
   );

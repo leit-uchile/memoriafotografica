@@ -17,6 +17,8 @@ import {
   FormText,
 } from "reactstrap";
 import Spinner from "reactstrap/lib/Spinner";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import { LeitSpinner } from "../../../components/index";
 import { bindActionCreators } from "redux";
 import {
@@ -24,33 +26,34 @@ import {
   selectMetaDataAllTags,
   selectMetaDataCreating,
   selectMetaDataNewIds,
+  selectPhotosOpsCompleted,
+  selectPhotosOpsErrors,
 } from "../../../reducers";
 
 const FilterModal = ({
-  buttonLabel,
   className,
   photoId,
   photoDetails,
   getPhotoDetails,
+  setOps,
   editPhoto,
   tags,
   getTags,
   createMultipleMetas,
   newTagsId,
+  completed,
+  errors,
 }) => {
   const [modal, setModal] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [newphoto, setNewphoto] = useState({});
   const [sending, setSending] = useState(false);
-
-  useEffect(() => {
-    getTags(); //get tags from backend
-  }, [newTagsId]);
 
   const toggle = () => {
     setModal(!modal);
     if (!modal) {
       getPhotoDetails(photoId);
+      getTags(); //get tags from backend
+      setOps(1); //required for change updatedPhoto status and reload Filter
     }
   };
 
@@ -66,8 +69,8 @@ const FilterModal = ({
     delete info.permission;
     delete info.comments;
     delete info.report;
+    delete info.category;
     setNewphoto(info);
-    setLoading(false);
   }, [photoDetails]);
 
   const handleCheckboxChange = (event) => {
@@ -119,17 +122,23 @@ const FilterModal = ({
         console.log("Waiting for new tags ID");
       }
     }
+    // eslint-disable-next-line
   }, [newTagsId]);
 
   const saveChanges = (to_send) => {
     delete to_send.image;
     delete to_send.thumbnail;
-    setSending(!sending);
-    editPhoto(to_send.id, to_send).then((response) => {
-      setSending(!sending);
-      window.location.reload();
-    });
+    setSending(true);
+    editPhoto(to_send.id, to_send);
   };
+
+  useEffect(() => {
+    if (errors.length === 0 && sending) {
+      setSending(false);
+      toggle();
+    }
+    // eslint-disable-next-line
+  }, [completed, errors]);
 
   const additionTag = (tag) => {
     const tagsList = [].concat(newphoto.metadata, tag);
@@ -148,15 +157,16 @@ const FilterModal = ({
 
   return (
     <div>
-      <Button color="danger" onClick={toggle}>
-        {buttonLabel}
+      <Button className="action" onClick={toggle}>
+        <FontAwesomeIcon icon={faPencilAlt} />
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>
-          Curando fotografía: {!loading && !sending ? photoDetails.title : ""}{" "}
+          Curando fotografía:{" "}
+          {photoDetails && !sending ? photoDetails.title : ""}{" "}
         </ModalHeader>
         <ModalBody>
-          {!loading ? (
+          {photoDetails ? (
             <Form>
               <Row style={{ margin: "4px 0px" }}>
                 <Col>
@@ -285,6 +295,8 @@ const mapStateToProps = (state) => ({
   tags: selectMetaDataAllTags(state),
   creating: selectMetaDataCreating(state),
   newTagsId: selectMetaDataNewIds(state),
+  completed: selectPhotosOpsCompleted(state),
+  errors: selectPhotosOpsErrors(state),
 });
 
 const mapActionsToProps = (dispatch) =>
@@ -292,6 +304,7 @@ const mapActionsToProps = (dispatch) =>
     {
       getPhotoDetails: gallery.photos.getPhoto,
       getTags: metadata.tags,
+      setOps: gallery.photos.setNBOps,
       createMultipleMetas: metadata.createMultipleMetas,
     },
     dispatch

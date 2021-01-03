@@ -8,11 +8,7 @@ import { LeitSpinner, Pagination } from "../../../components";
 import { bindActionCreators } from "redux";
 import ReportsTable from "./ReportsTable";
 import FilterOptions from "../FilterOptions";
-import {
-  selectReportReport,
-  selectReportUpdate,
-  selectSiteMiscCuradorLoading,
-} from "../../../reducers";
+import { selectReportReport, selectReportUpdate } from "../../../reducers";
 
 const filters = [
   { display: "Reportes desde", type: "date", name: "createdSince" },
@@ -34,11 +30,10 @@ const filters = [
  * Load reports and call actions to filter them.
  * Manage provided to the table.
  *
- * @param {Boolean} loading
  * @param {Array} reports
  * @param {Function} getReports
  */
-const Reports = ({ loading, reports, getReports, updatedReports }) => {
+const Reports = ({ reports, getReports, updatedReport }) => {
   const [filter, setFilter] = useState({
     createdSince: "",
     createdUntil: "",
@@ -46,9 +41,14 @@ const Reports = ({ loading, reports, getReports, updatedReports }) => {
     resolved: "",
   });
 
-  const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
+  const [pagination, setPagination] = useState({
+    page: 0,
+    page_size: 12,
+    loading: true,
+  });
 
   useEffect(() => {
+    setPagination((pag) => ({ ...pag, loading: true }));
     let url = "&sort=updated_at-desc";
     if (filter.createdSince && filter.createdSince !== "") {
       url = url + `&created_at=${filter.createdSince}`;
@@ -62,8 +62,16 @@ const Reports = ({ loading, reports, getReports, updatedReports }) => {
     if (filter.resolved && filter.resolved !== "") {
       url = url + `&resolved=${filter.resolved}`;
     }
-    getReports("", pagination.page + 1, pagination.page_size, url);
-  }, [filter, pagination, getReports, updatedReports]);
+    getReports("", pagination.page + 1, pagination.page_size, url).then((r) => {
+      setPagination((pag) => ({ ...pag, loading: false }));
+    });
+  }, [
+    filter,
+    pagination.page,
+    pagination.page_size,
+    getReports,
+    updatedReport,
+  ]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
@@ -102,33 +110,44 @@ const Reports = ({ loading, reports, getReports, updatedReports }) => {
           />
         </Col>
       </Row>
-      <Row>
-        <Col>
-          {loading ? <LeitSpinner /> : <ReportsTable reports={reports} />}
-          {reports.count === 0 ? (
-            "No hay reportes disponibles"
+      <div>
+        {!pagination.loading ? (
+          reports.results.length !== 0 ? (
+            <Row>
+              <Col>
+                <ReportsTable reports={reports} />
+              </Col>
+            </Row>
           ) : (
-            <Pagination
-              count={reports.count}
-              page_size={pagination.page_size}
-              page={pagination.page}
-              setStatePage={setPage}
-              size="md"
-              label="reports-pagination"
-              displayFirst
-              displayLast
-            />
-          )}
-        </Col>
-      </Row>
+            "No hay reportes disponibles"
+          )
+        ) : (
+          <Row>
+            <Col style={{ textAlign: "center" }}>
+              <LeitSpinner />
+            </Col>
+          </Row>
+        )}
+        {reports.count !== 0 ? (
+          <Pagination
+            count={reports.count}
+            page_size={pagination.page_size}
+            page={pagination.page}
+            setStatePage={setPage}
+            size="md"
+            label="reports-pagination"
+            displayFirst
+            displayLast
+          />
+        ) : null}
+      </div>
     </Container>
   );
 };
 
 const mapStateToProps = (state) => ({
-  loading: selectSiteMiscCuradorLoading(state),
   reports: selectReportReport(state),
-  updatedReports: selectReportUpdate(state),
+  updatedReport: selectReportUpdate(state),
 });
 
 const mapActionsToProps = (dispatch) =>

@@ -1,16 +1,27 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { Container, Table, Row, Col, ButtonGroup, Button, Input } from "reactstrap";
+import {
+  Container,
+  Table,
+  Row,
+  Col,
+  ButtonGroup,
+  Button,
+  Input,
+} from "reactstrap";
 import PhotoRow from "./PhotoRow";
 import { webadmin } from "../../../../actions";
-import { Pagination } from "../../../../components";
+import { LeitSpinner, Pagination } from "../../../../components";
 import PhotoRequesterModal from "./PhotoRequesterModal";
 import FilterOptions from "../../FilterOptions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { bindActionCreators } from "redux";
-import { selectWebAdminRequests } from "../../../../reducers";
+import {
+  selectWebAdminRequests,
+  selectWebAdminRequestUpdate,
+} from "../../../../reducers";
 import "../../styles.css";
 
 const filters = [
@@ -30,7 +41,13 @@ const filters = [
   },
 ];
 
-const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
+const PhotoTable = ({
+  requests,
+  updatedRequest,
+  getRequests,
+  getPhotosToApprove,
+  active,
+}) => {
   const [searchState, setSearchState] = useState("");
   const [filter, setFilter] = useState({
     createdSince: "",
@@ -38,13 +55,18 @@ const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
     resolved: "",
     approved: "",
   });
-  const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
+  const [pagination, setPagination] = useState({
+    page: 0,
+    page_size: 12,
+    loading: true,
+  });
   const [params, setParams] = useState({
     redirect: false,
     id: "",
   });
 
   useEffect(() => {
+    setPagination((pag) => ({ ...pag, loading: true }));
     let url = "&sort=updated_at-desc";
     if (active) {
       if (filter.createdSince && filter.createdSince !== "") {
@@ -59,16 +81,31 @@ const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
       if (filter.approved.length !== 0) {
         url = url + `&approved=${filter.approved}`;
       }
-      getRequests(searchState, pagination.page + 1, pagination.page_size, url);
+      getRequests(
+        searchState,
+        pagination.page + 1,
+        pagination.page_size,
+        url
+      ).then((r) => {
+        setPagination((pag) => ({ ...pag, loading: false }));
+      });
     }
-  }, [active, filter, searchState, pagination]);
+  }, [
+    active,
+    filter,
+    searchState,
+    pagination.page,
+    pagination.page_size,
+    updatedRequest,
+    getRequests,
+  ]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
   };
 
   const handleRedirect = (id) => {
-    getPhotosToApprove(id); // is it necessary give timeout or useEffect ?
+    getPhotosToApprove(id);
     setParams({
       ...params,
       redirect: true,
@@ -132,61 +169,72 @@ const PhotoTable = ({ requests, getRequests, getPhotosToApprove, active }) => {
           />
         </Col>
       </Row>
-      <Row>
-        <Col>
-          <Table responsive striped className="statBox">
-            <thead>
-              <tr>
-                <th>Estado</th>
-                <th>Solicitante</th>
-                <th>Finalidad</th>
-                <th>Solicitado el</th>
-                <th>&Uacute;ltima actualizaci&oacute;n</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {requests.length !== 0
-                ? requests.results.map((e, k) => (
-                    <PhotoRow
-                      request={e}
-                      key={k}
-                      actions={(id) => handleRedirect(id)}
-                      render={(info) => (
-                        <Fragment>
-                          <PhotoRequesterModal
-                            buttonLabel="Ver detalles"
-                            request={info}
-                          />
-                        </Fragment>
-                      )}
-                    />
-                  ))
-                : null}
-            </tbody>
-          </Table>
-          {requests.count === 0 ? (
-            "No hay solicitudes disponibles"
+      <div>
+        {!pagination.loading ? (
+          requests.results.length !== 0 ? (
+            <Row>
+              <Col>
+                <Table responsive striped className="statBox">
+                  <thead>
+                    <tr>
+                      <th>Solicitante</th>
+                      <th>Finalidad</th>
+                      <th>Estado</th>
+                      <th>Solicitado el</th>
+                      <th>&Uacute;ltima actualizaci&oacute;n</th>
+                      <th>Acci&oacute;n</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {requests.results.map((e, k) => (
+                      <PhotoRow
+                        request={e}
+                        key={k}
+                        actions={(id) => handleRedirect(id)}
+                        render={(info) => (
+                          <Fragment>
+                            <PhotoRequesterModal
+                              buttonLabel="Ver detalles"
+                              request={info}
+                            />
+                          </Fragment>
+                        )}
+                      />
+                    ))}
+                  </tbody>
+                </Table>
+              </Col>
+            </Row>
           ) : (
-            <Pagination
-              count={requests.count}
-              page_size={pagination.page_size}
-              page={pagination.page}
-              setStatePage={setPage}
-              size="md"
-              label="requests-pagination"
-              displayFirst
-              displayLast
-            />
-          )}
-        </Col>
-      </Row>
+            "No hay solicitudes disponibles"
+          )
+        ) : (
+          <Row>
+            <Col style={{ textAlign: "center" }}>
+              <LeitSpinner />
+            </Col>
+          </Row>
+        )}
+        {requests.count !== 0 ? (
+          <Pagination
+            count={requests.count}
+            page_size={pagination.page_size}
+            page={pagination.page}
+            setStatePage={setPage}
+            size="md"
+            label="requests-pagination"
+            displayFirst
+            displayLast
+          />
+        ) : null}
+      </div>
     </Container>
   );
 };
 
 const mapStateToProps = (state) => ({
   requests: selectWebAdminRequests(state),
+  updatedRequest: selectWebAdminRequestUpdate(state),
 });
 
 const mapActionsToProps = (dispatch) =>

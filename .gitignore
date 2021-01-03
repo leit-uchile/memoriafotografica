@@ -43,3 +43,5 @@ static.package-lock.json
 static.yarn.lock
 
 db
+cocola
+cocola.pub

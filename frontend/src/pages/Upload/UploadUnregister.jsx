@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserFriends,
@@ -17,8 +17,22 @@ import {
   Col,
   ButtonGroup,
 } from "reactstrap";
+import ReCAPTCHA from "react-google-recaptcha";
+import { connect } from "react-redux";
+import { webadmin } from "../../actions";
 
-const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
+const UploadUnregister = ({
+  cache,
+  saveInfo,
+  previousStep,
+  nextStep,
+  sendAlert,
+  recaptchaBack,
+  recaptchaState,
+  recaptchaReset,
+}) => {
+  let recaptchaRef;
+
   const [formData, setFormData] = useState(
     cache === {}
       ? {
@@ -57,10 +71,32 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
   const updateGeneration = (e) =>
     setInfo({ ...info, generation: e.target.value });
 
+  //Recaptcha logic
+  useEffect(() => {
+    recaptchaRef.reset();
+    if (recaptchaState.success) {
+      nextStep();
+      return recaptchaReset();
+    }
+  }, [recaptchaState.success]);
+
   const onSubmit = (e) => {
     e.preventDefault();
-    saveInfo({ ...formData, info: { ...info } });
-    nextStep();
+    if (validateCaptcha()) {
+      saveInfo({ ...formData, info: { ...info } });
+      recaptchaBack(recaptchaRef.getValue());
+    } else {
+      sendAlert("Debe rellenar el captcha", "warning");
+    }
+  };
+
+  const validateCaptcha = () => {
+    const recaptchaValue = recaptchaRef.getValue();
+    if (recaptchaValue == null || recaptchaValue == "") {
+      return false;
+    } else {
+      return true;
+    }
   };
 
   return (
@@ -72,15 +108,10 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
           </h2>
         </Col>
       </Row>
-      <Form
-        onSubmit={onSubmit}
-        className="white-box form-container"
-      >
+      <Form onSubmit={onSubmit} className="white-box form-container">
         <div className="form-title">
-          <FontAwesomeIcon
-            icon={faUserFriends}
-          />
-          <Label>{" "}Acerca de la comunidad FCFM</Label>
+          <FontAwesomeIcon icon={faUserFriends} />
+          <Label> Acerca de la comunidad FCFM</Label>
         </div>
         <FormGroup>
           <Label>¿Cuál o cuáles fueron sus roles (o son)?</Label>
@@ -102,33 +133,39 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
               Externo a la comunidad
             </Label>
           </FormGroup>
-          <FormGroup check>
-            <Label check>
-              <Input
-                type="checkbox"
-                name="estudiante"
-                onChange={checkGeneration}
-              />{" "}
-              Estudiante
-            </Label>
-            {formData.student ? (
-              <label>
-                {" "}
-                generación:{" "}
-                <Input
-                  type="Number"
-                  max="3000"
-                  onChange={updateGeneration}
-                  min="1920"
-                  placeholder="1920"
-                />{" "}
-              </label>
-            ) : null}
-          </FormGroup>
+          <Row form>
+            <Col sm={3} form>
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    type="checkbox"
+                    name="estudiante"
+                    onChange={checkGeneration}
+                  />{" "}
+                  Estudiante
+                </Label>{" "}
+              </FormGroup>
+            </Col>
+            <Col form>
+              {formData.student ? (
+                <label>
+                  Generación:{" "}
+                  <Input
+                    type="Number"
+                    max="3000"
+                    onChange={updateGeneration}
+                    min="1920"
+                    placeholder="1920"
+                  />{" "}
+                </label>
+              ) : null}
+            </Col>
+          </Row>
         </FormGroup>
+
         <div className="form-title">
-          <FontAwesomeIcon icon={faEnvelope}/>
-          <Label>{" "}Si necesitamos contactarte</Label>
+          <FontAwesomeIcon icon={faEnvelope} />
+          <Label> Si necesitamos contactarte</Label>
         </div>
         <FormGroup row>
           <Col sm={2}>
@@ -175,6 +212,12 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
             />
           </Col>
         </FormGroup>
+        <ReCAPTCHA
+          sitekey={process.env.REACT_APP_RECAPTCHA_KEY}
+          ref={(el) => {
+            recaptchaRef = el;
+          }}
+        />
         <ButtonGroup style={{ minWidth: "20em" }}>
           <Button onClick={previousStep}>
             <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver
@@ -187,5 +230,13 @@ const UploadUnregister = ({ cache, saveInfo, previousStep, nextStep }) => {
     </Container>
   );
 };
+const mapStateToProps = (state) => ({
+  recaptchaState: state.webadmin.recaptchaState,
+});
 
-export default UploadUnregister;
+const mapActionsToProps = (dispatch) => ({
+  recaptchaBack: (value) => dispatch(webadmin.validateRecaptcha(value)),
+  recaptchaReset: () => dispatch(webadmin.resetValidateRecaptcha()),
+});
+
+export default connect(mapStateToProps, mapActionsToProps)(UploadUnregister);

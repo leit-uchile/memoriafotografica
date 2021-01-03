@@ -8,6 +8,7 @@ import {
   FormGroup,
   Label,
   Col,
+  Spinner,
 } from "reactstrap";
 import { connect } from "react-redux";
 import { gallery } from "../../../actions";
@@ -24,7 +25,6 @@ import "./resolveModal.css";
 import { bindActionCreators } from "redux";
 
 const ResolveModal = ({
-  buttonLabel,
   className,
   report,
   censureContent,
@@ -32,8 +32,9 @@ const ResolveModal = ({
   editReport,
 }) => {
   const [modal, setModal] = useState(false);
+  const [discarting, setDiscarting] = useState(false);
+  const [censuring, setCensuring] = useState(false);
   const [editModal, setEditModal] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [newreport, setNewreport] = useState({});
 
   useEffect(() => {
@@ -42,21 +43,21 @@ const ResolveModal = ({
   }, [report, modal]);
 
   const discardReport = () => {
-    setLoading(!loading);
-    let discardedReport = newreport;
+    let discardedReport = { ...newreport };
     discardedReport.resolved = true;
     discardedReport.resolution_details = "descarted";
+    setDiscarting(true);
     updateReport(discardedReport).then((r) => {
-      setLoading(!loading);
-      //window.location.reload();
+      setDiscarting(false);
+      setModal(!modal);
     });
   };
 
   const censure = () => {
-    setLoading(!loading);
-    censureContent(newreport).then((response) => {
-      setLoading(!loading);
-      //window.location.reload();
+    setCensuring(true);
+    censureContent(newreport).then((r) => {
+      setCensuring(false);
+      setModal(!modal);
     });
   };
 
@@ -87,10 +88,10 @@ const ResolveModal = ({
 
   return (
     <div>
-      <Button color="danger" onClick={setModal}>
-        {buttonLabel}
+      <Button className="action" onClick={setModal}>
+        <FontAwesomeIcon icon={faPencilAlt} />
       </Button>
-      <Modal isOpen={modal} toggle={() => setModal()} size={"lg"}>
+      <Modal isOpen={modal} toggle={() => setModal()} size={"lg"} className={className}>
         <ModalHeader toggle={() => setModal()}>Resolver Reporte</ModalHeader>
         <ModalBody>
           <Form>
@@ -98,41 +99,58 @@ const ResolveModal = ({
               <Label for="delete" sm={3}>
                 Descartar reporte{" "}
               </Label>
-
               <Col sm={9}>
-                <FontAwesomeIcon
-                  icon={faTrashAlt}
-                  onClick={discardReport}
-                  style={{
-                    color: "var(--leit-red)",
-                    cursor: "pointer",
-                    fontSize: "16px",
-                  }}
-                />
+                {discarting ? (
+                  <Spinner
+                    style={{
+                      width: "1rem",
+                      height: "1rem",
+                      color: "var(--leit-red)",
+                    }}
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={faTrashAlt}
+                    onClick={discardReport}
+                    style={{
+                      color: "var(--leit-red)",
+                      cursor: "pointer",
+                      fontSize: "16px",
+                    }}
+                  />
+                )}
               </Col>
             </FormGroup>
             <FormGroup row>
               <Label for="censure" sm={3}>
                 Censurar{" "}
               </Label>
-
               <Col sm={9}>
-                <FontAwesomeIcon
-                  icon={faEye}
-                  onClick={censure}
-                  style={{
-                    color: "var(--leit-red)",
-                    cursor: "pointer",
-                    fontSize: "16px",
-                  }}
-                />
+                {censuring ? (
+                  <Spinner
+                    style={{
+                      width: "1rem",
+                      height: "1rem",
+                      color: "var(--leit-red)",
+                    }}
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={faEye}
+                    onClick={censure}
+                    style={{
+                      color: "var(--leit-red)",
+                      cursor: "pointer",
+                      fontSize: "16px",
+                    }}
+                  />
+                )}
               </Col>
             </FormGroup>
             <FormGroup row>
               <Label for="edit" sm={3}>
                 Editar contenido reportado{" "}
               </Label>
-
               <Col sm={9}>
                 <FontAwesomeIcon
                   icon={faPencilAlt}

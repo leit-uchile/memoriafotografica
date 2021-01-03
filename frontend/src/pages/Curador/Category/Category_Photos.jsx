@@ -29,10 +29,9 @@ import {
   selectCategoriesError,
   selectCategoriesDetails,
   selectCategoriesUpdatePhotos,
-  selectSiteMiscCuradorLoading,
 } from "../../../reducers";
 
-const RemovePhotos = ({ action }) => {
+const RemovePhotos = ({ action, disabled }) => {
   const [modal, setModal] = useState(false);
 
   const toggle = () => {
@@ -41,7 +40,7 @@ const RemovePhotos = ({ action }) => {
 
   return (
     <Fragment>
-      <Button color="secondary" onClick={toggle}>
+      <Button color="secondary" onClick={toggle} disabled={disabled}>
         Remover Fotos
       </Button>
       <Modal
@@ -78,7 +77,6 @@ const RemovePhotos = ({ action }) => {
 const Category_Photos = ({
   photos,
   photo_count,
-  loading,
   catDetails,
   updatedPhotos,
   getPhotosAuth,
@@ -221,8 +219,8 @@ const Category_Photos = ({
           <Button color="primary" onClick={doRedirect}>
             Agregar fotos nuevas <FontAwesomeIcon icon={faExternalLinkAlt} />
           </Button>{" "}
-          <RemovePhotos action={removePhotos} />{" "}
-          {loading ? (
+          <RemovePhotos action={removePhotos} disabled={data.pictures.length === 0}/>{" "}
+          {!photos ? (
             <LeitSpinner />
           ) : (
             <Fragment>
@@ -258,7 +256,6 @@ const Category_Photos = ({
 const mapStateToProps = (state) => ({
   photos: selectPhotos(state),
   photo_count: selectPhotosCount(state),
-  loading: selectSiteMiscCuradorLoading(state),
   catError: selectCategoriesError(state),
   catDetails: selectCategoriesDetails(state),
   updatedPhotos: selectCategoriesUpdatePhotos(state),

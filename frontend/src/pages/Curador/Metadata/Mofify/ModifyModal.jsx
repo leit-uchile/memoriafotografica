@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Col,
   Form,
@@ -10,40 +10,66 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  Spinner,
 } from "reactstrap";
 import { connect } from "react-redux";
 import { metadata } from "../../../../actions";
-import { LeitSpinner } from "../../../../components";
 import { bindActionCreators } from "redux";
-import { selectMetaDataOpsErrors,
-          selectMetaDataOpsCompleted,
-          } from "../../../../reducers"
+import {
+  selectMetaDataOpsErrors,
+  selectMetaDataOpsCompleted,
+} from "../../../../reducers";
 import "./modifyModal.css";
 
 const ModifyModal = ({
-  selected,
+  setOps,
+  open,
+  toggle,
   op,
+  selected,
   iptcs,
-  completed,
-  errors,
   deleteMeta,
   putMeta,
   mergeMeta,
-  doReload,
-  setOps,
-  toggle,
-  open,
+  completed,
+  errors,
 }) => {
-  const [state, setState] = useState({
-    editing: true,
-    done: false,
-    checked: false,
-    value: "",
-    iptc: -1,
-  });
+  const [formData, setData] = useState({});
+  const [sending, setSending] = useState(false);
 
-  const doOp = () => {
-    setState((s) => ({ ...s, editing: false }));
+  // Set defaults if only one element is here
+  useEffect(() => {
+    if (selected.length === 1) {
+      setData({
+        checked: selected[0].approved,
+        value: selected[0].value,
+        iptc: selected[0].metadata,
+      });
+    } else {
+      setData({
+        checked: false,
+        value: "",
+        iptc: 1,
+      });
+    }
+  }, [selected, open]);
+
+  useEffect(() => {
+    if (open) {
+      setOps(selected.length);
+    }
+    // eslint-disable-next-line
+  }, [open]);
+
+  // Set default IPTC id
+  // useEffect(() => {
+  //   if (iptcs.length !== 0) {
+  //     setState((s) => ({ ...s, iptc: iptcs[0].id }));
+  //   }
+  // }, [iptcs]);
+
+  const onSend = () => {
+    setSending(true);
     switch (op) {
       case "Eliminar":
         selected.forEach((element) => {
@@ -53,11 +79,11 @@ const ModifyModal = ({
       case "Modificar Selección":
         selected.forEach((element) => {
           var copy = { ...element };
-          if (state.value !== "") {
-            copy.value = state.value;
+          if (formData.value !== "") {
+            copy.value = formData.value;
           }
-          copy.approved = state.checked;
-          copy.metadata = state.iptc;
+          copy.approved = formData.checked;
+          copy.metadata = formData.iptc;
           putMeta(copy);
         });
         break;
@@ -74,160 +100,102 @@ const ModifyModal = ({
     }
   };
 
-  // Set defaults if only one element is here
   useEffect(() => {
-    if (selected.length === 1) {
-      setState((s) => ({
-        ...s,
-        checked: selected[0].approved,
-        value: selected[0].value,
-        iptc: selected[0].metadata,
-      }));
-    } else {
-      setState((s) => ({
-        ...s,
-        checked: false,
-        value: "",
-        iptc: -1,
-      }));
-    }
-  }, [selected]);
-
-  useEffect(() => {
-    if (!open) {
-      if (state.done) {
-        var d = new Date();
-        doReload(d.getTime());
-      }
-      setState((s) => ({ ...s, editing: true, done: false }));
-    } else {
-      setOps(selected.length);
+    if (errors.length === 0 && sending) {
+      setSending(false);
+      toggle();
     }
     // eslint-disable-next-line
-  }, [open]);
-
-  useEffect(() => {
-    if (completed + errors.length >= selected.length) {
-      setState((s) => ({ ...s, done: true }));
-    }
-    // eslint-disable-next-line
-  }, [completed, errors, selected]);
-
-  // Set default IPTC id
-  useEffect(() => {
-    if (iptcs.length !== 0) {
-      setState((s) => ({ ...s, iptc: iptcs[0].id }));
-    }
-  }, [iptcs]);
+  }, [completed, errors]);
 
   return (
     <Modal isOpen={open} toggle={toggle}>
       <ModalHeader toggle={toggle}>{op}</ModalHeader>
-      {state.editing ? (
-        <Fragment>
-          <ModalBody>
-            {selected.length < 1 ? (
-              "Seleccione al menos un elemento"
-            ) : op === "Eliminar" ? (
-              "Esta operación borrará las etiquetas y eliminará todas las referencias en sus fotos."
-            ) : op === "Modificar Selección" ? (
-              <Form>
-                Los elementos seran sobreescritos
-                {selected.length === 1 ? (
-                  <FormGroup row>
-                    <Label for="valueInput" sm={2}>
-                      Valor
-                    </Label>
-                    <Col sm={10}>
-                      <Input
-                        type="text"
-                        placeholder="valor"
-                        name="valueInput"
-                        value={state.value}
-                        onChange={(e) => {
-                          const target = e.target;
-                          setState((s) => ({ ...s, value: target.value }));
-                        }}
-                      />
-                    </Col>
-                  </FormGroup>
-                ) : null}
-                <FormGroup row>
-                  <Label for="selectIPTC" sm={2}>
-                    IPTC
-                  </Label>
-                  <Col sm={10}>
-                    <Input
-                      type="select"
-                      name="selectIPTC"
-                      onChange={(e) => {
-                        const target = e.target;
-                        setState((s) => ({
-                          ...s,
-                          iptc: Number(
-                            target.options[target.selectedIndex].value
-                          ),
-                        }));
-                      }}
-                    >
-                      {iptcs.map((ip) => (
-                        <option value={ip.id}>{ip.name}</option>
-                      ))}
-                    </Input>
-                  </Col>
-                </FormGroup>
-                <FormGroup check>
-                  <input
-                    type="checkbox"
-                    name="aprobarCheckbox"
-                    checked={state.checked}
-                    onClick={() =>
-                      setState((s) => ({ ...s, checked: !s.checked }))
-                    }
-                    id="approved"
-                    class="toggle-button"
+      <ModalBody>
+        {op === "Eliminar" ? (
+          "Esta operación borrará las etiquetas y eliminará todas las referencias en sus fotos."
+        ) : op === "Modificar Selección" ? (
+          <Form>
+            Los elementos seran sobreescritos
+            {selected.length === 1 ? (
+              <FormGroup row>
+                <Label for="value" sm={2}>
+                  Valor
+                </Label>
+                <Col sm={10}>
+                  <Input
+                    type="text"
+                    placeholder="valor"
+                    name="value"
+                    value={formData.value}
+                    onChange={(e) => {
+                      setData({ ...formData, [e.target.name]: e.target.value });
+                    }}
                   />
-                  <label for="approved">Aprobación</label>
-                </FormGroup>
-              </Form>
-            ) : (
-              <div className="modify-modal-content">
-                Las etiquetas seran ahora y sus fotograf&iacute;as tendran
-                s&oacute;lo esta etiqueta.
-                <b>{selected[0].value}</b>
-              </div>
-            )}
-          </ModalBody>
-          <ModalFooter>
-            {selected.length >= 1 ? (
-              <Button
-                color={op === "Eliminar" ? "danger" : "primary"}
-                onClick={doOp}
-              >
-                Confirmar
-              </Button>
+                </Col>
+              </FormGroup>
             ) : null}
-            <Button color="secondary" onClick={toggle}>
-              Volver
-            </Button>
-          </ModalFooter>
-        </Fragment>
-      ) : state.done ? (
-        errors.length === 0 ? (
-          <ModalBody className="modify-modal-content">
-            Operaci&oacute;n completada
-          </ModalBody>
+            <FormGroup row>
+              <Label for="selectIPTC" sm={2}>
+                IPTC
+              </Label>
+              <Col sm={10}>
+                <Input
+                  type="select"
+                  name="selectIPTC"
+                  value={formData.iptc}
+                  onChange={(e) => {
+                    const target = e.target;
+                    setData({
+                      ...formData,
+                      iptc: Number(target.options[target.selectedIndex].value),
+                    });
+                  }}
+                >
+                  {iptcs.map((ip) => (
+                    <option value={ip.id}>{ip.name}</option>
+                  ))}
+                </Input>
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label for="aproved" sm={2}>
+                Aprobación
+              </Label>
+              <Col sm={10}>
+                <input
+                  type="checkbox"
+                  checked={formData.checked}
+                  onClick={() =>
+                    setData({ ...formData, checked: !formData.checked })
+                  }
+                  id="approved"
+                  class="toggle-button"
+                />
+                <label for="approved"></label>
+              </Col>
+            </FormGroup>
+          </Form>
         ) : (
-          <ModalBody className="modify-modal-content">
-            Algunas operaciones fallaron, reintenta mas tarde.
-          </ModalBody>
-        )
-      ) : (
-        <ModalBody className="modify-modal-content">
-          <LeitSpinner />
-          Enviando petici&oacute;n
-        </ModalBody>
-      )}
+          <div className="modify-modal-content">
+            Las etiquetas ser&aacute;n fusionadas. Sus fotograf&iacute;as
+            tendr&aacute;n la etiqueta:{" "}
+            <b>{selected.length > 0 ? selected[0].value : ""}</b>
+          </div>
+        )}
+      </ModalBody>
+      <ModalFooter>
+        <Button
+          color={op === "Eliminar" ? "danger" : "primary"}
+          onClick={() => onSend()}
+        >
+          {sending ? <Spinner style={{ width: "1rem", height: "1rem" }} /> : ""}{" "}
+          Guardar cambios
+        </Button>
+        <Button color="secondary" onClick={toggle}>
+          Cancelar
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };
@@ -240,10 +208,10 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = (dispatch) =>
   bindActionCreators(
     {
+      setOps: metadata.setNBOps,
       putMeta: metadata.putMetadata,
       deleteMeta: metadata.deleteMetadata,
       mergeMeta: metadata.mergeMetadata,
-      setOps: metadata.setNBOps,
     },
     dispatch
   );

@@ -35,13 +35,14 @@ export const selectPhotosCount = (state) => fromPhotos.selectPhotosCount(state);
 export const selectPhotosDetails = (state) =>
   fromPhotos.selectPhotosDetails(state);
 
-export const selectPhotosError = (state) => fromPhotos.selectPhotosError(state);
+export const selectPhotosOpsCompleted = (state) => 
+  fromPhotos.selectPhotosOpsCompleted(state);
 
-export const selectPhotosUpdatedPhoto = (state) =>
-  fromPhotos.selectPhotosUpdatedPhoto(state);
+export const selectPhotosOpsErrors = (state) => 
+  fromPhotos.selectPhotosOpsErrors(state);
 
-export const selectPhotosRefresh = (state) =>
-  fromPhotos.selectPhotosRefresh(state);
+export const selectPhotosPhotoUpdate = (state) =>
+  fromPhotos.selectPhotosPhotoUpdate(state);
 
 // Categories
 export const selectCats = (state) => fromCategories.selectCats(state);
@@ -58,11 +59,14 @@ export const selectCategoriesDetails = (state) =>
 export const selectCategoriesUpdatePhotos = (state) =>
   fromCategories.selectCategoriesUpdatePhotos(state);
 
+export const selectCategoriesOpsCompleted = (state) =>
+  fromCategories.selectCategoriesOpsCompleted(state);
+
+export const selectCategoriesCatUpdate = (state) =>
+  fromCategories.selectCategoriesCatUpdate(state);
+
 export const selectCategoriesTotal = (state) =>
   fromCategories.selectCategoriesTotal(state);
-
-export const selectNewCategories = (state) =>
-  fromCategories.selectNewCategories(state);
 
 // Albums
 export const selectAlbums = (state) => fromAlbum.selectAlbums(state);
@@ -77,9 +81,12 @@ export const selectAlbumResult = (state) => fromAlbum.selectAlbumResult(state);
 export const selectAlbumCollections = (state) =>
   fromAlbum.selectAlbumCollections(state);
 
-export const selectAlbumEdit = (state) => fromAlbum.selectAlbumEdit(state);
+export const selectAlbumAlbumUpdate = (state) => 
+  fromAlbum.selectAlbumAlbumUpdate(state);
 
-export const selectAlbumDelete = (state) => fromAlbum.selectAlbumDelete(state);
+  export const selectAlbumDelete = (state) => 
+  fromAlbum.selectAlbumDelete(state);
+
 export const selectAlbumCollectionAlbumData = (state) =>
   fromAlbum.selectAlbumCollectionAlbumData(state);
 
@@ -102,6 +109,9 @@ export const selectMetaDataBatch = (state) =>
 export const selectMetaDataOpsCompleted = (state) =>
   fromMetaData.selectMetaDataOpsCompleted(state);
 
+export const selectMetaDataUpdate = (state) =>
+  fromMetaData.selectMetaDataUpdate(state);
+
 export const selectMetaDataOpsErrors = (state) =>
   fromMetaData.selectMetaDataOpsErrors(state);
 
@@ -120,17 +130,8 @@ export const selectMetaDataNewIds = (state) =>
   fromMetaData.selectMetaDataNewIds(state);
 
 //SiteMisc
-export const selectSiteMiscCuradorLoading = (state) =>
-  fromSiteMisc.selectSiteMiscCuradorLoading(state);
-
 export const selectSiteMiscHomeLoading = (state) =>
   fromSiteMisc.selectSiteMiscHomeLoading(state);
-
-export const selectSiteMiscCuradorRefresh = (state) =>
-  fromSiteMisc.selectSiteMiscCuradorRefresh(state);
-
-export const selectSiteMiscMetaDataHelpDiscloure = (state) =>
-  fromSiteMisc.selectSiteMiscMetaDataHelpDiscloure(state);
 
 export const selectSiteMiscSearchMetaIDS = (state) =>
   fromSiteMisc.selectSiteMiscSearchMetaIDS(state);
@@ -157,11 +158,14 @@ export const selectSiteMiscAlerts = (state) =>
 export const selectWebAdminMessages = (state) =>
   fromWebAdmin.selectWebAdminMessages(state);
 
-export const selectWebAdminUpdateMessage = (state) =>
-  fromWebAdmin.selectWebAdminUpdateMessage(state);
+export const selectWebAdminMessageUpdate = (state) =>
+  fromWebAdmin.selectWebAdminMessageUpdate(state);
 
 export const selectWebAdminRequests = (state) =>
   fromWebAdmin.selectWebAdminRequests(state);
+
+  export const selectWebAdminRequestUpdate = (state) =>
+  fromWebAdmin.selectWebAdminRequestUpdate(state);
 
 export const selectWebAdminRequestDetail = (state) =>
   fromWebAdmin.selectWebAdminRequestDetail(state);

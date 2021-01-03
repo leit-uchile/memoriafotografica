@@ -8,13 +8,11 @@ import {
   CREATED_ALBUM,
   CREATED_ALBUM_ERROR,
   DELETED_ALBUM,
-  DELETE_ALBUM_SENT,
   DELETED_ALBUM_ERROR,
   EDITED_ALBUM,
-  EDIT_ALBUM_SENT,
   EDITED_ALBUM_ERROR,
 } from '../types'
-import {setAlert} from "../site_misc"
+import { setAlert } from "../site_misc"
 
 /**
  * Load Albums API with pages
@@ -66,33 +64,28 @@ export const loadAlbumInfo = (id, detailed) => (dispatch) => {
 
 export const createAlbum = formData => (dispatch, getState) => {
   dispatch({ type: CREATE_ALBUM_SENT, data: null });
-
   let header = {
     Authorization: "Token " + getState().user.token,
     "Content-Type": "application/json"
   };
-
-  fetch("/api/albums/", {
+  return fetch("/api/albums/", {
     method: "POST",
     headers: header,
     body: JSON.stringify(formData)
-  })
-    .then(res => {
-      if (res.status === 201) {
+  }).then((response) => {
+    const res = response;
+    if (res.status === 201) {
+      dispatch({ type: CREATED_ALBUM, data: null });
+    } else {
+      dispatch(setAlert("Error al crear album", "warning"));
+      res.json().then(payload => {
         dispatch({
-          type: CREATED_ALBUM,
-          data: null
+          type: CREATED_ALBUM_ERROR,
+          error: payload
         });
-      } else {
-        dispatch(setAlert("Error al crear album", "warning"));
-        res.json().then(payload => {
-          dispatch({
-            type: CREATED_ALBUM_ERROR,
-            error: payload
-          });
-        });
-      }
-    })
+      });
+    }
+  })
     .catch(error => {
       dispatch(setAlert("Error al subir fotografia", "warning"));
       dispatch({
@@ -104,57 +97,52 @@ export const createAlbum = formData => (dispatch, getState) => {
 
 
 export const deleteAlbum = albumId => (dispatch, getState) => {
-  dispatch({ type: DELETE_ALBUM_SENT, data: null })
   let header = {
     Authorization: "Token " + getState().user.token,
     "Content-Type": "application/json"
   };
-  fetch("/api/albums/"+albumId, {
-    method:"DELETE",
+  return fetch("/api/albums/" + albumId, {
+    method: "DELETE",
     headers: header,
-    body:{}
+    body: {}
   }).then(res => {
-    if(res.status === 204){
+    if (res.status === 204) {
       dispatch({
-        type : DELETED_ALBUM,
-        data : null
-      }) 
+        type: DELETED_ALBUM,
+        data: null
+      })
     } else {
       dispatch(setAlert("Error al crear album", "warning"));
-        res.json().then(payload => {
-          dispatch({
-            type: DELETED_ALBUM_ERROR,
-            error: payload
-          });
+      res.json().then(payload => {
+        dispatch({
+          type: DELETED_ALBUM_ERROR,
+          error: payload
         });
+      });
     }
   })
 }
 
-export const editAlbum = (albumId,formData) => (dispatch, getState) => {
-  dispatch({ type: EDIT_ALBUM_SENT, data: null })
+export const editAlbum = (albumId, formData) => (dispatch, getState) => {
   let header = {
     Authorization: "Token " + getState().user.token,
     "Content-Type": "application/json"
   };
-  fetch("/api/albums/"+albumId+"/", {
-    method:"PUT",
+  return fetch("/api/albums/" + albumId + "/", {
+    method: "PUT",
     headers: header,
     body: JSON.stringify(formData)
-  }).then(res => {
-    if(res.status === 200){
-      dispatch({
-        type : EDITED_ALBUM,
-        data : null
-      }) 
+  }).then((response) => {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch(setAlert("Álbum actualizado exitosamente", "success"));
+        dispatch({ type: EDITED_ALBUM, data: data });
+      });
     } else {
-      dispatch(setAlert("Error al crear album", "warning"));
-        res.json().then(payload => {
-          dispatch({
-            type: EDITED_ALBUM_ERROR,
-            error: payload
-          });
-        });
+      dispatch(setAlert("Error actualizando álbum. Intente nuevamente", "warning"));
+      dispatch({ type: EDITED_ALBUM_ERROR, data: r.data });
+      throw r.data;
     }
   })
 }
