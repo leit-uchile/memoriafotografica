@@ -22,6 +22,7 @@ import "./collection.css";
 import { Redirect } from "react-router";
 import { bindActionCreators } from "redux";
 import { selectAlbums } from "../../reducers";
+import PropTypes from "prop-types";
 
 const AllCollections = ({ setRoute, albums, loadCollections }) => {
   const [params, setParams] = useState({
@@ -130,7 +131,7 @@ const AllCollections = ({ setRoute, albums, loadCollections }) => {
               </Row>
             ) : (
               rows.map((r, k) => (
-                <Row key={r.key} style={k === 0 ? {} : { marginTop: "1em" }}>
+                <Row key={k} style={k === 0 ? {} : { marginTop: "1em" }}>
                   <Col>
                     <CardDeck>
                       {r.map((c) => (
@@ -175,6 +176,15 @@ const AllCollections = ({ setRoute, albums, loadCollections }) => {
       </Row>
     </Container>
   );
+};
+
+AllCollections.propTypes = {
+  albums: PropTypes.shape({
+    results: PropTypes.array.isRequired,
+    count: PropTypes.number.isRequired,
+  }).isRequired,
+  setRoute: PropTypes.func.isRequired,
+  loadCollections: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

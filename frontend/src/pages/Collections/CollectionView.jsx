@@ -9,11 +9,13 @@ import Helmet from "react-helmet";
 import Gallery from "react-photo-gallery";
 import { useMediaQuery } from "react-responsive";
 import { CSSTransition } from "react-transition-group";
-import { gallery, site_misc } from "../../actions";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import "./collectionView.css";
+import { gallery } from "../../actions";
 import { selectAlbumsLoading, selectAlbumsData } from "../../reducers";
+import PropTypes from "prop-types";
+
+import "./collectionView.css";
 
 /*
  Helper local rendering functions
@@ -51,17 +53,8 @@ const RenderData = ({ photo, handle }) => (
  * @param {Object} albumData
  * @param {Boolean} loading
  * @param {Function} loadInfo
- * @param {Function} setIndex
- * @param {Function} pushPhotos
  */
-const CollectionView = ({
-  match,
-  albumData,
-  loadInfo,
-  loading,
-  setIndex,
-  pushPhotos,
-}) => {
+const CollectionView = ({ match, albumData, loadInfo, loading }) => {
   // Load album info
   useEffect(() => {
     loadInfo(match.params.id, true);
@@ -99,14 +92,10 @@ const CollectionView = ({
   }, [albumData]);
 
   const handleOnClick = (id) => {
-    console.log(id);
-    setIndex(id);
     setDisplay({ ...display, redirect: id });
   };
 
   if (display.redirect !== false) {
-    // TODO: change this push photos to url use
-    pushPhotos(albumData.pictures);
     return (
       <Redirect
         push
@@ -124,7 +113,7 @@ const CollectionView = ({
     id: el.id,
   }));
 
-  return albumData !== {} ? (
+  return Object.entries(albumData).length !== 0 ? (
     <Container fluid style={{ padding: "0", margin: "0", marginTop: "-2em" }}>
       {loading ? (
         <LeitSpinner />
@@ -148,13 +137,13 @@ const CollectionView = ({
                   disabled={!display.timeline}
                   onClick={() => setDisplay({ ...display, timeline: false })}
                 >
-                  Ver como galeria
+                  Ver como galer&iacute;a
                 </Button>
                 <Button
                   disabled={display.timeline}
                   onClick={() => setDisplay({ ...display, timeline: true })}
                 >
-                  Ver como linea de tiempo
+                  Ver como l&iacute;nea de tiempo
                 </Button>
               </ButtonGroup>
             </Col>
@@ -245,6 +234,16 @@ const CollectionView = ({
   ) : null;
 };
 
+CollectionView.propTypes = {
+  loading: PropTypes.bool.isRequired,
+  albumData: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    pictures: PropTypes.array.isRequired,
+  }).isRequired,
+  loadInfo: PropTypes.func.isRequired,
+};
+
 const mapStateToProps = (state) => ({
   loading: selectAlbumsLoading(state),
   albumData: selectAlbumsData(state),
@@ -254,8 +253,6 @@ const mapActionsToProps = (dispatch) =>
   bindActionCreators(
     {
       loadInfo: gallery.album.loadAlbumInfo,
-      pushPhotos: site_misc.pushPhotoArray,
-      setIndex: site_misc.setSelectedId,
     },
     dispatch
   );
