@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { Button, Row, Col, Container, Badge } from "reactstrap";
+import { Button, Row, Col, Container } from "reactstrap";
 import { user, site_misc, gallery } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
 import CreateAlbumModal from "./CreateAlbumModal";
@@ -10,11 +10,13 @@ import { Helmet } from "react-helmet";
 import Gallery from "react-photo-gallery";
 import { bindActionCreators } from "redux";
 import "../styles.css";
-import {   selectUserPhotos,
-            selectUserData,
-            selectUserPublicUser,
-            selectPhotosPhotoUpdate,
-            selectPhotosRefresh,} from "../../../reducers";
+import {
+  selectUserPhotos,
+  selectUserData,
+  selectUserPublicUser,
+  selectPhotosPhotoUpdate,
+  selectPhotosRefresh,
+} from "../../../reducers";
 
 class UserPhotos extends Component {
   constructor(props) {
@@ -39,10 +41,7 @@ class UserPhotos extends Component {
   }
 
   componentDidUpdate() {
-    if (
-      (this.props.refresh) &&
-      !this.state.modalOpen
-    ) {
+    if (this.props.refresh && !this.state.modalOpen) {
       setTimeout(() => window.location.reload(), 1000);
     }
   }
@@ -154,7 +153,10 @@ class UserPhotos extends Component {
                 isCurator={false}
                 censurePhoto={null}
               />
-              <CreateAlbumModal photosID={this.state.picturesToEdit} isOpen={(bool) => this.setState({modalOpen: bool})}/>
+              <CreateAlbumModal
+                photosID={this.state.picturesToEdit}
+                isOpen={(bool) => this.setState({ modalOpen: bool })}
+              />
             </Col>
           </Row>
         )}

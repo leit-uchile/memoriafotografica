@@ -3,13 +3,12 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import {
   Button,
-  Row,
-  Col,
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
   Label,
+  Col,
   FormGroup,
   Input,
   Form,
@@ -18,15 +17,6 @@ import {
 } from "reactstrap";
 
 import { gallery } from "../../../actions";
-
-const CC_INFO = [
-  { name: "CC BY", text: "Atribución" },
-  { name: "CC BY-SA", text: "Atribución, Compartir Igual" },
-  { name: "CC BY-ND", text: "Atribución, Sin Derivadas" },
-  { name: "CC BY-NC", text: "Atribución, No Comercial" },
-  { name: "CC BY-NC-SA", text: "Atribución, No Comercial, Compartir Igual" },
-  { name: "CC BY-NC-ND", text: "Atribución, No Comercial, Sin Derivadas" },
-];
 
 function CreateAlbumModal(props) {
   const [toggle, setToggle] = useState(false);

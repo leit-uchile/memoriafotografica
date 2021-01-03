@@ -231,6 +231,7 @@ PhotoEditor.propTypes = {
       src: PropTypes.string.isRequired,
     })
   ),
+  getSelection: PropTypes.func.isRequired,
 };
 
 export default PhotoEditor;

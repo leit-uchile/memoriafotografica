@@ -5,6 +5,11 @@ COPY package.json /app/frontend
 COPY .env-cmdrc /app/frontend/.env-cmdrc
 RUN npm install --silent
 RUN npm install env-cmd
+
+# Temporal fix (Static URL not working cuz breaking change on css-loader 3.0)
+# See https://github.com/facebook/create-react-app/issues/9870
+COPY webpack.config.js /app/frontend/node_modules/react-scripts/config/webpack.config.js
+
 COPY . ./
 EXPOSE 3000
 

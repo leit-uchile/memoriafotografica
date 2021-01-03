@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   Container,
   Row,
@@ -17,73 +17,24 @@ import { Pagination } from "../../components";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { site_misc, gallery } from "../../actions";
-import uuid4 from "uuid";
 import "./collection.css";
 import { Redirect } from "react-router";
 import { bindActionCreators } from "redux";
 import { selectAlbums } from "../../reducers";
+import PropTypes from "prop-types";
+import useAlbumList from "./hooks/useAlbumList";
 
 const AllCollections = ({ setRoute, albums, loadCollections }) => {
-  const [params, setParams] = useState({
-    name: "",
-    redirectUrl: false,
-  });
-
-  const [rows, setRows] = useState([]);
-
-  const [page, setPage] = useState({
-    page: 0,
-    page_size: 9,
-  });
-
-  const setDaPage = (p) => setPage((d) => ({ ...d, page: p }));
-
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
-  });
-
-  // Set user info and load the albums accordingly
-  useEffect(() => {
-    setRoute("/collections");
-    let par = "&collections=1";
-    par = params.name !== "" ? par + "&name=" + params.name : par;
-    loadCollections(page.page, page.page_size, par);
-    // eslint-disable-next-line
-  }, [loadCollections, page]);
-
-  useEffect(() => {
-    let list = [];
-    const albumslist = albums.results;
-    for (let index = 0; index < albumslist.length; index = index + 3) {
-      let cols = [];
-      if (albumslist[index]) cols.push(albumslist[index]);
-      if (albumslist[index + 1]) cols.push(albumslist[index + 1]);
-      if (albumslist[index + 2]) cols.push(albumslist[index + 2]);
-      cols.theKey = uuid4();
-      list.push(cols);
-    }
-    setRows(list);
-  }, [albums.results]);
-
-  const formatDate = (d) => {
-    var date = new Date(d);
-    return date.toLocaleString();
-  };
-
-  const setRedirect = (id) => {
-    setParams({
-      ...params,
-      redirectUrl: `/user/public/collections/${id}`,
-    });
-  };
-
-  const onSearch = () => {
-    setDaPage(0);
-  };
+  const [
+    params,
+    setParams,
+    rows,
+    page,
+    setDaPage,
+    formatDate,
+    setRedirect,
+    onSearch,
+  ] = useAlbumList(setRoute, albums, loadCollections);
 
   if (params.redirectUrl) {
     return <Redirect push to={params.redirectUrl} />;
@@ -130,7 +81,7 @@ const AllCollections = ({ setRoute, albums, loadCollections }) => {
               </Row>
             ) : (
               rows.map((r, k) => (
-                <Row key={r.key} style={k === 0 ? {} : { marginTop: "1em" }}>
+                <Row key={k} style={k === 0 ? {} : { marginTop: "1em" }}>
                   <Col>
                     <CardDeck>
                       {r.map((c) => (
@@ -175,6 +126,15 @@ const AllCollections = ({ setRoute, albums, loadCollections }) => {
       </Row>
     </Container>
   );
+};
+
+AllCollections.propTypes = {
+  albums: PropTypes.shape({
+    results: PropTypes.array.isRequired,
+    count: PropTypes.number.isRequired,
+  }).isRequired,
+  setRoute: PropTypes.func.isRequired,
+  loadCollections: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
