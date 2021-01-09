@@ -23,13 +23,11 @@ import { webadmin } from "../../../actions";
 
 const UploadUnregister = ({
   cache,
-  saveInfo,
   previousStep,
   nextStep,
   sendAlert,
-  recaptchaBack,
-  recaptchaState,
-  recaptchaReset,
+  validateFormBackend,
+  answerFormBackend,
 }) => {
   let recaptchaRef;
 
@@ -45,6 +43,7 @@ const UploadUnregister = ({
           email: "",
           name: "",
           lastname: "",
+          recaptchaToken: "",
         }
   );
 
@@ -71,31 +70,27 @@ const UploadUnregister = ({
   const updateGeneration = (e) =>
     setInfo({ ...info, generation: e.target.value });
 
-  //Recaptcha logic
-  useEffect(() => {
-    recaptchaRef.reset();
-    if (recaptchaState.success) {
-      nextStep();
-      return recaptchaReset();
-    }
-  }, [recaptchaState.success]);
-
   const onSubmit = (e) => {
     e.preventDefault();
-    if (validateCaptcha()) {
-      saveInfo({ ...formData, info: { ...info } });
-      recaptchaBack(recaptchaRef.getValue());
+    if (!isCaptchaEmpty()) {
+      const captchaValue = recaptchaRef.getValue();
+      // TODO refactor redux logic to make sense with the changes done in refactored UploadUnregister
+
+      // TODO send the form to backend , make a user and login with that user
+      validateFormBackend({ ...formData, recaptchaToken: captchaValue });
+      recaptchaRef.reset();
+      nextStep();
     } else {
       sendAlert("Debe rellenar el captcha", "warning");
     }
   };
 
-  const validateCaptcha = () => {
+  const isCaptchaEmpty = () => {
     const recaptchaValue = recaptchaRef.getValue();
     if (recaptchaValue == null || recaptchaValue == "") {
-      return false;
-    } else {
       return true;
+    } else {
+      return false;
     }
   };
 
@@ -231,12 +226,11 @@ const UploadUnregister = ({
   );
 };
 const mapStateToProps = (state) => ({
-  recaptchaState: state.webadmin.recaptchaState,
+  answerFormBackend: state.webadmin.recaptchaState,
 });
 
 const mapActionsToProps = (dispatch) => ({
-  recaptchaBack: (value) => dispatch(webadmin.validateRecaptcha(value)),
-  recaptchaReset: () => dispatch(webadmin.resetValidateRecaptcha()),
+  validateFormBackend: (value) => dispatch(webadmin.validateRecaptcha(value)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(UploadUnregister);

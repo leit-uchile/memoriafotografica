@@ -30,7 +30,7 @@ class UploadPage extends Component {
     super(props);
     this.state = {
       userInfo: {}, // For anonymous upload
-      data: {     
+      data: {
         date: "",
         tags: [],
         cc: "",
@@ -78,7 +78,6 @@ class UploadPage extends Component {
           >
             <UnregisteredPrompt />
             <UploadUnregister
-              saveInfo={this.saveUserInfo}
               cache={this.state.userInfo}
               sendAlert={this.props.sendAlert}
             />
