@@ -18,14 +18,14 @@ const active_members = [
       "/assets/profiles/20248254_1604088656270906_1312142107271353514_o.jpg",
     altText: "Foto de perfil Darío Palma",
     caption: "Darío Palma",
-    employment: "Egresado de Doble título e Ingeniería Civil en Computación",
+    employment: "Ingénieur Généraliste ECN e Ingeniero Civil en Computación",
   },
   {
     source:
       "https://avatars1.githubusercontent.com/u/26554728?s=400&u=30a71e6019159edbd3f720b234796319064bef95&v=4",
     altText: "Foto de perfil Darío Cáceres",
     caption: "Darío Cáceres",
-    employment: "Estudiante de Ingeniería Civil en Computación",
+    employment: "Memorista, Ingeniería Civil en Computación",
   },
   {
     source: "/assets/profiles/isaias.jpg",
@@ -37,7 +37,7 @@ const active_members = [
     source: "/assets/profiles/jastorga.png",
     altText: "Foto de perfil José Astorga",
     caption: "José Astorga",
-    employment: "Estudiante de Ingeniería Civil en Computación",
+    employment: "Memorista, Ingeniería Civil en Computación",
   },
   {
     source: "/assets/profiles/photo_2020-10-24_11-41-25.jpg",

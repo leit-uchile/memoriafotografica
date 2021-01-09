@@ -1,6 +1,6 @@
 .stepContainer {
   margin-bottom: 2em;
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
 }
 .stepContainer .card img {
   max-height: 200px;
@@ -36,15 +36,15 @@
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   box-shadow: 0 0 0 0.1rem var(--leit-pink-disabled) !important;
 }
-.form-container .form-control{
+.form-container .form-control {
   margin: 8px 0;
 }
-.form-container button{
+.form-container button {
   margin: 8px 0;
 }
 
 /* Toggle Switch for checkboxes */
-.form-check.center{
+.form-check.center {
   text-align: center;
 }
 
