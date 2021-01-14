@@ -1,15 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  Form,
-  FormGroup,
-  Label,
-  Col,
-  Spinner,
-} from "reactstrap";
+import { Button } from "reactstrap";
 import { connect } from "react-redux";
 import { gallery } from "../../../actions";
 import EditUserModal from "./EditUserModal";
@@ -31,7 +21,6 @@ const ResolveModal = ({
   updateReport,
   editReport,
 }) => {
-  const [modal, setModal] = useState(false);
   const [newreport, setNewreport] = useState({});
   const [editModal, setEditModal] = useState(false);
   const [discarting, setDiscarting] = useState(false);
@@ -40,16 +29,15 @@ const ResolveModal = ({
   useEffect(() => {
     let info = { ...report };
     setNewreport(info);
-  }, [report, modal]);
+  }, [report]);
 
   const discardReport = () => {
     let discardedReport = { ...newreport };
     discardedReport.resolved = true;
-    discardedReport.resolution_details = "descarted";
+    discardedReport.resolution_details = "Reporte descartado";
     setDiscarting(true);
     updateReport(discardedReport).then((r) => {
       setDiscarting(false);
-      setModal(!modal);
     });
   };
 
@@ -57,7 +45,6 @@ const ResolveModal = ({
     setCensuring(true);
     censureContent(newreport).then((r) => {
       setCensuring(false);
-      setModal(!modal);
     });
   };
 

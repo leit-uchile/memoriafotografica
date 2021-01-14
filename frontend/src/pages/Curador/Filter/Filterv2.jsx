@@ -116,7 +116,7 @@ const Filter = ({ photos, photoCount, getPhotosAuth, editPhoto, updatedPhoto }) 
             <Input
               type="text"
               name="search-curador"
-              placeholder="Filtrar por título"
+              placeholder="Filtrar por nombre"
               value={searchState}
               onChange={(e) => {
                 setPagination((p) => ({ ...p, page: 0 }));

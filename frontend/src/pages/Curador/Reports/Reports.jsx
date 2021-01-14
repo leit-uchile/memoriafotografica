@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Input, Button, ButtonGroup } from "reactstrap";
 import { connect } from "react-redux";
 import { gallery } from "../../../actions";

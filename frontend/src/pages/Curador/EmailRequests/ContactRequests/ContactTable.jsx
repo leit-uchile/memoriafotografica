@@ -143,8 +143,6 @@ const ContactTable = ({
               <option value="50">50 por p&aacute;gina</option>
             </Input>
           </ButtonGroup>
-        </Col>
-        <Col sm={6}>
           <ButtonGroup className="mr-auto">
             <Input
               type="text"
