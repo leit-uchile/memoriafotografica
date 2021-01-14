@@ -39,7 +39,6 @@ const Modify = ({ metadata, iptcs, searchMeta, active, updatedMeta }) => {
     page_size: 12,
     loading: true,
   });
-  const [showHelp, setShowHelp] = useState(false);
   const [operation, setOperation] = useState("0");
   const [modal, setModal] = useState(false);
   const [selected, setSelected] = useState([]);
@@ -77,7 +76,7 @@ const Modify = ({ metadata, iptcs, searchMeta, active, updatedMeta }) => {
       <Row style={{ marginBottom: "10px" }}>
         <Col sm={6}>
           <ButtonGroup>
-            <Button onClick={() => setShowHelp(true)}>¿Ayuda?</Button>
+            <Button id="help">¿Ayuda?</Button>
             <Input
               type="select"
               name="selectOp"
@@ -135,25 +134,11 @@ const Modify = ({ metadata, iptcs, searchMeta, active, updatedMeta }) => {
           </ButtonGroup>
         </Col>
       </Row>
-      {showHelp ? (
-        <Fragment>
-          <Row style={{ marginTop: "1em" }}>
-            <HelpMessages messages={messages} />
-          </Row>
-          <Row style={{ marginTop: "1em" }}>
-            <Col sm={{ offset: 3, size: 6 }}>
-              <Button
-                onClick={() => {
-                  setShowHelp(false);
-                }}
-                block
-              >
-                Ya entend&iacute;
-              </Button>
-            </Col>
-          </Row>
-        </Fragment>
-      ) : null}
+      <Row>
+        <Col>
+          <HelpMessages id="#help" messages={messages} />
+        </Col>
+      </Row>
       <div>
         {!pagination.loading ? (
           metadata.results.length !== 0 ? (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Container, Row, Col, Input, Button, ButtonGroup } from "reactstrap";
 import { connect } from "react-redux";
 import { gallery } from "../../../actions";
@@ -9,6 +9,22 @@ import { bindActionCreators } from "redux";
 import ReportsTable from "./ReportsTable";
 import FilterOptions from "../FilterOptions";
 import { selectReportReport, selectReportUpdate } from "../../../reducers";
+import HelpMessages from "../HelpMessages";
+
+const messages = [
+  {
+    action: `Editar`,
+    helpMessage: `Puede modificar el contenido que inflinge las normas. Tras guardar sus cambios el reporte quedará resuelto.`,
+  },
+  {
+    action: `Censurar`,
+    helpMessage: `Al censurar el contenido éste ya no será visible y el reporte quedará resuelto.`,
+  },
+  {
+    action: `Descartar`,
+    helpMessage: `El contenido no será modificado y el reporte quedará resuelto.`,
+  },
+];
 
 const filters = [
   { display: "Reportes desde", type: "date", name: "createdSince" },
@@ -83,8 +99,9 @@ const Reports = ({ reports, getReports, updatedReport }) => {
       <Row style={{ marginBottom: "10px" }}>
         <Col sm={6}>
           <ButtonGroup>
+            <Button id="help">¿Ayuda?</Button>
             <Button disabled>Filtrar</Button>
-            <Button color="primary" id="toggler">
+            <Button color="primary" id="filter">
               <FontAwesomeIcon icon={faFilter} />
             </Button>
             <Input
@@ -103,8 +120,9 @@ const Reports = ({ reports, getReports, updatedReport }) => {
       </Row>
       <Row>
         <Col>
+          <HelpMessages id="#help" messages={messages} />
           <FilterOptions
-            id="#toggler"
+            id="#filter"
             params={filters}
             setState={(name, value) => setFilter({ ...filter, [name]: value })}
           />

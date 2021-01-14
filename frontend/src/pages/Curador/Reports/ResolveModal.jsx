@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import {
   Button,
   Modal,
@@ -17,9 +17,9 @@ import EditPhotosModal from "../../User/PhotoCollection/EditPhotosModal";
 import EditCommentModal from "./EditCommentModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faEye,
-  faTrashAlt,
   faPencilAlt,
+  faEyeSlash,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import "./resolveModal.css";
 import { bindActionCreators } from "redux";
@@ -32,10 +32,10 @@ const ResolveModal = ({
   editReport,
 }) => {
   const [modal, setModal] = useState(false);
+  const [newreport, setNewreport] = useState({});
+  const [editModal, setEditModal] = useState(false);
   const [discarting, setDiscarting] = useState(false);
   const [censuring, setCensuring] = useState(false);
-  const [editModal, setEditModal] = useState(false);
-  const [newreport, setNewreport] = useState({});
 
   useEffect(() => {
     let info = { ...report };
@@ -61,113 +61,41 @@ const ResolveModal = ({
     });
   };
 
-  const editOption =
-    newreport.type === 1 ? (
-      <EditUserModal
-        report={newreport}
-        isOpen={editModal}
-        handleToggle={() => setEditModal(!editModal)}
-        editUser={(newData) => editReport(newreport, newData)}
-      />
-    ) : newreport.type === 2 ? (
-      <EditPhotosModal
-        photosId={[newreport.content_id.id]}
-        isOpen={editModal}
-        handleToggle={() => setEditModal(!editModal)}
-        editPhoto={(photoId, newData) => editReport(newreport, newData)}
-        isCurator={true}
-      />
-    ) : (
-      <EditCommentModal
-        report={newreport}
-        isOpen={editModal}
-        handleToggle={() => setEditModal(!editModal)}
-        editComment={(comment) => editReport(newreport, comment)}
-      />
-    );
-
   return (
-    <div>
-      <Button className="action" onClick={setModal}>
+    <Fragment>
+      {newreport.type === 1 ? (
+        <EditUserModal
+          report={newreport}
+          isOpen={editModal}
+          handleToggle={() => setEditModal(!editModal)}
+          editUser={(newData) => editReport(newreport, newData)}
+        />
+      ) : newreport.type === 2 ? (
+        <EditPhotosModal
+          photosId={[newreport.content_id.id]}
+          isOpen={editModal}
+          handleToggle={() => setEditModal(!editModal)}
+          editPhoto={(photoId, newData) => editReport(newreport, newData)}
+          isCurator={true}
+        />
+      ) : (
+        <EditCommentModal
+          report={newreport}
+          isOpen={editModal}
+          handleToggle={() => setEditModal(!editModal)}
+          editComment={(comment) => editReport(newreport, comment)}
+        />
+      )}
+      <Button className="action" onClick={() => setEditModal(!editModal)}>
         <FontAwesomeIcon icon={faPencilAlt} />
       </Button>
-      <Modal isOpen={modal} toggle={() => setModal()} size={"lg"} className={className}>
-        <ModalHeader toggle={() => setModal()}>Resolver Reporte</ModalHeader>
-        <ModalBody>
-          <Form>
-            <FormGroup row>
-              <Label for="delete" sm={3}>
-                Descartar reporte{" "}
-              </Label>
-              <Col sm={9}>
-                {discarting ? (
-                  <Spinner
-                    style={{
-                      width: "1rem",
-                      height: "1rem",
-                      color: "var(--leit-red)",
-                    }}
-                  />
-                ) : (
-                  <FontAwesomeIcon
-                    icon={faTrashAlt}
-                    onClick={discardReport}
-                    style={{
-                      color: "var(--leit-red)",
-                      cursor: "pointer",
-                      fontSize: "16px",
-                    }}
-                  />
-                )}
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Label for="censure" sm={3}>
-                Censurar{" "}
-              </Label>
-              <Col sm={9}>
-                {censuring ? (
-                  <Spinner
-                    style={{
-                      width: "1rem",
-                      height: "1rem",
-                      color: "var(--leit-red)",
-                    }}
-                  />
-                ) : (
-                  <FontAwesomeIcon
-                    icon={faEye}
-                    onClick={censure}
-                    style={{
-                      color: "var(--leit-red)",
-                      cursor: "pointer",
-                      fontSize: "16px",
-                    }}
-                  />
-                )}
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Label for="edit" sm={3}>
-                Editar contenido reportado{" "}
-              </Label>
-              <Col sm={9}>
-                <FontAwesomeIcon
-                  icon={faPencilAlt}
-                  onClick={() => setEditModal(true)}
-                  style={{
-                    color: "var(--leit-red)",
-                    cursor: "pointer",
-                    fontSize: "16px",
-                  }}
-                />
-              </Col>
-            </FormGroup>
-            {editOption}
-          </Form>
-        </ModalBody>
-      </Modal>
-    </div>
+      <Button className="action" onClick={censure}>
+        <FontAwesomeIcon icon={faEyeSlash} />
+      </Button>
+      <Button className="action" onClick={discardReport}>
+        <FontAwesomeIcon icon={faTrash} />
+      </Button>
+    </Fragment>
   );
 };
 

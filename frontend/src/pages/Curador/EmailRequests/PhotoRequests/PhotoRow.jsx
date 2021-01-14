@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Badge } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle, faEye } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faTasks } from "@fortawesome/free-solid-svg-icons";
 
 const check = <FontAwesomeIcon icon={faCheckCircle} />;
 
@@ -48,7 +48,7 @@ const PhotoRow = ({ request, key, actions, render }) => {
           )
         ) : (
           <Button className="action" onClick={() => actions(request.id)}>
-            <FontAwesomeIcon icon={faEye} />
+            <FontAwesomeIcon icon={faTasks} />
           </Button>
         )}
       </td>
