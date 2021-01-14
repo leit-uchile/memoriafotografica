@@ -4,11 +4,12 @@ import { applyMiddleware, createStore } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { Provider } from "react-redux";
-import { Router } from "react-router";
-import { createMemoryHistory } from "history";
+import { BrowserRouter as Router } from "react-router-dom";
 import rootReducer from "./reducers";
 
 // Reference https://redux.js.org/recipes/writing-tests#connected-components
+// Wrap render with a custom store that we can supply
+// with and initialState
 function render(
   ui,
   {
@@ -28,17 +29,11 @@ function render(
 }
 
 // Reference https://www.rockyourcode.com/test-redirect-with-jest-react-router-and-react-testing-library/
-function renderWithRouter(
-  ui,
-  {
-    route = "/",
-    history = createMemoryHistory({ initialEntries: [route] }),
-    ...renderOptions
-  } = {}
-) {
+// No longer using reference since we use BrowserRouter
+// Wrap with Router the UI so we can use Link, Redirect and query params
+function renderWithRouter(ui, { ...renderOptions } = {}) {
   return {
-    ...render(<Router history={history}>{ui}</Router>, { ...renderOptions }),
-    history,
+    ...render(<Router>{ui}</Router>, { ...renderOptions }),
   };
 }
 
