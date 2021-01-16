@@ -74,8 +74,6 @@ const UploadUnregister = ({
     e.preventDefault();
     if (!isCaptchaEmpty()) {
       const captchaValue = recaptchaRef.getValue();
-      // TODO refactor redux logic to make sense with the changes done in refactored UploadUnregister
-
       // TODO send the form to backend , make a user and login with that user
       validateFormBackend({ ...formData, recaptchaToken: captchaValue });
       recaptchaRef.reset();
@@ -226,11 +224,11 @@ const UploadUnregister = ({
   );
 };
 const mapStateToProps = (state) => ({
-  answerFormBackend: state.webadmin.recaptchaState,
+  answerFormBackend: state.webadmin.guestState,
 });
 
 const mapActionsToProps = (dispatch) => ({
-  validateFormBackend: (value) => dispatch(webadmin.validateRecaptcha(value)),
+  validateFormBackend: (value) => dispatch(webadmin.GuestVerify(value)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(UploadUnregister);

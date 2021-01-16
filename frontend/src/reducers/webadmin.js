@@ -19,9 +19,8 @@ import {
   CONTACTMESSAGE_SWITCH_STATE_ERROR,
   PHOTOREQUEST_RECOVERED,
   PHOTOREQUEST_ERROR,
-  VALIDATE_RECAPTCHA,
-  VALIDATE_RECAPTCHA_ERROR,
-  RESET_RECAPTCHA,
+  GUEST_VERIFY,
+  GUEST_VERIFY_ERROR,
 } from "../actions/types";
 
 const initialState = {
@@ -38,18 +37,16 @@ const initialState = {
   requests: [],
   requestDetail: {},
   updatedRequest: false,
-  recaptchaState: false,
+  guestState: false,
 };
 
 export default function webadmin(state = initialState, action) {
   const { type, data } = action;
   switch (type) {
-    case VALIDATE_RECAPTCHA:
-      return { ...state, recaptchaState: data };
-    case VALIDATE_RECAPTCHA_ERROR:
-      return { ...state, recaptchaState: false };
-    case RESET_RECAPTCHA:
-      return { ...state, recaptchaState: false };
+    case GUEST_VERIFY:
+      return { ...state, guestState: data };
+    case GUEST_VERIFY_ERROR:
+      return { ...state, guestState: false };
     case LANDING_LOADING:
       return { ...state, loading: true };
     case NEWS_RECOVERED:

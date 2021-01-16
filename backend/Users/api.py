@@ -26,21 +26,39 @@ def createHash(id):
 
 
 class GuestVerifyTokenAPI(generics.GenericAPIView):
-    """
-    Check that user email exists in DB, 
-        if user is active respond 403 Forbidden + error message
-        else Recover registerlink for that user
-            if link exists user has already registered but not finished
-            TODO TODO VERY IMPORTANT: else no link, thus get token 
-    If user is new, create, send email, respond with token
-    """
-    serializer_class = ReCaptchaSerializer
-
     allowed_methods = ["POST"]
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
+        formData = request.data.copy()
+        if "recaptchaToken" in formData.keys():
+            tokenRecaptcha = {"recaptcha": formData.pop("recaptchaToken")}
+        else:
+            return Response("No recaptcha token",
+                            status=status.HTTP_400_BAD_REQUEST)
+        recaptchaSer = ReCaptchaSerializer(data=tokenRecaptcha)
+
+        if recaptchaSer.is_valid():
+            """
+            If user email exists in DB, 
+                if user active 
+                    respond 403 Forbidden + error message
+                else 
+                    Recover registerlink for that user
+                if link exists
+                     user has already registered but not finished
+                else 
+                    no link, thus get token 
+            User is new, create, send email, respond with token
+            """
+            doesUserExist = User.objects.filter(
+                email=formData["email"]).exists()
+            if (doesUserExist):
+                return Response({"Error": "Usuario con correo ya existente"},
+                                status=status.HTTP_403_FORBIDDEN)
+
+            serializer = self.serializer_class(data=formData,
+                                               context={'request': request})
+
             return Response({'success': True}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -19,13 +19,12 @@ import {
   CONTACTMESSAGES_ERROR,
   CONTACTMESSAGE_SWITCH_STATE,
   CONTACTMESSAGE_SWITCH_STATE_ERROR,
-  VALIDATE_RECAPTCHA,
-  VALIDATE_RECAPTCHA_ERROR,
-  RESET_RECAPTCHA,
+  GUEST_VERIFY,
+  GUEST_VERIFY_ERROR,
 } from "./types";
 import { setAlert } from "./site_misc";
 
-export const validateRecaptcha = (data) => (dispatch) => {
+export const GuestVerify = (data) => (dispatch) => {
   {
     let header = { "Content-Type": "application/json" };
     fetch("/api/users/guest/", {
@@ -36,17 +35,15 @@ export const validateRecaptcha = (data) => (dispatch) => {
       if (response.status == 200) {
         return response
           .json()
-          .then((data) => dispatch({ type: VALIDATE_RECAPTCHA, data: data }));
+          .then((data) => dispatch({ type: GUEST_VERIFY, data: data }));
       } else {
-        dispatch({ type: VALIDATE_RECAPTCHA_ERROR, data: response.data });
-        throw response.data;
+        response.json().then((data) => {
+          dispatch(setAlert(data["Error"], "warning"));
+          dispatch({ type: GUEST_VERIFY_ERROR, data: data["Error"] });
+        });
       }
     });
   }
-};
-
-export const resetValidateRecaptcha = () => (dispatch) => {
-  dispatch({ type: RESET_RECAPTCHA, data: null });
 };
 
 export const landingLoading = () => (dispatch) =>
