@@ -270,7 +270,7 @@ class AlbumPhotoSerializer(AlbumSerializer):
         depth = 2
 
 
-class TagSuggestionSerializer(serializers.ModelSerializer):
+class TagSuggestionCreateSerializer(serializers.ModelSerializer):
 
     photo = serializers.PrimaryKeyRelatedField(
         queryset=Photo.objects.all(), many=False)
@@ -294,3 +294,19 @@ class TagSuggestionSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         return instance
+
+
+class TagSuggestionMetaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TagSuggestion
+        depth = 1
+        fields = ['metadata', 'votes']
+
+
+class PhotoTagSuggestionSerializer(serializers.ModelSerializer):
+    tagsuggestion_photo = TagSuggestionMetaSerializer(many=True)
+
+    class Meta:
+        model = Photo
+        fields = ['id', 'thumbnail', 'tagsuggestion_photo']
+

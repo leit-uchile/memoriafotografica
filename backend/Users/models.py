@@ -7,7 +7,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.base_user import BaseUserManager
 from .managers import UserManager
-from Gallery.models import Album, Photo, Comment, Reporte
+from Gallery.models import Album, Photo, Comment, Reporte, TagSuggestion
 from datetime import datetime
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -40,6 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     photos = models.ManyToManyField(Photo, blank=True)
     comments = models.ManyToManyField(Comment, blank = True)
     report = models.ManyToManyField(Reporte, blank= True)
+    # tags_suggestions = models.ManyToManyField(TagSuggestion, blank= True)
 
     #TIPO DE USUARIO
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default = 1)

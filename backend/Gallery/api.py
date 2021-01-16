@@ -78,16 +78,17 @@ def filter_photos(photolist, request):
             approved = True
             if request.query_params["approved"] == "false":
                 approved = False
-            photolist = photolist.filter(approved = approved)
+            photolist = photolist.filter(approved=approved)
         if "resolved" in request.query_params:
             resolved = True
             if request.query_params["resolved"] == "false":
                 resolved = False
-            photolist = photolist.filter(resolved = resolved)
+            photolist = photolist.filter(resolved=resolved)
         if "type" in request.query_params:
-            photolist = photolist.filter(type = request.query_params["type"])
+            photolist = photolist.filter(type=request.query_params["type"])
         if "desc" in request.query_params:
-            photolist = photolist.filter(description__icontains = request.query_params["desc"])
+            photolist = photolist.filter(
+                description__icontains=request.query_params["desc"])
         if "taken" in request.query_params:
             photolist = photolist.filter(
                 upload_date__gte=date.fromisoformat(request.query_params["taken"]))
@@ -189,9 +190,11 @@ class PhotoListAPI(generics.GenericAPIView):
             return JsonResponse({"position": position, "page": page, "nextId": next_p, "prevId": prev_p, "total": results})
 
         for aPhoto in serialized_data:
-            if request.user.is_anonymous or request.user.user_type == 1: aPhoto['metadata'] = list(filter(lambda x: check_approval(x), aPhoto['metadata']))
+            if request.user.is_anonymous or request.user.user_type == 1:
+                aPhoto['metadata'] = list(
+                    filter(lambda x: check_approval(x), aPhoto['metadata']))
             ##aPhoto['metadata'] = list(map(lambda x: make_tag(x), aPhoto['metadata']))
-        photos_to_map = list(map(get_user,zip(photo, serialized_data)))
+        photos_to_map = list(map(get_user, zip(photo, serialized_data)))
         return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
     def post(self, request, *args, **kwargs):
@@ -587,14 +590,14 @@ class ReportListAPI(generics.GenericAPIView):
         if request.user:
             if request.user.user_type > 1:
                 report = Reporte.objects.all()
-                report = filter_photos(report,request)
-                report = sort_by_field(report,request)
+                report = filter_photos(report, request)
+                report = sort_by_field(report, request)
                 serializer = ReportSerializer(report, many=True)
                 if "page" in request.query_params and "page_size" in request.query_params:
                     return self.get_paginated_response(self.paginate_queryset(serializer.data))
                 return Response(serializer.data)
-            return Response(status = status.HTTP_401_UNAUTHORIZED)
-        return Response(status = status.HTTP_401_UNAUTHORIZED)
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     def post(self, request, *args, **kwargs):
         serializer = ReportSerializer(data=request.data)
@@ -778,19 +781,19 @@ class CategoryPhotoListAPI(generics.GenericAPIView):
 
 class TagSuggestionAPI(generics.GenericAPIView):
     # permission_classes = (IsAuthenticated | ReadOnly,)
-    serializer_class = TagSuggestionSerializer
+    # serializer_class = TagSuggestionSerializer
     queryset = TagSuggestion.objects.all()
 
     def get(self, request, *args, **kwargs):
 
-        tag_suggestion = TagSuggestion.objects.all()
-        serializer = TagSuggestionSerializer(tag_suggestion, many=True)
+        tag_suggestion = Photo.objects.exclude(
+            tagsuggestion_photo__isnull=True)
+        serializer = PhotoTagSuggestionSerializer(tag_suggestion, many=True)
         serialized_data = serializer.data
         return self.get_paginated_response(self.paginate_queryset(serialized_data))
 
     def post(self, request, *args, **kwargs):
-        print(request.data)
-        serializer = TagSuggestionSerializer(
+        serializer = TagSuggestionCreateSerializer(
             data=request.data, context={'request': request}, many=True)
 
         if serializer.is_valid():
