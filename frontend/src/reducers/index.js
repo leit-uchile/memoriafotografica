@@ -244,3 +244,6 @@ export const selectTagSuggestionsFailed = (state) =>
 
 export const selectTagSuggestionsNewIds = (state) => 
   fromTagSuggestions.selectTagSuggestionsNewIds(state);
+
+export const selectTagSuggestionsRecovered = (state) => 
+  fromTagSuggestions.selectTagSuggestionsRecovered(state);
