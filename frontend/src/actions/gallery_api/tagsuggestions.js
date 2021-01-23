@@ -2,6 +2,7 @@ import {
   CREATED_TAGSUGGESTION,
   CREATING_TAGSUGGESTION,
   CREATED_TAGSUGGESTION_ERROR,
+  LOADING_TAGSUGGESTION,
   RECOVERED_TAGSUGGESTION,
   RECOVERED_TAGSUGGESTION_ERROR,
   EMPTY_TAGSUGGESTION,
@@ -51,12 +52,14 @@ export const getTagSuggestions = () => (dispatch, getState) => {
     Authorization: "Token " + getState().user.token,
   };
 
+  dispatch({ type: LOADING_TAGSUGGESTION });
+
   fetch("/api/tagsuggestion/", {
     method: "GET",
     headers: headers,
   }).then(function (response) {
     const r = response;
-    if (r.status === 201) {
+    if (r.status === 200) {
       r.json().then((data) => {
         if (data.count > 0) {
           dispatch({ type: RECOVERED_TAGSUGGESTION, data: data });

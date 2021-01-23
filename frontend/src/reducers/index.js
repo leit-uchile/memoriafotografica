@@ -6,7 +6,7 @@ import metrics, * as fromMetrics from "./metrics";
 import photos, * as fromPhotos from "./gallery/photos";
 import reports, * as fromReports from "./gallery/reports";
 import site_misc, * as fromSiteMisc from "./site_misc";
-import tagsuggestions, * as fromTagSuggestions from "./gallery/tagsuggestions"
+import tagsuggestions, * as fromTagSuggestions from "./gallery/tagsuggestions";
 import upload, * as fromUpload from "./upload";
 import user, * as fromUser from "./user";
 import webadmin, * as fromWebAdmin from "./webadmin";
@@ -108,7 +108,7 @@ export const selectMetaDataUpdated = (state) =>
   fromMetaData.selectMetaDataUpdated(state);
 
 export const selectMetaDataOpsErrors = (state) =>
-    fromMetaData.selectMetaDataOpsErrors(state);
+  fromMetaData.selectMetaDataOpsErrors(state);
 
 export const selectMetaDataGeneralTagsResult = (state) =>
   fromMetaData.selectMetaDataGeneralTagsResult(state);
@@ -236,14 +236,17 @@ export const selectMetrics = (state) => fromMetrics.selectMetrics(state);
 export const selectUpload = (state) => fromUpload.selectUpload(state);
 
 //TagSuggestions
-export const selectTagSuggestionsCreating = (state) => 
+export const selectTagSuggestionsCreating = (state) =>
   fromTagSuggestions.selectTagSuggestionsCreating(state);
 
-export const selectTagSuggestionsFailed = (state) => 
+export const selectTagSuggestionsFailed = (state) =>
   fromTagSuggestions.selectTagSuggestionsFailed(state);
 
-export const selectTagSuggestionsNewIds = (state) => 
+export const selectTagSuggestionsNewIds = (state) =>
   fromTagSuggestions.selectTagSuggestionsNewIds(state);
 
-export const selectTagSuggestionsRecovered = (state) => 
+export const selectTagSuggestionsRecovered = (state) =>
   fromTagSuggestions.selectTagSuggestionsRecovered(state);
+
+export const selectTagSuggestionsLoading = (state) =>
+  fromTagSuggestions.selectTagSuggestionsLoading(state);

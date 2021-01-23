@@ -182,7 +182,7 @@ const TagSuggestionModal = ({
           {tags.length === 0 ? (
             <span style={{ fontStyle: "italic" }}>No hay tags asociados</span>
           ) : (
-            tags.map((el, index) => (
+            tags.map((el) => (
               <Badge
                 className="tags"
                 key={el.id}
