@@ -780,8 +780,7 @@ class CategoryPhotoListAPI(generics.GenericAPIView):
 
 
 class TagSuggestionAPI(generics.GenericAPIView):
-    # permission_classes = (IsAuthenticated | ReadOnly,)
-    # serializer_class = TagSuggestionSerializer
+    permission_classes = (IsAuthenticated,)
     queryset = TagSuggestion.objects.all()
 
     def get(self, request, *args, **kwargs):
@@ -800,3 +799,26 @@ class TagSuggestionAPI(generics.GenericAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TagSuggestionApproveAPI(generics.GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request, pk, *args, **kwargs):
+
+        tag_suggestion = TagSuggestion.objects.get(pk=pk)        
+        tag = tag_suggestion.metadata
+        photo = tag_suggestion.photo
+        approve = request.data['approve']
+
+
+        if int(approve):
+            photo.metadata.add(tag)
+        tag_suggestion.delete()
+        
+        serializer = PhotoSerializer(photo)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+
+
+

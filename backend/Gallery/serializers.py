@@ -300,7 +300,7 @@ class TagSuggestionMetaSerializer(serializers.ModelSerializer):
     class Meta:
         model = TagSuggestion
         depth = 1
-        fields = ['metadata', 'votes']
+        fields = ['id', 'metadata', 'votes']
 
 
 class PhotoTagSuggestionSerializer(serializers.ModelSerializer):
