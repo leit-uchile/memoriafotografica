@@ -5,7 +5,7 @@ import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
-import rootReducer from "./reducers";
+import rootReducer from "../reducers";
 
 // Reference https://redux.js.org/recipes/writing-tests#connected-components
 // Wrap render with a custom store that we can supply

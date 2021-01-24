@@ -46,7 +46,7 @@ export const getAlbums = (page, page_size, params) => (dispatch) => {
  */
 export const loadAlbumInfo = (id, detailed) => (dispatch) => {
   dispatch({ type: ALBUM_LOADING });
-  return fetch(`/api/albums/${id}/?detailed=${detailed ? "y" : "n"}`).then(
+  return fetch(`/api/albums/${id}?detailed=${detailed ? "y" : "n"}`).then(
     (res) => {
       const response = res;
       if (res.status === 200) {

@@ -25,7 +25,6 @@ import { setAlert } from "../site_misc";
  */
 export const home = (page = 0, pageSize = 200) => (dispatch, getState) => {
   let headers = { "Content-Type": "application/json" };
-
   dispatch({ type: HOME_LOADING, data: null });
   return fetch(`/api/photos/?page=${page + 1}&page_size=${pageSize}`, {
     method: "GET",
@@ -40,7 +39,6 @@ export const home = (page = 0, pageSize = 200) => (dispatch, getState) => {
     } else {
       dispatch({ type: EMPTY_PHOTOS, data: r.data });
       dispatch({ type: HOME_LOADED });
-      throw r.data;
     }
   });
 };
@@ -76,7 +74,6 @@ export const getPhotosAuth = (page = 0, pageSize = 25, search = "") => (
       });
     } else {
       dispatch({ type: EMPTY_PHOTOS, data: r.data });
-      throw r.data;
     }
   });
 };
@@ -119,7 +116,6 @@ export const associateCategory = (photoIds, catId, action = "add") => (
         )
       );
       dispatch({ type: UPDATED_CATEGORY_PHOTOS_ERROR, data: photoIds });
-      throw r.data;
     }
   });
 };

@@ -121,7 +121,7 @@ const CollectionView = ({ match, albumData, loadInfo, loading }) => {
             <Container>
               {isTabletOrMobileDevice
                 ? display.photos.map((photo, i) => (
-                    <Row className="collection-view-element">
+                    <Row className="collection-view-element" key={photo.id}>
                       <Col sm={{ size: 6 }}>
                         <RenderPhoto photo={photo} />
                       </Col>
@@ -135,7 +135,7 @@ const CollectionView = ({ match, albumData, loadInfo, loading }) => {
                   ))
                 : display.photos.map((photo, i) =>
                     i % 2 === 0 ? (
-                      <Row className="collection-view-element">
+                      <Row className="collection-view-element" key={photo.id}>
                         <Col sm={{ size: 6 }}>
                           <RenderData
                             photo={photo}
@@ -147,7 +147,7 @@ const CollectionView = ({ match, albumData, loadInfo, loading }) => {
                         </Col>
                       </Row>
                     ) : (
-                      <Row className="collection-view-element">
+                      <Row className="collection-view-element" key={photo.id}>
                         <Col sm={{ size: 6 }}>
                           {" "}
                           <RenderPhoto photo={photo} />

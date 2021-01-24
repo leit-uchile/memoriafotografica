@@ -39,7 +39,6 @@ export const validateRecaptcha = (valueRecaptcha) => (dispatch) => {
           .then((data) => dispatch({ type: VALIDATE_RECAPTCHA, data: data }));
       } else {
         dispatch({ type: VALIDATE_RECAPTCHA_ERROR, data: response.data });
-        throw response.data;
       }
     });
   }
@@ -60,7 +59,6 @@ export const getNews = (page = 0, page_size = 4, params = "") => (dispatch) => {
         .then((data) => dispatch({ type: NEWS_RECOVERED, data: data }));
     } else {
       dispatch({ type: NEWS_EMPTY, data: r.data });
-      throw r.data;
     }
   });
 };
@@ -74,7 +72,6 @@ export const getCaroussel = () => (dispatch) => {
         .then((data) => dispatch({ type: CAROUSSEL_RECOVERED, data: data }));
     } else {
       dispatch({ type: CAROUSSEL_ERROR, data: r.data });
-      throw r.data;
     }
   });
 };
@@ -161,7 +158,6 @@ export const getRequests = (query, page, page_size, extra) => (
       });
     } else {
       dispatch({ type: PHOTOREQUESTS_ERROR, data: r.data });
-      throw r.data;
     }
   });
 };
@@ -184,7 +180,6 @@ export const getRequest = (id) => (dispatch, getState) => {
       });
     } else {
       dispatch({ type: PHOTOREQUEST_ERROR, data: r.data });
-      throw r.data;
     }
   });
 };
@@ -213,7 +208,6 @@ export const updateRequest = (request) => (dispatch, getState) => {
     } else {
       dispatch(setAlert("Hubo un error al actualizar la solicitud", "warning"));
       dispatch({ type: PHOTOREQUEST_SWITCH_STATE_ERROR, data: r.data });
-      throw r.data;
     }
   });
 };
@@ -243,7 +237,6 @@ export const contactUs = (formData) => {
         } else {
           dispatch(setAlert("Hubo un error al enviar su mensaje", "warning"));
           dispatch({ type: CONTACT_ERROR, data: r.data });
-          throw r.data;
         }
       });
     } else {
@@ -277,7 +270,6 @@ export const getMessages = (query, page, page_size, extra) => (
       });
     } else {
       dispatch({ type: CONTACTMESSAGES_ERROR, data: r.data });
-      throw r.data;
     }
   });
 };
@@ -310,7 +302,6 @@ export const updateMessage = (messageUpdate, formData) => (
     } else {
       dispatch(setAlert("Error actualizando solicitud. Intente nuevamente", "warning"));
       dispatch({ type: CONTACTMESSAGE_SWITCH_STATE_ERROR, data: r.data });
-      throw r.data;
     }
   });
 };
