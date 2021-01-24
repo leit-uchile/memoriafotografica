@@ -16,6 +16,7 @@ import {
 import NewsSlider from "../News/NewsSlider";
 import Gallery from "react-photo-gallery";
 import { bindActionCreators } from "redux";
+import PropTypes from "prop-types"
 import "./landing.css";
 
 const LandingPage = (props) => {
@@ -32,6 +33,7 @@ const LandingPage = (props) => {
     height: el.aspect_h,
     width: el.aspect_w,
     id: el.id,
+    alt: el.title,
   }));
 
   var onClickPhoto = (o) => {
@@ -218,6 +220,26 @@ const LandingPage = (props) => {
     </Fragment>
   );
 };
+
+LandingPage.propTypes = {
+  photos: PropTypes.arrayOf(PropTypes.shape({
+    image: PropTypes.string.isRequired,
+    thumbnail: PropTypes.string.isRequired,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    title: PropTypes.string,
+    aspect_h: PropTypes.number.isRequired,
+    aspect_w: PropTypes.number.isRequired,
+  })).isRequired,
+  collections: PropTypes.arrayOf(PropTypes.shape({
+    description: PropTypes.string,
+    thumbnail: PropTypes.string.isRequired,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    name: PropTypes.string,
+  })).isRequired,
+  loadPhotos: PropTypes.func.isRequired,
+  loadCollections: PropTypes.func.isRequired,
+  setRoute: PropTypes.func.isRequired,
+}
 
 const mapStateToProps = (state) => ({
   photos: selectPhotos(state),

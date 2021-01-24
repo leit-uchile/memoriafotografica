@@ -1,6 +1,6 @@
 import React from "react";
 import "@testing-library/jest-dom";
-import { renderWithRouter, screen } from "../../test-utils";
+import { renderWithRouter, screen } from "../../test/test-utils";
 import Header from "../Layout/Header";
 
 it("renders without crashing", () => {

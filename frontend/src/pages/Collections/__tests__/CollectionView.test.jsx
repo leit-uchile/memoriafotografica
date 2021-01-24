@@ -1,28 +1,9 @@
 import React from "react";
 import "@testing-library/jest-dom";
-import { rest } from "msw";
-import { setupServer } from "msw/node";
 import { Route, Switch } from "react-router-dom";
-import { renderWithRouter, waitFor, screen } from "../../../test-utils";
+import { renderWithRouter, waitFor, screen } from "../../../test/test-utils";
 import userEvent from "@testing-library/user-event";
 import CollectionView from "../CollectionView";
-
-const server = setupServer(
-  rest.get("/api/albums/1/?detailed=y", (req, res, ctx) => {
-    return res(
-      ctx.json({
-        id: 1,
-        name: "title",
-        description: "description",
-        pictures: [],
-      })
-    );
-  })
-);
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
 
 it("renders without crashing", async () => {
   renderWithRouter(

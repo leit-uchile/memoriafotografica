@@ -39,25 +39,25 @@ export const login = (email, password) => {
     return fetch("/api/auth/login/", { headers, body, method: "POST" })
       .then((res) => {
         if (res.status < 500) {
-          return res.json().then((data) => {
-            return { status: res.status, data };
-          });
+          try{
+            return res.json().then((data) => (
+              { status: res.status, data }
+            ));
+          }catch{
+            return { status: res.status, data: res.text };
+          }
         } else {
-          console.log("Server Error!");
-          throw res;
+          dispatch({ type: AUTH_ERROR, data: res.text });
         }
       })
       .then((res) => {
         if (res.status === 200) {
           dispatch({ type: USER_LOADED, data: res.data.user });
           dispatch({ type: LOGIN_SUCCESS, data: res.data.token });
-          return res.data;
         } else if (res.status === 403 || res.status === 401) {
           dispatch({ type: AUTH_ERROR, data: res.data });
-          throw res.data;
         } else {
           dispatch({ type: LOGIN_FAILED, data: res.data });
-          throw res.data;
         }
       });
   };
@@ -91,14 +91,17 @@ export const register = (
             dispatch({ type: REGISTRATION_SUCCESS });
             return { status: res.status };
           } else {
-            return res.json().then((data) => {
-              return { status: res.status, data };
-            });
+            try{
+              return res.json().then((data) => (
+                { status: res.status, data }
+              ));
+            }catch{
+              return { status: res.status, data: res.text };
+            }
           }
         } else {
           console.log("Server Error!");
-          dispatch({ type: REGISTRATION_FAILED, data: res.data });
-          throw res;
+          dispatch({ type: REGISTRATION_FAILED, data: res.text });
         }
       })
       .then((res) => {
@@ -106,10 +109,8 @@ export const register = (
           return;
         } else if (res.status === 403 || res.status === 401) {
           dispatch({ type: AUTH_ERROR, data: res.data });
-          throw res.data;
         } else {
           dispatch({ type: REGISTRATION_FAILED, data: res.data });
-          throw res.data;
         }
       });
   };
@@ -147,7 +148,6 @@ export const getRegisterLink = (code) => (dispatch) => {
       });
     } else {
       dispatch({ type: REGISTRATION_LINK_FAILED, data: r.data });
-      throw r.data;
     }
   });
 };
@@ -171,7 +171,7 @@ export const getUserPhotos = (user_id, page, page_size, extra = "") => (
       });
     } else {
       dispatch({ type: USER_RECOVERED_PHOTO_ERROR, data: r.data });
-      throw r.data;
+
     }
   });
 };
@@ -195,7 +195,7 @@ export const getUserAlbums = (user_id, page, page_size, extra = "") => (
       });
     } else {
       dispatch({ type: USER_RECOVERED_ALBUM_ERROR, data: r.data });
-      throw r.data;
+
     }
   });
 };
@@ -219,7 +219,7 @@ export const getUserComments = (user_id, page, page_size) => (
       });
     } else {
       dispatch({ type: USER_RECOVERED_COMMENTS_ERROR, data: r.data });
-      throw r.data;
+
     }
   });
 };
@@ -299,7 +299,7 @@ export const loadPublicUserPhotos = (user_id, extra = "") => (
     } else {
       dispatch(setAlert("Error cargando fotografías. Intente nuevamente", "warning"));
       dispatch({ type: USER_RECOVERED_PHOTO_ERROR, data: r.data });
-      throw r.data;
+
     }
   });
 }
