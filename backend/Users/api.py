@@ -10,7 +10,7 @@ from .serializers import (CreateUserSerializer, UserSerializer,
                           LoginUserSerializer, UserAlbumSerializer,
                           UserCommentSerializer, UserPhotoSerializer,
                           ChangePasswordSerializer, ReCaptchaSerializer)
-from .models import User, RegisterLink
+from .models import User, RegisterLink, CompletedRegistrationStatus
 from .permissions import *
 from WebAdmin.views import sendEmail
 from rest_framework.documentation import include_docs_urls
@@ -34,33 +34,35 @@ class GuestVerifyTokenAPI(generics.GenericAPIView):
             tokenRecaptcha = {"recaptcha": formData.pop("recaptchaToken")}
         else:
             return Response("No recaptcha token",
-                            status=status.HTTP_400_BAD_REQUEST)
+                           status=status.HTTP_400_BAD_REQUEST)
+        
         recaptchaSer = ReCaptchaSerializer(data=tokenRecaptcha)
-
         if recaptchaSer.is_valid():
-            """
-            If user email exists in DB, 
-                if user active 
-                    respond 403 Forbidden + error message
-                else 
-                    Recover registerlink for that user
-                if link exists
-                     user has already registered but not finished
-                else 
-                    no link, thus get token 
-            User is new, create, send email, respond with token
-            """
-            doesUserExist = User.objects.filter(
-                email=formData["email"]).exists()
-            if (doesUserExist):
-                return Response({"Error": "Usuario con correo ya existente"},
-                                status=status.HTTP_403_FORBIDDEN)
-
-            serializer = self.serializer_class(data=formData,
-                                               context={'request': request})
-
-            return Response({'success': True}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            userExists = User.objects.filter(email=formData['email']).exists()
+            if(not userExists):
+                #TODO registrar visitante como invitado
+                temp = 123
+            else:
+                user = User.objects.get(email=formData['email'])
+                asd = 1
+                if(user.is_active):
+                    #TODO usuario activo: respuesta es anda a logearte
+                    temp= 14141414
+                else:
+                    registrationCompletedExists= CompletedRegistrationStatus.objects.filter(user=user).exists()
+                    if (registrationCompletedExists):
+                        registrationCompletedStatus = CompletedRegistrationStatus.objects.get(user=user)
+                        if (registrationCompletedStatus.status == 1):
+                            # TODO es un usuario inactivo, mandar a activar de nuevo
+                            temp = 123
+                        else:
+                            # TODO es un invitado ofrecer registarse o continuar como invitado
+                            temp = 123
+                    else:
+                        #TODO es un usuario inactivo, mandar a activar de nuevo    
+                        temp = 123123123123
+        else:
+            return Response(recaptchaSer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ReadOnly(BasePermission):
@@ -87,20 +89,14 @@ class RegistrationAPI(generics.GenericAPIView):
         recaptchaSer = ReCaptchaSerializer(data=tokenRecaptcha)
 
         if recaptchaSer.is_valid():
-            """
-            TODO: check if user has already register but hasn't clicked
-            the register link.
-            TODO: check if user has registered as guest
-            """
-
             serializer.is_valid(raise_exception=True)
             user = serializer.save()
             activation_link = RegisterLink(code=createHash(user.pk),
-                                           status=1,
-                                           user=user)
+                                            status=1,
+                                            user=user)
             activation_link.save()
             sendEmail(user.email, "sign_up", "Active su cuenta",
-                      activation_link.code)
+                        activation_link.code)
             return Response(status=status.HTTP_200_OK)
         return Response(recaptchaSer.errors,
                         status=status.HTTP_400_BAD_REQUEST)

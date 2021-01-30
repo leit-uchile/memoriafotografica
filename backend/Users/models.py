@@ -92,3 +92,18 @@ class RegisterLink(models.Model):
         null=True, 
         blank=True
     )
+
+class CompletedRegistrationStatus(models.Model):
+    REGISTRATION_STATES =(
+        (0,'incomplete'),
+        (1,'complete')
+    )
+
+    code = models.CharField(max_length=256)
+    status = models.PositiveSmallIntegerField(choices=REGISTRATION_STATES,default=1)
+    user= models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        null=False, 
+        blank=False)
+    

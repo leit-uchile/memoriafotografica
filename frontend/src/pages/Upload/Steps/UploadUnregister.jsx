@@ -76,6 +76,7 @@ const UploadUnregister = ({
       const captchaValue = recaptchaRef.getValue();
       // TODO send the form to backend , make a user and login with that user
       validateFormBackend({ ...formData, recaptchaToken: captchaValue });
+      // TODO get token from backend
       recaptchaRef.reset();
       nextStep();
     } else {
