@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
-import { Container, Row, Col, Badge } from "reactstrap";
+import { Container, Row, Col, Badge, Button } from "reactstrap";
 import { Redirect } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,12 +10,15 @@ import Gallery from "react-photo-gallery";
 import { LeitSpinner, Pagination } from "../../components";
 import FilterPicker from "./FilterPicker";
 import { bindActionCreators } from "redux";
-import {  selectPhotos, 
-          selectPhotosCount,
-          selectSiteMiscSearchMetaIDS,
-          selectSiteMiscHomeLoading,
-          selectUserToken } from "../../reducers";
+import {
+  selectPhotos,
+  selectPhotosCount,
+  selectSiteMiscSearchMetaIDS,
+  selectSiteMiscHomeLoading,
+  selectUserToken,
+} from "../../reducers";
 import "./home.css";
+import AdvancedSearch from "./AdvancedSearch";
 
 /**
  * Home
@@ -39,6 +42,7 @@ class Home extends Component {
       link: "",
       catIds: [],
       sorting: "",
+      toggle: false,  
     };
 
     // componentWillLoad
@@ -153,15 +157,12 @@ class Home extends Component {
                   )}
                 </div>
               </Col>
-              <Col md="5" lg="3">
-                <FilterPicker
-                  resetHomePagination={this.resetHomePagination}
-                  defaultMaxAllowed={this.state.maxAllowedCategories}
-                  page={this.state.photoPagination.page}
-                  maxPerPage={this.state.photoPagination.maxAllowed}
-                  putInfo={this.putFilterInfo}
-                />
+              <Col>
+                <Button onClick={() => this.setState({toggle: !this.state.toggle})}>Búsqueda Avanzada</Button>
               </Col>
+            </Row>
+            <Row>
+              <AdvancedSearch isToggle={this.state.toggle}/>
             </Row>
           </Container>
         </div>
