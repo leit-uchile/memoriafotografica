@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import AsyncSelect from "react-select/async";
 import {
   Col,
   Container,
@@ -9,22 +10,20 @@ import {
   Input,
   Collapse,
 } from "reactstrap";
-import Select from "react-select";
 
 const AdvancedSearch = ({
-  isToggle, // bool que indica si se muestran las opciones o no
+  isToggle, // boolean that shows if advanced options are displayed
 }) => {
-
-  // TODO: cambiar las opciones a lo que corresponda
-  const options = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
-  ];
+  // API call to fetch category options
+  const options = () =>
+    fetch("/api/categories")
+      .then((r) => (r.status === 200 ? r.json() : null))
+      .then((j) => j.results.map((el) => ({ value: el.id, label: el.title })))
+      .catch((err) => []);
 
   return (
     <Collapse isOpen={isToggle}>
-      <Col sm="12" md={{ size: 6, offset: 3 }}>
+      <Col sm="12" md={{ offset: 10 }}>
         <Form>
           <FormGroup>
             <legend>Por fecha</legend>
@@ -76,10 +75,11 @@ const AdvancedSearch = ({
         <Form>
           <FormGroup>
             Por categoría
-            <Select
-              options={options}
-              placeholder={"Selecciona una o más categorías"}
+            <AsyncSelect
               isMulti
+              cacheOptions
+              defaultOptions
+              loadOptions={options}
             />
           </FormGroup>
         </Form>
