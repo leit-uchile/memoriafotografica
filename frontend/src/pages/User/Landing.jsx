@@ -12,13 +12,25 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet";
 import { bindActionCreators } from "redux";
-import { selectUserPhotos, selectUserComments } from "../../reducers";
+import {
+  selectUserPhotos,
+  selectUserComments,
+  selectUserNotifications,
+} from "../../reducers";
 import Gallery from "react-photo-gallery";
 import { LeitSpinner, Pagination } from "../../components";
 import "./styles.css";
 import Comment from "../PhotoView/Comments/Comment";
 
-const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
+const Landing = ({
+  user,
+  photos,
+  getPhotos,
+  comments,
+  getComments,
+  notifications,
+  getNotifications,
+}) => {
   const [params, setParams] = useState({
     redirect: false,
     url: "",
@@ -30,6 +42,11 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
     loading: true,
   });
   const [pagComments, setPagComments] = useState({
+    page: 0,
+    page_size: 5,
+    loading: true,
+  });
+  const [pagNotifications, setPagNotifications] = useState({
     page: 0,
     page_size: 5,
     loading: true,
@@ -63,6 +80,17 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
       }
     );
   }, [pagComments.page]);
+
+  useEffect(() => {
+    setPagNotifications((pag) => ({ ...pag, loading: true }));
+    getNotifications(
+      user.id,
+      pagNotifications.page + 1,
+      pagNotifications.page_size
+    ).then((r) => {
+      setPagNotifications((pag) => ({ ...pag, loading: false }));
+    });
+  }, [pagNotifications.page]);
 
   if (params.redirect) {
     return <Redirect push to={params.url} />;
@@ -206,7 +234,37 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
               </Container>
               <hr />
               <Container fluid>
-                <p>En construccion</p>
+                <Row>
+                  <Col>
+                    {!pagNotifications.loading ? (
+                      notifications.results.length !== 0 ? (
+                        <Container></Container>
+                      ) : (
+                        "No tienes notificaciones"
+                      )
+                    ) : (
+                      <Row>
+                        <Col style={{ textAlign: "center" }}>
+                          <LeitSpinner />
+                        </Col>
+                      </Row>
+                    )}
+                    {notifications.count !== 0 ? (
+                      <Pagination
+                        count={notifications.count}
+                        page_size={pagNotifications.page_size}
+                        page={pagNotifications.page}
+                        setStatePage={(p) =>
+                          setPagNotifications((pag) => ({ ...pag, page: p }))
+                        }
+                        size="md"
+                        label="notifications"
+                        displayFirst
+                        displayLast
+                      />
+                    ) : null}
+                  </Col>
+                </Row>
               </Container>
             </div>
           </Col>
@@ -232,6 +290,7 @@ const makeIcons = (rol_id) => {
 const mapStateToProps = (state) => ({
   photos: selectUserPhotos(state),
   comments: selectUserComments(state),
+  notifications: selectUserNotifications(state),
   user: state.user.userData,
 });
 
@@ -240,6 +299,7 @@ const mapActionsToProps = (dispatch) =>
     {
       getPhotos: user.getUserPhotos,
       getComments: user.getUserComments,
+      getNotifications: user.getUserNotifications,
     },
     dispatch
   );

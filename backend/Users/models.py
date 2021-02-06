@@ -10,6 +10,13 @@ from .managers import UserManager
 from Gallery.models import Album, Photo, Comment, Reporte
 from datetime import datetime
 
+class Notification(models.Model):
+    title = models.CharField(max_length=30, blank=True)
+    message = models.CharField(max_length=280)
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_at = models.DateTimeField(default=datetime.now)
+    read = models.BooleanField(default=False)
+
 class User(AbstractBaseUser, PermissionsMixin):
     USER_TYPE_CHOICES = (
         (1, 'colaborator'),
@@ -40,6 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     photos = models.ManyToManyField(Photo, blank=True)
     comments = models.ManyToManyField(Comment, blank = True)
     report = models.ManyToManyField(Reporte, blank= True)
+    notifications = models.ManyToManyField(Notification, blank=True)
 
     #TIPO DE USUARIO
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default = 1)

@@ -46,6 +46,7 @@ const EditUserModal = ({
   const onSend = () => {
     let info = { ...formData };
     deletePhoto ? (info.avatar = null) : delete info.avatar;
+    delete info.notifications;
     setSending(true);
     editUser(info).then((r) => {
       setSending(false);

@@ -12,8 +12,10 @@ import {
   USER_RECOVERED_PHOTO,
   USER_RECOVERED_ALBUM,
   USER_RECOVERED_COMMENTS,
+  USER_RECOVERED_NOTIFICATIONS,
   USER_RECOVERED_ALBUM_ERROR,
   USER_RECOVERED_COMMENTS_ERROR,
+  USER_RECOVERED_NOTIFICATIONS_ERROR,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAILED,
   USER_LOADED,
@@ -47,6 +49,10 @@ const baseState = {
     results: [],
     count: 0,
   },
+  notifications: {
+    results: [],
+    count: 0,
+  },
   userData: null,
   publicLoading: false,
   // auth
@@ -76,6 +82,7 @@ const initialState =
         photos: {},
         comments: {},
         albums: {},
+        notifications: {},
         userData: JSON.parse(localStorage.getItem("user")),
         publicLoading: false,
         token: localStorage.getItem("token"),
@@ -166,6 +173,11 @@ export default function user(state = initialState, action) {
         ...state,
         comments: action.data,
       };
+    case USER_RECOVERED_NOTIFICATIONS:
+      return {
+        ...state,
+        notifications: action.data,
+      };
     case USER_RECOVERED_PHOTO_ERROR:
       return {
         ...state,
@@ -182,6 +194,12 @@ export default function user(state = initialState, action) {
       return {
         ...state,
         comments: {},
+        error: action.data,
+      };
+    case USER_RECOVERED_NOTIFICATIONS_ERROR:
+      return {
+        ...state,
+        notifications: {},
         error: action.data,
       };
     case USER_UPDATE_SUCCESS:
@@ -242,6 +260,8 @@ export const selectUserRegisterSucces = (state) => state.user.registerSuccess;
 export const selectUserPhotos = (state) => state.user.photos;
 
 export const selectUserComments = (state) => state.user.comments;
+
+export const selectUserNotifications = (state) => state.user.notifications;
 
 export const selectUserAlbums = (state) => state.user.albums;
 

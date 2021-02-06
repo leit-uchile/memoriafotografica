@@ -21,6 +21,8 @@ import {
   USER_RECOVERED_ALBUM_ERROR,
   USER_RECOVERED_COMMENTS,
   USER_RECOVERED_COMMENTS_ERROR,
+  USER_RECOVERED_NOTIFICATIONS,
+  USER_RECOVERED_NOTIFICATIONS_ERROR,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAILED,
   USER_PASSWORD_UPDATED,
@@ -219,6 +221,30 @@ export const getUserComments = (user_id, page, page_size) => (
       });
     } else {
       dispatch({ type: USER_RECOVERED_COMMENTS_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
+export const getUserNotifications = (user_id, page, page_size) => (
+  dispatch,
+  getState
+) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+  return fetch(
+    `/api/users/notifications/${user_id}/?page=${page}&page_size=${page_size}`,
+    { method: "GET", headers: headers }
+  ).then(function (response) {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch({ type: USER_RECOVERED_NOTIFICATIONS, data: data });
+      });
+    } else {
+      dispatch({ type: USER_RECOVERED_NOTIFICATIONS_ERROR, data: r.data });
       throw r.data;
     }
   });
