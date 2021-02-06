@@ -42,7 +42,7 @@ class Home extends Component {
       link: "",
       catIds: [],
       sorting: "",
-      toggle: false,  
+      toggle: false,
     };
 
     // componentWillLoad
@@ -132,41 +132,28 @@ class Home extends Component {
         <div className="home-gallery-menu">
           <Container>
             <Row>
-              <Col md="7" lg="9">
+              <Col md="7" lg="12">
                 <div className="home-filters-containers">
-                  {filters.length !== 0 ? (
-                    filters.map((el) => (
-                      <Badge
-                        className="tags"
-                        key={el.metaID}
-                        style={{ cursor: "default" }}
-                        pill
-                      >
-                        #{el.value}
-                        <FontAwesomeIcon
-                          icon={faTimesCircle}
-                          style={{ marginLeft: "4px", cursor: "pointer" }}
-                          onClick={() =>
-                            this.props.removeSearch(el.metaID, el.value)
-                          }
-                        />
-                      </Badge>
-                    ))
-                  ) : (
                     <h2> Todas las fotograf&iacute;as</h2>
-                  )}
+                  <Col md={{offset: 7}}>
+                    <Button
+                      onClick={() =>
+                        this.setState({ toggle: !this.state.toggle })
+                      }
+                    >
+                      Búsqueda Avanzada
+                    </Button>
+                  </Col>
                 </div>
               </Col>
-              <Col>
-                <Button onClick={() => this.setState({toggle: !this.state.toggle})}>Búsqueda Avanzada</Button>
-              </Col>
             </Row>
-            <Row>
-              <AdvancedSearch isToggle={this.state.toggle}/>
-            </Row>
+
+              <Row>
+                <AdvancedSearch isToggle={this.state.toggle} />
+              </Row>
           </Container>
         </div>
-        <div className="home-background parallax">
+        <div className="home-background">
           <Container className="home-gallery-container">
             <Row>
               <Col
