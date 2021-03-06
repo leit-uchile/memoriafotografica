@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework import serializers
 from .models import *
 from Gallery.models import Photo
-
+from django.db import IntegrityError
 
 class IPTCKeywordSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,10 +28,16 @@ class MetadataAdminSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        # Default admin serializer to approved
-        m = Metadata.objects.create(value=validated_data["value"], approved=True, metadata=validated_data["metadata"] )
-        #m.metadata.set(validated_data["metadata"])
-        return m
+
+        try:
+            # Default admin serializer to approved
+            m = Metadata.objects.create(value=validated_data["value"], approved=True, metadata=validated_data["metadata"] )
+            #m.metadata.set(validated_data["metadata"])
+            return m
+        
+        except IntegrityError:
+            m = Metadata.objects.get(value=validated_data["value"])
+            return m
 
     def update(self, instance, validated_data):
         instance.value = validated_data.get('value', instance.value)
