@@ -1,8 +1,8 @@
-import React, { Fragment } from "react";
-import { Table } from "reactstrap";
+import React, { useState } from "react";
+import { Badge, Table } from "reactstrap";
 import { Link } from "react-router-dom";
 
-const SuggestionRow = ({ suggestion }) => {
+const SuggestionRow = ({ suggestion, select, selected }) => {
   return (
     <tr>
       <td>
@@ -12,13 +12,48 @@ const SuggestionRow = ({ suggestion }) => {
         </div>
       </td>
 
-      <td></td>
+      <td>
+        {suggestion.tagsuggestion_photo.map((sug) => {
+          let selectStyle;
+
+          if (selected[sug.id]) {
+            selectStyle = {
+              backgroundColor: "var(--leit-pink)",
+              color: "white",
+            };
+          }
+
+          return (
+            <Badge
+              className={`tags`}
+              key={sug.metadata.id}
+              style={selectStyle}
+              onClick={() => select(sug.id)}
+              pill
+            >
+              #{sug.metadata.value}
+            </Badge>
+          );
+        })}
+      </td>
       <td></td>
     </tr>
   );
 };
 
-const SuggestionTable = ({ suggestions }) => {
+const SuggestionTable = ({ suggestions, sugSelected, setSugSelected }) => {
+  const select = (sug) => {
+    let newSuggestion = sugSelected;
+
+    if (sugSelected[sug]) {
+      delete newSuggestion[sug];
+    } else {
+      newSuggestion[sug] = true;
+    }
+    setSugSelected({ ...newSuggestion });
+  };
+  console.log(sugSelected);
+
   return (
     <Table responsive striped>
       <thead>
@@ -30,7 +65,14 @@ const SuggestionTable = ({ suggestions }) => {
       </thead>
       <tbody>
         {suggestions.length !== 0
-          ? suggestions.results.map((r) => <SuggestionRow key={r.id} suggestion={r}/>)
+          ? suggestions.results.map((r) => (
+              <SuggestionRow
+                key={r.id}
+                suggestion={r}
+                select={select}
+                selected={sugSelected}
+              />
+            ))
           : null}
       </tbody>
     </Table>

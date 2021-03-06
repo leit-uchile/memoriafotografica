@@ -1,10 +1,13 @@
 import {
-  CREATED_TAGSUGGESTION,
   CREATING_TAGSUGGESTION,
+  CREATED_TAGSUGGESTION,
   CREATED_TAGSUGGESTION_ERROR,
   LOADING_TAGSUGGESTION,
   RECOVERED_TAGSUGGESTION,
   RECOVERED_TAGSUGGESTION_ERROR,
+  APPROVING_TAGSUGGESTION,
+  APPROVED_TAGSUGGESTION,
+  APPROVED_TAGSUGGESTION_ERROR,
   EMPTY_TAGSUGGESTION,
 } from "../types";
 
@@ -73,4 +76,44 @@ export const getTagSuggestions = () => (dispatch, getState) => {
       );
     }
   });
+};
+
+export const approveTagSuggestions = (tagIds, approve=1) => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+
+  dispatch({ type: APPROVING_TAGSUGGESTION });
+
+  let request = tagIds.map((id, ) =>
+    fetch(`/api/tagsuggestion/approve/${id}/`, {
+      method: "PUT",
+      headers: headers,
+      body: JSON.stringify({"approve": approve})
+    }).then((r) => [r, id])
+  );
+
+  let approved = [];
+  let failed = [];
+
+  Promise.all(request).then((responses) => {
+    for (let response of responses) {
+      console.log(response[0])
+      if (response[0].status === 202) {
+        approved.push(response[1]);
+      } else {
+        failed.push(response[1]);
+      }
+    }
+  });
+
+  if (failed.length > 0) {
+    dispatch({
+      type: APPROVED_TAGSUGGESTION_ERROR,
+      data: { failed, approved },
+    });
+  } else {
+    dispatch({ type: APPROVED_TAGSUGGESTION, data: approved });
+  }
 };

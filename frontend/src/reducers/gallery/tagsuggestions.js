@@ -6,6 +6,9 @@ import {
   RECOVERED_TAGSUGGESTION_ERROR,
   EMPTY_TAGSUGGESTION,
   LOADING_TAGSUGGESTION,
+  APPROVING_TAGSUGGESTION,
+  APPROVED_TAGSUGGESTION,
+  APPROVED_TAGSUGGESTION_ERROR,
 } from "../../actions/types";
 
 const initialState = {
@@ -14,6 +17,9 @@ const initialState = {
   creating: false,
   failed: false,
   tags_suggestions: [],
+  approving: false,
+  approved: false,
+  approved_fail_ids: [],
 };
 
 export default function tagsuggestions(state = initialState, action) {
@@ -72,6 +78,29 @@ export default function tagsuggestions(state = initialState, action) {
         failed: false,
         tags_suggestions: [],
       };
+
+    case APPROVING_TAGSUGGESTION:
+      return {
+        ...state,
+        approving: true,
+        approved: false,
+        approved_fail_ids: [],
+      };
+    case APPROVED_TAGSUGGESTION:
+      return {
+        ...state,
+        approving: false,
+        approved: true,
+        approved_fail_ids: [],
+      };
+    case APPROVED_TAGSUGGESTION_ERROR:
+      return {
+        ...state,
+        approving: false,
+        approved: false,
+        approved_fail_ids: data.failed,
+      };
+
     default:
       return state;
   }
@@ -91,3 +120,12 @@ export const selectTagSuggestionsNewIds = (state) =>
 
 export const selectTagSuggestionsRecovered = (state) =>
   state.tagsuggestions.tags_suggestions;
+
+export const selectTagSuggestionsApproving = (state) =>
+  state.tagsuggestions.approving;
+
+export const selectTagSuggestionsApproved = (state) =>
+  state.tagsuggestions.approved;
+
+export const selectTagSuggestionsApproveFailIds = (state) =>
+  state.tagsuggestions.approved_fail_ids;

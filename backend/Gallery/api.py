@@ -806,19 +806,19 @@ class TagSuggestionApproveAPI(generics.GenericAPIView):
 
     def put(self, request, pk, *args, **kwargs):
 
-        tag_suggestion = TagSuggestion.objects.get(pk=pk)        
+        try:
+            tag_suggestion = TagSuggestion.objects.get(pk=pk)
+        except Exception:
+            return Response({"id": pk}, status=status.HTTP_404_NOT_FOUND)
+        
         tag = tag_suggestion.metadata
         photo = tag_suggestion.photo
-        approve = request.data['approve']
+        approve = int(request.data['approve'])
 
-
-        if int(approve):
+        if approve:
             photo.metadata.add(tag)
+            photo.save()
+
         tag_suggestion.delete()
         
-        serializer = PhotoSerializer(photo)
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-
-
-
-
+        return Response({"id": pk}, status=status.HTTP_202_ACCEPTED)

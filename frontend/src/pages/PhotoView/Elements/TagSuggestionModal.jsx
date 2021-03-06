@@ -71,9 +71,9 @@ const TagSuggestionModal = ({
     ) {
       console.log(metadataCreation.newIds);
 
-      let newMetaIds = metadataCreation.newIds[
-        metadataCreation.newIds.length - 1
-      ].map((tag) => tag.id);
+      let newMetaIds = metadataCreation.newIds.map((tag) => tag.id);
+
+      console.log(newMetaIds);
 
       formData.tags.forEach((tag) => {
         metadata[tag.name] = { ...tag };

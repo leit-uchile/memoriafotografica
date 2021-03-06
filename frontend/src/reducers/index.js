@@ -250,3 +250,12 @@ export const selectTagSuggestionsRecovered = (state) =>
 
 export const selectTagSuggestionsLoading = (state) =>
   fromTagSuggestions.selectTagSuggestionsLoading(state);
+
+export const selectTagSuggestionsApproving = (state) =>
+  fromTagSuggestions.selectTagSuggestionsApproving(state);
+
+export const selectTagSuggestionsApproved = (state) =>
+  fromTagSuggestions.selectTagSuggestionsApproved(state);
+
+export const selectTagSuggestionsApproveFailIds = (state) =>
+  fromTagSuggestions.selectTagSuggestionsApproveFailIds(state);
