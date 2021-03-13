@@ -16,6 +16,7 @@ import {
   Row,
   Col,
   ButtonGroup,
+  Alert,
 } from "reactstrap";
 import ReCAPTCHA from "react-google-recaptcha";
 import { connect } from "react-redux";
@@ -47,41 +48,36 @@ const UploadUnregister = ({
         }
   );
 
-  const [info, setInfo] = useState(
-    cache === null
-      ? { ...cache.info }
-      : {
-          estudiante: false,
-          generation: "",
-        }
-  );
-
   const updateForm = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const updateInfo = (e) =>
-    setInfo({ ...info, [e.target.name]: e.target.checked });
-
-  const checkGeneration = (e) => {
-    setFormData({ ...formData, student: e.target.checked });
-    setInfo({ ...info, estudiante: e.target.checked });
+  const updateInfo = (e) => {
+    if (e.target.id === "Alumno" && e.target.checked) {
+      setFormData({ ...formData, student: true, rol: e.target.value });
+    } else {
+      setFormData({ ...formData, student: false, rol: e.target.value });
+    }
   };
 
-  const updateGeneration = (e) =>
-    setInfo({ ...info, generation: e.target.value });
+  const [captchaError, setCaptchaError] = useState(false);
+  const [rolError, setRolError] = useState(false);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (!isCaptchaEmpty()) {
+    setErrorMessages();
+    if (!captchaError && !rolError) {
       const captchaValue = recaptchaRef.getValue();
       // TODO send the form to backend , make a user and login with that user
       validateFormBackend({ ...formData, recaptchaToken: captchaValue });
       // TODO get token from backend
       recaptchaRef.reset();
       nextStep();
-    } else {
-      sendAlert("Debe rellenar el captcha", "warning");
     }
+  };
+
+  const setErrorMessages = () => {
+    isCaptchaEmpty ? setCaptchaError(true) : setCaptchaError(false);
+    formData.rol === "" ? setRolError(true) : setRolError(false);
   };
 
   const isCaptchaEmpty = () => {
@@ -93,6 +89,7 @@ const UploadUnregister = ({
     }
   };
 
+  console.log(formData);
   return (
     <Container>
       <Row>
@@ -107,56 +104,78 @@ const UploadUnregister = ({
           <FontAwesomeIcon icon={faUserFriends} />
           <Label> Acerca de la comunidad FCFM</Label>
         </div>
-        <FormGroup>
-          <Label>¿Cuál o cuáles fueron sus roles (o son)?</Label>
+        <FormGroup tag="fieldset">
+          <Label>¿Cuál es/fue su rol?</Label>
           <FormGroup check>
-            <Label check>
-              <Input type="checkbox" name="academico" onChange={updateInfo} />{" "}
+            <Input
+              id="Alumno"
+              type="radio"
+              name="rol"
+              onChange={updateInfo}
+              value = {1}
+            />
+            <Label check for="Alumno">
+              Alumno
+            </Label>
+          </FormGroup>
+          <FormGroup check>
+            <Input
+              id="Ex-alumno"
+              type="radio"
+              name="rol"
+              onChange={updateInfo}
+              value = {2}
+            />
+            <Label check for="Ex-alumno">
+              Ex-Alumno
+            </Label>
+          </FormGroup>
+          <FormGroup check>
+            <Input
+              id="Académico"
+              type="radio"
+              name="rol"
+              onChange={updateInfo}
+              value = {3}
+            />
+            <Label check for="Académico">
               Académico
             </Label>
           </FormGroup>
           <FormGroup check>
-            <Label check>
-              <Input type="checkbox" name="funcionario" onChange={updateInfo} />{" "}
+            <Input
+              id="Ex-Académico"
+              type="radio"
+              name="rol"
+              onChange={updateInfo}
+              value = {4}
+            />
+            <Label check for="Ex-Académico">
+              Ex-Académico
+            </Label>
+          </FormGroup>
+          <FormGroup check>
+            <Input
+              type="radio"
+              name="rol"
+              id="Funcionario"
+              onChange={updateInfo}
+              value = {5}
+            />
+            <Label check for="Funcionario">
               Funcionario
             </Label>
           </FormGroup>
           <FormGroup check>
-            <Label check>
-              <Input type="checkbox" name="externo" onChange={updateInfo} />{" "}
+            <Input type="radio" name="rol" id="Externo" onChange={updateInfo} value= {6}/>
+            <Label check for="Externo">
               Externo a la comunidad
             </Label>
           </FormGroup>
-          <Row form>
-            <Col sm={3} form>
-              <FormGroup check>
-                <Label check>
-                  <Input
-                    type="checkbox"
-                    name="estudiante"
-                    onChange={checkGeneration}
-                  />{" "}
-                  Estudiante
-                </Label>{" "}
-              </FormGroup>
-            </Col>
-            <Col form>
-              {formData.student ? (
-                <label>
-                  Generación:{" "}
-                  <Input
-                    type="Number"
-                    max="3000"
-                    onChange={updateGeneration}
-                    min="1920"
-                    placeholder="1920"
-                  />{" "}
-                </label>
-              ) : null}
-            </Col>
-          </Row>
         </FormGroup>
-
+        <Alert color="info" isOpen={rolError} toggle={() => setRolError(false)}>
+          Debe seleccionar un rol
+        </Alert>
         <div className="form-title">
           <FontAwesomeIcon icon={faEnvelope} />
           <Label> Si necesitamos contactarte</Label>
@@ -212,6 +231,13 @@ const UploadUnregister = ({
             recaptchaRef = el;
           }}
         />
+        <Alert
+          color="info"
+          isOpen={captchaError}
+          toggle={() => setCaptchaError(false)}
+        >
+          Debe rellenar el captcha
+        </Alert>
         <ButtonGroup style={{ minWidth: "20em" }}>
           <Button onClick={previousStep}>
             <FontAwesomeIcon icon={faChevronCircleLeft} /> Volver

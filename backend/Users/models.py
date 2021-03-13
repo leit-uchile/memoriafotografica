@@ -31,6 +31,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     birth_date = models.DateField(_('birth date'))
     date_joined = models.DateTimeField(_('date joined'),auto_now_add=True)
     is_active = models.BooleanField(_('active'), default=True)      #Habilitado
+    completed_registration = models.BooleanField(_('completed_registration'), default=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     deleted = models.BooleanField(_('deleted'), default = False)    #Eliminado
     generation = models.CharField(_('generation'), max_length = 5, blank = True)
@@ -92,18 +93,3 @@ class RegisterLink(models.Model):
         null=True, 
         blank=True
     )
-
-class CompletedRegistrationStatus(models.Model):
-    REGISTRATION_STATES =(
-        (0,'incomplete'),
-        (1,'complete')
-    )
-
-    code = models.CharField(max_length=256)
-    status = models.PositiveSmallIntegerField(choices=REGISTRATION_STATES,default=1)
-    user= models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        null=False, 
-        blank=False)
-    

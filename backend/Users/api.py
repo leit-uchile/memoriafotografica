@@ -10,7 +10,7 @@ from .serializers import (CreateUserSerializer, UserSerializer,
                           LoginUserSerializer, UserAlbumSerializer,
                           UserCommentSerializer, UserPhotoSerializer,
                           ChangePasswordSerializer, ReCaptchaSerializer)
-from .models import User, RegisterLink, CompletedRegistrationStatus
+from .models import User, RegisterLink
 from .permissions import *
 from WebAdmin.views import sendEmail
 from rest_framework.documentation import include_docs_urls
@@ -18,6 +18,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_condition import ConditionalPermission, C, And, Or, Not
 from django.http import Http404
+from datetime import datetime
 
 
 def createHash(id):
@@ -25,7 +26,7 @@ def createHash(id):
     return str(hashlib.sha256(integer).hexdigest())
 
 
-class GuestVerifyTokenAPI(generics.GenericAPIView):
+class RegisterGuest(generics.GenericAPIView):
     allowed_methods = ["POST"]
 
     def post(self, request, *args, **kwargs):
@@ -33,34 +34,41 @@ class GuestVerifyTokenAPI(generics.GenericAPIView):
         if "recaptchaToken" in formData.keys():
             tokenRecaptcha = {"recaptcha": formData.pop("recaptchaToken")}
         else:
-            return Response("No recaptcha token",
-                           status=status.HTTP_400_BAD_REQUEST)
+            return Response('No recaptchaToken',
+                           status=status.HTTP_401_UNAUTHORIZED)
         
         recaptchaSer = ReCaptchaSerializer(data=tokenRecaptcha)
         if recaptchaSer.is_valid():
             userExists = User.objects.filter(email=formData['email']).exists()
             if(not userExists):
-                #TODO registrar visitante como invitado
-                temp = 123
+                newGuest = User(
+                    email=formData['email'],
+                    first_name= formData['name'],
+                    last_name = formData['lastname'],
+                    birth_date=datetime.today().strftime('%Y-%m-%d'),
+                    rol_type = formData['rol'],
+                    is_active= False,
+                    completed_registration = False
+                )
+                newGuest.save()
+                # TODO crearle el link de registro.
+                # TODO Enviarle un correo que termine el registro y active (es correo distinto al previo debe redirigir a otra vista)
+                #TODO RETORNAR TOKEN
             else:
                 user = User.objects.get(email=formData['email'])
-                asd = 1
                 if(user.is_active):
                     #TODO usuario activo: respuesta es anda a logearte
+                    # TODO Vista: Es usuario  te vamos a redirigir a login
                     temp= 14141414
                 else:
-                    registrationCompletedExists= CompletedRegistrationStatus.objects.filter(user=user).exists()
-                    if (registrationCompletedExists):
-                        registrationCompletedStatus = CompletedRegistrationStatus.objects.get(user=user)
-                        if (registrationCompletedStatus.status == 1):
-                            # TODO es un usuario inactivo, mandar a activar de nuevo
-                            temp = 123
-                        else:
-                            # TODO es un invitado ofrecer registarse o continuar como invitado
-                            temp = 123
+                    if (user.completed_registration):
+                        # TODO es un usuario inactivo, y registro completo . Mandar a activarloms
+                        # TODO Vista: Ya tenemos una cuenta asociada a tu correo, te hemos enviado correo para activarte.
+                        temp = 123
                     else:
-                        #TODO es un usuario inactivo, mandar a activar de nuevo    
-                        temp = 123123123123
+                        # TODO es un invitado ofrecer registarse o continuar como invitado ?
+                        # TODO registrar( LO MANDO ACTUALIZAR PASS?), marcar como registro completo y enviar activacion.
+                        temp = 123
         else:
             return Response(recaptchaSer.errors, status=status.HTTP_400_BAD_REQUEST)
 
