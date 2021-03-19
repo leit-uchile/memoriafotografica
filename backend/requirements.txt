@@ -1,4 +1,4 @@
-Django==2.2.13
+Django==2.2.18
 djangorestframework==3.9.1
 django-rest-knox==3.1.4
 django-rest-passwordreset==1.1.0
