@@ -73,7 +73,7 @@ const SuggestionTable = ({ suggestions, sugSelected, setSugSelected }) => {
                 selected={sugSelected}
               />
             ))
-          : null}
+          : <div/> }
       </tbody>
     </Table>
   );

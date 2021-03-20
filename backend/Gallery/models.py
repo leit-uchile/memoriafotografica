@@ -172,3 +172,6 @@ class TagSuggestion(models.Model):
     votes = models.IntegerField(default=1)
     resolved = models.BooleanField(default=False)
     resolution = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "TagSuggestion [Photo id: " + str(self.photo.id) + " - Value: " + self.metadata.value + " - Votes: " + str(self.votes) + "]"

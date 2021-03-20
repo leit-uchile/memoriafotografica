@@ -6,6 +6,7 @@ import {
   selectTagSuggestionsApproving,
   selectTagSuggestionsApproved,
   selectTagSuggestionsApproveFailIds,
+  selectTagSuggestionsFailed
 } from "../../../../reducers";
 import { gallery } from "../../../../actions";
 import PropTypes from "prop-types";
@@ -26,11 +27,9 @@ const Suggestions = ({
   approving,
   approved,
   approveFailIds,
+  failed
 }) => {
-  // useEffect(() => {
-  //   console.log(tagSuggestions);
-  // }, [tagSuggestions]);
-
+  
   useEffect(() => {
     if (active) {
       getTagSuggestions();
@@ -38,10 +37,11 @@ const Suggestions = ({
   }, [active]);
 
   useEffect(() => {
-    if (approved || approveFailIds.length > 0) {
+    if (approved || (failed && approveFailIds.length > 0)) {
+      setSugSelected({})
       getTagSuggestions();
     }
-  }, [approved, approveFailIds]);
+  }, [approved, failed, approveFailIds]);
 
   const [sugSelected, setSugSelected] = useState({});
 
@@ -108,6 +108,7 @@ const mapStateToProps = (state) => ({
   approving: selectTagSuggestionsApproving(state),
   approved: selectTagSuggestionsApproved(state),
   approveFailIds: selectTagSuggestionsApproveFailIds(state),
+  failed: selectTagSuggestionsFailed(state)
 });
 
 const mapActionToProps = (dispatch) =>
