@@ -14,9 +14,10 @@ from rest_framework_recaptcha.fields import ReCaptchaField
 class ReCaptchaSerializer(serializers.Serializer):
     recaptcha = ReCaptchaField()
 
-class NotificationSerializer(serializers.Serializer):
+class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
+        fields = ('title', 'message', 'created_at', 'read')
     def update(self, instance, validated_data):
         instance.viewed = validated_data.get('viewed', instance.viewed)
         instance.updated_at = datetime.now()
