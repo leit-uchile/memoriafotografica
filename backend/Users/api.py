@@ -41,7 +41,7 @@ class RegisterGuest(generics.GenericAPIView):
         if recaptchaSer.is_valid():
             userExists = User.objects.filter(email=formData['email']).exists()
             if(not userExists):
-                newGuest = User(
+                newGuest = User.objects.create(
                     email=formData['email'],
                     first_name= formData['name'],
                     last_name = formData['lastname'],
@@ -50,7 +50,17 @@ class RegisterGuest(generics.GenericAPIView):
                     is_active= False,
                     completed_registration = False
                 )
-                newGuest.save()
+                activation_link = RegisterLink.objects.create(
+                    code=createHash(newGuest.pk),
+                    status=1,
+                    user=newGuest
+                )
+                sendEmail(
+                    newGuest.email,
+                    "complete_guest_registration",
+                    "Completa tu registro",
+                    activation_link.code
+                )
                 # TODO crearle el link de registro.
                 # TODO Enviarle un correo que termine el registro y active (es correo distinto al previo debe redirigir a otra vista)
                 #TODO RETORNAR TOKEN
