@@ -42,7 +42,6 @@ class Home extends Component {
       link: "",
       catIds: [],
       sorting: "",
-      toggle: false,
     };
 
     // componentWillLoad
@@ -134,23 +133,13 @@ class Home extends Component {
             <Row>
               <Col md="7" lg="12">
                 <div className="home-filters-containers">
-                    <h2> Todas las fotograf&iacute;as</h2>
-                  <Col md={{offset: 7}}>
-                    <Button
-                      onClick={() =>
-                        this.setState({ toggle: !this.state.toggle })
-                      }
-                    >
-                      Búsqueda Avanzada
-                    </Button>
+                  <h2> Todas las fotograf&iacute;as</h2>
+                  <Col md={{ offset: 7 }}>
+                    <AdvancedSearch />
                   </Col>
                 </div>
               </Col>
             </Row>
-
-              <Row>
-                <AdvancedSearch isToggle={this.state.toggle} />
-              </Row>
           </Container>
         </div>
         <div className="home-background">
