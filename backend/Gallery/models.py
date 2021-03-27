@@ -166,12 +166,8 @@ class TagSuggestion(models.Model):
     metadata = models.ForeignKey(
         Metadata, blank=False, null=False, on_delete=models.CASCADE, related_name='tagsuggestion_metadata')
 
-    # users = models.ForeignKey(
-    #     Metadata, blank=False, null=False, on_delete=models.CASCADE, related_name='tagsuggestion_metadata')
-
-    votes = models.IntegerField(default=1)
     resolved = models.BooleanField(default=False)
     resolution = models.BooleanField(default=False)
 
     def __str__(self):
-        return "TagSuggestion [Photo id: " + str(self.photo.id) + " - Value: " + self.metadata.value + " - Votes: " + str(self.votes) + "]"
+        return "TagSuggestion [Photo id: " + str(self.photo.id) + " - Value: " + self.metadata.value + "]"

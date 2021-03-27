@@ -109,7 +109,7 @@ const TagSuggestionModal = ({
         setSuggestionTagComplete(true);
       }
     }
-  }, [tagsuggestionsCreating]);
+  }, [tagsuggestionsCreating, tagSuggestionsFailed, tagSuggestionsNewIds]);
 
   const suggestions = meta
     ? meta.map((e) => ({ name: e.value, id: e.id }))

@@ -280,16 +280,22 @@ class TagSuggestionCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TagSuggestion
-        fields = ['photo', 'metadata', 'votes']
+        fields = ['photo', 'metadata']
 
     def create(self, validated_data):
         tag_suggest, created = TagSuggestion.objects.get_or_create(
             **validated_data)
 
+        my_user = self.context['request'].user
+        
         if not created:
-            tag_suggest.votes = tag_suggest.votes + 1
+            if not tag_suggest in my_user.tags_suggestions.all():
+                tag_suggest.user_set.add(my_user)
+                tag_suggest.save()
+        else:
+            tag_suggest.user_set.add(my_user)
             tag_suggest.save()
-
+        
         return tag_suggest
 
     def update(self, instance, validated_data):
@@ -297,11 +303,17 @@ class TagSuggestionCreateSerializer(serializers.ModelSerializer):
 
 
 class TagSuggestionMetaSerializer(serializers.ModelSerializer):
+    
+    votes = serializers.SerializerMethodField()
+    
     class Meta:
         model = TagSuggestion
         depth = 1
         fields = ['id', 'metadata', 'votes']
 
+    def get_votes(self, obj):
+        return obj.user_set.count()
+        
 
 class PhotoTagSuggestionSerializer(serializers.ModelSerializer):
     tagsuggestion_photo = TagSuggestionMetaSerializer(many=True)
@@ -309,4 +321,3 @@ class PhotoTagSuggestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
         fields = ['id', 'thumbnail', 'tagsuggestion_photo']
-

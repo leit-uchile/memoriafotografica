@@ -40,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     photos = models.ManyToManyField(Photo, blank=True)
     comments = models.ManyToManyField(Comment, blank = True)
     report = models.ManyToManyField(Reporte, blank= True)
-    # tags_suggestions = models.ManyToManyField(TagSuggestion, blank= True)
+    tags_suggestions = models.ManyToManyField(TagSuggestion, blank= True)
 
     #TIPO DE USUARIO
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default = 1)

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Badge, Table } from "reactstrap";
 import { Link } from "react-router-dom";
 
@@ -31,7 +31,7 @@ const SuggestionRow = ({ suggestion, select, selected }) => {
               onClick={() => select(sug.id)}
               pill
             >
-              #{sug.metadata.value}
+              #{sug.metadata.value} ({sug.votes})
             </Badge>
           );
         })}
