@@ -10,6 +10,7 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
+  ModalFooter,
 } from "reactstrap";
 
 const AdvancedSearch = () => {
@@ -28,6 +29,7 @@ const AdvancedSearch = () => {
   // state to save category label to be added in category array in formData
   const [catData, saveCat] = useState("");
 
+  // state to toggle modal
   const [modal, setModal] = useState(false);
 
   // API call to fetch category options
@@ -69,8 +71,10 @@ const AdvancedSearch = () => {
 
   return (
     <div>
-      <Button onClick={changeToggle}>Búsqueda Avanzada</Button>
-      <Modal isOpen={modal} toggle={changeToggle}>
+      <Button color="primary" onClick={changeToggle}>
+        Búsqueda Avanzada
+      </Button>
+      <Modal isOpen={modal} toggle={changeToggle} scrollable>
         <ModalHeader>Búsqueda Avanzada</ModalHeader>
         <ModalBody>
           <Form>
@@ -79,26 +83,10 @@ const AdvancedSearch = () => {
                 <FormGroup tag="fieldset">
                   <legend>Por fecha</legend>
                   <FormGroup>
-                    <Label>
-                      <Input
-                        type="radio"
-                        name="date-radio"
-                        value="updateDate"
-                        id="byDate"
-                      />{" "}
-                      Fecha de subida
-                    </Label>
-                  </FormGroup>
-                  <FormGroup>
-                    <Label>
-                      <Input
-                        type="radio"
-                        name="date-radio"
-                        value="photoDate"
-                        id="byDate"
-                      />{" "}
-                      Fecha de la foto
-                    </Label>
+                    <Input type="select" id="byDate">
+                      <option value="updateDate">Fecha de subida</option>
+                      <option value="photoDate">Fecha de la foto</option>
+                    </Input>
                   </FormGroup>
                   <FormGroup>
                     <Input type="date" id="date" />
@@ -112,64 +100,52 @@ const AdvancedSearch = () => {
                 <FormGroup tag="fieldset">
                   <legend>Incluir en cada resultado de la búsqueda</legend>
                   <FormGroup>
-                    <Label>
-                      <Input
-                        type="radio"
-                        name="date-radio"
-                        value="allWords"
-                        id="searchIncludes"
-                      />{" "}
-                      Todas las palabras
-                    </Label>
-                  </FormGroup>
-                  <FormGroup>
-                    <Label>
-                      <Input
-                        type="radio"
-                        name="date-radio"
-                        value="atLeastOne"
-                        id="searchIncludes"
-                      />{" "}
-                      Por lo menos una palabra
-                    </Label>
+                    <Input type="select" id="searchIncludes">
+                      <option value="allWords">Todas las palabras</option>
+                      <option value="atLeastOne">
+                        Por lo menos una palabra
+                      </option>
+                    </Input>
                   </FormGroup>
                 </FormGroup>
+                <FormGroup>
+                  <legend>Por categoría</legend>
+                  <AsyncSelect
+                    placeholder="Selecciona una categoría"
+                    getOptionLabel={(e) => e.label}
+                    isMulti
+                    cacheOptions
+                    defaultOptions
+                    loadOptions={options}
+                    onInputChange={handleCatChange}
+                    onChange={handleCat}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label>Ordenar por</Label>
+                  <Input type="radio" name="order-radio" id="orderBy"></Input>
+                </FormGroup>
+                <FormGroup>
+                  <legend>Por permisos de autor</legend>
+                  <Input type="select" name="permission-radio" id="permissions">
+                    <option>Selecciona una opción</option>
+                    <option>CC BY</option>
+                    <option>CC BY-SA</option>
+                    <option>CC BY-ND</option>
+                    <option>CC BY-NC</option>
+                    <option>CC BY-NC-SA</option>
+                    <option>CC BY-NC-ND</option>
+                  </Input>
+                </FormGroup>
               </Col>
-              <FormGroup>
-                Por categoría
-                <AsyncSelect
-                  placeholder="Selecciona una categoría"
-                  getOptionLabel={(e) => e.label}
-                  isMulti
-                  cacheOptions
-                  defaultOptions
-                  loadOptions={options}
-                  onInputChange={handleCatChange}
-                  onChange={handleCat}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label>Ordenar por</Label>
-                <Input type="radio" name="order-radio" id="orderBy"></Input>
-              </FormGroup>
-              <FormGroup>
-                <Label>Por permisos de autor</Label>
-                <Input type="select" name="permission-radio" id="permissions">
-                  <option>Selecciona una opción</option>
-                  <option>CC BY</option>
-                  <option>CC BY-SA</option>
-                  <option>CC BY-ND</option>
-                  <option>CC BY-NC</option>
-                  <option>CC BY-NC-SA</option>
-                  <option>CC BY-NC-ND</option>
-                </Input>
-              </FormGroup>
-              <Button type="submit" onClick={submitAdvSearch}>
-                Buscar
-              </Button>
             </FormGroup>
           </Form>
         </ModalBody>
+        <ModalFooter>
+          <Button color="primary" type="submit" onClick={submitAdvSearch}>
+            Buscar
+          </Button>
+        </ModalFooter>
       </Modal>
     </div>
   );
