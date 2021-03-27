@@ -17,9 +17,14 @@ class ReCaptchaSerializer(serializers.Serializer):
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        fields = ('title', 'message', 'created_at', 'read')
+        fields = ('id', 'type', 'content', 'message', 'created_at', 'read')
+    
+    def create(self, validated_data):
+        notification = Notification.objects.create(**validated_data)
+        return notification
+        
     def update(self, instance, validated_data):
-        instance.viewed = validated_data.get('viewed', instance.viewed)
+        instance.read = validated_data.get('read', instance.read)
         instance.updated_at = datetime.now()
         instance.save()
         return instance

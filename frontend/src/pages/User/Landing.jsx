@@ -21,6 +21,7 @@ import Gallery from "react-photo-gallery";
 import { LeitSpinner, Pagination } from "../../components";
 import "./styles.css";
 import Comment from "../PhotoView/Comments/Comment";
+import Notification from "./Notification";
 
 const Landing = ({
   user,
@@ -70,6 +71,7 @@ const Landing = ({
     ).then((r) => {
       setPagPhotos((pag) => ({ ...pag, loading: false }));
     });
+    // eslint-disable-next-line
   }, [pagPhotos.page]);
 
   useEffect(() => {
@@ -79,6 +81,7 @@ const Landing = ({
         setPagComments((pag) => ({ ...pag, loading: false }));
       }
     );
+    // eslint-disable-next-line
   }, [pagComments.page]);
 
   useEffect(() => {
@@ -90,6 +93,7 @@ const Landing = ({
     ).then((r) => {
       setPagNotifications((pag) => ({ ...pag, loading: false }));
     });
+    // eslint-disable-next-line
   }, [pagNotifications.page]);
 
   if (params.redirect) {
@@ -182,7 +186,7 @@ const Landing = ({
                         <Container>
                           {comments.results.map((el, key) => (
                             <Row key={"Comment" + key}>
-                              <Col>
+                              <Col style={{padding:"6px"}}>
                                 <Comment
                                   element={{
                                     content: el.content,
@@ -238,7 +242,24 @@ const Landing = ({
                   <Col>
                     {!pagNotifications.loading ? (
                       notifications.results.length !== 0 ? (
-                        <Container></Container>
+                        <Container>
+                          {notifications.results.map((el, key) => (
+                            <Row key={"Notification" + key}>
+                              <Col style={{padding:"6px"}}>
+                                <Notification
+                                  element={{
+                                    id: el.id,
+                                    type: el.type,
+                                    content: el.content,
+                                    message: el.message,
+                                    created_at: el.created_at,
+                                    read: el.read,
+                                  }}
+                                />
+                              </Col>
+                            </Row>
+                          ))}
+                        </Container>
                       ) : (
                         "No tienes notificaciones"
                       )

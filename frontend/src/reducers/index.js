@@ -212,6 +212,8 @@ export const selectUserComments = (state) => fromUser.selectUserComments(state);
 
 export const selectUserNotifications = (state) => fromUser.selectUserNotifications(state);
 
+export const selectUserNotificationUpdate = (state) => fromUser.selectUserNotificationUpdate(state);
+
 export const selectUserAlbums = (state) => fromUser.selectUserAlbums(state);
 
 export const selectUserPublicUser = (state) =>

@@ -9,7 +9,7 @@ from .serializers import (CreateUserSerializer, UserSerializer,
                           UserCommentSerializer, UserPhotoSerializer,
                           NotificationSerializer, UserNotificationSerializer,
                           ChangePasswordSerializer, ReCaptchaSerializer)
-from .models import User, RegisterLink
+from .models import User, RegisterLink, Notification
 from Gallery.models import Photo
 from Gallery.serializers import PhotoSerializer
 from .permissions import *
@@ -22,6 +22,7 @@ from django.http import Http404
 import hashlib
 from django.dispatch import receiver
 from django_rest_passwordreset.signals import reset_password_token_created
+from .task import create_notification
 
 
 def createHash(id):
@@ -98,6 +99,7 @@ class RegisterLinkAPI(generics.GenericAPIView):
                     user.is_active = 1
                     user.public_profile = True
                     user.save()
+                    create_notification.delay(content_pk=register_link.user.id, type=1, content=1)
                     register_link.status = 0
                     register_link.save()
                     return Response(
@@ -333,6 +335,13 @@ class UserNotificationsAPI(generics.GenericAPIView):
     """
     permission_classes = [IsAuthenticated | ReadOnly, ]
 
+    def get_object(self, pk, admin):
+        notification = Notification.objects.get(pk=pk)
+        try:
+            return notification
+        except Notification.DoesNotExist:
+            raise Http404
+
     def get(self, request, pk, *args, **kwargs):
         try:
             user = User.objects.get(pk=pk)
@@ -347,16 +356,14 @@ class UserNotificationsAPI(generics.GenericAPIView):
 
     def put(self, request, pk, *args, **kwargs):
         notification = self.get_object(pk, True)
-        if request.user.user_type == 1 and notification in request.user.notifications.all():
+        if notification.user_set.first() == request.user:
             notification = self.get_object(pk, False)
             serializer_class = NotificationSerializer
             serializer = NotificationSerializer(notification, data = request.data, partial=True)
-        else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status= status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status= status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 

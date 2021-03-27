@@ -18,6 +18,7 @@ import {
   USER_RECOVERED_NOTIFICATIONS_ERROR,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAILED,
+  USER_NOTIFICATION_UPDATED,
   USER_LOADED,
   USER_PASSWORD_UPDATED,
   USER_PASSWORD_UPDATE_FAILED,
@@ -53,6 +54,7 @@ const baseState = {
     results: [],
     count: 0,
   },
+  notificationUpdate: {},
   userData: null,
   publicLoading: false,
   // auth
@@ -83,6 +85,7 @@ const initialState =
         comments: {},
         albums: {},
         notifications: {},
+        notificationUpdate: {},
         userData: JSON.parse(localStorage.getItem("user")),
         publicLoading: false,
         token: localStorage.getItem("token"),
@@ -210,6 +213,11 @@ export default function user(state = initialState, action) {
       };
     case USER_UPDATE_FAILED:
       return { ...state, errors: action.data };
+    case USER_NOTIFICATION_UPDATED:
+      return {
+        ...state,
+        notificationUpdate: action.data,
+      };
     case USER_PASSWORD_UPDATED:
       return { ...state };
     case USER_PASSWORD_UPDATE_FAILED:
@@ -262,6 +270,8 @@ export const selectUserPhotos = (state) => state.user.photos;
 export const selectUserComments = (state) => state.user.comments;
 
 export const selectUserNotifications = (state) => state.user.notifications;
+
+export const selectUserNotificationUpdate = (state) => state.user.notificationUpdate;
 
 export const selectUserAlbums = (state) => state.user.albums;
 

@@ -11,7 +11,18 @@ from Gallery.models import Album, Photo, Comment, Reporte
 from datetime import datetime
 
 class Notification(models.Model):
-    title = models.CharField(max_length=30, blank=True)
+    NOTIFICATION_TYPE_CHOICES = (
+        (1, 'Aprobación'),
+        (2, 'Edición'),
+        (3, 'Censura')
+    )
+    CONTENT_TYPE_CHOICES = (
+        (1, 'usuario'),
+        (2, 'foto'),
+        (3, 'comentario')
+    )
+    type = models.PositiveSmallIntegerField(choices=NOTIFICATION_TYPE_CHOICES, default = 1)
+    content = models.PositiveSmallIntegerField(choices=CONTENT_TYPE_CHOICES, default = 1)
     message = models.CharField(max_length=280)
     created_at = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)

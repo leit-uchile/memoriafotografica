@@ -1,0 +1,16 @@
+.notification-div {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: var(--leit-bg-gray);
+    padding: 0.5em;
+}
+.notification-header {
+    display: inline-block;
+    border-right: 2px solid gray;
+    padding: 0 15px 0 0;
+}
+.notification-date {
+display: inline-block;
+padding: 0 15px;
+color: #999;
+}
