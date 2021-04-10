@@ -6,7 +6,7 @@ django-multiselectfield==0.1.8
 django-rest-swagger==2.2.0
 coreapi==2.3.3
 markdown==3.0.1 
-pygments==2.3.0
+pygments==2.7.4
 rest_condition==1.0.3
 Pillow==7.1.0
 sorl-thumbnail==12.5.0
