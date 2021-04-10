@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import {
   Col,
@@ -39,6 +40,25 @@ const AdvancedSearch = () => {
       .then((j) => j.results.map((el) => ({ value: el.id, label: el.title })))
       .catch((err) => []);
 
+  const byDate = [
+    { value: "updateDate", label: "Fecha de subida" },
+    { value: "photoDate", label: "Fecha de la foto" },
+  ];
+
+  const searchIncludes = [
+    { value: "allWords", label: "Todas las palabras" },
+    { value: "atLeastOne", label: "Por lo menos una palabra" },
+  ];
+
+  const permissions = [
+    {value: "CC BY", label: "CC BY"},
+    {value: "CC BY-SA", label: "CC BY-SA"},
+    {value: "CC BY-ND", label: "CC BY-ND"},
+    {value: "CC BY-NC", label: "CC BY-NC"},
+    {value: "CC BY-NC-SA", label: "CC BY-NC-SA"},
+    {value: "CC BY-NC-ND", label: "CC BY-NC-ND"},
+  ];
+
   const changeToggle = () => {
     setModal(!modal);
   };
@@ -69,6 +89,13 @@ const AdvancedSearch = () => {
     });
   };
 
+  const addValueSelect = (key, value) => {
+    saveFormData({
+      ...formData,
+      [key]: value,
+    });
+  };
+
   return (
     <div>
       <Button color="primary" onClick={changeToggle}>
@@ -83,10 +110,14 @@ const AdvancedSearch = () => {
                 <FormGroup tag="fieldset">
                   <legend>Por fecha</legend>
                   <FormGroup>
-                    <Input type="select" id="byDate">
-                      <option value="updateDate">Fecha de subida</option>
-                      <option value="photoDate">Fecha de la foto</option>
-                    </Input>
+                    <Select
+                      inputId="byDate"
+                      placeholder="Selecciona una opción"
+                      options={byDate}
+                      onChange={(e) => {
+                        addValueSelect("byDate", e.value);
+                      }}
+                    />
                   </FormGroup>
                   <FormGroup>
                     <Input type="date" id="date" />
@@ -100,12 +131,14 @@ const AdvancedSearch = () => {
                 <FormGroup tag="fieldset">
                   <legend>Incluir en cada resultado de la búsqueda</legend>
                   <FormGroup>
-                    <Input type="select" id="searchIncludes">
-                      <option value="allWords">Todas las palabras</option>
-                      <option value="atLeastOne">
-                        Por lo menos una palabra
-                      </option>
-                    </Input>
+                    <Select
+                      inputId="searchIncludes"
+                      placeholder="Selecciona una opción"
+                      options={searchIncludes}
+                      onChange={(e) => {
+                        addValueSelect("searchIncludes", e.value);
+                      }}
+                    />
                   </FormGroup>
                 </FormGroup>
                 <FormGroup>
@@ -127,15 +160,14 @@ const AdvancedSearch = () => {
                 </FormGroup>
                 <FormGroup>
                   <legend>Por permisos de autor</legend>
-                  <Input type="select" name="permission-radio" id="permissions">
-                    <option>Selecciona una opción</option>
-                    <option>CC BY</option>
-                    <option>CC BY-SA</option>
-                    <option>CC BY-ND</option>
-                    <option>CC BY-NC</option>
-                    <option>CC BY-NC-SA</option>
-                    <option>CC BY-NC-ND</option>
-                  </Input>
+                  <Select
+                      inputId="permissions"
+                      placeholder="Selecciona una opción"
+                      options={permissions}
+                      onChange={(e) => {
+                        addValueSelect("permissions", e.value);
+                      }}
+                    />
                 </FormGroup>
               </Col>
             </FormGroup>
