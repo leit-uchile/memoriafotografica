@@ -1,8 +1,13 @@
 from .api import *
 from django.urls import re_path, include
+### V2 
+from .apiV2 import PhotoViewSet
+from rest_framework.routers import DefaultRouter
 
+router = DefaultRouter()
+router.register(r'v2/photos', PhotoViewSet, basename='photo')
 
-urlpatterns = [
+urlpatterns = router.urls + [
     re_path('^photos/$', PhotoListAPI.as_view()),
     re_path('^photos/(?P<pk>[0-9]+)/$', PhotoDetailAPI.as_view()),
     re_path('^photos/(?P<pk>[0-9]+)/comments/$', PhotoCommentListAPI.as_view()),
@@ -17,5 +22,4 @@ urlpatterns = [
     re_path('^albums/(?P<pk>[0-9]+)/$', AlbumDetailAPI.as_view()),
     re_path("^reports/$", ReportListAPI.as_view()),
     re_path("^reports/(?P<pk>[0-9]+)/$", ReportDetailAPI.as_view())
-
 ]

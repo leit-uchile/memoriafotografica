@@ -115,6 +115,7 @@ class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         exclude = ('censure', 'report','comments')
         model = Photo
+        
     def update(self, instance, validated_data):
         instance.permission = validated_data.get('permission', instance.permission)
         instance.title = validated_data.get('title', instance.title)
@@ -127,6 +128,35 @@ class PhotoSerializer(serializers.ModelSerializer):
             pass
         instance.save()
         return instance
+
+
+class PhotoSerializerV2(serializers.ModelSerializer):
+    #Para usuario colaborador
+    class Meta:
+        exclude = ('censure', 'report','comments')
+        model = Photo
+
+    def create(self,validated_data):
+        p = serializers.ModelSerializer.create(self,validated_data)
+        self.context['request'].user.photos.add(p)
+        return p
+
+
+    def update(self, instance, validated_data):
+        print(instance)
+        print(self.context['request'].user.photos.filter(pk=instance.id).first())
+        print(instance.equales)
+        instance.permission = validated_data.get('permission', instance.permission)
+        instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get('description', instance.description)
+        instance.updated_at = datetime.now()
+        instance.upload_date = validated_data.get('upload_date', instance.upload_date)
+        try:
+            instance.metadata.set(validated_data['metadata'])
+        except KeyError:
+            pass
+        instance.save()
+        return instance    
 
 class PhotoDetailSerializer(PhotoSerializer):
     class Meta(PhotoSerializer.Meta):
