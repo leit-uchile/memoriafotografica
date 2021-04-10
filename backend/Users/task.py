@@ -35,21 +35,22 @@ def create_notification(content_pk=None, type=1, content=1):
         user = Photo.objects.get(pk=content_pk).user_set.first() 
     elif content==3:
         user = Comment.objects.get(pk=content_pk).user_set.first()
-    if user:
-        if (type>=1 and type<=3):
-            message = messages[type-1][content-1]
-            serializer = NotificationSerializer(data={
-                'type': type, 
-                'content': content,
-                'message': message
-                })
-            if serializer.is_valid():
-                notification = serializer.save()
-                print("Notification CREATED")
-                user.notifications.add(notification)
-                print("Notification REFERENCE CREATED")
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-        print("Notification TYPE ERROR")
+    else:
+        print("Notification USER ERROR")
         return Response(status=status.HTTP_400_BAD_REQUEST)
-    print("Notification USER ERROR")
+    if (type>=1 and type<=3):
+        message = messages[type-1][content-1]
+        serializer = NotificationSerializer(data={
+            'type': type, 
+            'content': content,
+            'message': message
+            })
+        if serializer.is_valid():
+            notification = serializer.save()
+            print("Notification CREATED")
+            user.notifications.add(notification)
+            print("Notification REFERENCE CREATED")
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    print("Notification TYPE ERROR")
     return Response(status=status.HTTP_400_BAD_REQUEST)
+    

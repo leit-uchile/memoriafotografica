@@ -345,9 +345,17 @@ class UserNotificationsAPI(generics.GenericAPIView):
     def get(self, request, pk, *args, **kwargs):
         try:
             user = User.objects.get(pk=pk)
-            serializer = UserNotificationSerializer(user)
+            filters = {}
+            if "read" in request.query_params:
+                read = True
+                if request.query_params["read"] == "false":
+                    read = False
+                filters['read'] = read
+            
+            user_notifications = user.notifications.filter(**filters)
+            serializer = NotificationSerializer(user_notifications, many=True)
             if "page" in request.query_params and "page_size" in request.query_params:
-                return self.get_paginated_response(self.paginate_queryset(serializer.data["notifications"]))
+                return self.get_paginated_response(self.paginate_queryset(serializer.data))
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             return Response(serializer.data)

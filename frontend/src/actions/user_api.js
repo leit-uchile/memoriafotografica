@@ -227,7 +227,7 @@ export const getUserComments = (user_id, page, page_size) => (
   });
 };
 
-export const getUserNotifications = (user_id, page, page_size) => (
+export const getUserNotifications = (user_id, page, page_size, extra = "") => (
   dispatch,
   getState
 ) => {
@@ -236,7 +236,7 @@ export const getUserNotifications = (user_id, page, page_size) => (
     Authorization: "Token " + getState().user.token,
   };
   return fetch(
-    `/api/users/notifications/${user_id}/?page=${page}&page_size=${page_size}`,
+    `/api/users/notifications/${user_id}/?page=${page}&page_size=${page_size}${extra}`,
     { method: "GET", headers: headers }
   ).then(function (response) {
     const r = response;

@@ -51,7 +51,7 @@ const Notification = ({
   useEffect(() => {
     updatedNotification.id === id
       ? setIsRead(updatedNotification.read)
-      : console.log();
+      : void 0;
     // eslint-disable-next-line
   }, [updatedNotification]);
 
