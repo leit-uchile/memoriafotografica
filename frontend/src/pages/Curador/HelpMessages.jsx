@@ -5,7 +5,7 @@ const HelpMessages = ({ messages }) => (
   <Fragment>
     {messages.map((m) => (
       <Col>
-        <Card body>
+        <Card body style={{height: "100%"}}>
           <CardTitle style={{fontWeight: "bold"}}>{m.action}</CardTitle>
           <CardText>{m.helpMessage}</CardText>
         </Card>
