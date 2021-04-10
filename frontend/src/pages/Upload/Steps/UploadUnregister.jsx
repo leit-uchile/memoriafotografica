@@ -27,7 +27,7 @@ const UploadUnregister = ({
   previousStep,
   nextStep,
   sendAlert,
-  validateFormBackend,
+  guestVerify,
   answerFormBackend,
 }) => {
   let recaptchaRef;
@@ -68,7 +68,7 @@ const UploadUnregister = ({
     if (!captchaError && !rolError) {
       const captchaValue = recaptchaRef.getValue();
       // TODO send the form to backend , make a user and login with that user
-      validateFormBackend({ ...formData, recaptchaToken: captchaValue });
+      guestVerify({ ...formData, recaptchaToken: captchaValue });
       // TODO get token from backend
       recaptchaRef.reset();
       nextStep();
@@ -112,7 +112,7 @@ const UploadUnregister = ({
               type="radio"
               name="rol"
               onChange={updateInfo}
-              value = {1}
+              value={1}
             />
             <Label check for="Alumno">
               Alumno
@@ -124,7 +124,7 @@ const UploadUnregister = ({
               type="radio"
               name="rol"
               onChange={updateInfo}
-              value = {2}
+              value={2}
             />
             <Label check for="Ex-alumno">
               Ex-Alumno
@@ -136,7 +136,7 @@ const UploadUnregister = ({
               type="radio"
               name="rol"
               onChange={updateInfo}
-              value = {3}
+              value={3}
             />
             <Label check for="Académico">
               Académico
@@ -148,7 +148,7 @@ const UploadUnregister = ({
               type="radio"
               name="rol"
               onChange={updateInfo}
-              value = {4}
+              value={4}
             />
             <Label check for="Ex-Académico">
               Ex-Académico
@@ -160,14 +160,20 @@ const UploadUnregister = ({
               name="rol"
               id="Funcionario"
               onChange={updateInfo}
-              value = {5}
+              value={5}
             />
             <Label check for="Funcionario">
               Funcionario
             </Label>
           </FormGroup>
           <FormGroup check>
-            <Input type="radio" name="rol" id="Externo" onChange={updateInfo} value= {6}/>
+            <Input
+              type="radio"
+              name="rol"
+              id="Externo"
+              onChange={updateInfo}
+              value={6}
+            />
             <Label check for="Externo">
               Externo a la comunidad
             </Label>
@@ -255,7 +261,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapActionsToProps = (dispatch) => ({
-  validateFormBackend: (value) => dispatch(webadmin.GuestVerify(value)),
+  guestVerify: (value) => dispatch(webadmin.GuestVerify(value)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(UploadUnregister);

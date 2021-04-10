@@ -36,10 +36,14 @@ export default function FormTermsOfUse({
           type="checkbox"
           name="termsOfUse"
           checked={termsValue}
-          onClick={setTermsValue}
+          onChange={setTermsValue}
           required
         />
-        <Label for="termsOfUse" check onClick={toggleTermsModal}>
+        <Label
+          for="termsOfUse"
+          onClick={toggleTermsModal}
+          style={{ marginLeft: "0.5em" }}
+        >
           Acepto los{" "}
           <span style={{ color: "blue", cursor: "pointer" }}>
             terminos de uso
