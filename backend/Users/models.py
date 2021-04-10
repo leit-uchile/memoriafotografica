@@ -45,6 +45,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default = 1)
     rol_type = models.PositiveSmallIntegerField(choices=ROL_TYPE_CHOICES, default=6)
     is_staff = models.BooleanField(_('staff status'), default=False)
+    is_curator = models.BooleanField(_('curator'), default=False)
     public_profile = models.BooleanField(default=False)
     #LOGGING
     created_at = models.DateTimeField(default=datetime.now)

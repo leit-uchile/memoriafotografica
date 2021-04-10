@@ -6,8 +6,18 @@ from .serializers import PhotoSerializerV2
 
 
 class PhotoViewSet(viewsets.ModelViewSet):
-    queryset = Photo.objects.all()
     serializer_class = PhotoSerializerV2
 
-    def get_queryset():
-        pass
+    def get_queryset(self):
+        # get request user 
+        user = self.request.user
+        # retrieve permissions if user is curator
+        if user.is_curator:
+            return Photo.objects.all()
+        # if collaborator can only PUT/PATCH/DELETE its photos
+        else:
+            if self.request.method in ['GET', 'POST']:
+                return Photo.objects.all()
+            return user.photos.all()
+            
+
