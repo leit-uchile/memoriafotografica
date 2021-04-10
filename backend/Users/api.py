@@ -26,6 +26,26 @@ def createHash(id):
     return str(hashlib.sha256(integer).hexdigest())
 
 
+class CompleteRegistration(generics.GenericAPIView):
+    def post(self, request, *args, **kwargs):
+        registerLink = RegisterLink.objects.filter(code=request.data["code"])
+        if(registerLink.exists()):
+            registerLink = registerLink.first()
+            if(registerLink.status == 0):
+                return Response(status=status.HTTP_403_FORBIDDEN)
+            registerLink.status = 0
+            registerLink.save()
+            user = registerLink.user
+            if (not (user.completed_registration == False and user.is_active == False)):
+                return Response(status=status.HTTP_403_FORBIDDEN)
+            user.set_password(request.data["password"])
+            user.birth_date = request.data["date"]
+            user.completed_registration = True
+            user.is_active = True
+            user.save()
+            return Response(status=status.HTTP_200_OK)
+
+
 class RegisterGuest(generics.GenericAPIView):
     allowed_methods = ["POST"]
 
@@ -35,41 +55,34 @@ class RegisterGuest(generics.GenericAPIView):
             tokenRecaptcha = {"recaptcha": formData.pop("recaptchaToken")}
         else:
             return Response('No recaptchaToken',
-                           status=status.HTTP_401_UNAUTHORIZED)
-        
+                            status=status.HTTP_401_UNAUTHORIZED)
+
         recaptchaSer = ReCaptchaSerializer(data=tokenRecaptcha)
         if recaptchaSer.is_valid():
             userExists = User.objects.filter(email=formData['email']).exists()
-            if(not userExists):
+            if (not userExists):
                 newGuest = User.objects.create(
                     email=formData['email'],
-                    first_name= formData['name'],
-                    last_name = formData['lastname'],
+                    first_name=formData['name'],
+                    last_name=formData['lastname'],
                     birth_date=datetime.today().strftime('%Y-%m-%d'),
-                    rol_type = formData['rol'],
-                    is_active= False,
-                    completed_registration = False
-                )
-                activation_link = RegisterLink.objects.create(
-                    code=createHash(newGuest.pk),
-                    status=1,
-                    user=newGuest
-                )
-                sendEmail(
-                    newGuest.email,
-                    "complete_guest_registration",
-                    "Completa tu registro",
-                    activation_link.code
-                )
-                # TODO crearle el link de registro.
-                # TODO Enviarle un correo que termine el registro y active (es correo distinto al previo debe redirigir a otra vista)
+                    rol_type=formData['rol'],
+                    is_active=False,
+                    completed_registration=False)
+
+                activation_link = RegisterLink.objects.create(code=createHash(
+                    newGuest.pk),
+                                                              status=1,
+                                                              user=newGuest)
+                sendEmail(newGuest.email, "complete_guest_registration",
+                          "Completa tu registro", activation_link.code)
                 #TODO RETORNAR TOKEN
             else:
                 user = User.objects.get(email=formData['email'])
-                if(user.is_active):
+                if (user.is_active):
                     #TODO usuario activo: respuesta es anda a logearte
                     # TODO Vista: Es usuario  te vamos a redirigir a login
-                    temp= 14141414
+                    temp = 14141414
                 else:
                     if (user.completed_registration):
                         # TODO es un usuario inactivo, y registro completo . Mandar a activarloms
@@ -80,7 +93,8 @@ class RegisterGuest(generics.GenericAPIView):
                         # TODO registrar( LO MANDO ACTUALIZAR PASS?), marcar como registro completo y enviar activacion.
                         temp = 123
         else:
-            return Response(recaptchaSer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(recaptchaSer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class ReadOnly(BasePermission):
@@ -110,11 +124,11 @@ class RegistrationAPI(generics.GenericAPIView):
             serializer.is_valid(raise_exception=True)
             user = serializer.save()
             activation_link = RegisterLink(code=createHash(user.pk),
-                                            status=1,
-                                            user=user)
+                                           status=1,
+                                           user=user)
             activation_link.save()
             sendEmail(user.email, "sign_up", "Active su cuenta",
-                        activation_link.code)
+                      activation_link.code)
             return Response(status=status.HTTP_200_OK)
         return Response(recaptchaSer.errors,
                         status=status.HTTP_400_BAD_REQUEST)
