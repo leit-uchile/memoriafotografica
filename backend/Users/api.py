@@ -32,12 +32,12 @@ class CompleteRegistration(generics.GenericAPIView):
         if(registerLink.exists()):
             registerLink = registerLink.first()
             if(registerLink.status == 0):
-                return Response(status=status.HTTP_403_FORBIDDEN)
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
             registerLink.status = 0
             registerLink.save()
             user = registerLink.user
             if (not (user.completed_registration == False and user.is_active == False)):
-                return Response(status=status.HTTP_403_FORBIDDEN)
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
             user.set_password(request.data["password"])
             user.birth_date = request.data["date"]
             user.completed_registration = True

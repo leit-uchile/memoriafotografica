@@ -66,9 +66,6 @@ const CompleteRegistration = ({
     if (checkPassword()) {
       finishRegistration({ ...formData });
     }
-    // history.push("/")
-    // TODO CHECKEAR RESPUESTA, SI 200 REDIRIGIR A VISTA
-    // TODO SI ES QUE NOT 200 RETURN A ERROR.
   };
 
   const channgeAcceptedTerms = () => {
@@ -80,7 +77,8 @@ const CompleteRegistration = ({
   };
 
   return(
-  <Container>
+    finishRegistrationStatus === undefined?
+  (<Container>
   <Row>
     <Col>
       <h2 className="page-title">Completa tu registro</h2>
@@ -147,7 +145,7 @@ const CompleteRegistration = ({
       <Button color="primary">¡Reg&iacute;strame!</Button>
     </FormGroup>
   </Form>
-</Container>
+</Container>) : <CompleteRegistrationMessage status={finishRegistrationStatus}/>
 )
 };
 
