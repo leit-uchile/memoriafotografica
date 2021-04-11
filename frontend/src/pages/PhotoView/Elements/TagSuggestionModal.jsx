@@ -33,10 +33,6 @@ import PropTypes from "prop-types";
 import { useEffect } from "react";
 
 const TagSuggestionModal = ({
-  // style,
-  // className,
-  // suggestionTagSent,
-  // suggestionTagComplete,
   photoId,
   tags,
   isAuth,
@@ -69,12 +65,7 @@ const TagSuggestionModal = ({
       metadataCreation.failedCreations.length === 0 &&
       metadataCreation.newIds.length !== 0
     ) {
-      console.log(metadataCreation.newIds);
-
       let newMetaIds = metadataCreation.newIds.map((tag) => tag.id);
-
-      console.log(newMetaIds);
-
       formData.tags.forEach((tag) => {
         metadata[tag.name] = { ...tag };
       });
@@ -144,6 +135,9 @@ const TagSuggestionModal = ({
   };
 
   const upLoadMetadata = () => {
+    setSuggestionTagErrors(false);
+    setSuggestionTagComplete(false);
+    
     let metadata = {};
 
     formData.tags.forEach((tag) => {
@@ -187,7 +181,6 @@ const TagSuggestionModal = ({
                 className="tags"
                 key={el.id}
                 pill
-                // onClick={(e) => onRedirect(el.id, el.value)}
               >
                 #{el.value}
               </Badge>
@@ -197,7 +190,6 @@ const TagSuggestionModal = ({
 
         <FormGroup>
           <h5 style={{ textAlign: "left" }}>Sugerir</h5>
-          {/* <Label className="form-subtitle">Sugerir:</Label> */}
           <ReactTags
             placeholder={"Añadir etiquetas"}
             autoresize={false}
@@ -221,11 +213,7 @@ const TagSuggestionModal = ({
     <Fragment>
       <Button
         onClick={toggle}
-        // className={className}
-        // style={style}
-        // color="danger"
       >
-        {/* <FontAwesomeIcon icon={faFlag} /> */}
         Sugerir
       </Button>
 
