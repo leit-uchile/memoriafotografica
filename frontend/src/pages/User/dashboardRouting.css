@@ -15,8 +15,11 @@
   color: var(--leit-pink);
   font-weight: bold;
 }
-.user-dashboard-block .info > h2 > svg{
+.buttons > svg{
   cursor: pointer;
+  font-size: 16px;
+  color: var(--leit-pink);
+  margin: 4px;
 }
 .navButton {
   color: #000000;

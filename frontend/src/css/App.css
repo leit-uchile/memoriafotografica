@@ -56,7 +56,7 @@ hr {
   margin-bottom: 1.5em;
 }
 .dashboard .col {
-  padding: 12px; /* Dos Rows en un Col -> Col padre {{padding: "0"}} */
+  padding: 12px;
 }
 .stat-box {
   border: 1px solid lightgray;

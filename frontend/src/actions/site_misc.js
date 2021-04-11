@@ -10,7 +10,6 @@ import {
   READ_UPLOAD_DISCLOSURE,
   HOME_PHOTO_PAGINATION,
   RECOVERED_PHOTOS,
-  SET_METADATA_HELP_DISCLOSURE,
 } from "./types";
 import uuid from "uuid";
 

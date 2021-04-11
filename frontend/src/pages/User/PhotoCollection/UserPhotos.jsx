@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { Button, Row, Col, Container, Badge } from "reactstrap";
+import { Button, Row, Col, Container } from "reactstrap";
 import { user, site_misc, gallery } from "../../../actions";
 import EditPhotosModal from "./EditPhotosModal";
 import CreateAlbumModal from "./CreateAlbumModal";
@@ -10,11 +10,13 @@ import { Helmet } from "react-helmet";
 import Gallery from "react-photo-gallery";
 import { bindActionCreators } from "redux";
 import "../styles.css";
-import {   selectUserPhotos,
-            selectUserData,
-            selectUserPublicUser,
-            selectPhotosUpdatedPhoto,
-            selectPhotosRefresh,} from "../../../reducers";
+import {
+  selectUserPhotos,
+  selectUserData,
+  selectUserPublicUser,
+  selectPhotosPhotoUpdate,
+  selectPhotosRefresh,
+} from "../../../reducers";
 
 class UserPhotos extends Component {
   constructor(props) {
@@ -34,15 +36,12 @@ class UserPhotos extends Component {
         "&page=1&page_size=100"
       );
     } else {
-      props.onLoadGetPhotos(props.user.id, 100, 0); //no poner limite
+      props.onLoadGetPhotos(props.user.id, 100, 0, "&approved=true"); //no poner limite
     }
   }
 
   componentDidUpdate() {
-    if (
-      (this.props.updatedPhoto || this.props.refresh) &&
-      !this.state.modalOpen
-    ) {
+    if (this.props.refresh && !this.state.modalOpen) {
       setTimeout(() => window.location.reload(), 1000);
     }
   }
@@ -118,9 +117,9 @@ class UserPhotos extends Component {
             >
               {this.state.isPublic
                 ? `Fotos de ${this.props.publicUser.first_name}`
-                : "Mis fotos"}
+                : "Mis fotos"}{" "}
+              <Badge color="primary">{mapped.length}</Badge>
             </h2>
-            {/* <Badge color="primary">{mapped.length}</Badge> */}
           </Col>
         </Row>
         {this.state.isPublic ? null : (
@@ -149,13 +148,15 @@ class UserPhotos extends Component {
                 handleToggle={() =>
                   this.setState({ modalOpen: !this.state.modalOpen })
                 }
-                editPhoto={(id,content)=>this.props.editPhoto(id,content)}
-                deletePhoto={(id)=>this.props.deletePhoto(id)}
+                editPhoto={(id, content) => this.props.editPhoto(id, content)}
+                deletePhoto={(id) => this.props.deletePhoto(id)}
                 isCurator={false}
                 censurePhoto={null}
-                
               />
-              <CreateAlbumModal photosID={this.state.picturesToEdit} isOpen={(bool) => this.setState({modalOpen: bool})}/>
+              <CreateAlbumModal
+                photosID={this.state.picturesToEdit}
+                isOpen={(bool) => this.setState({ modalOpen: bool })}
+              />
             </Col>
           </Row>
         )}
@@ -200,7 +201,7 @@ const mapStateToProps = (state) => ({
   photos: selectUserPhotos(state),
   user: selectUserData(state),
   publicUser: selectUserPublicUser(state),
-  updatedPhoto: selectPhotosUpdatedPhoto(state),
+  updatedPhoto: selectPhotosPhotoUpdate(state),
   refresh: selectPhotosRefresh(state),
 });
 

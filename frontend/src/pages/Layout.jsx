@@ -39,9 +39,15 @@ const lazyComponents = [
   },
   {
     component: lazy(() => import("./User")),
+    path: "/user/dashboard",
+    route: PrivateComponent,
+    message: "Cargando herramientas de usuario...",
+  },
+  {
+    component: lazy(() => import("./User")),
     path: "/user/",
     route: BoundedRoute,
-    message: "Cargando herramientas de usuario...",
+    message: "Cargando usuario...",
   },
 ];
 

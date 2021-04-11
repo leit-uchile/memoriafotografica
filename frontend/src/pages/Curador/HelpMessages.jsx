@@ -1,17 +1,26 @@
-import React, { Fragment } from "react";
-import { Col, Card, CardTitle, CardText } from "reactstrap";
+import React from "react";
+import {
+  Col,
+  Row,
+  Card,
+  CardTitle,
+  CardText,
+  UncontrolledCollapse,
+} from "reactstrap";
 
-const HelpMessages = ({ messages }) => (
-  <Fragment>
-    {messages.map((m) => (
-      <Col>
+const HelpMessages = ({ id, messages }) => (
+  <UncontrolledCollapse toggler={id} style={{ marginBottom: "1em" }}>
+    <Row>
+      {messages.map((m) => (
+        <Col>
         <Card body style={{height: "100%"}}>
-          <CardTitle style={{fontWeight: "bold"}}>{m.action}</CardTitle>
-          <CardText>{m.helpMessage}</CardText>
-        </Card>
-      </Col>
-    ))}
-  </Fragment>
+            <CardTitle style={{ fontWeight: "bold" }}>{m.action}</CardTitle>
+            <CardText>{m.helpMessage}</CardText>
+          </Card>
+        </Col>
+      ))}
+    </Row>
+  </UncontrolledCollapse>
 );
 
 export default HelpMessages;

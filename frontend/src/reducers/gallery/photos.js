@@ -3,6 +3,7 @@ import {
   EMPTY_PHOTOS,
   RECOVERED_PHOTO_DETAILS,
   PHOTO_DETAILS_ERROR,
+  PHOTO_RESET_NB_OPS,
   EDIT_PHOTO,
   EDIT_PHOTO_ERROR,
   DELETED_PHOTO,
@@ -10,9 +11,11 @@ import {
 
 const initialState = {
   photos: [],
-  errors: null,
-  refresh: false,
-  updatedPhoto: false,
+  count: 0,
+  nbOperations: 0,
+  opsCompleted: 0,
+  opsErrors: [],
+  photoUpdate: {},
   details: {
     title: "[Titulo]",
     image: undefined,
@@ -32,24 +35,36 @@ export default function photos(state = initialState, action) {
         count: action.data.count,
       };
     case EMPTY_PHOTOS:
-      return { ...state, photos: [] };
+      return { ...state, photos: [], count: 0 };
+    case PHOTO_RESET_NB_OPS:
+      return {
+        ...state,
+        nbOperations: action.data,
+        opsCompleted: 0,
+        opsErrors: [],
+      };
     case EDIT_PHOTO:
       return {
         ...state,
-        details: { ...state.details, ...action.data },
-        updatedPhoto: true,
+        opsCompleted: state.opsCompleted +1,
+        photoUpdate: state.nbOperations === state.opsCompleted + 1 ? action.data : state.photoUpdate,
       };
     case EDIT_PHOTO_ERROR:
-      return { ...state, edit_photo_errors: action.data };
+      return { ...state, opsErrors: [...state.opsErrors, action.data] };
     case DELETED_PHOTO:
       let newList = state.photos.filter((photo) => photo.id !== action.data.id);
-      return { ...state, photos: [newList], updatedPhoto: true, refresh: true };
+      return {
+        ...state,
+        photos: [newList],
+        opsCompleted: state.opsCompleted +1,
+        photoUpdate: state.nbOperations === state.opsCompleted + 1 ? action.data : state.photoUpdate,
+      };
     case RECOVERED_PHOTO_DETAILS:
-      return { ...state, details: action.data, errors: null };
+      return { ...state, details: action.data, opsErrors: [] };
     case PHOTO_DETAILS_ERROR:
       return {
         ...state,
-        errors: action.data,
+        opsErrors: [...state.opsErrors, action.data],
         details: {
           title: "[Titulo]",
           image: undefined,
@@ -77,8 +92,8 @@ export const selectPhotosCount = (state) => state.photos.count;
 
 export const selectPhotosDetails = (state) => state.photos.details;
 
-export const selectPhotosError = (state) => state.photos.errors;
+export const selectPhotosOpsCompleted = (state) => state.photos.opsCompleted;
 
-export const selectPhotosUpdatedPhoto = (state) => state.photos.updatedPhoto;
+export const selectPhotosOpsErrors = (state) => state.photos.opsErrors;
 
-export const selectPhotosRefresh = (state) => state.photos.refresh;
+export const selectPhotosPhotoUpdate = (state) => state.photos.photoUpdate;

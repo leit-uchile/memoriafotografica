@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Container, Col, Row } from "reactstrap";
+import { Button, Container, Row } from "reactstrap";
 import "../Login/login.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUnlock } from "@fortawesome/free-solid-svg-icons";

@@ -11,8 +11,10 @@ import {
   Input,
   Spinner,
 } from "reactstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPhone } from "@fortawesome/free-solid-svg-icons";
 
-const ContactPhoneModal = ({ buttonLabel, className, message, send }) => {
+const ContactPhoneModal = ({ className, message, send }) => {
   const [modal, setModal] = useState(false);
   const [sending, setSending] = useState(false);
   const [contacted, setContacted] = useState(false);
@@ -24,7 +26,7 @@ const ContactPhoneModal = ({ buttonLabel, className, message, send }) => {
   };
 
   const onSend = () => {
-    let msgUpdate = {...message};
+    let msgUpdate = { ...message };
     msgUpdate.resolved = true;
     msgUpdate.email_sent = false;
     setSending(true);
@@ -36,8 +38,8 @@ const ContactPhoneModal = ({ buttonLabel, className, message, send }) => {
 
   return (
     <div>
-      <Button color="danger" onClick={toggle} disabled={message.resolved}>
-        {buttonLabel}
+      <Button className="action" onClick={toggle}>
+        <FontAwesomeIcon icon={faPhone} />
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>Contacto</ModalHeader>

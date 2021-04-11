@@ -18,11 +18,9 @@ import {
   selectPhotos,
   selectPhotosCount,
   selectErrors,
-  selectSiteMiscCuradorRefresh,
-  selectSiteMiscCuradorLoading,
   selectWebAdminAllTags,
   selectUserIsAuthenticated,
-  selectPhotosUpdatedPhoto,
+  selectPhotosPhotoUpdate,
 } from "../../../reducers";
 
 const filters = [
@@ -42,7 +40,7 @@ const filters = [
   },
 ];
 
-const Filter = ({ photos, photoCount, loading, getPhotosAuth, editPhoto, updatedPhoto }) => {
+const Filter = ({ photos, photoCount, getPhotosAuth, editPhoto, updatedPhoto }) => {
   const [searchState, setSearchState] = useState("");
   const [filter, setFilter] = useState({
     censured: "",
@@ -52,9 +50,14 @@ const Filter = ({ photos, photoCount, loading, getPhotosAuth, editPhoto, updated
   });
 
   const [cardsView, setCardsView] = useState(false);
-  const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
+  const [pagination, setPagination] = useState({
+    page: 0,
+    page_size: 12,
+    loading: true,
+  });
 
   useEffect(() => {
+    setPagination((pag) => ({ ...pag, loading: true }));
     let url = "&sort=updated_at-desc";
     if (searchState !== "") {
       url = url + `&title=${searchState}`;
@@ -71,8 +74,17 @@ const Filter = ({ photos, photoCount, loading, getPhotosAuth, editPhoto, updated
     if (filter.approved.length !== 0) {
       url = url + `&approved=${filter.approved}`;
     }
-    getPhotosAuth(pagination.page + 0, pagination.page_size, url);
-  }, [filter, pagination, updatedPhoto]);
+    getPhotosAuth(pagination.page + 0, pagination.page_size, url).then((r) => {
+      setPagination((pag) => ({ ...pag, loading: false }));
+    });
+  }, [
+    searchState,
+    filter,
+    pagination.page,
+    pagination.page_size,
+    getPhotosAuth,
+    updatedPhoto,
+  ]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
@@ -104,7 +116,7 @@ const Filter = ({ photos, photoCount, loading, getPhotosAuth, editPhoto, updated
             <Input
               type="text"
               name="search-curador"
-              placeholder="Filtrar por título"
+              placeholder="Filtrar por nombre"
               value={searchState}
               onChange={(e) => {
                 setPagination((p) => ({ ...p, page: 0 }));
@@ -143,36 +155,38 @@ const Filter = ({ photos, photoCount, loading, getPhotosAuth, editPhoto, updated
           />
         </Col>
       </Row>
-      <Row>
-        {loading ? (
-          <Col style={{ textAlign: "center" }}>
-            <LeitSpinner />
-          </Col>
+      <div>
+        {!pagination.loading ? (
+          photos.length !== 0 ? (
+            <Row>
+              <Col>
+                {!cardsView ? (
+                  <PhotoList photos={photos} editPhoto={editPhoto} />
+                ) : (
+                  <PhotoCards photos={photos} editPhoto={editPhoto} />
+                )}
+              </Col>
+            </Row>
+          ) : (
+            "No hay fotografías disponibles"
+          )
         ) : (
-          <Col>
-            {!cardsView ? (
-              <PhotoList photos={photos} editPhoto={editPhoto} />
-            ) : (
-              <PhotoCards photos={photos} editPhoto={editPhoto} />
-            )}
-          </Col>
+          <Row>
+            <Col style={{ textAlign: "center" }}>
+              <LeitSpinner />
+            </Col>
+          </Row>
         )}
-      </Row>
-      {photoCount === 0 ? (
-        "No hay fotografías disponibles"
-      ) : (
-        <Row style={{ marginTop: "2em" }}>
-          <Col>
-            <Pagination
-              count={photoCount}
-              page_size={pagination.page_size}
-              page={pagination.page}
-              setStatePage={setPage}
-              size="md"
-            />
-          </Col>
-        </Row>
-      )}
+        {photoCount !== 0 ? (
+          <Pagination
+            count={photoCount}
+            page_size={pagination.page_size}
+            page={pagination.page}
+            setStatePage={setPage}
+            size="md"
+          />
+        ) : null}
+      </div>
     </Container>
   );
 };
@@ -183,9 +197,7 @@ const mapStateToProps = (state) => ({
   meta: selectWebAdminAllTags(state),
   photos: selectPhotos(state),
   photoCount: selectPhotosCount(state),
-  loading: selectSiteMiscCuradorLoading(state),
-  refresh: selectSiteMiscCuradorRefresh(state),
-  updatedPhoto: selectPhotosUpdatedPhoto(state),
+  updatedPhoto: selectPhotosPhotoUpdate(state),
 });
 
 const mapActionsToProps = (dispatch) =>

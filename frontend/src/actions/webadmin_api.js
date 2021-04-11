@@ -1,5 +1,4 @@
 import {
-  LANDING_LOADING,
   NEWS_RECOVERED,
   NEWS_EMPTY,
   CAROUSSEL_RECOVERED,
@@ -40,7 +39,6 @@ export const validateRecaptcha = (valueRecaptcha) => (dispatch) => {
           .then((data) => dispatch({ type: VALIDATE_RECAPTCHA, data: data }));
       } else {
         dispatch({ type: VALIDATE_RECAPTCHA_ERROR, data: response.data });
-        throw response.data;
       }
     });
   }
@@ -49,9 +47,6 @@ export const validateRecaptcha = (valueRecaptcha) => (dispatch) => {
 export const resetValidateRecaptcha = () => (dispatch) => {
   dispatch({ type: RESET_RECAPTCHA, data: null });
 };
-
-export const landingLoading = () => (dispatch) =>
-  dispatch({ type: LANDING_LOADING, data: null });
 
 export const getNews = (page = 0, page_size = 4, params = "") => (dispatch) => {
   return fetch(
@@ -64,7 +59,6 @@ export const getNews = (page = 0, page_size = 4, params = "") => (dispatch) => {
         .then((data) => dispatch({ type: NEWS_RECOVERED, data: data }));
     } else {
       dispatch({ type: NEWS_EMPTY, data: r.data });
-      throw r.data;
     }
   });
 };
@@ -78,7 +72,6 @@ export const getCaroussel = () => (dispatch) => {
         .then((data) => dispatch({ type: CAROUSSEL_RECOVERED, data: data }));
     } else {
       dispatch({ type: CAROUSSEL_ERROR, data: r.data });
-      throw r.data;
     }
   });
 };
@@ -165,7 +158,6 @@ export const getRequests = (query, page, page_size, extra) => (
       });
     } else {
       dispatch({ type: PHOTOREQUESTS_ERROR, data: r.data });
-      throw r.data;
     }
   });
 };
@@ -188,7 +180,6 @@ export const getRequest = (id) => (dispatch, getState) => {
       });
     } else {
       dispatch({ type: PHOTOREQUEST_ERROR, data: r.data });
-      throw r.data;
     }
   });
 };
@@ -217,7 +208,6 @@ export const updateRequest = (request) => (dispatch, getState) => {
     } else {
       dispatch(setAlert("Hubo un error al actualizar la solicitud", "warning"));
       dispatch({ type: PHOTOREQUEST_SWITCH_STATE_ERROR, data: r.data });
-      throw r.data;
     }
   });
 };
@@ -247,7 +237,6 @@ export const contactUs = (formData) => {
         } else {
           dispatch(setAlert("Hubo un error al enviar su mensaje", "warning"));
           dispatch({ type: CONTACT_ERROR, data: r.data });
-          throw r.data;
         }
       });
     } else {
@@ -273,7 +262,7 @@ export const getMessages = (query, page, page_size, extra) => (
       method: "GET",
       headers: headers,
     }
-  ).then(function (response) {
+  ).then((response) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
@@ -281,7 +270,6 @@ export const getMessages = (query, page, page_size, extra) => (
       });
     } else {
       dispatch({ type: CONTACTMESSAGES_ERROR, data: r.data });
-      throw r.data;
     }
   });
 };
@@ -308,12 +296,12 @@ export const updateMessage = (messageUpdate, formData) => (
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
+        dispatch(setAlert("Solicitud actualizada exitosamente", "success"));
         dispatch({ type: CONTACTMESSAGE_SWITCH_STATE, data: data });
       });
     } else {
-      dispatch(setAlert("Hubo un error al actualizar la solicitud", "warning"));
+      dispatch(setAlert("Error actualizando solicitud. Intente nuevamente", "warning"));
       dispatch({ type: CONTACTMESSAGE_SWITCH_STATE_ERROR, data: r.data });
-      throw r.data;
     }
   });
 };

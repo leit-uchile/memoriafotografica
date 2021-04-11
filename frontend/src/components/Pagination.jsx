@@ -150,7 +150,7 @@ const goTop = () =>
   });
 
 Pagination.propTypes = {
-  maxPageProp: PropTypes.number.isRequired,
+  maxPageProp: PropTypes.number,
   page: PropTypes.number.isRequired,
   count: PropTypes.number,
   page_size: PropTypes.number,

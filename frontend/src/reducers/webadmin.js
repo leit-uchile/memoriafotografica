@@ -1,5 +1,4 @@
 import {
-  LANDING_LOADING,
   NEWS_RECOVERED,
   NEWS_EMPTY,
   CAROUSSEL_RECOVERED,
@@ -25,19 +24,18 @@ import {
 } from "../actions/types";
 
 const initialState = {
-  news: { count: 0, results: [] },
+  news: { results: [], count: 0, },
   caroussel: [],
   errors: [],
   requestedPhotos: [],
   requested: false,
   contacted: false,
   //Used in curador
-  loading: false,
-  messages: [],
-  updatedMessage: false,
-  requests: [],
+  messages: { results: [], count: 0, },
+  messageUpdate: {},
+  requests: { results: [], count: 0, },
   requestDetail: {},
-  updatedRequest: false,
+  requestUpdate: {},
   recaptchaState: false,
 };
 
@@ -50,21 +48,18 @@ export default function webadmin(state = initialState, action) {
       return { ...state, recaptchaState: false };
     case RESET_RECAPTCHA:
       return { ...state, recaptchaState: false };
-    case LANDING_LOADING:
-      return { ...state, loading: true };
     case NEWS_RECOVERED:
-      return { ...state, loading: false, news: data };
+      return { ...state, news: data };
     case NEWS_EMPTY:
       return {
         ...state,
-        loading: false,
         news: { count: 0, results: [] },
         errors: data,
       };
     case CAROUSSEL_RECOVERED:
-      return { ...state, loading: false, caroussel: data[0].news };
+      return { ...state, caroussel: data[0].news };
     case CAROUSSEL_ERROR:
-      return { ...state, loading: false, caroussel: [], errors: data };
+      return { ...state, caroussel: [], errors: data };
     case REQUESTPHOTO:
       let filtered = state.requestedPhotos.filter(
         (el) => el.id !== action.data.id
@@ -90,9 +85,9 @@ export default function webadmin(state = initialState, action) {
     case PHOTOREQUEST_ERROR:
       return { ...state, requestDetail: {}, error: action.data };
     case PHOTOREQUEST_SWITCH_STATE:
-      return { ...state, updatedRequest: true };
+      return { ...state, requestUpdate: action.data };
     case PHOTOREQUEST_SWITCH_STATE_ERROR:
-      return { ...state, updatedRequest: false };
+      return { ...state, requestUpdate: {} };
     case CONTACT_SUCCESS:
       return { ...state, contacted: true };
     case CONTACT_ERROR:
@@ -102,35 +97,46 @@ export default function webadmin(state = initialState, action) {
     case CONTACTMESSAGES_ERROR:
       return { ...state, errors: data };
     case CONTACTMESSAGE_SWITCH_STATE:
-      return { ...state, updatedMessage: true };
+      return { ...state, messageUpdate: action.data };
     case CONTACTMESSAGE_SWITCH_STATE_ERROR:
-      return { ...state, updatedMessage: false };
+      return { ...state, messageUpdate: {} };
     default:
       return state;
   }
 }
 
-export const selectWebAdminMessages = (state) => state.webadmin.messages;
+export const selectWebAdminMessages = (state) => 
+  state.webadmin.messages;
 
-export const selectWebAdminUpdateMessage = (state) =>
-  state.webadmin.updatedMessage;
+export const selectWebAdminMessageUpdate = (state) =>
+  state.webadmin.messageUpdate;
 
-export const selectWebAdminRequests = (state) => state.webadmin.requests;
+export const selectWebAdminRequests = (state) => 
+  state.webadmin.requests;
+
+export const selectWebAdminRequestUpdate = (state) =>
+  state.webadmin.requestUpdate;
 
 export const selectWebAdminRequestDetail = (state) =>
   state.webadmin.requestDetail;
 
-export const selectWebAdminAllTags = (state) => state.webadmin.all_tags;
+export const selectWebAdminAllTags = (state) => 
+  state.webadmin.all_tags;
 
-export const selectWebAdminContacted = (state) => state.webadmin.contacted;
+export const selectWebAdminContacted = (state) => 
+  state.webadmin.contacted;
 
-export const selectWebAdminNewsResult = (state) => state.webadmin.news.results;
+export const selectWebAdminNewsResult = (state) => 
+  state.webadmin.news.results;
 
-export const selectWebAdminNewCount = (state) => state.webadmin.news.count;
+export const selectWebAdminNewCount = (state) => 
+  state.webadmin.news.count;
 
-export const selectWebAdminCarousel = (state) => state.webadmin.caroussel;
+export const selectWebAdminCarousel = (state) => 
+  state.webadmin.caroussel;
 
 export const selectWebAdminRequestPhotos = (state) =>
   state.webadmin.requestedPhotos;
 
-export const selectWebAdminRequested = (state) => state.webadmin.requested;
+export const selectWebAdminRequested = (state) => 
+  state.webadmin.requested;

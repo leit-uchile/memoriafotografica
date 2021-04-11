@@ -190,10 +190,10 @@ const ModifyModal = ({
           onClick={() => onSend()}
         >
           {sending ? <Spinner style={{ width: "1rem", height: "1rem" }} /> : ""}{" "}
-          Confirmar
+          Eliminar
         </Button>
         <Button color="secondary" onClick={toggle}>
-          Volver
+          Cancelar
         </Button>
       </ModalFooter>
     </Modal>

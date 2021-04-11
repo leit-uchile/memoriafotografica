@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import Gallery from "react-photo-gallery";
-import { Container, Row, Col } from "reactstrap";
+import { Container, Row, Col, Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
@@ -63,13 +63,10 @@ const SelectedImage = ({
   top,
   left,
   selected,
-  onClick,
+  toggle,
   onRedirect,
-  selectAllBtn,
-  viewLink,
   selectIcon,
 }) => {
-  const [isSelected, setIsSelected] = useState(selected);
   //calculate x,y scale
   const sx = (100 - (30 / photo.width) * 100) / 100;
   const sy = (100 - (30 / photo.height) * 100) / 100;
@@ -86,40 +83,34 @@ const SelectedImage = ({
   };
 
   const handleOnSelect = (e) => {
-    setIsSelected(!isSelected);
-    onClick(e, { index });
+    toggle(photo.id, { index });
   };
-
-  useEffect(() => {
-    setIsSelected(selected);
-  }, [selected]);
 
   return (
     <div
       style={{ margin, height: photo.height, width: photo.width, ...cont }}
-      className={!isSelected ? "not-selected" : "selected"}
+      className={!selected ? "not-selected" : "selected"}
     >
-      <Checkmark selected={isSelected ? true : false} />
+      <Checkmark selected={selected} />
       <img
         alt={photo.title}
         style={
-          isSelected ? { ...imgStyle, ...selectedImgStyle } : { ...imgStyle }
+          selected ? { ...imgStyle, ...selectedImgStyle } : { ...imgStyle }
         }
         {...photo}
-        onClick={isSelected ? handleOnSelect : () => {}}
+        onClick={selected ? handleOnSelect : () => {}}
       />
 
-      {!isSelected ? (
+      {!selected ? (
         <div className="icons">
-          {viewLink ? (
+          {onRedirect !== null ? (
             <FontAwesomeIcon
               icon={faEye}
               style={{ marginRight: "0.35em" }}
               onClick={handleOnRedirect}
             />
-          ) : (
-            ""
-          )}
+          ) : null}
+
           <FontAwesomeIcon
             icon={selectIcon}
             style={{ marginRight: "0.35em" }}
@@ -137,14 +128,12 @@ const SelectedImage = ({
   );
 };
 
-const PhotoEditor = ({ photos, selectAll, ...props }) => {
-  // const [selectAll, setSelectAll] = useState(false);
-
-  // const toggleSelectAll = () => {
-  //   setSelectAll(!selectAll);
-  //   putAll(!selectAll)
-  // };
-
+const PhotoEditor = ({
+  photos,
+  onRedirect = null,
+  checkAll = false,
+  ...props
+}) => {
   const validIcons = ["pen", "check"];
   const iconsDict = {
     pen: faPencilAlt,
@@ -157,45 +146,73 @@ const PhotoEditor = ({ photos, selectAll, ...props }) => {
       ? iconStr
       : "pen";
   };
-  const [viewLink, setViewLink] = useState(
-    props.viewLink === undefined ? true : props.viewLink
-  );
   const [selectIcon, setSelectIcon] = useState(
     props.selectIcon === undefined ? "pen" : checkIcon(props.selectIcon)
   );
-  const [allButton, setAllButton] = useState(
-    props.selectAllBtn === undefined ? true : props.selectAllBtn
-  );
+
+  const [state, setState] = useState({});
+
   const imageRenderer = useCallback(
-    ({ index, left, top, key, photo, onClick }) => (
+    ({ index, left, top, photo }) => (
       <SelectedImage
-        selected={allButton ? selectAll : photo.selected}
-        key={key}
-        margin={"2px"}
         index={index}
+        selected={state[photo.id]}
+        toggle={toggleElement}
+        margin={"2px"}
         photo={photo}
         left={left}
         top={top}
-        onClick={onClick}
-        onRedirect={props.onRedirect}
-        selectAllBtn={allButton}
+        onRedirect={onRedirect}
         selectIcon={iconsDict[selectIcon]}
-        viewLink={viewLink}
       />
     ),
-    [selectAll]
+    [state]
   );
+
+  useEffect(() => {
+    selectAll();
+  }, [checkAll]);
+
+  useEffect(() => {
+    // List changed ?
+    if (photos[0] && state[photos[0].id] === undefined) {
+      let selected = {};
+      photos.forEach((element, key) => {
+        selected[element.id] = false;
+      });
+      setState(selected);
+      props.getSelection(selected);
+    }
+    // eslint-disable-next-line
+  }, [photos, props.update]);
+
+  const toggleElement = (val, obj) => {
+    let key = obj.index;
+    let update = { ...state };
+    update[val] = !state[val];
+    if (!state[val]) {
+      update["nb-" + key] = !state[val];
+    } else {
+      delete update["nb-" + key];
+    }
+    setState(update);
+    props.getSelection(update);
+  };
+
+  const selectAll = () => {
+    let selected = {};
+    photos.forEach((element, key) => {
+      selected[element.id] = checkAll;
+      if (checkAll) {
+        selected["nb-" + key] = checkAll;
+      }
+    });
+    setState(selected);
+    props.getSelection(selected);
+  };
 
   return (
     <Container fluid>
-      {/* <Row>
-        <Col>
-        {!selectAll
-        ?(<Button onClick={toggleSelectAll}>Seleccionar todas</Button>)
-        :(<Button onClick={toggleSelectAll}>Borrar selección</Button>)
-        }
-        </Col>
-      </Row> */}
       <Row>
         <Col>
           <Gallery photos={photos} renderImage={imageRenderer} {...props} />
@@ -206,9 +223,7 @@ const PhotoEditor = ({ photos, selectAll, ...props }) => {
 };
 
 PhotoEditor.propTypes = {
-  viewLink: PropTypes.bool,
   selectIcon: PropTypes.oneOf(["pen", "check"]),
-  selectAllBtn: PropTypes.bool,
   photos: PropTypes.arrayOf(
     PropTypes.shape({
       width: PropTypes.number.isRequired,
@@ -216,7 +231,7 @@ PhotoEditor.propTypes = {
       src: PropTypes.string.isRequired,
     })
   ),
-  selectAll: PropTypes.func.isRequired,
+  getSelection: PropTypes.func.isRequired,
 };
 
 export default PhotoEditor;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col } from "reactstrap";
+import { Container, Row, Col, Badge } from "reactstrap";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { user } from "../../../actions";
@@ -7,17 +7,19 @@ import uuid4 from "uuid";
 import { Redirect } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import "../styles.css";
-import { selectUserData,
-         selectUserAlbums,} from "../../../reducers";
+import { selectUserData, selectUserAlbums } from "../../../reducers";
+import AlbumGallery from "../../../components/AlbumGallery";
+import { LeitSpinner } from "../../../components";
 
 const UserAlbums = ({
-  isPublic,
+  publicView,
   user,
   albums,
   publicUser,
   loadPublicAlbums,
   loadAlbums,
 }) => {
+  const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState({
     user: { first_name: "usuario" },
     redirectUrl: false,
@@ -25,36 +27,26 @@ const UserAlbums = ({
 
   // Set user info and load the albums accordingly
   useEffect(() => {
-    if (isPublic && publicUser !== undefined) {
+    setLoading(true);
+    if (publicView && publicUser !== undefined) {
       setDisplay((d) => ({ ...d, user: publicUser }));
-      loadPublicAlbums(publicUser.id);
-    } else if (!isPublic) {
-      loadAlbums(user.id, -1, -1);
+      loadPublicAlbums(publicUser.id, "&page=1&page_size=100").then((r) => {
+        setLoading(false);
+      });
+    } else if (!publicView) {
       setDisplay((d) => ({ ...d, user: user }));
+      loadAlbums(user.id, 1, 100).then((r) => {
+        setLoading(false);
+      });
     }
-  }, [isPublic, publicUser, loadPublicAlbums, loadAlbums, user]);
-
-  const [rows, setRows] = useState([]);
-
-  useEffect(() => {
-    let list = [];
-    for (let index = 0; index < albums.length; index = index + 3) {
-      let cols = [];
-      if (albums[index]) cols.push(albums[index]);
-      if (albums[index + 1]) cols.push(albums[index + 1]);
-      if (albums[index + 2]) cols.push(albums[index + 2]);
-      cols.theKey = uuid4();
-      list.push(cols);
-    }
-    setRows(list);
-  }, [albums]);
+  }, [publicView, publicUser, loadPublicAlbums, loadAlbums, user]);
 
   const setRedirect = (id) => {
     setDisplay({
       ...display,
-      redirectUrl: isPublic
+      redirectUrl: publicView
         ? `/user/public/albums/${id}`
-        : `/user/albums/${id}`,
+        : `/user/dashboard/albums/${id}`,
     });
   };
 
@@ -64,8 +56,8 @@ const UserAlbums = ({
     <Container fluid className="dashboard">
       <Helmet>
         <title>
-          {isPublic && publicUser
-            ? "Albums de" + display.user.first_name
+          {publicView && publicUser
+            ? "Albums de " + display.user.first_name
             : "Mis albumes"}
         </title>
       </Helmet>
@@ -73,37 +65,47 @@ const UserAlbums = ({
         <Col>
           <h2
             style={{
-              textAlign: `${isPublic ? "center" : "left"}`,
+              textAlign: `${publicView ? "center" : "left"}`,
             }}
           >
-            {isPublic ? `Albums de ${display.user.first_name}` : "Mis albumes"}
+            {publicView
+              ? `Albums de ${display.user.first_name}`
+              : "Mis albumes"}{" "}
+            {!loading ? (
+              <Badge color="primary">{albums.results.length}</Badge>
+            ) : null}
           </h2>
-          {/* <Badge color="primary">{mapped.length}</Badge> */}
         </Col>
       </Row>
       <Row>
         <Col>
           <Container fluid>
-            {rows.map((r) => (
-              <Row key={r.key} style={{ marginTop: "1em" }}>
-                {r.map((c) => (
-                  <Col key={c.name}>
-                    <div
-                      style={{
-                        backgroundImage: `url("${c.thumbnail}")`,
-                        cursor: "pointer",
+            <div className="stat-box rounded">
+              {!loading ? (
+                <Row>
+                  <Col
+                    sm={
+                      albums.results.length === 1
+                        ? { size: 4, offset: 4 }
+                        : { size: 12 }
+                    }
+                  >
+                    <AlbumGallery
+                      albums={albums.results}
+                      onClick={(e, obj) => {
+                        setRedirect(albums.results[obj.index].id);
                       }}
-                      className="user-albums-background"
-                      onClick={() => {
-                        setRedirect(c.id);
-                      }}
-                    >
-                      <h4>{c.name}</h4>
-                    </div>
+                    />
                   </Col>
-                ))}
-              </Row>
-            ))}
+                </Row>
+              ) : (
+                <Row>
+                  <Col style={{ textAlign: "center" }}>
+                    <LeitSpinner />
+                  </Col>
+                </Row>
+              )}
+            </div>
           </Container>
         </Col>
       </Row>

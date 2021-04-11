@@ -1,18 +1,18 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Col, Button, Row, Input, ButtonGroup } from "reactstrap";
 import MetadataList from "./MetadataList";
 import HelpMessages from "../../HelpMessages";
 import ModifyModal from "./ModifyModal";
 import { connect } from "react-redux";
 import { metadata } from "../../../../actions";
-import { Pagination } from "../../../../components";
+import { LeitSpinner, Pagination } from "../../../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { bindActionCreators } from "redux";
 import {
   selectMetaDataAllIptcs,
   selectMetaDataGeneralTags,
-  selectMetaDataUpdated,
+  selectMetaDataUpdate,
 } from "../../../../reducers";
 import "../styles.css";
 
@@ -32,24 +32,35 @@ const messages = [
  * Search metadata and narrow the list
  * Select elements and make modifications
  */
-const Modify = ({ metadata, iptcs, searchMeta, active, updated }) => {
+const Modify = ({ metadata, iptcs, searchMeta, active, updatedMeta }) => {
   const [searchState, setSearchState] = useState("");
-  const [pagination, setPagination] = useState({ page: 0, page_size: 12 });
-  const [showHelp, setShowHelp] = useState(false);
+  const [pagination, setPagination] = useState({
+    page: 0,
+    page_size: 12,
+    loading: true,
+  });
   const [operation, setOperation] = useState("0");
   const [modal, setModal] = useState(false);
   const [selected, setSelected] = useState([]);
 
   useEffect(() => {
     if (active) {
+      setPagination((pag) => ({ ...pag, loading: true }));
       searchMeta(
         searchState,
         pagination.page + 1,
         pagination.page_size,
         "&sort=updated_at-desc"
-      );
+      ).then((r) => setPagination((pag) => ({ ...pag, loading: false })));
     }
-  }, [pagination, searchState, searchMeta, active, updated]);
+  }, [
+    pagination.page,
+    pagination.page_size,
+    searchState,
+    searchMeta,
+    active,
+    updatedMeta,
+  ]);
 
   const setPage = (p) => {
     setPagination((pag) => ({ ...pag, page: p }));
@@ -62,10 +73,10 @@ const Modify = ({ metadata, iptcs, searchMeta, active, updated }) => {
           <h2>Modificar Metadata</h2>
         </Col>
       </Row>
-      <Row>
+      <Row style={{ marginBottom: "10px" }}>
         <Col sm={6}>
           <ButtonGroup>
-            <Button onClick={() => setShowHelp(true)}>¿Ayuda?</Button>
+            <Button id="help">¿Ayuda?</Button>
             <Input
               type="select"
               name="selectOp"
@@ -123,54 +134,52 @@ const Modify = ({ metadata, iptcs, searchMeta, active, updated }) => {
           </ButtonGroup>
         </Col>
       </Row>
-      {showHelp ? (
-        <Fragment>
-          <Row style={{ marginTop: "1em" }}>
-            <HelpMessages messages={messages} />
-          </Row>
-          <Row style={{ marginTop: "1em" }}>
-            <Col sm={{ offset: 3, size: 6 }}>
-              <Button
-                onClick={() => {
-                  setShowHelp(false);
-                }}
-                block
-              >
-                Ya entend&iacute;
-              </Button>
-            </Col>
-          </Row>
-        </Fragment>
-      ) : null}
-      <Row style={{ marginTop: "1em" }}>
+      <Row>
         <Col>
-          <MetadataList
-            metadata={metadata.results}
-            iptcs={iptcs ? iptcs : []}
-            getSelection={(v) => {
-              var keys = Object.keys(v)
-                .filter((el) => el.includes("nb-"))
-                .map((el) => el.substr(3));
-              setSelected(keys.map((el) => metadata.results[Number(el)]));
-            }}
-            update={updated}
-          />
-          {metadata.count === 0 ? (
-            "No hay resultados disponibles"
-          ) : (
-            <Pagination
-              count={metadata.count}
-              page_size={pagination.page_size}
-              page={pagination.page}
-              setStatePage={setPage}
-              size="md"
-              label="metadata-pagination"
-              displayFirst
-              displayLast
-            />
-          )}
+          <HelpMessages id="#help" messages={messages} />
         </Col>
       </Row>
+      <div>
+        {!pagination.loading ? (
+          metadata.results.length !== 0 ? (
+            <Row>
+              <Col>
+                <MetadataList
+                  metadata={metadata.results}
+                  iptcs={iptcs ? iptcs : []}
+                  getSelection={(v) => {
+                    var keys = Object.keys(v)
+                      .filter((el) => el.includes("nb-"))
+                      .map((el) => el.substr(3));
+                    setSelected(keys.map((el) => metadata.results[Number(el)]));
+                  }}
+                  update={updatedMeta}
+                />
+              </Col>
+            </Row>
+          ) : (
+            "No hay resultados disponibles"
+          )
+        ) : (
+          <Row>
+            <Col style={{ textAlign: "center" }}>
+              <LeitSpinner />
+            </Col>
+          </Row>
+        )}
+        {metadata.count !== 0 ? (
+          <Pagination
+            count={metadata.count}
+            page_size={pagination.page_size}
+            page={pagination.page}
+            setStatePage={setPage}
+            size="md"
+            label="metadata-pagination"
+            displayFirst
+            displayLast
+          />
+        ) : null}
+      </div>
     </Container>
   );
 };
@@ -178,7 +187,7 @@ const Modify = ({ metadata, iptcs, searchMeta, active, updated }) => {
 const mapStateToProps = (state) => ({
   metadata: selectMetaDataGeneralTags(state),
   iptcs: selectMetaDataAllIptcs(state),
-  updated: selectMetaDataUpdated(state),
+  updatedMeta: selectMetaDataUpdate(state),
 });
 
 const mapActionsToProps = (dispatch) =>
