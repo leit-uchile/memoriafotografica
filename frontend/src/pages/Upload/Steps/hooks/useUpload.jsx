@@ -9,16 +9,14 @@ import { useState, useEffect } from "react";
  * They are called in order as follows
  */
 const useUpload = (
-  createMultipleMetas,
-  uploadImages,
-  metadataCreation,
-  metadata = [],
-  uploadPhotos = () => {}
+  createMultipleMetas, // func
+  uploadImages, // func
+  metadataCreation, // metadata status object
 ) => {
   const [state, setState] = useState({
     data: { photos: [], meta: {} }, // All info to upload
-    uploading: false,
     newMetadata: [],
+    uploading: false,
     waitForMeta: false,
   });
 
@@ -26,7 +24,7 @@ const useUpload = (
    * MAIN METHOD
    * filtered photos, general photo info as meta
    */
-  const startProcess = (photos, meta) => {
+  const startProcess = (photos, photoInfo) => {
     // Manage metadata creation:
     // Merge tags in one array
     let newMetadata = [];
@@ -37,7 +35,7 @@ const useUpload = (
         }
       });
     });
-    meta.forEach((tag) => {
+    photoInfo.tags.forEach((tag) => {
       if (tag.id === undefined) {
         newMetadata.push(tag.value);
       }
@@ -48,14 +46,14 @@ const useUpload = (
       createMultipleMetas(newMetadata);
       setState({
         ...state,
-        data: { photos: [...photos], meta },
+        data: { photos: [...photos], photoInfo },
         uploading: true,
         waitForMeta: true,
       });
     } else {
       setState({
         ...state,
-        data: { photos: [...photos], meta },
+        data: { photos: [...photos], photoInfo },
         uploading: true,
         waitForMeta: false,
       });
@@ -63,70 +61,69 @@ const useUpload = (
   };
 
   useEffect(() => {
-    if (metadataCreation && !metadataCreation.uploading && state.uploading) {
+    if (metadataCreation && !metadataCreation.creating && state.uploading) {
       // Update metadata from props info
       setState({
         ...state,
-        newMetadata: [metadataCreation.newIds],
+        newMetadata: [...metadataCreation.newIds],
         waitForMeta: false,
       });
     }
   }, [metadataCreation]);
 
-  // Call method associateMeta if needed
+  // Call AssociateMeta after state update
   useEffect(() => {
-    if (!state.waitForMeta && state.data.photos.length !== 0) {
-      // Call AssociateMeta after state update
-      associateMeta();
+    if (!state.waitForMeta && state.uploading) {
+      consolidateMetadata();
     }
   }, [state]);
 
-  const associateMeta = () => {
+  const consolidateMetadata = () => {
+    // Map all new names to a valid id
     let meta_mapped = {};
-    state.metadata.forEach((t) => {
+    state.newMetadata.forEach((t) => {
       meta_mapped[t.value] = t.id;
     });
 
     // get default metadata
     // As an array of IDs as 1,2,3
-    let default_metadata = state.data.meta
-      .map((t) => {
-        return meta_mapped[t.value];
-      })
+    let default_metadata = state.data.photoInfo.tags
+      .map((t) => (t.id ? t.id : meta_mapped[t.value])) // If it doesnt exist is new!
       .join();
 
-    // Read from photoList and change meta
-    let photo_copy = this.state.data.photos.map((el) => {
+    // Read from photoList and change metadata
+    let photo_copy = state.data.photos.map((el) => {
+      // Add CC rights
+      let cc = el.meta.cc == null ? state.data.photoInfo.cc : el.meta.cc;
+
       // If the information is uniform
       if (el.meta.tags.length === 0) {
-        return { ...el, meta: { ...el.meta, tags: default_metadata } };
+        return {
+          ...el,
+          meta: {
+            ...el.meta, tags: default_metadata,
+            cc, date: state.data.photoInfo.date,
+          },
+        };
       } else {
         let custom_metadata = el.meta.tags
-          .map((t) => {
-            // They have name saved
-            return meta_mapped[t.value];
-          })
-          .join();
-        return { ...el, meta: { ...el.meta, tags: custom_metadata } };
+          .map((t) => (t.id ? t.id : meta_mapped[t.value]))
+        custom_metadata.push(...default_metadata)
+          
+        return {
+          ...el,
+          meta: {
+            ...el.meta, tags: custom_metadata.join(),
+            cc, date: state.data.photoInfo.date,
+          },
+        };
       }
     });
 
-    // Start process
-    setState({ data: { ...this.state.data, photos: photo_copy } });
-    startUploading({});
-  };
-
-  // Once the metadata is ready we upload photos
-  const startUploading = (newData) => {
-    // Merge album info and photos from arg photos
-    // Important: photos is used to store the images
-    setState({
-      ...state,
-      data: { ...state.data, ...newData },
-      uploading: true, // This may be removed (?)
-    });
-    // Upload all
-    uploadPhotos(this.state.data);
+    // Update photos and Start process
+    setState({ data: { ...state.data, photos: photo_copy } });
+    uploadImages(photo_copy);
+    
   };
 
   return [startProcess];

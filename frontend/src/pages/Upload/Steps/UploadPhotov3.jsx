@@ -1,16 +1,7 @@
 import React from "react";
 import UploadDetails from "./UploadDetailsv2";
 import UploadProgress from "./UploadProgress";
-import {
-  Container,
-  Row,
-  Col,
-  Button,
-  ButtonGroup,
-  CardDeck,
-  Card,
-  CardBody,
-} from "reactstrap";
+import { Container, Row, Col, Button, ButtonGroup, CardColumns } from "reactstrap";
 import Dropzone from "react-dropzone";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,10 +11,7 @@ import {
 import { connect } from "react-redux";
 import { site_misc, gallery, metadata } from "../../../actions";
 import { bindActionCreators } from "redux";
-import {
-  selectUpload,
-  selectMetaData,
-} from "../../../reducers";
+import { selectUpload, selectMetaData } from "../../../reducers";
 import "./uploadPhoto.css";
 import useHandleFiles from "./hooks/useHandleFiles";
 import useUpload from "./hooks/useUpload";
@@ -50,21 +38,16 @@ const UploadPhoto = ({
     sendAlert
   );
 
-  const [startProcess] = useUpload(createMultipleMetas, uploadImages, metadataCreation);
+  const [startProcess] = useUpload(
+    createMultipleMetas,
+    uploadImages,
+    metadataCreation
+  );
 
   const handleInputChange = (query) => {
     if (query.length >= 2) {
       searchMeta(query, 1, 10);
     }
-  };
-
-  const uploadPhotos = () => {
-    let index = upload.error.map((e) => e.photo_index);
-    let filtered = state.photos.filter((_, k) => index.includes(k));
-    filtered = filtered.length === 0 ? [...state.photos] : filtered;
-
-    setState({ photos: filtered });
-    startProcess(filtered, photoInfo);
   };
 
   const showFailed = () => {
@@ -77,26 +60,16 @@ const UploadPhoto = ({
     setState({ ...state, photos: filtered });
   };
 
+  const uploadPhotos = () => {
+    startProcess(state.photos, photoInfo);
+  };
+
   const suggestions = meta
     ? meta.map((el) => ({ id: el.id, name: el.value }))
     : [];
 
-  let first = state.photos
-    .slice(0, 2)
-    .map((el, key) => (
-      <UploadDetails
-        key={el.id}
-        id={el.id}
-        photo={el.photo}
-        save={(info) => saveMeta(info, key)}
-        delete={() => handleErase(key)}
-        meta={el.meta}
-        suggestions={suggestions}
-        search={handleInputChange}
-      />
-    ));
-  let rows = [];
-  for (var i = 2; i < state.photos.length; i = i + 3) {
+  const rows = [];
+  for (var i = 0; i < state.photos.length; i = i + 3) {
     var row = [];
     for (let j = 0; j < 3 && i + j < state.photos.length; j++) {
       const el = state.photos[j + i];
@@ -114,18 +87,27 @@ const UploadPhoto = ({
         />
       );
     }
-
     rows.push(
-      <Row style={{ marginTop: "1em" }}>
-        <Col>
-          <CardDeck>{row}</CardDeck>
-        </Col>
-      </Row>
+          <CardColumns>{row}</CardColumns>
     );
   }
 
+  const dropzone = (
+    <div className="upload-photo-dropzone">
+      <Dropzone onDrop={handleOnDrop}>
+        {({ getRootProps, getInputProps }) => (
+          <div {...getRootProps()}>
+            <input {...getInputProps()} />
+            <p>Arrastra y suelta una imagen o haz click aqui</p>
+            <FontAwesomeIcon icon={faCloudUploadAlt} size="3x" />
+          </div>
+        )}
+      </Dropzone>
+    </div>
+  );
+
   return (
-    <Container fluid>
+    <Container>
       <Row>
         <Col>
           <h2 className="page-title">
@@ -134,35 +116,11 @@ const UploadPhoto = ({
         </Col>
       </Row>
       <Row>
-        <Col sm={9}>
-          <Container fluid>
-            <Row>
-              <Col>
-                <CardDeck>
-                  <Card className="upload-photo-dropzone">
-                    <CardBody>
-                      <Dropzone onDrop={handleOnDrop}>
-                        {({ getRootProps, getInputProps }) => (
-                          <div {...getRootProps()}>
-                            <input {...getInputProps()} />
-                            <p>Arrastra y suelta una imagen o haz click aqui</p>
-                            <FontAwesomeIcon
-                              icon={faCloudUploadAlt}
-                              size="3x"
-                            />
-                          </div>
-                        )}
-                      </Dropzone>
-                    </CardBody>
-                  </Card>
-                  {first}
-                </CardDeck>
-              </Col>
-            </Row>
+        <Col md={12} lg={9}>
+            {state.photos.length === 0 && dropzone}
             {rows}
-          </Container>
         </Col>
-        <Col sm={3}>
+        <Col md={12} lg={3}>
           <div className="white-box upload-rules">
             <h4>Metadatos</h4>
             <ul>
@@ -183,11 +141,8 @@ const UploadPhoto = ({
               </li>
             </ul>
           </div>
+          {state.photos.length > 0 && dropzone}
         </Col>
-      </Row>
-      <Row style={{ marginTop: "2em" }}>
-        <Col md={8}></Col>
-        <Col md={4}></Col>
       </Row>
       <Row>
         <Col style={{ textAlign: "center" }}>
@@ -231,7 +186,7 @@ UploadPhoto.propTypes = {
 
 const mapStateToProps = (state) => ({
   upload: selectUpload(state),
-  metadataCreation: selectMetaData(state)
+  metadataCreation: selectMetaData(state),
 });
 
 const mapActionsToProps = (dispatch) =>

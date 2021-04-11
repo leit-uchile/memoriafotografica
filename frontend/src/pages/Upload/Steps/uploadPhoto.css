@@ -8,6 +8,7 @@
   text-align: center;
   border: 3px dashed var(--leit-pink);
   box-shadow: #ddd 3px 5px 10px;
+  padding: 1rem;
 }
 .upload-photo-dropzone div {
   height: 100%;

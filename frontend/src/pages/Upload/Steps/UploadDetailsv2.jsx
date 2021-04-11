@@ -11,6 +11,11 @@ import {
   Card,
   CardBody,
 } from "reactstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import PropTypes from "prop-types"
 import "./uploadDetails.css";
 
 const CC_INFO = [
@@ -96,9 +101,12 @@ class UploadDetails extends Component {
   };
 
   render() {
+    //  className="white-box upload-details-container"
     return (
-      <Card className="white-box upload-details-container">
-        <img width="100%" src={this.state.src} alt="Thumbnail" />
+      <Card className="white-box">
+        <div className="upload-card-img">
+          <img src={this.state.src} />
+        </div>
         <CardBody>
           <Form>
             <FormGroup>
@@ -115,20 +123,19 @@ class UploadDetails extends Component {
               />
             </FormGroup>
             <ButtonGroup>
-              <Button color="danger" onClick={this.onDelete}>
-                Eliminar
-              </Button>
-              <Button onClick={this.toggle}>
-                {this.state.collapse
-                  ? "Descartar cambios"
-                  : "Información por separado"}{" "}
-              </Button>
-              {this.state.collapse ? (
-                <Button color="primary" onClick={this.onSubmit}>
-                  Guardar cambios
-                </Button>
-              ) : null}
-            </ButtonGroup>
+
+            <Button color="danger" onClick={this.onDelete}>
+            <FontAwesomeIcon icon={faTrash}/>
+            </Button>
+            <Button
+              onClick={this.state.collapse ? this.onSubmit : this.toggle}
+              color={this.state.collapse ? "success" : "secondary"}
+              >
+              {this.state.collapse
+                ? "Guardar"
+                : "Agregar datos"}{" "}
+            </Button>
+              </ButtonGroup>
           </Form>
           <Collapse
             isOpen={this.state.collapse}
@@ -189,6 +196,15 @@ class UploadDetails extends Component {
       </Card>
     );
   }
+}
+
+UploadDetails.propTypes = {
+  photo: PropTypes.object.isRequired,
+  save: PropTypes.func.isRequired,
+  delete: PropTypes.func.isRequired,
+  meta: PropTypes.object.isRequired,
+  suggestions: PropTypes.arrayOf(PropTypes.shape({"id": PropTypes.any})).isRequired,
+  search: PropTypes.func.isRequired,
 }
 
 export default UploadDetails;

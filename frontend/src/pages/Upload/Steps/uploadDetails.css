@@ -4,3 +4,11 @@
 .upload-details-hr {
   margin-bottom: 1em;
 }
+
+.upload-card-img{
+  background-color: black;
+  contain: content;
+  justify-content: center;
+  display: flex;
+  overflow-x: auto;
+}

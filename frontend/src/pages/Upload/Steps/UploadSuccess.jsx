@@ -17,7 +17,7 @@ const UploadSuccess = () => {
               </h2>
           </Col>
         </Row>
-        <Row style={{ marginTop: "2em"}}>
+        <Row>
           <Col md={{ size: 6, offset: 3}}>
             <h4>
                 Tus fotos deber&aacute;n ser aprobadas 

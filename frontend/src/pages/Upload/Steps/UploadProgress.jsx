@@ -64,7 +64,7 @@ const UploadProgress = ({
         toggle();
       }}
     >
-      {buttonLabel}
+      {buttonLabel}{' '}
       <FontAwesomeIcon icon={faChevronCircleRight} />
       <Modal isOpen={modal}>
         <ModalHeader >Subir Fotograf&iacute;a</ModalHeader>
