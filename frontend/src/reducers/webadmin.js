@@ -21,6 +21,8 @@ import {
   PHOTOREQUEST_ERROR,
   GUEST_VERIFY,
   GUEST_VERIFY_ERROR,
+  COMPLETE_REGISTRATION,
+  COMPLETE_REGISTRATION_ERROR,
 } from "../actions/types";
 
 const initialState = {
@@ -43,6 +45,10 @@ const initialState = {
 export default function webadmin(state = initialState, action) {
   const { type, data } = action;
   switch (type) {
+    case COMPLETE_REGISTRATION:
+      return { ...state, completeRegistration: action.data };
+    case COMPLETE_REGISTRATION_ERROR:
+      return { ...state, completeRegistration: action.data };
     case GUEST_VERIFY:
       return { ...state, guestState: data };
     case GUEST_VERIFY_ERROR:

@@ -19,7 +19,8 @@ urlpatterns = [
     re_path("^users/photos/(?P<pk>[0-9]+)/$", UserPhotosAPI.as_view()),
     re_path("^users/albums/(?P<pk>[0-9]+)/$", UserAlbumsAPI.as_view()),
     re_path("^users/comments/(?P<pk>[0-9]+)/$", UserCommentsAPI.as_view()),
-    re_path("^users/guest/", GuestVerifyTokenAPI.as_view()),
+    re_path("^users/guest/", RegisterGuest.as_view()),
+    re_path("^users/complete_registration/", CompleteRegistration.as_view()),
     re_path(
         "^auth/password_reset/",
         include('django_rest_passwordreset.urls', namespace='password_reset')),

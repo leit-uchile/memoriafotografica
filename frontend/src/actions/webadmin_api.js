@@ -21,8 +21,30 @@ import {
   CONTACTMESSAGE_SWITCH_STATE_ERROR,
   GUEST_VERIFY,
   GUEST_VERIFY_ERROR,
+  COMPLETE_REGISTRATION,
+  COMPLETE_REGISTRATION_ERROR,
 } from "./types";
 import { setAlert } from "./site_misc";
+
+export const CompleteRegistration = (data) => (dispatch) => {
+  {
+    let header = { "Content-Type": "application/json" };
+    fetch("/api/users/complete_registration/", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: header,
+    }).then(function (response) {
+        return dispatch({ type: COMPLETE_REGISTRATION, data: response.status })
+          
+      // else {
+      //   response.json().then((data) => {
+      //     dispatch(setAlert(data["Error"], "warning"));
+      //     dispatch({ type: COMPLETE_REGISTRATION_ERROR, data: data["Error"] });
+      //   });
+      // }
+    });
+  }
+};
 
 export const GuestVerify = (data) => (dispatch) => {
   {
