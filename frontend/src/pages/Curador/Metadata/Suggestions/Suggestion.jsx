@@ -1,7 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import {
   selectTagSuggestionsRecovered,
-  selectUserIsAuthenticated,
   selectTagSuggestionsLoading,
   selectTagSuggestionsApproving,
   selectTagSuggestionsApproved,
@@ -127,18 +126,25 @@ const Suggestions = ({
       </Row>
 
       <Row>
-        {tagSuggestions.length === 0 ? "No hay Sugerencias disponibles" : ""}
+        {tagSuggestions.count === 0 ? "No hay Sugerencias disponibles" : ""}
       </Row>
     </Container>
   );
 };
 
 Suggestions.propTypes = {
-  isAuth: PropTypes.bool.isRequired,
+  active: PropTypes.bool.isRequired,
+  getTagSuggestions: PropTypes.func.isRequired,
+  approveTagSuggestions: PropTypes.func.isRequired,
+  tagSuggestions: PropTypes.object,
+  approveFailIds: PropTypes.array,
+  approving: PropTypes.bool.isRequired,
+  approved: PropTypes.bool.isRequired,
+  failed: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
-  isAuth: selectUserIsAuthenticated(state),
   tagSuggestions: selectTagSuggestionsRecovered(state),
   loading: selectTagSuggestionsLoading(state),
   approving: selectTagSuggestionsApproving(state),

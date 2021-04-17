@@ -1,6 +1,7 @@
 import React from "react";
 import { Badge, Table } from "reactstrap";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const SuggestionRow = ({ suggestion, select, selected }) => {
   return (
@@ -41,6 +42,12 @@ const SuggestionRow = ({ suggestion, select, selected }) => {
   );
 };
 
+SuggestionRow.ropTypes = {
+  suggestion: PropTypes.object.isRequired,
+  selected: PropTypes.object.isRequired,
+  select: PropTypes.func.isRequired,
+};
+
 const SuggestionTable = ({ suggestions, sugSelected, setSugSelected }) => {
   const select = (sug) => {
     let newSuggestion = sugSelected;
@@ -52,7 +59,6 @@ const SuggestionTable = ({ suggestions, sugSelected, setSugSelected }) => {
     }
     setSugSelected({ ...newSuggestion });
   };
-  console.log(sugSelected);
 
   return (
     <Table responsive striped>
@@ -64,19 +70,27 @@ const SuggestionTable = ({ suggestions, sugSelected, setSugSelected }) => {
         </tr>
       </thead>
       <tbody>
-        {suggestions.length !== 0
-          ? suggestions.results.map((r) => (
-              <SuggestionRow
-                key={r.id}
-                suggestion={r}
-                select={select}
-                selected={sugSelected}
-              />
-            ))
-          : <div/> }
+        {suggestions.count !== 0 ? (
+          suggestions.results.map((r) => (
+            <SuggestionRow
+              key={r.id}
+              suggestion={r}
+              select={select}
+              selected={sugSelected}
+            />
+          ))
+        ) : (
+          <div />
+        )}
       </tbody>
     </Table>
   );
+};
+
+SuggestionTable.propTypes = {
+  suggestions: PropTypes.object.isRequired,
+  sugSelected: PropTypes.object,
+  setSugSelected: PropTypes.func,
 };
 
 export default SuggestionTable;

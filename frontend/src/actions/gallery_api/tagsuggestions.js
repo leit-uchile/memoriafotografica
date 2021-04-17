@@ -43,7 +43,7 @@ export const createTagSuggestions = (photo, metadataList) => (
       );
     } else {
       r.json().then((data) =>
-        dispatch({ type: CREATED_TAGSUGGESTION_ERROR, data: { data } })
+        dispatch({ type: CREATED_TAGSUGGESTION_ERROR, data: data})
       );
     }
   });

@@ -1,5 +1,8 @@
-import React, { useState, Fragment } from "react";
-import { LeitSpinner } from "../../../components/index";
+import React, { useState, useEffect, Fragment } from "react";
+import PropTypes from "prop-types";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+
 import {
   Button,
   Modal,
@@ -13,24 +16,19 @@ import {
 } from "reactstrap";
 
 import { Link } from "react-router-dom";
+import { LeitSpinner } from "../../../components/index";
+import ReactTags from "react-tag-autocomplete";
 
 import {
   selectUserIsAuthenticated,
   selectMetaDataGeneralTagsResult,
   selectMetaData,
-  selectMetaDataNewIds,
   selectTagSuggestionsCreating,
   selectTagSuggestionsNewIds,
   selectTagSuggestionsFailed,
 } from "../../../reducers";
 
 import { metadata, gallery } from "../../../actions";
-import ReactTags from "react-tag-autocomplete";
-
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { useEffect } from "react";
 
 const TagSuggestionModal = ({
   photoId,
@@ -49,58 +47,13 @@ const TagSuggestionModal = ({
     tags: [],
   });
 
-  const [modal, setModal] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const [suggestionsToCreate, setSuggestionsToCreate] = useState([]);
-  const [suggestionTagSent, setSuggestionTagSent] = useState(false);
-  const [suggestionTagErrors, setSuggestionTagErrors] = useState(false);
-  const [suggestionTagComplete, setSuggestionTagComplete] = useState(false);
-
-  // Reaccionar a la  creacion de nueva Id para el metada
-  useEffect(() => {
-    if (metadataCreation.creating) {
-      setSuggestionTagSent(true);
-    } else if (
-      !metadataCreation.creating &&
-      metadataCreation.failedCreations.length === 0 &&
-      metadataCreation.newIds.length !== 0
-    ) {
-      let newMetaIds = metadataCreation.newIds.map((tag) => tag.id);
-      formData.tags.forEach((tag) => {
-        metadata[tag.name] = { ...tag };
-      });
-
-      // filtrar metadatas ids (ya creados)
-      let meta_ids = formData.tags
-        .filter((el) => el.id !== undefined)
-        .map((el) => el.id);
-      setSuggestionsToCreate(meta_ids.concat(newMetaIds));
-    } else {
-      setSuggestionTagErrors(true);
-    }
-  }, [metadataCreation.creating]);
-
-  // Crear Sugerencias de Tags
-  useEffect(() => {
-    console.log(suggestionsToCreate);
-    if (suggestionsToCreate.length !== 0) {
-      createTagSuggestions(photoId, suggestionsToCreate);
-    }
-  }, [suggestionsToCreate]);
-
-  // Reaccionar a sugerencias de tags creadas!
-  useEffect(() => {
-    if (tagsuggestionsCreating) {
-      setSuggestionTagSent(true);
-    } else {
-      if (tagSuggestionsFailed) {
-        setSuggestionTagComplete(false);
-        setSuggestionTagErrors(true);
-      } else if (tagSuggestionsNewIds.length !== 0) {
-        setSuggestionTagComplete(true);
-      }
-    }
-  }, [tagsuggestionsCreating, tagSuggestionsFailed, tagSuggestionsNewIds]);
+  const [suggestionRequest, setSuggestionRequest] = useState({
+    sent: false,
+    errors: false,
+    complete: false,
+  });
 
   const suggestions = meta
     ? meta.map((e) => ({ name: e.value, id: e.id }))
@@ -108,7 +61,7 @@ const TagSuggestionModal = ({
 
   const reset = () => {
     setFormData({ tags: [] });
-    setSuggestionTagSent(false);
+    setSuggestionRequest({ sent: false, errors: false, complete: false });
   };
 
   const deleteTag = (i) => {
@@ -123,8 +76,7 @@ const TagSuggestionModal = ({
   };
 
   const toggle = () => {
-    setSuggestionTagSent(false);
-    setModal(!modal);
+    setIsOpen(!isOpen);
     setTimeout(reset, 1000);
   };
 
@@ -134,10 +86,9 @@ const TagSuggestionModal = ({
     }
   };
 
+  // Comenzar creación de metadata
   const upLoadMetadata = () => {
-    setSuggestionTagErrors(false);
-    setSuggestionTagComplete(false);
-    
+    // setSuggestionRequest({ sent: false, errors: false, complete: false });
     let metadata = {};
 
     formData.tags.forEach((tag) => {
@@ -145,22 +96,71 @@ const TagSuggestionModal = ({
     });
 
     // filtrar metadatas nuevos!
-    let new_metas = formData.tags
+    let newMetas = formData.tags
       .filter((el) => el.id === undefined)
       .map((el) => el.name);
 
     // filtrar metadatas ids (ya creados)
-    let meta_ids = formData.tags
+    let metaIds = formData.tags
       .filter((el) => el.id !== undefined)
       .map((el) => el.id);
 
     // crear metadatas nuevos
-    if (new_metas.length !== 0) {
-      createMultipleMetas(new_metas);
-    } else {
-      setSuggestionsToCreate(meta_ids);
+    if (newMetas.length !== 0) {
+      createMultipleMetas(newMetas);
+    } else if (metaIds.length !== 0) {
+      createTagSuggestions(photoId, metaIds);
     }
   };
+
+  // Reaccionar a la  creacion de nueva Id para el metada
+  useEffect(() => {
+    if (metadataCreation.creating) {
+      setSuggestionRequest({ ...suggestionRequest, sent: true });
+    } else if (
+      !metadataCreation.creating &&
+      metadataCreation.failedCreations.length === 0 &&
+      metadataCreation.newIds.length !== 0
+    ) {
+      let newMetaIds = metadataCreation.newIds.map((tag) => tag.id);
+      formData.tags.forEach((tag) => {
+        metadata[tag.name] = { ...tag };
+      });
+
+      // filtrar metadatas ids (ya creados)
+      let metaIds = formData.tags
+        .filter((el) => el.id !== undefined)
+        .map((el) => el.id);
+      createTagSuggestions(photoId, metaIds.concat(newMetaIds));
+    } else {
+      setSuggestionRequest({
+        ...suggestionRequest,
+        errors: true,
+        complete: false,
+      });
+    }
+  }, [metadataCreation.creating]);
+
+  // Reaccionar a sugerencias de tags creadas!
+  useEffect(() => {
+    if (tagsuggestionsCreating) {
+      setSuggestionRequest({ ...suggestionRequest, sent: true });
+    } else {
+      if (tagSuggestionsFailed) {
+        setSuggestionRequest({
+          ...suggestionRequest,
+          errors: true,
+          complete: false,
+        });
+      } else if (tagSuggestionsNewIds.length !== 0) {
+        setSuggestionRequest({
+          ...suggestionRequest,
+          errors: false,
+          complete: true,
+        });
+      }
+    }
+  }, [tagsuggestionsCreating, tagSuggestionsFailed, tagSuggestionsNewIds]);
 
   const suggestTagForm = (
     <Fragment>
@@ -177,11 +177,7 @@ const TagSuggestionModal = ({
             <span style={{ fontStyle: "italic" }}>No hay tags asociados</span>
           ) : (
             tags.map((el) => (
-              <Badge
-                className="tags"
-                key={el.id}
-                pill
-              >
+              <Badge className="tags" key={el.id} pill>
                 #{el.value}
               </Badge>
             ))
@@ -211,22 +207,18 @@ const TagSuggestionModal = ({
 
   return (
     <Fragment>
-      <Button
-        onClick={toggle}
-      >
-        Sugerir
-      </Button>
+      <Button onClick={toggle}>Sugerir</Button>
 
-      <Modal isOpen={modal} toggle={toggle}>
+      <Modal isOpen={isOpen} toggle={toggle}>
         <ModalHeader toggle={toggle}>{"Sugerir Etiquetas"}</ModalHeader>
         <ModalBody>
           {isAuth ? (
-            suggestionTagSent ? (
-              suggestionTagComplete ? (
+            suggestionRequest.sent ? (
+              suggestionRequest.complete ? (
                 <div className="report-modal-content">
                   <h5>¡Sugerencias enviadas!</h5>
                 </div>
-              ) : suggestionTagErrors ? (
+              ) : suggestionRequest.errors ? (
                 <div className="report-modal-content">
                   <h5>Hubo un problema al subir algunas de tus sugerencias</h5>
                   <p>Intentalo nuevamente</p>
@@ -257,7 +249,7 @@ const TagSuggestionModal = ({
         </ModalBody>
         {isAuth ? (
           <ModalFooter>
-            {!suggestionTagSent ? (
+            {!suggestionRequest.sent ? (
               <Fragment>
                 <Button color="primary" onClick={upLoadMetadata}>
                   Enviar Sugerencia
@@ -279,10 +271,17 @@ const TagSuggestionModal = ({
 };
 
 TagSuggestionModal.propTypes = {
+  photoId: PropTypes.number.isRequired,
   tags: PropTypes.array.isRequired,
   isAuth: PropTypes.bool.isRequired,
   meta: PropTypes.array.isRequired,
+  metadataCreation: PropTypes.object,
+  tagSuggestionsNewIds: PropTypes.array,
+  tagsuggestionsCreating: PropTypes.bool,
+  tagSuggestionsFailed: PropTypes.bool,
   searchMeta: PropTypes.func.isRequired,
+  createMultipleMetas: PropTypes.func.isRequired,
+  createTagSuggestions: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

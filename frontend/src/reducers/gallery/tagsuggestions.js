@@ -16,7 +16,7 @@ const initialState = {
   loading: false,
   creating: false,
   failed: false,
-  tags_suggestions: [],
+  tags_suggestions: { results: [], count: 0, },
   approving: false,
   approved: false,
   approved_fail_ids: [],
@@ -52,7 +52,6 @@ export default function tagsuggestions(state = initialState, action) {
       return {
         ...state,
         loading: true,
-        tags_suggestions: [],
       };
 
     case RECOVERED_TAGSUGGESTION:
@@ -76,7 +75,7 @@ export default function tagsuggestions(state = initialState, action) {
         ...state,
         loading: false,
         failed: false,
-        tags_suggestions: [],
+        tags_suggestions: { results: [], count: 0, },
       };
 
     case APPROVING_TAGSUGGESTION:
