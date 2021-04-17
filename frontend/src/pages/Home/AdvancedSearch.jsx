@@ -51,12 +51,12 @@ const AdvancedSearch = () => {
   ];
 
   const permissions = [
-    {value: "CC BY", label: "CC BY"},
-    {value: "CC BY-SA", label: "CC BY-SA"},
-    {value: "CC BY-ND", label: "CC BY-ND"},
-    {value: "CC BY-NC", label: "CC BY-NC"},
-    {value: "CC BY-NC-SA", label: "CC BY-NC-SA"},
-    {value: "CC BY-NC-ND", label: "CC BY-NC-ND"},
+    { value: "CC BY", label: "CC BY" },
+    { value: "CC BY-SA", label: "CC BY-SA" },
+    { value: "CC BY-ND", label: "CC BY-ND" },
+    { value: "CC BY-NC", label: "CC BY-NC" },
+    { value: "CC BY-NC-SA", label: "CC BY-NC-SA" },
+    { value: "CC BY-NC-ND", label: "CC BY-NC-ND" },
   ];
 
   const changeToggle = () => {
@@ -114,9 +114,7 @@ const AdvancedSearch = () => {
                       inputId="byDate"
                       placeholder="Selecciona una opción"
                       options={byDate}
-                      onChange={(e) => {
-                        addValueSelect("byDate", e.value);
-                      }}
+                      onChange={(e) => addValueSelect("byDate", e.value)}
                     />
                   </FormGroup>
                   <FormGroup>
@@ -135,9 +133,9 @@ const AdvancedSearch = () => {
                       inputId="searchIncludes"
                       placeholder="Selecciona una opción"
                       options={searchIncludes}
-                      onChange={(e) => {
-                        addValueSelect("searchIncludes", e.value);
-                      }}
+                      onChange={(e) =>
+                        addValueSelect("searchIncludes", e.value)
+                      }
                     />
                   </FormGroup>
                 </FormGroup>
@@ -150,24 +148,26 @@ const AdvancedSearch = () => {
                     cacheOptions
                     defaultOptions
                     loadOptions={options}
-                    onInputChange={handleCatChange}
                     onChange={handleCat}
                   />
                 </FormGroup>
                 <FormGroup>
                   <Label>Ordenar por</Label>
-                  <Input type="radio" name="order-radio" id="orderBy"></Input>
+                  <Select
+                    inputID="orderBy"
+                    placeholder="Selecciona una opción"
+                    options={byDate}
+                    onChange={(e) => addValueSelect("orderBy", e.value)}
+                  />
                 </FormGroup>
                 <FormGroup>
                   <legend>Por permisos de autor</legend>
                   <Select
-                      inputId="permissions"
-                      placeholder="Selecciona una opción"
-                      options={permissions}
-                      onChange={(e) => {
-                        addValueSelect("permissions", e.value);
-                      }}
-                    />
+                    inputId="permissions"
+                    placeholder="Selecciona una opción"
+                    options={permissions}
+                    onChange={(e) => addValueSelect("permissions", e.value)}
+                  />
                 </FormGroup>
               </Col>
             </FormGroup>
