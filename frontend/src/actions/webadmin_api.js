@@ -34,7 +34,10 @@ export const CompleteRegistration = (data) => (dispatch) => {
       body: JSON.stringify(data),
       headers: header,
     }).then(function (response) {
-        return dispatch({ type: COMPLETE_REGISTRATION, data: response.status })
+        if(response.status===200){
+          return dispatch({ type: COMPLETE_REGISTRATION, data: {status:true} })
+        }
+        return dispatch({ type: COMPLETE_REGISTRATION, data: {status: false} })
           
       // else {
       //   response.json().then((data) => {

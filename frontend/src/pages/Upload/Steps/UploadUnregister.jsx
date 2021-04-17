@@ -28,9 +28,10 @@ const UploadUnregister = ({
   nextStep,
   sendAlert,
   guestVerify,
-  answerFormBackend,
+  guestState,
 }) => {
-  let recaptchaRef;
+
+  // let recaptchaRef;
 
   const [formData, setFormData] = useState(
     cache === {}
@@ -61,35 +62,31 @@ const UploadUnregister = ({
 
   const [captchaError, setCaptchaError] = useState(false);
   const [rolError, setRolError] = useState(false);
+  const [captchaValue,setCaptchaValue]=useState()
+
+  useEffect(()=>{
+    if (guestState){
+      if(guestState.isGuest){
+      console.log(guestState.isGuest)
+      //TODO AGREGAR UN LOADING GIF?
+      nextStep()
+      } 
+    }
+  },[guestState])
 
   const onSubmit = (e) => {
     e.preventDefault();
     setErrorMessages();
-    if (!captchaError && !rolError) {
-      const captchaValue = recaptchaRef.getValue();
-      // TODO send the form to backend , make a user and login with that user
+    if (captchaValue && !rolError) {
       guestVerify({ ...formData, recaptchaToken: captchaValue });
-      // TODO get token from backend
-      recaptchaRef.reset();
-      nextStep();
     }
   };
 
   const setErrorMessages = () => {
-    isCaptchaEmpty ? setCaptchaError(true) : setCaptchaError(false);
+    captchaValue? setCaptchaError(false) : setCaptchaError(true)
     formData.rol === "" ? setRolError(true) : setRolError(false);
   };
 
-  const isCaptchaEmpty = () => {
-    const recaptchaValue = recaptchaRef.getValue();
-    if (recaptchaValue == null || recaptchaValue == "") {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  console.log(formData);
   return (
     <Container>
       <Row>
@@ -233,9 +230,7 @@ const UploadUnregister = ({
         </FormGroup>
         <ReCAPTCHA
           sitekey={process.env.REACT_APP_RECAPTCHA_KEY}
-          ref={(el) => {
-            recaptchaRef = el;
-          }}
+          onChange={(value)=> setCaptchaValue(value)}
         />
         <Alert
           color="info"
@@ -257,7 +252,7 @@ const UploadUnregister = ({
   );
 };
 const mapStateToProps = (state) => ({
-  answerFormBackend: state.webadmin.guestState,
+  guestState: state.webadmin.guestState,
 });
 
 const mapActionsToProps = (dispatch) => ({
