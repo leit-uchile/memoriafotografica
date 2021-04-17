@@ -27,9 +27,6 @@ const AdvancedSearch = () => {
     permissions: "",
   });
 
-  // state to save category label to be added in category array in formData
-  const [catData, saveCat] = useState("");
-
   // state to toggle modal
   const [modal, setModal] = useState(false);
 
@@ -63,15 +60,31 @@ const AdvancedSearch = () => {
     setModal(!modal);
   };
 
-  const handleCatChange = (val) => {
-    saveCat(val);
-  };
-
-  const handleCat = (label) => {
-    if (!formData.category.includes(label)) {
+  const handleCat = (labels) => {
+    if (labels === null){
       saveFormData({
         ...formData,
-        category: formData.category.concat(label),
+        category: []
+      })
+    }
+    else if (labels.length > formData.category.length) {
+      labels.forEach((label) => {
+        if (!formData.category.includes(label)) {
+          saveFormData({
+            ...formData,
+            category: formData.category.concat(label),
+          });
+        }
+      });
+    } else if (labels.length < formData.category.length){
+      formData.category.forEach((catLabel) => {
+        if (labels.includes(catLabel)) {
+          const idx = formData.category.indexOf(catLabel);
+          saveFormData({
+            ...formData,
+            category: formData.category.splice(idx, 1),
+          });
+        }
       });
     }
   };
