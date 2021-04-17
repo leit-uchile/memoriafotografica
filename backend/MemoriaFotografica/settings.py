@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'corsheaders',
     'django_rest_passwordreset',
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
 ]
 
 # TODO change secret KEY for production
@@ -186,3 +188,15 @@ EMAIL_HOST_PASSWORD = 'lmzopvjdjwayaujy'
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = ('http://localhost', )
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'elastic:9200'
+    },
+}
+
+# Name of the Elasticsearch index for production
+ELASTICSEARCH_INDEX_NAMES = {
+    'Gallery.documents.comment': 'prod_commment',
+    'Gallery.documents.photo': 'prod_photo',
+}

@@ -127,6 +127,22 @@ class Photo(models.Model):
         except:
             return "Photo id: " + str(self.id) + " uploaded at "+ str(self.created_at)
 
+    @property
+    def metadata_indexing(self):
+        """Tags for indexing.
+
+        Used in Elasticsearch indexing.
+        """
+        return [metadata.value for metadata in self.metadata.all()]
+
+    @property
+    def categories_indexing(self):
+        """Tags for indexing.
+
+        Used in Elasticsearch indexing.
+        """
+        return [category.title for category in self.category.all()]
+
 class Album(models.Model):
 
     name = models.CharField(max_length=40)
