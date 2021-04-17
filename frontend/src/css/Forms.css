@@ -1,6 +1,6 @@
 .stepContainer {
   margin-bottom: 2em;
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
 }
 .stepContainer .card img {
   max-height: 250px;
