@@ -115,7 +115,7 @@ const AdvancedSearch = () => {
         Búsqueda Avanzada
       </Button>
       <Modal isOpen={modal} toggle={changeToggle} scrollable>
-        <ModalHeader>Búsqueda Avanzada</ModalHeader>
+        <ModalHeader toggle={changeToggle}>Búsqueda Avanzada</ModalHeader>
         <ModalBody>
           <Form>
             <FormGroup tag="fieldset" onChange={(e) => addValue(e)}>
