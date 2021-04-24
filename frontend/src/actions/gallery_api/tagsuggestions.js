@@ -99,7 +99,6 @@ export const approveTagSuggestions = (tagIds, approve=1) => (dispatch, getState)
 
   Promise.all(request).then((responses) => {
     for (let response of responses) {
-      console.log(response[0])
       if (response[0].status === 202) {
         approved.push(response[1]);
       } else {
