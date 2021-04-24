@@ -12,7 +12,7 @@ import {
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import Categories from "./Categories";
+//import Categories from "./Categories";
 import { connect } from "react-redux";
 import { gallery } from "../../actions";
 import { bindActionCreators } from "redux";
@@ -170,20 +170,6 @@ const FilterPicker = ({
           <Container fluid className="filter-cats">
             {currentCats.length > 0 ? (
               <Row fluid>
-                <Categories
-                  categorias={
-                    currentCats ? currentCats.filter((e, i) => i % 2 === 0) : []
-                  }
-                  onClick={pickCategory}
-                  size={{ md: "6" }}
-                />
-                <Categories
-                  categorias={
-                    currentCats ? currentCats.filter((e, i) => i % 2 === 1) : []
-                  }
-                  onClick={pickCategory}
-                  size={{ md: "6" }}
-                />
               </Row>
             ) : (
               <Row>
