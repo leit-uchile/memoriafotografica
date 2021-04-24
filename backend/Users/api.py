@@ -353,6 +353,7 @@ class UserNotificationsAPI(generics.GenericAPIView):
                 filters['read'] = read
             
             user_notifications = user.notifications.filter(**filters)
+            user_notifications = user_notifications.order_by("-created_at")
             serializer = NotificationSerializer(user_notifications, many=True)
             if "page" in request.query_params and "page_size" in request.query_params:
                 return self.get_paginated_response(self.paginate_queryset(serializer.data))

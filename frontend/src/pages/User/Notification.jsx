@@ -40,18 +40,19 @@ const typeToText = (t) => {
       return "Otro";
   }
 };
-
+// colCorrection: Popover only supports 11 col division
 const Notification = ({
   element: { id, type, content, message, created_at, read },
   markAsRead,
   updatedNotification,
+  colCorrection = 0,
 }) => {
   const [isRead, setIsRead] = useState(read);
 
   useEffect(() => {
-    updatedNotification.id === id
-      ? setIsRead(updatedNotification.read)
-      : void 0;
+    if (updatedNotification.id === id) {
+      setIsRead(updatedNotification.read);
+    }
     // eslint-disable-next-line
   }, [updatedNotification]);
 
@@ -63,12 +64,19 @@ const Notification = ({
             {makeIcons(content)}
           </div>
         </Col>
-        <Col xs={8} md={9} ld={10}>
+        <Col
+          xs={8 - colCorrection}
+          md={9 - colCorrection}
+          ld={10 - colCorrection}
+        >
           <div className="notification-header">
             <b>{typeToText(type)}</b>
           </div>
           {created_at ? (
-            <div className="notification-date"> {moment(created_at).fromNow()}</div>
+            <div className="notification-date">
+              {" "}
+              {moment(created_at).fromNow()}
+            </div>
           ) : (
             <div className="notification-date">Cargando...</div>
           )}

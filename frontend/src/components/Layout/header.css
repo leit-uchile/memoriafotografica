@@ -20,7 +20,8 @@ header .navbar-brand p {
   white-space: normal;
   margin-bottom: -0.3125rem;
 }
-header .navbar-nav .nav-item .nav-link.active {
+header .navbar-nav .nav-item .nav-link.active,
+header .navbar-nav .nav-item .btn.btn-link.active {
   color: var(--leit-pink);
 }
 header .navbar-nav .dropdown-menu.dropdown-menu {
@@ -32,6 +33,19 @@ header .navbar-nav .dropdown-menu.dropdown-menu .dropdown-item {
 header .navbar-nav .dropdown-menu.dropdown-menu .dropdown-item:active {
   border-color: var(--leit-pink-disabled);
   background-color: var(--leit-pink-disabled);
+}
+header .navbar-nav .nav-item .btn.btn-link {
+  color: #747677;
+}
+header .navbar-nav .nav-item .btn.btn-link:not(.active):hover {
+  color: rgba(0, 0, 0, 0.7);
+}
+.popover{
+  max-width: fit-content;
+}
+.popover-body{
+  overflow-x: hidden;
+  overflow-y: auto !important;
 }
 
 @media screen and (max-width: 991px) {

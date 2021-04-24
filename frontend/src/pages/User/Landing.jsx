@@ -4,18 +4,14 @@ import { connect } from "react-redux";
 import { user } from "../../actions";
 import { Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPlusCircle,
-  faSuitcase,
-  faCameraRetro,
-  faAddressCard,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet";
 import { bindActionCreators } from "redux";
 import {
   selectUserPhotos,
   selectUserComments,
   selectUserNotifications,
+  selectUserData,
 } from "../../reducers";
 import Gallery from "react-photo-gallery";
 import { LeitSpinner, Pagination } from "../../components";
@@ -186,7 +182,7 @@ const Landing = ({
                         <Container>
                           {comments.results.map((el, key) => (
                             <Row key={"Comment" + key}>
-                              <Col style={{padding:"6px"}}>
+                              <Col style={{ padding: "6px" }}>
                                 <Comment
                                   element={{
                                     content: el.content,
@@ -245,7 +241,7 @@ const Landing = ({
                         <Container>
                           {notifications.results.map((el, key) => (
                             <Row key={"Notification" + key}>
-                              <Col style={{padding:"6px"}}>
+                              <Col style={{ padding: "6px" }}>
                                 <Notification
                                   element={{
                                     id: el.id,
@@ -295,24 +291,11 @@ const Landing = ({
   );
 };
 
-const makeIcons = (rol_id) => {
-  switch (rol_id) {
-    case 1:
-      return <FontAwesomeIcon icon={faCameraRetro} />;
-    case 2:
-      return <FontAwesomeIcon icon={faAddressCard} />;
-    case 3:
-      return <FontAwesomeIcon icon={faSuitcase} />;
-    default:
-      return "Failed";
-  }
-};
-
 const mapStateToProps = (state) => ({
   photos: selectUserPhotos(state),
   comments: selectUserComments(state),
   notifications: selectUserNotifications(state),
-  user: state.user.userData,
+  user: selectUserData(state),
 });
 
 const mapActionsToProps = (dispatch) =>

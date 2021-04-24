@@ -154,6 +154,9 @@ export const selectSiteMiscUploadDisclosureSet = (state) =>
 export const selectSiteMiscAlerts = (state) =>
   fromSiteMisc.selectSiteMiscAlerts(state);
 
+export const selectSiteMiscNotifications = (state) =>
+  fromSiteMisc.selectSiteMiscNotifications(state);
+
 //WebAdmin
 export const selectWebAdminMessages = (state) =>
   fromWebAdmin.selectWebAdminMessages(state);

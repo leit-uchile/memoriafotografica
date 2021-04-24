@@ -17,16 +17,15 @@ import { Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import "./userModal.css";
-import { selectUserData, selectUserNotifications } from "../reducers";
+import { selectUserData } from "../reducers";
 import PropTypes from "prop-types";
 
-const UserModal = ({ logout, user, getNotifications, nNotif }) => {
+const UserModal = ({ logout, user }) => {
   const [toggle, setToggle] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
   const doToggle = () => {
     setToggle(!toggle);
-    !toggle ? getNotifications(user.id, 1, 1, "&read=false") : void 0;
   };
 
   const doLogout = () => {
@@ -64,12 +63,7 @@ const UserModal = ({ logout, user, getNotifications, nNotif }) => {
               ) : null}
 
               <Col>
-                <h4>
-                  Perfil y notificaciones{" "}
-                  <Badge pill color="primary">
-                    {nNotif ? nNotif.count : "-"}
-                  </Badge>
-                </h4>
+                <h4>Perfil de usuario</h4>
               </Col>
             </Row>
             <Row style={{ marginTop: "0.5em" }}>
@@ -115,7 +109,7 @@ const UserModal = ({ logout, user, getNotifications, nNotif }) => {
                     setTimeout(() => setRedirect(false), 1000);
                   }}
                 >
-                  Ir al Escritorio
+                  Escritorio
                 </Button>
               </Col>
             </Row>
@@ -138,14 +132,11 @@ UserModal.propTypes = {
 
 const mapStateToProps = (state) => ({
   user: selectUserData(state),
-  nNotif: selectUserNotifications(state),
 });
 
 const mapActionsToProps = (dispatch) => ({
   logout: () => dispatch(user.logout()),
   setLoginSuccessRoute: (route) => dispatch(site_misc.addLoginRoute(route)),
-  getNotifications: (userId, page, page_size, extra) =>
-    dispatch(user.getUserNotifications(userId, page, page_size, extra)),
 });
 
 export default connect(mapStateToProps, mapActionsToProps)(UserModal);

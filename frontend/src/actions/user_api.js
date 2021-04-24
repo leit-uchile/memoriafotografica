@@ -21,6 +21,7 @@ import {
   USER_RECOVERED_ALBUM_ERROR,
   USER_RECOVERED_COMMENTS,
   USER_RECOVERED_COMMENTS_ERROR,
+  NOTIFICATIONS_RECOVERED,
   USER_RECOVERED_NOTIFICATIONS,
   USER_RECOVERED_NOTIFICATIONS_ERROR,
   USER_NOTIFICATION_UPDATED,
@@ -227,7 +228,7 @@ export const getUserComments = (user_id, page, page_size) => (
   });
 };
 
-export const getUserNotifications = (user_id, page, page_size, extra = "") => (
+export const getUserNotifications = (user_id, page, page_size, header = false, extra = "") => (
   dispatch,
   getState
 ) => {
@@ -242,7 +243,9 @@ export const getUserNotifications = (user_id, page, page_size, extra = "") => (
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_NOTIFICATIONS, data: data });
+        header 
+        ? dispatch({ type: NOTIFICATIONS_RECOVERED, data: data}) 
+        : dispatch({ type: USER_RECOVERED_NOTIFICATIONS, data: data });
       });
     } else {
       dispatch({ type: USER_RECOVERED_NOTIFICATIONS_ERROR, data: r.data });
@@ -262,8 +265,8 @@ export const updateNotification = (id) => (
   return fetch(
     `/api/users/notifications/${id}/`,
     {
-      method: "PUT", 
-      headers, 
+      method: "PUT",
+      headers,
       body: JSON.stringify({
         read: true,
       })
