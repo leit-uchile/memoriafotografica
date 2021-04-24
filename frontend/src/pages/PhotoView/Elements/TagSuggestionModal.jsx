@@ -12,6 +12,8 @@ import {
   Form,
   FormGroup,
   FormText,
+  Input,
+  FormFeedback,
   Badge,
 } from "reactstrap";
 
@@ -48,6 +50,10 @@ const TagSuggestionModal = ({
   });
 
   const [isOpen, setIsOpen] = useState(false);
+  const [tagDuplicated, setTagDuplicated] = useState({
+    tags: [],
+    isDup: false,
+  });
 
   const [suggestionRequest, setSuggestionRequest] = useState({
     sent: false,
@@ -56,23 +62,52 @@ const TagSuggestionModal = ({
   });
 
   const suggestions = meta
-    ? meta.map((e) => ({ name: e.value, id: e.id }))
+    ? meta
+        .map((e) => ({ name: e.value, id: e.id }))
+        .filter((t) => {
+          for (const tag of tags) {
+            if (t.id === tag.id) {
+              return false;
+            }
+          }
+          return true;
+        })
     : [];
 
   const reset = () => {
     setFormData({ tags: [] });
     setSuggestionRequest({ sent: false, errors: false, complete: false });
+    setTagDuplicated({ tags: [], isDup: false });
   };
 
   const deleteTag = (i) => {
+    const tagRemoved = formData.tags[i];
     const tags = formData.tags.slice(0);
     tags.splice(i, 1);
     setFormData({ ...formData, tags });
+
+    if (tagDuplicated.isDup) {
+      let dupIndex = tagDuplicated.tags.indexOf(tagRemoved.name);
+      if (dupIndex !== -1) {
+        const newDupTags = tagDuplicated.tags.slice(0);
+        newDupTags.splice(dupIndex, 1);
+        setTagDuplicated({ tags: newDupTags, isDup: newDupTags.length !== 0 });
+      }
+    }
   };
 
-  const additionTag = (tag) => {
-    const tags = [].concat(formData.tags, tag);
-    setFormData({ ...formData, tags: tags });
+  const additionTag = (newTag) => {
+    const newTags = [].concat(formData.tags, newTag);
+    setFormData({ ...formData, tags: newTags });
+
+    for (const tag of tags) {
+      if (newTag.name === tag.value) {
+        setTagDuplicated({
+          tags: tagDuplicated.tags.concat([newTag.name]),
+          isDup: true,
+        });
+      }
+    }
   };
 
   const toggle = () => {
@@ -88,7 +123,6 @@ const TagSuggestionModal = ({
 
   // Comenzar creación de metadata
   const upLoadMetadata = () => {
-    // setSuggestionRequest({ sent: false, errors: false, complete: false });
     let metadata = {};
 
     formData.tags.forEach((tag) => {
@@ -200,6 +234,15 @@ const TagSuggestionModal = ({
             Para ingresar una nueva etiqueta debe presionar la tecla "Entrar" o
             "Tabulación"
           </FormText>
+
+          {tagDuplicated.isDup && (
+            <div style={{ color: "red", size: "1.5em" }}>
+              <span>
+                Tu sugerencia <b> {tagDuplicated.tags[0]} </b> ya se encuentra
+                dentro de los tags de esta foto. Debes borrarla para continuar.
+              </span>
+            </div>
+          )}
         </FormGroup>
       </Form>
     </Fragment>
@@ -251,7 +294,11 @@ const TagSuggestionModal = ({
           <ModalFooter>
             {!suggestionRequest.sent ? (
               <Fragment>
-                <Button color="primary" onClick={upLoadMetadata}>
+                <Button
+                  color="primary"
+                  onClick={upLoadMetadata}
+                  disabled={tagDuplicated.isDup}
+                >
                   Enviar Sugerencia
                 </Button>
                 <Button color="secondary" onClick={toggle}>
