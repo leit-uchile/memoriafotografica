@@ -29,14 +29,15 @@ def createHash(id):
 class CompleteRegistration(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         registerLink = RegisterLink.objects.filter(code=request.data["code"])
-        if(registerLink.exists()):
+        if (registerLink.exists()):
             registerLink = registerLink.first()
-            if(registerLink.status == 0):
+            if (registerLink.status == 0):
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
             registerLink.status = 0
             registerLink.save()
             user = registerLink.user
-            if (not (user.completed_registration == False and user.is_active == False)):
+            if (not (user.completed_registration == False
+                     and user.is_active == False)):
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
             user.set_password(request.data["password"])
             user.birth_date = request.data["date"]
@@ -76,10 +77,12 @@ class RegisterGuest(generics.GenericAPIView):
                                                               user=newGuest)
                 sendEmail(newGuest.email, "complete_guest_registration",
                           "Completa tu registro", activation_link.code)
-                return Response({"isGuest" : {
-                    "user": UserSerializer(newGuest).data,
-                    "token": AuthToken.objects.create(newGuest)
-                         }})
+                return Response(
+                    {
+                        "user": UserSerializer(newGuest).data,
+                        "token": AuthToken.objects.create(newGuest)
+                    },
+                    status=status.HTTP_200_OK)
             else:
                 user = User.objects.get(email=formData['email'])
                 if (user.is_active):

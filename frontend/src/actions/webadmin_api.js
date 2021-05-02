@@ -34,11 +34,14 @@ export const CompleteRegistration = (data) => (dispatch) => {
       body: JSON.stringify(data),
       headers: header,
     }).then(function (response) {
-        if(response.status===200){
-          return dispatch({ type: COMPLETE_REGISTRATION, data: {status:true} })
-        }
-        return dispatch({ type: COMPLETE_REGISTRATION, data: {status: false} })
-          
+      if (response.status === 200) {
+        return dispatch({
+          type: COMPLETE_REGISTRATION,
+          data: { status: true },
+        });
+      }
+      return dispatch({ type: COMPLETE_REGISTRATION, data: { status: false } });
+
       // else {
       //   response.json().then((data) => {
       //     dispatch(setAlert(data["Error"], "warning"));

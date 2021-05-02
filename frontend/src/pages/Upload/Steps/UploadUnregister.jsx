@@ -26,11 +26,10 @@ const UploadUnregister = ({
   cache,
   previousStep,
   nextStep,
-  sendAlert,
   guestVerify,
   guestState,
+  saveToken,
 }) => {
-
   // let recaptchaRef;
 
   const [formData, setFormData] = useState(
@@ -62,17 +61,17 @@ const UploadUnregister = ({
 
   const [captchaError, setCaptchaError] = useState(false);
   const [rolError, setRolError] = useState(false);
-  const [captchaValue,setCaptchaValue]=useState()
+  const [captchaValue, setCaptchaValue] = useState();
 
-  useEffect(()=>{
-    if (guestState){
-      if(guestState.isGuest){
-      console.log(guestState.isGuest)
-      //TODO AGREGAR UN LOADING GIF?
-      nextStep()
-      } 
+  useEffect(() => {
+    if (guestState) {
+      console.log(guestState);
+      saveToken(guestState.token);
+      nextStep();
+    } else {
+      //TODO ERROR
     }
-  },[guestState])
+  }, [guestState]);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -83,7 +82,7 @@ const UploadUnregister = ({
   };
 
   const setErrorMessages = () => {
-    captchaValue? setCaptchaError(false) : setCaptchaError(true)
+    captchaValue ? setCaptchaError(false) : setCaptchaError(true);
     formData.rol === "" ? setRolError(true) : setRolError(false);
   };
 
@@ -230,7 +229,7 @@ const UploadUnregister = ({
         </FormGroup>
         <ReCAPTCHA
           sitekey={process.env.REACT_APP_RECAPTCHA_KEY}
-          onChange={(value)=> setCaptchaValue(value)}
+          onChange={(value) => setCaptchaValue(value)}
         />
         <Alert
           color="info"

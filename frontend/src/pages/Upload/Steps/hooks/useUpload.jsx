@@ -12,6 +12,7 @@ const useUpload = (
   createMultipleMetas, // func
   uploadImages, // func
   metadataCreation, // metadata status object
+  token
 ) => {
   const [state, setState] = useState({
     data: { photos: [], meta: {} }, // All info to upload
@@ -101,20 +102,25 @@ const useUpload = (
         return {
           ...el,
           meta: {
-            ...el.meta, tags: default_metadata,
-            cc, date: state.data.photoInfo.date,
+            ...el.meta,
+            tags: default_metadata,
+            cc,
+            date: state.data.photoInfo.date,
           },
         };
       } else {
-        let custom_metadata = el.meta.tags
-          .map((t) => (t.id ? t.id : meta_mapped[t.value]))
-        custom_metadata.push(...default_metadata)
-          
+        let custom_metadata = el.meta.tags.map((t) =>
+          t.id ? t.id : meta_mapped[t.value]
+        );
+        custom_metadata.push(...default_metadata);
+
         return {
           ...el,
           meta: {
-            ...el.meta, tags: custom_metadata.join(),
-            cc, date: state.data.photoInfo.date,
+            ...el.meta,
+            tags: custom_metadata.join(),
+            cc,
+            date: state.data.photoInfo.date,
           },
         };
       }
@@ -122,8 +128,7 @@ const useUpload = (
 
     // Update photos and Start process
     setState({ data: { ...state.data, photos: photo_copy } });
-    uploadImages(photo_copy);
-    
+    uploadImages(photo_copy, token);
   };
 
   return [startProcess];

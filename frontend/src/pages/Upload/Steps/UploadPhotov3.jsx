@@ -1,7 +1,14 @@
 import React from "react";
 import UploadDetails from "./UploadDetailsv2";
 import UploadProgress from "./UploadProgress";
-import { Container, Row, Col, Button, ButtonGroup, CardColumns } from "reactstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  ButtonGroup,
+  CardColumns,
+} from "reactstrap";
 import Dropzone from "react-dropzone";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -33,7 +40,9 @@ const UploadPhoto = ({
   photoInfo,
   previousStep,
   nextStep,
+  token,
 }) => {
+  console.log(token);
   const [state, setState, handleOnDrop, saveMeta, handleErase] = useHandleFiles(
     sendAlert
   );
@@ -41,7 +50,8 @@ const UploadPhoto = ({
   const [startProcess] = useUpload(
     createMultipleMetas,
     uploadImages,
-    metadataCreation
+    metadataCreation,
+    token
   );
 
   const handleInputChange = (query) => {
@@ -87,9 +97,7 @@ const UploadPhoto = ({
         />
       );
     }
-    rows.push(
-          <CardColumns>{row}</CardColumns>
-    );
+    rows.push(<CardColumns>{row}</CardColumns>);
   }
 
   const dropzone = (
@@ -117,8 +125,8 @@ const UploadPhoto = ({
       </Row>
       <Row>
         <Col md={12} lg={9}>
-            {state.photos.length === 0 && dropzone}
-            {rows}
+          {state.photos.length === 0 && dropzone}
+          {rows}
         </Col>
         <Col md={12} lg={3}>
           <div className="white-box upload-rules">
