@@ -40,6 +40,7 @@ class UploadPage extends Component {
       cacheCreatedPhotoIds: [], // In case of upload error
       metadata: [], // Used during metadata creation
       newMetaCount: 0,
+      token: null,
     };
     this.props.setRoute("/upload");
   }
@@ -52,6 +53,10 @@ class UploadPage extends Component {
 
   savePhotoInfo = (info) => {
     this.setState({ data: { ...this.state.data, ...info } });
+  };
+
+  saveToken = (value) => {
+    this.setState({ token: value });
   };
 
   render() {
@@ -79,6 +84,7 @@ class UploadPage extends Component {
             <UnregisteredPrompt />
             <UploadUnregister
               cache={this.state.userInfo}
+              saveToken={this.saveToken}
             />
             <UploadAlbum
               isAuth={this.props.isAuthenticated}
@@ -92,6 +98,7 @@ class UploadPage extends Component {
               photoInfo={this.state.data}
               meta={this.props.meta}
               searchMeta={this.props.recoverMetadata}
+              token={this.state.token}
             />
 
             <UploadSuccess />
