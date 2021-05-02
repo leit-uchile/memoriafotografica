@@ -64,13 +64,14 @@ const UploadUnregister = ({
   const [captchaValue, setCaptchaValue] = useState();
 
   useEffect(() => {
+    console.log(guestState);
     if (guestState) {
-      console.log(guestState);
-      saveToken(guestState.token);
-      nextStep();
-    } else {
-      //TODO ERROR
+      if (!guestState.redirect) {
+        saveToken(guestState.token);
+        nextStep();
+      }
     }
+    //TODO handle redirects
   }, [guestState]);
 
   const onSubmit = (e) => {

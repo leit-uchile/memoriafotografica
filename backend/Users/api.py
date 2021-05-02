@@ -45,6 +45,7 @@ class CompleteRegistration(generics.GenericAPIView):
             user.is_active = True
             user.save()
             return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class RegisterGuest(generics.GenericAPIView):
@@ -60,8 +61,20 @@ class RegisterGuest(generics.GenericAPIView):
 
         recaptchaSer = ReCaptchaSerializer(data=tokenRecaptcha)
         if recaptchaSer.is_valid():
-            userExists = User.objects.filter(email=formData['email']).exists()
-            if (not userExists):
+            try:
+                user = User.objects.get(email=formData['email'])
+                if (user.is_active):
+                    if (user.completed_registration):
+                        return Response({'redirect': 'login'}, status=status.HTTP_200_OK)
+                    else:
+                        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                else:
+                    if (user.completed_registration):
+                        return Response({'redirect': 'activate_user'}, status=status.HTTP_200_OK)
+                    else:
+                        return Response({'redirect': 'modal_guest_complete_registration'}, status=status.HTTP_200_OK)
+
+            except User.DoesNotExist:
                 newGuest = User.objects.create(
                     email=formData['email'],
                     first_name=formData['name'],
@@ -73,8 +86,8 @@ class RegisterGuest(generics.GenericAPIView):
 
                 activation_link = RegisterLink.objects.create(code=createHash(
                     newGuest.pk),
-                                                              status=1,
-                                                              user=newGuest)
+                    status=1,
+                    user=newGuest)
                 sendEmail(newGuest.email, "complete_guest_registration",
                           "Completa tu registro", activation_link.code)
                 return Response(
@@ -83,21 +96,6 @@ class RegisterGuest(generics.GenericAPIView):
                         "token": AuthToken.objects.create(newGuest)
                     },
                     status=status.HTTP_200_OK)
-            else:
-                user = User.objects.get(email=formData['email'])
-                if (user.is_active):
-                    #TODO usuario activo: respuesta es anda a logearte
-                    # TODO Vista: Es usuario  te vamos a redirigir a login
-                    temp = 14141414
-                else:
-                    if (user.completed_registration):
-                        # TODO es un usuario inactivo, y registro completo . Mandar a activarloms
-                        # TODO Vista: Ya tenemos una cuenta asociada a tu correo, te hemos enviado correo para activarte.
-                        temp = 123
-                    else:
-                        # TODO es un invitado ofrecer registarse o continuar como invitado ?
-                        # TODO registrar( LO MANDO ACTUALIZAR PASS?), marcar como registro completo y enviar activacion.
-                        temp = 123
         else:
             return Response(recaptchaSer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
