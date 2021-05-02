@@ -1,11 +1,9 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { site_misc } from "../../actions";
-import { Container, Row, Col, Badge, Button } from "reactstrap";
+import { Container, Row, Col} from "reactstrap";
 import { Redirect } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import Gallery from "react-photo-gallery";
 import { LeitSpinner, Pagination } from "../../components";
 import FilterPicker from "./FilterPicker";
@@ -27,39 +25,42 @@ import AdvancedSearch from "./AdvancedSearch";
  * allow to search using categories, metadata,
  * and time sort using FilterPicker and Redux's store Metadata
  */
-class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      photoPagination: {
-        page: 0,
-        maxAllowed: 25, // MASTER CONFIG
-      },
-      maxAllowedCategories: 4,
-      sortOpen: false,
-      chosenPhotoIndex: 0, // For redirect
-      redirect: false,
-      link: "",
-      catIds: [],
-      sorting: "",
-    };
 
-    // componentWillLoad
-    this.props.setRoute("/gallery");
-  }
+const Home = (props) => {
+  const [state, saveHomeConf] = useState({
+    photoPagination: {
+      page: 0,
+      maxAllowed: 25, // MASTER CONFIG
+    },
+    maxAllowedCategories: 4,
+    sortOpen: false,
+    chosenPhotoIndex: 0, // For redirect
+    redirect: false,
+    link: "",
+    catIds: [],
+    sorting: "",
+  });
+  useEffect(() => {props.setRoute("/gallery")}, []);
 
-  putFilterInfo = (o) => {
-    this.setState({ catIds: o.cats, sorting: o.sorting });
+  const putFilterInfo = (o) => {
+    saveHomeConf({ 
+      ... state,
+      catIds: o.cats, 
+      sorting: o.sorting });
+  }; 
+  
+  const handleOnClick = (obj) => {
+    saveHomeConf({ 
+      ... state,
+      redirect: true, 
+      chosenPhotoIndex: obj.index });
   };
 
-  handleOnClick = (obj) => {
-    this.setState({ redirect: true, chosenPhotoIndex: obj.index });
-  };
-
-  resetHomePagination = () => {
-    this.setState({
+  const resetHomePagination = () => {
+    saveHomeConf({
+      ... state,
       photoPagination: {
-        maxAllowed: this.state.photoPagination.maxAllowed,
+        maxAllowed: state.photoPagination.maxAllowed,
         page: 0,
       },
     });
@@ -68,18 +69,17 @@ class Home extends Component {
   /**
    * Method for HomePagination
    */
-  setPage = (number) => {
-    this.setState({
+  const setPage = (number) => {
+    saveHomeConf({
+      ... state,
       photoPagination: {
-        maxAllowed: this.state.photoPagination.maxAllowed,
+        maxAllowed: state.photoPagination.maxAllowed,
         page: number,
       },
     });
-  };
-
-  render() {
-    const { photos, filters, loadingPhotos, count } = this.props;
-    const { maxAllowed } = this.state.photoPagination;
+  }; 
+    const { photos, filters, loadingPhotos, count } = props;
+    const { maxAllowed } = state.photoPagination;
 
     // For gallery
     var mapped = photos.map((el) => ({
@@ -89,28 +89,30 @@ class Home extends Component {
       id: el.id,
     }));
 
-    if (this.state.redirect) {
-      this.props.setRoute("/photo"); // For NavLink in Navbar
-      this.props.setSelectedId(this.state.chosenPhotoIndex); // For in photo navigation
-      this.props.setPhotoPagination(this.state.photoPagination);
+    if (state.redirect) {
+      props.setRoute("/photo"); // For NavLink in Navbar
+      props.setSelectedId(state.chosenPhotoIndex); // For in photo navigation
+      props.setPhotoPagination(state.photoPagination);
 
       var url = "?";
-      url = url + "sort=" + this.state.sorting;
+      url = url + "sort=" + state.sorting;
       url =
-        this.state.catIds.length === 0
+        state.catIds.length === 0
           ? url
-          : url + "&category=" + this.state.catIds.join(",");
+          : url + "&category=" + state.catIds.join(",");
       url =
-        this.props.filters.length === 0
+        props.filters.length === 0
           ? url
           : url +
             "&metadata=" +
-            this.props.filters.map((el) => el.metaID).join(",");
-      this.setState({ redirect: false });
+            props.filters.map((el) => el.metaID).join(",");
+      saveHomeConf({ 
+        ... state,
+        redirect: false });
       return (
         <Redirect
           push
-          to={`/photo/${mapped[this.state.chosenPhotoIndex].id}/${url}`}
+          to={`/photo/${mapped[state.chosenPhotoIndex].id}/${url}`}
         />
       );
     }
@@ -154,7 +156,7 @@ class Home extends Component {
                   <Gallery
                     photos={mapped}
                     targetRowHeight={200}
-                    onClick={(e, index) => this.handleOnClick(index)}
+                    onClick={(e, index) => handleOnClick(index)}
                     className="additional"
                   />
                 )}
@@ -166,8 +168,8 @@ class Home extends Component {
                   <Pagination
                     count={count}
                     page_size={maxAllowed}
-                    page={this.state.photoPagination.page}
-                    setStatePage={this.setPage}
+                    page={state.photoPagination.page}
+                    setStatePage={setPage}
                     size="lg"
                   />
                 )}
@@ -176,8 +178,7 @@ class Home extends Component {
           </Container>
         </div>
       </Fragment>
-    );
-  }
+  )
 }
 
 const mapStateToProps = (state) => ({
