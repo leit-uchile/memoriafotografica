@@ -76,7 +76,10 @@ class RegisterGuest(generics.GenericAPIView):
                                                               user=newGuest)
                 sendEmail(newGuest.email, "complete_guest_registration",
                           "Completa tu registro", activation_link.code)
-                #TODO RETORNAR TOKEN
+                return Response({"isGuest" : {
+                    "user": UserSerializer(newGuest).data,
+                    "token": AuthToken.objects.create(newGuest)
+                         }})
             else:
                 user = User.objects.get(email=formData['email'])
                 if (user.is_active):

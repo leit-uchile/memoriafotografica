@@ -145,7 +145,7 @@ const CompleteRegistration = ({
       <Button color="primary">¡Reg&iacute;strame!</Button>
     </FormGroup>
   </Form>
-</Container>) : <CompleteRegistrationMessage status={finishRegistrationStatus}/>
+</Container>) : <CompleteRegistrationMessage status={finishRegistrationStatus.status}/>
 )
 };
 

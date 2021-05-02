@@ -79,7 +79,6 @@ class UploadPage extends Component {
             <UnregisteredPrompt />
             <UploadUnregister
               cache={this.state.userInfo}
-              sendAlert={this.props.sendAlert}
             />
             <UploadAlbum
               isAuth={this.props.isAuthenticated}
