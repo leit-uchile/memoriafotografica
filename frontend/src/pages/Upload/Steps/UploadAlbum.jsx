@@ -70,6 +70,20 @@ const CC_INFO = [
   },
 ];
 
+const toMaxDate = (date) => {
+  var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+  if (month.length < 2) 
+      month = '0' + month;
+  if (day.length < 2) 
+      day = '0' + day;
+
+  return [year, month, day].join('-');
+}
+
 /**
  * Upload Album
  *
@@ -150,6 +164,8 @@ const UploadAlbum = ({
     }
   };
 
+  const today = new Date();
+
   return (
     <Container>
       <Row>
@@ -172,8 +188,13 @@ const UploadAlbum = ({
             </div>
             <FormGroup>
               <Label className="form-subtitle">Fecha de las fotos:</Label>
-              <Input type="date" onChange={updateDate} required />
-            </FormGroup>
+              <Input
+                type="date"
+                onChange={updateDate}
+                required
+                max={toMaxDate(today)}
+              />
+            </FormGroup>{" "}
             <FormGroup>
               <Label className="form-subtitle">Etiquetas:</Label>
               <ReactTags
@@ -250,7 +271,7 @@ const UploadAlbum = ({
               </Button>
             </ButtonGroup>
           </Form>
-        </Col> 
+        </Col>
         <Col md={4} className="white-box upload-rules">
           <h4>Subida de contenido</h4>
           <ul>

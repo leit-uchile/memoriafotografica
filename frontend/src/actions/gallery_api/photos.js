@@ -340,7 +340,7 @@ export const uploadImages = (photos) => (dispatch, getState) => {
       // Date photos were taken
       formData.append("upload_date", photo.meta.date + "T00:00");
       formData.append("permission", photo.meta.cc)
-      photo.meta.tags.length >= 0 && formData.append("metadata", photo.meta.tags);
+      photo.meta.tags !== "" && photo.meta.tags.length >= 0 && formData.append("metadata", photo.meta.tags);
 
       const this_key = key; // avoid binding bellow
       fetch("/api/photos/", {
