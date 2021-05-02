@@ -32,14 +32,20 @@ import {
  * On success saves the metadata on store.metadata.newIDs
  * On failure saves reason and name on store.metadata.failedCreations
  */
-export const createMetadataByName = (name, list = false) => (
+export const createMetadataByName = (name, list = false, token) => (
   dispatch,
   getState
 ) => {
   let headers = {
-    "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
+      "Content-Type": "application/json", 
   };
+  if (token) {
+    headers = {
+      Authorization: "Token " + token,
+      "Content-Type": "application/json", 
+    };
+  }
 
   let newMetadata = list
     ? name.map((el) => ({ value: el, metadata: 1 }))
@@ -66,7 +72,7 @@ export const createMetadataByName = (name, list = false) => (
  * Creates multiple metadata from a list of names
  * @param {Array} nameList
  */
-export const createMultipleMetas = (nameList) => (dispatch, getState) => {
+export const createMultipleMetas = (nameList,token=null) => (dispatch, getState) => {
   // Failsafe
   if (nameList.length === 0) {
     return;
@@ -74,7 +80,7 @@ export const createMultipleMetas = (nameList) => (dispatch, getState) => {
   // Set process in motion
   dispatch({ type: CREATING_METADATA, data: nameList.length });
 
-  createMetadataByName(nameList, true)(dispatch, getState);
+  createMetadataByName(nameList, true,token)(dispatch, getState);
 };
 
 /**

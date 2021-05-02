@@ -19,7 +19,7 @@ from datetime import date
 from django.contrib.auth.backends import AllowAllUsersModelBackend
 from rest_framework import authentication
 from rest_framework import exceptions
-
+from Gallery.auth import GuestOrUserAuth
 
 def get_user(photoPair):
     try:
@@ -140,21 +140,6 @@ class ReadOnly(BasePermission):
     def has_permission(self, request, view):
         return request.method in SAFE_METHODS
 
-
-class ExampleAuthentication(authentication.BaseAuthentication):
-    def authenticate(self, request):
-        #Usuario o invitado
-        # No este borrado
-        # REQUEST METHOD
-
-        try:
-            user = User.objects.get(email="als@osdk0.cl")
-        except User.DoesNotExist:
-            raise exceptions.AuthenticationFailed('No such user')
-
-        return (user, None)
-
-
 class PhotoListAPI(generics.GenericAPIView):
     """
     get:
@@ -163,7 +148,7 @@ class PhotoListAPI(generics.GenericAPIView):
     post:
     Create a new picture.
     """
-    authentication_classes = [ExampleAuthentication]
+    authentication_classes = [GuestOrUserAuth]
     permission_classes = [
         IsAuthenticated | ReadOnly,
     ]

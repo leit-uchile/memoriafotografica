@@ -44,7 +44,7 @@ const useUpload = (
 
     // If API call isn't necessary
     if (newMetadata.length !== 0) {
-      createMultipleMetas(newMetadata);
+      createMultipleMetas(newMetadata,token);
       setState({
         ...state,
         data: { photos: [...photos], photoInfo },
