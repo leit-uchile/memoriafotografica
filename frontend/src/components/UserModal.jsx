@@ -8,8 +8,7 @@ import {
   Container,
   Row,
   Col,
-  ModalFooter,
-  Badge,
+  ModalFooter
 } from "reactstrap";
 import { connect } from "react-redux";
 import { site_misc, user } from "../actions";

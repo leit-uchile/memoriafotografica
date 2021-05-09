@@ -212,7 +212,6 @@ const Header = ({
                                           created_at: el.created_at,
                                           read: el.read,
                                         }}
-                                        colCorrection={1}
                                       />
                                     </Col>
                                   </Row>

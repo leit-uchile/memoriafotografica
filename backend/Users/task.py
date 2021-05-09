@@ -36,7 +36,6 @@ def create_notification(content_pk=None, type=1, content=1):
     elif content==3:
         user = Comment.objects.get(pk=content_pk).user_set.first()
     else:
-        print("Notification USER ERROR")
         return Response(status=status.HTTP_400_BAD_REQUEST)
     if (type>=1 and type<=3):
         message = messages[type-1][content-1]
@@ -47,10 +46,7 @@ def create_notification(content_pk=None, type=1, content=1):
             })
         if serializer.is_valid():
             notification = serializer.save()
-            print("Notification CREATED")
             user.notifications.add(notification)
-            print("Notification REFERENCE CREATED")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-    print("Notification TYPE ERROR")
     return Response(status=status.HTTP_400_BAD_REQUEST)
     

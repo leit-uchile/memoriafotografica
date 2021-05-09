@@ -52,8 +52,6 @@
 a,
 .btn-link {
   color: var(--leit-pink);
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
 }
 a:hover,
 .btn-link:hover {

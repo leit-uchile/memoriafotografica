@@ -40,12 +40,10 @@ const typeToText = (t) => {
       return "Otro";
   }
 };
-// colCorrection: Popover only supports 11 col division
 const Notification = ({
   element: { id, type, content, message, created_at, read },
   markAsRead,
-  updatedNotification,
-  colCorrection = 0,
+  updatedNotification
 }) => {
   const [isRead, setIsRead] = useState(read);
 
@@ -65,9 +63,9 @@ const Notification = ({
           </div>
         </Col>
         <Col
-          xs={8 - colCorrection}
-          md={9 - colCorrection}
-          ld={10 - colCorrection}
+          xs={8}
+          md={9}
+          ld={10}
         >
           <div className="notification-header">
             <b>{typeToText(type)}</b>

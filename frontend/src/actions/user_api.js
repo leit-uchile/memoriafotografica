@@ -228,6 +228,9 @@ export const getUserComments = (user_id, page, page_size) => (
   });
 };
 
+//  getUserNotifications:
+//  header: boolean that allows to distinguish between header and dashboard view
+
 export const getUserNotifications = (user_id, page, page_size, header = false, extra = "") => (
   dispatch,
   getState
