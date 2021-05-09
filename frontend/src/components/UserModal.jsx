@@ -63,7 +63,7 @@ const UserModal = ({ logout, user }) => {
               ) : null}
 
               <Col>
-                <h4>Perfil de usuario</h4>
+                <h4>Interfaz de usuario</h4>
               </Col>
             </Row>
             <Row style={{ marginTop: "0.5em" }}>
