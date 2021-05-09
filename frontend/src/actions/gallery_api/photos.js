@@ -23,11 +23,11 @@ import { setAlert } from "../site_misc";
  * @param {Number} page
  * @param {Number} pageSize
  */
-export const home = (page = 0, pageSize = 200) => (dispatch, getState) => {
+export const home = (page = 0, pageSize = 200, extra = "") => (dispatch, getState) => {
   let headers = { "Content-Type": "application/json" };
 
   dispatch({ type: HOME_LOADING, data: null });
-  return fetch(`/api/photos/?page=${page + 1}&page_size=${pageSize}`, {
+  return fetch(`/api/photos/?page=${page + 1}&page_size=${pageSize}${extra}`, {
     method: "GET",
     headers: headers,
   }).then(function (response) {
