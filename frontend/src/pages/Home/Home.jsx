@@ -1,12 +1,11 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import { site_misc } from "../../actions";
+import { gallery, site_misc } from "../../actions";
 import { Container, Row, Col } from "reactstrap";
 import { Redirect } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Gallery from "react-photo-gallery";
 import { LeitSpinner, Pagination } from "../../components";
-import FilterPicker from "./FilterPicker";
 import { bindActionCreators } from "redux";
 import {
   selectPhotos,
@@ -17,6 +16,7 @@ import {
 } from "../../reducers";
 import "./home.css";
 import AdvancedSearch from "./AdvancedSearch";
+import useHome from "./hooks/useHome";
 
 /**
  * Home
@@ -27,84 +27,7 @@ import AdvancedSearch from "./AdvancedSearch";
  */
 
 const Home = (props) => {
-
-  // BIGTODO: Put all logic on a hook called useHome
-
-  const [state, setState] = useState({
-    photoPagination: {
-      page: 0,
-      maxAllowed: 25, // MASTER CONFIG
-    },
-    sortOpen: false,
-    chosenPhotoIndex: 0, // For redirect
-    redirect: false,
-    link: "",
-    // TODO: Add default filter
-    filters: ""
-  });
-
-  useEffect(() => {
-    props.setRoute("/gallery");
-    // TODO: Add get photos call to action
-  }, []);
-
-  // TODO Add recall logic on filters
-  useEffect(() => {
-    // TODO: Add get photos call to action
-    // TODO: Reset pagination on updated filters
-  }, [state.filters])
-
-  // Add filters to search method
-  const putFilterInfo = (o) => {
-    setState({
-      ...state,
-      catIds: o.cats,
-      sorting: o.sorting,
-    });
-  };
-
-  const handleOnClick = (obj) => {
-    setState({
-      ...state,
-      redirect: true,
-      chosenPhotoIndex: obj.index,
-    });
-  };
-
-  const resetHomePagination = () => {
-    setState({
-      ...state,
-      photoPagination: {
-        maxAllowed: state.photoPagination.maxAllowed,
-        page: 0,
-      },
-    });
-  };
-
-  /**
-   * Method for HomePagination
-   */
-  const setPage = (number) => {
-    setState({
-      ...state,
-      photoPagination: {
-        maxAllowed: state.photoPagination.maxAllowed,
-        page: number,
-      },
-    });
-  };
-
-  const { photos, filters, loadingPhotos, count } = props;
-  const { maxAllowed } = state.photoPagination;
-
-  // TODO: Add useMemo (See React documentation)
-  // For gallery
-  var mapped = photos.map((el) => ({
-    src: el.thumbnail,
-    height: el.aspect_h,
-    width: el.aspect_w,
-    id: el.id,
-  }));
+  const [state, setState, handleOnClick, setPage, mapped] = useHome(props);
 
   // TODO: Fix logic for Photo redirect
   if (state.redirect) {
@@ -112,20 +35,7 @@ const Home = (props) => {
     props.setSelectedId(state.chosenPhotoIndex); // For in photo navigation
     props.setPhotoPagination(state.photoPagination);
 
-    var url = "?";
-    url = url + "sort=" + state.sorting;
-    url =
-      state.catIds.length === 0
-        ? url
-        : url + "&category=" + state.catIds.join(",");
-    url =
-      props.filters.length === 0
-        ? url
-        : url + "&metadata=" + props.filters.map((el) => el.metaID).join(",");
-    setState({
-      ...state,
-      redirect: false,
-    });
+    var url = "?" + state.filters;
     return (
       <Redirect
         push
@@ -154,9 +64,11 @@ const Home = (props) => {
             <Col md="7" lg="12">
               <div className="home-filters-containers">
                 <h2> Todas las fotograf&iacute;as</h2>
-                <Col md={{ offset: 7 }}>
-                  <AdvancedSearch />
-                </Col>
+                <AdvancedSearch
+                  onSubmit={(f) => {
+                    setState({ ...state, filters: f });
+                  }}
+                />
               </div>
             </Col>
           </Row>
@@ -168,7 +80,7 @@ const Home = (props) => {
             <Col
               sm={mapped.length === 1 ? { size: 4, offset: 4 } : { size: 12 }}
             >
-              {loadingPhotos ? (
+              {props.loadingPhotos ? (
                 <LeitSpinner />
               ) : (
                 <Gallery
@@ -182,10 +94,10 @@ const Home = (props) => {
           </Row>
           <Row style={{ marginTop: "2em" }}>
             <Col>
-              {loadingPhotos && (
+              {props.loadingPhotos && (
                 <Pagination
-                  count={count}
-                  page_size={maxAllowed}
+                  count={props.count}
+                  page_size={state.photoPagination.maxAllowed}
                   page={state.photoPagination.page}
                   setStatePage={setPage}
                   size="lg"
@@ -216,6 +128,7 @@ const mapActionsToProps = (dispatch) =>
       // eslint-disable-next-line
       setSelectedId: site_misc.setSelectedId,
       setPhotoPagination: site_misc.setPhotoPagination,
+      getPhotos: gallery.photos.home,
     },
     dispatch
   );
