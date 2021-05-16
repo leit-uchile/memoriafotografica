@@ -128,6 +128,12 @@ const FilterModal = ({
   const saveChanges = (to_send) => {
     delete to_send.image;
     delete to_send.thumbnail;
+    if (photoDetails.approved === to_send.approved) {
+      delete to_send.approved;
+    }
+    if (photoDetails.censure === to_send.censure) {
+      delete to_send.censure;
+    }
     setSending(true);
     editPhoto(to_send.id, to_send);
   };

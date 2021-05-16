@@ -13,6 +13,7 @@ from django.http import Http404
 from WebAdmin.views import sendEmail
 from datetime import date
 from django.db.models import Q
+from Users.task import create_notification
 
 
 def sort_by_field(element_list, request):
@@ -360,6 +361,7 @@ class CensureAPI(generics.GenericAPIView):
             partial=True)
         if serializer.is_valid() and report_serializer.is_valid():
             serializer.save()
+            create_notification.delay(content_pk=request.data["content_id"]["id"], type=3, content=content_type)
             report_serializer.save()
             return Response(report_serializer.data)
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -410,6 +412,7 @@ class ReportEditAPI(generics.GenericAPIView):
         print(serializer.is_valid())
         if serializer.is_valid() and report_serializer.is_valid():
             serializer.save()
+            create_notification.delay(content_pk=request.data['report']['content_id']['id'], type=2, content=content_type)
             report_serializer.save()
             return Response(report_serializer.data)
         return Response(status=status.HTTP_400_BAD_REQUEST)

@@ -21,6 +21,10 @@ import {
   USER_RECOVERED_ALBUM_ERROR,
   USER_RECOVERED_COMMENTS,
   USER_RECOVERED_COMMENTS_ERROR,
+  NOTIFICATIONS_RECOVERED,
+  USER_RECOVERED_NOTIFICATIONS,
+  USER_RECOVERED_NOTIFICATIONS_ERROR,
+  USER_NOTIFICATION_UPDATED,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAILED,
   USER_PASSWORD_UPDATED,
@@ -220,6 +224,65 @@ export const getUserComments = (user_id, page, page_size) => (
     } else {
       dispatch({ type: USER_RECOVERED_COMMENTS_ERROR, data: r.data });
 
+    }
+  });
+};
+
+//  getUserNotifications:
+//  header: boolean that allows to distinguish between header and dashboard view
+
+export const getUserNotifications = (user_id, page, page_size, header = false, extra = "") => (
+  dispatch,
+  getState
+) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+  return fetch(
+    `/api/users/notifications/${user_id}/?page=${page}&page_size=${page_size}${extra}`,
+    { method: "GET", headers: headers }
+  ).then(function (response) {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        header 
+        ? dispatch({ type: NOTIFICATIONS_RECOVERED, data: data}) 
+        : dispatch({ type: USER_RECOVERED_NOTIFICATIONS, data: data });
+      });
+    } else {
+      dispatch({ type: USER_RECOVERED_NOTIFICATIONS_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
+export const updateNotification = (id) => (
+  dispatch,
+  getState
+) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+  return fetch(
+    `/api/users/notifications/${id}/`,
+    {
+      method: "PUT",
+      headers,
+      body: JSON.stringify({
+        read: true,
+      })
+    }
+  ).then((response) => {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch({ type: USER_NOTIFICATION_UPDATED, data: data });
+      });
+    } else {
+      dispatch(setAlert("Error actualizando notificación", "warning"));
+      throw r.data;
     }
   });
 };
