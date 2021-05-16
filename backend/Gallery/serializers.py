@@ -113,7 +113,7 @@ class CreatePhotoSerializer(serializers.ModelSerializer):
 class PhotoSerializer(serializers.ModelSerializer):
     #Para usuario colaborador
     class Meta:
-        exclude = ('censure', 'report','comments')
+        exclude = ('censure', 'report','comments','image')
         model = Photo
     def update(self, instance, validated_data):
         instance.permission = validated_data.get('permission', instance.permission)

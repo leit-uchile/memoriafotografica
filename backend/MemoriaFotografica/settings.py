@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'Users',
     'Gallery',
     'MetaData',
+    'Search_indexes',
     'WebAdmin',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -197,6 +198,6 @@ ELASTICSEARCH_DSL = {
 
 # Name of the Elasticsearch index for production
 ELASTICSEARCH_INDEX_NAMES = {
-    'Gallery.documents.comment': 'prod_commment',
-    'Gallery.documents.photo': 'prod_photo',
+    'Search_indexes.documents.comments.comment': 'prod_commment',
+    'Search_indexes.documents.photos.photo': 'prod_photo',
 }
