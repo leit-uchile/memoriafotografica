@@ -125,6 +125,7 @@ class EditProfile extends Component {
     let user_copy = { ...this.state.user };
     delete user_copy.avatar;
     delete user_copy.password;
+    delete user_copy.notifications;
     this.props.update(user_copy);
   };
 

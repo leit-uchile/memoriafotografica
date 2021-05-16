@@ -16,6 +16,7 @@ from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_MET
 from rest_condition import ConditionalPermission, C, And, Or, Not
 from rest_framework.documentation import include_docs_urls
 from datetime import date
+from Users.task import create_notification
 
 def get_user(photoPair):
     try:
@@ -268,6 +269,15 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
             photo = self.get_object(pk,True)
             serializer_class = PhotoAdminSerializer
             serializer = PhotoAdminSerializer(photo, data = request.data, partial=True)
+            if serializer.is_valid():
+                if "censure" in request.data:
+                    if request.data["censure"]:
+                        create_notification.delay(content_pk=photo.id, type=3, content=2)
+                elif "approved" in request.data:
+                    if request.data["approved"]:
+                        create_notification.delay(content_pk=photo.id, type=1, content=2)
+                else:
+                    create_notification.delay(content_pk=photo.id, type=2, content=2)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 

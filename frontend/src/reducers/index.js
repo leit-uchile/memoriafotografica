@@ -154,6 +154,9 @@ export const selectSiteMiscUploadDisclosureSet = (state) =>
 export const selectSiteMiscAlerts = (state) =>
   fromSiteMisc.selectSiteMiscAlerts(state);
 
+export const selectSiteMiscNotifications = (state) =>
+  fromSiteMisc.selectSiteMiscNotifications(state);
+
 //WebAdmin
 export const selectWebAdminMessages = (state) =>
   fromWebAdmin.selectWebAdminMessages(state);
@@ -209,6 +212,10 @@ export const selectUserRegisterSucces = (state) =>
 export const selectUserPhotos = (state) => fromUser.selectUserPhotos(state);
 
 export const selectUserComments = (state) => fromUser.selectUserComments(state);
+
+export const selectUserNotifications = (state) => fromUser.selectUserNotifications(state);
+
+export const selectUserNotificationUpdate = (state) => fromUser.selectUserNotificationUpdate(state);
 
 export const selectUserAlbums = (state) => fromUser.selectUserAlbums(state);
 

@@ -7,8 +7,9 @@ from django.conf import settings
 from .serializers import (CreateUserSerializer, UserSerializer,
                           LoginUserSerializer, UserAlbumSerializer,
                           UserCommentSerializer, UserPhotoSerializer,
+                          NotificationSerializer, UserNotificationSerializer,
                           ChangePasswordSerializer, ReCaptchaSerializer)
-from .models import User, RegisterLink
+from .models import User, RegisterLink, Notification
 from Gallery.models import Photo
 from Gallery.serializers import PhotoSerializer
 from .permissions import *
@@ -21,6 +22,7 @@ from django.http import Http404
 import hashlib
 from django.dispatch import receiver
 from django_rest_passwordreset.signals import reset_password_token_created
+from .task import create_notification
 
 
 def createHash(id):
@@ -97,6 +99,7 @@ class RegisterLinkAPI(generics.GenericAPIView):
                     user.is_active = 1
                     user.public_profile = True
                     user.save()
+                    create_notification.delay(content_pk=register_link.user.id, type=1, content=1)
                     register_link.status = 0
                     register_link.save()
                     return Response(
@@ -320,6 +323,57 @@ class UserCommentsAPI(generics.GenericAPIView):
             return Response(serializer.data)
         except User.DoesNotExist:
             raise Http404
+
+class UserNotificationsAPI(generics.GenericAPIView):
+    """
+       get:
+       Get notifications of a *user*.
+       Permits pagination if page_size and page are on the query parameters
+
+       put:
+       Change state from unread to read
+    """
+    permission_classes = [IsAuthenticated | ReadOnly, ]
+
+    def get_object(self, pk, admin):
+        notification = Notification.objects.get(pk=pk)
+        try:
+            return notification
+        except Notification.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, *args, **kwargs):
+        try:
+            user = User.objects.get(pk=pk)
+            filters = {}
+            if "read" in request.query_params:
+                read = True
+                if request.query_params["read"] == "false":
+                    read = False
+                filters['read'] = read
+            
+            user_notifications = user.notifications.filter(**filters)
+            user_notifications = user_notifications.order_by("-created_at")
+            serializer = NotificationSerializer(user_notifications, many=True)
+            if "page" in request.query_params and "page_size" in request.query_params:
+                return self.get_paginated_response(self.paginate_queryset(serializer.data))
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            raise Http404
+
+    def put(self, request, pk, *args, **kwargs):
+        notification = self.get_object(pk, True)
+        if notification.user_set.first() == request.user:
+            notification = self.get_object(pk, False)
+            serializer_class = NotificationSerializer
+            serializer = NotificationSerializer(notification, data = request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status= status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @receiver(reset_password_token_created)

@@ -4,21 +4,30 @@ import { connect } from "react-redux";
 import { user } from "../../actions";
 import { Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPlusCircle,
-  faSuitcase,
-  faCameraRetro,
-  faAddressCard,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet";
 import { bindActionCreators } from "redux";
-import { selectUserPhotos, selectUserComments } from "../../reducers";
+import {
+  selectUserPhotos,
+  selectUserComments,
+  selectUserNotifications,
+  selectUserData,
+} from "../../reducers";
 import Gallery from "react-photo-gallery";
 import { LeitSpinner, Pagination } from "../../components";
 import "./styles.css";
 import Comment from "../PhotoView/Comments/Comment";
+import Notification from "./Notification";
 
-const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
+const Landing = ({
+  user,
+  photos,
+  getPhotos,
+  comments,
+  getComments,
+  notifications,
+  getNotifications,
+}) => {
   const [params, setParams] = useState({
     redirect: false,
     url: "",
@@ -30,6 +39,11 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
     loading: true,
   });
   const [pagComments, setPagComments] = useState({
+    page: 0,
+    page_size: 5,
+    loading: true,
+  });
+  const [pagNotifications, setPagNotifications] = useState({
     page: 0,
     page_size: 5,
     loading: true,
@@ -53,6 +67,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
     ).then((r) => {
       setPagPhotos((pag) => ({ ...pag, loading: false }));
     });
+    // eslint-disable-next-line
   }, [pagPhotos.page]);
 
   useEffect(() => {
@@ -62,7 +77,20 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
         setPagComments((pag) => ({ ...pag, loading: false }));
       }
     );
+    // eslint-disable-next-line
   }, [pagComments.page]);
+
+  useEffect(() => {
+    setPagNotifications((pag) => ({ ...pag, loading: true }));
+    getNotifications(
+      user.id,
+      pagNotifications.page + 1,
+      pagNotifications.page_size
+    ).then((r) => {
+      setPagNotifications((pag) => ({ ...pag, loading: false }));
+    });
+    // eslint-disable-next-line
+  }, [pagNotifications.page]);
 
   if (params.redirect) {
     return <Redirect push to={params.url} />;
@@ -154,7 +182,7 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
                         <Container>
                           {comments.results.map((el, key) => (
                             <Row key={"Comment" + key}>
-                              <Col>
+                              <Col style={{ padding: "6px" }}>
                                 <Comment
                                   element={{
                                     content: el.content,
@@ -206,7 +234,54 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
               </Container>
               <hr />
               <Container fluid>
-                <p>En construccion</p>
+                <Row>
+                  <Col>
+                    {!pagNotifications.loading ? (
+                      notifications.results.length !== 0 ? (
+                        <Container>
+                          {notifications.results.map((el, key) => (
+                            <Row key={"Notification" + key}>
+                              <Col style={{ padding: "6px" }}>
+                                <Notification
+                                  element={{
+                                    id: el.id,
+                                    type: el.type,
+                                    content: el.content,
+                                    message: el.message,
+                                    created_at: el.created_at,
+                                    read: el.read,
+                                  }}
+                                />
+                              </Col>
+                            </Row>
+                          ))}
+                        </Container>
+                      ) : (
+                        "No tienes notificaciones"
+                      )
+                    ) : (
+                      <Row>
+                        <Col style={{ textAlign: "center" }}>
+                          <LeitSpinner />
+                        </Col>
+                      </Row>
+                    )}
+                    {notifications.count !== 0 ? (
+                      <Pagination
+                        count={notifications.count}
+                        page_size={pagNotifications.page_size}
+                        page={pagNotifications.page}
+                        setStatePage={(p) =>
+                          setPagNotifications((pag) => ({ ...pag, page: p }))
+                        }
+                        size="md"
+                        label="notifications"
+                        displayFirst
+                        displayLast
+                      />
+                    ) : null}
+                  </Col>
+                </Row>
               </Container>
             </div>
           </Col>
@@ -216,23 +291,11 @@ const Landing = ({ user, photos, getPhotos, comments, getComments }) => {
   );
 };
 
-const makeIcons = (rol_id) => {
-  switch (rol_id) {
-    case 1:
-      return <FontAwesomeIcon icon={faCameraRetro} />;
-    case 2:
-      return <FontAwesomeIcon icon={faAddressCard} />;
-    case 3:
-      return <FontAwesomeIcon icon={faSuitcase} />;
-    default:
-      return "Failed";
-  }
-};
-
 const mapStateToProps = (state) => ({
   photos: selectUserPhotos(state),
   comments: selectUserComments(state),
-  user: state.user.userData,
+  notifications: selectUserNotifications(state),
+  user: selectUserData(state),
 });
 
 const mapActionsToProps = (dispatch) =>
@@ -240,6 +303,7 @@ const mapActionsToProps = (dispatch) =>
     {
       getPhotos: user.getUserPhotos,
       getComments: user.getUserComments,
+      getNotifications: user.getUserNotifications,
     },
     dispatch
   );
