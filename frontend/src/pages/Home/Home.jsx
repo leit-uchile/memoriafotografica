@@ -29,7 +29,6 @@ import useHome from "./hooks/useHome";
 const Home = (props) => {
   const [state, setState, handleOnClick, setPage, mapped] = useHome(props);
 
-  // TODO: Fix logic for Photo redirect
   if (state.redirect) {
     props.setRoute("/photo"); // For NavLink in Navbar
     props.setSelectedId(state.chosenPhotoIndex); // For in photo navigation
@@ -44,7 +43,6 @@ const Home = (props) => {
     );
   }
 
-  // TODO: Add update filters method to Advanced search
   return (
     <Fragment>
       <Helmet>

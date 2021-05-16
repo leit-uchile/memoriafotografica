@@ -17,17 +17,13 @@ const useHome = (props) => {
 
   useEffect(() => {
     props.setRoute("/gallery");
-    // TODO: Add get photos call to action
     props.getPhotos(
       state.photoPagination.page,
       state.photoPagination.maxAllowed
     );
   }, []);
 
-  // TODO Add recall logic on filters
   useEffect(() => {
-    // TODO: Add get photos call to action
-    // TODO: Reset pagination on updated filters
     props.getPhotos(0, state.photoPagination.maxAllowed, state.filters);
     resetHomePagination();
   }, [state.filters]);
