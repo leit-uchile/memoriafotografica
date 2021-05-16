@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useHistory, Redirect } from "react-router-dom";
 import {
   faUserFriends,
   faEnvelope,
   faChevronCircleRight,
   faChevronCircleLeft,
+  faFileExcel,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   Container,
@@ -17,6 +19,10 @@ import {
   Col,
   ButtonGroup,
   Alert,
+  Modal,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
 } from "reactstrap";
 import ReCAPTCHA from "react-google-recaptcha";
 import { connect } from "react-redux";
@@ -30,7 +36,7 @@ const UploadUnregister = ({
   guestState,
   saveToken,
 }) => {
-  // let recaptchaRef;
+  const history = useHistory();
 
   const [formData, setFormData] = useState(
     cache === {}
@@ -69,9 +75,78 @@ const UploadUnregister = ({
       if (!guestState.redirect) {
         saveToken(guestState.token);
         nextStep();
+      } else {
+        switch (guestState.redirect) {
+          case "login":
+            setModalTitle("Usuario ya existente");
+            setModalBody(
+              "Detectamos que ya tienes una cuenta registrada, porfavor dirigete al login y sube tus fotografías una vez logeado."
+            );
+            setModalFooter(
+              <Button
+                color="primary"
+                onClick={() => {
+                  history.push("/login");
+                }}
+              >
+                Ir a login
+              </Button>
+            );
+            setModal(true);
+            break;
+          case "activate_user":
+            setModalTitle("Usuario inactivo");
+            setModalBody(
+              "Detectamos que ya tienes una cuenta registrada pero inactiva, porfavor revisa tu correo y activa tu cuenta."
+            );
+            setModalFooter(
+              <div
+                style={{
+                  display: "flex",
+                  flex: 1,
+                  justifyContent: "space-between",
+                }}
+              >
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    //TODO reenviar correo de activacion
+                    setModalBody("Te hemos reenviado el correo de actvacion");
+                    setModalFooter(
+                      <Button
+                        color="primary"
+                        onClick={() => {
+                          history.push("/");
+                        }}
+                      >
+                        Volver al inicio
+                      </Button>
+                    );
+                  }}
+                >
+                  Reenviar correo de activacion
+                </Button>
+                <Button
+                  color="secondary"
+                  onClick={() => {
+                    history.push("/");
+                  }}
+                >
+                  Volver al inicio
+                </Button>
+              </div>
+            );
+            setModal(true);
+            // history.push('/')
+            break;
+          case "guest_complete_registration":
+            // history.push('/')
+            break;
+          default:
+            return;
+        }
       }
     }
-    //TODO handle redirects
   }, [guestState]);
 
   const onSubmit = (e) => {
@@ -87,8 +162,21 @@ const UploadUnregister = ({
     formData.rol === "" ? setRolError(true) : setRolError(false);
   };
 
+  const [modal, setModal] = useState(false);
+  const [modalBody, setModalBody] = useState("HABER");
+  const [modalTitle, setModalTitle] = useState("ola joben");
+  const [modalFooter, setModalFooter] = useState("");
+
+  const toggle = () => setModal(!modal);
+
   return (
     <Container>
+      <Modal isOpen={modal} toggle={toggle}>
+        <ModalHeader toggle={toggle}>{modalTitle}</ModalHeader>
+        <ModalBody>{modalBody}</ModalBody>
+        <ModalFooter>{modalFooter}</ModalFooter>
+      </Modal>
+
       <Row>
         <Col>
           <h2 className="page-title">

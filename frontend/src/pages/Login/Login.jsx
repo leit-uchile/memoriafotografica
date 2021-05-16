@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, Redirect} from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { user, site_misc } from "../../actions";
 import { connect } from "react-redux";
 import { Alert } from "reactstrap";
@@ -7,9 +7,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUnlock } from "@fortawesome/free-solid-svg-icons";
 import "./login.css";
 import { bindActionCreators } from "redux";
-import { selectErrors,
-        selectUserIsAuthenticated,
-        selectSiteMiscLoginSuccesRoute,} from "../../reducers";
+import {
+  selectErrors,
+  selectUserIsAuthenticated,
+  selectSiteMiscLoginSuccesRoute,
+} from "../../reducers";
 
 class Login extends Component {
   state = {
@@ -31,6 +33,9 @@ class Login extends Component {
     this.props.setLoginSuccessRoute();
   }
 
+  componentDidUpdate() {
+    window.scrollTo(0, 0);
+  }
 
   translateError = (error) => {
     var errorMessage;

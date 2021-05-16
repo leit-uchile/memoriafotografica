@@ -30,7 +30,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_('last name'), max_length=30)
     birth_date = models.DateField(_('birth date'))
     date_joined = models.DateTimeField(_('date joined'),auto_now_add=True)
-    is_active = models.BooleanField(_('active'), default=True)      #Habilitado
+    is_active = models.BooleanField(_('active'), default=False)      #Habilitado
     completed_registration = models.BooleanField(_('completed_registration'), default=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     deleted = models.BooleanField(_('deleted'), default = False)    #Eliminado

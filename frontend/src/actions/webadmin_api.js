@@ -66,6 +66,7 @@ export const GuestVerify = (data) => (dispatch) => {
           .then((data) => dispatch({ type: GUEST_VERIFY, data: data }));
       } else {
         response.json().then((data) => {
+          //TODO better handling for errors?
           dispatch(setAlert(data["Error"], "warning"));
           dispatch({ type: GUEST_VERIFY_ERROR, data: data["Error"] });
         });

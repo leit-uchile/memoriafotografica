@@ -72,7 +72,7 @@ class RegisterGuest(generics.GenericAPIView):
                     if (user.completed_registration):
                         return Response({'redirect': 'activate_user'}, status=status.HTTP_200_OK)
                     else:
-                        return Response({'redirect': 'modal_guest_complete_registration'}, status=status.HTTP_200_OK)
+                        return Response({'redirect': 'guest_complete_registration'}, status=status.HTTP_200_OK)
 
             except User.DoesNotExist:
                 newGuest = User.objects.create(
