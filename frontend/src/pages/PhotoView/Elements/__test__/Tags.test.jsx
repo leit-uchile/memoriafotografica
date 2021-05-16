@@ -9,10 +9,15 @@ const tags = [
   { id: 100, value: "beauchef851" },
 ];
 
-it("renders without crashing", () => {
+it("renders tags without crashing", () => {
   renderWithRouter(<Tags tags={tags} photoId={1} onRedirect={() => {}} />);
   expect(screen.getByText("#beauchef"));
   expect(screen.getByText("#beauchef851"));
+});
+
+it("renders without tags without crashing", () => {
+  renderWithRouter(<Tags tags={[]} photoId={1} onRedirect={() => {}} />);
+  expect(screen.getByText("No hay tags asociados"));
 });
 
 it("Check click on tags", () => {

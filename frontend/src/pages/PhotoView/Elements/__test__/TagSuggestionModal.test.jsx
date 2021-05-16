@@ -1,6 +1,6 @@
 import React from "react";
 import "@testing-library/jest-dom";
-import { renderWithRouter, screen } from "../../../../test/test-utils";
+import { renderWithRouter, screen, within } from "../../../../test/test-utils";
 import userEvent from "@testing-library/user-event";
 import TagSuggestionModal from "../TagSuggestionModal";
 
@@ -47,7 +47,7 @@ it("renders without crashing", () => {
   expect(screen.getByText("Cancelar"));
 });
 
-it("Write a tag in the tag suggestions", () => {
+it("Add a tag suggestion and then delete it", () => {
   renderWithRouter(<TagSuggestionModal tags={tags} photoId={1} />, {
     initialState: {
       user: {
@@ -65,5 +65,69 @@ it("Write a tag in the tag suggestions", () => {
 
   userEvent.click(screen.getByRole("button", { name: "Sugerir" }));
   writeTag("nuevoBeauchef");
-  expect(screen.getByText("nuevoBeauchef"));
+  expect(screen.getByText("nuevoBeauchef", { ignore: "input" }));
+
+  // delete it
+  userEvent.click(within(screen.getByRole("form")).getByRole("button"));
+  expect(screen.queryByText("nuevoBeauchef", { ignore: "input" })).toBeNull();
+});
+
+it("Add duplicated tags", () => {
+  renderWithRouter(<TagSuggestionModal tags={tags} photoId={1} />, {
+    initialState: {
+      user: {
+        isAuthenticated: true,
+        userData: {
+          id: 1,
+          first_name: "user",
+          last_name: "user",
+          user_type: 1,
+          isStaff: false,
+        },
+      },
+    },
+  });
+
+  userEvent.click(screen.getByRole("button", { name: "Sugerir" }));
+
+  expect(
+    screen.queryByText("ya se encuentra dentro de los tags de esta foto", {
+      exact: false,
+    })
+  ).toBeNull();
+
+  writeTag("beauchef");
+  expect(screen.getByText("beauchef", { exact: true, ignore: "input, span" }));
+
+  expect(
+    screen.getByText("ya se encuentra dentro de los tags de esta foto", {
+      exact: false,
+    })
+  );
+});
+
+it("send tags", async () => {
+  renderWithRouter(<TagSuggestionModal tags={tags} photoId={1} />, {
+    initialState: {
+      user: {
+        isAuthenticated: true,
+        userData: {
+          id: 1,
+          first_name: "user",
+          last_name: "user",
+          user_type: 1,
+          isStaff: false,
+        },
+      },
+    },
+  });
+
+  userEvent.click(screen.getByRole("button", { name: "Sugerir" }));
+  writeTag("nuevoBeauchef");
+  expect(screen.getByText("nuevoBeauchef", { ignore: "input" }));
+
+  // delete it
+  console.error("Que está pasando")
+  userEvent.click(screen.getByRole("button", { name: "Enviar Sugerencia" })); // enviar
+  expect(await screen.findByText("¡Sugerencias enviadas!")).toBeInTheDocument();
 });

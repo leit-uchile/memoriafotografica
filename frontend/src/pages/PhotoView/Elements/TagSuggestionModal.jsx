@@ -204,7 +204,10 @@ const TagSuggestionModal = ({
         }
       </p>
 
-      <Form className="white-box form-container upload-album-section-content">
+      <Form
+        className="white-box form-container upload-album-section-content"
+        role="form"
+      >
         <FormGroup>
           <h5 style={{ textAlign: "left" }}>Etiquetas</h5>
           {tags.length === 0 ? (
