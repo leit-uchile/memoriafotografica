@@ -1,3 +1,4 @@
+import { string } from "prop-types";
 import React, { useState } from "react";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
@@ -13,8 +14,10 @@ import {
   ModalBody,
   ModalFooter,
 } from "reactstrap";
+import { category } from "../../actions/gallery_api";
 
-const AdvancedSearch = () => {
+const AdvancedSearch = (props) => {
+  // Big TODO: pasar logica a hook
   // state used to save form data for the search query
   const [formData, saveFormData] = useState({
     byDate: "",
@@ -24,7 +27,7 @@ const AdvancedSearch = () => {
     searchIncludes: "",
     category: [],
     orderBy: "",
-    permissions: "",
+    permission: "",
   });
 
   // state to toggle modal
@@ -38,8 +41,8 @@ const AdvancedSearch = () => {
       .catch((err) => []);
 
   const byDate = [
-    { value: "updateDate", label: "Fecha de subida" },
-    { value: "photoDate", label: "Fecha de la foto" },
+    { value: "update_date", label: "Fecha de subida" },
+    { value: "created_at", label: "Fecha de la foto" },
   ];
 
   const searchIncludes = [
@@ -61,13 +64,12 @@ const AdvancedSearch = () => {
   };
 
   const handleCat = (labels) => {
-    if (labels === null){
+    if (labels === null) {
       saveFormData({
         ...formData,
-        category: []
-      })
-    }
-    else if (labels.length > formData.category.length) {
+        category: [],
+      });
+    } else if (labels.length > formData.category.length) {
       labels.forEach((label) => {
         if (!formData.category.includes(label)) {
           saveFormData({
@@ -76,7 +78,7 @@ const AdvancedSearch = () => {
           });
         }
       });
-    } else if (labels.length < formData.category.length){
+    } else if (labels.length < formData.category.length) {
       formData.category.forEach((catLabel) => {
         if (labels.includes(catLabel)) {
           const idx = formData.category.indexOf(catLabel);
@@ -91,7 +93,23 @@ const AdvancedSearch = () => {
 
   const submitAdvSearch = (e) => {
     e.preventDefault();
-    console.log(formData);
+    // TODO: meter cosas en el filters
+    let filtersStr = "?";
+    for (let key in formData) {
+      if (formData[key] === "" || formData[key] === []) {
+        continue;
+      } else {
+        if (formData[category] !== []){
+          // TODO: hacer esto de mejor forma
+          const search = formData[category].join("__");
+          filtersStr += search;
+        }
+        if (formData[])
+
+      }
+      filtersStr += "?"
+    }
+    props.onSubmit(filtersStr);
   };
 
   const addValue = (event) => {
@@ -162,6 +180,7 @@ const AdvancedSearch = () => {
                     defaultOptions
                     loadOptions={options}
                     onChange={handleCat}
+                    isSearchable={true}
                   />
                 </FormGroup>
                 <FormGroup>
