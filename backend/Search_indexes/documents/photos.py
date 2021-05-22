@@ -14,6 +14,9 @@ photo_index.settings(
 
 @photo_index.doc_type
 class PhotoDocument(Document):
+
+    id = fields.IntegerField(attr='id')
+
     title = fields.TextField(
         analyzer=html_strip,
         fields={

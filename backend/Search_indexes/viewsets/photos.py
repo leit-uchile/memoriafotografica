@@ -10,6 +10,7 @@ from django_elasticsearch_dsl_drf.constants import (
 from django_elasticsearch_dsl_drf.filter_backends import (
     FilteringFilterBackend,
     OrderingFilterBackend,
+    IdsFilterBackend,
     SearchFilterBackend,
     DefaultOrderingFilterBackend
 )
@@ -31,6 +32,7 @@ class PhotoDocumentViewSet(DocumentViewSet):
         OrderingFilterBackend,
         DefaultOrderingFilterBackend,
         SearchFilterBackend,
+        IdsFilterBackend,
     ]
     # Define search fields
     search_fields = (
@@ -41,7 +43,7 @@ class PhotoDocumentViewSet(DocumentViewSet):
     # Define filtering fields
     filter_fields = {
         'id': {
-            'field': '_id',
+            'field': 'id',
             'lookups': [
                 LOOKUP_FILTER_RANGE,
                 LOOKUP_QUERY_IN,
