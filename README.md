@@ -83,3 +83,7 @@ Pasos:
 4. Desplegar exponiendo el puerto 80/443 (con un certbot en la misma para pedir certificados y reiniciar nginx cuando sea necesario) con ```sudo docker-compose -f docker-compose.prod.yml```
 
 **TODO: Generar certificados automaticamente con Ansible en contenedores**
+
+# Elastic search
+
+Los índices se actualizan de forma automática por cada actualización de datos. Sin embargo para inicializar y actualizar manualmente se necesita el comando `./manage.py search_index --populate -f` en el contendor de backend
