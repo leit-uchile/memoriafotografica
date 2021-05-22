@@ -18,13 +18,13 @@ from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 
 # Example app models
 from Search_indexes.documents.photos import PhotoDocument
-from Gallery.serializers import PhotoSerializer
+from Search_indexes.serializers.photos import PhotoDocumentSerializer
 
 class PhotoDocumentViewSet(DocumentViewSet):
     """The PhotoDocument view."""
 
     document = PhotoDocument
-    serializer_class = PhotoSerializer
+    serializer_class = PhotoDocumentSerializer
     lookup_field = 'id'
     filter_backends = [
         FilteringFilterBackend,

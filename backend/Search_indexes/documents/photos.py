@@ -28,7 +28,12 @@ class PhotoDocument(Document):
         }
     )
 
-    permission = fields.TextField()
+    permission = fields.TextField(
+        analyzer=html_strip,
+        fields={
+            'raw': fields.TextField(analyzer='keyword'),
+        }
+    )
     
     thumbnail = fields.FileField()
 
