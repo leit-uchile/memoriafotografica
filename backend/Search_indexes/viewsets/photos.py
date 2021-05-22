@@ -16,8 +16,8 @@ from django_elasticsearch_dsl_drf.filter_backends import (
 )
 
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
+from django_elasticsearch_dsl_drf.pagination import LimitOffsetPagination
 
-# Example app models
 from Search_indexes.documents.photos import PhotoDocument
 from Search_indexes.serializers.photos import PhotoDocumentSerializer
 
@@ -26,6 +26,7 @@ class PhotoDocumentViewSet(DocumentViewSet):
 
     document = PhotoDocument
     serializer_class = PhotoDocumentSerializer
+    pagination_class = LimitOffsetPagination
     lookup_field = 'id'
     filter_backends = [
         FilteringFilterBackend,

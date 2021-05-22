@@ -36,9 +36,9 @@ urlpatterns = [
     re_path(r'^api/', include(user_endpoints)),
     re_path(r'^api/', include(gallery_endpoints)),
     re_path(r'^api/', include(metadata_endpoints)),
-    re_path(r'^api/metrics/', include(metrics_endpoints)),
     re_path(r'^api/', include(webadmin_endpoints)),
-    re_path(r'^api/es/', include(search_endpoints)),
+    re_path(r'^api/metrics/', include(metrics_endpoints)),
+    re_path(r'^api/search/', include(search_endpoints)),
     re_path(r'^api/auth/', include('knox.urls')),
     #re_path(r'^', TemplateView.as_view(template_name="index.html")),
     url(r'^docs/', include_docs_urls(title="API Memfoto", public=False))
