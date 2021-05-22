@@ -20,6 +20,7 @@ urlpatterns = [
     re_path("^users/albums/(?P<pk>[0-9]+)/$", UserAlbumsAPI.as_view()),
     re_path("^users/comments/(?P<pk>[0-9]+)/$", UserCommentsAPI.as_view()),
     re_path("^users/guest/", RegisterGuest.as_view()),
+    re_path("^users/resend_activation/", ResendActivationEmail.as_view()),
     re_path("^users/complete_registration/", CompleteRegistration.as_view()),
     re_path(
         "^auth/password_reset/",

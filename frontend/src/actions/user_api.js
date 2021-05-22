@@ -28,6 +28,8 @@ import {
   USER_PUBLIC_LOADING,
   USER_PUBLIC_LOADED,
   USER_PUBLIC_ERROR,
+  RESEND_ACTIVATION_EMAIL,
+  RESEND_ACTIVATION_EMAIL_FAILED,
 } from "./types";
 import { setAlert } from "./site_misc";
 
@@ -517,5 +519,38 @@ export const resetPasswordConfirm = (token, password) => (dispatch) => {
          dispatch({ type: RESET_PASSWORD_CONFIRM_FAILED, data: res.data });
       }
     });
+};
+
+export const resendActivationEmail = (email) => (dispatch, getState) => {
+  let headers, body;
+
+    headers = {
+      "Content-Type": "application/json",
+    };
+    body = JSON.stringify({ email:email });
+
+  return fetch(`api/users/resend_activation/`, { headers, body, method: "POST" })
+    .then((res) => {
+      if (res.status < 500) {
+        return res.json().then((data) => {
+          return { status: res.status, data };
+        });
+      } else {
+        console.log("Server Error!");
+        throw res;
+      }
+    })
+    .then((res) => {
+      if (res.status === 200) {
+        return dispatch({ type: RESEND_ACTIVATION_EMAIL });
+      }
+      else{
+        throw res;
+      }
+    })
+    .catch(()=>{
+        dispatch({ type: RESEND_ACTIVATION_EMAIL_FAILED});
+    });
+
 };
 

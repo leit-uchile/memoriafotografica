@@ -28,6 +28,9 @@ import {
   RESET_PASSWORD_VALIDATE_FAILED,
   RESET_PASSWORD_CONFIRM_SUCCESS,
   RESET_PASSWORD_CONFIRM_FAILED,
+  RESEND_ACTIVATION_EMAIL,
+  RESEND_ACTIVATION_EMAIL_FAILED,
+  RESET_UNREGISTERED_UPLOAD
 } from "../actions/types";
 
 /**
@@ -53,6 +56,8 @@ const baseState = {
   resetPasswordRequest: false,
   resetPasswordTokenValid: false,
   resetPasswordConfirmed: false,
+
+  resendActivation:'',
 };
 
 // Compare if the token is valid (12 hours)
@@ -205,6 +210,12 @@ export default function user(state = initialState, action) {
       return { ...state, resetPasswordConfirmed: true, errors: {} };
     case RESET_PASSWORD_CONFIRM_FAILED:
       return { ...state, errors: action.data, resetPasswordConfirmed: false};
+    case RESEND_ACTIVATION_EMAIL:
+      return {...state,resendActivation:'success'}
+    case RESEND_ACTIVATION_EMAIL_FAILED:
+      return {...state,resendActivation:'error'}
+    case RESET_UNREGISTERED_UPLOAD:
+      return { ...state , resendActivation:''}
     default:
       return { ...state };
   }

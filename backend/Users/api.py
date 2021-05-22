@@ -48,6 +48,25 @@ class CompleteRegistration(generics.GenericAPIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
+class ResendActivationEmail(generics.GenericAPIView):
+    allowed_methods = ["POST"]
+
+    def post(self, request, *args, **kwargs):
+        if "email" in request.data.keys():
+            try:
+                user = User.objects.get(email=request.data['email'])
+                activation_link = RegisterLink.objects.get(user=user)
+                if (not user.is_active and user.completed_registration):
+                    sendEmail(user.email, "sign_up", "Active su cuenta",activation_link.code)
+                    return Response(status=status.HTTP_200_OK)
+                if (not user.is_active and not user.completed_registration):
+                    sendEmail(user.email, "complete_guest_registration","Completa tu registro", activation_link.code)
+                    return Response(status=status.HTTP_200_OK)
+                else:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+            except User.DoesNotExist or RegisterLink.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
 class RegisterGuest(generics.GenericAPIView):
     allowed_methods = ["POST"]
 
@@ -104,7 +123,6 @@ class RegisterGuest(generics.GenericAPIView):
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
         return request.method in SAFE_METHODS
-
 
 class RegistrationAPI(generics.GenericAPIView):
     """
@@ -193,7 +211,6 @@ class LoginAPI(generics.GenericAPIView):
             data,  # NOTE: context adds the base url and we dont need it here context=self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user)
         })
-
 
 class PasswordAPI(generics.GenericAPIView):
     """

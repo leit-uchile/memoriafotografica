@@ -23,6 +23,7 @@ import {
   GUEST_VERIFY_ERROR,
   COMPLETE_REGISTRATION,
   COMPLETE_REGISTRATION_ERROR,
+  RESET_UNREGISTERED_UPLOAD
 } from "../actions/types";
 
 const initialState = {
@@ -108,6 +109,8 @@ export default function webadmin(state = initialState, action) {
       return { ...state, updatedMessage: true };
     case CONTACTMESSAGE_SWITCH_STATE_ERROR:
       return { ...state, updatedMessage: false };
+    case RESET_UNREGISTERED_UPLOAD:
+      return { ...state, guestState: false}
     default:
       return state;
   }
