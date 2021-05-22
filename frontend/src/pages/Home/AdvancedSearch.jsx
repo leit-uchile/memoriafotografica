@@ -4,6 +4,7 @@ import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import {
   Col,
+  CustomInput,
   Button,
   Form,
   FormGroup,
@@ -32,6 +33,8 @@ const AdvancedSearch = (props) => {
 
   // state to toggle modal
   const [modal, setModal] = useState(false);
+  // state to toggle endDate input
+  const [toggle, setSwitch] = useState(false);
 
   // API call to fetch category options
   const options = () =>
@@ -61,6 +64,10 @@ const AdvancedSearch = (props) => {
 
   const changeToggle = () => {
     setModal(!modal);
+  };
+
+  const changeDateToggle = () => {
+    setSwitch(!toggle);
   };
 
   const handleCat = (labels) => {
@@ -147,15 +154,19 @@ const AdvancedSearch = (props) => {
                       options={byDate}
                       onChange={(e) => addValueSelect("byDate", e.value)}
                     />
+                    <CustomInput
+                      type="switch"
+                      id="rangeDate"
+                      label="Por rango de fecha"
+                      onChange={changeDateToggle}
+                    />
                   </FormGroup>
                   <FormGroup>
-                    <Input type="date" id="date" />
+                    <Input type="date" id="startDate" />
+                    {toggle ? (
+                      <Input type="date" name="end" id="endDate" />
+                    ) : null}
                   </FormGroup>
-                </FormGroup>
-                <FormGroup>
-                  <legend>Por rango de fechas</legend>
-                  <Input type="date" name="start" id="startDate" />
-                  <Input type="date" name="end" id="endDate" />
                 </FormGroup>
                 <FormGroup tag="fieldset">
                   <legend>Incluir en cada resultado de la búsqueda</legend>
