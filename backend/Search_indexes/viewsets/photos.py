@@ -52,6 +52,18 @@ class PhotoDocumentViewSet(DocumentViewSet):
         },
         'approved': 'approved.raw',
         'censure': 'censure.raw',
+        'category': {
+            'field': 'category',
+            'lookups': [
+                LOOKUP_FILTER_TERMS,
+                LOOKUP_FILTER_PREFIX,
+                LOOKUP_FILTER_WILDCARD,
+                LOOKUP_QUERY_IN,
+                LOOKUP_QUERY_EXCLUDE,
+            ],
+        },
+        'created_at': 'created_at.raw',
+        'upload_date': 'upload_date.raw',
         'permission': 'permission.raw',
         'metadata': {
             'field': 'metadata',
