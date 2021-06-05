@@ -42,7 +42,6 @@ const UploadPhoto = ({
   nextStep,
   token,
 }) => {
-  console.log(token);
   const [state, setState, handleOnDrop, saveMeta, handleErase] = useHandleFiles(
     sendAlert
   );

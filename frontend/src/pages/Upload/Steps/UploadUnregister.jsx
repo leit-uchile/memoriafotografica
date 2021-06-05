@@ -143,7 +143,6 @@ const UploadUnregister = ({
   useEffect(() => {
     return () => {
       resetStates()
-      //TODO reset guestSTATE y resendState
     };
   }, []);
 
@@ -195,18 +194,18 @@ const UploadUnregister = ({
   };
 
   const onSubmit = (e) => {
-    // TODO FIX al volver a home despues de uploadunregister si hago uploadunregister denuevo esta explosivo
-    // TODO add loading icons cuando este cargando el crear invitado y al reenviar correos
-    // TODO no abrir modal a menos que se hayan completado todos los campos?
-    setLoading(true);
     e.preventDefault();
     setErrorMessages();
-    if (captchaValue && !rolError) {
+    if (captchaValue && formData.rol.length>0) {
+      setLoading(true);
       guestVerify({ ...formData, recaptchaToken: captchaValue });
     }
   };
 
-  const toggle = () => setModal(!modal);
+  const toggle = () => {
+    resetStates()
+    setModal(!modal);
+  }
 
   return (
     <Container>
@@ -218,7 +217,7 @@ const UploadUnregister = ({
         </Row>
       ) : (
         <div>
-          <Modal isOpen={modal} toggle={toggle}>
+           <Modal isOpen={modal} toggle={toggle}>
             <ModalHeader toggle={toggle}>{modalTitle}</ModalHeader>
             <ModalBody>{modalBody}</ModalBody>
             <ModalFooter>{modalFooter}</ModalFooter>
@@ -399,7 +398,10 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = (dispatch) => ({
   guestVerify: (value) => dispatch(webadmin.GuestVerify(value)),
   resendEmail: (email) => dispatch(user.resendActivationEmail(email)),
-  resetStates: () => dispatch({type: 'RESET_UNREGISTERED_UPLOAD'})
+  resetStates: () => {
+    dispatch({type: 'RESET_UNREGISTERED_UPLOAD'})
+    dispatch({type: 'GUEST_VERIFY_ERROR'})
+  }
 });
 
 

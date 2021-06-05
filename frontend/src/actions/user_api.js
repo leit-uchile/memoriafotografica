@@ -532,19 +532,9 @@ export const resendActivationEmail = (email) => (dispatch, getState) => {
   return fetch(`api/users/resend_activation/`, { headers, body, method: "POST" })
     .then((res) => {
       if (res.status < 500) {
-        return res.json().then((data) => {
-          return { status: res.status, data };
-        });
+        return dispatch({ type: RESEND_ACTIVATION_EMAIL });
       } else {
         console.log("Server Error!");
-        throw res;
-      }
-    })
-    .then((res) => {
-      if (res.status === 200) {
-        return dispatch({ type: RESEND_ACTIVATION_EMAIL });
-      }
-      else{
         throw res;
       }
     })
