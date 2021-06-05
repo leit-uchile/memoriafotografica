@@ -12,7 +12,8 @@ import "./styles.css";
 
 const Comment = ({
   element: { content, censure, usuario, id, created_at, updated_at },
-  viewerId,
+  editable = false,
+  reportable = false,
   updateComment,
   deleteComment,
 }) => {
@@ -57,7 +58,7 @@ const Comment = ({
           ) : (
             <div className="comment-date">Cargando...</div>
           )}
-          {usuario.id === viewerId ? (
+          {editable ? (
             !editing ? (
               <div className="comment-user-options">
                 <FontAwesomeIcon
@@ -95,7 +96,8 @@ const Comment = ({
                 </Button>
               </div>
             )
-          ) : (
+          ) : null}
+          {reportable ? (
             <ReportModal
               style={{ display: "inline-block" }}
               className="float-right"
@@ -112,7 +114,7 @@ const Comment = ({
               reportType={3}
               buttonTitle={"Comentario inapropiado"}
             />
-          )}
+          ) : null}
           {editing ? (
             <Input
               type="text"
@@ -138,5 +140,3 @@ const mapActionsToProps = (dispatch) =>
   );
 
 export default connect(null, mapActionsToProps)(Comment);
-
-//export default Comment;

@@ -8,7 +8,7 @@ import {
   Container,
   Row,
   Col,
-  ModalFooter,
+  ModalFooter
 } from "reactstrap";
 import { connect } from "react-redux";
 import { site_misc, user } from "../actions";
@@ -23,7 +23,9 @@ const UserModal = ({ logout, user }) => {
   const [toggle, setToggle] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
-  const doToggle = () => setToggle(!toggle);
+  const doToggle = () => {
+    setToggle(!toggle);
+  };
 
   const doLogout = () => {
     logout();
@@ -50,7 +52,7 @@ const UserModal = ({ logout, user }) => {
             <Row className="user-modal-interfaces">
               {user_type > 2 ? (
                 <Col>
-                  <h4>Interfaz de Administrador</h4>
+                  <h4>Interfaz de administrador</h4>
                 </Col>
               ) : null}
               {user_type > 1 ? (
@@ -60,7 +62,7 @@ const UserModal = ({ logout, user }) => {
               ) : null}
 
               <Col>
-                <h4>Gestionar perfil</h4>
+                <h4>Interfaz de usuario</h4>
               </Col>
             </Row>
             <Row style={{ marginTop: "0.5em" }}>
@@ -106,7 +108,7 @@ const UserModal = ({ logout, user }) => {
                     setTimeout(() => setRedirect(false), 1000);
                   }}
                 >
-                  Ir a Perfil
+                  Escritorio
                 </Button>
               </Col>
             </Row>

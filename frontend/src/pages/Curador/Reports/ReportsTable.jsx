@@ -20,7 +20,6 @@ const ReportsTable = ({ reports, updateReport, censureContent }) => {
       <b>{rep.resolution_details || "-"}</b>
     ) : (
       <ResolveModal
-        buttonLabel="Acciones"
         report={rep}
         updateReport={updateReport}
         censureContent={censureContent}
@@ -32,12 +31,12 @@ const ReportsTable = ({ reports, updateReport, censureContent }) => {
       <thead>
         <tr>
           <th>Tipo</th>
-          <th>Acciones</th>
-          <th>Estado</th>
-          <th>Fecha del reporte</th>
-          <th>&Uacute;ltima actualizaci&oacute;n</th>
-          <th>Contenido</th>
           <th>Detalles</th>
+          <th>Motivo</th>
+          <th>Estado</th>
+          <th>Reportado el</th>
+          <th>&Uacute;ltima actualizaci&oacute;n</th>
+          <th>Acci&oacute;n</th>
         </tr>
       </thead>
       <tbody>

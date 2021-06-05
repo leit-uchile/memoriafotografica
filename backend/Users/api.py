@@ -9,8 +9,11 @@ from django.conf import settings
 from .serializers import (CreateUserSerializer, UserSerializer,
                           LoginUserSerializer, UserAlbumSerializer,
                           UserCommentSerializer, UserPhotoSerializer,
+                          NotificationSerializer, UserNotificationSerializer,
                           ChangePasswordSerializer, ReCaptchaSerializer)
-from .models import User, RegisterLink
+from .models import User, RegisterLink, Notification
+from Gallery.models import Photo
+from Gallery.serializers import PhotoSerializer
 from .permissions import *
 from WebAdmin.views import sendEmail
 from rest_framework.documentation import include_docs_urls
@@ -19,6 +22,10 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_condition import ConditionalPermission, C, And, Or, Not
 from django.http import Http404
 from datetime import datetime
+import hashlib
+from django.dispatch import receiver
+from django_rest_passwordreset.signals import reset_password_token_created
+from .task import create_notification
 
 
 def createHash(id):
@@ -179,6 +186,7 @@ class RegisterLinkAPI(generics.GenericAPIView):
                     user.is_active = 1
                     user.public_profile = True
                     user.save()
+                    create_notification.delay(content_pk=register_link.user.id, type=1, content=1)
                     register_link.status = 0
                     register_link.save()
                     return Response(
@@ -309,9 +317,9 @@ class UserDetailAPI(generics.GenericAPIView):
 
     def get(self, request, pk, *args, **kwargs):
         user = self.get_object(pk)
-        if (request.user.is_anonymous and not user.public_profile):
+        if request.user.is_anonymous and not user.public_profile:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if (request.user.user_type == 1 and not user.public_profile):
+        if ((not request.user.is_anonymous) and request.user.user_type == 1) and not user.public_profile:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         serializer = UserSerializer(user)
         return Response(serializer.data)
@@ -344,15 +352,23 @@ class UserPhotosAPI(generics.GenericAPIView):
        get:
        Get photos of a *user*.
        """
-    permission_classes = [
-        IsAuthenticated | ReadOnly,
-    ]
+    permission_classes = [IsAuthenticated | ReadOnly, ]
     serializer_class = UserPhotoSerializer
 
     def get(self, request, pk, *args, **kwargs):
         try:
             user = User.objects.get(pk=pk)
-            serializer = UserPhotoSerializer(user)
+            filters = {}
+            if "approved" in request.query_params:
+                approved = True
+                if request.query_params["approved"] == "false":
+                    approved = False
+                filters['approved'] = approved
+    
+            user_pics = user.photos.filter(**filters)
+            serializer = PhotoSerializer(user_pics, many=True)
+            if "page" in request.query_params and "page_size" in request.query_params:
+                return self.get_paginated_response(self.paginate_queryset(serializer.data))
             return Response(serializer.data)
         except User.DoesNotExist:
             raise Http404
@@ -373,6 +389,8 @@ class UserAlbumsAPI(generics.GenericAPIView):
         try:
             user = User.objects.get(pk=pk)
             serializer = UserAlbumSerializer(user)
+            if "page" in request.query_params and "page_size" in request.query_params:
+                return self.get_paginated_response(self.paginate_queryset(serializer.data["albums"]))
             return Response(serializer.data)
         except User.DoesNotExist:
             raise Http404
@@ -382,6 +400,7 @@ class UserCommentsAPI(generics.GenericAPIView):
     """
        get:
        Get comments of a *user*.
+       Permits pagination if page_size and page are on the query parameters
 
        TODO delete:
        Delete an comment asociated to a *user*.
@@ -394,10 +413,63 @@ class UserCommentsAPI(generics.GenericAPIView):
     def get(self, request, pk, *args, **kwargs):
         try:
             user = User.objects.get(pk=pk)
-            serializer = UserCommentSerializer(user)
+            serializer = self.serializer_class(user)
+            if "page" in request.query_params and "page_size" in request.query_params:
+                return self.get_paginated_response(self.paginate_queryset(serializer.data["comments"]))
             return Response(serializer.data)
         except User.DoesNotExist:
             raise Http404
+
+class UserNotificationsAPI(generics.GenericAPIView):
+    """
+       get:
+       Get notifications of a *user*.
+       Permits pagination if page_size and page are on the query parameters
+
+       put:
+       Change state from unread to read
+    """
+    permission_classes = [IsAuthenticated | ReadOnly, ]
+
+    def get_object(self, pk, admin):
+        notification = Notification.objects.get(pk=pk)
+        try:
+            return notification
+        except Notification.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, *args, **kwargs):
+        try:
+            user = User.objects.get(pk=pk)
+            filters = {}
+            if "read" in request.query_params:
+                read = True
+                if request.query_params["read"] == "false":
+                    read = False
+                filters['read'] = read
+            
+            user_notifications = user.notifications.filter(**filters)
+            user_notifications = user_notifications.order_by("-created_at")
+            serializer = NotificationSerializer(user_notifications, many=True)
+            if "page" in request.query_params and "page_size" in request.query_params:
+                return self.get_paginated_response(self.paginate_queryset(serializer.data))
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            raise Http404
+
+    def put(self, request, pk, *args, **kwargs):
+        notification = self.get_object(pk, True)
+        if notification.user_set.first() == request.user:
+            notification = self.get_object(pk, False)
+            serializer_class = NotificationSerializer
+            serializer = NotificationSerializer(notification, data = request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status= status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @receiver(reset_password_token_created)

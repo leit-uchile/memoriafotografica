@@ -12,10 +12,13 @@ import {
   USER_RECOVERED_PHOTO,
   USER_RECOVERED_ALBUM,
   USER_RECOVERED_COMMENTS,
+  USER_RECOVERED_NOTIFICATIONS,
   USER_RECOVERED_ALBUM_ERROR,
   USER_RECOVERED_COMMENTS_ERROR,
+  USER_RECOVERED_NOTIFICATIONS_ERROR,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAILED,
+  USER_NOTIFICATION_UPDATED,
   USER_LOADED,
   USER_PASSWORD_UPDATED,
   USER_PASSWORD_UPDATE_FAILED,
@@ -38,9 +41,23 @@ import {
  * User deletion is done as a logout is successful
  */
 const baseState = {
-  photos: [],
-  comments: [],
-  albums: [],
+  photos: {
+    results: [],
+    count: 0,
+  },
+  comments: {
+    results: [],
+    count: 0,
+  },
+  albums: {
+    results: [],
+    count: 0,
+  },
+  notifications: {
+    results: [],
+    count: 0,
+  },
+  notificationUpdate: {},
   userData: null,
   publicLoading: false,
   // auth
@@ -65,13 +82,15 @@ const initialState =
   localStorage.getItem("isAuth") === null
     ? baseState
     : new Date().getTime() -
-        JSON.parse(localStorage.getItem("isAuth")).timeSet >
+      JSON.parse(localStorage.getItem("isAuth")).timeSet >
       43200000
-    ? baseState
-    : {
-        photos: [],
-        comments: [],
-        albums: [],
+      ? baseState
+      : {
+        photos: {},
+        comments: {},
+        albums: {},
+        notifications: {},
+        notificationUpdate: {},
         userData: JSON.parse(localStorage.getItem("user")),
         publicLoading: false,
         token: localStorage.getItem("token"),
@@ -162,22 +181,33 @@ export default function user(state = initialState, action) {
         ...state,
         comments: action.data,
       };
+    case USER_RECOVERED_NOTIFICATIONS:
+      return {
+        ...state,
+        notifications: action.data,
+      };
     case USER_RECOVERED_PHOTO_ERROR:
       return {
         ...state,
-        photos: [],
+        photos: {},
         error: action.data,
       };
     case USER_RECOVERED_ALBUM_ERROR:
       return {
         ...state,
-        albmus: [],
+        albums: [],
         error: action.data,
       };
     case USER_RECOVERED_COMMENTS_ERROR:
       return {
         ...state,
-        comments: [],
+        comments: {},
+        error: action.data,
+      };
+    case USER_RECOVERED_NOTIFICATIONS_ERROR:
+      return {
+        ...state,
+        notifications: {},
         error: action.data,
       };
     case USER_UPDATE_SUCCESS:
@@ -188,6 +218,11 @@ export default function user(state = initialState, action) {
       };
     case USER_UPDATE_FAILED:
       return { ...state, errors: action.data };
+    case USER_NOTIFICATION_UPDATED:
+      return {
+        ...state,
+        notificationUpdate: action.data,
+      };
     case USER_PASSWORD_UPDATED:
       return { ...state };
     case USER_PASSWORD_UPDATE_FAILED:
@@ -244,6 +279,10 @@ export const selectUserRegisterSucces = (state) => state.user.registerSuccess;
 export const selectUserPhotos = (state) => state.user.photos;
 
 export const selectUserComments = (state) => state.user.comments;
+
+export const selectUserNotifications = (state) => state.user.notifications;
+
+export const selectUserNotificationUpdate = (state) => state.user.notificationUpdate;
 
 export const selectUserAlbums = (state) => state.user.albums;
 

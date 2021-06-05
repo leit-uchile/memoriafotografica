@@ -11,9 +11,11 @@ import {
   FormGroup,
   Input,
   Form,
+  Spinner,
 } from "reactstrap";
 import { user } from "../../../actions";
 import moment from "moment";
+import { UserPicture } from "../../../components";
 
 const EditUserModal = ({
   report,
@@ -24,15 +26,18 @@ const EditUserModal = ({
   getUser,
 }) => {
   const [formData, setData] = useState({});
+  const [sending, setSending] = useState(false);
   const [deletePhoto, setDelete] = useState(false);
 
   useEffect(() => {
     getUser(report.content_id.id);
+    // eslint-disable-next-line
   }, [isOpen]);
 
   useEffect(() => {
     let info = { ...userDetails, upload_date: moment(Date(Date.now())) };
     setData(info);
+    setDelete(false);
   }, [userDetails]);
 
   const updateData = (e) =>
@@ -41,7 +46,12 @@ const EditUserModal = ({
   const onSend = () => {
     let info = { ...formData };
     deletePhoto ? (info.avatar = null) : delete info.avatar;
-    editUser(info);
+    delete info.notifications;
+    setSending(true);
+    editUser(info).then((r) => {
+      setSending(false);
+      handleToggle();
+    });
   };
   return (
     <div>
@@ -49,27 +59,59 @@ const EditUserModal = ({
         <ModalHeader toggle={() => handleToggle()}>Editar usuario</ModalHeader>
         <ModalBody>
           <Form>
-            <FormGroup row>
-              <Label for="photo" sm={3}>
-                Eliminar foto de perfil{" "}
-              </Label>
-
-              <Col sm={9}>
-                <input
-                  type="checkbox"
-                  class="toggle-button"
-                  id="photo"
-                  checked={deletePhoto}
-                  onChange={() => setDelete(!deletePhoto)}
-                />
-                <label for="photo"></label>
-              </Col>
-            </FormGroup>
+            {formData.avatar !== null ? (
+              <Fragment>
+                <FormGroup
+                  row
+                  style={{
+                    lineHeight: "50%",
+                    alignItems: "center",
+                    textAlign: "center",
+                  }}
+                >
+                  <Col>
+                    <UserPicture
+                      user={formData}
+                      dims={100}
+                      render={() => (
+                        <img
+                          height="100"
+                          width="100"
+                          style={{
+                            borderRadius: "50%",
+                          }}
+                          src={formData.avatar}
+                          alt="user-avatar"
+                        />
+                      )}
+                    />
+                  </Col>
+                </FormGroup>
+                <FormGroup row>
+                  <Label for="photo" sm={3}>
+                    Eliminar foto de perfil{" "}
+                  </Label>
+                  <Col sm={9}>
+                    <input
+                      type="checkbox"
+                      class="toggle-button"
+                      id="photo"
+                      checked={deletePhoto}
+                      onChange={() => setDelete(!deletePhoto)}
+                    />
+                    <label for="photo"></label>
+                  </Col>
+                </FormGroup>
+              </Fragment>
+            ) : (
+              <FormGroup row>
+                <Label sm={12}>Usuario sin fotografía</Label>
+              </FormGroup>
+            )}
             <FormGroup row>
               <Label for="first_name" sm={3}>
                 Nombre{" "}
               </Label>
-
               <Col sm={9}>
                 <Input
                   type="text"
@@ -84,7 +126,6 @@ const EditUserModal = ({
               <Label for="last_name" sm={3}>
                 Apellido{" "}
               </Label>
-
               <Col sm={9}>
                 <Input
                   type="text"
@@ -99,7 +140,6 @@ const EditUserModal = ({
               <Label for="rol_type" sm={3}>
                 Rol{" "}
               </Label>
-
               <Col sm={9}>
                 <Input
                   name="rol_type"
@@ -119,20 +159,17 @@ const EditUserModal = ({
           </Form>
         </ModalBody>
         <ModalFooter>
-          {true ? (
-            <Fragment>
-              <Button color="primary" onClick={() => onSend()}>
-                Guardar cambios
-              </Button>
-              <Button color="secondary" onClick={() => handleToggle()}>
-                Cancelar
-              </Button>
-            </Fragment>
-          ) : (
-            <Button color="secondary" onClick={() => handleToggle()}>
-              Cerrar
-            </Button>
-          )}
+          <Button color="primary" onClick={() => onSend()}>
+            {sending ? (
+              <Spinner style={{ width: "1rem", height: "1rem" }} />
+            ) : (
+              ""
+            )}{" "}
+            Guardar cambios
+          </Button>
+          <Button color="secondary" onClick={() => handleToggle()}>
+            Cancelar
+          </Button>
         </ModalFooter>
       </Modal>
     </div>

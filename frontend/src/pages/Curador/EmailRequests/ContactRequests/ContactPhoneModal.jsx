@@ -9,11 +9,14 @@ import {
   FormGroup,
   Label,
   Input,
+  Spinner,
 } from "reactstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPhone } from "@fortawesome/free-solid-svg-icons";
 
-const ContactPhoneModal = (props) => {
-  const { buttonLabel, className, message, send } = props;
+const ContactPhoneModal = ({ className, message, send }) => {
   const [modal, setModal] = useState(false);
+  const [sending, setSending] = useState(false);
   const [contacted, setContacted] = useState(false);
   const toggle = () => setModal(!modal);
   const formData = {
@@ -23,13 +26,20 @@ const ContactPhoneModal = (props) => {
   };
 
   const onSend = () => {
-    send(message, formData, false);
-    setModal(!modal);
+    let msgUpdate = { ...message };
+    msgUpdate.resolved = true;
+    msgUpdate.email_sent = false;
+    setSending(true);
+    send(msgUpdate, formData).then((r) => {
+      setSending(false);
+      setModal(!modal);
+    });
   };
+
   return (
     <div>
-      <Button color="danger" onClick={toggle} disabled={message.resolved}>
-        {buttonLabel}
+      <Button className="action" onClick={toggle}>
+        <FontAwesomeIcon icon={faPhone} />
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>Contacto</ModalHeader>
@@ -64,8 +74,13 @@ const ContactPhoneModal = (props) => {
             disabled={!contacted}
             onClick={() => onSend()}
           >
+            {sending ? (
+              <Spinner style={{ width: "1rem", height: "1rem" }} />
+            ) : (
+              ""
+            )}{" "}
             Actualizar
-          </Button>{" "}
+          </Button>
           <Button color="secondary" onClick={toggle}>
             Cancelar
           </Button>

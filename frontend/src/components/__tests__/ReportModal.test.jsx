@@ -1,6 +1,6 @@
 import React from "react";
 import "@testing-library/jest-dom";
-import { renderWithRouter, render, screen } from "../../test-utils";
+import { renderWithRouter, render, screen } from "../../test/test-utils";
 import userEvent from "@testing-library/user-event";
 import ReportModal from "../ReportModal";
 

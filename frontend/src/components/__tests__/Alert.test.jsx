@@ -1,6 +1,6 @@
 import React from "react";
 import "@testing-library/jest-dom";
-import { render, screen } from "../../test-utils";
+import { render, screen } from "../../test/test-utils";
 import Alert from "../Layout/Alert";
 
 it("renders without crashing", () => {

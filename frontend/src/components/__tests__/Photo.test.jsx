@@ -1,6 +1,6 @@
 import React from "react";
 import "@testing-library/jest-dom";
-import { renderWithRouter, screen } from "../../test-utils";
+import { renderWithRouter, screen } from "../../test/test-utils";
 import Photo from "../Photo";
 
 it("renders without crashing", () => {

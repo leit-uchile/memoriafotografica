@@ -3,7 +3,7 @@ from .models import *
 from django.contrib.auth import authenticate
 # Create serializers here :)
 from rest_framework import serializers
-from .models import User
+from .models import User, Notification
 from django.conf import settings
 from datetime import datetime
 from Gallery.serializers import AlbumSerializer, PhotoSerializer, CommentSerializer
@@ -14,6 +14,20 @@ from rest_framework_recaptcha.fields import ReCaptchaField
 class ReCaptchaSerializer(serializers.Serializer):
     recaptcha = ReCaptchaField()
 
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ('id', 'type', 'content', 'message', 'created_at', 'read')
+    
+    def create(self, validated_data):
+        notification = Notification.objects.create(**validated_data)
+        return notification
+        
+    def update(self, instance, validated_data):
+        instance.read = validated_data.get('read', instance.read)
+        instance.updated_at = datetime.now()
+        instance.save()
+        return instance
 
 class ChangePasswordSerializer(serializers.Serializer):
     """
@@ -76,8 +90,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserPhotoSerializer(serializers.ModelSerializer):
-    photos = PhotoSerializer(many=True)
-
+    photos = PhotoSerializer(many = True)
     class Meta:
         model = User
         fields = ('photos', )
@@ -97,6 +110,13 @@ class UserCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('comments', )
+
+class UserNotificationSerializer(serializers.ModelSerializer):
+    notifications = NotificationSerializer(many=True)
+
+    class Meta:
+        model = User
+        fields = ('notifications', )
 
 
 class LoginUserSerializer(serializers.Serializer):

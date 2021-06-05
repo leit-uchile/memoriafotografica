@@ -8,6 +8,7 @@ it("renders without crashing", () => {
     <PhotoEditor
       photos={[{ width: 200, height: 200, src: "/foo.jpg" }]}
       selectAll={() => {}}
+      getSelection={() => {}}
     />
   );
 });

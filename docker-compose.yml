@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - ./db/postgresql:/var/lib/postgresql/data
-  backend:
+  backend: &python
     build:
       context: ./backend
       target: dev
@@ -21,6 +21,8 @@ services:
       - ./backend:/app
     depends_on:
       - db
+      - rabbitmq
+      - celery_worker
     ports:
       - 8000:8000
       - 5678:5678
@@ -29,7 +31,19 @@ services:
       context: ./frontend
       target: dev
     volumes:
-      - ./frontend:/app/frontend:rw
+      - ./frontend/src:/app/frontend/src:rw
+      - ./frontend/package.json:/app/frontend/package.json:rw
+      - ./frontend/package-lock.json:/app/frontend/package-lock.json:rw
     ports:
       - "3001:3000"
     stdin_open: true
+  rabbitmq:
+    image: rabbitmq:3.7-alpine
+  celery_worker:
+    <<: *python
+    command: celery -A MemoriaFotografica worker --loglevel=INFO
+    ports: []
+    depends_on: 
+      - rabbitmq
+      - db
+

@@ -10,11 +10,8 @@ import {
   HOME_LOADED,
   HOME_SET_SELECTED_INDEX,
   HOME_PHOTO_PAGINATION,
-  CURADOR_LOADING,
-  CURADOR_COMPLETED,
-  CURADOR_REFRESH,
   READ_UPLOAD_DISCLOSURE,
-  SET_METADATA_HELP_DISCLOSURE,
+  NOTIFICATIONS_RECOVERED,
 } from "../actions/types";
 
 const initialState = {
@@ -27,12 +24,11 @@ const initialState = {
     selectedIndex: -1,
     photoPagination: {},
   },
-  curador: {
-    loading: false,
-    refresh: false,
-  },
   uploadDisclosureSet: localStorage.getItem("upload_disclosed") === "true" ? true : false,
-  metadataHelpDisclosure: localStorage.getItem("metadata_help_disclosed") === "true" ? true : false,
+  notifications: {
+    results: [],
+    count: 0,
+  },
 };
 
 export default function site_misc(state = initialState, action) {
@@ -70,31 +66,21 @@ export default function site_misc(state = initialState, action) {
         ...state,
         home: { ...state.home, photoPagination: action.data },
       };
-    case CURADOR_LOADING:
-      return { ...state, curador: { ...state.curador, loading: true } };
-    case CURADOR_COMPLETED:
-      return { ...state, curador: { ...state.curador, loading: false } };
-    case CURADOR_REFRESH:
-      return { ...state, curador: { ...state.curador, refresh: true } };
     case READ_UPLOAD_DISCLOSURE:
       localStorage.setItem("upload_disclosed", true);
       return { ...state, uploadDisclosureSet: true };
-    case SET_METADATA_HELP_DISCLOSURE:
-      localStorage.setItem("metadata_help_disclosed", action.data);
-      return { ...state, metadataHelpDisclosure: action.data };
+    case NOTIFICATIONS_RECOVERED:
+      return {
+        ...state,
+        notifications: action.data,
+      };
     default:
       return { ...state };
   }
 }
 
 
-export const selectSiteMiscCuradorLoading = (state) => state.site_misc.curador.loading;
-
 export const selectSiteMiscHomeLoading = (state) => state.site_misc.home.loading;
-
-export const selectSiteMiscCuradorRefresh = (state) => state.site_misc.curador.refresh;
-
-export const selectSiteMiscMetaDataHelpDiscloure = (state) => state.site_misc.metadataHelpDisclosure;
 
 export const selectSiteMiscSearchMetaIDS = (state) => state.site_misc.searchMetaIDs;
 
@@ -109,3 +95,5 @@ export const selectSiteMiscCurrentRoute = (state) => state.site_misc.currentRout
 export const selectSiteMiscUploadDisclosureSet = (state) => state.site_misc.uploadDisclosureSet;
 
 export const selectSiteMiscAlerts = (state) => state.site_misc.alerts;
+
+export const selectSiteMiscNotifications = (state) => state.site_misc.notifications;

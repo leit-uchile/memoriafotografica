@@ -6,6 +6,8 @@ import {
   CATEGORY_RESET_ERRORS,
   UPDATED_CATEGORY_ERROR,
   UPDATED_CATEGORY,
+  DELETED_CATEGORY,
+  DELETED_CATEGORY_ERROR,
   RECOVERED_CATEGORY,
   RECOVERED_CATEGORY_ERROR,
   UPDATED_CATEGORY_PHOTOS,
@@ -15,10 +17,12 @@ import {
 const initialState = {
   categories: [],
   error: "",
-  total: -1,
-  newCat: {},
+  total: 0,
   categoryDetail: {},
   updatedPhotos: false,
+  catUpdate: {},
+  nbOperations: 0,
+  opsCompleted: 0,
 };
 
 export default function categories(state = initialState, action) {
@@ -30,21 +34,45 @@ export default function categories(state = initialState, action) {
         total: action.data.count,
       };
     case EMPTY_CATEGORIES:
-      return { ...state, categories: [], count: 0 };
+      return { ...state, categories: [], total: 0 };
+    case CATEGORY_RESET_ERRORS:
+      return {
+        ...state,
+        error: "",
+        nbOperations: action.data,
+        opsCompleted: 0,
+        updatedPhotos: false,
+      };
+    case CREATED_CATEGORY:
+      return {
+        ...state,
+        catUpdate: action.data
+      };
     case CREATED_CATEGORY_ERROR:
       return {
         ...state,
-        loading: false,
         error: "Hubo un error creando la categoría.",
-        newCat: {},
       };
-    case CREATED_CATEGORY:
-      return { ...state, loading: false, newCat: action.data };
-    case CATEGORY_RESET_ERRORS:
-      return { ...state, error: "", updatedPhotos: false };
     case UPDATED_CATEGORY:
-      return { ...state, error: "", categoryDetail: action.data };
+      return {
+        ...state,
+        error: "",
+        categoryDetail: action.data,
+        catUpdate: action.data,
+      };
     case UPDATED_CATEGORY_ERROR:
+      return {
+        ...state,
+        error: action.data,
+
+      };
+    case DELETED_CATEGORY:
+      return {
+        ...state,
+        opsCompleted: state.opsCompleted + 1,
+        catUpdate: state.nbOperations === state.opsCompleted + 1 ? action.data : state.catUpdate,
+      };
+    case DELETED_CATEGORY_ERROR:
       return { ...state, error: action.data };
     case RECOVERED_CATEGORY:
       return { ...state, categoryDetail: action.data };
@@ -75,8 +103,12 @@ export const selectCategoriesDetails = (state) =>
 export const selectCategoriesUpdatePhotos = (state) =>
   state.categories.updatedPhotos;
 
-export const selectCategoriesTotal = (state) => state.categories.total;
+export const selectCategoriesOpsCompleted = (state) =>
+  state.categories.opsCompleted;
 
-export const selectNewCategories = (state) => state.categories.newCat;
+export const selectCategoriesCatUpdate = (state) =>
+  state.categories.catUpdate;
+
+export const selectCategoriesTotal = (state) => state.categories.total;
 
 export const selectCats = (state) => state.categories;

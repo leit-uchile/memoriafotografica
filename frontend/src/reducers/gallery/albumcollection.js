@@ -6,23 +6,21 @@ import {
   CREATE_ALBUM_SENT,
   CREATED_ALBUM_ERROR,
   DELETED_ALBUM,
-  DELETE_ALBUM_SENT,
   DELETED_ALBUM_ERROR,
   EDITED_ALBUM,
-  EDIT_ALBUM_SENT,
   EDITED_ALBUM_ERROR,
   ALBUMS_LOADED,
   ALBUMS_EMPTY,
 } from "../../actions/types";
 
 const initialState = {
-  albumData: {},
+  albumData: { name: "", description: "", pictures: [] },
   loading: false,
   errors: [],
-  createAlbum: {sent: false, success: false},
-  deleteAlbum: {sent: false, success: false},
-  editAlbum: {sent: false, success: false},
-  albums: {count: 0, results: []},
+  createAlbum: { sent: false, success: false },
+  deleteAlbum: { sent: false, success: false },
+  albumUpdate: {},
+  albums: { count: 0, results: [] },
 };
 
 export default function albumcollection(state = initialState, action) {
@@ -42,19 +40,15 @@ export default function albumcollection(state = initialState, action) {
     case ALBUMS_LOADED:
       return { ...state, albums: action.data, loading: false };
     case ALBUMS_EMPTY:
-      return { ...state, albums: {count: 0, results: []}, loading: false}
-    case DELETE_ALBUM_SENT:
-      return { ...state, deleteAlbum: {sent: false, success: false}};
+      return { ...state, albums: { count: 0, results: [] }, loading: false };
     case DELETED_ALBUM:
-      return { ...state, deleteAlbum: {sent: true, success: true}};
+      return { ...state, deleteAlbum: { sent: true, success: true } };
     case DELETED_ALBUM_ERROR:
-      return { ...state, deleteAlbum: {sent: true, success: false}};
-    case EDIT_ALBUM_SENT:
-      return { ...state, editAlbum: {sent: false, success: false}};
+      return { ...state, deleteAlbum: { sent: true, success: false } };
     case EDITED_ALBUM:
-      return { ...state, editAlbum: {sent: true, success: true}};
+      return { ...state, editAlbum: action.data };
     case EDITED_ALBUM_ERROR:
-      return { ...state, editAlbum: {sent: true, success: false}};
+      return { ...state, errors: [...state.errors, action.data] };
     default:
       return state;
   }
@@ -66,12 +60,15 @@ export const selectAlbumsLoading = (state) => state.albumcollection.loading;
 
 export const selectAlbumsData = (state) => state.albumcollection.albumData;
 
-export const selectAlbumResult = (state) => state.albumcollection.albums.results;
+export const selectAlbumResult = (state) =>
+  state.albumcollection.albums.results;
 
 export const selectAlbumCollections = (state) => state.albumcollection;
 
-export const selectAlbumCollectionAlbumData = (state) => state.albumcollection.albumData;
+export const selectAlbumCollectionAlbumData = (state) =>
+  state.albumcollection.albumData;
 
-export const selectAlbumEdit = (state) => state.albumcollection.editAlbum;
+export const selectAlbumAlbumUpdate = (state) =>
+  state.albumcollection.albumUpdate;
 
 export const selectAlbumDelete = (state) => state.albumcollection.deleteAlbum;

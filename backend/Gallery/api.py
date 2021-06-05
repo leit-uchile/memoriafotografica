@@ -20,6 +20,7 @@ from django.contrib.auth.backends import AllowAllUsersModelBackend
 from rest_framework import authentication
 from rest_framework import exceptions
 from Gallery.auth import GuestOrUserAuth
+from Users.task import create_notification
 
 def get_user(photoPair):
     try:
@@ -302,9 +303,16 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
         elif request.user.user_type != 1:
             photo = self.get_object(pk, True)
             serializer_class = PhotoAdminSerializer
-            serializer = PhotoAdminSerializer(photo,
-                                              data=request.data,
-                                              partial=True)
+            serializer = PhotoAdminSerializer(photo, data = request.data, partial=True)
+            if serializer.is_valid():
+                if "censure" in request.data:
+                    if request.data["censure"]:
+                        create_notification.delay(content_pk=photo.id, type=3, content=2)
+                elif "approved" in request.data:
+                    if request.data["approved"]:
+                        create_notification.delay(content_pk=photo.id, type=1, content=2)
+                else:
+                    create_notification.delay(content_pk=photo.id, type=2, content=2)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 

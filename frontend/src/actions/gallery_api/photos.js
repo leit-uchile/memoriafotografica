@@ -1,6 +1,7 @@
 import {
   RECOVERED_PHOTOS,
   EMPTY_PHOTOS,
+  PHOTO_RESET_NB_OPS,
   EDIT_PHOTO,
   DELETED_PHOTO,
   EDIT_PHOTO_ERROR,
@@ -9,8 +10,6 @@ import {
   UPLOADED_PHOTO,
   ERROR_UPLOADING_PHOTO,
   UPLOADING,
-  CURADOR_LOADING,
-  CURADOR_COMPLETED,
   HOME_LOADING,
   HOME_LOADED,
   HOME_PHOTO_PAGINATION,
@@ -26,7 +25,6 @@ import { setAlert } from "../site_misc";
  */
 export const home = (page = 0, pageSize = 200) => (dispatch, getState) => {
   let headers = { "Content-Type": "application/json" };
-
   dispatch({ type: HOME_LOADING, data: null });
   return fetch(`/api/photos/?page=${page + 1}&page_size=${pageSize}`, {
     method: "GET",
@@ -41,7 +39,6 @@ export const home = (page = 0, pageSize = 200) => (dispatch, getState) => {
     } else {
       dispatch({ type: EMPTY_PHOTOS, data: r.data });
       dispatch({ type: HOME_LOADED });
-      throw r.data;
     }
   });
 };
@@ -62,14 +59,10 @@ export const getPhotosAuth = (page = 0, pageSize = 25, search = "") => (
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
-
-  dispatch({ type: CURADOR_LOADING });
-
   let url = `/api/photos/?page=${page + 1}&page_size=${pageSize}`;
   if (search !== "") {
     url = url + search;
   }
-
   return fetch(url, {
     method: "GET",
     headers: headers,
@@ -78,12 +71,9 @@ export const getPhotosAuth = (page = 0, pageSize = 25, search = "") => (
     if (r.status === 200) {
       return r.json().then((data) => {
         dispatch({ type: RECOVERED_PHOTOS, data: data });
-        dispatch({ type: CURADOR_COMPLETED });
       });
     } else {
       dispatch({ type: EMPTY_PHOTOS, data: r.data });
-      dispatch({ type: CURADOR_COMPLETED });
-      throw r.data;
     }
   });
 };
@@ -112,8 +102,7 @@ export const associateCategory = (photoIds, catId, action = "add") => (
     if (r.status === 200) {
       dispatch(
         setAlert(
-          `Fotos ${
-            action === "add" ? "agregadas a" : "eliminadas de la "
+          `Fotos ${action === "add" ? "agregadas a" : "eliminadas de la "
           } categoria`,
           "success"
         )
@@ -127,43 +116,35 @@ export const associateCategory = (photoIds, catId, action = "add") => (
         )
       );
       dispatch({ type: UPDATED_CATEGORY_PHOTOS_ERROR, data: photoIds });
-      throw r.data;
     }
   });
 };
+
+/**
+ * When doing multiple operations set number of ops
+ * for completion checking and error catching
+ */
+export const setNBOps = (num) => (dispatch) =>
+  dispatch({ type: PHOTO_RESET_NB_OPS, data: num });
 
 export const editPhoto = (photoID, newData) => (dispatch, getState) => {
   let headers = {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
-
-  // Verify that category is an id
-  let updatedData = { ...newData };
-  if (newData.category.length !== 0 && newData.category[0].id) {
-    // TODO: find all bad updates and remove this
-    updatedData.category = newData.map((el) => el.id);
-  }
-
-  let sent_data = JSON.stringify(updatedData);
   return fetch("/api/photos/" + photoID + "/", {
     method: "PUT",
     headers: headers,
-    body: sent_data,
-  }).then(function (response) {
+    body: JSON.stringify(newData),
+  }).then((response) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch(setAlert("Se ha(n) editado con éxito", "success"));
+        dispatch(setAlert("Fotografía actualizada exitosamente", "success"));
         dispatch({ type: EDIT_PHOTO, data: data });
       });
     } else {
-      dispatch(
-        setAlert(
-          "Hubo un error al editar la(s) fotografia(s). Intente nuevamente",
-          "warning"
-        )
-      );
+      dispatch(setAlert("Error actualizando fotografía. Intente nuevamente", "warning"));
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
       throw r.data;
     }
@@ -175,22 +156,16 @@ export const deletePhoto = (photoID) => (dispatch, getState) => {
     Authorization: "Token " + getState().user.token,
     "Content-Type": "application/json",
   };
-
   return fetch("/api/photos/" + photoID + "/", {
     method: "DELETE",
     headers: headers,
-  }).then(function (response) {
+  }).then((response) => {
     const r = response;
     if (r.status === 204) {
-      dispatch(setAlert("Se ha(n) borrado con éxito", "success"));
+      dispatch(setAlert("Fotografía eliminada exitosamente", "success"));
       dispatch({ type: DELETED_PHOTO, data: photoID });
     } else {
-      dispatch(
-        setAlert(
-          "Hubo un error al borrar la(s) fotografia(s). Intente nuevamente",
-          "warning"
-        )
-      );
+      dispatch(setAlert("Error eliminando fotografía. Intente nuevamente", "warning"));
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
       throw r.data;
     }
@@ -221,8 +196,7 @@ export const sortByField = (field, order, page, pageSize = 25) => (
       : `metadata=${selected_meta.map((m) => m.metaID).join()}&`;
 
   fetch(
-    `/api/photos/?${meta_text}sort=${field}-${order}&page=${
-      page + 1
+    `/api/photos/?${meta_text}sort=${field}-${order}&page=${page + 1
     }&page_size=${pageSize}`,
     {
       method: "GET",
@@ -263,8 +237,7 @@ export const recoverByCats = (catIds, pair, page, pageSize = 25) => (
       : `metadata=${selected_meta.map((m) => m.metaID).join()}&`;
 
   fetch(
-    `/api/photos/?${meta_text}category=${catIds.join(",")}&sort=${pair.field}-${
-      pair.order
+    `/api/photos/?${meta_text}category=${catIds.join(",")}&sort=${pair.field}-${pair.order
     }&page=${page + 1}&page_size=${pageSize}`,
     {
       method: "GET",
@@ -289,9 +262,9 @@ export const getPhoto = (id) => (dispatch, getState) => {
   let headers = !isAuth
     ? { "Content-Type": "application/json" }
     : {
-        "Content-Type": "application/json",
-        Authorization: "Token " + getState().user.token,
-      };
+      "Content-Type": "application/json",
+      Authorization: "Token " + getState().user.token,
+    };
 
   return fetch(`/api/photos/${id}`, { method: "GET", headers: headers }).then(
     function (response) {
