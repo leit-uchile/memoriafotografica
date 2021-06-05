@@ -43,7 +43,7 @@ const AdvancedSearch = (props) => {
       .catch((err) => []);
 
   const byDate = [
-    { value: "update_date", label: "Fecha de subida" },
+    { value: "upload_date", label: "Fecha de subida" },
     { value: "created_at", label: "Fecha de la foto" },
   ];
 
@@ -133,8 +133,8 @@ const AdvancedSearch = (props) => {
           if(formData[key] === "created_at"){
             filtersArr.push("created_at" + date);
           }
-          else if(formData[key] === "update_date"){
-            filtersArr.push("update_date" + date);
+          else if(formData[key] === "upload_date"){
+            filtersArr.push("upload_date" + date);
           }
         }
       }
