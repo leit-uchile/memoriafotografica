@@ -112,11 +112,11 @@ const AdvancedSearch = (props) => {
           let search = [];
           const lenCat = formData[key].length;
           for (let i = 0;  i < lenCat; i++){
-            const labelCat = formData[key][i].label;
+            const labelCat = formData[key][i].label.replace(" ", "__");
             search.push(labelCat);
           }
           const searchStr = search.join("__");
-          filtersArr.push("category=" + searchStr);
+          filtersArr.push("category__in=" + searchStr);
         }
         else if (key === "orderBy" && formData[key] !== "") {
           let order = "ordering=" + formData[key];
