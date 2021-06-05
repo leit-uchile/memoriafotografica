@@ -22,7 +22,6 @@ const AdvancedSearch = (props) => {
   // state used to save form data for the search query
   const [formData, saveFormData] = useState({
     byDate: "",
-    date: "",
     startDate: "",
     endDate: "",
     searchIncludes: "",
@@ -100,23 +99,48 @@ const AdvancedSearch = (props) => {
 
   const submitAdvSearch = (e) => {
     e.preventDefault();
-    // TODO: meter cosas en el filters
-    let filtersStr = "?";
+    let filtersArr = [];
     for (let key in formData) {
-      if (formData[key] === "" || formData[key] === []) {
+      if (formData[key] === "" || formData[key].length === 0) {
         continue;
       } else {
-        if (formData[category] !== []){
-          // TODO: hacer esto de mejor forma
-          const search = formData[category].join("__");
-          filtersStr += search;
+        if (key === "permission" && formData[key] !== "") {
+          let perm = "permission=" + formData[key];
+          filtersArr.push(perm);
         }
-        if (formData[])
-
+        else if (key === "category" && formData[key].length !== 0) {
+          let search = [];
+          const lenCat = formData[key].length;
+          for (let i = 0;  i < lenCat; i++){
+            const labelCat = formData[key][i].label;
+            search.push(labelCat);
+          }
+          const searchStr = search.join("__");
+          filtersArr.push("category=" + searchStr);
+        }
+        else if (key === "orderBy" && formData[key] !== "") {
+          let order = "ordering=" + formData[key];
+          filtersArr.push(order);
+        }
+        else if (key === "byDate") {
+          let date;
+          if (formData.startDate !== "" && formData.endDate !== "") {
+            date = "__range=" + formData.startDate + "__" + formData.endDate;
+          }
+          else if(formData.startDate !== "" && formData.endDate === ""){
+            date = "=" + formData.startDate;
+          }
+          if(formData[key] === "created_at"){
+            filtersArr.push("created_at" + date);
+          }
+          else if(formData[key] === "update_date"){
+            filtersArr.push("update_date" + date);
+          }
+        }
       }
-      filtersStr += "?"
     }
-    props.onSubmit(filtersStr);
+    const filterUrl = "?" + filtersArr.join("&");
+    props.onSubmit(filterUrl);
   };
 
   const addValue = (event) => {
@@ -206,10 +230,10 @@ const AdvancedSearch = (props) => {
                 <FormGroup>
                   <legend>Por permisos de autor</legend>
                   <Select
-                    inputId="permissions"
+                    inputId="permission"
                     placeholder="Selecciona una opción"
                     options={permissions}
-                    onChange={(e) => addValueSelect("permissions", e.value)}
+                    onChange={(e) => addValueSelect("permission", e.value)}
                   />
                 </FormGroup>
               </Col>
