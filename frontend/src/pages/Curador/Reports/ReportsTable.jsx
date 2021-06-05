@@ -1,28 +1,22 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Table } from "reactstrap";
 import ReportRow from "./ReportRow";
-import ResolveModal from "./ResolveModal";
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
-import { gallery } from "../../../actions";
-import { bindActionCreators } from "redux";
+import ResolveButtons from "./ResolveButtons";
 
 /**
  * Define different Renders and updates for
  * each report.
  *
  * @param {Array} reports
- * @param {Function} updateReport
  */
-const ReportsTable = ({ reports, updateReport, censureContent }) => {
-  const resolveButton = (rep) =>
+const ReportsTable = ({ reports }) => {
+
+  const actions = (rep) =>
     rep.resolved ? (
       <b>{rep.resolution_details || "-"}</b>
     ) : (
-      <ResolveModal
+      <ResolveButtons
         report={rep}
-        updateReport={updateReport}
-        censureContent={censureContent}
       />
     );
 
@@ -41,70 +35,16 @@ const ReportsTable = ({ reports, updateReport, censureContent }) => {
       </thead>
       <tbody>
         {reports.length !== 0
-          ? reports.results.map((r) =>
-              r.type === 1 ? (
-                <ReportRow
-                  report={r}
-                  render={(content) => (
-                    <p>
-                      Ver perfil de{" "}
-                      <Link
-                        to={`/user/public/${content.id}`}
-                      >{`${content.first_name} ${content.last_name}`}</Link>
-                    </p>
-                  )}
-                  actions={resolveButton}
-                  key={r.id}
-                />
-              ) : r.type === 2 ? (
-                <ReportRow
-                  report={r}
-                  render={(content) => (
-                    <Fragment>
-                      <img
-                        src={content.thumbnail}
-                        height="100px"
-                        alt="content"
-                      />
-                      <div>
-                        <Link to={`/photo/${content.id}`}>Ver imagen</Link>
-                      </div>
-                    </Fragment>
-                  )}
-                  actions={resolveButton}
-                  key={r.id}
-                />
-              ) : (
-                <ReportRow
-                  report={r}
-                  render={(content) => (
-                    <Fragment>
-                      <p>{content.content}</p>
-                      <Link to={`/curador/comment/${content.id}/`}>
-                        Ver comentario
-                      </Link>
-                    </Fragment>
-                  )}
-                  actions={resolveButton}
-                  key={r.id}
-                />
-              )
-            )
+          ? reports.map((r) => (
+              <ReportRow
+                report={r}
+                actions={actions}
+                key={r.id}
+              />
+            ))
           : null}
       </tbody>
     </Table>
   );
 };
-
-const mapStateToProps = (state) => ({});
-
-const mapActionsToProps = (dispatch) =>
-  bindActionCreators(
-    {
-      updateReport: gallery.reports.updateReport,
-      censureContent: gallery.reports.censureContent,
-    },
-    dispatch
-  );
-
-export default connect(mapStateToProps, mapActionsToProps)(ReportsTable);
+export default (ReportsTable);

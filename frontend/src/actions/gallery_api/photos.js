@@ -2,10 +2,12 @@ import {
   RECOVERED_PHOTOS,
   EMPTY_PHOTOS,
   PHOTO_RESET_NB_OPS,
+  EDIT_PHOTO_UPDATING,
   EDIT_PHOTO,
-  DELETED_PHOTO,
   EDIT_PHOTO_ERROR,
-  RECOVERED_PHOTO_DETAILS,
+  DELETED_PHOTO,
+  PHOTO_DETAILS_LOADING,
+  PHOTO_DETAILS_LOADED,
   PHOTO_DETAILS_ERROR,
   UPLOADED_PHOTO,
   ERROR_UPLOADING_PHOTO,
@@ -132,6 +134,7 @@ export const editPhoto = (photoID, newData) => (dispatch, getState) => {
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
+  dispatch({ type: EDIT_PHOTO_UPDATING})
   return fetch("/api/photos/" + photoID + "/", {
     method: "PUT",
     headers: headers,
@@ -140,12 +143,12 @@ export const editPhoto = (photoID, newData) => (dispatch, getState) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch(setAlert("Fotografía actualizada exitosamente", "success"));
         dispatch({ type: EDIT_PHOTO, data: data });
+        dispatch(setAlert("Fotografía actualizada exitosamente", "success"));
       });
     } else {
-      dispatch(setAlert("Error actualizando fotografía. Intente nuevamente", "warning"));
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
+      dispatch(setAlert("Error actualizando fotografía. Intente nuevamente", "warning"));
       throw r.data;
     }
   });
@@ -156,17 +159,18 @@ export const deletePhoto = (photoID) => (dispatch, getState) => {
     Authorization: "Token " + getState().user.token,
     "Content-Type": "application/json",
   };
+  dispatch({ type: EDIT_PHOTO_UPDATING})
   return fetch("/api/photos/" + photoID + "/", {
     method: "DELETE",
     headers: headers,
   }).then((response) => {
     const r = response;
     if (r.status === 204) {
-      dispatch(setAlert("Fotografía eliminada exitosamente", "success"));
       dispatch({ type: DELETED_PHOTO, data: photoID });
+      dispatch(setAlert("Fotografía eliminada exitosamente", "success"));
     } else {
-      dispatch(setAlert("Error eliminando fotografía. Intente nuevamente", "warning"));
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
+      dispatch(setAlert("Error eliminando fotografía. Intente nuevamente", "warning"));
       throw r.data;
     }
   });
@@ -265,13 +269,13 @@ export const getPhoto = (id) => (dispatch, getState) => {
       "Content-Type": "application/json",
       Authorization: "Token " + getState().user.token,
     };
-
+  dispatch({ type: PHOTO_DETAILS_LOADING })
   return fetch(`/api/photos/${id}`, { method: "GET", headers: headers }).then(
     function (response) {
       const r = response;
       if (r.status === 200) {
         return r.json().then((data) => {
-          dispatch({ type: RECOVERED_PHOTO_DETAILS, data: data });
+          dispatch({ type: PHOTO_DETAILS_LOADED, data: data });
         });
       } else {
         dispatch({ type: PHOTO_DETAILS_ERROR, data: r.status });
