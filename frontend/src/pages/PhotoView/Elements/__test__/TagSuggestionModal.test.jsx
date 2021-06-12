@@ -125,9 +125,6 @@ it("send tags", async () => {
   userEvent.click(screen.getByRole("button", { name: "Sugerir" }));
   writeTag("nuevoBeauchef");
   expect(screen.getByText("nuevoBeauchef", { ignore: "input" }));
-
-  // delete it
-  console.error("Que está pasando")
   userEvent.click(screen.getByRole("button", { name: "Enviar Sugerencia" })); // enviar
   expect(await screen.findByText("¡Sugerencias enviadas!")).toBeInTheDocument();
 });

@@ -89,24 +89,30 @@ const handlers = [
     );
   }),
 
-  rest.post("/api/tagsuggestion/", (req, res, ctx) => {
-    let meta = JSON.parse(req.body);
-    meta = meta.map((m) => m.metadata);
+  rest.post("/api/metadata/", (req, res, ctx) => {
+    let meta = req.body.map((m, index) => {
+      return { id: index, ...m };
+    });
+    return res(ctx.status(201), ctx.json(meta));
+  }),
+
+  rest.get("/api/metadata/", (req, res, ctx) => {
     return res(
       ctx.status(200),
-      ctx.json({ count: meta.length, results: meta })
+      ctx.json({ count: 0, next: null, previous: null, results: [] })
     );
   }),
 
-  rest.post("/api/metadata/", (req, res, ctx) => {    
-    let meta = req.body.meta.map((index, m) => {
-      return { id: index, metadata: m.metadata };
+  rest.post("/api/metadata/", (req, res, ctx) => {
+    let meta = req.body.map((m, index) => {
+      return { id: index, ...m };
     });
+    return res(ctx.status(201), ctx.json(meta));
+  }),
 
-    return res(
-      ctx.status(200),
-      ctx.json(meta)
-    );
+  rest.post("/api/tagsuggestion/", (req, res, ctx) => {
+    let meta = req.body;
+    return res(ctx.status(201), ctx.json(meta));
   }),
 ];
 
