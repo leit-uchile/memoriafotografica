@@ -198,6 +198,7 @@ ELASTICSEARCH_DSL = {
 
 # Name of the Elasticsearch index for production
 ELASTICSEARCH_INDEX_NAMES = {
-    'Search_indexes.documents.comments.comment': 'prod_commment',
+    'Search_indexes.documents.comments.comment': 'prod_comment',
     'Search_indexes.documents.photos.photo': 'prod_photo',
+    'Search_indexes.documents.metadata.metadata': 'prod_metadata',
 }

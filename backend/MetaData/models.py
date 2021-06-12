@@ -25,3 +25,11 @@ class Metadata(models.Model):
     def as_dict(self):
         return {"id": self.id, "value": self.value, "approved": self.approved}
 
+    @property
+    def name_indexing(self):
+        """Tags for indexing.
+
+        Used in Elasticsearch indexing.
+        """
+        return self.metadata.name 
+
