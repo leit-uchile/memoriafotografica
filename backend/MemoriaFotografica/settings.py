@@ -188,3 +188,6 @@ EMAIL_HOST_PASSWORD = 'lmzopvjdjwayaujy'
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = ('http://localhost', )
+
+# URLS configurations
+BASE_FRONT_URL = 'http://memoriafotografica.cl'

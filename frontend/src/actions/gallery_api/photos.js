@@ -296,14 +296,8 @@ export const getPhoto = (id) => (dispatch, getState) => {
  * We now expect data as is
  */
 export const uploadImages = (photos, token = null) => (dispatch, getState) => {
-  let header = {
-    Authorization: "Token " + getState().user.token,
-  };
-  if (token) {
-    header = {
-      Authorization: "Token " + token,
-    };
-  }
+  let header = token === null ? {Authorization: "Token " + getState().user.token} : {Authorization: "Token " + token}
+
   dispatch({ type: UPLOADING, data: photos.length });
 
   const funcs = photos.map((photo, key) => () => {

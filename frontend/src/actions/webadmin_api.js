@@ -39,14 +39,7 @@ export const CompleteRegistration = (data) => (dispatch) => {
           data: { status: true },
         });
       }
-      return dispatch({ type: COMPLETE_REGISTRATION, data: { status: false } });
-
-      // else {
-      //   response.json().then((data) => {
-      //     dispatch(setAlert(data["Error"], "warning"));
-      //     dispatch({ type: COMPLETE_REGISTRATION_ERROR, data: data["Error"] });
-      //   });
-      // }
+      return dispatch({ type: COMPLETE_REGISTRATION_ERROR, data: { status: false } });
     });
   }
 };

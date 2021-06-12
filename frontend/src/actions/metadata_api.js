@@ -33,56 +33,59 @@ import { setAlert } from "./site_misc";
  * On success saves the metadata on store.metadata.newIDs
  * On failure saves reason and name on store.metadata.failedCreations
  */
-export const createMetadataByName = (name, list = false, token) => (
-  dispatch,
-  getState
-) => {
-  let headers = {
-    Authorization: "Token " + getState().user.token,
-      "Content-Type": "application/json", 
+export const createMetadataByName =
+  (name, list = false, token) =>
+  (dispatch, getState) => {
+    let headers =
+      token === null
+        ? {
+            Authorization: "Token " + getState().user.token,
+            "Content-Type": "application/json",
+          }
+        : {
+            Authorization: "Token " + token,
+            "Content-Type": "application/json",
+          };
+
+    let newMetadata = list
+      ? name.map((el) => ({ value: el, metadata: 1 }))
+      : [{ value: name, metadata: 1 }];
+
+    // NOTE: metadata defaults to 1
+    fetch("/api/metadata/", {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(newMetadata),
+    }).then(function (response) {
+      const r = response;
+      if (r.status === 201) {
+        r.json().then((data) =>
+          dispatch({ type: CREATED_METADATA, data: data })
+        );
+      } else {
+        r.json().then((data) =>
+          dispatch({ type: CREATED_METADATA_ERROR, data: { data, name: name } })
+        );
+      }
+    });
   };
-  if (token) {
-    headers = {
-      Authorization: "Token " + token,
-      "Content-Type": "application/json", 
-    };
-  }
-
-  let newMetadata = list
-    ? name.map((el) => ({ value: el, metadata: 1 }))
-    : [{ value: name, metadata: 1 }];
-
-  // NOTE: metadata defaults to 1
-  fetch("/api/metadata/", {
-    method: "POST",
-    headers: headers,
-    body: JSON.stringify(newMetadata),
-  }).then(function (response) {
-    const r = response;
-    if (r.status === 201) {
-      r.json().then((data) => dispatch({ type: CREATED_METADATA, data: data }));
-    } else {
-      r.json().then((data) =>
-        dispatch({ type: CREATED_METADATA_ERROR, data: { data, name: name } })
-      );
-    }
-  });
-};
 
 /**
  * Creates multiple metadata from a list of names
  * @param {Array} nameList
  */
-export const createMultipleMetas = (nameList,token=null) => (dispatch, getState) => {
-  // Failsafe
-  if (nameList.length === 0) {
-    return;
-  }
-  // Set process in motion
-  dispatch({ type: CREATING_METADATA, data: nameList.length });
+export const createMultipleMetas =
+  (nameList, token = null) =>
+  (dispatch, getState) => {
+    // Failsafe
+    if (nameList.length === 0) {
+      return;
+    }
+    // Set process in motion
+    dispatch({ type: CREATING_METADATA, data: nameList.length });
 
-  createMetadataByName(nameList, true,token)(dispatch, getState);
-};
+    createMetadataByName(nameList, true, token)(dispatch, getState);
+  };
 
 /**
  * Create custom metadata with asociation
@@ -123,30 +126,29 @@ export const resetNewMetadataIds = () => (dispatch) =>
  * @param {*} limit
  * @param {*} iptc id
  */
-export const searchMetadataByValueSB = (query, limit = 10, iptc = 0) => (
-  dispatch,
-  getState
-) => {
-  const success_func = (response) => {
-    const r = response;
-    if (r.status === 200) {
-      r.json().then((data) => dispatch({ type: RECOVERED_TAGS, data: data }));
+export const searchMetadataByValueSB =
+  (query, limit = 10, iptc = 0) =>
+  (dispatch, getState) => {
+    const success_func = (response) => {
+      const r = response;
+      if (r.status === 200) {
+        r.json().then((data) => dispatch({ type: RECOVERED_TAGS, data: data }));
+      } else {
+        dispatch({ type: EMPTY_TAGS });
+      }
+    };
+
+    if (getState().user.isAuthenticated) {
+      let headers = { Authorization: "Token " + getState().user.token };
+      fetch(`/api/metadata/?search=${query}&limit=${limit}&iptc=${iptc}`, {
+        headers,
+      }).then(success_func);
     } else {
-      dispatch({ type: EMPTY_TAGS });
+      fetch(`/api/metadata/?search=${query}&limit=${limit}&iptc=${iptc}`).then(
+        success_func
+      );
     }
   };
-
-  if (getState().user.isAuthenticated) {
-    let headers = { Authorization: "Token " + getState().user.token };
-    fetch(`/api/metadata/?search=${query}&limit=${limit}&iptc=${iptc}`, {
-      headers,
-    }).then(success_func);
-  } else {
-    fetch(`/api/metadata/?search=${query}&limit=${limit}&iptc=${iptc}`).then(
-      success_func
-    );
-  }
-};
 
 /**
  * Recover all tags
@@ -250,10 +252,12 @@ export const putMetadata = (metadata) => (dispatch, getState) => {
     if (r.status === 206 || r.status === 200) {
       return r.json().then((data) => {
         dispatch(setAlert("Metadata actualizada exitosamente", "success"));
-        dispatch({ type: UPDATED_METADATA, data: metadata })
+        dispatch({ type: UPDATED_METADATA, data: metadata });
       });
     } else {
-      dispatch(setAlert("Error actualizando metadata. Intente nuevamente", "warning"));
+      dispatch(
+        setAlert("Error actualizando metadata. Intente nuevamente", "warning")
+      );
       dispatch({ type: UPDATED_METADATA_ERROR, data: metadata });
     }
   });
@@ -267,36 +271,34 @@ export const putMetadata = (metadata) => (dispatch, getState) => {
  * @param {*} page_size
  * @param {String} extra parameters
  */
-export const searchMetadataByValueGeneral = (query, page, page_size, extra) => (
-  dispatch,
-  getState
-) => {
-  const success_func = (response) => {
-    const r = response;
-    if (r.status === 200) {
-      r.json().then((data) =>
-        dispatch({ type: RECOVERED_CURADOR_TAGS, data: data })
-      );
+export const searchMetadataByValueGeneral =
+  (query, page, page_size, extra) => (dispatch, getState) => {
+    const success_func = (response) => {
+      const r = response;
+      if (r.status === 200) {
+        r.json().then((data) =>
+          dispatch({ type: RECOVERED_CURADOR_TAGS, data: data })
+        );
+      } else {
+        dispatch({ type: EMPTY_CURADOR_TAGS });
+      }
+    };
+
+    let user = getState().user;
+    if (user.isAuthenticated) {
+      let headers = { Authorization: "Token " + user.token };
+      return fetch(
+        `/api/metadata/?search=${query}&page=${page}&page_size=${page_size}${extra}`,
+        {
+          headers,
+        }
+      ).then(success_func);
     } else {
-      dispatch({ type: EMPTY_CURADOR_TAGS });
+      return fetch(
+        `/api/metadata/?search=${query}&page=${page}&page_size=${page_size}${extra}`
+      ).then(success_func);
     }
   };
-
-  let user = getState().user;
-  if (user.isAuthenticated) {
-    let headers = { Authorization: "Token " + user.token };
-    return fetch(
-      `/api/metadata/?search=${query}&page=${page}&page_size=${page_size}${extra}`,
-      {
-        headers,
-      }
-    ).then(success_func);
-  } else {
-    return fetch(
-      `/api/metadata/?search=${query}&page=${page}&page_size=${page_size}${extra}`
-    ).then(success_func);
-  }
-};
 
 /**
  * Delete metadata by id
@@ -314,11 +316,12 @@ export const deleteMetadata = (id) => (dispatch, getState) => {
       dispatch(setAlert("Metadata eliminada exitosamente", "success"));
       dispatch({ type: DELETED_METADATA, data: id });
     } else {
-      dispatch(setAlert("Error eliminando metadata. Intente nuevamente", "warning"));
+      dispatch(
+        setAlert("Error eliminando metadata. Intente nuevamente", "warning")
+      );
       dispatch({ type: DELETED_METADATA_ERROR, data: id });
     }
-  }
-  );
+  });
 };
 
 /**
@@ -348,10 +351,12 @@ export const mergeMetadata = (ids) => (dispatch, getState) => {
     if (r.status === 200) {
       return r.json().then((data) => {
         dispatch(setAlert("Metadata unida exitosamente", "success"));
-        dispatch({ type: METADATA_MERGE, data: data })
+        dispatch({ type: METADATA_MERGE, data: data });
       });
     } else {
-      dispatch(setAlert("Error uniendo metadata. Intente nuevamente", "warning"));
+      dispatch(
+        setAlert("Error uniendo metadata. Intente nuevamente", "warning")
+      );
       dispatch({ type: METADATA_MERGE_ERROR, data: ids.join(",") });
     }
   });

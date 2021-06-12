@@ -15,11 +15,11 @@ def sendEmail(emailto, case, subject, attached):
 
     if case == "sign_up":
         template = 'sendEmail/sign_up_email.html'
-        data = 'http://memoriafotografica.cl/confirm/?code=' + attached  #code
+        data = f'{settings.BASE_FRONT_URL}/confirm/?code={attached}'  #code
 
     elif case == "reset_password":
         template = 'sendEmail/reset_password_email.html'
-        data = 'http://memoriafotografica.cl/recoveruser/confirm/?code=' + attached  #code
+        data = f'{settings.BASE_FRONT_URL}/recoveruser/confirm/?code={attached}'  #code
 
     elif case == "contact_us":
         template = 'sendEmail/contact_us_response_email.html'
@@ -33,7 +33,7 @@ def sendEmail(emailto, case, subject, attached):
 
     elif case == 'complete_guest_registration':
         template = 'sendEmail/complete_guest_registration.html'
-        data = 'http://localhost:3001/complete_guest_registration/?code=' + attached
+        data = f'{settings.BASE_FRONT_URL}/complete_guest_registration/?code={attached}'
 
     html_message = render_to_string(template, {'data': data})
     email = EmailMessage(

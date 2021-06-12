@@ -9,6 +9,8 @@ from django.contrib.auth.base_user import BaseUserManager
 from .managers import UserManager
 from Gallery.models import Album, Photo, Comment, Reporte
 from datetime import datetime
+from django.utils.timezone import make_aware
+from django.utils import timezone
 
 class Notification(models.Model):
     NOTIFICATION_TYPE_CHOICES = (
@@ -67,8 +69,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(_('staff status'), default=False)
     public_profile = models.BooleanField(default=False)
     #LOGGING
-    created_at = models.DateTimeField(default=datetime.now)
-    updated_at = models.DateTimeField(default=datetime.now)
+    created_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now())
     
     objects = UserManager()
 
