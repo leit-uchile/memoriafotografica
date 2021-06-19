@@ -5,7 +5,7 @@ import {
   Col,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import "./uploadProgress.css";
+import "./css/uploadProgress.css";
 
 const UploadSuccess = () => {
     return (
@@ -32,17 +32,17 @@ const UploadSuccess = () => {
         </Row>
         <Row xs="3">
           <Col className="text-center">
-          <img src="/assets/cropping-tool.svg" width="30%"/>
+          <img src="/assets/cropping-tool.svg" width="30%" alt="next-action-edit"/>
             <h3>Editar fotos</h3>
           </Col>
           <Col className="text-center">
             <Link to="/user/dashboard/albums">
-            <img src="/assets/photo-album.svg" width="30%"/>
+            <img src="/assets/photo-album.svg" width="30%" alt="next-action-album"/>
             <h3>Crear album</h3>
             </Link>
           </Col>
           <Col className="text-center">
-          <img src="/assets/image-file.svg" width="30%"/>
+          <img src="/assets/image-file.svg" width="30%" alt="next-action-upload"/>
           <h3>¡Subir más!</h3>
           </Col>
         </Row>    

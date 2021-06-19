@@ -17,7 +17,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, } from "react-redux";
 import { selectUpload } from "../../../reducers";
-import "./uploadPhoto.css";
+import "./css/uploadPhoto.css";
 import useHandleFiles from "./hooks/useHandleFiles";
 import useUpload from "./hooks/useUpload";
 import PropTypes from "prop-types";

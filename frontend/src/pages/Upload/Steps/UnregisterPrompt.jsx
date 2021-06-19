@@ -3,7 +3,7 @@ import { Container, Button, Row, Col } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignInAlt, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import "./unregisterPrompt.css";
+import "./css/unregisterPrompt.css";
 import PropTypes from "prop-types"
 
 const UnregisteredPrompt = ({ nextStep }) => (

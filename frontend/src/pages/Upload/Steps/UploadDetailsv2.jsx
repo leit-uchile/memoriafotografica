@@ -16,7 +16,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types"
-import "./uploadDetails.css";
+import "./css/uploadDetails.css";
 
 const CC_INFO = [
   { name: "CC BY", text: "Atribución" },
@@ -105,7 +105,7 @@ class UploadDetails extends Component {
     return (
       <Card className="white-box">
         <div className="upload-card-img">
-          <img src={this.state.src} />
+          <img src={this.state.src} alt="imagen para subir"/>
         </div>
         <CardBody>
           <Form>

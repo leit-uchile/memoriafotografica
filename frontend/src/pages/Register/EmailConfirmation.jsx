@@ -1,17 +1,8 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { user } from "../../actions";
-import { Container, Row, Col } from "reactstrap";
 import { bindActionCreators } from "redux";
 import { selectUserActivate } from "../../reducers";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheck,
-  faEye,
-  faPencilAlt,
-  faTimes,
-  faExclamationTriangle,
-} from "@fortawesome/free-solid-svg-icons";
 import MessageConfirmation from './CompleteRegistrationMessage'
 
 const EmailConfirmation = ({ location, activateCode, status }) => {

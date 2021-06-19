@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useHistory } from "react-router-dom";
 import {
   Container,
   Form,
@@ -25,7 +24,6 @@ const CompleteRegistration = ({
   finishRegistration,
   finishRegistrationStatus,
 }) => {
-  const history = useHistory();
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [toggleTermModal, setToggleTermModal] = useState(false);
   const [formData, setFormData] = useState({

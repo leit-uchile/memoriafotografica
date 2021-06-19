@@ -15,10 +15,6 @@ import {
   Col,
   Row,
   Alert,
-  Modal,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
   Container,
 } from "reactstrap";
 import FormTermsOfUse from "../../components/TermsOfUse/FormTermsOfUse";

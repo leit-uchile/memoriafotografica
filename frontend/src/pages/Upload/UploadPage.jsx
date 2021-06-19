@@ -37,9 +37,9 @@ const UploadPage = () => {
 
   const dispatch = useDispatch();
 
-  const sendAlert = useCallback((m,at,t) => dispatch(site_misc.setAlert(m,at,t)),[]);
+  const sendAlert = useCallback((m,at,t) => dispatch(site_misc.setAlert(m,at,t)),[dispatch]);
   const recoverMetadata = useCallback((s,p,ps,e) =>
-    dispatch(metadata.searchMetadataByValueGeneral(s,p,ps,e)),[]);
+    dispatch(metadata.searchMetadataByValueGeneral(s,p,ps,e)),[dispatch]);
 
   useEffect(() => {
     dispatch(site_misc.setCurrentRoute("/upload"));

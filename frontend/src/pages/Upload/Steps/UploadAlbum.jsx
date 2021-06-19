@@ -24,7 +24,7 @@ import {
 import { faCreativeCommons } from "@fortawesome/free-brands-svg-icons";
 import ReactTags from "react-tag-autocomplete";
 import PropTypes from "prop-types"
-import "./uploadAlbum.css";
+import "./css/uploadAlbum.css";
 
 const CC_INFO = [
   {

@@ -12,7 +12,7 @@ import {
   ModalFooter,
 } from "reactstrap";
 import { connect } from "react-redux";
-import "./uploadProgress.css";
+import "./css/uploadProgress.css";
 import PropTypes from "prop-types";
 import { faChevronCircleRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
