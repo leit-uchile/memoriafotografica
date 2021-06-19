@@ -3,13 +3,13 @@ import "@testing-library/jest-dom";
 import { renderWithRouter, screen } from "../../../test/test-utils";
 import UploadPage from "../UploadPage"
 
-it("renders default step", async () => {
+it("renders default step", () => {
     renderWithRouter(<UploadPage />)
     expect(screen.getByText("Iniciar sesion"))
     expect(screen.getByText("Registrarme"))
 })
 
-it("renders second step if logged in", async () => {
+it("renders second step if logged in", () => {
     renderWithRouter(<UploadPage />, {initialState: {
         user: {
           isAuthenticated: true,

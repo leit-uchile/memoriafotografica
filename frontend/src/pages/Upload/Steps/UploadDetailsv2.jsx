@@ -110,7 +110,7 @@ class UploadDetails extends Component {
         <CardBody>
           <Form>
             <FormGroup>
-              <Label className="form-subtitle">Descripcion:</Label>
+              <Label className="form-subtitle">Descripción:</Label>
               <Input
                 type="textarea"
                 placeholder="Historia asociada a la foto"
@@ -123,8 +123,7 @@ class UploadDetails extends Component {
               />
             </FormGroup>
             <ButtonGroup>
-
-            <Button color="danger" onClick={this.onDelete}>
+            <Button color="danger" onClick={this.onDelete} data-testid="delete-image">
             <FontAwesomeIcon icon={faTrash}/>
             </Button>
             <Button
