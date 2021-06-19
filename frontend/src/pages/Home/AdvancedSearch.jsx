@@ -16,6 +16,7 @@ import {
   ModalFooter,
 } from "reactstrap";
 import { category } from "../../actions/gallery_api";
+//import useAdvSearch from "./hooks/useAdvSeach";
 
 const AdvancedSearch = (props) => {
   // Big TODO: pasar logica a hook
@@ -40,6 +41,13 @@ const AdvancedSearch = (props) => {
     fetch("/api/categories")
       .then((r) => (r.status === 200 ? r.json() : null))
       .then((j) => j.results.map((el) => ({ value: el.id, label: el.title })))
+      .catch((err) => []);
+
+  // TODO: fetch from the correct API endpoint for metadata
+  const keyWords = () =>
+    fetch("/api/search/metadata")
+      .then((r) => (r.status === 200 ? r.json() : null))
+      .then((j) => j.results.map((el) => ({ value: el.value })))
       .catch((err) => []);
 
   const byDate = [
@@ -107,39 +115,35 @@ const AdvancedSearch = (props) => {
         if (key === "permission" && formData[key] !== "") {
           let perm = "permission=" + formData[key];
           filtersArr.push(perm);
-        }
-        else if (key === "category" && formData[key].length !== 0) {
+        } else if (key === "category" && formData[key].length !== 0) {
           let search = [];
           const lenCat = formData[key].length;
-          for (let i = 0;  i < lenCat; i++){
+          for (let i = 0; i < lenCat; i++) {
             const labelCat = formData[key][i].label.replace(" ", "__");
             search.push(labelCat);
           }
           const searchStr = search.join("__");
           filtersArr.push("category__in=" + searchStr);
-        }
-        else if (key === "orderBy" && formData[key] !== "") {
+        } else if (key === "orderBy" && formData[key] !== "") {
           let order = "ordering=" + formData[key];
           filtersArr.push(order);
-        }
-        else if (key === "byDate") {
+        } else if (key === "byDate") {
           let date;
           if (formData.startDate !== "" && formData.endDate !== "") {
             date = "__range=" + formData.startDate + "__" + formData.endDate;
-          }
-          else if(formData.startDate !== "" && formData.endDate === ""){
+          } else if (formData.startDate !== "" && formData.endDate === "") {
             date = "=" + formData.startDate;
           }
-          if(formData[key] === "created_at"){
+          if (formData[key] === "created_at") {
             filtersArr.push("created_at" + date);
-          }
-          else if(formData[key] === "upload_date"){
+          } else if (formData[key] === "upload_date") {
             filtersArr.push("upload_date" + date);
           }
         }
       }
     }
     const filterUrl = "?" + filtersArr.join("&");
+    console.log(filterUrl);
     props.onSubmit(filterUrl);
   };
 
@@ -169,6 +173,17 @@ const AdvancedSearch = (props) => {
           <Form>
             <FormGroup tag="fieldset" onChange={(e) => addValue(e)}>
               <Col>
+                <FormGroup>
+                  <legend>Palabras clave</legend>
+                  <AsyncSelect
+                    isMulti
+                    cacheOptions
+                    defaultOptions
+                    getOptionValue={(el) => el.value}
+                    loadOptions={keyWords}
+                    isSearchable={true}
+                  />
+                </FormGroup>
                 <FormGroup tag="fieldset">
                   <legend>Por fecha</legend>
                   <FormGroup>
@@ -219,7 +234,7 @@ const AdvancedSearch = (props) => {
                   />
                 </FormGroup>
                 <FormGroup>
-                  <Label>Ordenar por</Label>
+                  <legend>Ordenar por</legend>
                   <Select
                     inputID="orderBy"
                     placeholder="Selecciona una opción"
