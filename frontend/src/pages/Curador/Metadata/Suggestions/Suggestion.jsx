@@ -41,6 +41,9 @@ const Suggestions = ({
   approveFailIds,
   failed,
 }) => {
+
+  const [sugSelected, setSugSelected] = useState({});
+  
   useEffect(() => {
     if (active) {
       getTagSuggestions();
@@ -53,9 +56,7 @@ const Suggestions = ({
       getTagSuggestions();
     }
   }, [approved, failed, approveFailIds, getTagSuggestions]);
-
-  const [sugSelected, setSugSelected] = useState({});
-  const [showHelp, setShowHelp] = useState(false);
+ 
 
   return (
     <Container fluid>
@@ -64,7 +65,7 @@ const Suggestions = ({
       <Row>
         <Col>
           <ButtonGroup>
-            <Button onClick={() => setShowHelp(true)}>¿Ayuda?</Button>
+            <Button id="help">¿Ayuda?</Button>
 
             <Button
               color="primary"
@@ -89,25 +90,9 @@ const Suggestions = ({
         </Col>
       </Row>
 
-      {showHelp ? (
-        <Fragment>
-          <Row style={{ marginTop: "1em" }}>
-            <HelpMessages messages={messages} />
-          </Row>
-          <Row style={{ marginTop: "1em", marginBottom: "2em"}}>
-            <Col sm={{ offset: 3, size: 6 }}>
-              <Button
-                onClick={() => {
-                  setShowHelp(false);
-                }}
-                block
-              >
-                Ya entend&iacute;
-              </Button>
-            </Col>
-          </Row>
-        </Fragment>
-      ) : null}
+      <Row style={{ marginTop: "1em" }}>
+        <HelpMessages id={"#help"} messages={messages} />
+      </Row>
 
       <Row>
         {loading || approving ? (
