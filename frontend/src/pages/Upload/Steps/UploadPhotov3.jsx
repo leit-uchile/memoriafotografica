@@ -167,7 +167,6 @@ const UploadPhoto = ({
 };
 
 UploadPhoto.propTypes = {
-  saveAll: PropTypes.func.isRequired,
   photoInfo: PropTypes.object.isRequired,
   meta: PropTypes.arrayOf(
     PropTypes.shape({
