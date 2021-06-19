@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useHistory, Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import {
   faUserFriends,
   faEnvelope,
   faChevronCircleRight,
   faChevronCircleLeft,
-  faFileExcel,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   Container,

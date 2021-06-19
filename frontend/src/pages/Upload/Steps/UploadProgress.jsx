@@ -28,8 +28,6 @@ const UploadProgress = ({
   upload: {
     uploading,
     photosUploading,
-    photosUploaded,
-    newPhotosIds,
     opsFinished,
     error,
   },

@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux"
+import { selectMetaData } from "../../../../reducers";
+import { gallery, metadata } from "../../../../actions";
 
 /**
  * DISCLAIMER: Uploading and putting data on different models is hard.
@@ -9,11 +12,12 @@ import { useState, useEffect } from "react";
  * They are called in order as follows
  */
 const useUpload = (
-  createMultipleMetas, // func
-  uploadImages, // func
-  metadataCreation, // metadata status object
   token
 ) => {
+
+  const metadataCreation =  useSelector(selectMetaData);
+
+  const dispatch = useDispatch()
   const [state, setState] = useState({
     data: { photos: [], meta: {} }, // All info to upload
     newMetadata: [],
@@ -44,7 +48,7 @@ const useUpload = (
 
     // If API call isn't necessary
     if (newMetadata.length !== 0) {
-      createMultipleMetas(newMetadata,token);
+      dispatch(metadata.createMultipleMetas(newMetadata,token));
       setState({
         ...state,
         data: { photos: [...photos], photoInfo },
@@ -128,7 +132,7 @@ const useUpload = (
 
     // Update photos and Start process
     setState({ data: { ...state.data, photos: photo_copy } });
-    uploadImages(photo_copy, token);
+    dispatch(gallery.photos.uploadImages(photo_copy, token));
   };
 
   return [startProcess];

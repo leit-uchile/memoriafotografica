@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignInAlt, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import "./unregisterPrompt.css";
+import PropTypes from "prop-types"
 
 const UnregisteredPrompt = ({ nextStep }) => (
   <Container>
@@ -49,5 +50,9 @@ const UnregisteredPrompt = ({ nextStep }) => (
     </Container>
   </Container>
 );
+
+UnregisteredPrompt.propTypes = {
+  nextStep: PropTypes.func.isRequired
+}
 
 export default UnregisteredPrompt;

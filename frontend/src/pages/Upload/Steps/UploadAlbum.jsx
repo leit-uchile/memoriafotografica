@@ -23,6 +23,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faCreativeCommons } from "@fortawesome/free-brands-svg-icons";
 import ReactTags from "react-tag-autocomplete";
+import PropTypes from "prop-types"
 import "./uploadAlbum.css";
 
 const CC_INFO = [
@@ -296,5 +297,15 @@ const UploadAlbum = ({
     </Container>
   );
 };
+
+UploadAlbum.propTypes = {
+  isAuth: PropTypes.bool.isRequired,
+  saveAll: PropTypes.func.isRequired,
+  nextStep: PropTypes.func.isRequired,
+  previousStep: PropTypes.func.isRequired,
+  meta: PropTypes.array.isRequired,
+  sendAlert: PropTypes.func.isRequired,
+  searchMeta: PropTypes.func.isRequired,
+}
 
 export default UploadAlbum;

@@ -15,10 +15,8 @@ import {
   faChevronCircleLeft,
   faCloudUploadAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { connect } from "react-redux";
-import { site_misc, gallery, metadata } from "../../../actions";
-import { bindActionCreators } from "redux";
-import { selectUpload, selectMetaData } from "../../../reducers";
+import { useSelector, } from "react-redux";
+import { selectUpload } from "../../../reducers";
 import "./uploadPhoto.css";
 import useHandleFiles from "./hooks/useHandleFiles";
 import useUpload from "./hooks/useUpload";
@@ -32,24 +30,20 @@ import PropTypes from "prop-types";
 const UploadPhoto = ({
   sendAlert,
   searchMeta,
-  uploadImages,
-  createMultipleMetas,
-  upload,
   meta,
-  metadataCreation,
   photoInfo,
   previousStep,
   nextStep,
   token,
 }) => {
+
+  const upload =  useSelector(selectUpload);
+
   const [state, setState, handleOnDrop, saveMeta, handleErase] = useHandleFiles(
     sendAlert
   );
 
   const [startProcess] = useUpload(
-    createMultipleMetas,
-    uploadImages,
-    metadataCreation,
     token
   );
 
@@ -181,29 +175,10 @@ UploadPhoto.propTypes = {
       id: PropTypes.string,
     })
   ),
-  metadataCreation: PropTypes.object.isRequired,
   searchMeta: PropTypes.func.isRequired,
-  upload: PropTypes.object.isRequired,
   sendAlert: PropTypes.func.isRequired,
-  uploadImages: PropTypes.func.isRequired,
-  createMultipleMetas: PropTypes.func.isRequired,
   previousStep: PropTypes.func.isRequired,
   nextStep: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  upload: selectUpload(state),
-  metadataCreation: selectMetaData(state),
-});
-
-const mapActionsToProps = (dispatch) =>
-  bindActionCreators(
-    {
-      sendAlert: site_misc.setAlert,
-      uploadImages: gallery.photos.uploadImages,
-      createMultipleMetas: metadata.createMultipleMetas,
-    },
-    dispatch
-  );
-
-export default connect(mapStateToProps, mapActionsToProps)(UploadPhoto);
+export default UploadPhoto;
