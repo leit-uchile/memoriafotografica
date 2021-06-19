@@ -126,7 +126,7 @@ class RequestPhoto extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    if (this.state.formData.recaptchaToken == "") {
+    if (this.state.formData.recaptchaToken === "") {
       this.props.sendAlert("Debe rellenar el captcha", "warning");
     } else {
       const photosId = this.props.requestedPhotos.map((el) => el.id);

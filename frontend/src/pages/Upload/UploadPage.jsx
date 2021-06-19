@@ -43,7 +43,7 @@ const UploadPage = () => {
 
   useEffect(() => {
     dispatch(site_misc.setCurrentRoute("/upload"));
-  }, []);
+  }, [dispatch]);
 
   const savePhotoInfo = (info) => {
     setState({ ...state, data: { ...state.data, ...info } });

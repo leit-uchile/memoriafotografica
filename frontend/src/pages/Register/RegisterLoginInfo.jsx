@@ -109,7 +109,7 @@ class RegisterLoginInfo extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     if (this.checkPassword()) {
-      if (this.recaptcharef.getValue() == "") {
+      if (this.recaptcharef.getValue() === "") {
         this.setState({
           error: "Debe rellenar el recaptcha",
         });

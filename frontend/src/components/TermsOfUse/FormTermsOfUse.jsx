@@ -1,25 +1,8 @@
-import React, { Component } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
 import {
-  faUserCircle,
-  faUser,
-  faUserTag,
-} from "@fortawesome/free-solid-svg-icons";
-import {
-  Form,
   FormGroup,
   Label,
   Input,
-  Button,
-  Col,
-  Row,
-  Alert,
-  Modal,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  Container,
 } from "reactstrap";
 import TermsOfUseModal from "./TermsOfUseModal";
 

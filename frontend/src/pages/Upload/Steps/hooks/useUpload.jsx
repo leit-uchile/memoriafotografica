@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux"
 import { selectMetaData } from "../../../../reducers";
 import { gallery, metadata } from "../../../../actions";
@@ -29,7 +29,7 @@ const useUpload = (
    * MAIN METHOD
    * filtered photos, general photo info as meta
    */
-  const startProcess = (photos, photoInfo) => {
+  const startProcess = useCallback((photos, photoInfo) => {
     // Manage metadata creation:
     // Merge tags in one array
     let newMetadata = [];
@@ -63,7 +63,7 @@ const useUpload = (
         waitForMeta: false,
       });
     }
-  };
+  },[dispatch, state, token]);
 
   useEffect(() => {
     if (metadataCreation && !metadataCreation.creating && state.uploading) {
@@ -74,16 +74,9 @@ const useUpload = (
         waitForMeta: false,
       });
     }
-  }, [metadataCreation]);
+  }, [metadataCreation, state]);
 
-  // Call AssociateMeta after state update
-  useEffect(() => {
-    if (!state.waitForMeta && state.uploading) {
-      consolidateMetadata();
-    }
-  }, [state]);
-
-  const consolidateMetadata = () => {
+  const consolidateMetadata = useCallback(() => {
     // Map all new names to a valid id
     let meta_mapped = {};
     state.newMetadata.forEach((t) => {
@@ -133,7 +126,15 @@ const useUpload = (
     // Update photos and Start process
     setState({ data: { ...state.data, photos: photo_copy } });
     dispatch(gallery.photos.uploadImages(photo_copy, token));
-  };
+  },[dispatch, state, token]);
+
+
+  // Call AssociateMeta after state update
+  useEffect(() => {
+    if (!state.waitForMeta && state.uploading) {
+      consolidateMetadata();
+    }
+  }, [state, consolidateMetadata]);
 
   return [startProcess];
 };

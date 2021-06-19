@@ -1,25 +1,10 @@
-import React, { Component } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react"
 import {
-  faUserCircle,
-  faUser,
-  faUserTag,
-} from "@fortawesome/free-solid-svg-icons";
-import {
-  Form,
-  FormGroup,
-  Label,
-  Input,
   Button,
-  Col,
-  Row,
-  Alert,
   Modal,
   ModalHeader,
   ModalFooter,
   ModalBody,
-  Container,
 } from "reactstrap";
 
 const TermsOfUseModal = ({
@@ -27,7 +12,6 @@ const TermsOfUseModal = ({
   toggleFunc,
   acceptTerms,
   className,
-  ...props
 }) => (
   <Modal isOpen={isOpen} toggle={toggleFunc} className={className}>
     <ModalHeader toggle={toggleFunc}>T&eacute;rminos de uso</ModalHeader>
