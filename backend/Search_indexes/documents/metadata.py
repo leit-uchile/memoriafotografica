@@ -29,7 +29,11 @@ class MetadataDocument(Document):
         fields={
             'raw': fields.TextField(analyzer='keyword'),
         }
-    )
+    ) 
+
+    created_at = fields.DateField()
+
+    updated_at = fields.DateField()
 
     class Django(object):
         """Inner nested class Django."""

@@ -76,6 +76,8 @@ class MetadataDocumentViewSet(DocumentViewSet):
     # Define ordering fields
     ordering_fields = {
         'id': None,
+        'updated_at': 'updated_at',
+        'created_at': 'created_at',
     }
     # Specify default ordering
-    ordering = ('updated_at')
+    ordering = ('created_at')
