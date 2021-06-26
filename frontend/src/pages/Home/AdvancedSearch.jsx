@@ -16,6 +16,7 @@ import {
   ModalFooter,
 } from "reactstrap";
 import { category } from "../../actions/gallery_api";
+import "./AdvancedSearch.css";
 //import useAdvSearch from "./hooks/useAdvSeach";
 
 const AdvancedSearch = (props) => {
@@ -177,7 +178,6 @@ const AdvancedSearch = (props) => {
                   <legend>Palabras clave</legend>
                   <AsyncSelect
                     isMulti
-                    cacheOptions
                     defaultOptions
                     getOptionLabel={(e) => e.label}
                     loadOptions={keyWords}
