@@ -55,8 +55,27 @@ const getNews = (number) => {
     return results
 }
 
+/**
+ * Helper to create a user object
+ * @param {*} id 
+ * @param {*} firstname
+ * @param {*} lastname
+ * @param {*} isStaff
+ * @param {*} isPublic 
+ */
+const getUser = (id, firstname, lastname, isStaff, isPublic) => ({
+    avatar: null,
+    id: id,
+    first_name: firstname,
+    last_name: lastname,
+    rol: '1',
+    is_staff: isStaff,
+    public_profile: isPublic,
+})
+
 export {
     getNews,
     getAlbum,
-    getPictures
+    getPictures,
+    getUser
 }

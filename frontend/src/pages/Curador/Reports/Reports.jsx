@@ -67,7 +67,6 @@ const Reports = ({ reportsStatus, reports, getReports, updatedReport }) => {
   });
 
   useEffect(() => {
-    setPagination((pag) => ({ ...pag }));
     let url = "&sort=updated_at-desc";
     if (filter.createdSince && filter.createdSince !== "") {
       url = url + `&created_at=${filter.createdSince}`;

@@ -10,14 +10,11 @@ import ResolveButtons from "./ResolveButtons";
  * @param {Array} reports
  */
 const ReportsTable = ({ reports }) => {
-
   const actions = (rep) =>
     rep.resolved ? (
       <b>{rep.resolution_details || "-"}</b>
     ) : (
-      <ResolveButtons
-        report={rep}
-      />
+      <ResolveButtons report={rep} />
     );
 
   return (
@@ -36,15 +33,11 @@ const ReportsTable = ({ reports }) => {
       <tbody>
         {reports.length !== 0
           ? reports.map((r) => (
-              <ReportRow
-                report={r}
-                actions={actions}
-                key={r.id}
-              />
+              <ReportRow report={r} actions={actions} key={r.id} />
             ))
           : null}
       </tbody>
     </Table>
   );
 };
-export default (ReportsTable);
+export default ReportsTable;
