@@ -3,49 +3,8 @@ import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { renderWithRouter, screen } from "../../../../test/test-utils";
 import SuggestionTable from "../Suggestions/SuggestionTable";
+import * as suggestions from "../../../../test/data/tagsugesstions.json"
 
-const suggestions = {
-  count: 2,
-  results: [
-    {
-      id: 1,
-      thumbnail: "",
-      tagsuggestion_photo: [
-        {
-          id: 1,
-          metadata: {
-            value: "beauchef851",
-            id: 1,
-          },
-          votes: 5,
-        },
-        {
-          id: 2,
-          metadata: {
-            value: "moderno",
-            id: 2,
-          },
-          votes: 1,
-        },
-      ],
-    },
-
-    {
-      id: 2,
-      thumbnail: "",
-      tagsuggestion_photo: [
-        {
-          id: 3,
-          metadata: {
-            value: "beauchef850",
-            id: 3,
-          },
-          votes: 2,
-        },
-      ],
-    },
-  ],
-};
 
 it("renders without crashing", () => {
   renderWithRouter(

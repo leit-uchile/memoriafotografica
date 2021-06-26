@@ -60,6 +60,7 @@ const SuggestionTable = ({ suggestions, sugSelected, setSugSelected }) => {
     setSugSelected({ ...newSuggestion });
   };
 
+
   return (
     <Table responsive striped>
       <thead>
@@ -70,7 +71,7 @@ const SuggestionTable = ({ suggestions, sugSelected, setSugSelected }) => {
         </tr>
       </thead>
       <tbody>
-        {suggestions.count !== 0 ? (
+        {suggestions.count !== 0 && suggestions.results ? (
           suggestions.results.map((r) => (
             <SuggestionRow
               key={r.id}
@@ -80,7 +81,7 @@ const SuggestionTable = ({ suggestions, sugSelected, setSugSelected }) => {
             />
           ))
         ) : (
-          <div />
+          <tr/>
         )}
       </tbody>
     </Table>

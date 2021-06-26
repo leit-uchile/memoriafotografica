@@ -1,0 +1,42 @@
+{
+  "count": 2,
+  "results": [
+    {
+      "id": 1,
+      "thumbnail": "",
+      "tagsuggestion_photo": [
+        {
+          "id": 1,
+          "metadata": {
+            "value": "beauchef851",
+            "id": 1
+          },
+          "votes": 5
+        },
+        {
+          "id": 2,
+          "metadata": {
+            "value": "moderno",
+            "id": 2
+          },
+          "votes": 1
+        }
+      ]
+    },
+
+    {
+      "id": 2,
+      "thumbnail": "",
+      "tagsuggestion_photo": [
+        {
+          "id": 3,
+          "metadata": {
+            "value": "beauchef850",
+            "id": 3
+          },
+          "votes": 2
+        }
+      ]
+    }
+  ]
+}

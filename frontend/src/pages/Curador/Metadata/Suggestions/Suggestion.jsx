@@ -41,9 +41,8 @@ const Suggestions = ({
   approveFailIds,
   failed,
 }) => {
-
   const [sugSelected, setSugSelected] = useState({});
-  
+
   useEffect(() => {
     if (active) {
       getTagSuggestions();
@@ -56,7 +55,6 @@ const Suggestions = ({
       getTagSuggestions();
     }
   }, [approved, failed, approveFailIds, getTagSuggestions]);
- 
 
   return (
     <Container fluid>
@@ -126,7 +124,7 @@ Suggestions.propTypes = {
   approving: PropTypes.bool.isRequired,
   approved: PropTypes.bool.isRequired,
   failed: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired
+  loading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({

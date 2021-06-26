@@ -12,8 +12,8 @@ import {
 const HelpMessages = ({ id, messages }) => (
   <UncontrolledCollapse toggler={id} style={{ marginBottom: "1em" }}>
     <Row>
-      {messages.map((m) => (
-        <Col>
+      {messages.map((m, i) => (
+        <Col key={i}>
           <Card body style={{ height: "100%" }}>
             <CardTitle style={{ fontWeight: "bold" }}>{m.action}</CardTitle>
             <CardText>{m.helpMessage}</CardText>

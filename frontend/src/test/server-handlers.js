@@ -1,6 +1,6 @@
 import { rest } from "msw";
 import { getAlbum, getNews, getPictures } from "./rest-helpers";
-
+import * as tagsuggestions from "./data/tagsugesstions.json";
 /**
  * REST handlers to mock the app API
  */
@@ -114,6 +114,10 @@ const handlers = [
     let meta = req.body;
     return res(ctx.status(201), ctx.json(meta));
   }),
+
+  rest.get("/api/tagsuggestion/", (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json({count: tagsuggestions.count, results:tagsuggestions.results}));
+  })
 ];
 
 export { handlers };
