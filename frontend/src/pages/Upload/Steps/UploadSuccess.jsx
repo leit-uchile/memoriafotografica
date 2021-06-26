@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Container,
-  Button,
   Row,
   Col,
-  Progress,
-  Alert,
-  ButtonGroup,
 } from "reactstrap";
-import "./styles.css";
-import "./uploadProgress.css";
+import { Link } from "react-router-dom";
+import "./css/uploadProgress.css";
 
 const UploadSuccess = () => {
     return (
@@ -21,7 +17,7 @@ const UploadSuccess = () => {
               </h2>
           </Col>
         </Row>
-        <Row style={{ marginTop: "2em"}}>
+        <Row>
           <Col md={{ size: 6, offset: 3}}>
             <h4>
                 Tus fotos deber&aacute;n ser aprobadas 
@@ -36,15 +32,17 @@ const UploadSuccess = () => {
         </Row>
         <Row xs="3">
           <Col className="text-center">
-          <img src="/assets/cropping-tool.svg" width="30%"/>
+          <img src="/assets/cropping-tool.svg" width="30%" alt="next-action-edit"/>
             <h3>Editar fotos</h3>
           </Col>
           <Col className="text-center">
-            <img src="/assets/photo-album.svg" width="30%"/>
+            <Link to="/user/dashboard/albums">
+            <img src="/assets/photo-album.svg" width="30%" alt="next-action-album"/>
             <h3>Crear album</h3>
+            </Link>
           </Col>
           <Col className="text-center">
-          <img src="/assets/image-file.svg" width="30%"/>
+          <img src="/assets/image-file.svg" width="30%" alt="next-action-upload"/>
           <h3>¡Subir más!</h3>
           </Col>
         </Row>    

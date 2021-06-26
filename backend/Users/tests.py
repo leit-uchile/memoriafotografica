@@ -2,6 +2,9 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 from .models import User
 from unittest.mock import patch
+from django.utils import timezone
+import pytz
+import datetime
 
 class UserApiTest(APITestCase):
 
@@ -15,7 +18,8 @@ class UserApiTest(APITestCase):
             "birth_date": "1991-01-01",
             "rol_type": "1",
             "first_name": "Name",
-            "last_name": "LastName"
+            "last_name": "LastName",
+            "recaptchaToken": "sample"
         }
 
         return super().setUp()

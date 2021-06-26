@@ -18,50 +18,70 @@ import {
   CONTACTMESSAGES_ERROR,
   CONTACTMESSAGE_SWITCH_STATE,
   CONTACTMESSAGE_SWITCH_STATE_ERROR,
-  VALIDATE_RECAPTCHA,
-  VALIDATE_RECAPTCHA_ERROR,
-  RESET_RECAPTCHA,
+  GUEST_VERIFY,
+  GUEST_VERIFY_ERROR,
+  COMPLETE_REGISTRATION,
+  COMPLETE_REGISTRATION_ERROR,
 } from "./types";
 import { setAlert } from "./site_misc";
 
-export const validateRecaptcha = (valueRecaptcha) => (dispatch) => {
-  {
-    let header = { "Content-Type": "application/json" };
-    let data = { recaptcha: valueRecaptcha };
-    fetch("/api/users/recaptcha/", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: header,
-    }).then(function (response) {
-      if (response.status == 200) {
-        return response
-          .json()
-          .then((data) => dispatch({ type: VALIDATE_RECAPTCHA, data: data }));
-      } else {
-        dispatch({ type: VALIDATE_RECAPTCHA_ERROR, data: response.data });
-      }
+export const CompleteRegistration = (data) => (dispatch) => {
+  let header = { "Content-Type": "application/json" };
+  fetch("/api/users/complete_registration/", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: header,
+  }).then(function (response) {
+    if (response.status === 200) {
+      return dispatch({
+        type: COMPLETE_REGISTRATION,
+        data: { status: true },
+      });
+    }
+    return dispatch({
+      type: COMPLETE_REGISTRATION_ERROR,
+      data: { status: false },
     });
-  }
+  });
 };
 
-export const resetValidateRecaptcha = () => (dispatch) => {
-  dispatch({ type: RESET_RECAPTCHA, data: null });
-};
-
-export const getNews = (page = 0, page_size = 4, params = "") => (dispatch) => {
-  return fetch(
-    `/api/news/?page=${page + 1}&page_size=${page_size}${params}`
-  ).then((response) => {
-    const r = response;
-    if (r.status === 200) {
-      return r
+export const GuestVerify = (data) => (dispatch) => {
+  let header = { "Content-Type": "application/json" };
+  fetch("/api/users/guest/", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: header,
+  }).then(function (response) {
+    if (response.status === 200) {
+      return response
         .json()
-        .then((data) => dispatch({ type: NEWS_RECOVERED, data: data }));
+        .then((data) => dispatch({ type: GUEST_VERIFY, data: data }));
     } else {
-      dispatch({ type: NEWS_EMPTY, data: r.data });
+      response.json().then((data) => {
+        //TODO better handling for errors?
+        dispatch(setAlert(data["Error"], "warning"));
+        dispatch({ type: GUEST_VERIFY_ERROR, data: data["Error"] });
+      });
     }
   });
 };
+
+export const getNews =
+  (page = 0, page_size = 4, params = "") =>
+  (dispatch) => {
+    return fetch(
+      `/api/news/?page=${page + 1}&page_size=${page_size}${params}`
+    ).then((response) => {
+      const r = response;
+      if (r.status === 200) {
+        return r
+          .json()
+          .then((data) => dispatch({ type: NEWS_RECOVERED, data: data }));
+      } else {
+        dispatch({ type: NEWS_EMPTY, data: r.data });
+      }
+    });
+  };
 
 export const getCaroussel = () => (dispatch) => {
   return fetch("/api/caroussel").then((response) => {
@@ -136,31 +156,29 @@ export const sendRequest = (photos, info) => {
 /**
  * Recover all Photo Request
  */
-export const getRequests = (query, page, page_size, extra) => (
-  dispatch,
-  getState
-) => {
-  let headers = {
-    "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token,
+export const getRequests =
+  (query, page, page_size, extra) => (dispatch, getState) => {
+    let headers = {
+      "Content-Type": "application/json",
+      Authorization: "Token " + getState().user.token,
+    };
+    return fetch(
+      `/api/requests/photos/all/?search=${query}&page=${page}&page_size=${page_size}${extra}`,
+      {
+        method: "GET",
+        headers: headers,
+      }
+    ).then(function (response) {
+      const r = response;
+      if (r.status === 200) {
+        return r.json().then((data) => {
+          dispatch({ type: PHOTOREQUESTS_RECOVERED, data: data });
+        });
+      } else {
+        dispatch({ type: PHOTOREQUESTS_ERROR, data: r.data });
+      }
+    });
   };
-  return fetch(
-    `/api/requests/photos/all/?search=${query}&page=${page}&page_size=${page_size}${extra}`,
-    {
-      method: "GET",
-      headers: headers,
-    }
-  ).then(function (response) {
-    const r = response;
-    if (r.status === 200) {
-      return r.json().then((data) => {
-        dispatch({ type: PHOTOREQUESTS_RECOVERED, data: data });
-      });
-    } else {
-      dispatch({ type: PHOTOREQUESTS_ERROR, data: r.data });
-    }
-  });
-};
 
 /**
  * Get Request Details
@@ -248,60 +266,61 @@ export const contactUs = (formData) => {
 /**
  * Recover all Messages from Contact Us
  */
-export const getMessages = (query, page, page_size, extra) => (
-  dispatch,
-  getState
-) => {
-  let headers = {
-    "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token,
+export const getMessages =
+  (query, page, page_size, extra) => (dispatch, getState) => {
+    let headers = {
+      "Content-Type": "application/json",
+      Authorization: "Token " + getState().user.token,
+    };
+    return fetch(
+      `/api/requests/contact/all/?search=${query}&page=${page}&page_size=${page_size}${extra}`,
+      {
+        method: "GET",
+        headers: headers,
+      }
+    ).then((response) => {
+      const r = response;
+      if (r.status === 200) {
+        return r.json().then((data) => {
+          dispatch({ type: CONTACTMESSAGES_RECOVERED, data: data });
+        });
+      } else {
+        dispatch({ type: CONTACTMESSAGES_ERROR, data: r.data });
+      }
+    });
   };
-  return fetch(
-    `/api/requests/contact/all/?search=${query}&page=${page}&page_size=${page_size}${extra}`,
-    {
-      method: "GET",
-      headers: headers,
-    }
-  ).then((response) => {
-    const r = response;
-    if (r.status === 200) {
-      return r.json().then((data) => {
-        dispatch({ type: CONTACTMESSAGES_RECOVERED, data: data });
-      });
-    } else {
-      dispatch({ type: CONTACTMESSAGES_ERROR, data: r.data });
-    }
-  });
-};
 
-export const updateMessage = (messageUpdate, formData) => (
-  dispatch,
-  getState
-) => {
-  let headers = {
-    "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token,
+export const updateMessage =
+  (messageUpdate, formData) => (dispatch, getState) => {
+    let headers = {
+      "Content-Type": "application/json",
+      Authorization: "Token " + getState().user.token,
+    };
+    let jsonthing = JSON.stringify({
+      reply: formData.reply,
+      resolved: messageUpdate.resolved,
+      email_sent: messageUpdate.email_sent,
+      subject: formData.subject,
+    });
+    return fetch(`/api/requests/contact/${messageUpdate.id}/`, {
+      method: "PUT",
+      headers: headers,
+      body: jsonthing,
+    }).then((response) => {
+      const r = response;
+      if (r.status === 200) {
+        return r.json().then((data) => {
+          dispatch(setAlert("Solicitud actualizada exitosamente", "success"));
+          dispatch({ type: CONTACTMESSAGE_SWITCH_STATE, data: data });
+        });
+      } else {
+        dispatch(
+          setAlert(
+            "Error actualizando solicitud. Intente nuevamente",
+            "warning"
+          )
+        );
+        dispatch({ type: CONTACTMESSAGE_SWITCH_STATE_ERROR, data: r.data });
+      }
+    });
   };
-  let jsonthing = JSON.stringify({
-    reply: formData.reply,
-    resolved: messageUpdate.resolved,
-    email_sent: messageUpdate.email_sent,
-    subject: formData.subject,
-  });
-  return fetch(`/api/requests/contact/${messageUpdate.id}/`, {
-    method: "PUT",
-    headers: headers,
-    body: jsonthing,
-  }).then((response) => {
-    const r = response;
-    if (r.status === 200) {
-      return r.json().then((data) => {
-        dispatch(setAlert("Solicitud actualizada exitosamente", "success"));
-        dispatch({ type: CONTACTMESSAGE_SWITCH_STATE, data: data });
-      });
-    } else {
-      dispatch(setAlert("Error actualizando solicitud. Intente nuevamente", "warning"));
-      dispatch({ type: CONTACTMESSAGE_SWITCH_STATE_ERROR, data: r.data });
-    }
-  });
-};

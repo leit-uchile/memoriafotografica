@@ -126,7 +126,8 @@ export const selectMetaDataAllIptcs = (state) => state.metadata.all_iptcs;
 
 export const selectMetaDataBatch = (state) => state.metadata.batch;
 
-export const selectMetaDataOpsCompleted = (state) => state.metadata.opsCompleted;
+export const selectMetaDataOpsCompleted = (state) =>
+  state.metadata.opsCompleted;
 
 export const selectMetaDataOpsErrors = (state) => state.metadata.opsErrors;
 

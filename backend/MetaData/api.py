@@ -15,6 +15,7 @@ from rest_framework.exceptions import NotFound
 
 from MetaData.models import *
 from Users.permissions import *
+from Gallery.auth import GuestOrUserAuth
 #from .permissions import *
 
 from django.http import Http404, QueryDict
@@ -157,6 +158,8 @@ class MetadataListAPI(generics.GenericAPIView):
     Create a new metadata.
 
     """
+
+    authentication_classes = [GuestOrUserAuth]
     permission_classes = [IsAuthenticated|ReadOnly,]
 
     def get(self, request, *args, **kwargs):

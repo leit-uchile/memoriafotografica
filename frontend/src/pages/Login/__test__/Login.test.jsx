@@ -15,6 +15,5 @@ it("displays error message", async () =>{
     renderWithRouter(<Login />);
     expect(screen.getByText("Entrar"))
     userEvent.click(screen.getByText("Entrar"))
-    screen.debug()
     await waitFor(() => screen.getByText("No podemos ingresarte al sitio"))
 })

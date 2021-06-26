@@ -12,6 +12,6 @@ Pillow==7.1.0
 sorl-thumbnail==12.5.0
 django-cors-headers==3.4.0
 ptvsd==4.3.2
-psycopg2
+psycopg2==2.8.6
 djangorestframework-recaptcha==0.2.0
 celery==5.0.0

@@ -8,7 +8,17 @@
   text-align: center;
   border: 3px dashed var(--leit-pink);
   box-shadow: #ddd 3px 5px 10px;
+  padding: 1rem;
 }
 .upload-photo-dropzone div {
   height: 100%;
+}
+
+.upload-rules {
+  padding: 2em;
+  border: 1px solid rgb(210, 214, 218);
+  height: fit-content;
+}
+.upload-rules h4 {
+  font-weight: 600;
 }

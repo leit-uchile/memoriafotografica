@@ -23,7 +23,7 @@ import "./collectionView.css";
 */
 const RenderPhoto = ({ photo }) => (
   <div className="collection-view-photo">
-    <img src={photo.thumbnail} width="100%" />
+    <img src={photo.thumbnail} width="100%" alt="collection heading"/>
   </div>
 );
 

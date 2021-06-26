@@ -12,7 +12,7 @@ import {
   ModalFooter,
 } from "reactstrap";
 import { connect } from "react-redux";
-import "./uploadProgress.css";
+import "./css/uploadProgress.css";
 import PropTypes from "prop-types";
 import { faChevronCircleRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -28,8 +28,6 @@ const UploadProgress = ({
   upload: {
     uploading,
     photosUploading,
-    photosUploaded,
-    newPhotosIds,
     opsFinished,
     error,
   },
@@ -64,7 +62,7 @@ const UploadProgress = ({
         toggle();
       }}
     >
-      {buttonLabel}
+      {buttonLabel}{' '}
       <FontAwesomeIcon icon={faChevronCircleRight} />
       <Modal isOpen={modal}>
         <ModalHeader >Subir Fotograf&iacute;a</ModalHeader>

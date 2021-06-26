@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-
+import React, { useState, useCallback } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAddressCard,
@@ -22,10 +21,12 @@ import {
 import { webadmin } from "../../actions";
 import { selectWebAdminContacted } from "../../reducers";
 import "./styles.css";
-import { validateRecaptcha } from "../../actions/webadmin_api";
 
-const ContactUs = ({ contacted, contactUs }) => {
+const ContactUs = () => {
   const [formData, setData] = useState({});
+
+  const contacted = useSelector(selectWebAdminContacted);
+  const dispatch = useDispatch();
 
   const updateData = (e) => {
     setData({ ...formData, [e.target.name]: e.target.value });
@@ -34,6 +35,11 @@ const ContactUs = ({ contacted, contactUs }) => {
   const updateCaptcha = () => {
     setData({ ...formData, recaptchaToken: recaptchaRef.getValue() });
   };
+
+  const contactUs = useCallback(
+    (form) => dispatch(webadmin.contactUs(form)),
+    []
+  );
 
   let recaptchaRef;
 
@@ -197,12 +203,4 @@ const Map = ({ source }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  contacted: selectWebAdminContacted(state),
-});
-
-const mapActionsToProps = (dispatch) => ({
-  contactUs: (form) => dispatch(webadmin.contactUs(form)),
-});
-
-export default connect(mapStateToProps, mapActionsToProps)(ContactUs);
+export default ContactUs;
