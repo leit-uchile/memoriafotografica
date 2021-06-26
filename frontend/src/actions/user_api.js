@@ -15,8 +15,8 @@ import {
   RESET_PASSWORD_CONFIRM_FAILED,
   LOGOUT_SUCCESS,
   USER_LOADED,
-  USER_RECOVERED_PHOTO,
-  USER_RECOVERED_PHOTO_ERROR,
+  USER_PHOTOS_LOADED,
+  USER_PHOTOS_ERROR,
   USER_RECOVERED_ALBUM,
   USER_RECOVERED_ALBUM_ERROR,
   USER_RECOVERED_COMMENTS,
@@ -164,6 +164,7 @@ export const getUserPhotos = (user_id, page, page_size, extra = "") => (
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
+  dispatch({ type: 'USER_PHOTOS_LOADING' })
   return fetch(
     `/api/users/photos/${user_id}/?page=${page}&page_size=${page_size}${extra}`,
     { method: "GET", headers: headers }
@@ -171,10 +172,10 @@ export const getUserPhotos = (user_id, page, page_size, extra = "") => (
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_PHOTO, data: data });
+        dispatch({ type: USER_PHOTOS_LOADED, data: data });
       });
     } else {
-      dispatch({ type: USER_RECOVERED_PHOTO_ERROR, data: r.data });
+      dispatch({ type: USER_PHOTOS_ERROR, data: r.data });
 
     }
   });
@@ -357,11 +358,11 @@ export const loadPublicUserPhotos = (user_id, extra = "") => (
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_PHOTO, data: data });
+        dispatch({ type: USER_PHOTOS_LOADED, data: data });
       });
     } else {
       dispatch(setAlert("Error cargando fotografías. Intente nuevamente", "warning"));
-      dispatch({ type: USER_RECOVERED_PHOTO_ERROR, data: r.data });
+      dispatch({ type: USER_PHOTOS_ERROR, data: r.data });
 
     }
   });

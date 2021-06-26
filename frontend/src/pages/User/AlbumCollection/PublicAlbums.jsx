@@ -5,10 +5,12 @@ import { user } from "../../../actions";
 import { LeitSpinner } from "../../../components";
 import { bindActionCreators } from "redux";
 import UserAlbums from "./UserAlbums";
-import { selectUserPublicLoading,
-         selectUserPublicUser } from "../../../reducers";
+import {
+  selectUserPublicStatus,
+  selectUserPublicUser,
+} from "../../../reducers";
 
-const PublicAlbums = ({ match, publicLoading, publicUser, loadPublicUser }) => {
+const PublicAlbums = ({ match, dataStatus, publicUser, loadPublicUser }) => {
   useEffect(() => {
     // Load if necessary
     if (publicUser === undefined || publicUser.id !== Number(match.params.id)) {
@@ -16,7 +18,9 @@ const PublicAlbums = ({ match, publicLoading, publicUser, loadPublicUser }) => {
     }
   }, [match.params.id, publicUser, loadPublicUser]);
 
-  return publicLoading ? (
+  return dataStatus === "success" ? (
+    <UserAlbums publicView publicUser={publicUser} />
+  ) : (
     <Container style={{ textAlign: "center" }}>
       <Row>
         <Col>
@@ -24,13 +28,11 @@ const PublicAlbums = ({ match, publicLoading, publicUser, loadPublicUser }) => {
         </Col>
       </Row>
     </Container>
-  ) : (
-    <UserAlbums publicView publicUser={publicUser} />
   );
 };
 
 const mapStateToProps = (state) => ({
-  publicLoading: selectUserPublicLoading(state),
+  dataStatus: selectUserPublicStatus(state),
   publicUser: selectUserPublicUser(state),
 });
 

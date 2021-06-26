@@ -14,6 +14,8 @@ import {
   selectUserData,
   selectUserPublicUser,
   selectPhotosPhotoUpdate,
+  selectPhotosItemStatus,
+  selectUserPublicStatus,
 } from "../../../reducers";
 import { LeitSpinner } from "../../../components";
 import CreateAlbumModal from "./CreateAlbumModal";
@@ -22,6 +24,7 @@ const UserPhotos = ({
   location,
   match,
   user,
+  dataStatus,
   publicUser,
   loadPublicUser,
   photos,
@@ -30,10 +33,10 @@ const UserPhotos = ({
   setOps,
   editPhoto,
   deletePhoto,
+  itemStatus,
   updatedPhoto,
   setSelectedId,
 }) => {
-  const [loading, setLoading] = useState(true);
   const [params, setParams] = useState({
     redirect: false,
     index: "",
@@ -45,18 +48,11 @@ const UserPhotos = ({
   const publicView = location.pathname.includes("public");
 
   useEffect(() => {
-    setLoading(true);
     if (publicView) {
       loadPublicUser(match.params.id);
-      onLoadGetPublicPhotos(match.params.id, "&page=1&page_size=100").then(
-        (r) => {
-          setLoading(false);
-        }
-      );
+      onLoadGetPublicPhotos(match.params.id, "&page=1&page_size=100");
     } else {
-      onLoadGetPhotos(user.id, 1, 100, "&approved=true").then((r) => {
-        setLoading(false);
-      });
+      onLoadGetPhotos(user.id, 1, 100, "&approved=true");
     }
     // eslint-disable-next-line
   }, [publicView, user, updatedPhoto]);
@@ -65,6 +61,12 @@ const UserPhotos = ({
     setOps(selected.length);
     // eslint-disable-next-line
   }, [selected]);
+
+  useEffect(() => {
+    if (itemStatus === "idle") {
+      setModal(false);  // This closes EditPhotosModal
+    }
+  },[itemStatus]);
 
   if (params.redirect) {
     setSelectedId(params.index);
@@ -96,7 +98,7 @@ const UserPhotos = ({
             {publicView && publicUser
               ? `Fotos de ${publicUser.first_name}`
               : "Mis fotos"}{" "}
-            {!loading ? (
+            {dataStatus === "success" ? (
               <Badge color="primary">{photos.results.length}</Badge>
             ) : null}
           </h2>
@@ -122,6 +124,7 @@ const UserPhotos = ({
               editPhoto={(id, content) => editPhoto(id, content)}
               deletePhoto={(id) => deletePhoto(id)}
               isCurator={false}
+              updating={""}
             />
             <CreateAlbumModal photosID={selected} />
           </Col>
@@ -131,7 +134,15 @@ const UserPhotos = ({
         <Col>
           <Container fluid>
             <div className="stat-box rounded">
-              {!loading ? (
+              {dataStatus === "idle" ? (
+                <span></span>
+              ) : dataStatus === "loading" ? (
+                <Row>
+                  <Col style={{ textAlign: "center" }}>
+                    <LeitSpinner />
+                  </Col>
+                </Row>
+              ) : dataStatus === "success" ? (
                 publicView ? (
                   <Row>
                     <Col
@@ -197,11 +208,7 @@ const UserPhotos = ({
                   </Row>
                 )
               ) : (
-                <Row>
-                  <Col style={{ textAlign: "center" }}>
-                    <LeitSpinner />
-                  </Col>
-                </Row>
+                <p>Ha ocurrido un error</p>
               )}
             </div>
           </Container>
@@ -214,7 +221,9 @@ const UserPhotos = ({
 const mapStateToProps = (state) => ({
   photos: selectUserPhotos(state),
   user: selectUserData(state),
+  dataStatus: selectUserPublicStatus(state),
   publicUser: selectUserPublicUser(state),
+  itemStatus: selectPhotosItemStatus(state),
   updatedPhoto: selectPhotosPhotoUpdate(state),
 });
 
@@ -223,8 +232,8 @@ const mapActionsToProps = (dispatch) =>
     {
       setSelectedId: site_misc.setSelectedId,
       loadPublicUser: user.loadAUser,
-      onLoadGetPhotos: user.getUserPhotos,
       onLoadGetPublicPhotos: user.loadPublicUserPhotos,
+      onLoadGetPhotos: user.getUserPhotos,
       setOps: gallery.photos.setNBOps,
       editPhoto: gallery.photos.editPhoto,
       deletePhoto: gallery.photos.deletePhoto,

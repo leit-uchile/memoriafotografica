@@ -1,5 +1,5 @@
 import { rest } from "msw";
-import { getAlbum, getNews, getPictures } from "./rest-helpers"
+import { getAlbum, getNews, getPictures, getUser } from "./rest-helpers"
 
 /**
  * REST handlers to mock the app API
@@ -83,10 +83,16 @@ const handlers = [
       }])
     )
   }),
+  rest.get("/api/users/:id", (req, res, ctx) => {
+    let user = getUser(1, "first", "last", false, true);
+    return res(
+      ctx.json(user)
+    )
+  }),
   rest.post("/api/auth/login/", (req, res, ctx) => {
     return res(
       ctx.status(400),
-      ctx.json({message: `${req.body.email} no esta registrado`})
+      ctx.json({ message: `${req.body.email} no esta registrado` })
     )
   })
 ];
