@@ -1,15 +1,17 @@
-from django.db import models
+import os
 from datetime import datetime
+from math import floor
+from uuid import uuid4
+
+from django.core.files.base import ContentFile
+from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from multiselectfield import MultiSelectField
+from sorl.thumbnail import get_thumbnail
+
 from MemoriaFotografica.settings import BASE_DIR
 from MetaData.models import Metadata
-import os
-from uuid import uuid4
-from sorl.thumbnail import get_thumbnail
-from django.core.files.base import ContentFile
-from math import floor
 
 """
 Follow issue on

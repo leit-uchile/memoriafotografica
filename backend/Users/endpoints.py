@@ -1,7 +1,7 @@
-from .api import *
-from django.urls import re_path, include
-
+from django.urls import include, re_path
 from rest_framework import routers
+
+from .api import *
 
 router = routers.DefaultRouter()
 # router.register('User', UserViewSet, 'User')

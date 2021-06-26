@@ -1,32 +1,31 @@
 import hashlib
-from django.dispatch import receiver
-from django_rest_passwordreset.signals import reset_password_token_created
-from rest_framework import viewsets, permissions, generics
-from rest_framework.response import Response
-from rest_framework import status
-from knox.models import AuthToken
+from datetime import datetime
+
+import pytz
 from django.conf import settings
-from .serializers import (CreateUserSerializer, UserSerializer,
-                          LoginUserSerializer, UserAlbumSerializer,
-                          UserCommentSerializer, UserPhotoSerializer,
-                          NotificationSerializer, UserNotificationSerializer,
-                          ChangePasswordSerializer, ReCaptchaSerializer)
-from .models import User, RegisterLink, Notification
+from django.dispatch import receiver
+from django.http import Http404
+from django_rest_passwordreset.signals import reset_password_token_created
+from knox.models import AuthToken
+from rest_condition import And, C, ConditionalPermission, Not, Or
+from rest_framework import generics, permissions, status, viewsets
+from rest_framework.documentation import include_docs_urls
+from rest_framework.permissions import (SAFE_METHODS, BasePermission,
+                                        IsAuthenticated)
+from rest_framework.response import Response
+
 from Gallery.models import Photo
 from Gallery.serializers import PhotoSerializer
-from .permissions import *
 from WebAdmin.views import sendEmail
-from rest_framework.documentation import include_docs_urls
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import BasePermission, SAFE_METHODS
-from rest_condition import ConditionalPermission, C, And, Or, Not
-from django.http import Http404
-from datetime import datetime
-import hashlib
-from django.dispatch import receiver
-from django_rest_passwordreset.signals import reset_password_token_created
+
+from .models import Notification, RegisterLink, User
+from .permissions import *
+from .serializers import (ChangePasswordSerializer, CreateUserSerializer,
+                          LoginUserSerializer, NotificationSerializer,
+                          ReCaptchaSerializer, UserAlbumSerializer,
+                          UserCommentSerializer, UserNotificationSerializer,
+                          UserPhotoSerializer, UserSerializer)
 from .task import create_notification
-import pytz
 
 
 def createHash(id):
@@ -72,7 +71,7 @@ class ResendActivationEmail(generics.GenericAPIView):
                     return Response(status=status.HTTP_200_OK)
                 else:
                     return Response(status=status.HTTP_400_BAD_REQUEST)
-            except User.DoesNotExist or RegisterLink.DoesNotExist:
+            except (User.DoesNotExist, RegisterLink.DoesNotExist) as e:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
 class RegisterGuest(generics.GenericAPIView):

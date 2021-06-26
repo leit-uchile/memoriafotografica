@@ -1,16 +1,20 @@
 from __future__ import unicode_literals
-from django.db import models
-import django.contrib.auth.models as django_md
-from django.core.mail import send_mail
-from django.contrib.auth.models import PermissionsMixin
-from django.contrib.auth.base_user import AbstractBaseUser
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.base_user import BaseUserManager
-from .managers import UserManager
-from Gallery.models import Album, Photo, Comment, Reporte
+
 from datetime import datetime
-from django.utils.timezone import make_aware
+
+import django.contrib.auth.models as django_md
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import PermissionsMixin
+from django.core.mail import send_mail
+from django.db import models
 from django.utils import timezone
+from django.utils.timezone import make_aware
+from django.utils.translation import ugettext_lazy as _
+
+from Gallery.models import Album, Comment, Photo, Reporte
+
+from .managers import UserManager
+
 
 class Notification(models.Model):
     NOTIFICATION_TYPE_CHOICES = (

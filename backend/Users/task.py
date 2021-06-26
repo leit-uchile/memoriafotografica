@@ -1,9 +1,11 @@
 # Create your tasks here
+from celery import shared_task
 from rest_framework import status
 from rest_framework.response import Response
-from celery import shared_task
+
+from Gallery.models import Comment, Photo
+
 from .models import User
-from Gallery.models import Photo, Comment
 from .serializers import NotificationSerializer
 
 messages = [

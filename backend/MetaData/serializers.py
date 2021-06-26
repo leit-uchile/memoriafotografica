@@ -1,9 +1,9 @@
 # Import models here
-from .models import *
 from rest_framework import serializers
-from rest_framework import serializers
-from .models import *
+
 from Gallery.models import Photo
+
+from .models import *
 
 
 class IPTCKeywordSerializer(serializers.ModelSerializer):

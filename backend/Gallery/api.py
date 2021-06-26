@@ -1,26 +1,29 @@
-from rest_framework import viewsets, permissions, generics, pagination
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.response import Response
-from .models import Photo, Album, Comment, Reporte, Category
-from Users.models import User
-from .serializers import *
-from rest_framework.mixins import UpdateModelMixin
-from rest_framework.exceptions import NotFound
-from MetaData.models import *
-from Users.permissions import *
-from .permissions import *
-from django.http import Http404, QueryDict, JsonResponse
-from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
-from rest_condition import ConditionalPermission, C, And, Or, Not
-from rest_framework.documentation import include_docs_urls
 from datetime import date
+
 from django.contrib.auth.backends import AllowAllUsersModelBackend
-from rest_framework import authentication
-from rest_framework import exceptions
+from django.http import Http404, JsonResponse, QueryDict
+from rest_condition import And, C, ConditionalPermission, Not, Or
+from rest_framework import (authentication, exceptions, generics, pagination,
+                            permissions, status, viewsets)
+from rest_framework.documentation import include_docs_urls
+from rest_framework.exceptions import NotFound
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.permissions import (SAFE_METHODS, BasePermission,
+                                        IsAuthenticated)
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from Gallery.auth import GuestOrUserAuth
+from MetaData.models import *
+from Users.models import User
+from Users.permissions import *
 from Users.task import create_notification
+
+from .models import Album, Category, Comment, Photo, Reporte
+from .permissions import *
+from .serializers import *
+
 
 def get_user(photoPair):
     try:

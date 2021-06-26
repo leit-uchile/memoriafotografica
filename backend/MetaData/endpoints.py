@@ -1,6 +1,6 @@
-from .api import *
-from django.urls import re_path, include
+from django.urls import include, re_path
 
+from .api import *
 
 urlpatterns = [
     re_path('^iptc-keyword/$', IPTCKeywordListAPI.as_view()),

@@ -1,8 +1,7 @@
-from django.shortcuts import render
-
 # Email View
 from django.conf import settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 

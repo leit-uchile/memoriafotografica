@@ -1,10 +1,12 @@
 # Import models here
-from .models import *
 from datetime import datetime
+
+from django.utils.timezone import now
 from rest_framework import fields, serializers
 from rest_framework.exceptions import NotFound
 from rest_framework.fields import CurrentUserDefault
-from django.utils.timezone import now
+
+from .models import *
 
 
 class ReportSerializer(serializers.ModelSerializer):

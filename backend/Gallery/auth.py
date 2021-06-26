@@ -1,6 +1,7 @@
 
 from knox.auth import TokenAuthentication
 
+
 class GuestOrUserAuth(TokenAuthentication):
     def validate_user(self, auth_token):
         if (

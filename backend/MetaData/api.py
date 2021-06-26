@@ -1,27 +1,27 @@
+from django.http import Http404, QueryDict
+from rest_framework import generics, permissions, status, viewsets
+from rest_framework.documentation import include_docs_urls
+from rest_framework.exceptions import NotFound
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.permissions import (SAFE_METHODS, BasePermission,
+                                        IsAuthenticated)
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from Gallery.auth import GuestOrUserAuth
+from Gallery.models import *
+from Gallery.serializers import *
+from MetaData.models import *
+from Users.models import User
+from Users.permissions import *
+
 from .models import *
 from .serializers import *
 
-from rest_framework import viewsets, permissions, generics
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.response import Response
-
-from Users.models import User
-from Gallery.models import *
-from Gallery.serializers import *
-from rest_framework.mixins import UpdateModelMixin
-from rest_framework.exceptions import NotFound
-
-from MetaData.models import *
-from Users.permissions import *
-from Gallery.auth import GuestOrUserAuth
 #from .permissions import *
 
-from django.http import Http404, QueryDict
 
-from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
-from rest_framework.documentation import include_docs_urls
 
 def sort_by_field(element_list, request):
     sort_type = {"asc":"", "desc":"-"}

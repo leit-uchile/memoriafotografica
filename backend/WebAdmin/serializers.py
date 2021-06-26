@@ -1,10 +1,13 @@
 # Import models here
-from .models import News, LandingCaroussel, PhotoRequest, ContactRequest
-
-from rest_framework import serializers
-from Gallery.serializers import PhotoSerializer
-from django.conf import settings
 from datetime import datetime
+
+from django.conf import settings
+from rest_framework import serializers
+
+from Gallery.serializers import PhotoSerializer
+
+from .models import ContactRequest, LandingCaroussel, News, PhotoRequest
+
 # Create serializers here :)
 
 
