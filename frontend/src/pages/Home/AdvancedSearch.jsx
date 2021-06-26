@@ -47,7 +47,7 @@ const AdvancedSearch = (props) => {
   const keyWords = () =>
     fetch("/api/search/metadata")
       .then((r) => (r.status === 200 ? r.json() : null))
-      .then((j) => j.results.map((el) => ({ value: el.value })))
+      .then((j) => j.map((el) => ({ label: el.value })))
       .catch((err) => []);
 
   const byDate = [
@@ -179,7 +179,7 @@ const AdvancedSearch = (props) => {
                     isMulti
                     cacheOptions
                     defaultOptions
-                    getOptionValue={(el) => el.value}
+                    getOptionLabel={(e) => e.label}
                     loadOptions={keyWords}
                     isSearchable={true}
                   />
