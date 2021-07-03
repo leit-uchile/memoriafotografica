@@ -68,6 +68,10 @@ class PhotoDocument(Document):
         multi=True
     )
 
+    aspect_h = fields.IntegerField()
+    
+    aspect_w = fields.IntegerField()
+    
     class Django(object):
         """Inner nested class Django."""
 

@@ -26,4 +26,6 @@ class PhotoDocumentSerializer(DocumentSerializer):
             'created_at',
             'metadata',
             'category',
+            'aspect_h',
+            'aspect_w'
         )
