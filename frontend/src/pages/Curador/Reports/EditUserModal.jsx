@@ -106,12 +106,12 @@ const EditUserModal = ({
                     <Col sm={9}>
                       <input
                         type="checkbox"
-                        class="toggle-button"
+                        className="toggle-button"
                         id="photo"
                         checked={deletePhoto}
                         onChange={() => setDeletePhoto(!deletePhoto)}
                       />
-                      <label for="photo"></label>
+                      <label htmlFor="photo"></label>
                     </Col>
                   </FormGroup>
                 </Fragment>

@@ -1,5 +1,5 @@
 import { rest } from "msw";
-import { getAlbum, getNews, getPictures, getUser } from "./rest-helpers"
+import { getAlbum, getNews, getPictures, getUser, getReports } from "./rest-helpers"
 
 /**
  * REST handlers to mock the app API
@@ -81,6 +81,14 @@ const handlers = [
       ctx.json([{
         news: getNews(3)
       }])
+    )
+  }),
+  rest.get("/api/reports/", (req, res, ctx) => {
+    return res(
+      ctx.json({
+        count: 5,
+        results: getReports(5)
+      })
     )
   }),
   rest.get("/api/users/:id", (req, res, ctx) => {

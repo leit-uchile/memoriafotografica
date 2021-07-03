@@ -24,12 +24,12 @@ const FilterOptions = ({ id, params, setState }) => {
           </CardText>
           <Form>
             <FormGroup row>
-              {dateType.map((filter) => (
-                <Fragment>
+              {dateType.map((filter, index) => (
+                <Fragment key={`datetime ${index}`}>
                   <Label for={filter.name} sm={2}>
                     {filter.display}
                   </Label>
-                  <Col sm={4}>
+                  <Col>
                     <Input
                       type={filter.type}
                       name={filter.name}
@@ -43,12 +43,12 @@ const FilterOptions = ({ id, params, setState }) => {
               ))}
             </FormGroup>
             <FormGroup row>
-              {selectType.map((filter) => (
-                <Fragment>
+              {selectType.map((filter, index) => (
+                <Fragment key={`form-control ${index}`}>
                   <Label for={filter.name} sm={2}>
                     {filter.display}
                   </Label>
-                  <Col sm={4}>
+                  <Col>
                     <Input
                       type={filter.type}
                       name={filter.name}
@@ -60,13 +60,12 @@ const FilterOptions = ({ id, params, setState }) => {
                       <option value="">Todos</option>
                       {filter.options.length === 2 ? (
                         <Fragment>
-                          
                           <option value="true">{filter.options[0]}</option>
                           <option value="false">{filter.options[1]}</option>
                         </Fragment>
                       ) : (
                         filter.options.map((opt, key) => (
-                          <option value={key + 1}>{opt}</option>
+                          <option key={key} value={key + 1}>{opt}</option>
                         ))
                       )}
                     </Input>

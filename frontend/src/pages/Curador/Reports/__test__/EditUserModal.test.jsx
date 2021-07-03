@@ -9,7 +9,7 @@ it("renders without crashing", () => {
       report={{ content_id: { id: 1 } }}
       isOpen={true}
       handleToggle={() => {}}
-      editComment={() => {}}
+      editUser={() => {}}
       updating={""}
     />
   );
@@ -25,7 +25,7 @@ it("is loading", () => {
       report={{ content_id: { id: 1 } }}
       isOpen={true}
       handleToggle={() => {}}
-      editComment={() => {}}
+      editUser={() => {}}
       updating={""}
     />
   );
@@ -38,7 +38,7 @@ it("displays correctly", async () => {
       report={{ content_id: { id: 1 } }}
       isOpen={true}
       handleToggle={() => {}}
-      editComment={() => {}}
+      editUser={() => {}}
       updating={""}
     />
   );
@@ -54,7 +54,7 @@ it("is updating", async () => {
       report={{ content_id: { id: 1 } }}
       isOpen={true}
       handleToggle={() => {}}
-      editComment={() => {}}
+      editUser={() => {}}
       updating={"loading"}
     />
   );
