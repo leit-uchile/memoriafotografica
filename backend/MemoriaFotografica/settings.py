@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 from datetime import timedelta
+from MemoriaFotografica import secrets
 #from Gallery.paginators import GalleryPagination
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -110,6 +111,8 @@ else:
         }
     }
 
+CELERY_BROKER_URL = "amqp://rabbitmq"
+
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -178,11 +181,11 @@ REST_KNOX = {
 }
 
 # Email configuration
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'isaiasvenegasalmonacid@gmail.com'
-EMAIL_HOST_PASSWORD = 'lmzopvjdjwayaujy'
+EMAIL_HOST = secrets.EMAIL_HOST 
+EMAIL_PORT = secrets.EMAIL_PORT 
+EMAIL_USE_TLS = secrets.EMAIL_USE_TLS 
+EMAIL_HOST_USER = secrets.EMAIL_HOST_USER 
+EMAIL_HOST_PASSWORD = secrets.EMAIL_HOST_PASSWORD 
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = ('http://localhost', )

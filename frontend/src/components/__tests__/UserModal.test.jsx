@@ -36,7 +36,7 @@ it("opens modal for colaborator", () => {
     },
   });
   userEvent.click(screen.getByText("user user"));
-  expect(screen.getByText("Gestionar perfil"));
+  expect(screen.getByText("Interfaz de usuario"));
 });
 
 it("opens modal for curador", () => {
@@ -54,7 +54,7 @@ it("opens modal for curador", () => {
     },
   });
   userEvent.click(screen.getByText("user user"));
-  expect(screen.getByText("Gestionar perfil"));
+  expect(screen.getByText("Interfaz de usuario"));
   expect(screen.getByText("Interfaz de curador"));
 });
 
@@ -73,7 +73,7 @@ it("opens modal for administrator", () => {
     },
   });
   userEvent.click(screen.getByText("user user"));
-  expect(screen.getByText("Gestionar perfil"));
+  expect(screen.getByText("Interfaz de usuario"));
   expect(screen.getByText("Interfaz de curador"));
-  expect(screen.getByText("Interfaz de Administrador"));
+  expect(screen.getByText("Interfaz de administrador"));
 });

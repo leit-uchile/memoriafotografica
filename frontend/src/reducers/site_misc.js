@@ -11,6 +11,7 @@ import {
   HOME_SET_SELECTED_INDEX,
   HOME_PHOTO_PAGINATION,
   READ_UPLOAD_DISCLOSURE,
+  NOTIFICATIONS_RECOVERED,
 } from "../actions/types";
 
 const initialState = {
@@ -24,6 +25,10 @@ const initialState = {
     photoPagination: {},
   },
   uploadDisclosureSet: localStorage.getItem("upload_disclosed") === "true" ? true : false,
+  notifications: {
+    results: [],
+    count: 0,
+  },
 };
 
 export default function site_misc(state = initialState, action) {
@@ -64,6 +69,11 @@ export default function site_misc(state = initialState, action) {
     case READ_UPLOAD_DISCLOSURE:
       localStorage.setItem("upload_disclosed", true);
       return { ...state, uploadDisclosureSet: true };
+    case NOTIFICATIONS_RECOVERED:
+      return {
+        ...state,
+        notifications: action.data,
+      };
     default:
       return { ...state };
   }
@@ -85,3 +95,5 @@ export const selectSiteMiscCurrentRoute = (state) => state.site_misc.currentRout
 export const selectSiteMiscUploadDisclosureSet = (state) => state.site_misc.uploadDisclosureSet;
 
 export const selectSiteMiscAlerts = (state) => state.site_misc.alerts;
+
+export const selectSiteMiscNotifications = (state) => state.site_misc.notifications;

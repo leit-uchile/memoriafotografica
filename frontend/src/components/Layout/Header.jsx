@@ -3,6 +3,9 @@ import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import UserModal from "../UserModal";
 import SearchBar from "./SearchBar";
+import Notification from "../../pages/User/Notification";
+import LeitSpinner from "./LeitSpinner";
+import { user } from "../../actions";
 import {
   Navbar,
   NavbarToggler,
@@ -18,9 +21,17 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Button,
+  Popover,
+  PopoverHeader,
+  PopoverBody,
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUser,
+  faInfoCircle,
+  faBell,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   faImage,
   faHome,
@@ -28,13 +39,45 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./header.css";
 import {
+  selectUserData,
   selectUserIsAuthenticated,
   selectSiteMiscCurrentRoute,
+  selectSiteMiscNotifications,
 } from "../../reducers";
 import PropTypes from "prop-types";
+import { bindActionCreators } from "redux";
 
-const Header = ({ isAuth, currentRoute }) => {
+const Header = ({
+  user,
+  isAuth,
+  currentRoute,
+  notifications,
+  getNotifications,
+}) => {
   const [toggle, setToggle] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
+  const [pagNotifications, setPagNotifications] = useState({
+    page: 0,
+    page_size: 3,
+    loading: true,
+  });
+
+  useEffect(() => {
+    if (popoverOpen) {
+      setPagNotifications((pag) => ({ ...pag, loading: true }));
+      getNotifications(
+        user.id,
+        pagNotifications.page + 1,
+        pagNotifications.page_size,
+        true,
+        "&read=false"
+      ).then((r) => {
+        setPagNotifications((pag) => ({ ...pag, loading: false }));
+      });
+    }
+    // eslint-disable-next-line
+  }, [popoverOpen, pagNotifications.page_size]);
 
   var doLoginNav = isAuth ? (
     <NavLink tag={UserModal}></NavLink>
@@ -133,6 +176,60 @@ const Header = ({ isAuth, currentRoute }) => {
                         <FontAwesomeIcon icon={faInfoCircle} /> Sobre Nosotros
                       </NavLink>
                     </NavItem>
+                    {isAuth ? (
+                      <NavItem>
+                        <Button
+                          id="notifications"
+                          color="link"
+                          className={popoverOpen ? "active" : ""}
+                        >
+                          <FontAwesomeIcon icon={faBell} />
+                        </Button>
+                        <Popover
+                          hideArrow
+                          trigger="legacy"
+                          placement="bottom"
+                          isOpen={popoverOpen}
+                          target="notifications"
+                          toggle={() => setPopoverOpen(!popoverOpen)}
+                        >
+                          <PopoverHeader>
+                            Notificaciones sin leer{" "}
+                            <Link to="/user/dashboard">Ver todas</Link>
+                          </PopoverHeader>
+                          <PopoverBody>
+                            {!pagNotifications.loading ? (
+                              notifications.results.length !== 0 ? (
+                                notifications.results.map((el, key) => (
+                                  <Row key={"Notification" + key}>
+                                    <Col style={{ padding: "6px" }}>
+                                      <Notification
+                                        element={{
+                                          id: el.id,
+                                          type: el.type,
+                                          content: el.content,
+                                          message: el.message,
+                                          created_at: el.created_at,
+                                          read: el.read,
+                                        }}
+                                      />
+                                    </Col>
+                                  </Row>
+                                ))
+                              ) : (
+                                "No tienes notificaciones"
+                              )
+                            ) : (
+                              <Row>
+                                <Col style={{ textAlign: "center" }}>
+                                  <LeitSpinner />
+                                </Col>
+                              </Row>
+                            )}
+                          </PopoverBody>
+                        </Popover>
+                      </NavItem>
+                    ) : null}
                     <NavItem>{doLoginNav}</NavItem>
                   </Nav>
                 </Collapse>
@@ -152,8 +249,13 @@ Header.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
+  user: selectUserData(state),
   isAuth: selectUserIsAuthenticated(state),
   currentRoute: selectSiteMiscCurrentRoute(state),
+  notifications: selectSiteMiscNotifications(state),
 });
 
-export default connect(mapStateToProps, null)(Header);
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators({ getNotifications: user.getUserNotifications }, dispatch);
+
+export default connect(mapStateToProps, mapActionsToProps)(Header);
