@@ -6,6 +6,7 @@ import metrics, * as fromMetrics from "./metrics";
 import photos, * as fromPhotos from "./gallery/photos";
 import reports, * as fromReports from "./gallery/reports";
 import site_misc, * as fromSiteMisc from "./site_misc";
+import tagsuggestions, * as fromTagSuggestions from "./gallery/tagsuggestions";
 import upload, * as fromUpload from "./upload";
 import user, * as fromUser from "./user";
 import webadmin, * as fromWebAdmin from "./webadmin";
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   photos,
   reports,
   site_misc,
+  tagsuggestions,
   upload,
   user,
   webadmin,
@@ -243,3 +245,28 @@ export const selectMetrics = (state) => fromMetrics.selectMetrics(state);
 
 //Upload
 export const selectUpload = (state) => fromUpload.selectUpload(state);
+
+//TagSuggestions
+export const selectTagSuggestionsCreating = (state) =>
+  fromTagSuggestions.selectTagSuggestionsCreating(state);
+
+export const selectTagSuggestionsFailed = (state) =>
+  fromTagSuggestions.selectTagSuggestionsFailed(state);
+
+export const selectTagSuggestionsNewIds = (state) =>
+  fromTagSuggestions.selectTagSuggestionsNewIds(state);
+
+export const selectTagSuggestionsRecovered = (state) =>
+  fromTagSuggestions.selectTagSuggestionsRecovered(state);
+
+export const selectTagSuggestionsLoading = (state) =>
+  fromTagSuggestions.selectTagSuggestionsLoading(state);
+
+export const selectTagSuggestionsApproving = (state) =>
+  fromTagSuggestions.selectTagSuggestionsApproving(state);
+
+export const selectTagSuggestionsApproved = (state) =>
+  fromTagSuggestions.selectTagSuggestionsApproved(state);
+
+export const selectTagSuggestionsApproveFailIds = (state) =>
+  fromTagSuggestions.selectTagSuggestionsApproveFailIds(state);
