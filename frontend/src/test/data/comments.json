@@ -1,0 +1,35 @@
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "content": "buena foto men",
+      "created_at": "2021-07-03T12:57:49.580697-04:00",
+      "updated_at": "2021-07-03T12:57:49.580707-04:00",
+      "usuario": {
+        "id": 2,
+        "first_name": "Usuario1",
+        "last_name": "Colaborador",
+        "generation": "",
+        "avatar": null,
+        "rol_type": "Externo"
+      }
+    },
+    {
+      "id": 2,
+      "content": "gracias men",
+      "created_at": "2021-07-03T12:58:15.762979-04:00",
+      "updated_at": "2021-07-03T12:58:15.762984-04:00",
+      "usuario": {
+        "id": 3,
+        "first_name": "Usuario2",
+        "last_name": "Colaborador",
+        "generation": "",
+        "avatar": null,
+        "rol_type": "Alumno"
+      }
+    }
+  ]
+}
