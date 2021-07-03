@@ -23,11 +23,13 @@ const AdvancedSearch = (props) => {
   // Big TODO: pasar logica a hook
   // state used to save form data for the search query
   const [formData, saveFormData] = useState({
+    search: "",
     byDate: "",
     startDate: "",
     endDate: "",
     searchIncludes: "",
     category: [],
+    metadata: [],
     orderBy: "",
     permission: "",
   });
@@ -78,28 +80,28 @@ const AdvancedSearch = (props) => {
     setSwitch(!toggle);
   };
 
-  const handleCat = (labels) => {
+  const handleChange = (labels, state) => {
     if (labels === null) {
       saveFormData({
         ...formData,
-        category: [],
+        [state]: [],
       });
-    } else if (labels.length > formData.category.length) {
+    } else if (labels.length > formData[state].length) {
       labels.forEach((label) => {
-        if (!formData.category.includes(label)) {
+        if (!formData[state].includes(label)) {
           saveFormData({
             ...formData,
-            category: formData.category.concat(label),
+            [state]: formData[state].concat(label),
           });
         }
       });
-    } else if (labels.length < formData.category.length) {
-      formData.category.forEach((catLabel) => {
+    } else if (labels.length < formData[state].length) {
+      formData[state].forEach((catLabel) => {
         if (labels.includes(catLabel)) {
-          const idx = formData.category.indexOf(catLabel);
+          const idx = formData[state].indexOf(catLabel);
           saveFormData({
             ...formData,
-            category: formData.category.splice(idx, 1),
+            [state]: formData[state].splice(idx, 1),
           });
         }
       });
@@ -108,15 +110,22 @@ const AdvancedSearch = (props) => {
 
   const submitAdvSearch = (e) => {
     e.preventDefault();
+    changeToggle();
     let filtersArr = [];
     for (let key in formData) {
       if (formData[key] === "" || formData[key].length === 0) {
         continue;
       } else {
-        if (key === "permission" && formData[key] !== "") {
+        /*if (key === "search"){
+          let searchTerms = "search=" + 
+        }
+        else*/ if (key === "permission" && formData[key] !== "") {
           let perm = "permission=" + formData[key];
           filtersArr.push(perm);
-        } else if (key === "category" && formData[key].length !== 0) {
+        } else if (
+          (key === "category" || key === "metadata") &&
+          formData[key].length !== 0
+        ) {
           let search = [];
           const lenCat = formData[key].length;
           for (let i = 0; i < lenCat; i++) {
@@ -124,7 +133,7 @@ const AdvancedSearch = (props) => {
             search.push(labelCat);
           }
           const searchStr = search.join("__");
-          filtersArr.push("category__in=" + searchStr);
+          filtersArr.push(key + "__in=" + searchStr);
         } else if (key === "orderBy" && formData[key] !== "") {
           let order = "ordering=" + formData[key];
           filtersArr.push(order);
@@ -143,8 +152,7 @@ const AdvancedSearch = (props) => {
         }
       }
     }
-    const filterUrl = "?" + filtersArr.join("&");
-    console.log(filterUrl);
+    const filterUrl = "&" + filtersArr.join("&");
     props.onSubmit(filterUrl);
   };
 
@@ -175,12 +183,17 @@ const AdvancedSearch = (props) => {
             <FormGroup tag="fieldset" onChange={(e) => addValue(e)}>
               <Col>
                 <FormGroup>
+                  <legend>asdf</legend>
+                  <Input type="text" id="search" />
+                </FormGroup>
+                <FormGroup>
                   <legend>Palabras clave</legend>
                   <AsyncSelect
                     isMulti
                     defaultOptions
                     getOptionLabel={(e) => e.label}
                     loadOptions={keyWords}
+                    onChange={(e) => handleChange(e, "metadata")}
                     isSearchable={true}
                   />
                 </FormGroup>
@@ -229,7 +242,7 @@ const AdvancedSearch = (props) => {
                     cacheOptions
                     defaultOptions
                     loadOptions={options}
-                    onChange={handleCat}
+                    onChange={(e) => handleChange(e, "category")}
                     isSearchable={true}
                   />
                 </FormGroup>
