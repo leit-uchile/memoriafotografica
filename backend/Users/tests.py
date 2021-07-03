@@ -22,7 +22,7 @@ class UserMixing():
     login_url = "/api/auth/login/"
     complete_registration_url="/api/users/complete_registration/"
     resend_activation_url="/api/users/resend_activation/"
-    register_guest_url="/api/users/guest"
+    register_guest_url="/api/users/guest/"
 
     user_data = {
         "email": "user@leit.cl",
@@ -74,6 +74,7 @@ class UserApiTest(APITestCase, UserMixing):
     @patch("Users.serializers.ReCaptchaSerializer.is_valid")
     def create_user(self, mock_recaptcha_is_valid, admin=False):
         mock_recaptcha_is_valid.return_value = True
+        
         self.user_data['recaptchaToken'] = "sample"
         res = self.client.post(self.register_url, self.user_data, format="json")
         del self.user_data['recaptchaToken']
@@ -158,9 +159,74 @@ class UserApiTest(APITestCase, UserMixing):
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
 
+    #Case when user is active and completed registration. 
+    # redirect to login
+    # This is a User that finished its register process
+    @patch("Users.serializers.ReCaptchaSerializer.is_valid")
+    def test_register_guest_case_user1(self,mock_recaptcha_is_valid):
+        user= super().create_user(is_active=True)
+        mock_recaptcha_is_valid.return_value = True
+        user_data = self.user_data.copy()
+        user_data['recaptchaToken'] = "sample"
+        res = self.client.post(self.register_guest_url, user_data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data,{'redirect':'login'})
+
+    #Case when user is active but not completed registration,
+    # This case should neve happen
+    @patch("Users.serializers.ReCaptchaSerializer.is_valid")
+    def test_register_guest_case_user2(self,mock_recaptcha_is_valid):
+        user= super().create_user(is_active=True)
+        user.completed_registration=False
+        user.save()
+        mock_recaptcha_is_valid.return_value = True
+        user_data = self.user_data.copy()
+        user_data['recaptchaToken'] = "sample"
+        res = self.client.post(self.register_guest_url, user_data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    #Case when user is not active and completed registration,
+    # This is a User that hasnt verified its email
+    @patch("Users.serializers.ReCaptchaSerializer.is_valid")
+    def test_register_guest_case_user3(self,mock_recaptcha_is_valid):
+        user= super().create_user()
+        user.completed_registration=True
+        user.save()
+        mock_recaptcha_is_valid.return_value = True
+        user_data = self.user_data.copy()
+        user_data['recaptchaToken'] = "sample"
+        res = self.client.post(self.register_guest_url, user_data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data,{'redirect':'activate_user'})
+
+    #Case when user is not active and not completed registration,
+    # This is a Guest that hasnt finished its registration process
+    @patch("Users.serializers.ReCaptchaSerializer.is_valid")
+    def test_register_guest_case_guest1(self,mock_recaptcha_is_valid):
+        guest = super().create_guest()
+        mock_recaptcha_is_valid.return_value = True
+        user_data = self.user_data.copy()
+        user_data['recaptchaToken'] = "sample"
+        res = self.client.post(self.register_guest_url, user_data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data,{'redirect':'guest_complete_registration'})
 
 
-    def test_register_guest(self):
-        pass
-
-
+    #Case when user is not active and n
+    # This is a visitor becoming a Guest
+    @patch("Users.serializers.ReCaptchaSerializer.is_valid")
+    def test_register_guest_case_guest2(self,mock_recaptcha_is_valid):
+        mock_recaptcha_is_valid.return_value = True
+        user_data = self.user_data.copy()
+        user_data['recaptchaToken'] = "sample"
+        user_data["name"] = "Name"
+        user_data["lastname"] = "LastName"
+        user_data['rol']=  '1'
+        res = self.client.post(self.register_guest_url, user_data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertTrue(res.data['token'])
+        self.assertTrue(res.data['user'])
+        self.assertEqual(res.data['user']['email'], 'user@leit.cl')
+        self.assertEqual(res.data['user']['first_name'],'Name' )
+        self.assertEqual(res.data['user']['is_active'], False)
+        self.assertEqual(res.data['user']['completed_registration'], False)
