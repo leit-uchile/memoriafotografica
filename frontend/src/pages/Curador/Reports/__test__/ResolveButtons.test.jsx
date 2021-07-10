@@ -6,7 +6,7 @@ import ResolveButtons from "../ResolveButtons";
 
 it("renders without crashing", () => {
   render(<ResolveButtons report={{ type: 1 }} />);
-  expect(screen.getAllByRole("button")).length == 3;
+  expect(screen.getAllByRole("button").length == 3);
 });
 
 it("opens modal", () => {
