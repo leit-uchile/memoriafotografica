@@ -1,20 +1,15 @@
 import hashlib
 from datetime import datetime
 
-import pytz
-from django.conf import settings
 from django.dispatch import receiver
 from django.http import Http404
 from django_rest_passwordreset.signals import reset_password_token_created
 from knox.models import AuthToken
-from rest_condition import And, C, ConditionalPermission, Not, Or
-from rest_framework import generics, permissions, status, viewsets
-from rest_framework.documentation import include_docs_urls
+from rest_framework import generics, permissions, status
 from rest_framework.permissions import (SAFE_METHODS, BasePermission,
                                         IsAuthenticated)
 from rest_framework.response import Response
 
-from Gallery.models import Photo
 from Gallery.serializers import PhotoSerializer
 from WebAdmin.views import sendEmail
 
@@ -23,7 +18,7 @@ from .permissions import *
 from .serializers import (ChangePasswordSerializer, CreateUserSerializer,
                           LoginUserSerializer, NotificationSerializer,
                           ReCaptchaSerializer, UserAlbumSerializer,
-                          UserCommentSerializer, UserNotificationSerializer,
+                          UserCommentSerializer,
                           UserPhotoSerializer, UserSerializer)
 from .task import create_notification
 

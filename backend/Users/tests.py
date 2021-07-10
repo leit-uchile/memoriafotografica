@@ -4,10 +4,7 @@ from unittest.mock import patch
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from Users.api import CompleteRegistration
-from Users.models import User
-
-from .models import Notification, RegisterLink, User
+from Users.models import RegisterLink, User
 
 
 def createHash(id):
@@ -34,7 +31,7 @@ class UserMixing():
     }
 
     def create_user(self, admin=False, is_active=False):
-        user =  User.objects.create(
+        user =  User.objects.create_user(
             **self.user_data
         )
         if admin:
@@ -159,7 +156,7 @@ class UserApiTest(APITestCase, UserMixing):
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-    #Case when user is active and completed registration. 
+    # Case when user is active and completed registration. 
     # redirect to login
     # This is a User that finished its register process
     @patch("Users.serializers.ReCaptchaSerializer.is_valid")
@@ -172,7 +169,7 @@ class UserApiTest(APITestCase, UserMixing):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data,{'redirect':'login'})
 
-    #Case when user is active but not completed registration,
+    # Case when user is active but not completed registration,
     # This case should neve happen
     @patch("Users.serializers.ReCaptchaSerializer.is_valid")
     def test_register_guest_case_user2(self,mock_recaptcha_is_valid):
@@ -185,7 +182,7 @@ class UserApiTest(APITestCase, UserMixing):
         res = self.client.post(self.register_guest_url, user_data, format="json")
         self.assertEqual(res.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    #Case when user is not active and completed registration,
+    # Case when user is not active and completed registration,
     # This is a User that hasnt verified its email
     @patch("Users.serializers.ReCaptchaSerializer.is_valid")
     def test_register_guest_case_user3(self,mock_recaptcha_is_valid):
@@ -199,7 +196,7 @@ class UserApiTest(APITestCase, UserMixing):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data,{'redirect':'activate_user'})
 
-    #Case when user is not active and not completed registration,
+    # Case when user is not active and not completed registration,
     # This is a Guest that hasnt finished its registration process
     @patch("Users.serializers.ReCaptchaSerializer.is_valid")
     def test_register_guest_case_guest1(self,mock_recaptcha_is_valid):
@@ -212,7 +209,7 @@ class UserApiTest(APITestCase, UserMixing):
         self.assertEqual(res.data,{'redirect':'guest_complete_registration'})
 
 
-    #Case when user is not active and n
+    # Case when user is not active and n
     # This is a visitor becoming a Guest
     @patch("Users.serializers.ReCaptchaSerializer.is_valid")
     def test_register_guest_case_guest2(self,mock_recaptcha_is_valid):

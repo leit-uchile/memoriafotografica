@@ -6,13 +6,19 @@ from Users.tests import UserMixing
 
 class PhotoApiTest(APITestCase, UserMixing):
 
+    def setUp(self):
+        self.user = self.create_user()
+
+    def tearDown(self):
+        self.client.credentials() # Reset credentials
+        return super().tearDown()()
+
     def test_photos_get_authenticated(self):
-        self.create_user()
-        self.login_user()
+        auth = self.login_user()
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
         res = self.client.get('/api/photos/')
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_photos_get_unauthenticated(self):
-        self.client.force_authenticate(user=None)
         res = self.client.get('/api/photos/')
         self.assertEqual(res.status_code, status.HTTP_200_OK)
