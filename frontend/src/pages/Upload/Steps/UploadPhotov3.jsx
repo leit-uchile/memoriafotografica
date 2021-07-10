@@ -21,6 +21,7 @@ import "./css/uploadPhoto.css";
 import useHandleFiles from "./hooks/useHandleFiles";
 import useUpload from "./hooks/useUpload";
 import PropTypes from "prop-types";
+import { useMemo } from "react";
 
 /**
  * UploadPhoto
@@ -71,27 +72,31 @@ const UploadPhoto = ({
     ? meta.map((el) => ({ id: el.id, name: el.value }))
     : [];
 
-  const rows = [];
-  for (var i = 0; i < state.photos.length; i = i + 3) {
-    var row = [];
-    for (let j = 0; j < 3 && i + j < state.photos.length; j++) {
-      const el = state.photos[j + i];
-      const key = i + j;
-      row.push(
-        <UploadDetails
-          key={el.id}
-          id={el.id}
-          photo={el.photo}
-          save={(info) => saveMeta(info, key)}
-          delete={() => handleErase(key)}
-          meta={el.meta}
-          suggestions={suggestions}
-          search={handleInputChange}
-        />
-      );
+  const rows = useMemo(() => {
+    const r = []
+    for (var i = 0; i < state.photos.length; i = i + 3) {
+      var row = [];
+      for (let j = 0; j < 3 && i + j < state.photos.length; j++) {
+        const el = state.photos[j + i];
+        const key = i + j;
+        row.push(
+          <UploadDetails
+            key={el.id}
+            id={el.id}
+            photo={el.photo}
+            save={(info) => saveMeta(info, key)}
+            delete={() => handleErase(key)}
+            meta={el.meta}
+            suggestions={suggestions}
+            search={handleInputChange}
+          />
+        );
+      }
+      r.push(<CardColumns>{row}</CardColumns>);
     }
-    rows.push(<CardColumns>{row}</CardColumns>);
-  }
+    return r
+  }, [state.photos.length])
+  
 
   const dropzone = (
     <div className="upload-photo-dropzone">
@@ -167,7 +172,11 @@ const UploadPhoto = ({
 };
 
 UploadPhoto.propTypes = {
-  photoInfo: PropTypes.object.isRequired,
+  photoInfo: PropTypes.shape({
+    date: PropTypes.string.isRequired,
+    tags: PropTypes.array.isRequired,
+    cc: PropTypes.string.isRequired,
+  }),
   meta: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string.isRequired,
