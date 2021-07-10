@@ -1,10 +1,10 @@
 import React from "react";
 import "@testing-library/jest-dom";
-import { render, screen } from "../../../../test/test-utils";
+import { renderWithRouter, screen } from "../../../../test/test-utils";
 import ReportRow from "../ReportRow";
 
 it("renders without crashing", () => {
-  render(
+  renderWithRouter(
     <ReportRow
       report={{
         content: "Finge ser otra persona",
@@ -24,10 +24,6 @@ it("renders without crashing", () => {
     />
   );
   expect(screen.getByText("Usuario"));
-  expect(screen.getByText("Ver perfil de first last"));
   expect(screen.getByText("Finge ser otra persona"));
   expect(screen.getByText("Resuelto"));
-  expect(screen.getByText("27/3/2021"));
-  expect(screen.getByText("5/6/2021"));
-  expect(screen.getByText("Contenido censurado"));
 });
