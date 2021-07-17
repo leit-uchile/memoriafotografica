@@ -14,12 +14,12 @@
         "last_name": "Colaborador",
         "generation": "",
         "avatar": null,
-        "rol_type": "Externo"
+        "rol_type": "Alumno"
       }
     },
     {
       "id": 2,
-      "content": "gracias men",
+      "content": "gracias man",
       "created_at": "2021-07-03T12:58:15.762979-04:00",
       "updated_at": "2021-07-03T12:58:15.762984-04:00",
       "usuario": {
@@ -28,8 +28,23 @@
         "last_name": "Colaborador",
         "generation": "",
         "avatar": null,
-        "rol_type": "Alumno"
+        "rol_type": "Ex-Alumno"
+      }
+    },
+    {
+      "id": 3,
+      "content": "Que locura!",
+      "created_at": "2021-07-03T13:58:15.762979-04:00",
+      "updated_at": "2021-07-03T13:58:15.762984-04:00",
+      "usuario": {
+        "id": 4,
+        "first_name": "Usuario3",
+        "last_name": "Colaborador",
+        "generation": "",
+        "avatar": null,
+        "rol_type": "Ex-Alumno"
       }
     }
+
   ]
 }

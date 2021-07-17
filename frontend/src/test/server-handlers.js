@@ -128,7 +128,34 @@ const handlers = [
     return res(ctx.status(200), ctx.json(comments));
   }),
 
+  rest.post("/api/photos/:id/comments/", (req, res, ctx) => {
+    return res(
+      ctx.status(201),
+      ctx.json({
+        id: 4,
+        content: req.body.content,
+        created_at: "2021-07-03T15:00:49.700697-04:00",
+        updated_at: "2021-07-03T15:00:49.700707-04:00",
+      })
+    );
+  }),
 
+  rest.put("/api/comments/:id/", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        id: req.body.id,
+        censure: false,
+        content: req.body.content,
+        created_at: "2021-07-03T15:00:49.700697-04:00",
+        updated_at: "2021-07-03T17:00:49.700707-04:00",
+      })
+    );
+  }),
+
+  rest.delete("/api/comments/:id/", (_, res, ctx) => {
+    return res(ctx.status(204));
+  }),
 ];
 
 export { handlers };
