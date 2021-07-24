@@ -83,3 +83,14 @@ Pasos:
 4. Desplegar exponiendo el puerto 80/443 (con un certbot en la misma para pedir certificados y reiniciar nginx cuando sea necesario) con ```sudo docker-compose -f docker-compose.prod.yml```
 
 **TODO: Generar certificados automaticamente con Ansible en contenedores**
+
+
+
+# Credenciales
+
+Para el manejo de credenciales se utiliza **Ansible Vault** por lo que es necesario instalar Ansible en el sistema [Docs](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+La configuración se maneja mendiante una variable de entorno **ANSIBLE_VAULT_PASSWORD** que debe ser exportada o explicitada al momento de utilizar los scripts de gestión de secretos.
+
+Para manipular los secretos hay dos scripts:
+- encrypt_secrets.sh
+- reveal_secrets.sh

@@ -138,6 +138,7 @@ class ReadOnly(BasePermission):
     def has_permission(self, request, view):
         return request.method in SAFE_METHODS
 
+
 class PhotoListAPI(generics.GenericAPIView):
     """
     get:
@@ -207,15 +208,15 @@ class PhotoListAPI(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         serializer = CreatePhotoSerializer(data=request.data)
-        #dummy variables if no metadata is included
+        # dummy variables if no metadata is included
         p_metadata = None
         recovered_metadata = []
         try:
-            #recover metadata from string. String format ex.: "1,2,3,4,5"
+            # recover metadata from string. String format ex.: "1,2,3,4,5"
             p_metadata = request.data['metadata'].split(',')
         except KeyError:
             pass
-        #if metadata, get metadata objects
+        # if metadata, get metadata objects
         if p_metadata:
             recovered_metadata = Metadata.objects.filter(pk__in=p_metadata)
 
@@ -226,7 +227,7 @@ class PhotoListAPI(generics.GenericAPIView):
             request.user.save()
             serialized_data = serializer.data
             if p_metadata:
-                #add metadata to photo if any metadata is found:
+                # add metadata to photo if any metadata is found:
                 recovered_metadata = Metadata.objects.filter(pk__in=p_metadata)
                 p.metadata.add(*recovered_metadata)
                 # save photo to persist modifications.
@@ -383,6 +384,7 @@ class CommentListAPI(generics.GenericAPIView):
         serialized_data = serializer.data
         return self.get_paginated_response(
             self.paginate_queryset(serialized_data))
+
 
 
 class CommentDetailAPI(generics.GenericAPIView):
@@ -838,3 +840,48 @@ class CategoryPhotoListAPI(generics.GenericAPIView):
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.data)
+
+
+class TagSuggestionAPI(generics.GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = TagSuggestion.objects.all()
+
+    def get(self, request, *args, **kwargs):
+
+        tag_suggestion = Photo.objects.exclude(
+            tagsuggestion_photo__isnull=True)
+        serializer = PhotoTagSuggestionSerializer(tag_suggestion, many=True)
+        serialized_data = serializer.data
+        return self.get_paginated_response(self.paginate_queryset(serialized_data))
+
+    def post(self, request, *args, **kwargs):
+        serializer = TagSuggestionCreateSerializer(
+            data=request.data, context={'request': request}, many=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TagSuggestionApproveAPI(generics.GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request, pk, *args, **kwargs):
+
+        try:
+            tag_suggestion = TagSuggestion.objects.get(pk=pk)
+        except Exception:
+            return Response({"id": pk}, status=status.HTTP_404_NOT_FOUND)
+        
+        tag = tag_suggestion.metadata
+        photo = tag_suggestion.photo
+        approve = int(request.data['approve'])
+
+        if approve:
+            photo.metadata.add(tag)
+            photo.save()
+
+        tag_suggestion.delete()
+        
+        return Response({"id": pk}, status=status.HTTP_202_ACCEPTED)

@@ -8,10 +8,9 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from Gallery.models import Album, Comment, Photo, Reporte
+from Gallery.models import Album, Comment, Photo, Reporte, TagSuggestion
 
 from .managers import UserManager
-
 
 class Notification(models.Model):
     NOTIFICATION_TYPE_CHOICES = (
@@ -62,6 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     photos = models.ManyToManyField(Photo, blank=True)
     comments = models.ManyToManyField(Comment, blank = True)
     report = models.ManyToManyField(Reporte, blank= True)
+    tags_suggestions = models.ManyToManyField(TagSuggestion, blank= True)
     notifications = models.ManyToManyField(Notification, blank=True)
 
     #TIPO DE USUARIO

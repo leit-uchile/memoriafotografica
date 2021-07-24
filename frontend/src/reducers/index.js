@@ -6,6 +6,7 @@ import metrics, * as fromMetrics from "./metrics";
 import photos, * as fromPhotos from "./gallery/photos";
 import reports, * as fromReports from "./gallery/reports";
 import site_misc, * as fromSiteMisc from "./site_misc";
+import tagsuggestions, * as fromTagSuggestions from "./gallery/tagsuggestions";
 import upload, * as fromUpload from "./upload";
 import user, * as fromUser from "./user";
 import webadmin, * as fromWebAdmin from "./webadmin";
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   photos,
   reports,
   site_misc,
+  tagsuggestions,
   upload,
   user,
   webadmin,
@@ -43,6 +45,9 @@ export const selectPhotosOpsErrors = (state) =>
 
 export const selectPhotosPhotoUpdate = (state) =>
   fromPhotos.selectPhotosPhotoUpdate(state);
+
+export const selectPhotosItemStatus = (state) =>
+  fromPhotos.selectPhotosItemStatus(state);
 
 // Categories
 export const selectCats = (state) => fromCategories.selectCats(state);
@@ -222,15 +227,21 @@ export const selectUserAlbums = (state) => fromUser.selectUserAlbums(state);
 export const selectUserPublicUser = (state) =>
   fromUser.selectUserPublicUser(state);
 
-export const selectUserPublicLoading = (state) =>
-  fromUser.selectUserPublicLoading(state);
+export const selectUserPublicStatus = (state) =>
+  fromUser.selectUserPublicStatus(state);
 
 //Report
-export const selectReportReport = (state) =>
-  fromReports.selectReportReport(state);
+export const selectReportReports = (state) =>
+  fromReports.selectReportReports(state);
 
-export const selectReportUpdate = (state) =>
-  fromReports.selectReportUpdate(state);
+export const selectReportStatus = (state) =>
+  fromReports.selectReportStatus(state);
+
+export const selectReportItemStatus = (state) =>
+  fromReports.selectReportItemStatus(state);
+
+export const selectReportReportUpdate = (state) =>
+  fromReports.selectReportReportUpdate(state);
 
 export const selectReportPhotoReportSent = (state) =>
   fromReports.selectReportPhotoReportSent(state);
@@ -243,3 +254,28 @@ export const selectMetrics = (state) => fromMetrics.selectMetrics(state);
 
 //Upload
 export const selectUpload = (state) => fromUpload.selectUpload(state);
+
+//TagSuggestions
+export const selectTagSuggestionsCreating = (state) =>
+  fromTagSuggestions.selectTagSuggestionsCreating(state);
+
+export const selectTagSuggestionsFailed = (state) =>
+  fromTagSuggestions.selectTagSuggestionsFailed(state);
+
+export const selectTagSuggestionsNewIds = (state) =>
+  fromTagSuggestions.selectTagSuggestionsNewIds(state);
+
+export const selectTagSuggestionsRecovered = (state) =>
+  fromTagSuggestions.selectTagSuggestionsRecovered(state);
+
+export const selectTagSuggestionsLoading = (state) =>
+  fromTagSuggestions.selectTagSuggestionsLoading(state);
+
+export const selectTagSuggestionsApproving = (state) =>
+  fromTagSuggestions.selectTagSuggestionsApproving(state);
+
+export const selectTagSuggestionsApproved = (state) =>
+  fromTagSuggestions.selectTagSuggestionsApproved(state);
+
+export const selectTagSuggestionsApproveFailIds = (state) =>
+  fromTagSuggestions.selectTagSuggestionsApproveFailIds(state);

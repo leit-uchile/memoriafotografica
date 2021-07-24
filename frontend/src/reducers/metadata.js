@@ -53,13 +53,13 @@ export default function metadata(state = initialState, action) {
       return {
         ...state,
         newIds: [...state.newIds, ...data],
-        creating: !(state.nbMetaCreating === total + 1),
+        creating: !(state.nbMetaCreating === total + data.length),
       };
     case CREATED_METADATA_ERROR:
       return {
         ...state,
-        failedCreations: [...state.failedCreations, data],
-        creating: !(state.nbMetaCreating === total + 1),
+        failedCreations: [...state.failedCreations, ...data],
+        creating: !(state.nbMetaCreating === total + data.length),
       };
     case RESET_METADATA_STORE:
       return { ...initialState };
