@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   Col,
   Row,
@@ -22,5 +23,10 @@ const HelpMessages = ({ id, messages }) => (
     </Row>
   </UncontrolledCollapse>
 );
+
+HelpMessages.propTypes = {
+  id: PropTypes.string.isRequired,
+  messages: PropTypes.array.isRequired,
+};
 
 export default HelpMessages;

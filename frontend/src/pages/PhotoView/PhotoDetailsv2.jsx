@@ -188,6 +188,7 @@ const PhotoDetails = ({
                     </Fragment>
                   ) : null}
                   <Tags
+                    photoId={photoInfo.id}
                     tags={photoInfo.metadata}
                     onRedirect={redirectToSearch}
                     style={{ clear: "both" }}
