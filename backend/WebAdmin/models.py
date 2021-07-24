@@ -1,9 +1,13 @@
 from __future__ import unicode_literals
-from django.db import models
-from datetime import datetime
-from Gallery.models import Photo
-from uuid import uuid4
+
 import os
+from datetime import datetime
+from uuid import uuid4
+
+from django.db import models
+
+from Gallery.models import Photo
+
 
 # From Gallery App
 def gen_uuid(instance, filename):

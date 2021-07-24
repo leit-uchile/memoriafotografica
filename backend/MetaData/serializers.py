@@ -1,11 +1,11 @@
 # Import models here
-from .models import *
 from rest_framework import serializers
-from rest_framework import serializers
-from .models import *
+
 from Gallery.models import Photo
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+
+from .models import *
 
 
 class IPTCKeywordSerializer(serializers.ModelSerializer):

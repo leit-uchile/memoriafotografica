@@ -18,9 +18,11 @@ import {
   CONTACTMESSAGE_SWITCH_STATE_ERROR,
   PHOTOREQUEST_RECOVERED,
   PHOTOREQUEST_ERROR,
-  VALIDATE_RECAPTCHA,
-  VALIDATE_RECAPTCHA_ERROR,
-  RESET_RECAPTCHA,
+  GUEST_VERIFY,
+  GUEST_VERIFY_ERROR,
+  COMPLETE_REGISTRATION,
+  COMPLETE_REGISTRATION_ERROR,
+  RESET_UNREGISTERED_UPLOAD
 } from "../actions/types";
 
 const initialState = {
@@ -36,18 +38,20 @@ const initialState = {
   requests: { results: [], count: 0, },
   requestDetail: {},
   requestUpdate: {},
-  recaptchaState: false,
+  guestState: false,
 };
 
 export default function webadmin(state = initialState, action) {
   const { type, data } = action;
   switch (type) {
-    case VALIDATE_RECAPTCHA:
-      return { ...state, recaptchaState: data };
-    case VALIDATE_RECAPTCHA_ERROR:
-      return { ...state, recaptchaState: false };
-    case RESET_RECAPTCHA:
-      return { ...state, recaptchaState: false };
+    case COMPLETE_REGISTRATION:
+      return { ...state, completeRegistration: action.data };
+    case COMPLETE_REGISTRATION_ERROR:
+      return { ...state, completeRegistration: action.data };
+    case GUEST_VERIFY:
+      return { ...state, guestState: data };
+    case GUEST_VERIFY_ERROR:
+      return { ...state, guestState: false };
     case NEWS_RECOVERED:
       return { ...state, news: data };
     case NEWS_EMPTY:
@@ -100,6 +104,8 @@ export default function webadmin(state = initialState, action) {
       return { ...state, messageUpdate: action.data };
     case CONTACTMESSAGE_SWITCH_STATE_ERROR:
       return { ...state, messageUpdate: {} };
+    case RESET_UNREGISTERED_UPLOAD:
+      return { ...state, guestState: false}
     default:
       return state;
   }

@@ -172,6 +172,7 @@ REST_FRAMEWORK = {
     # ],
     'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication', ),
     'DEFAULT_PAGINATION_CLASS': 'Gallery.paginators.GalleryPagination',
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
 # Knox configuration
@@ -189,3 +190,6 @@ EMAIL_HOST_PASSWORD = secrets.EMAIL_HOST_PASSWORD
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = ('http://localhost', )
+
+# URLS configurations
+BASE_FRONT_URL = 'http://memoriafotografica.cl'

@@ -1,14 +1,17 @@
 # Import models here
-from .models import *
+from datetime import datetime
+
 from django.contrib.auth import authenticate
+from django.contrib.auth.password_validation import validate_password
 # Create serializers here :)
 from rest_framework import serializers
-from .models import User, Notification
-from django.conf import settings
-from datetime import datetime
-from Gallery.serializers import AlbumSerializer, PhotoSerializer, CommentSerializer
-from django.contrib.auth.password_validation import validate_password
 from rest_framework_recaptcha.fields import ReCaptchaField
+
+from Gallery.serializers import (AlbumSerializer, CommentSerializer,
+                                 PhotoSerializer)
+
+from .models import *
+from .models import Notification, User
 
 
 class ReCaptchaSerializer(serializers.Serializer):
@@ -50,7 +53,6 @@ class CreateUserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        print("validated data")
         extra_data = validated_data.copy()
         extra_data.pop("email")
         extra_data.pop("password")

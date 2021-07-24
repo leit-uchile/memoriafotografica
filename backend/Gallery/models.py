@@ -1,15 +1,16 @@
+import os
+from django.utils import timezone
+from math import floor
+from uuid import uuid4
+
+from django.core.files.base import ContentFile
 from django.db import models
-from datetime import datetime
-from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from multiselectfield import MultiSelectField
+from sorl.thumbnail import get_thumbnail
+
 from MemoriaFotografica.settings import BASE_DIR
 from MetaData.models import Metadata
-import os
-from uuid import uuid4
-from sorl.thumbnail import get_thumbnail
-from django.core.files.base import ContentFile
-from math import floor
 
 """
 Follow issue on
@@ -38,8 +39,8 @@ class Reporte(models.Model):
     content = models.TextField()
     resolved = models.BooleanField(default=False)
     resolution_details = models.TextField(default="")
-    created_at = models.DateTimeField(default=datetime.now)
-    updated_at = models.DateTimeField(default=datetime.now)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
     REPORT_TYPE_CHOICES = (
         (1, 'usuario'),
         (2, 'foto'),
@@ -50,20 +51,18 @@ class Reporte(models.Model):
 
 class Comment(models.Model):
     content = models.TextField()
-    censure = models.BooleanField(default=False)
-    report = models.ManyToManyField(Reporte, blank=True)
-    created_at = models.DateTimeField(default=datetime.now)
-    updated_at = models.DateTimeField(default=datetime.now)
-
+    censure = models.BooleanField(default = False)
+    report = models.ManyToManyField(Reporte, blank= True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return 'Comentario: "'+self.content[:50]+'..."'
 
 
 class Category(models.Model):
-    title = models.CharField(max_length=30)
-    created_at = models.DateTimeField(default=datetime.now)
-    updated_at = models.DateTimeField(default=datetime.now)
-
+    title = models.CharField(max_length= 30)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return self.title
 
@@ -80,9 +79,9 @@ def gen_uuid(instance, filename):
 class Photo(models.Model):
     image = models.ImageField(upload_to=gen_uuid)
     thumbnail = models.ImageField(blank=True)
-    title = models.CharField(max_length=30, blank=True)
+    title = models.CharField(max_length = 30, blank=True)
     upload_date = models.DateTimeField(
-        'date published', default=datetime.now, blank=True)
+        'date published', default=timezone.now, blank=True)
     description = models.CharField(max_length=255, blank=True)
     approved = models.BooleanField(default=False)
     censure = models.BooleanField(default=False)
@@ -95,9 +94,8 @@ class Photo(models.Model):
     aspect_h = models.IntegerField(blank=True, default=1)
     aspect_w = models.IntegerField(blank=True, default=1)
 
-    created_at = models.DateTimeField(default=datetime.now)
-    updated_at = models.DateTimeField(default=datetime.now)
-
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
     def save(self, *args, **kwargs):
         if not self.id:
             # Have to save the image (and imagefield) first
@@ -147,8 +145,8 @@ class Album(models.Model):
     name = models.CharField(max_length=40)
     pictures = models.ManyToManyField(Photo, blank=True)
     description = models.CharField(max_length=255, blank=True)
-    created_at = models.DateTimeField(default=datetime.now)
-    updated_at = models.DateTimeField(default=datetime.now)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
     collection = models.BooleanField(default=False)
 
     thumbnail = models.CharField(max_length=60, blank=True)

@@ -1,27 +1,25 @@
 import hashlib
-from rest_framework import viewsets, permissions, generics
-from rest_framework.response import Response
-from rest_framework import status
-from knox.models import AuthToken
-from django.conf import settings
-from .serializers import (CreateUserSerializer, UserSerializer,
-                          LoginUserSerializer, UserAlbumSerializer,
-                          UserCommentSerializer, UserPhotoSerializer,
-                          NotificationSerializer, UserNotificationSerializer,
-                          ChangePasswordSerializer, ReCaptchaSerializer)
-from .models import User, RegisterLink, Notification
-from Gallery.models import Photo
-from Gallery.serializers import PhotoSerializer
-from .permissions import *
-from WebAdmin.views import sendEmail
-from rest_framework.documentation import include_docs_urls
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import BasePermission, SAFE_METHODS
-from rest_condition import ConditionalPermission, C, And, Or, Not
-from django.http import Http404
-import hashlib
+from datetime import datetime
+
 from django.dispatch import receiver
+from django.http import Http404
 from django_rest_passwordreset.signals import reset_password_token_created
+from knox.models import AuthToken
+from rest_framework import generics, permissions, status
+from rest_framework.permissions import (SAFE_METHODS, BasePermission,
+                                        IsAuthenticated)
+from rest_framework.response import Response
+
+from Gallery.serializers import PhotoSerializer
+from WebAdmin.views import sendEmail
+
+from .models import Notification, RegisterLink, User
+from .permissions import *
+from .serializers import (ChangePasswordSerializer, CreateUserSerializer,
+                          LoginUserSerializer, NotificationSerializer,
+                          ReCaptchaSerializer, UserAlbumSerializer,
+                          UserCommentSerializer,
+                          UserPhotoSerializer, UserSerializer)
 from .task import create_notification
 
 
@@ -30,22 +28,103 @@ def createHash(id):
     return str(hashlib.sha256(integer).hexdigest())
 
 
-class VerifyTokenAPI(generics.GenericAPIView):
-    serializer_class = ReCaptchaSerializer
+class CompleteRegistration(generics.GenericAPIView):
+    def post(self, request, *args, **kwargs):
+        registerLink = RegisterLink.objects.filter(code=request.data["code"])
+        if (registerLink.exists()):
+            registerLink = registerLink.first()
+            if (registerLink.status == 0):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+            registerLink.status = 0
+            registerLink.save()
+            user = registerLink.user
+            if (not (user.completed_registration == False
+                     and user.is_active == False)):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+            user.set_password(request.data["password"])
+            user.birth_date = request.data["date"]
+            user.completed_registration = True
+            user.is_active = True
+            user.save()
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
+
+class ResendActivationEmail(generics.GenericAPIView):
     allowed_methods = ["POST"]
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            return Response({'success': True}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if "email" in request.data.keys():
+            try:
+                user = User.objects.get(email=request.data['email'])
+                activation_link = RegisterLink.objects.get(user=user)
+                if (not user.is_active and user.completed_registration):
+                    sendEmail(user.email, "sign_up", "Active su cuenta",activation_link.code)
+                    return Response(status=status.HTTP_200_OK)
+                if (not user.is_active and not user.completed_registration):
+                    sendEmail(user.email, "complete_guest_registration","Completa tu registro", activation_link.code)
+                    return Response(status=status.HTTP_200_OK)
+                else:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+            except (User.DoesNotExist, RegisterLink.DoesNotExist) as e:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+class RegisterGuest(generics.GenericAPIView):
+    allowed_methods = ["POST"]
+
+    def post(self, request, *args, **kwargs):
+        formData = request.data.copy()
+        if "recaptchaToken" in formData.keys():
+            tokenRecaptcha = {"recaptcha": formData.pop("recaptchaToken")}
+        else:
+            return Response('No recaptchaToken',
+                            status=status.HTTP_401_UNAUTHORIZED)
+
+        recaptchaSer = ReCaptchaSerializer(data=tokenRecaptcha)
+        if recaptchaSer.is_valid():
+            try:
+                user = User.objects.get(email=formData['email'])
+                if (user.is_active):
+                    if (user.completed_registration):
+                        return Response({'redirect': 'login'}, status=status.HTTP_200_OK)
+                    else:
+                        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                else:
+                    if (user.completed_registration):
+                        return Response({'redirect': 'activate_user'}, status=status.HTTP_200_OK)
+                    else:
+                        return Response({'redirect': 'guest_complete_registration'}, status=status.HTTP_200_OK)
+
+            except User.DoesNotExist:
+                newGuest = User.objects.create(
+                    email=formData['email'],
+                    first_name=formData['name'],
+                    last_name=formData['lastname'],
+                    birth_date=datetime.today().strftime('%Y-%m-%d'),
+                    rol_type=formData['rol'],
+                    is_active=False,
+                    completed_registration=False)
+
+                activation_link = RegisterLink.objects.create(code=createHash(
+                    newGuest.pk),
+                    status=1,
+                    user=newGuest)
+                sendEmail(newGuest.email, "complete_guest_registration",
+                          "Completa tu registro", activation_link.code)
+                return Response(
+                    {
+                        "user": UserSerializer(newGuest).data,
+                        "token": AuthToken.objects.create(newGuest)
+                    },
+                    status=status.HTTP_200_OK)
+        else:
+            return Response(recaptchaSer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
         return request.method in SAFE_METHODS
-
 
 class RegistrationAPI(generics.GenericAPIView):
     """
@@ -59,7 +138,8 @@ class RegistrationAPI(generics.GenericAPIView):
         if "recaptchaToken" in formData.keys():
             tokenRecaptcha = {"recaptcha": formData.pop("recaptchaToken")[0]}
         else:
-            tokenRecaptcha = {"recaptcha": ""}
+            return Response("No recaptcha token",
+                            status=status.HTTP_400_BAD_REQUEST)
         serializer = self.serializer_class(data=formData,
                                            context={'request': request})
         recaptchaSer = ReCaptchaSerializer(data=tokenRecaptcha)
@@ -83,7 +163,9 @@ class RegisterLinkAPI(generics.GenericAPIView):
     get:
     Get code status and user to activate
     """
-    permission_classes = [IsAuthenticated | ReadOnly, ]
+    permission_classes = [
+        IsAuthenticated | ReadOnly,
+    ]
 
     def get_object(self, code):
         return RegisterLink.objects.filter(code=code)
@@ -128,18 +210,19 @@ class LoginAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
         return Response({
-            # NOTE: context adds the base url and we dont need it here context=self.get_serializer_context()).data,
-            "user": UserSerializer(user).data,
+            "user": UserSerializer(user).
+            data,  # NOTE: context adds the base url and we dont need it here context=self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user)
         })
-
 
 class PasswordAPI(generics.GenericAPIView):
     """
     put:
     Change user password
     """
-    permission_classes = [IsAuthenticated, ]
+    permission_classes = [
+        IsAuthenticated,
+    ]
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -185,7 +268,9 @@ class UserListAPI(generics.GenericAPIView):
     Create a new user instance.
     """
 
-    permission_classes = [IsAuthenticated | ReadOnly, ]
+    permission_classes = [
+        IsAuthenticated | ReadOnly,
+    ]
 
     serializer_class = UserSerializer
 
@@ -214,7 +299,9 @@ class UserDetailAPI(generics.GenericAPIView):
        delete:
        Delete an user.
        """
-    permission_classes = [IsAuthenticated | ReadOnly, ]
+    permission_classes = [
+        IsAuthenticated | ReadOnly,
+    ]
     serializer_class = UserSerializer
 
     def get_object(self, pk):
@@ -261,7 +348,7 @@ class UserPhotosAPI(generics.GenericAPIView):
        Get photos of a *user*.
        """
     permission_classes = [IsAuthenticated | ReadOnly, ]
-    serializer_class = PhotoSerializer
+    serializer_class = UserPhotoSerializer
 
     def get(self, request, pk, *args, **kwargs):
         try:
@@ -288,7 +375,9 @@ class UserAlbumsAPI(generics.GenericAPIView):
        Get albums of a *user*.
 
        """
-    permission_classes = [IsAuthenticated | ReadOnly, ]
+    permission_classes = [
+        IsAuthenticated | ReadOnly,
+    ]
     serializer_class = UserAlbumSerializer
 
     def get(self, request, pk, *args, **kwargs):
@@ -311,7 +400,9 @@ class UserCommentsAPI(generics.GenericAPIView):
        TODO delete:
        Delete an comment asociated to a *user*.
        """
-    permission_classes = [IsAuthenticated | ReadOnly, ]
+    permission_classes = [
+        IsAuthenticated | ReadOnly,
+    ]
     serializer_class = UserCommentSerializer
 
     def get(self, request, pk, *args, **kwargs):
@@ -377,7 +468,8 @@ class UserNotificationsAPI(generics.GenericAPIView):
 
 
 @receiver(reset_password_token_created)
-def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+def password_reset_token_created(sender, instance, reset_password_token, *args,
+                                 **kwargs):
     """
     get:
         Handles password reset tokens

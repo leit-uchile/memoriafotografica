@@ -1,26 +1,27 @@
+from django.http import Http404, QueryDict
+from rest_framework import generics, permissions, status, viewsets
+from rest_framework.documentation import include_docs_urls
+from rest_framework.exceptions import NotFound
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.permissions import (SAFE_METHODS, BasePermission,
+                                        IsAuthenticated)
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from Gallery.auth import GuestOrUserAuth
+from Gallery.models import *
+from Gallery.serializers import *
+from MetaData.models import *
+from Users.models import User
+from Users.permissions import *
+
 from .models import *
 from .serializers import *
 
-from rest_framework import viewsets, permissions, generics
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.response import Response
-
-from Users.models import User
-from Gallery.models import *
-from Gallery.serializers import *
-from rest_framework.mixins import UpdateModelMixin
-from rest_framework.exceptions import NotFound
-
-from MetaData.models import *
-from Users.permissions import *
 #from .permissions import *
 
-from django.http import Http404, QueryDict
 
-from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
-from rest_framework.documentation import include_docs_urls
 
 def sort_by_field(element_list, request):
     sort_type = {"asc":"", "desc":"-"}
@@ -157,7 +158,10 @@ class MetadataListAPI(generics.GenericAPIView):
     Create a new metadata.
 
     """
+
+    authentication_classes = [GuestOrUserAuth]
     permission_classes = [IsAuthenticated|ReadOnly,]
+    serializer_class = MetadataSerializer
 
     def get(self, request, *args, **kwargs):
         try:
@@ -165,14 +169,13 @@ class MetadataListAPI(generics.GenericAPIView):
                 metadata_admin = Metadata.objects.all()
                 metadata_admin = search_meta(metadata_admin, request)
                 metadata_admin = sort_by_field(metadata_admin,request)
-                serializer_class = MetadataAdminSerializer
-                serializer = MetadataAdminSerializer(metadata_admin, many=True)
+                self.serializer_class = MetadataAdminSerializer
+                serializer = self.serializer_class(metadata_admin, many=True)
             else:
                 metadata = Metadata.objects.filter(approved=True)
                 metadata = search_meta(metadata, request)
                 metadata = sort_by_field(metadata,request)
-                serializer_class = MetadataSerializer
-                serializer = MetadataSerializer(metadata, many=True)
+                serializer = self.serializer_class(metadata, many=True)
         except Exception:
             # No user logged in
             ids = request.query_params.get('ids', None)
@@ -183,8 +186,7 @@ class MetadataListAPI(generics.GenericAPIView):
             else:
                 metadata = Metadata.objects.filter(approved=True)
                 metadata = search_meta(metadata, request)
-            serializer_class = MetadataSerializer
-            serializer = MetadataSerializer(metadata, many=True)
+            serializer = self.serializer_class(metadata, many=True)
         
         if "page" in request.query_params and "page_size" in request.query_params:
             return self.get_paginated_response(self.paginate_queryset(serializer.data))
