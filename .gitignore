@@ -1,7 +1,6 @@
 # =============== PyCharm ==============
 
 __pycache__/
-backend/*/migrations/*.py
 .DS_Store
 .idea/
 .venv/
@@ -45,3 +44,5 @@ static.yarn.lock
 db
 cocola
 cocola.pub
+
+elastic

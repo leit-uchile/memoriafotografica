@@ -8,10 +8,8 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - ./db/postgresql:/var/lib/postgresql/data
-  backend: &python
-    build:
-      context: ./backend
-      target: dev
+  backend:
+    image: leit/backend:latest
     command: python manage.py runserver 0.0.0.0:8000
     environment:
       DJANGO_SECRET_KEY: "ic8ub6c3x@1!%*-+tan#n@t+c6lr=gu=po5j5cl3ytodjwxs0r"
@@ -40,7 +38,7 @@ services:
   rabbitmq:
     image: rabbitmq:3.7-alpine
   celery_worker:
-    <<: *python
+    image: leit/backend:latest
     command: celery -A MemoriaFotografica worker --loglevel=INFO
     ports: []
     depends_on: 
