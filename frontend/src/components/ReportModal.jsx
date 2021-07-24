@@ -85,6 +85,7 @@ class ReportModal extends Component {
       reportTitle,
       helpText,
       options,
+      buttonTitle
     } = this.props;
 
     var ReportForm = (
@@ -123,6 +124,7 @@ class ReportModal extends Component {
           onClick={this.toggle}
           style={style}
           color="danger"
+          title={buttonTitle}
         >
           <FontAwesomeIcon icon={faFlag} />
         </Button>
@@ -194,6 +196,7 @@ ReportModal.propTypes = {
   reportTitle: PropTypes.string,
   options: PropTypes.arrayOf(PropTypes.string).isRequired,
   helpText: PropTypes.string.isRequired,
+  buttonTitle: PropTypes.string,
   style: PropTypes.object, // Optional
 };
 
