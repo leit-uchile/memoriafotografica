@@ -1,31 +1,45 @@
 import {
-  RECOVERED_REPORT,
+  REPORTS_LOADING,
+  REPORTS_LOADED,
   EMPTY_REPORTS,
-  REPORT_COMPLETED,
-  REPORT_FAILED,
+  REPORT_UPDATING,
+  REPORT_CENSORING,
+  REPORT_DISCARDING,
+  REPORT_UPDATED,
+  REPORT_UPDATED_ERROR,
   REPORT_NEW,
-  REPORT_SWITCH_STATE,
-  REPORT_SWITCH_STATE_ERROR,
+  REPORT_COMPLETED,
+  REPORT_FAILED
 } from "../../actions/types";
 
 const initialState = {
   reports: { results: [], count: 0, },
   error: "",
-  reportUpdate: {},
   photoReportSent: false,
   reportComplete: false,
+  reportsStatus: 'idle',
+  itemStatus: 'idle',
+  reportUpdate: {},
 };
 
 export default function curador(state = initialState, action) {
   switch (action.type) {
-    case RECOVERED_REPORT:
-      return { ...state, reports: action.data };
+    case REPORTS_LOADING:
+      return { ...state, reportsStatus: 'loading' };
+    case REPORTS_LOADED:
+      return { ...state, reportsStatus: 'success', reports: action.data };
     case EMPTY_REPORTS:
-      return { ...state, reports: { results: [], count: 0, }, };
-    case REPORT_SWITCH_STATE:
-      return { ...state, reportUpdate: action.data };
-    case REPORT_SWITCH_STATE_ERROR:
-      return { ...state, reportUpdate: {} };
+      return { ...state, reportsStatus: 'failure', reports: { results: [], count: 0, }, };
+    case REPORT_UPDATING:
+      return { ...state, itemStatus: 'loading' };
+    case REPORT_CENSORING:
+      return { ...state, itemStatus: 'loading' };
+    case REPORT_DISCARDING:
+      return { ...state, itemStatus: 'loading' };
+    case REPORT_UPDATED:
+      return { ...state, itemStatus: 'success', reportUpdate: action.data };
+    case REPORT_UPDATED_ERROR:
+      return { ...state, itemStatus: 'failure', reportUpdate: {} };
     case REPORT_NEW:
       return { ...state, photoReportSent: false };
     case REPORT_COMPLETED:
@@ -38,9 +52,13 @@ export default function curador(state = initialState, action) {
 }
 
 
-export const selectReportReport = (state) => state.reports.reports;
+export const selectReportReports = (state) => state.reports.reports;
 
-export const selectReportUpdate = (state) => state.reports.reportUpdate;
+export const selectReportStatus = (state) => state.reports.reportsStatus;
+
+export const selectReportItemStatus = (state) => state.reports.itemStatus;
+
+export const selectReportReportUpdate = (state) => state.reports.reportUpdate;
 
 export const selectReportPhotoReportSent = (state) => state.reports.photoReportSent;
 

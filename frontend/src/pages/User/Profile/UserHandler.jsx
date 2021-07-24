@@ -7,21 +7,21 @@ import PublicProfile from "./PublicProfile2";
 import { bindActionCreators } from "redux";
 import "../styles.css";
 import { selectUserPublicUser,
-         selectUserPublicLoading} from "../../../reducers";
+  selectUserPublicStatus} from "../../../reducers";
 
 const UserHandler= ({
   match,
   location,
   loadPublicUser,
   publicUser,
-  loading,
+  dataStatus,
   ...rest
 }) => {
   useEffect(() => {
     loadPublicUser(match.params.id);
   }, [loadPublicUser, match.params.id]);
 
-  return loading ? (
+  return dataStatus==="loading" ? (
     <Container style={{ textAlign: "center", paddingTop: "20vh" }}>
       <Row>
         <Col>
@@ -63,7 +63,7 @@ const UserHandler= ({
 
 const mapStateToProps = (state) => ({
   publicUser: selectUserPublicUser(state),
-  loading: selectUserPublicLoading(state),
+  dataStatus: selectUserPublicStatus(state),
 });
 
 const mapActionsToProps = (dispatch) =>

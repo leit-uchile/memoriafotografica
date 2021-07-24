@@ -1,5 +1,5 @@
 import { rest } from "msw";
-import { getAlbum, getNews, getPictures } from "./rest-helpers";
+import { getAlbum, getNews, getPictures, getUser, getReports } from "./rest-helpers"
 import * as tagsuggestions from "./data/tagsugesstions.json";
 import * as comments from "./data/comments.json";
 
@@ -83,6 +83,20 @@ const handlers = [
         },
       ])
     );
+  }),
+  rest.get("/api/reports/", (req, res, ctx) => {
+    return res(
+      ctx.json({
+        count: 5,
+        results: getReports(5)
+      })
+    )
+  }),
+  rest.get("/api/users/:id", (req, res, ctx) => {
+    let user = getUser(1, "first", "last", false, true);
+    return res(
+      ctx.json(user)
+    )
   }),
   rest.post("/api/auth/login/", (req, res, ctx) => {
     return res(

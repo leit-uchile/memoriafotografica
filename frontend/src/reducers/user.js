@@ -8,8 +8,9 @@ import {
   LOGIN_FAILED,
   LOGOUT_SUCCESS,
   AUTH_CLEAR_ERRORS,
-  USER_RECOVERED_PHOTO_ERROR,
-  USER_RECOVERED_PHOTO,
+  USER_PHOTOS_ERROR,
+  USER_PHOTOS_LOADING,
+  USER_PHOTOS_LOADED,
   USER_RECOVERED_ALBUM,
   USER_RECOVERED_COMMENTS,
   USER_RECOVERED_NOTIFICATIONS,
@@ -56,7 +57,7 @@ const baseState = {
   },
   notificationUpdate: {},
   userData: null,
-  publicLoading: false,
+  dataStatus: 'idle',
   // auth
   token: null,
   isAuthenticated: false,
@@ -87,7 +88,7 @@ const initialState =
         notifications: {},
         notificationUpdate: {},
         userData: JSON.parse(localStorage.getItem("user")),
-        publicLoading: false,
+        dataStatus: 'idle',
         token: localStorage.getItem("token"),
         isAuthenticated: true,
         isLoading: true,
@@ -161,10 +162,18 @@ export default function user(state = initialState, action) {
         ...state,
         userData: { ...action.data }, // user
       };
-    case USER_RECOVERED_PHOTO:
+    case USER_PHOTOS_LOADING:
+      return {...state }
+    case USER_PHOTOS_LOADED:
       return {
         ...state,
         photos: action.data,
+      };
+    case USER_PHOTOS_ERROR:
+      return {
+        ...state,
+        photos: {},
+        error: action.data,
       };
     case USER_RECOVERED_ALBUM:
       return {
@@ -180,12 +189,6 @@ export default function user(state = initialState, action) {
       return {
         ...state,
         notifications: action.data,
-      };
-    case USER_RECOVERED_PHOTO_ERROR:
-      return {
-        ...state,
-        photos: {},
-        error: action.data,
       };
     case USER_RECOVERED_ALBUM_ERROR:
       return {
@@ -223,11 +226,22 @@ export default function user(state = initialState, action) {
     case USER_PASSWORD_UPDATE_FAILED:
       return { ...state };
     case USER_PUBLIC_LOADING:
-      return { ...state, publicLoading: true };
+      return { 
+        ...state,
+        dataStatus: 'loading',
+      };
     case USER_PUBLIC_LOADED:
-      return { ...state, publicLoading: false, publicUser: action.data };
+      return { 
+        ...state, 
+        dataStatus: 'success',
+        publicUser: action.data 
+      };
     case USER_PUBLIC_ERROR:
-      return { ...state, publicLoading: false, publicUser: null };
+      return { 
+        ...state, 
+        dataStatus: 'failure',
+        publicUser: null 
+    };
     case RESET_PASSWORD_SUCCESS:
       return { ...state, resetPasswordRequest: true };
     case RESET_PASSWORD_FAILED:
@@ -277,5 +291,5 @@ export const selectUserAlbums = (state) => state.user.albums;
 
 export const selectUserPublicUser = (state) => state.user.publicUser;
 
-export const selectUserPublicLoading = (state) => state.user.publicLoading;
+export const selectUserPublicStatus = (state) => state.user.dataStatus;
 

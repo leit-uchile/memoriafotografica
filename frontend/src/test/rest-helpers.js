@@ -55,8 +55,81 @@ const getNews = (number) => {
     return results
 }
 
+/**
+ * Helper to create a group of reports
+ * @param {*} number 
+ */
+const getReports = (number) => {
+    let results = []
+    for (let index = 0; index < number; index++) {
+        {
+            index % 3 === 0
+                ? results.push({
+                    content: "Finge ser otra persona",
+                    content_id: {
+                        id: index,
+                        first_name: "first",
+                        last_name: "last",
+                    },
+                    created_at: "2021-03-20T16:13:13-03:00",
+                    id: index,
+                    resolved: false,
+                    type: 1,
+                    updated_at: "2021-03-20T16:13:13-03:00"
+                })
+                : index % 3 === 1
+                    ? results.push({
+                        content: "Usuario no es autor del contenido",
+                        content_id: {
+                            id: index,
+                            thumbnail: "",
+                        },
+                        created_at: "2021-03-20T16:13:13-03:00",
+                        id: index,
+                        resolved: false,
+                        type: 2,
+                        updated_at: "2021-03-20T16:13:13-03:00"
+                    })
+                    : results.push({
+                        content: "Incita a la violencia",
+                        content_id: {
+                            id: index,
+                            content: "comment"
+                        },
+                        created_at: "2021-03-20T16:13:13-03:00",
+                        id: index,
+                        resolved: false,
+                        type: 3,
+                        updated_at: "2021-03-20T16:13:13-03:00"
+                    })
+
+        }
+    }
+    return results
+}
+
+/**
+ * Helper to create a user object
+ * @param {*} id 
+ * @param {*} firstname
+ * @param {*} lastname
+ * @param {*} isStaff
+ * @param {*} isPublic 
+ */
+const getUser = (id, firstname, lastname, isStaff, isPublic) => ({
+    avatar: null,
+    id: id,
+    first_name: firstname,
+    last_name: lastname,
+    rol: '1',
+    is_staff: isStaff,
+    public_profile: isPublic,
+})
+
 export {
-    getNews,
+    getPictures,
     getAlbum,
-    getPictures
+    getNews,
+    getReports,
+    getUser
 }

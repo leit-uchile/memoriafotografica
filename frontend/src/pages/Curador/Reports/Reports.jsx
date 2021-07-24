@@ -8,7 +8,11 @@ import { LeitSpinner, Pagination } from "../../../components";
 import { bindActionCreators } from "redux";
 import ReportsTable from "./ReportsTable";
 import FilterOptions from "../FilterOptions";
-import { selectReportReport, selectReportUpdate } from "../../../reducers";
+import {
+  selectReportReports,
+  selectReportStatus,
+  selectReportReportUpdate,
+} from "../../../reducers";
 import HelpMessages from "../HelpMessages";
 
 const messages = [
@@ -49,7 +53,7 @@ const filters = [
  * @param {Array} reports
  * @param {Function} getReports
  */
-const Reports = ({ reports, getReports, updatedReport }) => {
+const Reports = ({ reportsStatus, reports, getReports, updatedReport }) => {
   const [filter, setFilter] = useState({
     createdSince: "",
     createdUntil: "",
@@ -60,11 +64,9 @@ const Reports = ({ reports, getReports, updatedReport }) => {
   const [pagination, setPagination] = useState({
     page: 0,
     page_size: 12,
-    loading: true,
   });
 
   useEffect(() => {
-    setPagination((pag) => ({ ...pag, loading: true }));
     let url = "&sort=updated_at-desc";
     if (filter.createdSince && filter.createdSince !== "") {
       url = url + `&created_at=${filter.createdSince}`;
@@ -78,9 +80,7 @@ const Reports = ({ reports, getReports, updatedReport }) => {
     if (filter.resolved && filter.resolved !== "") {
       url = url + `&resolved=${filter.resolved}`;
     }
-    getReports("", pagination.page + 1, pagination.page_size, url).then((r) => {
-      setPagination((pag) => ({ ...pag, loading: false }));
-    });
+    getReports("", pagination.page + 1, pagination.page_size, url);
   }, [
     filter,
     pagination.page,
@@ -128,44 +128,47 @@ const Reports = ({ reports, getReports, updatedReport }) => {
           />
         </Col>
       </Row>
-      <div>
-        {!pagination.loading ? (
-          reports.results.length !== 0 ? (
+      {reportsStatus === "idle" ? (
+        <span></span>
+      ) : reportsStatus === "loading" ? (
+        <Row>
+          <Col style={{ textAlign: "center" }}>
+            <LeitSpinner />
+          </Col>
+        </Row>
+      ) : reportsStatus === "success" ? (
+        reports.count !== 0 ? (
+          <div>
             <Row>
               <Col>
-                <ReportsTable reports={reports} />
+                <ReportsTable reports={reports.results} />
               </Col>
             </Row>
-          ) : (
-            "No hay reportes disponibles"
-          )
+            <Pagination
+              count={reports.count}
+              page_size={pagination.page_size}
+              page={pagination.page}
+              setStatePage={setPage}
+              size="md"
+              label="reports"
+              displayFirst
+              displayLast
+            />
+          </div>
         ) : (
-          <Row>
-            <Col style={{ textAlign: "center" }}>
-              <LeitSpinner />
-            </Col>
-          </Row>
-        )}
-        {reports.count !== 0 ? (
-          <Pagination
-            count={reports.count}
-            page_size={pagination.page_size}
-            page={pagination.page}
-            setStatePage={setPage}
-            size="md"
-            label="reports-pagination"
-            displayFirst
-            displayLast
-          />
-        ) : null}
-      </div>
+          <p>No hay reportes disponibles</p>
+        )
+      ) : (
+        <p>Ha ocurrido un error</p>
+      )}
     </Container>
   );
 };
 
 const mapStateToProps = (state) => ({
-  reports: selectReportReport(state),
-  updatedReport: selectReportUpdate(state),
+  reportsStatus: selectReportStatus(state),
+  reports: selectReportReports(state),
+  updatedReport: selectReportReportUpdate(state),
 });
 
 const mapActionsToProps = (dispatch) =>

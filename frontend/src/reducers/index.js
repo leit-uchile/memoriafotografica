@@ -46,6 +46,9 @@ export const selectPhotosOpsErrors = (state) =>
 export const selectPhotosPhotoUpdate = (state) =>
   fromPhotos.selectPhotosPhotoUpdate(state);
 
+export const selectPhotosItemStatus = (state) =>
+  fromPhotos.selectPhotosItemStatus(state);
+
 // Categories
 export const selectCats = (state) => fromCategories.selectCats(state);
 
@@ -224,15 +227,21 @@ export const selectUserAlbums = (state) => fromUser.selectUserAlbums(state);
 export const selectUserPublicUser = (state) =>
   fromUser.selectUserPublicUser(state);
 
-export const selectUserPublicLoading = (state) =>
-  fromUser.selectUserPublicLoading(state);
+export const selectUserPublicStatus = (state) =>
+  fromUser.selectUserPublicStatus(state);
 
 //Report
-export const selectReportReport = (state) =>
-  fromReports.selectReportReport(state);
+export const selectReportReports = (state) =>
+  fromReports.selectReportReports(state);
 
-export const selectReportUpdate = (state) =>
-  fromReports.selectReportUpdate(state);
+export const selectReportStatus = (state) =>
+  fromReports.selectReportStatus(state);
+
+export const selectReportItemStatus = (state) =>
+  fromReports.selectReportItemStatus(state);
+
+export const selectReportReportUpdate = (state) =>
+  fromReports.selectReportReportUpdate(state);
 
 export const selectReportPhotoReportSent = (state) =>
   fromReports.selectReportPhotoReportSent(state);
