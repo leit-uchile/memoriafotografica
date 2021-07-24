@@ -116,10 +116,7 @@ const AdvancedSearch = (props) => {
       if (formData[key] === "" || formData[key].length === 0) {
         continue;
       } else {
-        /*if (key === "search"){
-          let searchTerms = "search=" + 
-        }
-        else*/ if (key === "permission" && formData[key] !== "") {
+        if (key === "permission" && formData[key] !== "") {
           let perm = "permission=" + formData[key];
           filtersArr.push(perm);
         } else if (
@@ -149,6 +146,9 @@ const AdvancedSearch = (props) => {
           } else if (formData[key] === "upload_date") {
             filtersArr.push("upload_date" + date);
           }
+        } else if (key === "searchIncludes") {
+          let searchIncludes = "includes=" + formData[key];
+          filtersArr.push(searchIncludes);
         }
       }
     }

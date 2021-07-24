@@ -27,7 +27,7 @@ export const home = (page = 0, pageSize = 200, extra = "") => (dispatch, getStat
   let headers = { "Content-Type": "application/json" };
 
   dispatch({ type: HOME_LOADING, data: null });
-  return fetch(`/api/photos/?page=${page + 1}&page_size=${pageSize}${extra}`, {
+  return fetch(`/api/search/photo/?limit=${pageSize}&offset=${page*pageSize}${extra}`, {
     method: "GET",
     headers: headers,
   }).then(function (response) {
@@ -172,92 +172,7 @@ export const deletePhoto = (photoID) => (dispatch, getState) => {
       dispatch(setAlert("Error eliminando fotografía. Intente nuevamente", "warning"));
       dispatch({ type: EDIT_PHOTO_ERROR, data: r.data });
       throw r.data;
-    }
-  });
-};
-
-/**
- * Recover photos using only field sorting
- *
- * @param {String} field
- * @param {String} order
- * @param {Number} page
- * @param {Number} pageSize
- */
-export const sortByField = (field, order, page, pageSize = 25) => (
-  dispatch,
-  getState
-) => {
-  if (order !== "asc" && order !== "desc") {
-    return dispatch({ type: "EMPTY", data: "wrong order parameter" });
-  }
-  dispatch({ type: HOME_LOADING, data: null });
-
-  let selected_meta = getState().site_misc.searchMetaIDs;
-  let meta_text =
-    selected_meta.length === 0
-      ? ""
-      : `metadata=${selected_meta.map((m) => m.metaID).join()}&`;
-
-  fetch(
-    `/api/photos/?${meta_text}sort=${field}-${order}&page=${page + 1
-    }&page_size=${pageSize}`,
-    {
-      method: "GET",
-    }
-  ).then((response) => {
-    const r = response;
-    if (r.status === 200) {
-      return r.json().then((data) => {
-        dispatch({ type: RECOVERED_PHOTOS, data: data });
-        dispatch({ type: HOME_LOADED });
-      });
-    } else {
-      dispatch({ type: EMPTY_PHOTOS, data: r.data });
-      dispatch({ type: HOME_LOADED });
-      throw r.data;
-    }
-  });
-};
-
-/**
- * Recover photos using categories on the filter and sorting options
- *
- * @param {Array} catIds
- * @param {Object} pair like {field, order}
- * @param {Number} page
- * @param {Number} pageSize
- */
-export const recoverByCats = (catIds, pair, page, pageSize = 25) => (
-  dispatch,
-  getState
-) => {
-  dispatch({ type: HOME_LOADING, data: null });
-
-  let selected_meta = getState().site_misc.searchMetaIDs;
-  let meta_text =
-    selected_meta.length === 0
-      ? ""
-      : `metadata=${selected_meta.map((m) => m.metaID).join()}&`;
-
-  fetch(
-    `/api/photos/?${meta_text}category=${catIds.join(",")}&sort=${pair.field}-${pair.order
-    }&page=${page + 1}&page_size=${pageSize}`,
-    {
-      method: "GET",
-    }
-  ).then((response) => {
-    const r = response;
-    if (r.status === 200) {
-      return r.json().then((data) => {
-        dispatch({ type: RECOVERED_PHOTOS, data: data });
-        dispatch({ type: HOME_LOADED });
-      });
-    } else {
-      dispatch({ type: EMPTY_PHOTOS, data: r.data });
-      dispatch({ type: HOME_LOADED });
-      throw r.data;
-    }
+    } 
   });
 };
 

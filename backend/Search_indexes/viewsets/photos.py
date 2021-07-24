@@ -1,3 +1,4 @@
+from Search_indexes.backends.CustomSearchBackend import CustomSearchBackend
 from django_elasticsearch_dsl_drf.constants import (
     LOOKUP_FILTER_TERMS,
     LOOKUP_FILTER_RANGE,
@@ -34,6 +35,7 @@ class PhotoDocumentViewSet(DocumentViewSet):
         DefaultOrderingFilterBackend,
         SearchFilterBackend,
         IdsFilterBackend,
+        CustomSearchBackend
     ]
     # Define search fields
     search_fields = (
@@ -85,6 +87,7 @@ class PhotoDocumentViewSet(DocumentViewSet):
                 LOOKUP_QUERY_EXCLUDE,
             ],
         },
+        'searchIncludes': 'searchIncludes.raw',
     }
 
     # Define ordering fields
