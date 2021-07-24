@@ -161,6 +161,7 @@ class MetadataListAPI(generics.GenericAPIView):
 
     authentication_classes = [GuestOrUserAuth]
     permission_classes = [IsAuthenticated|ReadOnly,]
+    serializer_class = MetadataSerializer
 
     def get(self, request, *args, **kwargs):
         try:
@@ -168,14 +169,13 @@ class MetadataListAPI(generics.GenericAPIView):
                 metadata_admin = Metadata.objects.all()
                 metadata_admin = search_meta(metadata_admin, request)
                 metadata_admin = sort_by_field(metadata_admin,request)
-                serializer_class = MetadataAdminSerializer
-                serializer = MetadataAdminSerializer(metadata_admin, many=True)
+                self.serializer_class = MetadataAdminSerializer
+                serializer = self.serializer_class(metadata_admin, many=True)
             else:
                 metadata = Metadata.objects.filter(approved=True)
                 metadata = search_meta(metadata, request)
                 metadata = sort_by_field(metadata,request)
-                serializer_class = MetadataSerializer
-                serializer = MetadataSerializer(metadata, many=True)
+                serializer = self.serializer_class(metadata, many=True)
         except Exception:
             # No user logged in
             ids = request.query_params.get('ids', None)
@@ -186,8 +186,7 @@ class MetadataListAPI(generics.GenericAPIView):
             else:
                 metadata = Metadata.objects.filter(approved=True)
                 metadata = search_meta(metadata, request)
-            serializer_class = MetadataSerializer
-            serializer = MetadataSerializer(metadata, many=True)
+            serializer = self.serializer_class(metadata, many=True)
         
         if "page" in request.query_params and "page_size" in request.query_params:
             return self.get_paginated_response(self.paginate_queryset(serializer.data))
