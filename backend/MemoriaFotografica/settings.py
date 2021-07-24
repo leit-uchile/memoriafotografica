@@ -172,6 +172,7 @@ REST_FRAMEWORK = {
     # ],
     'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication', ),
     'DEFAULT_PAGINATION_CLASS': 'Gallery.paginators.GalleryPagination',
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
 # Knox configuration

@@ -1,18 +1,12 @@
 from datetime import date
 
-from django.contrib.auth.backends import AllowAllUsersModelBackend
-from django.http import Http404, JsonResponse, QueryDict
-from rest_condition import And, C, ConditionalPermission, Not, Or
-from rest_framework import (authentication, exceptions, generics, pagination,
-                            permissions, status, viewsets)
-from rest_framework.documentation import include_docs_urls
+from django.http import Http404, JsonResponse
+from rest_framework import (generics, status)
 from rest_framework.exceptions import NotFound
 from rest_framework.mixins import UpdateModelMixin
-from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import (SAFE_METHODS, BasePermission,
                                         IsAuthenticated)
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from Gallery.auth import GuestOrUserAuth
 from MetaData.models import *

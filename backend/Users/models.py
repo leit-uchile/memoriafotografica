@@ -1,14 +1,11 @@
 from __future__ import unicode_literals
 
-from datetime import datetime
-
 import django.contrib.auth.models as django_md
-from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
-from django.utils.timezone import make_aware
 from django.utils.translation import ugettext_lazy as _
 
 from Gallery.models import Album, Comment, Photo, Reporte
@@ -30,8 +27,8 @@ class Notification(models.Model):
     type = models.PositiveSmallIntegerField(choices=NOTIFICATION_TYPE_CHOICES, default = 1)
     content = models.PositiveSmallIntegerField(choices=CONTENT_TYPE_CHOICES, default = 1)
     message = models.CharField(max_length=280)
-    created_at = models.DateTimeField(default=datetime.now)
-    updated_at = models.DateTimeField(default=datetime.now)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
     read = models.BooleanField(default=False)
 
 class User(AbstractBaseUser, PermissionsMixin):

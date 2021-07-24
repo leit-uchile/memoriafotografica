@@ -1,5 +1,6 @@
 import hashlib
 from unittest.mock import patch
+from knox.models import AuthToken
 
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -42,11 +43,18 @@ class UserMixing():
         user.save()
         return user
     
-    def create_guest(self):
+    def create_guest(self, data=None):
+        if data is None:
+            use_data = self.user_data
+        else:
+            use_data = data
         return User.objects.create(
-            **self.user_data,
+            **use_data,
             completed_registration=False
         )
+    
+    def get_auth_token(self, user):
+        return AuthToken.objects.create(user)
     
     def create_register_link(self,user,status=1):
         return RegisterLink.objects.create(
