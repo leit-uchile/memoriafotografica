@@ -50,7 +50,7 @@ it("renders buttons", () => {
     />
   );
   expect(screen.getByRole("cell", { name: "Pendiente" }));
-  expect(screen.getAllByRole("button").length == 3);
+  expect(screen.getAllByRole("button")).toHaveLength(3);
 });
 
 it("renders resolution details", () => {

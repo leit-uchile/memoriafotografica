@@ -150,7 +150,7 @@ const Reports = ({ reportsStatus, reports, getReports, updatedReport }) => {
               page={pagination.page}
               setStatePage={setPage}
               size="md"
-              label="reports-pagination"
+              label="reports"
               displayFirst
               displayLast
             />

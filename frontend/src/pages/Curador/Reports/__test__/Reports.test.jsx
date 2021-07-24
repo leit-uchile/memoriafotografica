@@ -25,6 +25,6 @@ it("displays correctly", async () => {
   renderWithRouter(<Reports />);
   await waitFor(() => {
     expect(screen.getAllByRole("cell")).toHaveLength(7 * 5); // 7 columns for each report
-    expect(screen.getByLabelText("reports-pagination", { exact: false }));
+    expect(screen.getByLabelText("reports page navigation"));
   });
 });
