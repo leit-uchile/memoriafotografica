@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 from django.db import models
 from datetime import datetime
-from Gallery.models import Photo
 from uuid import uuid4
 import os
 
@@ -30,7 +29,8 @@ class LandingCaroussel(models.Model):
 
 class PhotoRequest(models.Model):
   reason = models.TextField()
-  photos = models.ManyToManyField(Photo)  
+  photos = models.ManyToManyField(
+    to='Gallery.Photo')  
   # DATOS:
   first_name = models.CharField(max_length=30)
   last_name = models.CharField(max_length=30)
@@ -64,3 +64,16 @@ class ContactRequest(models.Model):
   updated_at = models.DateTimeField(default=datetime.now)
   def __str__(self):
     return "Mensaje de "+self.first_name+" sobre: "+self.message[:10]+"..."
+
+class Ticket(models.Model):
+  curator = models.ForeignKey(
+        to='Users.User',
+        on_delete=models.SET_NULL,
+        null=True, 
+        blank=True,
+        related_name='curator'
+    )
+  assigned = models.BooleanField(default=False)
+  resolved = models.BooleanField(default=False)
+  created_at = models.DateTimeField(default=datetime.now)
+  updated_at = models.DateTimeField(default=datetime.now)
