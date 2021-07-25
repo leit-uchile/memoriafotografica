@@ -69,6 +69,7 @@ const FilterModal = ({
     delete info.permission;
     delete info.comments;
     delete info.report;
+    delete info.ticket;
     delete info.category;
     setNewphoto(info);
   }, [photoDetails]);

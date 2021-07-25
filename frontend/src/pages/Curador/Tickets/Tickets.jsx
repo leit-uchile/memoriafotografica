@@ -93,7 +93,7 @@ const Tickets = ({ tickets, getTickets, putCurator, ticketsStatus }) => {
                                 item={i}
                                 index={idx}
                                 moveItem={moveItem}
-                                name={`Foto ${i.id}`}
+                                name={`Ticket ${i.id}`}
                               />
                             ))}
                         </HighLight>
@@ -152,7 +152,7 @@ const Tickets = ({ tickets, getTickets, putCurator, ticketsStatus }) => {
                                   item={i}
                                   index={idx}
                                   moveItem={moveItem}
-                                  name={`Foto ${i.id}`}
+                                  name={`Ticket ${i.id}`}
                                 />
                               ))}
                           </HighLight>
