@@ -10,6 +10,7 @@ from uuid import uuid4
 from sorl.thumbnail import get_thumbnail
 from django.core.files.base import ContentFile
 from math import floor
+from simple_history.models import HistoricalRecords
 
 """
 Follow issue on
@@ -47,6 +48,8 @@ class Reporte(models.Model):
     )
     type = models.PositiveSmallIntegerField(choices=REPORT_TYPE_CHOICES)
 
+    history = HistoricalRecords()
+
 
 class Comment(models.Model):
     content = models.TextField()
@@ -55,6 +58,8 @@ class Comment(models.Model):
     created_at = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)
 
+    history = HistoricalRecords()
+    
     def __str__(self):
         return 'Comentario: "'+self.content[:50]+'..."'
 
@@ -97,6 +102,8 @@ class Photo(models.Model):
 
     created_at = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)
+
+    history = HistoricalRecords()
 
     def save(self, *args, **kwargs):
         if not self.id:

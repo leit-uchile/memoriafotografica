@@ -9,6 +9,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from .managers import UserManager
 from Gallery.models import Album, Photo, Comment, Reporte, TagSuggestion
 from datetime import datetime
+from simple_history.models import HistoricalRecords
 
 class Notification(models.Model):
     NOTIFICATION_TYPE_CHOICES = (
@@ -71,6 +72,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     updated_at = models.DateTimeField(default=datetime.now)
     
     objects = UserManager()
+    history = HistoricalRecords()
 
 
     USERNAME_FIELD = 'email'
