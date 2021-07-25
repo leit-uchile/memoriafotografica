@@ -34,6 +34,7 @@ services:
       - ./frontend/src:/app/frontend/src:rw
       - ./frontend/package.json:/app/frontend/package.json:rw
       - ./frontend/package-lock.json:/app/frontend/package-lock.json:rw
+      - ./frontend/.env-cmdrc:/app/frontend/.env-cmdrc
     ports:
       - "3001:3000"
     stdin_open: true
