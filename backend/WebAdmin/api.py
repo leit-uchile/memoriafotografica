@@ -460,12 +460,15 @@ class TicketDetailAPI(generics.GenericAPIView):
             ticket = self.get_object(pk)
             serializer = TicketSerializer(ticket, data=request.data, partial=True)
             if serializer.is_valid():
-                t = serializer.save()
                 if not ticket.curator:
                     curator = User.objects.get(pk=request.user.id)
                     ticket.curator = curator
                     ticket.save()
-                return Response(serializer.data)
+                if ticket.curator == request.user or request.user.user_type == 3:    
+                    t = serializer.save()
+                    return Response(serializer.data)
+                else:
+                    return Response(status=status.HTTP_401_UNAUTHORIZED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
