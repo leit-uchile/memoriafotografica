@@ -5,10 +5,11 @@ from rest_framework import status
 from rest_framework.response import Response
 from .models import Photo, Album, Comment, Reporte, Category
 from Users.models import User
+from MetaData.models import *
 from .serializers import *
+from WebAdmin.serializers import TicketSerializer
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.exceptions import NotFound
-from MetaData.models import *
 from Users.permissions import *
 from .permissions import *
 from django.http import Http404, QueryDict, JsonResponse
@@ -17,7 +18,6 @@ from rest_condition import ConditionalPermission, C, And, Or, Not
 from rest_framework.documentation import include_docs_urls
 from datetime import date
 from Users.task import create_notification
-
 
 def get_user(photoPair):
     try:
@@ -213,17 +213,23 @@ class PhotoListAPI(generics.GenericAPIView):
             recovered_metadata = Metadata.objects.filter(pk__in=p_metadata)
 
         if serializer.is_valid():
-            serializer.save()
-            p = Photo.objects.get(pk=serializer.data['id'])
-            request.user.photos.add(p)
+            p = serializer.save()
+            photo = Photo.objects.get(pk=serializer.data['id'])
+            request.user.photos.add(photo)
             request.user.save()
+            #create ticket
+            serializer_ticket = TicketSerializer(data={})
+            if serializer_ticket.is_valid():
+                s = serializer_ticket.save()
+                photo.ticket = s
+                photo.save()
             serialized_data = serializer.data
             if p_metadata:
                 # add metadata to photo if any metadata is found:
                 recovered_metadata = Metadata.objects.filter(pk__in=p_metadata)
-                p.metadata.add(*recovered_metadata)
+                photo.metadata.add(*recovered_metadata)
                 # save photo to persist modifications.
-                p.save()
+                photo.save()
                 # modify output serializer to display hand-added data.
                 serialized_data['metadata'] = list(
                     map(lambda x: x.pk, recovered_metadata))

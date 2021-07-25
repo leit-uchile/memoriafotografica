@@ -97,6 +97,11 @@ class Photo(models.Model):
     comments = models.ManyToManyField(Comment, blank=True)
     metadata = models.ManyToManyField(Metadata, blank=True)
     report = models.ManyToManyField(Reporte, blank=True)
+    ticket = models.OneToOneField(
+        to='WebAdmin.Ticket', 
+        on_delete=models.SET_NULL,
+        null=True, 
+        blank=True)
     aspect_h = models.IntegerField(blank=True, default=1)
     aspect_w = models.IntegerField(blank=True, default=1)
 
