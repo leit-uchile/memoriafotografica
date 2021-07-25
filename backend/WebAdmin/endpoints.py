@@ -13,4 +13,6 @@ urlpatterns = [
     re_path('^requests/contact/all/$', ContactRequestListAPI.as_view()),
     re_path('^actions/censure/', CensureAPI.as_view()),
     re_path('^actions/reportEditContent/', ReportEditAPI.as_view()),
+    re_path('^tickets/$', TicketListAPI.as_view()),
+    re_path('^tickets/(?P<pk>[0-9]+)/$', TicketDetailAPI.as_view()),
 ]

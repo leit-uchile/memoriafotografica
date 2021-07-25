@@ -55,10 +55,10 @@ const Item = ({ item, index, moveItem, name }) => {
         style={{ opacity: isDragging ? 0 : 1 }}
         className={"drag-item"}
       >
-        <span className={"item-title"}>{item.value}</span>
+        <span className={"item-title"}>{name ? name : item.value}</span>
         <FontAwesomeIcon
-          icon={item.approved ? faCheckCircle : faInfoCircle}
-          className={item.approved ? "drag-icon drag-approved" : "drag-icon"}
+          icon={item.approved || item.assigned ? faCheckCircle : faInfoCircle}
+          className={item.approved || item.assigned ? "drag-icon drag-approved" : "drag-icon"}
         />
         <br></br>
         <span className={"item-date"}>

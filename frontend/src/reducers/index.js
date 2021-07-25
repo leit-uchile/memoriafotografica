@@ -37,10 +37,10 @@ export const selectPhotosCount = (state) => fromPhotos.selectPhotosCount(state);
 export const selectPhotosDetails = (state) =>
   fromPhotos.selectPhotosDetails(state);
 
-export const selectPhotosOpsCompleted = (state) => 
+export const selectPhotosOpsCompleted = (state) =>
   fromPhotos.selectPhotosOpsCompleted(state);
 
-export const selectPhotosOpsErrors = (state) => 
+export const selectPhotosOpsErrors = (state) =>
   fromPhotos.selectPhotosOpsErrors(state);
 
 export const selectPhotosPhotoUpdate = (state) =>
@@ -86,10 +86,10 @@ export const selectAlbumResult = (state) => fromAlbum.selectAlbumResult(state);
 export const selectAlbumCollections = (state) =>
   fromAlbum.selectAlbumCollections(state);
 
-export const selectAlbumAlbumUpdate = (state) => 
+export const selectAlbumAlbumUpdate = (state) =>
   fromAlbum.selectAlbumAlbumUpdate(state);
 
-  export const selectAlbumDelete = (state) => 
+export const selectAlbumDelete = (state) =>
   fromAlbum.selectAlbumDelete(state);
 
 export const selectAlbumCollectionAlbumData = (state) =>
@@ -172,7 +172,7 @@ export const selectWebAdminMessageUpdate = (state) =>
 export const selectWebAdminRequests = (state) =>
   fromWebAdmin.selectWebAdminRequests(state);
 
-  export const selectWebAdminRequestUpdate = (state) =>
+export const selectWebAdminRequestUpdate = (state) =>
   fromWebAdmin.selectWebAdminRequestUpdate(state);
 
 export const selectWebAdminRequestDetail = (state) =>
@@ -198,6 +198,18 @@ export const selectWebAdminRequested = (state) =>
 
 export const selectWebAdminRequestPhotos = (state) =>
   fromWebAdmin.selectWebAdminRequestPhotos(state);
+
+export const selectTicketTickets = (state) =>
+  fromWebAdmin.selectTicketTickets(state);
+
+export const selectTicketStatus = (state) =>
+  fromWebAdmin.selectTicketStatus(state);
+
+export const selectTicketItemStatus = (state) =>
+  fromWebAdmin.selectTicketItemStatus(state);
+
+export const selectTicketUpdate = (state) =>
+  fromWebAdmin.selectTicketUpdate(state);
 
 //Users
 export const selectUserIsAuthenticated = (state) =>

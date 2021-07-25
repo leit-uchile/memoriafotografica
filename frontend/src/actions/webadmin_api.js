@@ -21,6 +21,12 @@ import {
   VALIDATE_RECAPTCHA,
   VALIDATE_RECAPTCHA_ERROR,
   RESET_RECAPTCHA,
+  TICKETS_LOADING,
+  TICKETS_LOADED, 
+  TICKETS_ERROR,
+  TICKET_UPDATING,
+  TICKET_UPDATED,
+  TICKET_UPDATED_ERROR,
 } from "./types";
 import { setAlert } from "./site_misc";
 
@@ -302,6 +308,64 @@ export const updateMessage = (messageUpdate, formData) => (
     } else {
       dispatch(setAlert("Error actualizando solicitud. Intente nuevamente", "warning"));
       dispatch({ type: CONTACTMESSAGE_SWITCH_STATE_ERROR, data: r.data });
+    }
+  });
+};
+
+/**
+ * Recover all Tickets
+ */
+export const getTickets = (page_size) => (
+  dispatch,
+  getState
+) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+  dispatch({ type: TICKETS_LOADING })
+  return fetch(
+    `/api/tickets/?page=1&page_size=${page_size}`,
+    {
+      method: "GET",
+      headers: headers,
+    }
+  ).then(function (response) {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch({ type: TICKETS_LOADED, data: data });
+      });
+    } else {
+      dispatch({ type: TICKETS_ERROR, data: r.data });
+    }
+  });
+};
+
+/**
+ * Update ticket
+ * @param {Object} ticket
+ */
+ export const putTicket = (ticket) => (dispatch, getState) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+  dispatch({ type: TICKET_UPDATING })
+  return fetch(`/api/tickets/${ticket.id}/`, {
+    method: "PUT",
+    headers: headers,
+    body: JSON.stringify(ticket),
+  }).then((response) => {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch(setAlert("Tarea actualizada exitosamente", "success"));
+        dispatch({ type: TICKET_UPDATED, data: data })
+      });
+    } else {
+      dispatch(setAlert("Error actualizando tarea. Intente nuevamente", "warning"));
+      dispatch({ type: TICKET_UPDATED_ERROR, data: r.data });
     }
   });
 };

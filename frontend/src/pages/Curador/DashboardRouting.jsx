@@ -7,13 +7,15 @@ import "../../css/semantic-ui-min-custom.css";
 import { NoMatch, BoundedRoute } from "../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faClipboardList,
   faArchive,
-  faFilter,
+  faImage,
   faFlag,
   faTags,
   faChartBar,
   faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
+import Tickets from "./Tickets/Tickets";
 import Filter from "./Filter/Filterv2";
 import Categories from "./Category/Categoriesv2";
 import Category_Photos from "./Category/Category_Photos";
@@ -28,12 +30,12 @@ import { connect } from "react-redux";
 import { site_misc } from "../../actions";
 import "./styles.css";
 
-/**
- * TODO:
- * arreglar estilo de nav
- * Agregar pega sin terminar con pelotita roja (notificaciones)
- */
 const availableRoutes = [
+  {
+    to: "tickets",
+    display: "Tareas",
+    icon: <FontAwesomeIcon icon={faClipboardList} />,
+  },
   {
     to: "categories",
     display: "Categorías",
@@ -42,10 +44,10 @@ const availableRoutes = [
   {
     to: "filter",
     display: "Curación",
-    icon: <FontAwesomeIcon icon={faFilter} />,
+    icon: <FontAwesomeIcon icon={faImage} />,
   },
   {
-    to: "reported",
+    to: "reports",
     display: "Reportes",
     icon: <FontAwesomeIcon icon={faFlag} />,
   },
@@ -115,7 +117,11 @@ const Dashboard = ({ match, location, setRoute }) => {
         >
           <Switch>
             <BoundedRoute exact path={match.path + "/"} component={Landing} />
-            <BoundedRoute path={match.path + "/filter"} component={Filter} />
+            <BoundedRoute
+              exact
+              path={match.path + "/tickets"}
+              component={Tickets}
+            />
             <BoundedRoute
               exact
               path={match.path + "/categories/:id/"}
@@ -133,7 +139,12 @@ const Dashboard = ({ match, location, setRoute }) => {
             />
             <BoundedRoute
               exact
-              path={match.path + "/reported"}
+              path={match.path + "/filter"}
+              component={Filter}
+            />
+            <BoundedRoute
+              exact
+              path={match.path + "/reports"}
               component={Reports}
             />
             <BoundedRoute

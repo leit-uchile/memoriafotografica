@@ -416,3 +416,56 @@ class ReportEditAPI(generics.GenericAPIView):
             report_serializer.save()
             return Response(report_serializer.data)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class TicketListAPI(generics.GenericAPIView):
+    """
+    List all tickets
+    Permits search queries using the search and limit parameter
+    Permits pagination if page_size and page are on the query parameters
+    """
+    def get(self, request, *args, **kwargs):
+        if request.user:
+            if request.user.user_type > 1:
+                ticket = Ticket.objects.all()
+                ticket = filter_elements(ticket, request)
+                ticket = sort_by_field(ticket, request)
+                serializer = TicketSerializer(ticket, many=True)
+                if "page" in request.query_params and "page_size" in request.query_params:
+                    return self.get_paginated_response(self.paginate_queryset(serializer.data))
+                return Response(serializer.data)
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+class TicketDetailAPI(generics.GenericAPIView):
+    """
+    Retrieve or update ticket instance.
+    """
+
+    def get_object(self, pk):
+        try:
+            return Ticket.objects.get(pk=pk)
+        except Ticket.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, *args, **kwargs):
+        if request.user.user_type >= 2:
+            ticket = self.get_object(pk)
+            serializer = TicketSerializer(ticket)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+    
+    def put(self, request, pk, *args, **kwargs):
+        if request.user.user_type >= 2:
+            ticket = self.get_object(pk)
+            serializer = TicketSerializer(ticket, data=request.data, partial=True)
+            if serializer.is_valid():
+                t = serializer.save()
+                if not ticket.curator:
+                    curator = User.objects.get(pk=request.user.id)
+                    ticket.curator = curator
+                    ticket.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)

@@ -21,6 +21,12 @@ import {
   VALIDATE_RECAPTCHA,
   VALIDATE_RECAPTCHA_ERROR,
   RESET_RECAPTCHA,
+  TICKETS_LOADING,
+  TICKETS_LOADED,
+  TICKETS_ERROR,
+  TICKET_UPDATING,
+  TICKET_UPDATED,
+  TICKET_UPDATED_ERROR,
 } from "../actions/types";
 
 const initialState = {
@@ -37,6 +43,10 @@ const initialState = {
   requestDetail: {},
   requestUpdate: {},
   recaptchaState: false,
+  tickets: { results: [], count: 0 },
+  ticketsStatus: 'idle',
+  itemStatus: 'idle',
+  ticketUpdate: {},
 };
 
 export default function webadmin(state = initialState, action) {
@@ -100,18 +110,30 @@ export default function webadmin(state = initialState, action) {
       return { ...state, messageUpdate: action.data };
     case CONTACTMESSAGE_SWITCH_STATE_ERROR:
       return { ...state, messageUpdate: {} };
+    case TICKETS_LOADING:
+      return { ...state, ticketsStatus: 'loading' };
+    case TICKETS_LOADED:
+      return { ...state, ticketsStatus: 'success', tickets: action.data };
+    case TICKETS_ERROR:
+      return { ...state, ticketsStatus: 'failure', tickets: { results: [], count: 0, } }
+    case TICKET_UPDATING:
+      return { ...state, itemStatus: 'loading' }
+    case TICKET_UPDATED:
+      return { ...state, itemStatus: 'success', ticketUpdate: action.data }
+    case TICKET_UPDATED_ERROR:
+      return { ...state, itemStatus: 'failure', ticketUpdate: {} }
     default:
       return state;
   }
 }
 
-export const selectWebAdminMessages = (state) => 
+export const selectWebAdminMessages = (state) =>
   state.webadmin.messages;
 
 export const selectWebAdminMessageUpdate = (state) =>
   state.webadmin.messageUpdate;
 
-export const selectWebAdminRequests = (state) => 
+export const selectWebAdminRequests = (state) =>
   state.webadmin.requests;
 
 export const selectWebAdminRequestUpdate = (state) =>
@@ -120,23 +142,35 @@ export const selectWebAdminRequestUpdate = (state) =>
 export const selectWebAdminRequestDetail = (state) =>
   state.webadmin.requestDetail;
 
-export const selectWebAdminAllTags = (state) => 
+export const selectWebAdminAllTags = (state) =>
   state.webadmin.all_tags;
 
-export const selectWebAdminContacted = (state) => 
+export const selectWebAdminContacted = (state) =>
   state.webadmin.contacted;
 
-export const selectWebAdminNewsResult = (state) => 
+export const selectWebAdminNewsResult = (state) =>
   state.webadmin.news.results;
 
-export const selectWebAdminNewCount = (state) => 
+export const selectWebAdminNewCount = (state) =>
   state.webadmin.news.count;
 
-export const selectWebAdminCarousel = (state) => 
+export const selectWebAdminCarousel = (state) =>
   state.webadmin.caroussel;
 
 export const selectWebAdminRequestPhotos = (state) =>
   state.webadmin.requestedPhotos;
 
-export const selectWebAdminRequested = (state) => 
+export const selectWebAdminRequested = (state) =>
   state.webadmin.requested;
+
+export const selectTicketStatus = (state) =>
+  state.webadmin.ticketsStatus;
+
+export const selectTicketTickets = (state) =>
+  state.webadmin.tickets;
+
+export const selectTicketItemStatus = (state) => 
+  state.webadmin.itemStatus;
+
+export const selectTicketUpdate = (state) => 
+  state.webadmin.ticketUpdate;
