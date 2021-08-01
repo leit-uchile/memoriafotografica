@@ -1,5 +1,6 @@
 # Import models here
 from rest_framework import serializers
+from django.utils import timezone
 
 from Gallery.models import Photo
 from django.db import IntegrityError
@@ -51,7 +52,7 @@ class MetadataAdminSerializer(serializers.ModelSerializer):
         except Exception as e:
             print(e)
         instance.approved = validated_data.get('approved', instance.approved)
-        instance.updated_at = datetime.now()
+        instance.updated_at = timezone.now()
         instance.save()
         return instance
 
@@ -85,7 +86,7 @@ class MetadataSerializer(serializers.ModelSerializer):
         try:
             instance.metadata.set(validated_data.get(
                 'metadata', instance.metadata))
-            instance.updated_at = datetime.now()
+            instance.updated_at = timezone.now()
         except KeyError:
             pass
         #instance.approved = validated_data.get('approved', instance.approved)
