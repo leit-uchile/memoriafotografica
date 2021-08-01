@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Categorize from "./DragNCategorize/Categorize";
-import Modify from "./Mofify/Modify";
+import Modify from "./Modify/Modify";
 import Suggestions from "./Suggestions/Suggestion";
 import {
   TabContent,
