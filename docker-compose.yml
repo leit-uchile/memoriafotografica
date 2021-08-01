@@ -40,6 +40,8 @@ services:
   celery_worker:
     image: leit/backend:latest
     command: celery -A MemoriaFotografica worker --loglevel=INFO
+    environment:
+      DJANGO_SECRET_KEY: "ic8ub6c3x@1!%*-+tan#n@t+c6lr=gu=po5j5cl3ytodjwxs0r"
     ports: []
     depends_on: 
       - rabbitmq

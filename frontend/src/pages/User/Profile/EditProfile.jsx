@@ -126,6 +126,8 @@ class EditProfile extends Component {
     delete user_copy.avatar;
     delete user_copy.password;
     delete user_copy.notifications;
+    delete user_copy.tags_suggestions;
+    delete user_copy.reports;
     this.props.update(user_copy);
   };
 
@@ -174,8 +176,8 @@ class EditProfile extends Component {
               <Row>
                 <Col>
                   <div className="stat-box">
-                    <Container fluid>
-                      <Card className="user-dashboard-card">
+                    <Container fluid style={{  textAlign: "center"}}>
+                      <Card className="user-dashboard-card" style={{width: '200px'}}>
                         <UserPicture
                           user={user}
                           dims={200}
