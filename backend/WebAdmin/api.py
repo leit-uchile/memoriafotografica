@@ -57,6 +57,9 @@ def filter_elements(elements, request):
             )
         if "limit" in request.query_params:
             elements = elements[0:int(request.query_params["limit"])]
+        if "curator" in request.query_params:
+            curatorID = request.query_params["curator"]
+            elements = elements.filter(curator=curatorID)
     except Exception as e:
         print("Error filtering", e)
         pass

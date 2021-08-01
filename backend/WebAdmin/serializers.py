@@ -55,7 +55,6 @@ class TicketSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         ticket = Ticket.objects.create(**validated_data)
-        print("ticket creado")
         return ticket
 
     def update(self, instance, validated_data):

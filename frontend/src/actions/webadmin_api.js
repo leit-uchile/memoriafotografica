@@ -315,7 +315,7 @@ export const updateMessage = (messageUpdate, formData) => (
 /**
  * Recover all Tickets
  */
-export const getTickets = (page_size) => (
+export const getTickets = (page, page_size, extra) => (
   dispatch,
   getState
 ) => {
@@ -325,7 +325,7 @@ export const getTickets = (page_size) => (
   };
   dispatch({ type: TICKETS_LOADING })
   return fetch(
-    `/api/tickets/?page=1&page_size=${page_size}`,
+    `/api/tickets/?page=${page}&page_size=${page_size}${extra}`,
     {
       method: "GET",
       headers: headers,

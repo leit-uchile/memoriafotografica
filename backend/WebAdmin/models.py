@@ -3,6 +3,7 @@ from django.db import models
 from datetime import datetime
 from uuid import uuid4
 import os
+from simple_history.models import HistoricalRecords
 
 # From Gallery App
 def gen_uuid(instance, filename):
@@ -77,3 +78,5 @@ class Ticket(models.Model):
   resolved = models.BooleanField(default=False)
   created_at = models.DateTimeField(default=datetime.now)
   updated_at = models.DateTimeField(default=datetime.now)
+
+  history = HistoricalRecords()
