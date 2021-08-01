@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'corsheaders',
     'django_rest_passwordreset',
+    'storages'
 ]
 
 # TODO change secret KEY for production
@@ -193,3 +194,13 @@ CORS_ORIGIN_WHITELIST = ('http://localhost', )
 
 # URLS configurations
 BASE_FRONT_URL = 'http://memoriafotografica.cl'
+
+# S3 Storage
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3ManifestStaticStorage'
+
+AWS_STORAGE_BUCKET_NAME = 'djangodefault'
+AWS_ACCESS_KEY_ID = 'minio'
+AWS_SECRET_ACCESS_KEY = 'minio123'
+AWS_S3_ENDPOINT_URL = 'http://minio1:9000'
