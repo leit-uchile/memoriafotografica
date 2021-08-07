@@ -112,11 +112,18 @@ const AdvancedSearch = (props) => {
     e.preventDefault();
     changeToggle();
     let filtersArr = [];
+    let searchTerms = "";
     for (let key in formData) {
       if (formData[key] === "" || formData[key].length === 0) {
         continue;
       } else {
-        if (key === "permission" && formData[key] !== "") {
+        if (key === "search") {
+          const termsList = formData[key].split(" ");
+          for (let i = 0; i < termsList.length; i++) {
+            let s = "search=" + termsList[i] + "&";
+            searchTerms += s;
+          }
+        } else if (key === "permission" && formData[key] !== "") {
           let perm = "permission=" + formData[key];
           filtersArr.push(perm);
         } else if (
@@ -147,12 +154,14 @@ const AdvancedSearch = (props) => {
             filtersArr.push("upload_date" + date);
           }
         } else if (key === "searchIncludes") {
-          let searchIncludes = "includes=" + formData[key];
-          filtersArr.push(searchIncludes);
+          if (formData[key] === "allWords") {
+            let searchIncludes = "includes=" + formData[key];
+            filtersArr.push(searchIncludes);
+          }
         }
       }
     }
-    const filterUrl = "&" + filtersArr.join("&");
+    const filterUrl = "&" + searchTerms + filtersArr.join("&");
     props.onSubmit(filterUrl);
   };
 
@@ -183,7 +192,7 @@ const AdvancedSearch = (props) => {
             <FormGroup tag="fieldset" onChange={(e) => addValue(e)}>
               <Col>
                 <FormGroup>
-                  <legend>asdf</legend>
+                  <legend>Buscar</legend>
                   <Input type="text" id="search" />
                 </FormGroup>
                 <FormGroup>
