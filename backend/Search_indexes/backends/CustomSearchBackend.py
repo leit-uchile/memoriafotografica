@@ -16,13 +16,15 @@ class CustomSearchBackend(SearchFilterBackend):
         __queries = self.construct_search(request, view) + \
             self.construct_nested_search(request, view)
 
-        terms_dict = queryset.to_dict().get('query').get('bool').get('filter')
-        if terms_dict is None:
-            queryset = queryset.query('bool', should=__queries)
-        else:
-            includesWord = terms_dict[0].get('terms').get('searchIncludes.raw')[0]
-            if includesWord == "allWords":
-                queryset = queryset.query('bool', must=__queries)
-            else: 
+        try:
+            terms_dict = queryset.to_dict().get('query').get('bool').get('filter')
+            if terms_dict is None:
                 queryset = queryset.query('bool', should=__queries)
-        return queryset
+            else:
+                includesWord = terms_dict[0].get('terms').get('includes.raw')[0]
+                if includesWord == "allWords":
+                    queryset = queryset.query('bool', must=__queries)
+        except AttributeError as e:
+            print(e)
+        finally:
+            return queryset
