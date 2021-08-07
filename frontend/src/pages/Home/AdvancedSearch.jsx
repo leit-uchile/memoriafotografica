@@ -39,11 +39,25 @@ const AdvancedSearch = (props) => {
   // state to toggle endDate input
   const [toggle, setSwitch] = useState(false);
 
+  // auxiliary function to sort by label
+  const sortByLabel = (a, b) => {
+    a.label = a.label.toLowerCase();
+    b.label = b.label.toLowerCase();
+    if (a.label == b.label) {
+      return 0;
+    }
+    if (a.label < b.label) {
+      return -1;
+    }
+    return 1;
+  };
+
   // API call to fetch category options
   const options = () =>
     fetch("/api/categories")
       .then((r) => (r.status === 200 ? r.json() : null))
       .then((j) => j.results.map((el) => ({ value: el.id, label: el.title })))
+      .then((arr) => arr.sort(sortByLabel))
       .catch((err) => []);
 
   // TODO: fetch from the correct API endpoint for metadata
@@ -51,6 +65,7 @@ const AdvancedSearch = (props) => {
     fetch("/api/search/metadata")
       .then((r) => (r.status === 200 ? r.json() : null))
       .then((j) => j.map((el) => ({ label: el.value })))
+      .then((arr) => arr.sort(sortByLabel))
       .catch((err) => []);
 
   const byDate = [
