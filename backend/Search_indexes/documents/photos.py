@@ -68,8 +68,6 @@ class PhotoDocument(Document):
         multi=True
     )
 
-    includes = fields.TextField()
-
     aspect_h = fields.IntegerField()
     
     aspect_w = fields.IntegerField()
