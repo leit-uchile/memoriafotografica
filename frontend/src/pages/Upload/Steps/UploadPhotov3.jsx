@@ -95,7 +95,7 @@ const UploadPhoto = ({
       r.push(<CardColumns>{row}</CardColumns>);
     }
     return r
-  }, [state.photos.length])
+  }, [state.photos])
   
 
   const dropzone = (
