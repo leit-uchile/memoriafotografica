@@ -87,7 +87,7 @@ class PhotoDocumentViewSet(DocumentViewSet):
                 LOOKUP_QUERY_EXCLUDE,
             ],
         },
-        'searchIncludes': 'searchIncludes.raw',
+        'includes': 'includes.raw',
     }
 
     # Define ordering fields
