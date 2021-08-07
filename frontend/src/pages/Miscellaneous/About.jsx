@@ -119,7 +119,7 @@ const About = () => {
   let joinUs = useRef();
 
   useEffect(() => {
-    if (joinUs.current !== null) {
+    if (joinUs && joinUs.current && joinUs.current !== null) {
       joinUs.current.focus({
         block: "start",
         behavior: "smooth",
