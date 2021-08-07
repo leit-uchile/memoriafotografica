@@ -1,5 +1,6 @@
 # Import models here
 from datetime import datetime
+from uuid import uuid4
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
@@ -13,6 +14,11 @@ from Gallery.serializers import (AlbumSerializer, CommentSerializer,
 from .models import *
 from .models import Notification, User
 
+
+def gen_uuid(filename):
+    ext = filename.split('.')[-1]
+    filename = '{}.{}'.format(uuid4().hex, ext)
+    return filename
 
 class ReCaptchaSerializer(serializers.Serializer):
     recaptcha = ReCaptchaField()
@@ -82,6 +88,9 @@ class UserSerializer(serializers.ModelSerializer):
         for attr, value in validated_data.items():
             if attr == 'password':
                 instance.set_password(value)
+            if attr == 'avatar':
+                validated_data.get('avatar').name = gen_uuid(validated_data.get('avatar').name )
+                setattr(instance,attr,value)
             elif attr == 'report':
                 continue
             else:
