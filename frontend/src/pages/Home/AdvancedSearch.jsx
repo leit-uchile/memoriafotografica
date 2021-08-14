@@ -1,5 +1,4 @@
-import { string } from "prop-types";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import {
@@ -38,6 +37,8 @@ const AdvancedSearch = (props) => {
   const [modal, setModal] = useState(false);
   // state to toggle endDate input
   const [toggle, setSwitch] = useState(false);
+  // state to save async input
+  const [inputValue, setInput] = useState("");
 
   // auxiliary function to sort by label
   const sortByLabel = (a, b) => {
@@ -52,20 +53,28 @@ const AdvancedSearch = (props) => {
     return 1;
   };
 
+  const filterInput = useCallback((array) => {
+    array.sort(sortByLabel);
+    if (inputValue !== "") {
+      array = array.filter((a) => a.label.includes(inputValue));
+    }
+    return array;
+  }, [inputValue]);
+
   // API call to fetch category options
-  const options = () =>
+  const categories = () =>
     fetch("/api/categories")
       .then((r) => (r.status === 200 ? r.json() : null))
       .then((j) => j.results.map((el) => ({ value: el.id, label: el.title })))
-      .then((arr) => arr.sort(sortByLabel))
+      .then(filterInput)
       .catch((err) => []);
 
-  // TODO: fetch from the correct API endpoint for metadata
+  // API call to fetch metadata values
   const keyWords = () =>
     fetch("/api/search/metadata")
       .then((r) => (r.status === 200 ? r.json() : null))
       .then((j) => j.map((el) => ({ label: el.value })))
-      .then((arr) => arr.sort(sortByLabel))
+      .then(filterInput)
       .catch((err) => []);
 
   const byDate = [
@@ -195,6 +204,12 @@ const AdvancedSearch = (props) => {
     });
   };
 
+  const handleAsyncInput = (newInput) => {
+    const input = newInput.replace(/\W/g, "");
+    setInput(newInput);
+    return input;
+  };
+
   return (
     <div>
       <Button color="primary" onClick={changeToggle}>
@@ -218,6 +233,7 @@ const AdvancedSearch = (props) => {
                     getOptionLabel={(e) => e.label}
                     loadOptions={keyWords}
                     onChange={(e) => handleChange(e, "metadata")}
+                    onInputChange={handleAsyncInput}
                     isSearchable={true}
                   />
                 </FormGroup>
@@ -265,9 +281,9 @@ const AdvancedSearch = (props) => {
                     isMulti
                     cacheOptions
                     defaultOptions
-                    loadOptions={options}
+                    loadOptions={categories}
                     onChange={(e) => handleChange(e, "category")}
-                    isSearchable={true}
+                    onInputChange={handleAsyncInput}
                   />
                 </FormGroup>
                 <FormGroup>
