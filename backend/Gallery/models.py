@@ -34,6 +34,14 @@ PERMISSION_CHOICES = (
     ('CC BY-NC-ND', 'Atribución NoComercial-SinDerivadas'),
 )
 
+class License(models.Model):
+    code = models.CharField(max_length= 30, unique=True)
+    description = models.CharField(max_length=255, blank=True)
+    image = models.ImageField(null=True, upload_to="license")
+    allow_sharing = models.BooleanField(default = True)
+    short_description = models.CharField(max_length= 50, null=True, blank= True)
+
+
 
 class Reporte(models.Model):
     content = models.TextField()
@@ -85,8 +93,9 @@ class Photo(models.Model):
     description = models.CharField(max_length=255, blank=True)
     approved = models.BooleanField(default=False)
     censure = models.BooleanField(default=False)
-    permission = PatchedMultiSelectField(
-        choices=PERMISSION_CHOICES, max_choices=3)
+    permission = models.ForeignKey(
+        License,null= True, blank=True, related_name='photo', on_delete=models.SET_NULL
+    )
     category = models.ManyToManyField(Category, blank=True)
     comments = models.ManyToManyField(Comment, blank=True)
     metadata = models.ManyToManyField(Metadata, blank=True)

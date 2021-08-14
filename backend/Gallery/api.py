@@ -885,3 +885,8 @@ class TagSuggestionApproveAPI(generics.GenericAPIView):
         tag_suggestion.delete()
         
         return Response({"id": pk}, status=status.HTTP_202_ACCEPTED)
+
+class LicenseAPI(generics.ListAPIView):
+    queryset = License.objects.all()
+    serializer_class = LicenseSerializer
+    permission_classes = [ReadOnly]
