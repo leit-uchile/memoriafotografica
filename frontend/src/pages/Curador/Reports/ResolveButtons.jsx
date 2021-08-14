@@ -70,13 +70,14 @@ const ResolveButtons = ({ report, edit, censure, discard, reportStatus }) => {
           <Button
             className="action"
             onClick={() => setEditContent(!editContent)}
+            title="Editar"
           >
             <FontAwesomeIcon icon={faPencilAlt} />
           </Button>
-          <Button className="action" onClick={censureContent}>
+          <Button className="action" onClick={censureContent} title="Censurar">
             <FontAwesomeIcon icon={faEyeSlash} />
           </Button>
-          <Button className="action" onClick={discardReport}>
+          <Button className="action" onClick={discardReport} title="Descartar">
             <FontAwesomeIcon icon={faTrash} />
           </Button>
         </Fragment>

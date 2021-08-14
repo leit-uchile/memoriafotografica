@@ -103,6 +103,7 @@ const CategoryTable = ({
                   onClick={() =>
                     redirect(`/curador/dashboard/categories/${el.id}/`)
                   }
+                  title="Editar"
                 >
                   <FontAwesomeIcon icon={faPencilAlt} />
                 </Button>
@@ -112,6 +113,7 @@ const CategoryTable = ({
                     setCat([el.id]);
                     setToggleDelete(!toggleDelete);
                   }}
+                  title="Eliminar"
                 >
                   <FontAwesomeIcon icon={faTrash} />
                 </Button>

@@ -129,6 +129,7 @@ const MetadataList = ({ metadata, iptcs, getSelection, update }) => {
                     setOperation("Modificar Selección");
                     setToggleModify(!toggleModify);
                   }}
+                  title="Editar"
                 >
                   <FontAwesomeIcon icon={faPencilAlt} />
                 </Button>
@@ -139,6 +140,7 @@ const MetadataList = ({ metadata, iptcs, getSelection, update }) => {
                     setOperation("Eliminar");
                     setToggleModify(!toggleModify);
                   }}
+                  title="Eliminar" 
                 >
                   <FontAwesomeIcon icon={faTrash} />
                 </Button>
