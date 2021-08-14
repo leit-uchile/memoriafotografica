@@ -42,7 +42,7 @@ dask==2.3.0
 decorator==4.4.0
 defusedxml==0.6.0
 distributed==2.3.2
-Django==3.0.3
+Django==3.1.12
 django-filter==2.2.0
 djangorestframework==3.11.0
 docutils==0.15.2
