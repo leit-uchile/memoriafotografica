@@ -44,7 +44,7 @@ defusedxml==0.6.0
 distributed==2.3.2
 Django==3.1.12
 django-filter==2.2.0
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 docutils==0.15.2
 entrypoints==0.3
 et-xmlfile==1.0.1
