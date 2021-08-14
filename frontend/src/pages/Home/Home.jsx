@@ -59,7 +59,7 @@ const Home = (props) => {
       <div className="home-gallery-menu">
         <Container>
           <Row>
-            <Col md="7" lg="12">
+            <Col>
               <div className="home-filters-containers">
                 <h2> Todas las fotograf&iacute;as</h2>
                 <AdvancedSearch
