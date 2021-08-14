@@ -23,6 +23,11 @@ const filters = [
     options: ["Resuelta", "Sin resolver"],
     name: "resolved",
   },
+  {
+    display: 'Ver sólo mis tareas',
+    type: "check",
+    name: "ticketsFor",
+  },
 ];
 
 const TicketList = ({ active, tickets, getTickets, ticketsStatus, user }) => {
@@ -30,6 +35,7 @@ const TicketList = ({ active, tickets, getTickets, ticketsStatus, user }) => {
     resolved: "",
     createdSince: "",
     createdUntil: "",
+    ticketsFor: "",
   });
   const [pagination, setPagination] = useState({
     page: 0,
@@ -42,7 +48,7 @@ const TicketList = ({ active, tickets, getTickets, ticketsStatus, user }) => {
 
   useEffect(() => {
     if (active) {
-      let url = `&sort=created_at-desc&curator=${user.id}`;
+      let url = `&sort=created_at-desc`;
       if (filter.resolved !== "") {
         url = url + `&resolved=${filter.resolved}`;
       }
@@ -52,6 +58,9 @@ const TicketList = ({ active, tickets, getTickets, ticketsStatus, user }) => {
       if (filter.createdUntil !== "") {
         url = url + `&created_at_until=${filter.createdUntil}`;
       }
+      if (filter.ticketsFor == true) {
+        url = url + `&curator=${user.id}`;
+      }
       getTickets(pagination.page + 1, pagination.page_size, url);
     }
   }, [active, filter, pagination.page, pagination.page_size, getTickets]);
@@ -60,7 +69,7 @@ const TicketList = ({ active, tickets, getTickets, ticketsStatus, user }) => {
     <Container fluid>
       <Row>
         <Col>
-          <h2>Mis tareas</h2>
+          <h2>Tareas</h2>
           <Row style={{ marginBottom: "10px" }}>
             <Col sm={6}>
               <ButtonGroup>

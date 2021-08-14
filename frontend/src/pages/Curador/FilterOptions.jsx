@@ -14,6 +14,7 @@ import {
 const FilterOptions = ({ id, params, setState }) => {
   const dateType = params.filter((el) => el.type === "date");
   const selectType = params.filter((el) => el.type === "select");
+  const checkType = params.filter((el) => el.type === "check");
   return (
     <UncontrolledCollapse toggler={id} style={{ marginBottom: "1em" }}>
       <Card>
@@ -65,10 +66,34 @@ const FilterOptions = ({ id, params, setState }) => {
                         </Fragment>
                       ) : (
                         filter.options.map((opt, key) => (
-                          <option key={key} value={key + 1}>{opt}</option>
+                          <option key={key} value={key + 1}>
+                            {opt}
+                          </option>
                         ))
                       )}
                     </Input>
+                  </Col>
+                </Fragment>
+              ))}
+            </FormGroup>
+            <FormGroup row>
+              {checkType.map((filter, index) => (
+                <Fragment key={`check ${index}`}>
+                  <Label for={filter.name} sm={2}>
+                    {filter.display}
+                  </Label>
+                  <Col>
+                    <input
+                      type="checkbox"
+                      class="toggle-button"
+                      name={filter.name}
+                      id={`check ${index}`}
+                      onChange={(e) => {
+                        e.persist();
+                        setState(e.target.name, e.target.checked);
+                      }}
+                    />
+                    <label for={`check ${index}`}></label>
                   </Col>
                 </Fragment>
               ))}

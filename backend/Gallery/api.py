@@ -299,8 +299,9 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
                 serializer_class = PhotoAdminSerializer
                 serializer = PhotoAdminSerializer(photo, data = request.data, partial=True)
                 if serializer.is_valid():
-                    photo.ticket.resolved = True
-                    photo.ticket.save()
+                    if not photo.ticket.resolved:
+                        photo.ticket.resolved = True
+                        photo.ticket.save()
                     if "censure" in request.data:
                         if request.data["censure"]:
                             create_notification.delay(content_pk=photo.id, type=3, content=2)

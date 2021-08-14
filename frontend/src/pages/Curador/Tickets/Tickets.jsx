@@ -37,7 +37,7 @@ const Tickets = () => {
               toggle("2");
             }}
           >
-            Mis tareas
+            Tareas
           </NavLink>
         </NavItem>
       </Nav>
