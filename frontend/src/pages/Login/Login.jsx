@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, Redirect} from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { user, site_misc } from "../../actions";
 import { connect } from "react-redux";
 import { Alert } from "reactstrap";
@@ -10,12 +10,19 @@ import { bindActionCreators } from "redux";
 import { selectErrors,
         selectUserIsAuthenticated,
         selectSiteMiscLoginSuccesRoute,} from "../../reducers";
+import PropTypes from "prop-types"
 
 class Login extends Component {
-  state = {
-    email: "",
-    password: "",
-  };
+  constructor(props){
+    super(props);
+    this.state = {
+      email: "",
+      password: "",
+    };
+    this.props.setRoute("/login");
+    // Pass along the loginRoute if it was set
+    this.props.setLoginSuccessRoute(props.loginRoute);
+  }
 
   genericChangeHandler = (event) => {
     this.setState({ [event.target.id]: event.target.value });
@@ -25,12 +32,6 @@ class Login extends Component {
     e.preventDefault();
     this.props.login(this.state.email, this.state.password);
   };
-
-  componentWillMount() {
-    this.props.setRoute("/login");
-    this.props.setLoginSuccessRoute();
-  }
-
 
   translateError = (error) => {
     var errorMessage;
@@ -124,6 +125,15 @@ class Login extends Component {
       </div>
     );
   }
+}
+
+Login.propTypes = {
+  errors: PropTypes.array.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
+  loginRoute: PropTypes.string.isRequired,
+  login: PropTypes.func.isRequired,
+  setRoute: PropTypes.func.isRequired,
+  setLoginSuccessRoute: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({

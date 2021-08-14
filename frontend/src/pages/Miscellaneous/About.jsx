@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Photo from "../../components/Photo";
 import {
@@ -114,12 +114,12 @@ const colaborators_photos = [
   },
 ];
 const About = () => {
-  let project = React.createRef();
-  let leit = React.createRef();
-  let joinUs = React.createRef();
+  let project = useRef();
+  let leit = useRef();
+  let joinUs = useRef();
 
   useEffect(() => {
-    if (joinUs.current !== null) {
+    if (joinUs && joinUs.current && joinUs.current !== null) {
       joinUs.current.focus({
         block: "start",
         behavior: "smooth",

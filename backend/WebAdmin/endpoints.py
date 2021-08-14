@@ -1,6 +1,7 @@
-from .api import *
-from django.urls import re_path, include
+from django.urls import include, re_path
+
 from . import views
+from .api import *
 
 urlpatterns = [
     re_path('^requests/photos/$', PhotoRequestAPI.as_view()),

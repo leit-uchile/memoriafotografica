@@ -1,25 +1,30 @@
-from rest_framework import viewsets, permissions, generics
-from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
-from .models import *
-from Gallery.models import Photo, Comment, Reporte
-from Users.models import User
-from .serializers import *
-from Gallery.serializers import PhotoAdminSerializer, CommentAdminSerializer, ReportSerializer
-from Users.serializers import UserSerializer
-from django.http import Http404
-from WebAdmin.views import sendEmail
 from datetime import date
+
 from django.db.models import Q
+from django.http import Http404
+from rest_framework import generics, permissions, status, viewsets
+from rest_framework.permissions import (SAFE_METHODS, BasePermission,
+                                        IsAuthenticated)
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from Gallery.models import Comment, Photo, Reporte
+from Gallery.serializers import (CommentAdminSerializer, PhotoAdminSerializer,
+                                 ReportSerializer)
+from Users.models import User
+from Users.serializers import ReCaptchaSerializer, UserSerializer
+from Users.task import create_notification
+from WebAdmin.views import sendEmail
+
+from .models import *
+from .serializers import *
 
 
 def sort_by_field(element_list, request):
     sort_type = {"asc": "", "desc": "-"}
     if "sort" in request.query_params:
         splitted_param = request.query_params["sort"].split("-")
-        query = sort_type[splitted_param[1]]+splitted_param[0]
+        query = sort_type[splitted_param[1]] + splitted_param[0]
         element_list = element_list.order_by(query)
     else:  # Default to sorting by asc creation
         element_list = element_list.order_by("created_at")
@@ -38,17 +43,17 @@ def filter_elements(elements, request):
             resolved = True
             if request.query_params["resolved"] == "false":
                 resolved = False
-            elements = elements.filter(resolved = resolved)
+            elements = elements.filter(resolved=resolved)
         if "approved" in request.query_params:
             approved = True
             if request.query_params["approved"] == "false":
                 approved = False
-            elements = elements.filter(approved = approved)
+            elements = elements.filter(approved=approved)
         if "email_sent" in request.query_params:
             email_sent = True
             if request.query_params["email_sent"] == "false":
                 email_sent = False
-            elements = elements.filter(email_sent = email_sent)
+            elements = elements.filter(email_sent=email_sent)
         if "search" in request.query_params:
             elements = elements.filter(
                 Q(first_name__icontains=request.query_params["search"]) |
@@ -78,7 +83,8 @@ class NewsListAPI(generics.GenericAPIView):
         news = sort_by_field(news, request)
         serializer = NewsSerializer(news, many=True)
         serialized_data = serializer.data
-        return self.get_paginated_response(self.paginate_queryset(serialized_data))
+        return self.get_paginated_response(
+            self.paginate_queryset(serialized_data))
 
 
 class NewsDetailAPI(generics.GenericAPIView):
@@ -178,15 +184,28 @@ class PhotoRequestDetailAPI(generics.GenericAPIView):
 class PhotoRequestAPI(generics.GenericAPIView):
 
     serializer_class = PhotoRequestNewSerializer
-    permission_classes = [IsAuthenticated | ReadOnly, ]
+    permission_classes = [
+        IsAuthenticated | ReadOnly,
+    ]
 
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(
-            data=request.data, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        formData = request.data
+        if "recaptchaToken" in formData.keys():
+            tokenRecaptcha = {"recaptcha": formData.pop("recaptchaToken")}
+        else:
+            tokenRecaptcha = {"recaptcha": ""}
+        serializer = self.serializer_class(data=formData,
+                                           context={'request': request})
+        recaptchaSer = ReCaptchaSerializer(data=tokenRecaptcha)
+        if recaptchaSer.is_valid():
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data,
+                                status=status.HTTP_201_CREATED)
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+        return Response(recaptchaSer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
 
 
 class PhotoRequestListAPI(generics.GenericAPIView):
@@ -231,18 +250,30 @@ class ContactRequestListAPI(generics.GenericAPIView):
                 contactrequests = sort_by_field(contactrequests, request)
                 serializer = self.serializer_class(contactrequests, many=True)
                 if "page" in request.query_params and "page_size" in request.query_params:
-                    return self.get_paginated_response(self.paginate_queryset(serializer.data))
+                    return self.get_paginated_response(
+                        self.paginate_queryset(serializer.data))
                 return Response(serializer.data)
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(
-            data=request.data, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        formData = request.data
+        if "recaptchaToken" in formData.keys():
+            tokenRecaptcha = {"recaptcha": formData.pop("recaptchaToken")}
+        else:
+            tokenRecaptcha = {"recaptcha": ""}
+        serializer = self.serializer_class(data=formData,
+                                           context={'request': request})
+        recaptchaSer = ReCaptchaSerializer(data=tokenRecaptcha)
+        if recaptchaSer.is_valid():
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data,
+                                status=status.HTTP_201_CREATED)
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+        return Response(recaptchaSer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
 
 
 class ContactRequestDetailAPI(generics.GenericAPIView):
@@ -263,12 +294,15 @@ class ContactRequestDetailAPI(generics.GenericAPIView):
     def put(self, request, pk, *args, **kwargs):
         if request.user.user_type > 1:
             contactrequest = self.get_object(pk)
-            serializer = ContactRequestSerializer(
-                contactrequest, data=request.data, partial=True)
+            serializer = ContactRequestSerializer(contactrequest,
+                                                  data=request.data,
+                                                  partial=True)
             if serializer.is_valid():
                 serializer.save()
-                sendEmail(emailto=contactrequest.email, case="contact_us",
-                          subject=request.data['subject'], attached=request.data['reply'])
+                sendEmail(emailto=contactrequest.email,
+                          case="contact_us",
+                          subject=request.data['subject'],
+                          attached=request.data['reply'])
                 return Response(serializer.data)
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -312,14 +346,26 @@ class CensureAPI(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         print(request.data)
         content_type = request.data['type']
-        to_censure = self.get_content(
-            request.data['content_id']['id'], content_type)
-        serializer = self.serializer_dict[content_type](
-            to_censure, data={'censure': True, 'is_active': False}, partial=True)
-        report_serializer = ReportSerializer(self.get_report(request.data['id']), data={
-                                             'resolved': True, 'resolution_details': "Contenido Censurado"}, partial=True)
+        to_censure = self.get_content(request.data['content_id']['id'],
+                                      content_type)
+        serializer = self.serializer_dict[content_type](to_censure,
+                                                        data={
+                                                            'censure': True,
+                                                            'is_active': False
+                                                        },
+                                                        partial=True)
+        report_serializer = ReportSerializer(self.get_report(
+            request.data['id']),
+            data={
+            'resolved':
+            True,
+            'resolution_details':
+            "Contenido Censurado"
+        },
+            partial=True)
         if serializer.is_valid() and report_serializer.is_valid():
             serializer.save()
+            create_notification.delay(content_pk=request.data["content_id"]["id"], type=3, content=content_type)
             report_serializer.save()
             return Response(report_serializer.data)
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -355,8 +401,9 @@ class ReportEditAPI(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         print(request.data['newContent'])
-        if(request.data['newContent']['upload_date']):
-            request.data['newContent']['upload_date'] = request.data['newContent']['upload_date'][0:10]+"T00:00:00-03:00"
+        if (request.data['newContent']['upload_date']):
+            request.data['newContent']['upload_date'] = request.data[
+                'newContent']['upload_date'][0:10] + "T00:00:00-03:00"
         content_type = request.data['report']['type']
         print(request.data['newContent'])
         to_edit = self.get_content(
@@ -369,6 +416,7 @@ class ReportEditAPI(generics.GenericAPIView):
         print(serializer.is_valid())
         if serializer.is_valid() and report_serializer.is_valid():
             serializer.save()
+            create_notification.delay(content_pk=request.data['report']['content_id']['id'], type=2, content=content_type)
             report_serializer.save()
             return Response(report_serializer.data)
         return Response(status=status.HTTP_400_BAD_REQUEST)

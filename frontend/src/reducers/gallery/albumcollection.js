@@ -5,15 +5,21 @@ import {
   CREATED_ALBUM,
   CREATE_ALBUM_SENT,
   CREATED_ALBUM_ERROR,
+  DELETED_ALBUM,
+  DELETED_ALBUM_ERROR,
+  EDITED_ALBUM,
+  EDITED_ALBUM_ERROR,
   ALBUMS_LOADED,
   ALBUMS_EMPTY,
 } from "../../actions/types";
 
 const initialState = {
-  albumData: {},
+  albumData: { name: "", description: "", pictures: [] },
   loading: false,
   errors: [],
   createAlbum: { sent: false, success: false },
+  deleteAlbum: { sent: false, success: false },
+  albumUpdate: {},
   albums: { count: 0, results: [] },
 };
 
@@ -35,6 +41,14 @@ export default function albumcollection(state = initialState, action) {
       return { ...state, albums: action.data, loading: false };
     case ALBUMS_EMPTY:
       return { ...state, albums: { count: 0, results: [] }, loading: false };
+    case DELETED_ALBUM:
+      return { ...state, deleteAlbum: { sent: true, success: true } };
+    case DELETED_ALBUM_ERROR:
+      return { ...state, deleteAlbum: { sent: true, success: false } };
+    case EDITED_ALBUM:
+      return { ...state, editAlbum: action.data };
+    case EDITED_ALBUM_ERROR:
+      return { ...state, errors: [...state.errors, action.data] };
     default:
       return state;
   }
@@ -46,8 +60,15 @@ export const selectAlbumsLoading = (state) => state.albumcollection.loading;
 
 export const selectAlbumsData = (state) => state.albumcollection.albumData;
 
-export const selectAlbumResult = (state) => state.albumcollection.albums.results;
+export const selectAlbumResult = (state) =>
+  state.albumcollection.albums.results;
 
 export const selectAlbumCollections = (state) => state.albumcollection;
 
-export const selectAlbumCollectionAlbumData = (state) => state.albumcollection.albumData;
+export const selectAlbumCollectionAlbumData = (state) =>
+  state.albumcollection.albumData;
+
+export const selectAlbumAlbumUpdate = (state) =>
+  state.albumcollection.albumUpdate;
+
+export const selectAlbumDelete = (state) => state.albumcollection.deleteAlbum;

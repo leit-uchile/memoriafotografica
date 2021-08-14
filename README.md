@@ -29,14 +29,14 @@ Legal y derechos de autor
 
 Equipo actual de desarrollo
   - Isaias Venegas (Computación)
-  - Dario Caceres (Computación)
   - Dario Palma (Computación)
   - Alejandra Alarcón (Computación)
-  - José Astorga (Computación)
-  - Vicente Diaz (Computación)
   - Joaquín Diaz (Computación)
 
 Miembros de desarrollo anteriores:
+  - José Astorga (Computación)
+  - Dario Caceres (Computación)
+  - Vicente Diaz (Computación)
   - Victoria Bollo (Astronomía)
   - Natalia Duran (Enfermería)
 
@@ -55,16 +55,13 @@ La aplicación utiliza Django para el backend y React en frontend. La aplicació
 Para correr el proyecto se necesita *docker* y *docker-compose*. Los comandos son los siguientes:
 
 ```
+user$ ./scripts/reveal_secrets.sh
+user$ docker build ./backend -t leit/backend --target dev
 user$ sudo docker-compose build
-user$ sudo docker-compose run db # Hay que permitir que se inicialice una vez, si no Django no se conectará con ella a tiempo.
-user$ sudo ./reset_db.sh
-user$ sudo ./load_fixtures.sh
+user$ sudo docker-compose run db # Hay que permitir que se inicialice una vez, si no Django no se conectará con ella a tiempo. Luego apagar
+user$ sudo ./scripts/reset_db.sh
+user$ sudo ./scripts/load_fixtures.sh
 user$ sudo docker-compose up -d
-```
-
-En caso de no poder utilizar el script *.sh* basta cambiar los permisos del archivo con
-```
-user$ sudo chmod +x ./reset_db.sh
 ```
 
 # Setup del proyecto con Docker (release)
@@ -83,3 +80,14 @@ Pasos:
 4. Desplegar exponiendo el puerto 80/443 (con un certbot en la misma para pedir certificados y reiniciar nginx cuando sea necesario) con ```sudo docker-compose -f docker-compose.prod.yml```
 
 **TODO: Generar certificados automaticamente con Ansible en contenedores**
+
+
+
+# Credenciales
+
+Para el manejo de credenciales se utiliza **Ansible Vault** por lo que es necesario instalar Ansible en el sistema [Docs](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+La configuración se maneja mendiante una variable de entorno **ANSIBLE_VAULT_PASSWORD** que debe ser exportada o explicitada al momento de utilizar los scripts de gestión de secretos.
+
+Para manipular los secretos hay dos scripts:
+- encrypt_secrets.sh
+- reveal_secrets.sh

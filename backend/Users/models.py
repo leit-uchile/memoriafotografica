@@ -1,14 +1,34 @@
 from __future__ import unicode_literals
-from django.db import models
+
 import django.contrib.auth.models as django_md
-from django.core.mail import send_mail
-from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.models import PermissionsMixin
+from django.core.mail import send_mail
+from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.base_user import BaseUserManager
+
+from Gallery.models import Album, Comment, Photo, Reporte, TagSuggestion
+
 from .managers import UserManager
-from Gallery.models import Album, Photo, Comment, Reporte
-from datetime import datetime
+
+class Notification(models.Model):
+    NOTIFICATION_TYPE_CHOICES = (
+        (1, 'Aprobación'),
+        (2, 'Edición'),
+        (3, 'Censura')
+    )
+    CONTENT_TYPE_CHOICES = (
+        (1, 'usuario'),
+        (2, 'foto'),
+        (3, 'comentario')
+    )
+    type = models.PositiveSmallIntegerField(choices=NOTIFICATION_TYPE_CHOICES, default = 1)
+    content = models.PositiveSmallIntegerField(choices=CONTENT_TYPE_CHOICES, default = 1)
+    message = models.CharField(max_length=280)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+    read = models.BooleanField(default=False)
 
 class User(AbstractBaseUser, PermissionsMixin):
     USER_TYPE_CHOICES = (
@@ -30,7 +50,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_('last name'), max_length=30)
     birth_date = models.DateField(_('birth date'))
     date_joined = models.DateTimeField(_('date joined'),auto_now_add=True)
-    is_active = models.BooleanField(_('active'), default=True)      #Habilitado
+    is_active = models.BooleanField(_('active'), default=False)      #Habilitado
+    completed_registration = models.BooleanField(_('completed_registration'), default=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     deleted = models.BooleanField(_('deleted'), default = False)    #Eliminado
     generation = models.CharField(_('generation'), max_length = 5, blank = True)
@@ -40,6 +61,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     photos = models.ManyToManyField(Photo, blank=True)
     comments = models.ManyToManyField(Comment, blank = True)
     report = models.ManyToManyField(Reporte, blank= True)
+    tags_suggestions = models.ManyToManyField(TagSuggestion, blank= True)
+    notifications = models.ManyToManyField(Notification, blank=True)
 
     #TIPO DE USUARIO
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default = 1)
@@ -47,8 +70,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(_('staff status'), default=False)
     public_profile = models.BooleanField(default=False)
     #LOGGING
-    created_at = models.DateTimeField(default=datetime.now)
-    updated_at = models.DateTimeField(default=datetime.now)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
     
     objects = UserManager()
 

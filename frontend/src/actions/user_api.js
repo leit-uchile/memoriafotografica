@@ -15,12 +15,16 @@ import {
   RESET_PASSWORD_CONFIRM_FAILED,
   LOGOUT_SUCCESS,
   USER_LOADED,
-  USER_RECOVERED_PHOTO,
-  USER_RECOVERED_PHOTO_ERROR,
+  USER_PHOTOS_LOADED,
+  USER_PHOTOS_ERROR,
   USER_RECOVERED_ALBUM,
   USER_RECOVERED_ALBUM_ERROR,
   USER_RECOVERED_COMMENTS,
   USER_RECOVERED_COMMENTS_ERROR,
+  NOTIFICATIONS_RECOVERED,
+  USER_RECOVERED_NOTIFICATIONS,
+  USER_RECOVERED_NOTIFICATIONS_ERROR,
+  USER_NOTIFICATION_UPDATED,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAILED,
   USER_PASSWORD_UPDATED,
@@ -28,6 +32,8 @@ import {
   USER_PUBLIC_LOADING,
   USER_PUBLIC_LOADED,
   USER_PUBLIC_ERROR,
+  RESEND_ACTIVATION_EMAIL,
+  RESEND_ACTIVATION_EMAIL_FAILED,
 } from "./types";
 import { setAlert } from "./site_misc";
 
@@ -39,25 +45,25 @@ export const login = (email, password) => {
     return fetch("/api/auth/login/", { headers, body, method: "POST" })
       .then((res) => {
         if (res.status < 500) {
-          return res.json().then((data) => {
-            return { status: res.status, data };
-          });
+          try{
+            return res.json().then((data) => (
+              { status: res.status, data }
+            ));
+          }catch{
+            return { status: res.status, data: res.text };
+          }
         } else {
-          console.log("Server Error!");
-          throw res;
+          dispatch({ type: AUTH_ERROR, data: res.text });
         }
       })
       .then((res) => {
         if (res.status === 200) {
           dispatch({ type: USER_LOADED, data: res.data.user });
           dispatch({ type: LOGIN_SUCCESS, data: res.data.token });
-          return res.data;
         } else if (res.status === 403 || res.status === 401) {
           dispatch({ type: AUTH_ERROR, data: res.data });
-          throw res.data;
         } else {
           dispatch({ type: LOGIN_FAILED, data: res.data });
-          throw res.data;
         }
       });
   };
@@ -70,7 +76,8 @@ export const register = (
   last_name,
   birth_date,
   rol_type,
-  avatar
+  avatar,
+  recaptchaToken
 ) => {
   return (dispatch) => {
     var formData = new FormData();
@@ -81,6 +88,7 @@ export const register = (
     formData.append("birth_date", birth_date);
     formData.append("rol_type", parseInt(rol_type));
     formData.append("avatar", avatar);
+    formData.append("recaptchaToken", recaptchaToken);
 
     return fetch("/api/auth/register/", { body: formData, method: "POST" })
       .then((res) => {
@@ -89,14 +97,17 @@ export const register = (
             dispatch({ type: REGISTRATION_SUCCESS });
             return { status: res.status };
           } else {
-            return res.json().then((data) => {
-              return { status: res.status, data };
-            });
+            try{
+              return res.json().then((data) => (
+                { status: res.status, data }
+              ));
+            }catch{
+              return { status: res.status, data: res.text };
+            }
           }
         } else {
           console.log("Server Error!");
-          dispatch({ type: REGISTRATION_FAILED, data: res.data });
-          throw res;
+          dispatch({ type: REGISTRATION_FAILED, data: res.text });
         }
       })
       .then((res) => {
@@ -104,10 +115,8 @@ export const register = (
           return;
         } else if (res.status === 403 || res.status === 401) {
           dispatch({ type: AUTH_ERROR, data: res.data });
-          throw res.data;
         } else {
           dispatch({ type: REGISTRATION_FAILED, data: res.data });
-          throw res.data;
         }
       });
   };
@@ -145,12 +154,11 @@ export const getRegisterLink = (code) => (dispatch) => {
       });
     } else {
       dispatch({ type: REGISTRATION_LINK_FAILED, data: r.data });
-      throw r.data;
     }
   });
 };
 
-export const getUserPhotos = (user_id, limit, offset) => (
+export const getUserPhotos = (user_id, page, page_size, extra = "") => (
   dispatch,
   getState
 ) => {
@@ -158,23 +166,24 @@ export const getUserPhotos = (user_id, limit, offset) => (
     "Content-Type": "application/json",
     Authorization: "Token " + getState().user.token,
   };
+  dispatch({ type: 'USER_PHOTOS_LOADING' })
   return fetch(
-    `/api/users/photos/${user_id}/?limit=${limit}&offset=${offset}`,
+    `/api/users/photos/${user_id}/?page=${page}&page_size=${page_size}${extra}`,
     { method: "GET", headers: headers }
   ).then(function (response) {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_PHOTO, data: data.photos });
+        dispatch({ type: USER_PHOTOS_LOADED, data: data });
       });
     } else {
-      dispatch({ type: USER_RECOVERED_PHOTO_ERROR, data: r.data });
-      throw r.data;
+      dispatch({ type: USER_PHOTOS_ERROR, data: r.data });
+
     }
   });
 };
 
-export const getUserAlbums = (user_id, limit, offset) => (
+export const getUserAlbums = (user_id, page, page_size, extra = "") => (
   dispatch,
   getState
 ) => {
@@ -183,22 +192,22 @@ export const getUserAlbums = (user_id, limit, offset) => (
     Authorization: "Token " + getState().user.token,
   };
   return fetch(
-    `/api/users/albums/${user_id}/?limit=${limit}&offset=${offset}`,
+    `/api/users/albums/${user_id}/?page=${page}&page_size=${page_size}${extra}`,
     { method: "GET", headers: headers }
   ).then(function (response) {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_ALBUM, data: data.albums });
+        dispatch({ type: USER_RECOVERED_ALBUM, data: data });
       });
     } else {
       dispatch({ type: USER_RECOVERED_ALBUM_ERROR, data: r.data });
-      throw r.data;
+
     }
   });
 };
 
-export const getUserComments = (user_id, limit, offset) => (
+export const getUserComments = (user_id, page, page_size) => (
   dispatch,
   getState
 ) => {
@@ -207,16 +216,75 @@ export const getUserComments = (user_id, limit, offset) => (
     Authorization: "Token " + getState().user.token,
   };
   return fetch(
-    `/api/users/comments/${user_id}/?limit=${limit}&offset=${offset}`,
+    `/api/users/comments/${user_id}/?page=${page}&page_size=${page_size}`,
     { method: "GET", headers: headers }
   ).then(function (response) {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_COMMENTS, data: data.comments });
+        dispatch({ type: USER_RECOVERED_COMMENTS, data: data });
       });
     } else {
       dispatch({ type: USER_RECOVERED_COMMENTS_ERROR, data: r.data });
+
+    }
+  });
+};
+
+//  getUserNotifications:
+//  header: boolean that allows to distinguish between header and dashboard view
+
+export const getUserNotifications = (user_id, page, page_size, header = false, extra = "") => (
+  dispatch,
+  getState
+) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+  return fetch(
+    `/api/users/notifications/${user_id}/?page=${page}&page_size=${page_size}${extra}`,
+    { method: "GET", headers: headers }
+  ).then(function (response) {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        header 
+        ? dispatch({ type: NOTIFICATIONS_RECOVERED, data: data}) 
+        : dispatch({ type: USER_RECOVERED_NOTIFICATIONS, data: data });
+      });
+    } else {
+      dispatch({ type: USER_RECOVERED_NOTIFICATIONS_ERROR, data: r.data });
+      throw r.data;
+    }
+  });
+};
+
+export const updateNotification = (id) => (
+  dispatch,
+  getState
+) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Token " + getState().user.token,
+  };
+  return fetch(
+    `/api/users/notifications/${id}/`,
+    {
+      method: "PUT",
+      headers,
+      body: JSON.stringify({
+        read: true,
+      })
+    }
+  ).then((response) => {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch({ type: USER_NOTIFICATION_UPDATED, data: data });
+      });
+    } else {
+      dispatch(setAlert("Error actualizando notificación", "warning"));
       throw r.data;
     }
   });
@@ -226,10 +294,13 @@ export const getUserComments = (user_id, limit, offset) => (
  * Load a user by ID if it is public
  */
 export const loadAUser = (id) => (dispatch, getState) => {
-  let headers = {
-    "Content-Type": "application/json",
-    Authorization: "Token " + getState().user.token,
-  };
+  let headers = {};
+  if (getState().user.isAuthenticated) {
+    headers = {
+      "Content-Type": "application/json",
+      Authorization: "Token " + getState().user.token,
+    };
+  }
   dispatch({ type: USER_PUBLIC_LOADING });
   return fetch(`/api/users/${id}/`, { method: "GET", headers: headers })
     .then((res) => {
@@ -257,41 +328,47 @@ export const loadAUser = (id) => (dispatch, getState) => {
 /**
  * Load all albums from a specific public user
  * @param {String|Number} user_id
+ * @param {String} extra params for sorting and pagination, filtering, etc
  */
-export const loadPublicUserAlbums = (user_id) => (dispatch) =>
-  fetch(`/api/albums/?user=${user_id}`).then((res) => {
-    const response = res;
-    if (response.status === 200) {
-      return response
-        .json()
-        .then((parsed) =>
-          dispatch({ type: USER_RECOVERED_ALBUM, data: parsed.results })
-        );
+export const loadPublicUserAlbums = (user_id, extra = "") => (
+  dispatch
+) => {
+  return fetch(`/api/albums/?user=${user_id}${extra}`
+  ).then((response) => {
+    const r = response;
+    if (r.status === 200) {
+      return r.json().then((data) => {
+        dispatch({ type: USER_RECOVERED_ALBUM, data: data })
+      });
     } else {
-      dispatch(
-        setAlert("Hubo un error al cargar los albumes del usuario", "warning")
-      );
+      dispatch(setAlert("Error cargando álbumes. Intente nuevamente", "warning"));
       dispatch({ type: USER_RECOVERED_ALBUM_ERROR });
     }
   });
+}
 
 /**
  * Load all photos from a specific public user
  * @param {String|Number} user_id
  * @param {String} extra params for sorting and pagination, filtering, etc
  */
-export const loadPublicUserPhotos = (user_id, extra = "") => (dispatch) =>
-  fetch(`/api/photos/?user=${user_id}${extra}`).then(function (response) {
+export const loadPublicUserPhotos = (user_id, extra = "") => (
+  dispatch
+) => {
+  return fetch(`/api/photos/?user=${user_id}${extra}`
+  ).then((response) => {
     const r = response;
     if (r.status === 200) {
       return r.json().then((data) => {
-        dispatch({ type: USER_RECOVERED_PHOTO, data: data.results });
+        dispatch({ type: USER_PHOTOS_LOADED, data: data });
       });
     } else {
-      dispatch({ type: USER_RECOVERED_PHOTO_ERROR, data: r.data });
-      throw r.data;
+      dispatch(setAlert("Error cargando fotografías. Intente nuevamente", "warning"));
+      dispatch({ type: USER_PHOTOS_ERROR, data: r.data });
+
     }
   });
+}
 
 /**
  * Load current user
@@ -434,7 +511,7 @@ export const updatePassword = (old_password, new_password) => (
     });
 };
 
-export const uploadUserPicture = (avatar) => (dispatch, getState) => {};
+export const uploadUserPicture = (avatar) => (dispatch, getState) => { };
 
 export const resetPasswordRequest = (email) => (dispatch) => {
   let headers = { "Content-Type": "application/json" };
@@ -512,8 +589,31 @@ export const resetPasswordConfirm = (token, password) => (dispatch) => {
         dispatch({ type: RESET_PASSWORD_CONFIRM_SUCCESS, data: null });
         return { status: res.status, data: null };
       } else {
-         dispatch({ type: RESET_PASSWORD_CONFIRM_FAILED, data: res.data });
+        dispatch({ type: RESET_PASSWORD_CONFIRM_FAILED, data: res.data });
       }
     });
+};
+
+export const resendActivationEmail = (email) => (dispatch, getState) => {
+  let headers, body;
+
+    headers = {
+      "Content-Type": "application/json",
+    };
+    body = JSON.stringify({ email:email });
+
+  return fetch(`api/users/resend_activation/`, { headers, body, method: "POST" })
+    .then((res) => {
+      if (res.status < 500) {
+        return dispatch({ type: RESEND_ACTIVATION_EMAIL });
+      } else {
+        console.log("Server Error!");
+        throw res;
+      }
+    })
+    .catch(()=>{
+        dispatch({ type: RESEND_ACTIVATION_EMAIL_FAILED});
+    });
+
 };
 

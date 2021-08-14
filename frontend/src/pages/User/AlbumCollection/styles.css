@@ -2,6 +2,8 @@
   background-color: white;
   margin-bottom: 1.5em;
   padding: 2em 1em;
+  font-size: 1.3em;
+  text-align: center;
 }
 
 .album-sticky-element{
@@ -9,10 +11,6 @@
   z-index: 2;
   top: 6.5em;
   height: fit-content;
-}
-
-.album-container{
-  text-align: center;
 }
 
 .album-title-row{
@@ -27,20 +25,6 @@
   top: calc(1em + 65px);
 }
 
-.album-container .album-white-box .album-desc{
-  font-size: 1.5em;
-}
-
-.album-container .album-white-box .album-photo-count{
-  font-size: 2em;
-  font-weight: 700;
-}
-
-.album-container .album-white-box .album-meta {
-  display: block;
-  color: grey;
-}
-
 /* User albums background*/
 
 .user-albums-background {
@@ -48,6 +32,7 @@
   background-position: center;
   background-size: cover;
   position: relative;
+  
 }
 
 .user-albums-background h4 {

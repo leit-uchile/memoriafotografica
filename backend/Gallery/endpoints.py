@@ -1,6 +1,6 @@
-from .api import *
-from django.urls import re_path, include
+from django.urls import include, re_path
 
+from .api import *
 
 urlpatterns = [
     re_path('^photos/$', PhotoListAPI.as_view()),
@@ -16,6 +16,7 @@ urlpatterns = [
     re_path('^albums/$', AlbumListAPI.as_view()),
     re_path('^albums/(?P<pk>[0-9]+)/$', AlbumDetailAPI.as_view()),
     re_path("^reports/$", ReportListAPI.as_view()),
-    re_path("^reports/(?P<pk>[0-9]+)/$", ReportDetailAPI.as_view())
-
+    re_path("^reports/(?P<pk>[0-9]+)/$", ReportDetailAPI.as_view()),
+    re_path("^tagsuggestion/$", TagSuggestionAPI.as_view()),
+    re_path("^tagsuggestion/approve/(?P<pk>[0-9]+)/$", TagSuggestionApproveAPI.as_view())
 ]

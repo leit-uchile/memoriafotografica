@@ -9,9 +9,7 @@ services:
     volumes:
       - ./db/postgresql:/var/lib/postgresql/data
   backend:
-    build:
-      context: ./backend
-      target: dev
+    image: leit/backend:latest
     command: python manage.py runserver 0.0.0.0:8000
     environment:
       DJANGO_SECRET_KEY: "ic8ub6c3x@1!%*-+tan#n@t+c6lr=gu=po5j5cl3ytodjwxs0r"
@@ -21,6 +19,8 @@ services:
       - ./backend:/app
     depends_on:
       - db
+      - rabbitmq
+      - celery_worker
     ports:
       - 8000:8000
       - 5678:5678
@@ -29,7 +29,21 @@ services:
       context: ./frontend
       target: dev
     volumes:
-      - ./frontend:/app/frontend:rw
+      - ./frontend/src:/app/frontend/src:rw
+      - ./frontend/package.json:/app/frontend/package.json:rw
+      - ./frontend/package-lock.json:/app/frontend/package-lock.json:rw
     ports:
       - "3001:3000"
     stdin_open: true
+  rabbitmq:
+    image: rabbitmq:3.7-alpine
+  celery_worker:
+    image: leit/backend:latest
+    command: celery -A MemoriaFotografica worker --loglevel=INFO
+    environment:
+      DJANGO_SECRET_KEY: "ic8ub6c3x@1!%*-+tan#n@t+c6lr=gu=po5j5cl3ytodjwxs0r"
+    ports: []
+    depends_on: 
+      - rabbitmq
+      - db
+

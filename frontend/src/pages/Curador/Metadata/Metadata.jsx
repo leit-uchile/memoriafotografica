@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Categorize from "./DragNCategorize/Categorize";
-import Modify from "./Mofify/Modify";
+import Modify from "./Modify/Modify";
+import Suggestions from "./Suggestions/Suggestion";
 import {
   TabContent,
   TabPane,
@@ -41,6 +42,16 @@ const Metadata = () => {
             Buscar y Modificar
           </NavLink>
         </NavItem>
+        <NavItem>
+          <NavLink
+            className={activeTab === "3" ? "active" : ""}
+            onClick={() => {
+              toggle("3");
+            }}
+          >
+            Sugerencias de Metadata
+          </NavLink>
+        </NavItem>
       </Nav>
       <TabContent activeTab={activeTab}>
         <TabPane tabId="1">
@@ -52,6 +63,9 @@ const Metadata = () => {
         </TabPane>
         <TabPane tabId="2">
           <Modify active={activeTab === "2"} />
+        </TabPane>
+        <TabPane tabId="3">
+          <Suggestions active={activeTab === "3"} />
         </TabPane>
       </TabContent>
     </div>

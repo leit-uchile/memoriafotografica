@@ -1,18 +1,23 @@
 import {
   RECOVERED_PHOTOS,
   EMPTY_PHOTOS,
-  RECOVERED_PHOTO_DETAILS,
-  PHOTO_DETAILS_ERROR,
+  PHOTO_RESET_NB_OPS,
+  EDIT_PHOTO_UPDATING,
   EDIT_PHOTO,
   EDIT_PHOTO_ERROR,
   DELETED_PHOTO,
+  PHOTO_DETAILS_LOADING,
+  PHOTO_DETAILS_LOADED,
+  PHOTO_DETAILS_ERROR,
 } from "../../actions/types";
 
 const initialState = {
   photos: [],
-  errors: null,
-  refresh: false,
-  updatedPhoto: false,
+  count: 0,
+  nbOperations: 0,
+  opsCompleted: 0,
+  opsErrors: [],
+  photoUpdate: {},
   details: {
     title: "[Titulo]",
     image: undefined,
@@ -21,6 +26,7 @@ const initialState = {
     category: [],
     metadata: [],
   },
+  itemStatus: 'idle',
 };
 
 export default function photos(state = initialState, action) {
@@ -32,24 +38,44 @@ export default function photos(state = initialState, action) {
         count: action.data.count,
       };
     case EMPTY_PHOTOS:
-      return { ...state, photos: [] };
+      return { ...state, photos: [], count: 0 };
+    case PHOTO_RESET_NB_OPS:
+      return {
+        ...state,
+        nbOperations: action.data,
+        opsCompleted: 0,
+        opsErrors: [],
+        itemStatus: 'idle'
+      };
+    case EDIT_PHOTO_UPDATING:
+      return {...state, itemStatus: 'loading'};
     case EDIT_PHOTO:
       return {
         ...state,
-        details: { ...state.details, ...action.data },
-        updatedPhoto: true,
+        opsCompleted: state.opsCompleted +1,
+        photoUpdate: state.nbOperations === state.opsCompleted + 1 ? action.data : state.photoUpdate,
+        itemStatus: state.nbOperations === state.opsCompleted + 1 ? 'idle' : 'loading'
       };
     case EDIT_PHOTO_ERROR:
-      return { ...state, edit_photo_errors: action.data };
+      return { ...state, itemStatus: 'failure', opsErrors: [...state.opsErrors, action.data] };
     case DELETED_PHOTO:
       let newList = state.photos.filter((photo) => photo.id !== action.data.id);
-      return { ...state, photos: [newList], updatedPhoto: true, refresh: true };
-    case RECOVERED_PHOTO_DETAILS:
-      return { ...state, details: action.data, errors: null };
+      return {
+        ...state,
+        photos: [newList],
+        opsCompleted: state.opsCompleted +1,
+        photoUpdate: state.nbOperations === state.opsCompleted + 1 ? action.data : state.photoUpdate,
+        itemStatus: state.nbOperations === state.opsCompleted + 1 ? 'idle' : 'loading'
+      };
+    case PHOTO_DETAILS_LOADING:
+        return { ...state, itemStatus: 'loading' };
+    case PHOTO_DETAILS_LOADED:
+      return { ...state, itemStatus: 'success', details: action.data, opsErrors: [] };
     case PHOTO_DETAILS_ERROR:
       return {
         ...state,
-        errors: action.data,
+        itemStatus: 'failure',
+        opsErrors: [...state.opsErrors, action.data],
         details: {
           title: "[Titulo]",
           image: undefined,
@@ -77,8 +103,10 @@ export const selectPhotosCount = (state) => state.photos.count;
 
 export const selectPhotosDetails = (state) => state.photos.details;
 
-export const selectPhotosError = (state) => state.photos.errors;
+export const selectPhotosOpsCompleted = (state) => state.photos.opsCompleted;
 
-export const selectPhotosUpdatedPhoto = (state) => state.photos.updatedPhoto;
+export const selectPhotosOpsErrors = (state) => state.photos.opsErrors;
 
-export const selectPhotosRefresh = (state) => state.photos.refresh;
+export const selectPhotosPhotoUpdate = (state) => state.photos.photoUpdate;
+
+export const selectPhotosItemStatus = (state) => state.photos.itemStatus;

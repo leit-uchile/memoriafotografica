@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { Fragment } from "react";
 import { Container, Row, Col, Button, ButtonGroup } from "reactstrap";
 import { LeitSpinner } from "../../components";
 import { Redirect, Link } from "react-router-dom";
@@ -9,18 +9,21 @@ import Helmet from "react-helmet";
 import Gallery from "react-photo-gallery";
 import { useMediaQuery } from "react-responsive";
 import { CSSTransition } from "react-transition-group";
-import { gallery, site_misc } from "../../actions";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import "./collectionView.css";
+import { gallery } from "../../actions";
 import { selectAlbumsLoading, selectAlbumsData } from "../../reducers";
+import useAlbumDetails from "./hooks/useAlbumDetails";
+import PropTypes from "prop-types";
+
+import "./collectionView.css";
 
 /*
  Helper local rendering functions
 */
 const RenderPhoto = ({ photo }) => (
   <div className="collection-view-photo">
-    <img src={photo.thumbnail} width="100%" />
+    <img src={photo.thumbnail} width="100%" alt="collection heading"/>
   </div>
 );
 
@@ -51,62 +54,19 @@ const RenderData = ({ photo, handle }) => (
  * @param {Object} albumData
  * @param {Boolean} loading
  * @param {Function} loadInfo
- * @param {Function} setIndex
- * @param {Function} pushPhotos
  */
-const CollectionView = ({
-  match,
-  albumData,
-  loadInfo,
-  loading,
-  setIndex,
-  pushPhotos,
-}) => {
-  // Load album info
-  useEffect(() => {
-    loadInfo(match.params.id, true);
-  }, [match.params.id, loadInfo]);
-
-  // Scroll up!
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-    });
-  });
+const CollectionView = ({ match, albumData, loadInfo, loading }) => {
+  const [display, setDisplay, handleOnClick, mapped] = useAlbumDetails(
+    match,
+    loadInfo,
+    albumData
+  );
 
   const isTabletOrMobileDevice = useMediaQuery({
     query: "(max-device-width: 480px)",
   });
 
-  // compute one time and store here
-  const [display, setDisplay] = useState({
-    photos: [],
-    uploaded: "",
-    redirect: false,
-    timeline: true,
-  });
-
-  useEffect(() => {
-    if (albumData !== null && albumData.pictures) {
-      setDisplay({
-        ...display,
-        photos: albumData.pictures,
-        uploaded: new Date(albumData.created_at).toLocaleDateString("es"),
-        redirect: false,
-      });
-    }
-  }, [albumData]);
-
-  const handleOnClick = (id) => {
-    console.log(id);
-    setIndex(id);
-    setDisplay({ ...display, redirect: id });
-  };
-
   if (display.redirect !== false) {
-    // TODO: change this push photos to url use
-    pushPhotos(albumData.pictures);
     return (
       <Redirect
         push
@@ -117,14 +77,7 @@ const CollectionView = ({
     );
   }
 
-  const mapped = display.photos.map((el) => ({
-    src: el.thumbnail,
-    height: el.aspect_h,
-    width: el.aspect_w,
-    id: el.id,
-  }));
-
-  return albumData !== {} ? (
+  return Object.entries(albumData).length !== 0 ? (
     <Container fluid style={{ padding: "0", margin: "0", marginTop: "-2em" }}>
       {loading ? (
         <LeitSpinner />
@@ -148,13 +101,13 @@ const CollectionView = ({
                   disabled={!display.timeline}
                   onClick={() => setDisplay({ ...display, timeline: false })}
                 >
-                  Ver como galeria
+                  Ver como galer&iacute;a
                 </Button>
                 <Button
                   disabled={display.timeline}
                   onClick={() => setDisplay({ ...display, timeline: true })}
                 >
-                  Ver como linea de tiempo
+                  Ver como l&iacute;nea de tiempo
                 </Button>
               </ButtonGroup>
             </Col>
@@ -168,7 +121,7 @@ const CollectionView = ({
             <Container>
               {isTabletOrMobileDevice
                 ? display.photos.map((photo, i) => (
-                    <Row className="collection-view-element">
+                    <Row className="collection-view-element" key={photo.id}>
                       <Col sm={{ size: 6 }}>
                         <RenderPhoto photo={photo} />
                       </Col>
@@ -182,7 +135,7 @@ const CollectionView = ({
                   ))
                 : display.photos.map((photo, i) =>
                     i % 2 === 0 ? (
-                      <Row className="collection-view-element">
+                      <Row className="collection-view-element" key={photo.id}>
                         <Col sm={{ size: 6 }}>
                           <RenderData
                             photo={photo}
@@ -194,7 +147,7 @@ const CollectionView = ({
                         </Col>
                       </Row>
                     ) : (
-                      <Row className="collection-view-element">
+                      <Row className="collection-view-element" key={photo.id}>
                         <Col sm={{ size: 6 }}>
                           {" "}
                           <RenderPhoto photo={photo} />
@@ -245,6 +198,16 @@ const CollectionView = ({
   ) : null;
 };
 
+CollectionView.propTypes = {
+  loading: PropTypes.bool.isRequired,
+  albumData: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    pictures: PropTypes.array.isRequired,
+  }).isRequired,
+  loadInfo: PropTypes.func.isRequired,
+};
+
 const mapStateToProps = (state) => ({
   loading: selectAlbumsLoading(state),
   albumData: selectAlbumsData(state),
@@ -254,8 +217,6 @@ const mapActionsToProps = (dispatch) =>
   bindActionCreators(
     {
       loadInfo: gallery.album.loadAlbumInfo,
-      pushPhotos: site_misc.pushPhotoArray,
-      setIndex: site_misc.setSelectedId,
     },
     dispatch
   );

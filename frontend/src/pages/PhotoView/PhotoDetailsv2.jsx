@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import {
   selectPhotos,
   selectPhotosDetails,
-  selectPhotosError,
+  selectPhotosOpsErrors,
   selectSiteMiscHomeSelectedIndex,
   selectSiteMiscHomephotoPagination,
 } from "../../reducers";
@@ -100,7 +100,7 @@ const PhotoDetails = ({
   }
 
   // In case of wrong id or banned id
-  if (errors !== null && errors !== undefined) {
+  if (errors.length !==0) {
     return <NoMatch location={location} />;
   }
 
@@ -188,6 +188,7 @@ const PhotoDetails = ({
                     </Fragment>
                   ) : null}
                   <Tags
+                    photoId={photoInfo.id}
                     tags={photoInfo.metadata}
                     onRedirect={redirectToSearch}
                     style={{ clear: "both" }}
@@ -291,7 +292,7 @@ const PhotoDetails = ({
 const mapStateToProps = (state) => ({
   photoInfo: selectPhotosDetails(state),
   suggestions: selectPhotos(state),
-  errors: selectPhotosError(state),
+  errors: selectPhotosOpsErrors(state),
   photoIndex: selectSiteMiscHomeSelectedIndex(state),
   photoPage: selectSiteMiscHomephotoPagination(state),
 });

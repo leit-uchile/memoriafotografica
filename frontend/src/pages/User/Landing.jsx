@@ -1,118 +1,227 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "reactstrap";
 import { connect } from "react-redux";
 import { user } from "../../actions";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet";
 import { bindActionCreators } from "redux";
-import { selectUserPhotos,
-         selectUserComments,
-         selectUserAlbums,} from "../../reducers";
-import { ReportModal } from "../../components";
+import {
+  selectUserPhotos,
+  selectUserComments,
+  selectUserNotifications,
+  selectUserData,
+} from "../../reducers";
+import Gallery from "react-photo-gallery";
+import { LeitSpinner, Pagination } from "../../components";
+import "./styles.css";
+import Comment from "../PhotoView/Comments/Comment";
+import Notification from "./Notification";
 
-class Landing extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      redirect: "",
-      isPublic: props.publicUser ? true : false,
-      user: props.publicUser ? props.publicUser : props.user,
-    };
+const Landing = ({
+  user,
+  photos,
+  getPhotos,
+  comments,
+  getComments,
+  notifications,
+  getNotifications,
+}) => {
+  const [params, setParams] = useState({
+    redirect: false,
+    url: "",
+  });
 
-    if (this.state.isPublic) {
-      this.props.onLoadGetPublicPhotos(this.state.user.id);
-      this.props.onLoadGetPublicAlbums(this.state.user.id);
-    } else {
-      this.props.onLoadGetPhotos(this.state.user.id, 4, 0);
-      this.props.onLoadGetAlbums(this.state.user.id, 4, 0);
-    }
-  }
+  const [pagPhotos, setPagPhotos] = useState({
+    page: 0,
+    page_size: 4,
+    loading: true,
+  });
+  const [pagComments, setPagComments] = useState({
+    page: 0,
+    page_size: 5,
+    loading: true,
+  });
+  const [pagNotifications, setPagNotifications] = useState({
+    page: 0,
+    page_size: 5,
+    loading: true,
+  });
 
-  render() {
-    const { albums, photos } = this.props.data;
-    const { user } = this.state;
+  const addMore = (
+    <FontAwesomeIcon
+      icon={faPlusCircle}
+      onClick={() => setParams({ redirect: true, url: "/upload" })}
+      title="Agregar más"
+    />
+  );
 
-    if (this.state.redirect !== "") {
-      return <Redirect push to={this.state.redirect} />;
-    }
+  useEffect(() => {
+    setPagPhotos((pag) => ({ ...pag, loading: true }));
+    getPhotos(
+      user.id,
+      pagPhotos.page + 1,
+      pagPhotos.page_size,
+      "&approved=false"
+    ).then((r) => {
+      setPagPhotos((pag) => ({ ...pag, loading: false }));
+    });
+    // eslint-disable-next-line
+  }, [pagPhotos.page]);
 
-    const addMore = (
-      <FontAwesomeIcon
-        icon={faPlusCircle}
-        onClick={() => this.setState({ redirect: "/upload" })}
-        title="Agregar más"
-      />
+  useEffect(() => {
+    setPagComments((pag) => ({ ...pag, loading: true }));
+    getComments(user.id, pagComments.page + 1, pagComments.page_size).then(
+      (r) => {
+        setPagComments((pag) => ({ ...pag, loading: false }));
+      }
     );
+    // eslint-disable-next-line
+  }, [pagComments.page]);
 
-    return (
-      <Container fluid={!this.state.isPublic} className="dashboard">
-        <Helmet>
-          <title>{`Escritorio de ${user.first_name} ${user.last_name}`}</title>
-        </Helmet>
+  useEffect(() => {
+    setPagNotifications((pag) => ({ ...pag, loading: true }));
+    getNotifications(
+      user.id,
+      pagNotifications.page + 1,
+      pagNotifications.page_size
+    ).then((r) => {
+      setPagNotifications((pag) => ({ ...pag, loading: false }));
+    });
+    // eslint-disable-next-line
+  }, [pagNotifications.page]);
+
+  if (params.redirect) {
+    return <Redirect push to={params.url} />;
+  }
+  return (
+    <Container fluid className="dashboard">
+      <Helmet>
+        <title>{`Escritorio de ${user.first_name} ${user.last_name}`}</title>
+      </Helmet>
+      <div>
         <Row>
           <Col>
             <h2
               style={{
-                textAlign: `${this.state.isPublic ? "center" : "left"}`,
+                textAlign: "left",
               }}
             >
-              {this.state.isPublic
-                ? `Perfil de ${user.first_name + " " + user.last_name}`
-                : "Escritorio"}
+              Escritorio
             </h2>
           </Col>
-          <ReportModal
-              style={{ display: "inline-block" }}
-              className="float-right"
-              elementId={this.state.user.id}
-              reportTitle={"Reportar Usuario"}
-              options={[
-                "Finge ser otra persona",
-                "Fotografía inadecuada",
-              ]}
-              helpText={
-                "Si consideras que hay un problema con esta usuario por favor envíamos un reporte mediante este formulario."
-              }
-              reportType={1}
-            />
         </Row>
         <Row>
           <Col>
             <div className="stat-box">
               <Container fluid className="stat-box-header">
-                <h2>
-                  Fotograf&iacute;as no listadas{" "}
-                  {this.state.isPublic ? null : addMore}
-                </h2>
-                {photos.length !== 0 ? (
-                  <Link
-                    to={
-                      this.state.isPublic
-                        ? `/user/public/${this.state.user.id}/photos`
-                        : "/user/dashboard/photos"
-                    }
-                  >
-                    {" "}
-                    Ver Todas
-                  </Link>
-                ) : null}
+                <h2>Fotograf&iacute;as sin aprobación {addMore}</h2>
               </Container>
               <hr />
               <Container fluid>
-                <p>En construccion</p>
+                {!pagPhotos.loading ? (
+                  photos.results.length !== 0 ? (
+                    <Row>
+                      <Col
+                        sm={
+                          photos.results.length === 1
+                            ? { size: 4, offset: 4 }
+                            : { size: 12 }
+                        }
+                      >
+                        <Gallery
+                          photos={photos.results.map((el) => ({
+                            src: el.thumbnail,
+                            height: el.aspect_h,
+                            width: el.aspect_w,
+                            id: el.id,
+                          }))}
+                          targetRowHeight={250}
+                        />
+                      </Col>
+                    </Row>
+                  ) : (
+                    "No tienes fotografías pendientes"
+                  )
+                ) : (
+                  <Row>
+                    <Col style={{ textAlign: "center" }}>
+                      <LeitSpinner />
+                    </Col>
+                  </Row>
+                )}
+                {photos.count !== 0 ? (
+                  <Pagination
+                    count={photos.count}
+                    page_size={pagPhotos.page_size}
+                    page={pagPhotos.page}
+                    setStatePage={(p) =>
+                      setPagPhotos((pag) => ({ ...pag, page: p }))
+                    }
+                    size="md"
+                    label="photos"
+                    displayFirst
+                    displayLast
+                  />
+                ) : null}
               </Container>
             </div>
           </Col>
           <Col>
             <div className="stat-box">
               <Container fluid className="stat-box-header">
-                <h2>Me han comentado</h2>
+                <h2>Mis comentarios</h2>
               </Container>
               <hr />
-              <Container fluid>
-                <p>En construccion</p>
+              <Container>
+                <Row>
+                  <Col>
+                    {!pagComments.loading ? (
+                      comments.results.length !== 0 ? (
+                        <Container>
+                          {comments.results.map((el, key) => (
+                            <Row key={"Comment" + key}>
+                              <Col style={{ padding: "6px" }}>
+                                <Comment
+                                  element={{
+                                    content: el.content,
+                                    usuario: user,
+                                    id: el.id,
+                                    created_at: el.created_at,
+                                    updated_at: el.updated_at,
+                                  }}
+                                />
+                              </Col>
+                            </Row>
+                          ))}
+                        </Container>
+                      ) : (
+                        "No tienes comentarios"
+                      )
+                    ) : (
+                      <Row>
+                        <Col style={{ textAlign: "center" }}>
+                          <LeitSpinner />
+                        </Col>
+                      </Row>
+                    )}
+                    {comments.count !== 0 ? (
+                      <Pagination
+                        count={comments.count}
+                        page_size={pagComments.page_size}
+                        page={pagComments.page}
+                        setStatePage={(p) =>
+                          setPagComments((pag) => ({ ...pag, page: p }))
+                        }
+                        size="md"
+                        label="comments"
+                        displayFirst
+                        displayLast
+                      />
+                    ) : null}
+                  </Col>
+                </Row>
               </Container>
             </div>
           </Col>
@@ -125,32 +234,76 @@ class Landing extends Component {
               </Container>
               <hr />
               <Container fluid>
-                <p>En construccion</p>
+                <Row>
+                  <Col>
+                    {!pagNotifications.loading ? (
+                      notifications.results.length !== 0 ? (
+                        <Container>
+                          {notifications.results.map((el, key) => (
+                            <Row key={"Notification" + key}>
+                              <Col style={{ padding: "6px" }}>
+                                <Notification
+                                  element={{
+                                    id: el.id,
+                                    type: el.type,
+                                    content: el.content,
+                                    message: el.message,
+                                    created_at: el.created_at,
+                                    read: el.read,
+                                  }}
+                                />
+                              </Col>
+                            </Row>
+                          ))}
+                        </Container>
+                      ) : (
+                        "No tienes notificaciones"
+                      )
+                    ) : (
+                      <Row>
+                        <Col style={{ textAlign: "center" }}>
+                          <LeitSpinner />
+                        </Col>
+                      </Row>
+                    )}
+                    {notifications.count !== 0 ? (
+                      <Pagination
+                        count={notifications.count}
+                        page_size={pagNotifications.page_size}
+                        page={pagNotifications.page}
+                        setStatePage={(p) =>
+                          setPagNotifications((pag) => ({ ...pag, page: p }))
+                        }
+                        size="md"
+                        label="notifications"
+                        displayFirst
+                        displayLast
+                      />
+                    ) : null}
+                  </Col>
+                </Row>
               </Container>
             </div>
           </Col>
         </Row>
-      </Container>
-    );
-  }
-}
+      </div>
+    </Container>
+  );
+};
 
 const mapStateToProps = (state) => ({
-  data: {
-    photos: selectUserPhotos(state),
-    comments: selectUserComments(state),
-    albums:  selectUserAlbums(state),
-  },
-  user: state.user.userData,
+  photos: selectUserPhotos(state),
+  comments: selectUserComments(state),
+  notifications: selectUserNotifications(state),
+  user: selectUserData(state),
 });
 
 const mapActionsToProps = (dispatch) =>
   bindActionCreators(
     {
-      onLoadGetPhotos: user.getUserPhotos,
-      onLoadGetAlbums: user.getUserAlbums,
-      onLoadGetPublicAlbums: user.loadPublicUserAlbums,
-      onLoadGetPublicPhotos: user.loadPublicUserPhotos,
+      getPhotos: user.getUserPhotos,
+      getComments: user.getUserComments,
+      getNotifications: user.getUserNotifications,
     },
     dispatch
   );

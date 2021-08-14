@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
+import React, { useState, useCallback } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { useSelector, useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAddressCard,
@@ -21,11 +22,26 @@ import { webadmin } from "../../actions";
 import { selectWebAdminContacted } from "../../reducers";
 import "./styles.css";
 
-const ContactUs = ({ contacted, contactUs }) => {
+const ContactUs = () => {
   const [formData, setData] = useState({});
 
-  const updateData = (e) =>
+  const contacted = useSelector(selectWebAdminContacted);
+  const dispatch = useDispatch();
+
+  const updateData = (e) => {
     setData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const updateCaptcha = () => {
+    setData({ ...formData, recaptchaToken: recaptchaRef.getValue() });
+  };
+
+  const contactUs = useCallback(
+    (form) => dispatch(webadmin.contactUs(form)),
+    []
+  );
+
+  let recaptchaRef;
 
   return (
     <Container>
@@ -37,7 +53,13 @@ const ContactUs = ({ contacted, contactUs }) => {
       <Row>
         <Col className="white-box form-container">
           {!contacted ? (
-            <Form>
+            <Form
+              onSubmit={(e) => {
+                e.preventDefault();
+                contactUs(formData);
+                recaptchaRef.reset();
+              }}
+            >
               <div className="form-title">
                 <FontAwesomeIcon icon={faAddressCard} />
                 <Label> Identificación de contacto</Label>
@@ -95,11 +117,14 @@ const ContactUs = ({ contacted, contactUs }) => {
                 />
               </FormGroup>
               <hr />
-              <Button
-                color="primary"
-                tabIndex="5"
-                onClick={() => contactUs(formData)}
-              >
+              <ReCAPTCHA
+                sitekey={process.env.REACT_APP_RECAPTCHA_KEY}
+                ref={(el) => {
+                  recaptchaRef = el;
+                }}
+                onChange={updateCaptcha}
+              />
+              <Button color="primary" tabIndex="5" type="submit">
                 Enviar
               </Button>
             </Form>
@@ -178,12 +203,4 @@ const Map = ({ source }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  contacted: selectWebAdminContacted(state),
-});
-
-const mapActionsToProps = (dispatch) => ({
-  contactUs: (form) => dispatch(webadmin.contactUs(form)),
-});
-
-export default connect(mapStateToProps, mapActionsToProps)(ContactUs);
+export default ContactUs;

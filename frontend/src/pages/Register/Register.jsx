@@ -7,9 +7,11 @@ import { Redirect, Link } from "react-router-dom";
 import StepWizard from "react-step-wizard";
 import { LeitSpinner } from "../../components";
 import { bindActionCreators } from "redux";
-import { selectErrors,
-          selectUserIsAuthenticated,
-          selectUserRegisterSucces, } from "../../reducers";
+import {
+  selectErrors,
+  selectUserIsAuthenticated,
+  selectUserRegisterSucces,
+} from "../../reducers";
 
 const FailedRegistration = (props) => (
   <Container>
@@ -125,7 +127,8 @@ class Register extends Component {
       this.state.loginInfo.lastname,
       this.state.loginInfo.date,
       this.state.loginInfo.rol,
-      this.state.loginInfo.avatar
+      this.state.loginInfo.avatar,
+      this.state.loginInfo.recaptchaToken
     );
   }
 

@@ -2,9 +2,15 @@
 FROM node:12.18.3-alpine3.12 as dev
 WORKDIR /app/frontend
 COPY package.json /app/frontend
-COPY .env-cmdrc /app/frontend/.env-cmdrc
 RUN npm install --silent
 RUN npm install env-cmd
+
+# Temporal fix (Static URL not working cuz breaking change on css-loader 3.0)
+# See https://github.com/facebook/create-react-app/issues/9870
+COPY webpack.config.js /app/frontend/node_modules/react-scripts/config/webpack.config.js
+# This is a secret file that gets ciphered multiple times
+COPY .env-cmdrc /app/frontend/.env-cmdrc
+
 COPY . ./
 EXPOSE 3000
 
