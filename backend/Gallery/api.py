@@ -287,7 +287,7 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
     def put(self, request, pk, *args, **kwargs):
         if request.user.user_type == 1:
             photo = self.get_object(pk, False)
-            if photo in request.user.photos.all():
+            if photo in request.user.photos.all() and photo.ticket.resolved:
                 serializer_class = PhotoSerializer
                 serializer = PhotoSerializer(
                     photo, data=request.data, partial=True)
@@ -295,10 +295,12 @@ class PhotoDetailAPI(generics.GenericAPIView, UpdateModelMixin):
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
         elif request.user.user_type != 1:
             photo = self.get_object(pk, True)
-            if photo.ticket.curator == request.user or request.user.user_type == 3:
+            if (photo.ticket.curator == request.user or photo.ticket.resolved) or request.user.user_type == 3:
                 serializer_class = PhotoAdminSerializer
                 serializer = PhotoAdminSerializer(photo, data = request.data, partial=True)
                 if serializer.is_valid():
+                    photo.ticket.resolved = True
+                    photo.ticket.save()
                     if "censure" in request.data:
                         if request.data["censure"]:
                             create_notification.delay(content_pk=photo.id, type=3, content=2)

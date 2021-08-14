@@ -5,7 +5,7 @@ from rest_framework import fields, serializers
 from rest_framework.exceptions import NotFound
 from rest_framework.fields import CurrentUserDefault
 from django.utils.timezone import now
-
+from MetaData.models import Metadata
 
 class ReportSerializer(serializers.ModelSerializer):
 
@@ -149,7 +149,8 @@ class PhotoDetailSerializer(PhotoSerializer):
 
 
 class PhotoAdminSerializer(serializers.ModelSerializer):
-
+    from WebAdmin.serializers import TicketSerializer
+    ticket = TicketSerializer(many=False)
     class Meta:
         fields = "__all__"
         model = Photo

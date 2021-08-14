@@ -4,7 +4,6 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from multiselectfield import MultiSelectField
 from MemoriaFotografica.settings import BASE_DIR
-from MetaData.models import Metadata
 import os
 from uuid import uuid4
 from sorl.thumbnail import get_thumbnail
@@ -95,7 +94,7 @@ class Photo(models.Model):
         choices=PERMISSION_CHOICES, max_choices=3)
     category = models.ManyToManyField(Category, blank=True)
     comments = models.ManyToManyField(Comment, blank=True)
-    metadata = models.ManyToManyField(Metadata, blank=True)
+    metadata = models.ManyToManyField('MetaData.Metadata', blank=True)
     report = models.ManyToManyField(Reporte, blank=True)
     ticket = models.OneToOneField(
         to='WebAdmin.Ticket', 
@@ -176,7 +175,7 @@ class TagSuggestion(models.Model):
         Photo, blank=False, null=False, on_delete=models.CASCADE, related_name='tagsuggestion_photo')
 
     metadata = models.ForeignKey(
-        Metadata, blank=False, null=False, on_delete=models.CASCADE, related_name='tagsuggestion_metadata')
+        'MetaData.Metadata', blank=False, null=False, on_delete=models.CASCADE, related_name='tagsuggestion_metadata')
 
     resolved = models.BooleanField(default=False)
     resolution = models.BooleanField(default=False)

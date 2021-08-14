@@ -55,11 +55,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     generation = models.CharField(_('generation'), max_length = 5, blank = True)
 
     #CONTENIDO GENERADO
-    albums = models.ManyToManyField(Album, blank=True)
-    photos = models.ManyToManyField(Photo, blank=True)
-    comments = models.ManyToManyField(Comment, blank = True)
-    report = models.ManyToManyField(Reporte, blank= True)
-    tags_suggestions = models.ManyToManyField(TagSuggestion, blank= True)
+    albums = models.ManyToManyField('Gallery.Album', blank=True)
+    photos = models.ManyToManyField('Gallery.Photo', blank=True)
+    comments = models.ManyToManyField('Gallery.Comment', blank = True)
+    report = models.ManyToManyField('Gallery.Reporte', blank= True)
+    tags_suggestions = models.ManyToManyField('Gallery.TagSuggestion', blank= True)
     notifications = models.ManyToManyField(Notification, blank=True)
 
     #TIPO DE USUARIO

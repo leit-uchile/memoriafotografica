@@ -13,6 +13,7 @@ const PhotoList = ({ photos, editPhoto }) => {
     <Table responsive striped className="statBox">
       <thead>
         <tr>
+          <th>Curador</th>
           <th>Nombre</th>
           <th>Imagen</th>
           <th>Estado</th>
@@ -25,6 +26,13 @@ const PhotoList = ({ photos, editPhoto }) => {
       <tbody>
         {photos.map((el, key) => (
           <tr key={el.id}>
+            <td>
+              {el.ticket.resolved
+                ? "Todos"
+                : el.ticket.assigned
+                ? `${el.ticket.curator.first_name} ${el.ticket.curator.last_name}`
+                : "Por asignar"}
+            </td>
             <td>{el.title}</td>
             <td>
               <img alt={el.title} src={el.thumbnail} width="100px%" />
@@ -35,14 +43,18 @@ const PhotoList = ({ photos, editPhoto }) => {
             <td style={{ fontSize: "1.2em" }}>
               {el.approved ? (
                 <Badge pill color="success">
-                  Aprobada{" "}{check}
+                  Aprobada {check}
                 </Badge>
               ) : (
-                <Badge pill color="warning">No aprobada</Badge>
+                <Badge pill color="warning">
+                  No aprobada
+                </Badge>
               )}
               <br></br>
               {el.censure ? (
-                <Badge pill color="danger">Censurada</Badge>
+                <Badge pill color="danger">
+                  Censurada
+                </Badge>
               ) : null}
             </td>
             <td>{el.description}</td>
