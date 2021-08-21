@@ -6,69 +6,14 @@ from uuid import uuid4
 from django.core.files.base import ContentFile
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from multiselectfield import MultiSelectField
 from sorl.thumbnail import get_thumbnail
 
 from MemoriaFotografica.settings import BASE_DIR
-from MetaData.models import Metadata
 
 """
 Follow issue on
 https://github.com/goinnn/django-multiselectfield/issues/74#issuecomment-423914610
 """
-
-
-class PatchedMultiSelectField(MultiSelectField):
-    def value_to_string(self, obj):
-        value = self.value_from_object(obj)
-        return self.get_prep_value(value)
-
-
-# Create your models here.
-PERMISSION_CHOICES = (
-    ('CC BY', 'Atribución'),
-    ('CC BY-SA', 'Atribución-CompartirIgual'),
-    ('CC BY-ND', 'Atribución sin Derivadas'),
-    ('CC BY-NC', 'Atribución No Comercial'),
-    ('CC BY-NC-SA', 'Atribución NoComercial-CompartirIgual'),
-    ('CC BY-NC-ND', 'Atribución NoComercial-SinDerivadas'),
-)
-
-
-class Reporte(models.Model):
-    content = models.TextField()
-    resolved = models.BooleanField(default=False)
-    resolution_details = models.TextField(default="")
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
-    REPORT_TYPE_CHOICES = (
-        (1, 'usuario'),
-        (2, 'foto'),
-        (3, 'comentario')
-    )
-    type = models.PositiveSmallIntegerField(choices=REPORT_TYPE_CHOICES)
-
-
-class Comment(models.Model):
-    content = models.TextField()
-    censure = models.BooleanField(default = False)
-    report = models.ManyToManyField(Reporte, blank= True)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
-    def __str__(self):
-        return 'Comentario: "'+self.content[:50]+'..."'
-
-
-class Category(models.Model):
-    title = models.CharField(max_length= 30)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
-    def __str__(self):
-        return self.title
-
-    def as_dict(self):
-        return {"id": self.id, "title": self.title}
-
 
 def gen_uuid(instance, filename):
     ext = filename.split('.')[-1]
@@ -83,14 +28,11 @@ class Photo(models.Model):
     upload_date = models.DateTimeField(
         'date published', default=timezone.now, blank=True)
     description = models.CharField(max_length=255, blank=True)
+    author = models.ForeignKey(to='Users.User', on_delete=models.CASCADE)
     approved = models.BooleanField(default=False)
     censure = models.BooleanField(default=False)
-    permission = PatchedMultiSelectField(
-        choices=PERMISSION_CHOICES, max_choices=3)
-    category = models.ManyToManyField(Category, blank=True)
-    comments = models.ManyToManyField(Comment, blank=True)
-    metadata = models.ManyToManyField(Metadata, blank=True)
-    report = models.ManyToManyField(Reporte, blank=True)
+    metadata = models.ManyToManyField(to='MetaData.Metadata', blank=True)
+    report = models.ManyToManyField(to='WebAdmin.Report', blank=True)
     aspect_h = models.IntegerField(blank=True, default=1)
     aspect_w = models.IntegerField(blank=True, default=1)
 
@@ -148,6 +90,7 @@ class Album(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
     collection = models.BooleanField(default=False)
+    author = models.ForeignKey(to='Users.User', on_delete=models.CASCADE)
 
     thumbnail = models.CharField(max_length=60, blank=True)
     aspect_h = models.IntegerField(blank=True, default=1)
@@ -156,16 +99,25 @@ class Album(models.Model):
     def __str__(self):
         return "Album " + self.name
 
-
-class TagSuggestion(models.Model):
-    photo = models.ForeignKey(
-        Photo, blank=False, null=False, on_delete=models.CASCADE, related_name='tagsuggestion_photo')
-
-    metadata = models.ForeignKey(
-        Metadata, blank=False, null=False, on_delete=models.CASCADE, related_name='tagsuggestion_metadata')
-
-    resolved = models.BooleanField(default=False)
-    resolution = models.BooleanField(default=False)
-
+class Comment(models.Model):
+    author = models.ForeignKey(to='Users.User', on_delete=models.CASCADE)
+    picture = models.ForeignKey(Photo, on_delete=models.CASCADE)
+    content = models.TextField()
+    censure = models.BooleanField(default = False)
+    report = models.ManyToManyField(to="WebAdmin.Report", blank= True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
-        return "TagSuggestion [Photo id: " + str(self.photo.id) + " - Value: " + self.metadata.value + "]"
+        return 'Comentario: "'+self.content[:50]+'..."'
+
+
+class Category(models.Model):
+    title = models.CharField(max_length= 30)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+    pictures = models.ManyToManyField(Photo, blank=True)
+    def __str__(self):
+        return self.title
+
+    def as_dict(self):
+        return {"id": self.id, "title": self.title}

@@ -8,27 +8,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from Gallery.models import Album, Comment, Photo, Reporte, TagSuggestion
-
 from .managers import UserManager
-
-class Notification(models.Model):
-    NOTIFICATION_TYPE_CHOICES = (
-        (1, 'Aprobación'),
-        (2, 'Edición'),
-        (3, 'Censura')
-    )
-    CONTENT_TYPE_CHOICES = (
-        (1, 'usuario'),
-        (2, 'foto'),
-        (3, 'comentario')
-    )
-    type = models.PositiveSmallIntegerField(choices=NOTIFICATION_TYPE_CHOICES, default = 1)
-    content = models.PositiveSmallIntegerField(choices=CONTENT_TYPE_CHOICES, default = 1)
-    message = models.CharField(max_length=280)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
-    read = models.BooleanField(default=False)
 
 class User(AbstractBaseUser, PermissionsMixin):
     USER_TYPE_CHOICES = (
@@ -57,13 +37,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     generation = models.CharField(_('generation'), max_length = 5, blank = True)
 
     #CONTENIDO GENERADO
-    albums = models.ManyToManyField(Album, blank=True)
-    photos = models.ManyToManyField(Photo, blank=True)
-    comments = models.ManyToManyField(Comment, blank = True)
-    report = models.ManyToManyField(Reporte, blank= True)
-    tags_suggestions = models.ManyToManyField(TagSuggestion, blank= True)
-    notifications = models.ManyToManyField(Notification, blank=True)
-
+    report = models.ManyToManyField(to='WebAdmin.Report', blank= True)
+    tags_suggestions = models.ManyToManyField(to='Metadata.TagSuggestion', blank= True)
+    
     #TIPO DE USUARIO
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default = 1)
     rol_type = models.PositiveSmallIntegerField(choices=ROL_TYPE_CHOICES, default=6)
@@ -115,3 +91,22 @@ class RegisterLink(models.Model):
         null=True, 
         blank=True
     )
+
+class Notification(models.Model):
+    NOTIFICATION_TYPE_CHOICES = (
+        (1, 'Aprobación'),
+        (2, 'Edición'),
+        (3, 'Censura')
+    )
+    CONTENT_TYPE_CHOICES = (
+        (1, 'usuario'),
+        (2, 'foto'),
+        (3, 'comentario')
+    )
+    type = models.PositiveSmallIntegerField(choices=NOTIFICATION_TYPE_CHOICES, default = 1)
+    content = models.PositiveSmallIntegerField(choices=CONTENT_TYPE_CHOICES, default = 1)
+    message = models.CharField(max_length=280)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+    read = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

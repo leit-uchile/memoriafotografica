@@ -1,9 +1,17 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import *
+from .models import News, LandingCaroussel, PhotoRequest, ContactRequest, Reporte
+
+class PhotoRequestAdmin(admin.ModelAdmin):
+    raw_id_fields = ('photos',)
+    list_display = ('first_name','email','resolved','approved','created_at',)
+
+class ContactRequestAdmin(admin.ModelAdmin):
+    list_display = ('resolved','created_at',)
 
 admin.site.register(News)
 admin.site.register(LandingCaroussel)
-admin.site.register(PhotoRequest)
-admin.site.register(ContactRequest)
+admin.site.register(PhotoRequestAdmin)
+admin.site.register(ContactRequestAdmin)
+admin.site.register(Reporte)

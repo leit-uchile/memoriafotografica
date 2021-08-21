@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'rest_framework',
     'knox',
-    'multiselectfield',
     'sorl.thumbnail',
     'corsheaders',
     'django_rest_passwordreset',

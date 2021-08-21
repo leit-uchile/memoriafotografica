@@ -8,12 +8,9 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework_recaptcha.fields import ReCaptchaField
 
-from Gallery.serializers import (AlbumSerializer, CommentSerializer,
-                                 PhotoSerializer)
-
 from .models import *
-from .models import Notification, User
-
+from WebAdmin.serializer import ReportSerializer
+from MetaData.serializer import PhotoTagSuggestionSerializer
 
 def gen_uuid(filename):
     ext = filename.split('.')[-1]
@@ -22,21 +19,6 @@ def gen_uuid(filename):
 
 class ReCaptchaSerializer(serializers.Serializer):
     recaptcha = ReCaptchaField()
-
-class NotificationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Notification
-        fields = ('id', 'type', 'content', 'message', 'created_at', 'read')
-    
-    def create(self, validated_data):
-        notification = Notification.objects.create(**validated_data)
-        return notification
-        
-    def update(self, instance, validated_data):
-        instance.read = validated_data.get('read', instance.read)
-        instance.updated_at = datetime.now()
-        instance.save()
-        return instance
 
 class ChangePasswordSerializer(serializers.Serializer):
     """
@@ -68,16 +50,23 @@ class CreateUserSerializer(serializers.ModelSerializer):
         return user
 
 
+class NestedUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'last_name', 'avatar', 'rol_type')
+
+
 class UserSerializer(serializers.ModelSerializer):
     #id = serializers.IntegerField(read_only=True)
     # avatar = serializers.ImageField(max_length=None, allow_empty_file=True)
     # albums = AlbumSerializer(many = True)
     # photos = PhotoSerializer(many = True)
     # user_type = serializers.IntegerField()
+    report = ReportSerializer(many=True)
+    tags_suggestions = PhotoTagSuggestionSerializer(many=True)
     class Meta:
         model = User
-        exclude = ('photos', 'albums', 'comments', 'groups',
-                   'user_permissions')
+        exclude = ('groups', 'user_permissions')
         extra_kwargs = {
             "password": {
                 "write_only": True
@@ -99,37 +88,6 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-
-class UserPhotoSerializer(serializers.ModelSerializer):
-    photos = PhotoSerializer(many = True)
-    class Meta:
-        model = User
-        fields = ('photos', )
-
-
-class UserAlbumSerializer(serializers.ModelSerializer):
-    albums = AlbumSerializer(many=True)
-
-    class Meta:
-        model = User
-        fields = ('albums', )
-
-
-class UserCommentSerializer(serializers.ModelSerializer):
-    comments = CommentSerializer(many=True)
-
-    class Meta:
-        model = User
-        fields = ('comments', )
-
-class UserNotificationSerializer(serializers.ModelSerializer):
-    notifications = NotificationSerializer(many=True)
-
-    class Meta:
-        model = User
-        fields = ('notifications', )
-
-
 class LoginUserSerializer(serializers.Serializer):
     email = serializers.CharField()
     password = serializers.CharField()
@@ -141,3 +99,19 @@ class LoginUserSerializer(serializers.Serializer):
 
         raise serializers.ValidationError(
             "Unable to log in with provided credentials.")
+
+class NotificationSerializer(serializers.ModelSerializer):
+    user = NestedUserSerializer(many=False)
+    class Meta:
+        model = Notification
+        fields = '__all__'
+    
+    def create(self, validated_data):
+        notification = Notification.objects.create(**validated_data)
+        return notification
+        
+    def update(self, instance, validated_data):
+        instance.read = validated_data.get('read', instance.read)
+        instance.updated_at = datetime.now()
+        instance.save()
+        return instance

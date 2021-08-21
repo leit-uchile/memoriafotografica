@@ -7,113 +7,15 @@ from rest_framework.exceptions import NotFound
 from rest_framework.fields import CurrentUserDefault
 
 from .models import *
-
-
-class ReportSerializer(serializers.ModelSerializer):
-
-    content_id = serializers.SerializerMethodField()
-
-    def get_content_id(self, obj):
-        """
-        Recover the id of it's reported element
-        """
-        if len(obj.photo_set.all()) != 0:
-            photo = obj.photo_set.all()[0]
-            return {"id": photo.id, "thumbnail": photo.thumbnail.url}
-        elif len(obj.comment_set.all()) != 0:
-            comment = obj.comment_set.all()[0]
-            return {"id": comment.id, "content": comment.content}
-        elif len(obj.user_set.all()) != 0:
-            user = obj.user_set.all()[0]
-            return {"id": user.id, "first_name": user.first_name, "last_name": user.last_name}
-        else:
-            return -1
-
-    class Meta:
-        model = Reporte
-        fields = '__all__'
-
-    def create(self, validated_data):
-        reporte = Reporte.objects.create(**validated_data)
-        return reporte
-
-    def update(self, instance, validated_data):
-        print(instance)
-        instance.resolved = validated_data.get('resolved', instance.resolved)
-        instance.resolution_details = validated_data.get(
-            'resolution_details', instance.resolution_details)
-        instance.updated_at = datetime.now()
-        instance.save()
-        return instance
-
-
-class CommentAdminSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ('id', 'content', 'censure',
-                  'report', 'created_at', 'updated_at')
-        read_only_fields = ('id',)
-
-    def create(self, validated_data):
-        return Comment.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        instance.content = validated_data.get('content', instance.content)
-        instance.censure = validated_data.get('censure', instance.censure)
-        instance.updated_at = datetime.now()
-        instance.save()
-        return instance
-
-
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ('id', 'content', 'created_at', 'updated_at')
-        read_only_fields = ('id',)
-
-    def create(self, validated_data):
-        return Comment.objects.create(**validated_data)
-    """
-    def update(self, instance, validated_data):
-        instance.content = validated_data.get('content', instance.content)
-        instance.censure = validated_data.get('censure', instance.censure)
-        instance.save()
-        return instance
-    Comento esto porque el colab no debiese editar nada
-    """
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = "__all__"
-
-    def create(self, validated_data):
-        return Category.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        instance.title = validated_data.get('title', instance.title)
-        instance.updated_at = datetime.now()
-        instance.save()
-        return instance
-
-
-"""
-class CreateCommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ('id','content',)
-
-        def create(self, validated_data):
-            comment = Comment.objects.create(**validated_data)
-            return comment
-"""
+from Users.serializers import NestedUserSerializer
+from MetaData.serializers import MetadataSerializer
+from WebAdmin.serializers import ReportSerializer
 
 
 class CreatePhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
-        fields = ('id', 'image', 'description',
+        fields = ('id', 'image', 'description', 'author', 
                   'upload_date', 'title', 'permission',
                   'thumbnail', 'aspect_h', 'aspect_w')
 
@@ -125,7 +27,7 @@ class CreatePhotoSerializer(serializers.ModelSerializer):
 class PhotoSerializer(serializers.ModelSerializer):
     # Para usuario colaborador
     class Meta:
-        exclude = ('censure', 'report', 'comments')
+        exclude = ('censure', 'report')
         model = Photo
 
     def update(self, instance, validated_data):
@@ -146,6 +48,10 @@ class PhotoSerializer(serializers.ModelSerializer):
 
 
 class PhotoDetailSerializer(PhotoSerializer):
+    author = NestedUserSerializer(many=False)
+    metadata = MetadataSerializer(many=True)
+    report = ReportSerializer(many=True)
+
     class Meta(PhotoSerializer.Meta):
         depth = 2
 
@@ -169,10 +75,6 @@ class PhotoAdminSerializer(serializers.ModelSerializer):
             instance.metadata.set(validated_data['metadata'])
         except KeyError:
             pass
-        try:
-            instance.category.set(validated_data['category'])
-        except KeyError:
-            pass
         instance.title = validated_data.get('title', instance.title)
         instance.updated_at = datetime.now()
         instance.save()
@@ -180,6 +82,10 @@ class PhotoAdminSerializer(serializers.ModelSerializer):
 
 
 class PhotoDetailAdminSerializer(PhotoAdminSerializer):
+    author = NestedUserSerializer(many=False)
+    metadata = MetadataSerializer(many=True)
+    report = ReportSerializer(many=True)
+    
     class Meta(PhotoAdminSerializer.Meta):
         depth = 2
 
@@ -268,58 +174,72 @@ class AlbumPhotoSerializer(AlbumSerializer):
     """
     Include photo information when serializing
     """
+    pictures = PhotoSerializer(many=True)
+    author = NestedUserSerializer(many=False)
+    
     class Meta(AlbumSerializer.Meta):
         depth = 2
 
-
-class TagSuggestionCreateSerializer(serializers.ModelSerializer):
-
-    photo = serializers.PrimaryKeyRelatedField(
-        queryset=Photo.objects.all(), many=False)
-
-    metadata = serializers.PrimaryKeyRelatedField(
-        queryset=Metadata.objects.all(), many=False)
-
+"""
+class CreateCommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TagSuggestion
-        fields = ['photo', 'metadata']
+        model = Comment
+        fields = ('id','content',)
+
+        def create(self, validated_data):
+            comment = Comment.objects.create(**validated_data)
+            return comment
+"""
+
+class CommentAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id', 'author', 'content', 'censure',
+                  'report', 'created_at', 'updated_at')
+        read_only_fields = ('id',)
 
     def create(self, validated_data):
-        tag_suggest, created = TagSuggestion.objects.get_or_create(
-            **validated_data)
-
-        my_user = self.context['request'].user
-        
-        if not created:
-            if not tag_suggest in my_user.tags_suggestions.all():
-                tag_suggest.user_set.add(my_user)
-                tag_suggest.save()
-        else:
-            tag_suggest.user_set.add(my_user)
-            tag_suggest.save()
-        
-        return tag_suggest
+        return Comment.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
+        instance.content = validated_data.get('content', instance.content)
+        instance.censure = validated_data.get('censure', instance.censure)
+        instance.updated_at = datetime.now()
+        instance.save()
         return instance
 
 
-class TagSuggestionMetaSerializer(serializers.ModelSerializer):
-    
-    votes = serializers.SerializerMethodField()
-    
+class CommentSerializer(serializers.ModelSerializer):
+    author = NestedUserSerializer(many=False)
+    picture = PhotoSerializer(many=False)
+    report = ReportSerializer(many=True)
     class Meta:
-        model = TagSuggestion
-        depth = 1
-        fields = ['id', 'metadata', 'votes']
+        model = Comment
+        fields = ('id', 'content', 'created_at', 'updated_at','author')
+        read_only_fields = ('id',)
 
-    def get_votes(self, obj):
-        return obj.user_set.count()
-        
+    def create(self, validated_data):
+        return Comment.objects.create(**validated_data)
+    """
+    def update(self, instance, validated_data):
+        instance.content = validated_data.get('content', instance.content)
+        instance.censure = validated_data.get('censure', instance.censure)
+        instance.save()
+        return instance
+    Comento esto porque el colab no debiese editar nada
+    """
 
-class PhotoTagSuggestionSerializer(serializers.ModelSerializer):
-    tagsuggestion_photo = TagSuggestionMetaSerializer(many=True)
-
+class CategorySerializer(serializers.ModelSerializer):
+    pictures = PhotoSerializer(many=True)
     class Meta:
-        model = Photo
-        fields = ['id', 'thumbnail', 'tagsuggestion_photo']
+        model = Category
+        fields = "__all__"
+
+    def create(self, validated_data):
+        return Category.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.updated_at = datetime.now()
+        instance.save()
+        return instance
