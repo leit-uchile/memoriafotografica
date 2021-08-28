@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import News, LandingCaroussel, PhotoRequest, ContactRequest, Reporte
+from .models import News, LandingCaroussel, PhotoRequest, ContactRequest, Report
 
 class PhotoRequestAdmin(admin.ModelAdmin):
     raw_id_fields = ('photos',)
@@ -12,6 +12,6 @@ class ContactRequestAdmin(admin.ModelAdmin):
 
 admin.site.register(News)
 admin.site.register(LandingCaroussel)
-admin.site.register(PhotoRequestAdmin)
-admin.site.register(ContactRequestAdmin)
-admin.site.register(Reporte)
+admin.site.register(PhotoRequest, PhotoRequestAdmin)
+admin.site.register(ContactRequest, ContactRequestAdmin)
+admin.site.register(Report)

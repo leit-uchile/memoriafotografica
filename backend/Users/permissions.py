@@ -37,38 +37,3 @@ class ModifyUserType(permissions.BasePermission):
         except KeyError:
             return True
 
-class IsPostRequest(permissions.BasePermission):
-    def has_permission(self, request, view):
-        method = request.method
-        if method == 'POST':
-            return True
-        else:
-            return False
-
-
-class IsGetRequest(permissions.BasePermission):
-
-    def has_permission(self, request, view):
-        method = request.method
-        if method == 'GET':
-            return True
-        else:
-            return False
-
-
-class IsPutRequest(permissions.BasePermission):
-    def has_permission(self, request, view):
-        method = request.method
-        if method == 'PUT':
-            return True
-        else:
-            return False
-
-
-class IsDeleteRequest(permissions.BasePermission):
-    def has_permission(self, request, view):
-        method = request.method
-        if method == 'DELETE':
-            return True
-        else:
-            return False

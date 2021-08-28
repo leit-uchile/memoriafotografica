@@ -1,7 +1,6 @@
 # Import models here
-from datetime import datetime
 
-from django.utils.timezone import now
+from django.utils import timezone
 from rest_framework import fields, serializers
 from rest_framework.exceptions import NotFound
 from rest_framework.fields import CurrentUserDefault
@@ -36,7 +35,7 @@ class PhotoSerializer(serializers.ModelSerializer):
         instance.title = validated_data.get('title', instance.title)
         instance.description = validated_data.get(
             'description', instance.description)
-        instance.updated_at = datetime.now()
+        instance.updated_at = timezone.now()
         instance.upload_date = validated_data.get(
             'upload_date', instance.upload_date)
         try:
@@ -76,7 +75,7 @@ class PhotoAdminSerializer(serializers.ModelSerializer):
         except KeyError:
             pass
         instance.title = validated_data.get('title', instance.title)
-        instance.updated_at = datetime.now()
+        instance.updated_at = timezone.now()
         instance.save()
         return instance
 
@@ -165,7 +164,7 @@ class AlbumSerializer(serializers.ModelSerializer):
         except KeyError:
             pass
 
-        instance.updated_at = datetime.now()
+        instance.updated_at = timezone.now()
         instance.save()
         return instance
 
@@ -204,7 +203,7 @@ class CommentAdminSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.content = validated_data.get('content', instance.content)
         instance.censure = validated_data.get('censure', instance.censure)
-        instance.updated_at = datetime.now()
+        instance.updated_at = timezone.now()
         instance.save()
         return instance
 
@@ -240,6 +239,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
-        instance.updated_at = datetime.now()
+        instance.updated_at = timezone.now()
         instance.save()
         return instance

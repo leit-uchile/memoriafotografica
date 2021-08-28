@@ -1,7 +1,7 @@
 # Import models here
-from datetime import datetime
 from uuid import uuid4
 
+from django.utils import timezone
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 # Create serializers here :)
@@ -9,8 +9,8 @@ from rest_framework import serializers
 from rest_framework_recaptcha.fields import ReCaptchaField
 
 from .models import *
-from WebAdmin.serializer import ReportSerializer
-from MetaData.serializer import PhotoTagSuggestionSerializer
+from WebAdmin.serializers import ReportSerializer
+from MetaData.serializers import PhotoTagSuggestionSerializer
 
 def gen_uuid(filename):
     ext = filename.split('.')[-1]
@@ -84,7 +84,7 @@ class UserSerializer(serializers.ModelSerializer):
                 continue
             else:
                 setattr(instance, attr, value)
-        instance.updated_at = datetime.now()
+        instance.updated_at = timezone.now()
         instance.save()
         return instance
 
@@ -112,6 +112,6 @@ class NotificationSerializer(serializers.ModelSerializer):
         
     def update(self, instance, validated_data):
         instance.read = validated_data.get('read', instance.read)
-        instance.updated_at = datetime.now()
+        instance.updated_at = timezone.now()
         instance.save()
         return instance

@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
 
 import os
-from datetime import datetime
 from uuid import uuid4
 
+from django.utils import timezone
 from django.db import models
 
 
@@ -18,8 +18,8 @@ class News(models.Model):
   subtitle = models.TextField()
   content = models.TextField()
   image = models.ImageField(upload_to=gen_uuid, blank=True)
-  created_at = models.DateTimeField(default=datetime.now)
-  updated_at = models.DateTimeField(default=datetime.now)
+  created_at = models.DateTimeField(default=timezone.now)
+  updated_at = models.DateTimeField(default=timezone.now)
 
   def __str__(self):
     has_image = " sin imagen "
@@ -32,7 +32,7 @@ class LandingCaroussel(models.Model):
 
 class PhotoRequest(models.Model):
   reason = models.TextField()
-  photos = models.ManyToManyField(to='Gallery.Photo', on_delete=models.SET_NULL, blank=True, null=True)  
+  photos = models.ManyToManyField(to='Gallery.Photo', blank=False, null=False)  
   # DATOS:
   first_name = models.CharField(max_length=30)
   last_name = models.CharField(max_length=30)
@@ -46,8 +46,8 @@ class PhotoRequest(models.Model):
 
   resolved = models.BooleanField(default=False)
   approved = models.BooleanField(default=False)
-  created_at = models.DateTimeField(default=datetime.now)
-  updated_at = models.DateTimeField(default=datetime.now)
+  created_at = models.DateTimeField(default=timezone.now)
+  updated_at = models.DateTimeField(default=timezone.now)
 
   def __str__(self):
     return "Peticion por "+self.first_name+", n fotos: "+str(self.photos.all().count())
@@ -62,8 +62,8 @@ class ContactRequest(models.Model):
 
   resolved = models.BooleanField(default=False)
   email_sent = models.BooleanField(default=False)
-  created_at = models.DateTimeField(default=datetime.now)
-  updated_at = models.DateTimeField(default=datetime.now)
+  created_at = models.DateTimeField(default=timezone.now)
+  updated_at = models.DateTimeField(default=timezone.now)
   def __str__(self):
     return "Mensaje de "+self.first_name+" sobre: "+self.message[:10]+"..."
 

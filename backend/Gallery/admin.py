@@ -23,7 +23,7 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     ordering = ['-created_at']
 
-admin.site.register(AlbumAdmin)
-admin.site.register(PhotoAdmin)
-admin.site.register(CommentAdmin)
-admin.site.register(CategoryAdmin)
+admin.site.register(Album, AlbumAdmin)
+admin.site.register(Photo, PhotoAdmin)
+admin.site.register(Comment, CommentAdmin)
+admin.site.register(Category, CategoryAdmin)

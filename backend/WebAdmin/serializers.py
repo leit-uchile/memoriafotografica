@@ -1,5 +1,5 @@
 # Import models here
-from datetime import datetime
+from django.utils import timezone
 
 from django.conf import settings
 from rest_framework import serializers
@@ -83,6 +83,6 @@ class ReportSerializer(serializers.ModelSerializer):
         instance.resolved = validated_data.get('resolved', instance.resolved)
         instance.resolution_details = validated_data.get(
             'resolution_details', instance.resolution_details)
-        instance.updated_at = datetime.now()
+        instance.updated_at = timezone.now()
         instance.save()
         return instance

@@ -9,6 +9,6 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('email','first_name','last_name','is_staff','rol_type')
     ordering = ['-updated_at']
 
-admin.site.register(UserAdmin)
+admin.site.register(User, UserAdmin)
 admin.site.register(RegisterLink)
 admin.site.register(Notification)
