@@ -53,13 +53,16 @@ const AdvancedSearch = (props) => {
     return 1;
   };
 
-  const filterInput = useCallback((array) => {
-    array.sort(sortByLabel);
-    if (inputValue !== "") {
-      array = array.filter((a) => a.label.includes(inputValue));
-    }
-    return array;
-  }, [inputValue]);
+  const filterInput = useCallback(
+    (array) => {
+      array.sort(sortByLabel);
+      if (inputValue !== "") {
+        array = array.filter((a) => a.label.includes(inputValue));
+      }
+      return array;
+    },
+    [inputValue]
+  );
 
   // API call to fetch category options
   const categories = () =>
@@ -73,7 +76,7 @@ const AdvancedSearch = (props) => {
   const keyWords = () =>
     fetch("/api/search/metadata")
       .then((r) => (r.status === 200 ? r.json() : null))
-      .then((j) => j.map((el) => ({ label: el.value })))
+      .then((j) => j.map((el, k) => ({ label: el.value, value: k })))
       .then(filterInput)
       .catch((err) => []);
 
@@ -104,6 +107,7 @@ const AdvancedSearch = (props) => {
     setSwitch(!toggle);
   };
 
+  // TODO: check if the data is actually updating
   const handleChange = (labels, state) => {
     if (labels === null) {
       saveFormData({
@@ -111,29 +115,25 @@ const AdvancedSearch = (props) => {
         [state]: [],
       });
     } else if (labels.length > formData[state].length) {
-      labels.forEach((label) => {
-        if (!formData[state].includes(label)) {
-          saveFormData({
-            ...formData,
-            [state]: formData[state].concat(label),
-          });
-        }
+      let newValues = labels
+        .filter((el) => !formData[state].includes(el.label))
+        .map((el) => el.label);
+      saveFormData({
+        ...formData,
+        [state]: [...formData[state], ...newValues],
       });
     } else if (labels.length < formData[state].length) {
-      formData[state].forEach((catLabel) => {
-        if (labels.includes(catLabel)) {
-          const idx = formData[state].indexOf(catLabel);
-          saveFormData({
-            ...formData,
-            [state]: formData[state].splice(idx, 1),
-          });
-        }
+      let newValues = labels
+        .filter((el) => formData[state].includes(el.label))
+        .map((el) => el.label);
+      saveFormData({
+        ...formData,
+        [state]: newValues,
       });
     }
   };
 
   const submitAdvSearch = (e) => {
-    e.preventDefault();
     changeToggle();
     let filtersArr = [];
     let searchTerms = "";
@@ -157,7 +157,7 @@ const AdvancedSearch = (props) => {
           let search = [];
           const lenCat = formData[key].length;
           for (let i = 0; i < lenCat; i++) {
-            const labelCat = formData[key][i].label.replace(" ", "__");
+            const labelCat = formData[key][i].replace(" ", "__");
             search.push(labelCat);
           }
           const searchStr = search.join("__");
@@ -211,6 +211,7 @@ const AdvancedSearch = (props) => {
   };
 
   return (
+    // TODO: dejar seleccionadas las opciones que se usaron en la busqueda anterior
     <div>
       <Button color="primary" onClick={changeToggle}>
         Búsqueda Avanzada
@@ -223,18 +224,25 @@ const AdvancedSearch = (props) => {
               <Col>
                 <FormGroup>
                   <legend>Buscar</legend>
-                  <Input type="text" id="search" />
+                  <Input
+                    type="text"
+                    id="search"
+                    value={formData.search}
+                    onChange={(e) =>
+                      saveFormData({ ...formData, search: e.value })
+                    }
+                  />
                 </FormGroup>
                 <FormGroup>
                   <legend>Palabras clave</legend>
                   <AsyncSelect
-                    isMulti
-                    defaultOptions
                     getOptionLabel={(e) => e.label}
+                    isMulti
+                    cacheOptions
+                    defaultOptions
                     loadOptions={keyWords}
                     onChange={(e) => handleChange(e, "metadata")}
                     onInputChange={handleAsyncInput}
-                    isSearchable={true}
                   />
                 </FormGroup>
                 <FormGroup tag="fieldset">
