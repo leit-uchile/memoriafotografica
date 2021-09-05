@@ -57,20 +57,18 @@ const Home = (props) => {
         <title>Buscar fotografias</title>
       </Helmet>
       <div className="home-gallery-menu">
-        <Container>
-          <Row>
-            <Col>
-              <div className="home-filters-containers">
-                <h2> Todas las fotograf&iacute;as</h2>
-                <AdvancedSearch
-                  onSubmit={(f) => {
-                    setState({ ...state, filters: f });
-                  }}
-                />
-              </div>
-            </Col>
-          </Row>
-        </Container>
+        <Row>
+          <Col>
+            <div className="home-filters-containers">
+              <h2> Todas las fotograf&iacute;as</h2>
+              <AdvancedSearch
+                onSubmit={(f) => {
+                  setState({ ...state, filters: f });
+                }}
+              />
+            </div>
+          </Col>
+        </Row>
       </div>
       <div className="home-background">
         <Container className="home-gallery-container">
