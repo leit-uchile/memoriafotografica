@@ -34,13 +34,14 @@ class Metadata(models.Model):
 
 class TagSuggestion(models.Model):
     photo = models.ForeignKey(to='Gallery.Photo',
-        blank=False, null=False, on_delete=models.CASCADE, related_name='tagsuggestion_photo')
+      blank=False, null=False, on_delete=models.CASCADE, related_name='tagsuggestion_photo')
 
     metadata = models.ForeignKey(
-        Metadata, blank=False, null=False, on_delete=models.CASCADE, related_name='tagsuggestion_metadata')
+      Metadata, blank=False, null=False, on_delete=models.CASCADE, related_name='tagsuggestion_metadata')
 
     resolved = models.BooleanField(default=False)
     resolution = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return "TagSuggestion [Photo id: " + str(self.photo.id) + " - Value: " + self.metadata.value + "]"

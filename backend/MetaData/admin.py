@@ -4,16 +4,16 @@ from django.contrib import admin
 from .models import IPTCKeyword, Metadata, TagSuggestion
 
 class IPTCKeywordAdmin(admin.ModelAdmin):
-    search_fields = ('name')
+    search_fields = ('name',)
     ordering = ['-updated_at']
 
 class MetadataAdmin(admin.ModelAdmin):
-    search_fields = ('value')
+    search_fields = ('value',)
     ordering = ['-updated_at']
 
 class TagSuggestionAdmin(admin.ModelAdmin):
-    raw_id_fields = ('photos',)
-    ordering = ['-updated_at']
+    raw_id_fields = ('photo',)
+    ordering = ['-created_at']
 
 admin.site.register(IPTCKeyword, IPTCKeywordAdmin)
 admin.site.register(Metadata, MetadataAdmin)

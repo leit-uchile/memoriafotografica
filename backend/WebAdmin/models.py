@@ -30,28 +30,6 @@ class News(models.Model):
 class LandingCaroussel(models.Model):
   news = models.ManyToManyField(News, blank= True)
 
-class PhotoRequest(models.Model):
-  reason = models.TextField()
-  photos = models.ManyToManyField(to='Gallery.Photo', blank=False, null=False)  
-  # DATOS:
-  first_name = models.CharField(max_length=30)
-  last_name = models.CharField(max_length=30)
-  identity_document = models.CharField(max_length=30)
-  profession = models.CharField(max_length=40)
-  address = models.CharField(max_length=50)
-  district = models.CharField(max_length=40)
-  phone_number = models.CharField(max_length=12)
-  email = models.EmailField(unique=False)
-  institution = models.CharField(max_length=40)
-
-  resolved = models.BooleanField(default=False)
-  approved = models.BooleanField(default=False)
-  created_at = models.DateTimeField(default=timezone.now)
-  updated_at = models.DateTimeField(default=timezone.now)
-
-  def __str__(self):
-    return "Peticion por "+self.first_name+", n fotos: "+str(self.photos.all().count())
-
 class ContactRequest(models.Model):
   first_name = models.CharField(max_length=30)
   last_name = models.CharField(max_length=30)

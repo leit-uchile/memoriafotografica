@@ -1,8 +1,12 @@
 from django.urls import include, re_path
 
+#from Gallery.api.comment import CommentListAPI
+from Gallery.api.photo import PhotoListAPI
 #from .api import *
 
 urlpatterns = [
+    re_path('^photos/$', PhotoListAPI.as_view()),
+    #re_path('^comments/$', CommentListAPI.as_view()),
     #re_path('^photos/$', PhotoListAPI.as_view()),
     #re_path('^photos/(?P<pk>[0-9]+)/$', PhotoDetailAPI.as_view()),
     #re_path('^photos/(?P<pk>[0-9]+)/comments/$', PhotoCommentListAPI.as_view()),

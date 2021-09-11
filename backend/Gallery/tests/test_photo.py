@@ -5,9 +5,9 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from Gallery.tests.mixins import PhotoMixin
-from Users.tests import UserMixing
+from Users.tests import UserMixin
 
-class PhotoApiTest(APITestCase, PhotoMixin, UserMixing):
+class PhotoApiTest(APITestCase, PhotoMixin, UserMixin):
 
     def setUp(self):
         self.user = self.create_user()

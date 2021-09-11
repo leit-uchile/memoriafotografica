@@ -3,9 +3,9 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from MetaData.tests.mixins import MetadataMixin
-from Users.tests import UserMixing
+from Users.tests import UserMixin
 
-class MetadataApiTest(APITestCase, MetadataMixin, UserMixing):
+class MetadataApiTest(APITestCase, MetadataMixin, UserMixin):
 
 	def setUp(self):
 		self.user = self.create_user()

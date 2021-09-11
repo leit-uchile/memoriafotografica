@@ -210,11 +210,11 @@ class CommentAdminSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     author = NestedUserSerializer(many=False)
-    picture = PhotoSerializer(many=False)
-    report = ReportSerializer(many=True)
+    # picture = PhotoSerializer(many=False)
+    # report = ReportSerializer(many=True)
     class Meta:
         model = Comment
-        fields = ('id', 'content', 'created_at', 'updated_at','author')
+        fields = ('id', 'content', 'created_at', 'updated_at','author','picture',)
         read_only_fields = ('id',)
 
     def create(self, validated_data):
@@ -242,3 +242,18 @@ class CategorySerializer(serializers.ModelSerializer):
         instance.updated_at = timezone.now()
         instance.save()
         return instance
+
+class PhotoRequestSerializer(serializers.ModelSerializer):
+    photos = PhotoSerializer(many = True)
+
+    class Meta:
+        model = PhotoRequest
+        fields ='__all__'
+
+class PhotoRequestNewSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = PhotoRequest
+        fields = ('reason','photos','first_name','last_name',
+            'identity_document','profession','address','district',
+            'phone_number','email','institution','resolved','approved','created_at','updated_at')

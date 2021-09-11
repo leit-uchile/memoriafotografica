@@ -1,10 +1,6 @@
 # Import models here
 from django.utils import timezone
-
-from django.conf import settings
 from rest_framework import serializers
-
-from Gallery.serializers import PhotoSerializer
 
 from .models import *
 
@@ -22,21 +18,6 @@ class LandingCarousselSerializer(serializers.ModelSerializer):
     class Meta:
         model = LandingCaroussel
         fields=('news',)
-
-class PhotoRequestSerializer(serializers.ModelSerializer):
-    photos = PhotoSerializer(many = True)
-
-    class Meta:
-        model = PhotoRequest
-        fields ='__all__'
-
-class PhotoRequestNewSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = PhotoRequest
-        fields = ('reason','photos','first_name','last_name',
-            'identity_document','profession','address','district',
-            'phone_number','email','institution','resolved','approved','created_at','updated_at')
 
 
 class ContactRequestSerializer(serializers.ModelSerializer):

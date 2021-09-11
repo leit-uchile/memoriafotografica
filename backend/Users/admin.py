@@ -4,7 +4,7 @@ from django.contrib import admin
 from .models import *
 
 class UserAdmin(admin.ModelAdmin):
-    raw_id_fields = ('report','tag_suggestions')
+    raw_id_fields = ('report','tags_suggestions')
     search_fields = ('email','first_name','last_name')
     list_display = ('email','first_name','last_name','is_staff','rol_type')
     ordering = ['-updated_at']

@@ -12,7 +12,7 @@ def createHash(id):
     integer = str(id).encode("UTF-8")
     return str(hashlib.sha256(integer).hexdigest())
 
-class UserMixing():
+class UserMixin():
     """
     Standard user mixin for testing
     """
@@ -71,7 +71,7 @@ class UserMixing():
         return res
 
 
-class UserApiTest(APITestCase, UserMixing):
+class UserApiTest(APITestCase, UserMixin):
     
     def tearDown(self):
         return super().tearDown()

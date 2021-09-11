@@ -25,3 +25,7 @@ class FilterContent(permissions.BasePermission):
             return user_type != 1
         except KeyError:
             return True
+
+class ReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.method in permissions.SAFE_METHODS

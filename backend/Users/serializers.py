@@ -9,7 +9,7 @@ from rest_framework import serializers
 from rest_framework_recaptcha.fields import ReCaptchaField
 
 from .models import *
-from WebAdmin.serializers import ReportSerializer
+#from WebAdmin.serializers import ReportSerializer
 from MetaData.serializers import PhotoTagSuggestionSerializer
 
 def gen_uuid(filename):
@@ -62,7 +62,7 @@ class UserSerializer(serializers.ModelSerializer):
     # albums = AlbumSerializer(many = True)
     # photos = PhotoSerializer(many = True)
     # user_type = serializers.IntegerField()
-    report = ReportSerializer(many=True)
+    # report = ReportSerializer(many=True)
     tags_suggestions = PhotoTagSuggestionSerializer(many=True)
     class Meta:
         model = User

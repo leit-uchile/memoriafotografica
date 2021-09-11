@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
+    'drf_psq',
     'rest_framework_swagger',
     'rest_framework',
     'knox',
@@ -50,6 +52,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_rest_passwordreset',
 ]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # TODO change secret KEY for production
 DRF_RECAPTCHA_SECRET_KEY = "6LdqEM0ZAAAAAIClslUTdWYpZdZQZqdRwupjTTIN"
@@ -169,6 +173,7 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': [
     #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     # ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication', ),
     'DEFAULT_PAGINATION_CLASS': 'Gallery.paginators.GalleryPagination',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',

@@ -38,7 +38,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     #CONTENIDO GENERADO
     report = models.ManyToManyField(to='WebAdmin.Report', blank= True)
-    tags_suggestions = models.ManyToManyField(to='Metadata.TagSuggestion', blank= True)
+    tags_suggestions = models.ManyToManyField(to='MetaData.TagSuggestion', blank= True)
     
     #TIPO DE USUARIO
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default = 1)
