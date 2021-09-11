@@ -5,6 +5,15 @@ from django.utils import timezone
 # Create your models here.
 
 
+
+class License(models.Model):
+    code = models.CharField(max_length= 30, unique=True)
+    description = models.CharField(max_length=1000, blank=True)
+    image = models.ImageField(null=True, upload_to="license")
+    allow_sharing = models.BooleanField(default = True)
+    short_description = models.CharField(max_length= 50, null=True, blank= True)
+
+
 class IPTCKeyword(models.Model):
     name = models.TextField()
     definition = models.TextField()

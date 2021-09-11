@@ -320,9 +320,3 @@ class PhotoTagSuggestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
         fields = ['id', 'thumbnail', 'tagsuggestion_photo']
-
-class LicenseSerializer(serializers.ModelSerializer):
-    # Para usuario colaborador
-    class Meta:
-        model = License
-        fields = '__all__'

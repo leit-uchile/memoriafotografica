@@ -11,4 +11,5 @@ urlpatterns = [
     re_path('^metadata/$', MetadataListAPI.as_view()),
     re_path('^metadata/batch/$', MetadataBatchAPI.as_view()),
     re_path('^metadata/merge/$', MetadataMergeAPI.as_view()),
+    re_path("^metadata/licenses/$", LicenseAPI.as_view())
 ]

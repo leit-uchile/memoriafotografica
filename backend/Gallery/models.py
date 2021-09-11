@@ -10,7 +10,7 @@ from multiselectfield import MultiSelectField
 from sorl.thumbnail import get_thumbnail
 
 from MemoriaFotografica.settings import BASE_DIR
-from MetaData.models import Metadata
+from MetaData.models import Metadata, License
 
 """
 Follow issue on
@@ -33,14 +33,6 @@ PERMISSION_CHOICES = (
     ('CC BY-NC-SA', 'Atribución NoComercial-CompartirIgual'),
     ('CC BY-NC-ND', 'Atribución NoComercial-SinDerivadas'),
 )
-
-class License(models.Model):
-    code = models.CharField(max_length= 30, unique=True)
-    description = models.CharField(max_length=255, blank=True)
-    image = models.ImageField(null=True, upload_to="license")
-    allow_sharing = models.BooleanField(default = True)
-    short_description = models.CharField(max_length= 50, null=True, blank= True)
-
 
 
 class Reporte(models.Model):

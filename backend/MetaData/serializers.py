@@ -92,3 +92,9 @@ class MetadataSerializer(serializers.ModelSerializer):
         #instance.approved = validated_data.get('approved', instance.approved)
         instance.save()
         return instance
+
+class LicenseSerializer(serializers.ModelSerializer):
+    # Para usuario colaborador
+    class Meta:
+        model = License
+        fields = '__all__'
