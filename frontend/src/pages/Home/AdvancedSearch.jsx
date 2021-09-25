@@ -189,6 +189,26 @@ const AdvancedSearch = (props) => {
     props.onSubmit(filterUrl);
   };
 
+  const getLabel = (val, arr) => {
+    for (let el in arr) {
+      if (arr[el].value === val) {
+        return arr[el].label;
+      }
+    }
+  };
+
+  const getValuesObjs = (val, arr) => {
+    const newArr = [];
+    val.forEach((v) => {
+      for (let idx in arr) {
+        if (arr[idx].value === v) {
+          newArr.push({ value: v, label: getLabel(v, arr) });
+        }
+      }
+    });
+    return newArr;
+  };
+
   const addValue = (event) => {
     const val = event.target.id;
     saveFormData({
@@ -240,6 +260,7 @@ const AdvancedSearch = (props) => {
                     isMulti
                     cacheOptions
                     defaultOptions
+                    defaultValue={getValuesObjs(formData.metadata, keyWords)}
                     loadOptions={keyWords}
                     onChange={(e) => handleChange(e, "metadata")}
                     onInputChange={handleAsyncInput}
@@ -251,6 +272,10 @@ const AdvancedSearch = (props) => {
                     <Select
                       inputId="byDate"
                       placeholder="Selecciona una opción"
+                      defaultValue={{
+                        value: formData.byDate,
+                        label: getLabel(formData.byDate, byDate),
+                      }}
                       options={byDate}
                       onChange={(e) => addValueSelect("byDate", e.value)}
                     />
@@ -262,7 +287,14 @@ const AdvancedSearch = (props) => {
                     />
                   </FormGroup>
                   <FormGroup>
-                    <Input type="date" id="startDate" />
+                    <Input
+                      type="date"
+                      id="startDate"
+                      defaultValue={{
+                        value: formData.startDate,
+                        label: formData.startDate,
+                      }}
+                    />
                     {toggle ? (
                       <Input type="date" name="end" id="endDate" />
                     ) : null}
@@ -274,6 +306,13 @@ const AdvancedSearch = (props) => {
                     <Select
                       inputId="searchIncludes"
                       placeholder="Selecciona una opción"
+                      defaultValue={{
+                        value: formData.searchIncludes,
+                        label: getLabel(
+                          formData.searchIncludes,
+                          searchIncludes
+                        ),
+                      }}
                       options={searchIncludes}
                       onChange={(e) =>
                         addValueSelect("searchIncludes", e.value)
@@ -299,6 +338,10 @@ const AdvancedSearch = (props) => {
                   <Select
                     inputID="orderBy"
                     placeholder="Selecciona una opción"
+                    defaultValue={{
+                      value: formData.orderBy,
+                      label: getLabel(formData.orderBy, byDate),
+                    }}
                     options={byDate}
                     onChange={(e) => addValueSelect("orderBy", e.value)}
                   />
@@ -308,6 +351,10 @@ const AdvancedSearch = (props) => {
                   <Select
                     inputId="permission"
                     placeholder="Selecciona una opción"
+                    defaultValue={{
+                      value: formData.permission,
+                      label: formData.permission,
+                    }}
                     options={permissions}
                     onChange={(e) => addValueSelect("permission", e.value)}
                   />
