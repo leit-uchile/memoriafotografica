@@ -100,6 +100,7 @@ const initialState =
         errors: {},
         activated: false,
         registerSuccess: false,
+        resendActivation: ''
       };
 
 var logginDate;
