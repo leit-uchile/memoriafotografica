@@ -885,3 +885,4 @@ class TagSuggestionApproveAPI(generics.GenericAPIView):
         tag_suggestion.delete()
         
         return Response({"id": pk}, status=status.HTTP_202_ACCEPTED)
+

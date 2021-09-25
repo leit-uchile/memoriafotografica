@@ -11,6 +11,7 @@ import upload, * as fromUpload from "./upload";
 import user, * as fromUser from "./user";
 import webadmin, * as fromWebAdmin from "./webadmin";
 import { combineReducers } from "redux";
+import licenseReducer from '../slices/licenses'
 
 const rootReducer = combineReducers({
   albumcollection,
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   upload,
   user,
   webadmin,
+  licenses: licenseReducer
 });
 
 export default rootReducer;

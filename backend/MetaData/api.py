@@ -20,9 +20,6 @@ from .models import *
 from .serializers import *
 
 #from .permissions import *
-
-
-
 def sort_by_field(element_list, request):
     sort_type = {"asc":"", "desc":"-"}
     try:
@@ -352,3 +349,9 @@ class MetadataMergeAPI(generics.GenericAPIView):
         except Exception as e:
             print(e)
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class LicenseAPI(generics.ListAPIView):
+    queryset = License.objects.all()
+    serializer_class = LicenseSerializer
+    permission_classes = [ReadOnly]
+

@@ -100,10 +100,9 @@ const PhotoDetails = ({
   }
 
   // In case of wrong id or banned id
-  if (errors.length !==0) {
+  if (errors.length !== 0) {
     return <NoMatch location={location} />;
   }
-
   return (
     <div ref={imageContainer}>
       <Helmet>
@@ -146,20 +145,19 @@ const PhotoDetails = ({
                 ? suggestions.length > state.pageSize
                   ? null
                   : suggestions.map((im, k) => (
-                      <Photo
-                        className={`suggestionPhoto ${
-                          im.id === photoInfo.id ? "thisPhoto" : ""
+                    <Photo
+                      className={`suggestionPhoto ${im.id === photoInfo.id ? "thisPhoto" : ""
                         }`}
-                        key={k}
-                        url={im.thumbnail}
-                        name={"Foto relacionada"}
-                        useLink={im.id !== photoInfo.id}
-                        onClick={() => {}}
-                        redirectUrl={`/photo/${im.id}/${location.search}`}
-                        height={"50px"}
-                        width={"50px"}
-                      />
-                    ))
+                      key={k}
+                      url={im.thumbnail}
+                      name={"Foto relacionada"}
+                      useLink={im.id !== photoInfo.id}
+                      onClick={() => { }}
+                      redirectUrl={`/photo/${im.id}/${location.search}`}
+                      height={"50px"}
+                      width={"50px"}
+                    />
+                  ))
                 : null}
             </div>
           </Col>
@@ -273,9 +271,7 @@ const PhotoDetails = ({
               >
                 <Col md={3}>
                   <h3>Licencia</h3>
-                  {photoInfo.permission.map((el) =>
-                    getPermissionLogo(el, 90, 32)
-                  )}
+                  {getPermissionLogo(photoInfo.permission, 90, 32)}
                 </Col>
                 <Col md={9}>
                   <CommentHandler id={match.params.id} fluid />

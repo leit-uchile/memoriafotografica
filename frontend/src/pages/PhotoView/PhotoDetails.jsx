@@ -4,9 +4,11 @@ import { connect } from "react-redux";
 import { Button, Row, Col, Container } from "reactstrap";
 import { Helmet } from "react-helmet";
 
-import { selectPhotos,
-          selectPhotosDetails,
-          selectSiteMiscHomeSelectedIndex} from "../../reducers";
+import {
+  selectPhotos,
+  selectPhotosDetails,
+  selectSiteMiscHomeSelectedIndex
+} from "../../reducers";
 import ReportModal from "../../components/ReportModal";
 import CommentHandler from "./CommentHandler";
 import Photo from "../../components/Photo";
@@ -161,39 +163,39 @@ class PhotoDetails extends Component {
 
     var Suggestions = suggestions
       ? suggestions
-          .slice(
-            this.state.leftPage,
-            this.state.leftPage + this.state.pageViewLimit
+        .slice(
+          this.state.leftPage,
+          this.state.leftPage + this.state.pageViewLimit
+        )
+        .map((im, k) =>
+          im.id !== photoInfo.id ? (
+            <Photo
+              style={{ marginLeft: "2px", display: "inline-block" }}
+              key={k}
+              url={im.thumbnail}
+              name={"Foto relacionada"}
+              useLink
+              redirectUrl={"/photo/" + im.id}
+              height={"50px"}
+              width={"50px"}
+            />
+          ) : (
+            <Photo
+              style={{
+                marginLeft: "2px",
+                display: "inline-block",
+                backgroundBlendMode: "lighten",
+                backgroundColor: "var(--leit-pink)",
+              }}
+              key={k}
+              url={im.thumbnail}
+              name={"Foto relacionada"}
+              height={"50px"}
+              width={"50px"}
+              onClick={() => { }}
+            />
           )
-          .map((im, k) =>
-            im.id !== photoInfo.id ? (
-              <Photo
-                style={{ marginLeft: "2px", display: "inline-block" }}
-                key={k}
-                url={im.thumbnail}
-                name={"Foto relacionada"}
-                useLink
-                redirectUrl={"/photo/" + im.id}
-                height={"50px"}
-                width={"50px"}
-              />
-            ) : (
-              <Photo
-                style={{
-                  marginLeft: "2px",
-                  display: "inline-block",
-                  backgroundBlendMode: "lighten",
-                  backgroundColor: "var(--leit-pink)",
-                }}
-                key={k}
-                url={im.thumbnail}
-                name={"Foto relacionada"}
-                height={"50px"}
-                width={"50px"}
-                onClick={() => {}}
-              />
-            )
-          )
+        )
       : null;
 
     return (
@@ -381,9 +383,7 @@ class PhotoDetails extends Component {
                 <Row>
                   <Col md={3}>
                     <h3>Licencia</h3>
-                    {photoInfo.permission.map((el) =>
-                      getPermissionLogo(el, 90, 32)
-                    )}
+                    {getPermissionLogo(photoInfo.permission, 90, 32)}
                   </Col>
                   <Col md={9}>
                     <CommentHandler id={this.props.match.params.id} fluid />

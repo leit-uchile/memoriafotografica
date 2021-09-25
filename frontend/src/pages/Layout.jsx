@@ -28,6 +28,8 @@ import RequestPhotoToast from "./RequestPhoto/RequestPhotoToast";
 import RecoverAccount from "./Other/RecoverAccount";
 import RecoverAccountConfirmation from "./Other/RecoverAccountConfirmation";
 import CompleteRegistration from "./Register/CompleteRegistration";
+import { getLicenses } from "../slices/licenses";
+import { useDispatch } from "react-redux";
 
 
 // Separate chunks for users
@@ -71,6 +73,9 @@ const Empty = (props) => {
  * - React Lazy component loading (Chunk separation)
  */
 const Layout = () => {
+  const dispatch = useDispatch()
+  dispatch (getLicenses()) 
+
   return (
     <Fragment>
       <div style={styles.background}>

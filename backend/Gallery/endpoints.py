@@ -18,5 +18,5 @@ urlpatterns = [
     re_path("^reports/$", ReportListAPI.as_view()),
     re_path("^reports/(?P<pk>[0-9]+)/$", ReportDetailAPI.as_view()),
     re_path("^tagsuggestion/$", TagSuggestionAPI.as_view()),
-    re_path("^tagsuggestion/approve/(?P<pk>[0-9]+)/$", TagSuggestionApproveAPI.as_view())
+    re_path("^tagsuggestion/approve/(?P<pk>[0-9]+)/$", TagSuggestionApproveAPI.as_view()),
 ]
