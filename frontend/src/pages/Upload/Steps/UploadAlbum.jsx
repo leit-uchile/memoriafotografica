@@ -27,63 +27,17 @@ import PropTypes from "prop-types"
 import "./css/uploadAlbum.css";
 import { useSelector } from 'react-redux'
 
-// const CC_INFO = [
-//   {
-//     name: "CC BY",
-//     text: "Atribución",
-//     desc:
-//       "Esta licencia permite a otras distribuir, remezclar, retocar, y crear a partir de su obra, incluso con fines comerciales, siempre y cuando den crédito por la creación original. Esta es la más flexible de las licencias ofrecidas. Se recomienda para la máxima difusión y utilización de los materiales licenciados. ",
-//     img: "/assets/CC/CCBY.svg",
-//   },
-//   {
-//     name: "CC BY-SA",
-//     text: "Atribución, Compartir Igual",
-//     desc:
-//       "Esta licencia permite a otras remezclar, retocar, y crear a partir de su obra, incluso con fines comerciales, siempre y cuando den crédito y licencien sus nuevas creaciones bajo los mismos términos. Esta licencia suele ser comparada con las licencias «copyleft» de software libre y de código abierto. Todas las nuevas obras basadas en la suya portarán la misma licencia, así que cualesquiera obras derivadas permitirán también uso comercial. Esta es la licencia que usa Wikipedia, y se recomienda para materiales que se beneficiarían de incorporar contenido de Wikipedia y proyectos con licencias similares. ",
-//     img: "/assets/CC/CCBYSA.svg",
-//   },
-//   {
-//     name: "CC BY-ND",
-//     text: "Atribución, Sin Derivadas",
-//     desc:
-//       "Esta licencia permite a otras sólo descargar sus obras y compartirlas con otras siempre y cuando den crédito, incluso con fines comerciales, pero no pueden cambiarlas de forma alguna.",
-//     img: "/assets/CC/CCBYND.svg",
-//   },
-//   {
-//     name: "CC BY-NC",
-//     text: "Atribución, No Comercial",
-//     desc:
-//       "Esta licencia permite a otras distribuir, remezclar, retocar, y crear a partir de su obra de forma no comercial y, a pesar de que sus nuevas obras deben siempre mencionarle y ser no comerciales, no están obligadas a licenciar sus obras derivadas bajo los mismos términos.",
-//     img: "/assets/CC/CCBYNC.svg",
-//   },
-//   {
-//     name: "CC BY-NC-SA",
-//     text: "Atribución, No Comercial, Compartir Igual",
-//     desc:
-//       "Esta licencia permite a otras remezclar, retocar, y crear a partir de su obra de forma no comercial, siempre y cuando den crédito y licencien sus nuevas creaciones bajo los mismos términos. ",
-//     img: "/assets/CC/CCBYNCSA.svg",
-//   },
-//   {
-//     name: "CC BY-NC-ND",
-//     text: "Atribución, No Comercial, Sin Derivadas",
-//     desc:
-//       "Esta licencia es la más restrictiva, permitiendo a otras sólo descargar sus obras y compartirlas con otras siempre y cuando den crédito, pero no pueden cambiarlas de forma alguna ni usarlas de forma comercial.",
-//     img: "/assets/CC/CCBYNCND.svg",
-//   },
-// ];
-
-
 
 const toMaxDate = (date) => {
   var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
+    month = '' + (d.getMonth() + 1),
+    day = '' + d.getDate(),
+    year = d.getFullYear();
 
-  if (month.length < 2) 
-      month = '0' + month;
-  if (day.length < 2) 
-      day = '0' + day;
+  if (month.length < 2)
+    month = '0' + month;
+  if (day.length < 2)
+    day = '0' + day;
 
   return [year, month, day].join('-');
 }
@@ -117,7 +71,6 @@ const UploadAlbum = ({
   });
 
   const CC_INFO = useSelector((state) => state.licenses)
-  console.log(CC_INFO)
 
   const suggestions = meta
     ? meta.map((e) => ({ name: e.value, id: e.id }))
@@ -233,7 +186,7 @@ const UploadAlbum = ({
                           type="radio"
                           name="CC"
                           id={"CreativeCommonsCheckbox" + (k + 1)}
-                          onClick={() => updateCC(el.code)}
+                          onClick={() => updateCC(el.id)}
                         />{" "}
                         <span className="CCName">{el.code + " "}</span>
                         <FontAwesomeIcon
@@ -249,19 +202,19 @@ const UploadAlbum = ({
                           }}
                         >
                           <PopoverHeader
-                          style={{ 
-                            display: 'flex',
-                            flex: 1, 
-                            justifyContent: 'space-between',
-                            alignItems: 'center'
-                          }}
-                          
+                            style={{
+                              display: 'flex',
+                              flex: 1,
+                              justifyContent: 'space-between',
+                              alignItems: 'center'
+                            }}
+
                           >
                             {el.short_description}
                             <img
                               alt="Uploaded content"
                               src={el.image}
-                              style={{ width: "15%"}}
+                              style={{ width: "15%" }}
                             />
                           </PopoverHeader>
                           <PopoverBody>{el.description}</PopoverBody>

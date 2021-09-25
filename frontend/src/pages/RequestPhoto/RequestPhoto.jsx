@@ -34,7 +34,8 @@ import {
   selectWebAdminRequested,
 } from "../../reducers";
 
-var Requested = ({ list, removeRequestPhoto }) => (
+var Requested = ({ list, removeRequestPhoto }) =>
+(
   <ListGroup>
     {list.length === 0 ? (
       <ListGroupItem disabled>No hay fotos solicitadas</ListGroupItem>
@@ -54,7 +55,7 @@ var Requested = ({ list, removeRequestPhoto }) => (
                     : { maxHeight: "128px", maxWidth: "100px" }
                 }
               />
-              {getPermissionLogo(el, 90, 32)}
+              {getPermissionLogo(el.permission, 90, 32)}
             </Col>
             <Col>
               <Row>
@@ -86,7 +87,7 @@ var Requested = ({ list, removeRequestPhoto }) => (
       ))
     )}
   </ListGroup>
-);
+)
 
 class RequestPhoto extends Component {
   constructor(props) {
