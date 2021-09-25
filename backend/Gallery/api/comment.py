@@ -26,7 +26,7 @@ class CommentListAPI(PsqMixin, mixins.ListModelMixin, mixins.CreateModelMixin ,v
     ordering = ['created_at']
 
     psq_rules = {
-        'list': [
+        ('list', 'create'): [
             Rule([IsAnonymous], CommentSerializer),
             Rule([IsColaborator], CommentSerializer),
             Rule([IsCurator], CommentAdminSerializer, lambda self: Comment.objects.all()),

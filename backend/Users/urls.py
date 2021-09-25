@@ -1,17 +1,17 @@
 from django.urls import include, re_path
 from rest_framework import routers
 
-#from .api import *
+from Users.api import LoginAPI
 
 router = routers.DefaultRouter()
 # router.register('User', UserViewSet, 'User')
 
 urlpatterns = [
     #re_path("^", include(router.urls)),
-    re_path('^api/auth/', include('knox.urls')),
+    #re_path('^api/auth/', include('knox.urls')),
     #re_path("^auth/register/$", RegistrationAPI.as_view()),
     #re_path("^confirm/(?P<code>)$", RegisterLinkAPI.as_view()),
-    #re_path("^auth/login/$", LoginAPI.as_view()),
+    re_path("^auth/login/$", LoginAPI.as_view()),
     #re_path("^auth/user/$", UserTokenAPI.as_view()),
     #re_path("^auth/password/$", PasswordAPI.as_view()),
     #re_path("^users/$", UserListAPI.as_view()),

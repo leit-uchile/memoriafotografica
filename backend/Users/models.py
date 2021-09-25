@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-import django.contrib.auth.models as django_md
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.core.mail import send_mail

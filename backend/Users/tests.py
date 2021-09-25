@@ -31,18 +31,23 @@ class UserMixin():
         "last_name": "LastName",
     }
 
-    def create_user(self, admin=False, is_active=False):
+    # Creates a colaborator/admin user validated
+    # No register link created
+    def create_user(self, admin=False):
         user =  User.objects.create_user(
             **self.user_data
         )
         if admin:
+            user.email = "admin@leit.cl"
             user.is_superuser = True
             user.user_type = 3
             user.is_staff = True
-        user.is_active = is_active
+        user.is_active = True
         user.save()
         return user
     
+    # A guest is a uncompleted user who has to activate its email as well
+    # No register link created
     def create_guest(self, data=None):
         if data is None:
             use_data = self.user_data
@@ -63,11 +68,8 @@ class UserMixin():
          user=user
         )
 
-    def login_user(self):
-        user = User.objects.get(email=self.user_data["email"])
-        user.is_active = True
-        user.save()
-        res = self.client.post(self.login_url, {"email": self.user_data["email"], "password": self.user_data["password"]}, format="json")
+    def login_user(self, user):
+        res = self.client.post(self.login_url, {"email": user.email, "password": self.user_data["password"]}, format="json")
         return res
 
 
@@ -76,6 +78,8 @@ class UserApiTest(APITestCase, UserMixin):
     def tearDown(self):
         return super().tearDown()
 
+    # Creates a colaborator/admin user who has to activate its email,
+    # created in the process
     @patch("Users.serializers.ReCaptchaSerializer.is_valid")
     def create_user(self, mock_recaptcha_is_valid, admin=False):
         mock_recaptcha_is_valid.return_value = True
@@ -84,7 +88,7 @@ class UserApiTest(APITestCase, UserMixin):
         res = self.client.post(self.register_url, self.user_data, format="json")
         del self.user_data['recaptchaToken']
         if admin:
-            user = User.objects.get(email=self.user_data["email"])
+            user = User.objects.get(email="admin@leit.cl")
             user.is_superuser = True
             user.user_type = 3
             user.is_staff = True
@@ -102,12 +106,16 @@ class UserApiTest(APITestCase, UserMixin):
 
     def test_user_login_unverified_email(self):
         reg_res = self.create_user()
-        res = self.client.post(self.login_url, {"email": self.user_data["email"], "password": self.user_data["password"]}, format="json")
+        user = User.objects.get(email=self.user_data["email"])
+        res = self.login_user(user)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_login_successful(self):
         reg_res = self.create_user()
-        res = self.login_user()
+        user = User.objects.get(email=self.user_data["email"])
+        user.is_active = True
+        user.save()
+        res = self.login_user(user)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_complete_registration_works_once(self):
@@ -122,8 +130,8 @@ class UserApiTest(APITestCase, UserMixin):
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
     
     def test_complete_registration_rejected(self):
-        user = super().create_user(is_active=True)
-        reg_link_user = self.create_register_link(user)
+        active_user = super().create_user()
+        reg_link_user = self.create_register_link(active_user)
         user_data = self.user_data.copy()
         user_data["date"] = "1991-01-01"
         user_data['code']=reg_link_user.code
@@ -145,7 +153,7 @@ class UserApiTest(APITestCase, UserMixin):
 
     @patch("Users.api.sendEmail")
     def test_resend_activation_email_guest(self,mock_email):
-        guest = super().create_guest()
+        guest = self.create_guest()
         reg_link = self.create_register_link(guest)
         res = self.client.post(self.resend_activation_url, self.user_data, format="json")
         mock_email.assert_called_with(guest.email, "complete_guest_registration","Completa tu registro",reg_link.code)
@@ -158,8 +166,6 @@ class UserApiTest(APITestCase, UserMixin):
         res = self.client.post(self.resend_activation_url, self.user_data, format="json")
         self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
         self.create_register_link(user)
-        user.is_active=True
-        user.save()
         res = self.client.post(self.resend_activation_url, self.user_data, format="json")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -169,7 +175,7 @@ class UserApiTest(APITestCase, UserMixin):
     # This is a User that finished its register process
     @patch("Users.serializers.ReCaptchaSerializer.is_valid")
     def test_register_guest_case_user1(self,mock_recaptcha_is_valid):
-        user= super().create_user(is_active=True)
+        user= super().create_user()
         mock_recaptcha_is_valid.return_value = True
         user_data = self.user_data.copy()
         user_data['recaptchaToken'] = "sample"
@@ -178,10 +184,10 @@ class UserApiTest(APITestCase, UserMixin):
         self.assertEqual(res.data,{'redirect':'login'})
 
     # Case when user is active but not completed registration,
-    # This case should neve happen
+    # This case should never happen
     @patch("Users.serializers.ReCaptchaSerializer.is_valid")
     def test_register_guest_case_user2(self,mock_recaptcha_is_valid):
-        user= super().create_user(is_active=True)
+        user= super().create_user()
         user.completed_registration=False
         user.save()
         mock_recaptcha_is_valid.return_value = True
@@ -196,6 +202,7 @@ class UserApiTest(APITestCase, UserMixin):
     def test_register_guest_case_user3(self,mock_recaptcha_is_valid):
         user= super().create_user()
         user.completed_registration=True
+        user.is_active = False
         user.save()
         mock_recaptcha_is_valid.return_value = True
         user_data = self.user_data.copy()
@@ -217,7 +224,7 @@ class UserApiTest(APITestCase, UserMixin):
         self.assertEqual(res.data,{'redirect':'guest_complete_registration'})
 
 
-    # Case when user is not active and n
+    # Case when user is not active and not completed registration,
     # This is a visitor becoming a Guest
     @patch("Users.serializers.ReCaptchaSerializer.is_valid")
     def test_register_guest_case_guest2(self,mock_recaptcha_is_valid):

@@ -15,28 +15,28 @@ class CommentApiTest(APITestCase, UserMixin, PhotoMixin, CommentMixin):
         self.base_url = '/api/comments/'
 
     def tearDown(self):
-        #self.client.credentials() # Reset credentials
+        self.client.credentials() # Reset credentials
         return super().tearDown()
 
     def test_comments_get_authenticated(self):
-        #auth = self.login_user()
-        #self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
+        auth = self.login_user(self.user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
         self.populate_comments(2, user_id=self.user.id, photo_id=self.photo.id)
 
         res = self.client.get(self.base_url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data["results"]), 2)
 
-    def test_comments_get_authenticated_not_approved(self):
-        #auth = self.login_user()
-        #self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
-        self.populate_comments(1, censure=True, user_id=self.user.id, photo_id=self.photo.id)
+    def test_comments_get_unauthenticated(self):
+        self.populate_comments(2, user_id=self.user.id, photo_id=self.photo.id)
 
         res = self.client.get(self.base_url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data["results"]), 0)
+        self.assertEqual(len(res.data["results"]), 2)
 
-    def test_comments_get_unauthenticated(self):
+    def test_comments_get_not_approved(self):
+        self.populate_comments(1, censure=True, user_id=self.user.id, photo_id=self.photo.id)
+
         res = self.client.get(self.base_url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data["results"]), 0)

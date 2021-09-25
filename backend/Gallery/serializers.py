@@ -14,9 +14,11 @@ from WebAdmin.serializers import ReportSerializer
 class CreatePhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
-        fields = ('id', 'image', 'description', 'author', 
-                  'upload_date', 'title', 'permission',
-                  'thumbnail', 'aspect_h', 'aspect_w')
+        fields = ('image', 'description', 'author', 
+                  'upload_date', 'title',
+                  #'permission',
+                  #'thumbnail',
+                  'aspect_h', 'aspect_w')
 
     def create(self, validated_data):
         photo = Photo.objects.create(**validated_data)
@@ -30,8 +32,8 @@ class PhotoSerializer(serializers.ModelSerializer):
         model = Photo
 
     def update(self, instance, validated_data):
-        instance.permission = validated_data.get(
-            'permission', instance.permission)
+        #instance.permission = validated_data.get(
+        #    'permission', instance.permission)
         instance.title = validated_data.get('title', instance.title)
         instance.description = validated_data.get(
             'description', instance.description)
@@ -64,8 +66,8 @@ class PhotoAdminSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.approved = validated_data.get('approved', instance.approved)
         instance.censure = validated_data.get('censure', instance.censure)
-        instance.permission = validated_data.get(
-            'permission', instance.permission)
+        #instance.permission = validated_data.get(
+        #    'permission', instance.permission)
         instance.description = validated_data.get(
             'description', instance.description)
         instance.upload_date = validated_data.get(
