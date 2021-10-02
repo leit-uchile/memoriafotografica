@@ -51,7 +51,6 @@ class PhotoSerializer(serializers.ModelSerializer):
 class PhotoDetailSerializer(PhotoSerializer):
     author = NestedUserSerializer(many=False)
     metadata = MetadataSerializer(many=True)
-    report = ReportSerializer(many=True)
 
     class Meta(PhotoSerializer.Meta):
         depth = 2

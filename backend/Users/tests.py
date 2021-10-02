@@ -34,8 +34,11 @@ class UserMixin():
     # Creates a colaborator/admin user validated
     # No register link created
     def create_user(self, admin=False):
+        count = str(User.objects.count() + 1)
+        user_data_copy = self.user_data.copy()
+        user_data_copy["email"] = count + self.user_data["email"]
         user =  User.objects.create_user(
-            **self.user_data
+            **user_data_copy,
         )
         if admin:
             user.email = "admin@leit.cl"
@@ -238,7 +241,7 @@ class UserApiTest(APITestCase, UserMixin):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertTrue(res.data['token'])
         self.assertTrue(res.data['user'])
-        self.assertEqual(res.data['user']['email'], 'user@leit.cl')
+        self.assertEqual(res.data['user']['email'], '1user@leit.cl')
         self.assertEqual(res.data['user']['first_name'],'Name' )
         self.assertEqual(res.data['user']['is_active'], False)
         self.assertEqual(res.data['user']['completed_registration'], False)

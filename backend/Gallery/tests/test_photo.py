@@ -6,6 +6,7 @@ from io import BytesIO
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from Gallery.models import Photo
 from Gallery.tests.mixins import PhotoMixin
 from Users.tests import UserMixin
 
@@ -27,7 +28,7 @@ class PhotoApiTest(APITestCase, PhotoMixin, UserMixin):
     def test_photos_get_authenticated(self):
         auth = self.login_user(self.user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
-        self.populate_photos(2, user_id=self.user.id)
+        self.populate_photos(2, user_id=self.user.pk)
 
         res = self.client.get(self.base_url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -36,7 +37,7 @@ class PhotoApiTest(APITestCase, PhotoMixin, UserMixin):
     def test_photos_get_authenticated_not_approved(self):
         auth = self.login_user(self.user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
-        self.populate_photos(2, False, user_id=self.user.id)
+        self.populate_photos(2, False, user_id=self.user.pk)
 
         res = self.client.get(self.base_url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -87,26 +88,95 @@ class PhotoApiTest(APITestCase, PhotoMixin, UserMixin):
         }, format='multipart')
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
     
-    def test_get_photo_serializer_by_role(self):
-        self.populate_photos(1, user_id=self.user.id)
+    def test_get_photolist_by_role(self):
+        self.populate_photos(1, user_id=self.user.pk)
 
         res_anon = self.client.get(self.base_url)
+
         auth = self.login_user(self.user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
         res_colaborator = self.client.get(self.base_url)
+
         self.assertEqual(res_anon.data, res_colaborator.data)
 
         auth = self.login_user(self.admin)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
         res_admin = self.client.get(self.base_url)
+
+        self.assertNotEqual(res_colaborator.data, res_admin.data)
+        
+    def test_edit_photo_admin(self):
+        self.populate_photos(1, user_id=self.user.pk)
+        id = Photo.objects.first().pk
+
+        auth = self.login_user(self.admin)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
+
+        res = self.client.get(self.base_url+str(id)+"/")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        # Only update title and skip metadata remappings
+        photo_json=res.data.copy()
+        photo_json.pop("author")
+        photo_json.pop("metadata")
+        photo_json.pop("report")
+        photo_json.pop("image")
+        photo_json.pop("thumbnail")
+        original_title = photo_json["title"]
+
+        photo_json["title"] =  "This is really a title"
+        res = self.client.patch(self.base_url+str(id)+"/", photo_json)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        self.assertNotEqual(original_title, res.data["title"])
+    
+    def test_get_one_photo(self):
+        self.populate_photos(2, user_id=self.user.pk)
+        id = Photo.objects.first().pk
+        res = self.client.get(self.base_url+str(id)+"/")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        id = Photo.objects.last().pk
+        res = self.client.get(self.base_url+str(id)+"/")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+    
+    def test_admin_has_more_info_photo(self):
+        self.populate_photos(1, user_id=self.user.pk)
+        id = Photo.objects.first().pk
+
+        res_anon = self.client.get(self.base_url+str(id)+"/")
+
+        auth = self.login_user(self.user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
+        res_colaborator = self.client.get(self.base_url+str(id)+"/")
+
+        self.assertEqual(res_anon.data, res_colaborator.data)
+
+        auth = self.login_user(self.admin)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
+        res_admin = self.client.get(self.base_url)
+        
         self.assertNotEqual(res_colaborator.data, res_admin.data)
 
-    # TODO: Complete the following tests with variations
-    @skip('Not yet tested')
-    def test_edit_photo(self):
-        pass
-    
-    @skip('Not yet tested')
-    def test_get_one_photo(self):
-        self.populate_photos(1, user_id=self.user.id)
-        
+    def test_reject_delete_photo(self):
+        self.populate_photos(1, user_id=self.admin.pk)
+        id = Photo.objects.first().pk
+
+        auth = self.login_user(self.user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
+
+        res = self.client.delete(self.base_url+str(id)+"/")
+
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_admin_delete_photo(self):
+        self.populate_photos(1, user_id=self.user.pk)
+        id = Photo.objects.first().pk
+
+        auth = self.login_user(self.admin)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
+
+        res = self.client.delete(self.base_url+str(id)+"/")
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+
+

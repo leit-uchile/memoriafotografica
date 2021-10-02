@@ -4,13 +4,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_psq import PsqMixin, Rule, psq
 
 from Gallery.auth import GuestOrUserAuth
-from Gallery.permissions import ReadOnly
+from Gallery.permissions import IsOwner, ReadOnly
 from Gallery.serializers import CreatePhotoSerializer, PhotoAdminSerializer, PhotoDetailAdminSerializer, PhotoDetailSerializer, PhotoSerializer
 from Gallery.models import Photo
 
 from Users.permissions import IsColaborator, IsAdmin, IsCurator, IsAnonymous
 
-class PhotoListAPI(PsqMixin, mixins.ListModelMixin, mixins.CreateModelMixin ,viewsets.GenericViewSet):
+class PhotoAPI(PsqMixin, viewsets.ModelViewSet):
     """
     List photos according to user permissions
 
@@ -38,38 +38,30 @@ class PhotoListAPI(PsqMixin, mixins.ListModelMixin, mixins.CreateModelMixin ,vie
             Rule([IsColaborator], CreatePhotoSerializer),
             Rule([IsCurator], CreatePhotoSerializer),
             Rule([IsAdmin], CreatePhotoSerializer),
+        ],
+        'update': [
+            Rule([IsAnonymous], PhotoSerializer),
+            Rule([IsColaborator], PhotoSerializer),
+            Rule([IsCurator], PhotoAdminSerializer),
+            Rule([IsAdmin], PhotoAdminSerializer),
+        ],
+        'retrieve': [
+            Rule([IsAnonymous], PhotoDetailSerializer),
+            Rule([IsColaborator], PhotoDetailSerializer),
+            Rule([IsCurator], PhotoDetailAdminSerializer),
+            Rule([IsAdmin], PhotoDetailAdminSerializer),
+        ],
+        'remove': [
+            Rule([IsColaborator & IsOwner], PhotoDetailSerializer),
+            Rule([IsCurator], PhotoDetailAdminSerializer),
+            Rule([IsAdmin], PhotoDetailAdminSerializer),
         ]
     }
     
-    # Add user as author
     def create(self, request, *args, **kwargs):
         request.data['author'] = request.user.id
         return super().create(request, *args, **kwargs)
 
-
-class PhotoDetailAPI(mixins.RetrieveModelMixin, mixins.UpdateModelMixin ,viewsets.GenericViewSet):
-    """
-    Photo REST API
-    """
-    permission_classes = [ IsAuthenticated | ReadOnly ]
-
-    serializer_class = PhotoDetailSerializer
-    queryset = Photo.objects.filter(approved=True, censure=False)
-
-    @psq([
-        Rule([IsAnonymous], PhotoDetailSerializer),
-        Rule([IsColaborator], PhotoDetailSerializer),
-        Rule([IsCurator], PhotoDetailAdminSerializer),
-        Rule([IsAdmin], PhotoDetailAdminSerializer),
-    ])
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @psq([
-        Rule([IsAnonymous], PhotoSerializer),
-        Rule([IsColaborator], PhotoSerializer),
-        Rule([IsCurator], PhotoAdminSerializer),
-        Rule([IsAdmin], PhotoAdminSerializer),
-    ])
     def update(self, request, *args, **kwargs):
+        request.data['author'] = request.user.id
         return super().update(request, *args, **kwargs)
