@@ -197,14 +197,13 @@ const AdvancedSearch = (props) => {
     }
   };
 
-  const getValuesObjs = (val, arr) => {
+  const getValuesObjs = (val) => {
     const newArr = [];
     val.forEach((v) => {
-      for (let idx in arr) {
-        if (arr[idx].value === v) {
-          newArr.push({ value: v, label: getLabel(v, arr) });
-        }
-      }
+      let idx = 0;
+      console.log(v);
+      newArr.push({ value: idx, label: v });
+      idx += 1;
     });
     return newArr;
   };
@@ -260,7 +259,7 @@ const AdvancedSearch = (props) => {
                     isMulti
                     cacheOptions
                     defaultOptions
-                    defaultValue={getValuesObjs(formData.metadata, keyWords)}
+                    defaultValue={getValuesObjs(formData.metadata)}
                     loadOptions={keyWords}
                     onChange={(e) => handleChange(e, "metadata")}
                     onInputChange={handleAsyncInput}
@@ -328,6 +327,7 @@ const AdvancedSearch = (props) => {
                     isMulti
                     cacheOptions
                     defaultOptions
+                    defaultValue={getValuesObjs(formData.category)}
                     loadOptions={categories}
                     onChange={(e) => handleChange(e, "category")}
                     onInputChange={handleAsyncInput}
