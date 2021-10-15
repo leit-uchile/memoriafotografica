@@ -211,8 +211,7 @@ class CommentAdminSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     author = NestedUserSerializer(many=False)
-    # picture = PhotoSerializer(many=False)
-    # report = ReportSerializer(many=True)
+    picture = PhotoSerializer(many=False)
     class Meta:
         model = Comment
         fields = ('id', 'content', 'created_at', 'updated_at','author','picture',)

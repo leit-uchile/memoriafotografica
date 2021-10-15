@@ -1,16 +1,16 @@
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import mixins, viewsets, filters, status
+from rest_framework import mixins, viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_psq import PsqMixin, Rule
+from drf_psq import PsqMixin, Rule, psq
 
 from Gallery.auth import GuestOrUserAuth
-from Gallery.permissions import ReadOnly
+from Gallery.permissions import IsOwner, ReadOnly
 from Gallery.serializers import CommentAdminSerializer, CommentSerializer
 from Gallery.models import Comment
 
 from Users.permissions import IsColaborator, IsAdmin, IsCurator, IsAnonymous
 
-class CommentListAPI(PsqMixin, mixins.ListModelMixin, mixins.CreateModelMixin ,viewsets.GenericViewSet):
+class CommentAPI(PsqMixin, mixins.ListModelMixin, mixins.CreateModelMixin ,viewsets.GenericViewSet):
     """
     List comments according to user permissions
     """
@@ -26,11 +26,39 @@ class CommentListAPI(PsqMixin, mixins.ListModelMixin, mixins.CreateModelMixin ,v
     ordering = ['created_at']
 
     psq_rules = {
-        ('list', 'create'): [
+        'list': [
             Rule([IsAnonymous], CommentSerializer),
             Rule([IsColaborator], CommentSerializer),
             Rule([IsCurator], CommentAdminSerializer, lambda self: Comment.objects.all()),
             Rule([IsAdmin], CommentAdminSerializer, lambda self: Comment.objects.all()),
+        ],
+        'create': [
+            Rule([IsColaborator], CommentSerializer),
+            Rule([IsCurator], CommentAdminSerializer),
+            Rule([IsAdmin], CommentAdminSerializer),
+        ],
+        'update': [
+            Rule([IsCurator], CommentAdminSerializer),
+            Rule([IsAdmin], CommentAdminSerializer),
+        ],
+        'retrieve': [
+            Rule([IsAnonymous], CommentSerializer),
+            Rule([IsColaborator], CommentSerializer),
+            Rule([IsCurator], CommentAdminSerializer),
+            Rule([IsAdmin], CommentAdminSerializer),
+        ],
+        'remove': [
+            Rule([IsColaborator & IsOwner], CommentSerializer),
+            Rule([IsCurator], CommentAdminSerializer),
+            Rule([IsAdmin], CommentAdminSerializer),
         ]
     }
+
+    def create(self, request, *args, **kwargs):
+        request.data['author'] = request.user.id
+        return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        request.data['author'] = request.user.id
+        return super().update(request, *args, **kwargs)
 
