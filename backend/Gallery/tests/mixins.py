@@ -1,5 +1,5 @@
 from io import BytesIO
-from Gallery.models import Photo, Comment
+from Gallery.models import Photo, Comment, Category
 from Users.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -56,5 +56,17 @@ class CommentMixin:
                 censure=censure,
                 picture=picture,
             )
+
+class CategoryMixin:
+    def populate_categories(self, total, photo_id=1):
+        """
+        Populate categories
+        """
+        for i in range(total):
+            category = Category(
+                title="This is not a title",
+            )
+            category.save()
+            category.pictures.add(photo_id)
 
         
