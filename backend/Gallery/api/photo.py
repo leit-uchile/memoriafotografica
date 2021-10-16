@@ -1,5 +1,4 @@
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import mixins, viewsets, filters
+from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_psq import PsqMixin, Rule, psq
 
@@ -17,7 +16,7 @@ class PhotoAPI(PsqMixin, viewsets.ModelViewSet):
     and allow for user and guest upload with a valid Knox JWT Token
     """
     authentication_classes = [GuestOrUserAuth]
-    permission_classes = [ IsAuthenticated | ReadOnly ] # Allows authenticated users and read only
+    permission_classes = [ ReadOnly | IsAdmin ] # Allows authenticated users and read only
     
     serializer_class = PhotoSerializer
     queryset = Photo.objects.filter(approved=True, censure=False)

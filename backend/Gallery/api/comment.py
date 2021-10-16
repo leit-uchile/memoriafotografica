@@ -1,21 +1,19 @@
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import mixins, viewsets, filters
+from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_psq import PsqMixin, Rule, psq
+from drf_psq import PsqMixin, Rule
 
-from Gallery.auth import GuestOrUserAuth
 from Gallery.permissions import IsOwner, ReadOnly
 from Gallery.serializers import CommentAdminSerializer, CommentSerializer
 from Gallery.models import Comment
 
 from Users.permissions import IsColaborator, IsAdmin, IsCurator, IsAnonymous
 
-class CommentAPI(PsqMixin, mixins.ListModelMixin, mixins.CreateModelMixin ,viewsets.GenericViewSet):
+class CommentAPI(PsqMixin, viewsets.ModelViewSet):
     """
     List comments according to user permissions
     """
-    authentication_classes =  [GuestOrUserAuth] # Checks that the user is a guest for POST new comments
-    permission_classes = [ IsAuthenticated | ReadOnly ] # Allows authenticated users and read only
+    #authentication_classes =  [GuestOrUserAuth] # Checks that the user is a guest for POST new comments
+    permission_classes = [ ReadOnly | IsAdmin ] # Allows authenticated users and read only
 
     serializer_class = CommentSerializer
     queryset = Comment.objects.filter(censure=False)

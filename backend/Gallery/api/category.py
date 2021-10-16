@@ -1,21 +1,18 @@
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import mixins, viewsets, filters
+from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_psq import PsqMixin, Rule, psq
 
-from Gallery.auth import GuestOrUserAuth
-from Gallery.permissions import IsOwner, ReadOnly
-from Gallery.serializers import CategorySerializer
+from Gallery.permissions import ReadOnly
+from Gallery.serializers import CategorySerializer, CreateCategorySerializer
 from Gallery.models import Category
 
 from Users.permissions import IsColaborator, IsAdmin, IsCurator, IsAnonymous
 
-class CategoryAPI(PsqMixin, mixins.ListModelMixin, mixins.CreateModelMixin ,viewsets.GenericViewSet):
+class CategoryAPI(PsqMixin, viewsets.ModelViewSet):
     """
     List categories according to user permissions
     """
-    authentication_classes =  [GuestOrUserAuth]
-    permission_classes = [ IsAuthenticated | ReadOnly ]
+    permission_classes = [ ReadOnly | IsCurator | IsAdmin ]
 
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
@@ -32,7 +29,11 @@ class CategoryAPI(PsqMixin, mixins.ListModelMixin, mixins.CreateModelMixin ,view
             Rule([IsCurator], CategorySerializer, lambda self: Category.objects.all()),
             Rule([IsAdmin], CategorySerializer, lambda self: Category.objects.all()),
         ],
-        ('create', 'update', 'remove'): [
+        ('create', 'update'): [
+            Rule([IsCurator], CreateCategorySerializer),
+            Rule([IsAdmin], CreateCategorySerializer),
+        ],
+        'remove': [
             Rule([IsCurator], CategorySerializer),
             Rule([IsAdmin], CategorySerializer),
         ],
@@ -43,4 +44,3 @@ class CategoryAPI(PsqMixin, mixins.ListModelMixin, mixins.CreateModelMixin ,view
             Rule([IsAdmin], CategorySerializer),
         ],
     }
-

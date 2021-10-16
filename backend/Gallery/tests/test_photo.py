@@ -166,7 +166,7 @@ class PhotoApiTest(APITestCase, PhotoMixin, UserMixin):
 
         res = self.client.delete(self.base_url+str(id)+"/")
 
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_admin_delete_photo(self):
         self.populate_photos(1, user_id=self.user.pk)

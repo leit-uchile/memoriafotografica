@@ -41,6 +41,7 @@ class CategoryApiTest(APITestCase, UserMixin, PhotoMixin, CategoryMixin):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
         res = self.client.post(self.base_url, {
             "title": "This is not a title",
+            "pictures": [self.photo.id]
         }, format='multipart')
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
     
@@ -50,7 +51,7 @@ class CategoryApiTest(APITestCase, UserMixin, PhotoMixin, CategoryMixin):
         res = self.client.post(self.base_url, {
             "title": "This is not a title",
         }, format='multipart')
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_admin_delete_category(self):
         self.populate_categories(1, photo_id=self.photo.id)
@@ -71,5 +72,4 @@ class CategoryApiTest(APITestCase, UserMixin, PhotoMixin, CategoryMixin):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
 
         res = self.client.delete(self.base_url+str(id)+"/")
-
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)

@@ -9,7 +9,7 @@ class IsAnonymous(permissions.BasePermission):
 class IsColaborator(permissions.BasePermission):
 
     def has_permission(self, request, view):
-        if not request.user.is_anonymous and request.user.user_type == 1:
+        if (not request.user.is_anonymous) and request.user.user_type == 1:
             return True
         else:
             return False
@@ -17,7 +17,7 @@ class IsColaborator(permissions.BasePermission):
 
 class IsCurator(permissions.BasePermission):
     def has_permission(self, request, view):
-        if not request.user.is_anonymous and request.user.user_type == 2:
+        if (not request.user.is_anonymous) and request.user.user_type == 2:
             return True
         else:
             return False
@@ -26,7 +26,7 @@ class IsCurator(permissions.BasePermission):
 class IsAdmin(permissions.BasePermission):
 
     def has_permission(self, request, view):
-        if not request.user.is_anonymous and request.user.user_type == 3:
+        if (not request.user.is_anonymous) and request.user.user_type == 3:
             return True
         else:
             return False

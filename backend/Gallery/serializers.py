@@ -234,11 +234,20 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = "__all__"
 
+class CreateCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ("title", "pictures")
+
     def create(self, validated_data):
-        return Category.objects.create(**validated_data)
+        instance = Category.objects.create(title=validated_data['title'])
+        instance.pictures.set(validated_data['pictures'])
+        instance.save()
+        return instance
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
+        instance.pictures.set(validated_data['pictures'])
         instance.updated_at = timezone.now()
         instance.save()
         return instance
