@@ -45,7 +45,7 @@ class CategoryApiTest(APITestCase, UserMixin, PhotoMixin, CategoryMixin):
         }, format='multipart')
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
     
-    def test_create_category_as_colab(self):
+    def test_reject_create_category(self):
         auth = self.login_user(self.user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
         res = self.client.post(self.base_url, {

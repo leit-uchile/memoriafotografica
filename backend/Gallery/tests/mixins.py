@@ -1,5 +1,5 @@
 from io import BytesIO
-from Gallery.models import Photo, Comment, Category
+from Gallery.models import Photo, Comment, Category, Album
 from Users.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -68,5 +68,20 @@ class CategoryMixin:
             )
             category.save()
             category.pictures.add(photo_id)
+
+class AlbumMixin:
+    def populate_albums(self, total, collection=False, user_id=1, photo_id=1):
+        """
+        Populate categories
+        """
+        user = User.objects.get(pk=user_id)
+        for _ in range(total):
+            album = Album(
+                name="This is not a name",
+                collection=collection,
+                author=user,
+            )
+            album.save()
+            album.pictures.add(photo_id)
 
         

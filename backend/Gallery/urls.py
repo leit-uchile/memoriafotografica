@@ -9,6 +9,7 @@ router = routers.SimpleRouter()
 router.register(r'photos', PhotoAPI, basename='photos')
 router.register(r'comments', CommentAPI, basename='comment')
 router.register(r'categories', CategoryAPI, basename='category')
+router.register(r'albums', CategoryAPI, basename='album')
 
 urlpatterns = [
     re_path('', include(router.urls)),

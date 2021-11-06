@@ -31,7 +31,7 @@ class UserMixin():
         "last_name": "LastName",
     }
 
-    # Creates a colaborator/admin user validated
+    # Creates a collaborator/admin user validated
     # No register link created
     def create_user(self, admin=False):
         count = str(User.objects.count() + 1)
@@ -81,7 +81,7 @@ class UserApiTest(APITestCase, UserMixin):
     def tearDown(self):
         return super().tearDown()
 
-    # Creates a colaborator/admin user who has to activate its email,
+    # Creates a collaborator/admin user who has to activate its email,
     # created in the process
     @patch("Users.serializers.ReCaptchaSerializer.is_valid")
     def create_user(self, mock_recaptcha_is_valid, admin=False):

@@ -95,15 +95,15 @@ class PhotoApiTest(APITestCase, PhotoMixin, UserMixin):
 
         auth = self.login_user(self.user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
-        res_colaborator = self.client.get(self.base_url)
+        res_collaborator = self.client.get(self.base_url)
 
-        self.assertEqual(res_anon.data, res_colaborator.data)
+        self.assertEqual(res_anon.data, res_collaborator.data)
 
         auth = self.login_user(self.admin)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
         res_admin = self.client.get(self.base_url)
 
-        self.assertNotEqual(res_colaborator.data, res_admin.data)
+        self.assertNotEqual(res_collaborator.data, res_admin.data)
         
     def test_edit_photo_admin(self):
         self.populate_photos(1, user_id=self.user.pk)
@@ -147,15 +147,15 @@ class PhotoApiTest(APITestCase, PhotoMixin, UserMixin):
 
         auth = self.login_user(self.user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
-        res_colaborator = self.client.get(self.base_url+str(id)+"/")
+        res_collaborator = self.client.get(self.base_url+str(id)+"/")
 
-        self.assertEqual(res_anon.data, res_colaborator.data)
+        self.assertEqual(res_anon.data, res_collaborator.data)
 
         auth = self.login_user(self.admin)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
         res_admin = self.client.get(self.base_url)
         
-        self.assertNotEqual(res_colaborator.data, res_admin.data)
+        self.assertNotEqual(res_collaborator.data, res_admin.data)
 
     def test_reject_delete_photo(self):
         self.populate_photos(1, user_id=self.admin.pk)
