@@ -64,8 +64,6 @@ class PhotoDocumentViewSet(DocumentViewSet):
                 LOOKUP_QUERY_EXCLUDE,
             ],
         },
-        'created_at': 'created_at.raw',
-        'upload_date': 'upload_date.raw',
         'permission': 'permission.raw',
         'metadata': {
             'field': 'metadata',
@@ -86,6 +84,22 @@ class PhotoDocumentViewSet(DocumentViewSet):
                 LOOKUP_QUERY_IN,
                 LOOKUP_QUERY_EXCLUDE,
             ],
+        },
+        'created_at': {
+            'field': 'created_at',
+            'lookups': [
+                LOOKUP_FILTER_RANGE,
+                LOOKUP_FILTER_WILDCARD,
+                LOOKUP_QUERY_IN
+            ]
+        },
+        'upload_date':{
+            'field': 'upload_date',
+            'lookups': [
+                LOOKUP_FILTER_RANGE,
+                LOOKUP_FILTER_WILDCARD,
+                LOOKUP_QUERY_IN
+            ]
         },
         'includes': 'includes.raw',
     }
