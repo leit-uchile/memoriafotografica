@@ -2,18 +2,19 @@ from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_psq import PsqMixin, Rule, psq
 
+from Gallery.permissions import IsOwner, ReadOnly
 from Gallery.permissions import ReadOnly
 from Gallery.serializers import AlbumSerializer
 from Gallery.models import Album
 
 from Users.permissions import IsColaborator, IsAdmin, IsCurator, IsAnonymous
+from rest_framework.permissions import IsAuthenticated
 
 class AlbumAPI(PsqMixin, viewsets.ModelViewSet):
     """
     List albums according to user permissions
     """
-    authentication_classes = [GuestOrUserAuth]
-    permission_classes = [ ReadOnly | IsAdmin ] # Allows authenticated users and read only
+    permission_classes = [ ReadOnly | IsAuthenticated ] # Allows authenticated users and read only
     
     serializer_class = AlbumSerializer
     queryset = Album.objects.all()
@@ -24,26 +25,26 @@ class AlbumAPI(PsqMixin, viewsets.ModelViewSet):
     ordering = ['created_at']
 
     psq_rules = {
-        'list': [
+        ('list', 'retrieve'): [
             Rule([IsAnonymous], AlbumSerializer),
-            Rule([IsColaborator], AlbumSerializer),
-            Rule([IsCurator], AlbumSerializer, lambda self: Album.objects.all()),
-            Rule([IsAdmin], AlbumSerializer, lambda self: Photo.objects.all()),
-        ],
-        ('create', 'update'): [
             Rule([IsColaborator], AlbumSerializer),
             Rule([IsCurator], AlbumSerializer),
             Rule([IsAdmin], AlbumSerializer),
         ],
-        # 'remove': [
-        #     Rule([IsColaborator], AlbumSerializer),
-        #     Rule([IsCurator], AlbumSerializer),
-        #     Rule([IsAdmin], AlbumSerializer),
-        # ],
-        'retrieve': [
-            Rule([IsAnonymous], AlbumSerializer),
-            Rule([IsColaborator], AlbumSerializer),
+        ('create', 'update'): [
+            Rule([IsAuthenticated], AlbumSerializer),
+        ],
+        'remove': [
+            Rule([IsColaborator & IsOwner], AlbumSerializer),
             Rule([IsCurator], AlbumSerializer),
             Rule([IsAdmin], AlbumSerializer),
         ],
     }
+
+    def create(self, request, *args, **kwargs):
+        request.data['author'] = request.user.id
+        return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        request.data['author'] = request.user.id
+        return super().update(request, *args, **kwargs)

@@ -14,7 +14,7 @@ class AlbumApiTest(APITestCase, PhotoMixin, UserMixin, AlbumMixin):
     def setUp(self):
         self.admin = self.create_user(True)
         self.user = self.create_user(False)
-        self.photo = self.create_photo(user_id=self.user.id)
+        #self.photo = self.create_photo(user_id=self.user.id)
         self.base_url = '/api/albums/'
     
     def tearDown(self):
@@ -24,14 +24,14 @@ class AlbumApiTest(APITestCase, PhotoMixin, UserMixin, AlbumMixin):
     def test_albums_get_authenticated(self):
         auth = self.login_user(self.user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
-        self.populate_albums(2, False, user_id=self.user.id, photo_id=self.photo.id)
+        self.populate_albums(2, False, user_id=self.user.id)
 
         res = self.client.get(self.base_url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data["results"]), 2)
     
     def test_albums_get_unauthenticated(self):
-        self.populate_albums(2, False, user_id=self.user.id, photo_id=self.photo.id)
+        self.populate_albums(2, False, user_id=self.user.id)
 
         res = self.client.get(self.base_url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -42,25 +42,22 @@ class AlbumApiTest(APITestCase, PhotoMixin, UserMixin, AlbumMixin):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
         res = self.client.post(self.base_url, {
             "name": "This is not a name",
-            "pictures": [self.photo.id]
-        }, format='multipart')
+        }, format='json')
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
     
     def test_reject_anonymous_create(self):
         res = self.client.post(self.base_url, {
             "name": "This is not a name",
-            "pictures": [self.photo.id]
-        }, format='multipart')
-        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        }, format='json')
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_collection(self):
         auth = self.login_user(self.admin)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
         res = self.client.post(self.base_url, {
             "name": "This is not a name",
-            "pictures": [self.photo.id],
             "collection": True,
-        }, format='multipart')
+        }, format='json')
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
     
     def test_reject_collab_create_collection(self):
@@ -68,13 +65,12 @@ class AlbumApiTest(APITestCase, PhotoMixin, UserMixin, AlbumMixin):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
         res = self.client.post(self.base_url, {
             "name": "This is not a name",
-            "pictures": [self.photo.id],
             "collection": True,
-        }, format='multipart')
+        }, format='json')
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
     
     def test_admin_delete_album(self):
-        self.populate_albums(1, False, user_id=self.user.id, photo_id=self.photo.id)
+        self.populate_albums(1, False, user_id=self.user.id)
         id = Album.objects.first().pk
 
         auth = self.login_user(self.admin)
@@ -85,7 +81,7 @@ class AlbumApiTest(APITestCase, PhotoMixin, UserMixin, AlbumMixin):
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
     
     def test_collab_delete_album(self):
-        self.populate_albums(1, False, user_id=self.user.id, photo_id=self.photo.id)
+        self.populate_albums(1, False, user_id=self.user.id)
         id = Album.objects.first().pk
 
         auth = self.login_user(self.user)

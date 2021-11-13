@@ -70,7 +70,7 @@ class CategoryMixin:
             category.pictures.add(photo_id)
 
 class AlbumMixin:
-    def populate_albums(self, total, collection=False, user_id=1, photo_id=1):
+    def populate_albums(self, total, collection=False, user_id=1):
         """
         Populate categories
         """
@@ -82,6 +82,5 @@ class AlbumMixin:
                 author=user,
             )
             album.save()
-            album.pictures.add(photo_id)
 
         

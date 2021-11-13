@@ -6,6 +6,7 @@ from rest_framework.exceptions import NotFound
 from rest_framework.fields import CurrentUserDefault
 
 from .models import *
+from Users.models import User
 from Users.serializers import NestedUserSerializer
 from MetaData.serializers import MetadataSerializer
 from WebAdmin.serializers import ReportSerializer
@@ -89,79 +90,67 @@ class PhotoDetailAdminSerializer(PhotoAdminSerializer):
     class Meta(PhotoAdminSerializer.Meta):
         depth = 2
 
-
 class AlbumSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Album
 
     def create(self, validated_data):
-        # Create incomplete album
         a = Album(name=validated_data['name'])
         a.description = validated_data.get('description', a.description)
-        a.save()
-        # Get user from request data
-        my_user = self.context['request'].user
-        # If user is admin or collab, set collection flag:
+        my_user = validated_data['author']
+        a.author = my_user
         if my_user.user_type != 1:
+            a.collection = validated_data.get('collection', False)
             try:
-                c = validated_data['collection']
-                a.collection = c
-                a.save()
+                a.pictures.add(*validated_data['pictures'])
+                # Save thumbnail
+                a.thumbnail = validated_data['pictures'][0].thumbnail.url
+                a.aspect_h = validated_data['pictures'][0].aspect_h
+                a.aspect_w = validated_data['pictures'][0].aspect_w
             except KeyError:
                 pass
-
-        # TODO: Handle error if no photos are passed to the album,
-        #       a.thumbnail call will throw an error!!!!!
-        try:
-            # TODO: Error handler if no pictures in request
-            validated_data['pictures']
-        except:
-            a.save()
-            return a
-
-        if a.collection:
-            a.pictures.add(*validated_data['pictures'])
-            # Save thumbnail
-            a.thumbnail = validated_data['pictures'][0].thumbnail.url
-            a.aspect_h = validated_data['pictures'][0].aspect_h
-            a.aspect_w = validated_data['pictures'][0].aspect_w
+            except ValueError:
+                pass
         else:
-            valid_pics = list(
-                filter(lambda x: x in my_user.photos.all(), validated_data['pictures']))
-            a.pictures.add(*valid_pics)
-            # Save thumbnail
-            a.thumbnail = valid_pics[0].thumbnail.url
-            a.aspect_h = valid_pics[0].aspect_h
-            a.aspect_w = valid_pics[0].aspect_w
+            try:
+                valid_pics = list(
+                    filter(lambda x: x.author == my_user, validated_data['pictures']))
+                a.pictures.add(*valid_pics)
+                # Save thumbnail
+                a.thumbnail = valid_pics[0].thumbnail.url
+                a.aspect_h = valid_pics[0].aspect_h
+                a.aspect_w = valid_pics[0].aspect_w
+            except KeyError:
+                pass
         a.save()
         return a
 
     def update(self, instance, validated_data):
-
         instance.name = validated_data.get('name', instance.name)
         instance.description = validated_data.get(
             'description', instance.description)
-        my_user = self.context['request'].user
+        my_user = validated_data['author']
         if my_user.user_type != 1:
             try:
-                c = validated_data['collection']
-                instance.collection = c
-                instance.save()
+                instance.collection = validated_data['collection']
             except KeyError:
                 pass
-
         try:
-            validated_data['pictures']
             if instance.collection:
                 instance.pictures.set(validated_data['pictures'])
                 # Save thumbnail
                 instance.thumbnail = validated_data['pictures'][0].thumbnail.url
+                instance.aspect_h = validated_data['pictures'][0].aspect_h
+                instance.aspect_w = validated_data['pictures'][0].aspect_w
             else:
                 valid_pics = list(
-                    filter(lambda x: x in my_user.photos.all(), validated_data['pictures']))
+                    filter(lambda x: x.author == my_user, validated_data['pictures']))
                 instance.pictures.set(valid_pics)
+                # Save thumbnail
                 instance.thumbnail = valid_pics[0].thumbnail.url
+                instance.aspect_h = valid_pics[0].aspect_h
+                instance.aspect_w = valid_pics[0].aspect_w
         except KeyError:
             pass
 
