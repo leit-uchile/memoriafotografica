@@ -4,7 +4,7 @@ from drf_psq import PsqMixin, Rule, psq
 
 from Gallery.permissions import IsOwner, ReadOnly
 from Gallery.permissions import ReadOnly
-from Gallery.serializers import AlbumSerializer
+from Gallery.serializers import AlbumSerializer, AlbumPhotoSerializer
 from Gallery.models import Album
 
 from Users.permissions import IsColaborator, IsAdmin, IsCurator, IsAnonymous
@@ -25,14 +25,22 @@ class AlbumAPI(PsqMixin, viewsets.ModelViewSet):
     ordering = ['created_at']
 
     psq_rules = {
-        ('list', 'retrieve'): [
+        'list': [
             Rule([IsAnonymous], AlbumSerializer),
             Rule([IsColaborator], AlbumSerializer),
             Rule([IsCurator], AlbumSerializer),
             Rule([IsAdmin], AlbumSerializer),
         ],
+        'retrieve': [
+            Rule([IsAnonymous], AlbumPhotoSerializer),
+            Rule([IsColaborator], AlbumPhotoSerializer),
+            Rule([IsCurator], AlbumPhotoSerializer),
+            Rule([IsAdmin], AlbumPhotoSerializer),
+        ],
         ('create', 'update'): [
-            Rule([IsAuthenticated], AlbumSerializer),
+            Rule([IsColaborator], AlbumSerializer),
+            Rule([IsCurator], AlbumSerializer),
+            Rule([IsAdmin], AlbumSerializer),
         ],
         'remove': [
             Rule([IsColaborator & IsOwner], AlbumSerializer),
