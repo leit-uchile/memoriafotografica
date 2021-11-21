@@ -181,15 +181,13 @@ REST_KNOX = {
     'TOKEN_TTL': timedelta(hours=12),
 }
 
-# Email configuration
-EMAIL_HOST = secrets.EMAIL_HOST 
-EMAIL_PORT = secrets.EMAIL_PORT 
-EMAIL_USE_TLS = secrets.EMAIL_USE_TLS 
-EMAIL_HOST_USER = secrets.EMAIL_HOST_USER 
-EMAIL_HOST_PASSWORD = secrets.EMAIL_HOST_PASSWORD 
-
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = ('http://localhost', )
 
 # URLS configurations
 BASE_FRONT_URL = 'http://memoriafotografica.cl'
+# SEINDGRID
+EMAIL_HOST_USER = secrets.EMAIL_HOST_USER
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+SENDGRID_API_KEY = os.environ["SENDGRID_API_KEY"]
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
