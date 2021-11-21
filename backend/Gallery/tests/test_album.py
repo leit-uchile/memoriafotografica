@@ -60,14 +60,17 @@ class AlbumApiTest(APITestCase, PhotoMixin, UserMixin, AlbumMixin):
         }, format='json')
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
     
-    def test_reject_collab_create_collection(self):
+    def test_collab_create_collection(self):
         auth = self.login_user(self.user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + auth.data['token'])
         res = self.client.post(self.base_url, {
             "name": "This is not a name",
             "collection": True,
         }, format='json')
-        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+        album = Album.objects.first()
+        self.assertEqual(album.collection, False)
     
     def test_admin_delete_album(self):
         self.populate_albums(1, False, user_id=self.user.id)
