@@ -189,5 +189,5 @@ BASE_FRONT_URL = 'http://memoriafotografica.cl'
 # SEINDGRID
 EMAIL_HOST_USER = secrets.EMAIL_HOST_USER
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
-SENDGRID_API_KEY = os.environ["SENDGRID_API_KEY"]
+SENDGRID_API_KEY = secrets.SENDGRID_API_KEY
 SENDGRID_SANDBOX_MODE_IN_DEBUG = False
