@@ -20,7 +20,7 @@ def gen_uuid(instance, filename):
 class Photo(models.Model):
     image = models.ImageField(upload_to=gen_uuid)
     thumbnail = models.ImageField(blank=True)
-    title = models.CharField(max_length = 30, blank=True)
+    title = models.CharField(max_length=30, blank=True)
     upload_date = models.DateTimeField(
         'date published', default=timezone.now, blank=True)
     description = models.CharField(max_length=255, blank=True)
@@ -34,6 +34,7 @@ class Photo(models.Model):
 
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
+
     def save(self, *args, **kwargs):
         if not self.id:
             # Have to save the image (and imagefield) first
@@ -95,47 +96,51 @@ class Album(models.Model):
     def __str__(self):
         return "Album " + self.name
 
+
 class Comment(models.Model):
     author = models.ForeignKey(to='Users.User', on_delete=models.CASCADE)
     picture = models.ForeignKey(Photo, on_delete=models.CASCADE)
     content = models.TextField()
-    censure = models.BooleanField(default = False)
-    report = models.ManyToManyField(to="WebAdmin.Report", blank= True)
+    censure = models.BooleanField(default=False)
+    report = models.ManyToManyField(to="WebAdmin.Report", blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
+
     def __str__(self):
         return 'Comentario: "'+self.content[:50]+'..."'
 
 
 class Category(models.Model):
-    title = models.CharField(max_length= 30)
+    title = models.CharField(max_length=30)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
     pictures = models.ManyToManyField(Photo, blank=True)
+
     def __str__(self):
         return self.title
 
     def as_dict(self):
         return {"id": self.id, "title": self.title}
 
+
 class PhotoRequest(models.Model):
-  reason = models.TextField()
-  photos = models.ManyToManyField(Photo, blank=False)
-  # DATOS:
-  first_name = models.CharField(max_length=30)
-  last_name = models.CharField(max_length=30)
-  identity_document = models.CharField(max_length=30)
-  profession = models.CharField(max_length=40)
-  address = models.CharField(max_length=50)
-  district = models.CharField(max_length=40)
-  phone_number = models.CharField(max_length=12)
-  email = models.EmailField(unique=False)
-  institution = models.CharField(max_length=40)
+    reason = models.TextField()
+    photos = models.ManyToManyField(Photo, blank=False)
+    # DATOS:
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    identity_document = models.CharField(max_length=30)
+    profession = models.CharField(max_length=40)
+    address = models.CharField(max_length=50)
+    district = models.CharField(max_length=40)
+    phone_number = models.CharField(max_length=12)
+    email = models.EmailField(unique=False)
+    institution = models.CharField(max_length=40)
 
-  resolved = models.BooleanField(default=False)
-  approved = models.BooleanField(default=False)
-  created_at = models.DateTimeField(default=timezone.now)
-  updated_at = models.DateTimeField(default=timezone.now)
+    resolved = models.BooleanField(default=False)
+    approved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
 
-  def __str__(self):
-    return "Peticion por "+self.first_name+", n fotos: "+str(self.photos.all().count())
+    def __str__(self):
+        return "Peticion por "+self.first_name+" " + self.last_name

@@ -4,7 +4,7 @@ from django.utils import timezone
 from rest_framework import fields, serializers
 from rest_framework.exceptions import NotFound
 from rest_framework.fields import CurrentUserDefault
-
+from WebAdmin.views import sendEmail
 from .models import *
 from Users.models import User
 from Users.serializers import NestedUserSerializer
@@ -242,16 +242,32 @@ class CreateCategorySerializer(serializers.ModelSerializer):
         return instance
 
 class PhotoRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PhotoRequest
+        fields ='__all__'
+
+    def create(self, validated_data):
+        instance = PhotoRequest.objects.create(reason=validated_data['reason'])
+        instance.photos.set(validated_data['photos'])
+        instance.save()
+        return instance
+        
+    def update(self, instance, validated_data):
+        instance.approved = validated_data['approved']
+        if validated_data['approved']:
+            sendEmail(emailto=instance.email, case="photo_request_success",
+                              subject='Hemos resuelto su solicitud', attached=validated_data['attached'])
+        else:
+            sendEmail(emailto=instance.email, case="photo_request_failure",
+                              subject='Hemos resuelto su solicitud', attached=[])
+        instance.resolved = True
+        instance.updated_at = timezone.now()
+        instance.save()
+        return instance
+
+class PhotoRequestDetailSerializer(serializers.ModelSerializer):
     photos = PhotoSerializer(many = True)
 
     class Meta:
         model = PhotoRequest
         fields ='__all__'
-
-class PhotoRequestNewSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = PhotoRequest
-        fields = ('reason','photos','first_name','last_name',
-            'identity_document','profession','address','district',
-            'phone_number','email','institution','resolved','approved','created_at','updated_at')

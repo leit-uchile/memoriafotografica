@@ -1,7 +1,8 @@
 from io import BytesIO
-from Gallery.models import Photo, Comment, Category, Album
+from Gallery.models import Photo, Comment, Category, Album, PhotoRequest
 from Users.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
+
 
 class PhotoMixin:
 
@@ -13,15 +14,16 @@ class PhotoMixin:
 
         user = User.objects.get(pk=user_id)
         photo = Photo.objects.create(
-                image=SimpleUploadedFile(name=self.image.name, content=self.image_bytes),
-                title="This is not a title",
-                description="Text that's not important to the story",
-                approved=approved,
-                censure=False,
-                #permission='CC BY',
-                aspect_h=1,
-                aspect_w=1,
-                author=user
+            image=SimpleUploadedFile(
+                name=self.image.name, content=self.image_bytes),
+            title="This is not a title",
+            description="Text that's not important to the story",
+            approved=approved,
+            censure=False,
+            #permission='CC BY',
+            aspect_h=1,
+            aspect_w=1,
+            author=user
         )
         return photo
 
@@ -32,7 +34,8 @@ class PhotoMixin:
         user = User.objects.get(pk=user_id)
         for _ in range(total):
             Photo.objects.create(
-                image=SimpleUploadedFile(name=self.image.name, content=self.image_bytes),
+                image=SimpleUploadedFile(
+                    name=self.image.name, content=self.image_bytes),
                 title="This is not a title",
                 description="Text that's not important to the story",
                 approved=approved,
@@ -41,6 +44,7 @@ class PhotoMixin:
                 aspect_w=1,
                 author=user
             )
+
 
 class CommentMixin:
     def populate_comments(self, total, censure=False, user_id=1, photo_id=1):
@@ -57,6 +61,7 @@ class CommentMixin:
                 picture=picture,
             )
 
+
 class CategoryMixin:
     def populate_categories(self, total, photo_id=1):
         """
@@ -68,6 +73,7 @@ class CategoryMixin:
             )
             category.save()
             category.pictures.add(photo_id)
+
 
 class AlbumMixin:
     def populate_albums(self, total, collection=False, user_id=1):
@@ -83,4 +89,16 @@ class AlbumMixin:
             )
             album.save()
 
-        
+
+class PhotoRequestMixin:
+    def populate_pr(self, total, photo_id=1):
+        """
+        Populate photo requests
+        """
+        photo = Photo.objects.get(pk=photo_id)
+        for _ in range(total):
+            pr = PhotoRequest(
+                reason="This is not a reason",
+            )
+            pr.save()
+            pr.photos.set([photo])
